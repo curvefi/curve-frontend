@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import MuiLink from '@mui/material/Link'
 import { APP_LINK, type AppMenuOption, getInternalUrl } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
 type AppNavAppsProps = { currentMenu: AppMenuOption; onChange: (appName: AppMenuOption) => void; networkId: string }
 
@@ -13,7 +13,7 @@ export const AppButtonLinks = ({ currentMenu, onChange, networkId }: AppNavAppsP
         color="navigation"
         size="small"
         className={currentMenu === menu ? 'current' : ''}
-        component={MuiLink} // todo: change to next/link
+        component={RouterLink}
         onClick={() => onChange(menu as AppMenuOption)}
         href={getInternalUrl(routes[0].app, networkId)}
         data-testid={`app-link-${menu}`}

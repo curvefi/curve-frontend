@@ -9,7 +9,7 @@ import type { FormEstGas, FormStatus, FormValues, PageVecrv, StepKey } from '@/d
 import { DEFAULT_FORM_EST_GAS } from '@/dao/components/PageVeCrv/utils'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import { CurveApi } from '@/dao/types/dao.types'
+import type { CurveApi } from '@/dao/types/dao.types'
 import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
 import Stepper from '@ui/Stepper'
@@ -28,7 +28,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.lockedCrv.activeKey)
-  const { connectState } = useConnection<CurveApi>()
+  const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)

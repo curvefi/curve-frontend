@@ -12,7 +12,7 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
 import useStore from '@/loan/store/useStore'
-import { LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -92,7 +92,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
         !formEstGas.loading &&
         !error &&
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
 
       const stepsObj: { [key: string]: Step } = {
         APPROVAL: {

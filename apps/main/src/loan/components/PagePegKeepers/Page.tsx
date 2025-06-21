@@ -2,7 +2,7 @@
 import styled from 'styled-components'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
 import Settings from '@/loan/layout/Settings'
-import type { LlamaApi, NetworkUrlParams } from '@/loan/types/loan.types'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { PegKeeperStatistics } from './components/PegKeeperStatistics'
 
 const Page = (params: NetworkUrlParams) => {
-  const { connectState } = useConnection<LlamaApi>()
+  const { connectState } = useConnection()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
 

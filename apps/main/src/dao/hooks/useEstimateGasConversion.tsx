@@ -1,13 +1,12 @@
 import { useMemo } from 'react'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
-import type { CurveApi } from '@/dao/types/dao.types'
 import { BN, formatNumber } from '@ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number | null | undefined) => {
-  const curve = requireLib<CurveApi>()
+  const curve = requireLib('curveApi')
   const chainId = curve?.chainId
   const chainTokenUsdRate = useStore().usdRates.usdRatesMapper['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault

@@ -3,7 +3,6 @@ import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
-import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import type {
   DashboardDataMapper,
   DashboardDatasMapper,
@@ -16,7 +15,7 @@ import type {
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES, SORT_ID } from '@/dex/components/PageDashboard/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
+import { ChainId, claimButtonsKey, CurveApi, FnStepResponse, PoolDataMapper } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, getStorageValue, setStorageValue, sleep } from '@/dex/utils'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'

@@ -7,7 +7,7 @@ import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import { FetchStatus, type LlamaApi, TransactionStatus } from '@/loan/types/loan.types'
+import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
 import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
@@ -93,7 +93,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     ...DEFAULT_STATE,
     checkApproval: {
       depositApprove: async (amount: string) => {
-        const lendApi = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
         if (!lendApi) return
 
         get()[sliceKey].setStateByKey('depositApproval', { approval: false, allowance: '', fetchStatus: 'loading' })
@@ -119,8 +119,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       depositApprove: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
@@ -140,8 +140,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       deposit: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
@@ -160,8 +160,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
       withdraw: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         if (!curve) return
 
         await get().gas.fetchGasInfo(curve)
@@ -179,8 +179,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       redeem: async (amount: string) => {
         get()[sliceKey].setStateByKey('estGas', { gas: 0, fetchStatus: 'loading' })
 
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         if (!curve) return
 
         await get().gas.fetchGasInfo(curve)
@@ -198,15 +198,15 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     deploy: {
       depositApprove: async (amount: string) => {
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         const { provider } = useWallet.getState()
         const approveInfinite = get()[sliceKey].approveInfinite
 
         // TODO: check so curve always is set when approving
         if (!lendApi || !curve || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = curve.chainId as ChainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to approve ${amount} crvUSD.`, 'pending').dismiss
@@ -256,13 +256,13 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       deposit: async (amount: string) => {
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         const { provider } = useWallet.getState()
 
         if (!lendApi || !curve || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = curve.chainId as ChainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -314,17 +314,16 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       withdraw: async (amount: string) => {
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const llamaApi = getLib('llamaApi')
         const { provider } = useWallet.getState()
 
-        if (!lendApi || !curve || !provider) return
+        if (!llamaApi || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = llamaApi.chainId as ChainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfo(llamaApi)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',
@@ -333,7 +332,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         })
 
         try {
-          const transactionHash = await lendApi.st_crvUSD.withdraw(amount)
+          const transactionHash = await llamaApi.st_crvUSD.withdraw(amount)
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'loading',
@@ -372,12 +371,12 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         }
       },
       redeem: async (amount: string) => {
-        const lendApi = getLib<LlamaApi>()
-        const curve = getLib<LlamaApi>()
+        const lendApi = getLib('llamaApi')
+        const curve = getLib('llamaApi')
         const { provider } = useWallet.getState()
         if (!lendApi || !curve || !provider) return
 
-        const chainId = curve.chainId
+        const chainId = curve.chainId as ChainId
 
         const fetchGasInfo = get().gas.fetchGasInfo
 
@@ -430,7 +429,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       },
     },
     fetchExchangeRate: async () => {
-      const lendApi = getLib<LlamaApi>()
+      const lendApi = getLib('llamaApi')
       if (!lendApi) return
 
       get()[sliceKey].setStateByKey('scrvUsdExchangeRate', { fetchStatus: 'loading', value: '' })
@@ -445,7 +444,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchCrvUsdSupplies: async () => {
-      const lendApi = getLib<LlamaApi>()
+      const lendApi = getLib('llamaApi')
       if (!lendApi) return
 
       get()[sliceKey].setStateByKey('crvUsdSupplies', { fetchStatus: 'loading', crvUSD: '', scrvUSD: '' })
@@ -467,7 +466,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       const signerAddress = useWallet.getState().wallet?.account?.address.toLowerCase()
       get()[sliceKey].setStateByKey('preview', { fetchStatus: 'loading', value: '0' })
 
-      const lendApi = getLib<LlamaApi>()
+      const lendApi = getLib('llamaApi')
       if (!lendApi || !signerAddress) return
 
       const userBalance: ScrvUsdUserBalances = queryClient.getQueryData([

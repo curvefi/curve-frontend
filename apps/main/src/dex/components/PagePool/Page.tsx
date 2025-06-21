@@ -3,14 +3,15 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useMemo } from 'react'
 import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
+import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, PoolUrlParams } from '@/dex/types/main.types'
-import { getPath, useChainId } from '@/dex/utils/utilsRouter'
+import type { PoolUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 
 export const PagePool = (props: PoolUrlParams) => {
   const { push } = useRouter()
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curveApi = null, connectState } = useConnection()
   const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
   const rChainId = useChainId(networkId)
 
@@ -32,22 +33,22 @@ export const PagePool = (props: PoolUrlParams) => {
       push(reRoutePathname)
       return
     }
-    if (!isLoading(connectState) && curve?.chainId === rChainId && haveAllPools && !poolData) {
+    if (!isLoading(connectState) && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
       void (async () => {
-        const foundPoolData = await fetchNewPool(curve, rPoolId)
+        const foundPoolData = await fetchNewPool(curveApi, rPoolId)
         if (!foundPoolData) {
           push(reRoutePathname)
         }
       })()
     }
-  }, [curve, fetchNewPool, haveAllPools, network, connectState, props, poolData, push, rChainId])
+  }, [curveApi, fetchNewPool, haveAllPools, network, connectState, props, poolData, push, rChainId])
 
   return (
     rFormType &&
     poolDataCacheOrApi?.pool?.id === rPoolId &&
     hasDepositAndStake != null && (
       <Transfer
-        curve={curve}
+        curve={curveApi}
         params={props}
         poolData={poolData}
         poolDataCacheOrApi={poolDataCacheOrApi}

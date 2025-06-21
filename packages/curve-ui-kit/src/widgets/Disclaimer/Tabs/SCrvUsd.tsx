@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { List } from '../List'
 import { Header, Paragraph, Section } from '../Section'
@@ -114,13 +115,13 @@ export const SCrvUsd = () => (
 
       <Paragraph>
         {t`Read the`}{' '}
-        <Link
+        <RouterLink
           color="textSecondary"
           href={getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_DISCLAIMER)}
           target="_blank"
         >
           {t`crvUSD Risk Disclaimer`}
-        </Link>{' '}
+        </RouterLink>{' '}
         {t`for a more detailed overview of risks related to crvUSD.`}
       </Paragraph>
     </Section>

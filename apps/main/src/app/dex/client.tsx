@@ -1,96 +1,41 @@
 'use client'
 import '@/global-extensions'
-import delay from 'lodash/delay'
-import { useParams, useRouter } from 'next/navigation'
-import { type ReactNode, useCallback, useEffect, useState } from 'react'
-import { ClientWrapper } from '@/app/ClientWrapper'
+import { useParams } from 'next/navigation'
+import { type ReactNode, useEffect, useState } from 'react'
 import Page from '@/dex/layout/default'
 import useStore from '@/dex/store/useStore'
 import { type ChainId, type UrlParams } from '@/dex/types/main.types'
-import { initCurveJs } from '@/dex/utils/utilsCurvejs'
-import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
-import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { recordValues } from '@curvefi/prices-api/objects.util'
+import type { NetworkDef } from '@ui/utils'
+import { useHydration } from '@ui-kit/hooks/useHydration'
+import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export const App = ({ children, networks }: { children: ReactNode; networks: Record<ChainId, NetworkDef> }) => {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
-  const { push } = useRouter()
-  const restFullPathname = useRestFullPathname()
   const [appLoaded, setAppLoaded] = useState(false)
-
-  const pageWidth = useLayoutStore((state) => state.pageWidth)
-  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
-  const setPageVisible = useLayoutStore((state) => state.setPageVisible)
-  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
-  const updateGlobalStoreByKey = useStore((state) => state.updateGlobalStoreByKey)
-  const networks = useStore((state) => state.networks.networks)
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
-  const theme = useUserProfileStore((state) => state.theme)
   const hydrate = useStore((s) => s.hydrate)
 
-  const chainId = networksIdMapper[networkId]
-  const network = networks[chainId]
-
-  const handleResizeListener = useCallback(() => {
-    if (window.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
-  }, [setLayoutWidth])
+  const network = recordValues(networks).find((n) => n.id === networkId)!
+  const isHydrated = useHydration('curveApi', hydrate, network.chainId)
+  useRedirectToEth(network, networkId, isHydrated)
 
   useEffect(() => {
-    if (!pageWidth) return
-    document.body.className = `theme-${theme} ${pageWidth}`.replace(/ +(?= )/g, '').trim()
-    document.body.setAttribute('data-theme', theme)
-  }, [pageWidth, theme])
-
-  useEffect(() => {
-    // reset the whole app state, as internal links leave the store with old state but curveJS is not loaded
-    useStore.setState(useStore.getInitialState())
+    const abort = new AbortController()
     void (async () => {
-      await fetchNetworks()
-      setAppLoaded(true)
-      updateGlobalStoreByKey('loaded', true)
+      try {
+        await fetchNetworks()
+      } finally {
+        if (!abort.signal.aborted) {
+          setAppLoaded(true)
+        }
+      }
     })()
-
-    const handleVisibilityChange = () => setPageVisible(!document.hidden)
-    const handleScroll = () => delay(() => updateShowScrollButton(window.scrollY), 200)
-    handleResizeListener()
-    handleVisibilityChange()
-
-    document.addEventListener('visibilitychange', handleVisibilityChange)
-    window.addEventListener('resize', handleResizeListener)
-    window.addEventListener('scroll', handleScroll)
-
     return () => {
       setAppLoaded(false)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-      window.removeEventListener('resize', handleResizeListener)
-      window.removeEventListener('scroll', handleScroll)
-      updateGlobalStoreByKey('loaded', false)
+      abort.abort()
     }
-  }, [fetchNetworks, handleResizeListener, setPageVisible, updateGlobalStoreByKey, updateShowScrollButton])
+  }, [fetchNetworks])
 
-  const onChainUnavailable = useCallback(
-    ([walletChainId]: [ChainId, ChainId]) => {
-      const network = networks[walletChainId]?.id
-      if (network) {
-        console.warn(`Network switched to ${network}, redirecting...`, location.href)
-        push(getPath({ network }, `/${restFullPathname}`))
-      }
-    },
-    [networks, push, restFullPathname],
-  )
-
-  return (
-    <ClientWrapper loading={!appLoaded} networks={networks}>
-      <ConnectionProvider
-        hydrate={hydrate}
-        initLib={initCurveJs}
-        chainId={chainId}
-        onChainUnavailable={onChainUnavailable}
-      >
-        <Page network={network}>{children}</Page>
-      </ConnectionProvider>
-    </ClientWrapper>
-  )
+  return <Page network={network}>{appLoaded && isHydrated && children}</Page>
 }

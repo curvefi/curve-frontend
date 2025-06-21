@@ -159,7 +159,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
         step: 'REMOVE',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)

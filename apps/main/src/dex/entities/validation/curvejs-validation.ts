@@ -1,5 +1,5 @@
 import { enforce, group, test } from 'vest'
-import type { ChainId, CurveApi } from '@/dex/types/main.types'
+import type { ChainId } from '@/dex/types/main.types'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams } from '@ui-kit/lib/model/query'
 import { createValidationSuite } from '@ui-kit/lib/validation'
@@ -14,7 +14,7 @@ export const chainValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
 export const curvejsValidationGroup = ({ chainId }: ChainParams<ChainId>) =>
   group('apiValidation', () => {
     test('api', () => {
-      enforce(getLib<CurveApi>()?.chainId)
+      enforce(getLib('curveApi')?.chainId)
         .message('Chain ID should be loaded')
         .equals(chainId)
         .message('Incorrect chain ID')

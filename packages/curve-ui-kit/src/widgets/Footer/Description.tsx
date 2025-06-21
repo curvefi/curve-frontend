@@ -1,9 +1,9 @@
 import Box from '@mui/material/Box'
-import Link from '@mui/material/Link'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { RCLogoSM } from '@ui/images'
 import { t } from '@ui-kit/lib/i18n'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -16,7 +16,7 @@ export const Description = () => (
       flexDirection: 'column',
     }}
   >
-    <Link
+    <RouterLink
       href="/"
       sx={{
         display: 'flex',
@@ -47,7 +47,7 @@ export const Description = () => (
       >
         Curve
       </Typography>
-    </Link>
+    </RouterLink>
 
     <Typography
       variant="bodySRegular"

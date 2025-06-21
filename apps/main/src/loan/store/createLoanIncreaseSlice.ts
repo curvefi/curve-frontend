@@ -185,7 +185,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       })
 
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { collateral } = formValues
       const approveFn = networks[chainId].api.loanIncrease.approve
       const resp = await approveFn(activeKey, provider, llamma, collateral)
@@ -212,7 +212,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
         step: 'BORROW',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { collateral, debt } = formValues
       const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
 

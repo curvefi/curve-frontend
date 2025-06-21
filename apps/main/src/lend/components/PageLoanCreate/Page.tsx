@@ -38,7 +38,7 @@ const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
 
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
-  const { lib: api = null, connectState } = useConnection<Api>()
+  const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
   const [isLoaded, setLoaded] = useState(false)

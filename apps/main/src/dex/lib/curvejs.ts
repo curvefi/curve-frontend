@@ -3,14 +3,13 @@ import flatten from 'lodash/flatten'
 import isUndefined from 'lodash/isUndefined'
 import memoizee from 'memoizee'
 import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
-import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
 import type { ExchangeRate, FormValues, Route, SearchedParams } from '@/dex/components/PageRouterSwap/types'
 import { httpFetcher } from '@/dex/lib/utils'
-import useStore from '@/dex/store/useStore'
 import {
   ChainId,
   ClaimableReward,
+  claimButtonsKey,
   CurveApi,
   EstimatedGas,
   NetworkConfig,
@@ -415,7 +414,7 @@ const router = {
           ? await curve.router.estimateGas.swap(fromAddress, toAddress, fromAmount)
           : await curve.router.estimateGas.approve(fromAddress, fromAmount)
       }
-      warnIncorrectEstGas(curve.chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(curve.chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -529,7 +528,7 @@ const poolDeposit = {
           ? await p.estimateGas.depositWrappedApprove(amounts)
           : await p.estimateGas.depositApprove(amounts)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -622,7 +621,7 @@ const poolDeposit = {
           ? await p.estimateGas.depositAndStakeWrappedApprove(amounts)
           : await p.estimateGas.depositAndStakeApprove(amounts)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -681,7 +680,7 @@ const poolDeposit = {
       resp.estimatedGas = resp.isApproved
         ? await p.estimateGas.stake(lpTokenAmount)
         : await p.estimateGas.stakeApprove(lpTokenAmount)
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -829,7 +828,7 @@ const poolSwap = {
           ? await p.estimateGas.swapWrappedApprove(fromAddress, fromAmount)
           : await p.estimateGas.swapApprove(fromAddress, fromAmount)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -920,7 +919,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawApprove(lpTokenAmount)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -1001,7 +1000,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawImbalanceApprove(amounts)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -1092,7 +1091,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawOneCoinApprove(lpTokenAmount)
       }
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -1143,7 +1142,7 @@ const poolWithdraw = {
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: true, error: '' }
     try {
       resp.estimatedGas = await p.estimateGas.unstake(lpTokenAmount)
-      warnIncorrectEstGas(chainId, resp.estimatedGas)
+      void warnIncorrectEstGas(chainId, resp.estimatedGas)
       return resp
     } catch (error) {
       console.error(error)
@@ -1630,8 +1629,12 @@ const lockCrv = {
   },
 }
 
-function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
-  const network = useStore.getState().networks.networks[chainId]
+async function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
+  // import useStore dynamically to avoid circular dependency issues (only in production builds)
+  const {
+    default: { getState },
+  } = await import('@/dex/store/useStore')
+  const network = getState().networks.networks[chainId]
   const isGasL2 = network?.gasL2
   if (isGasL2 && !Array.isArray(estimatedGas) && estimatedGas !== null) {
     console.warn('Incorrect estimated gas returned for L2', estimatedGas)

@@ -1,16 +1,16 @@
 'use client'
 import styled from 'styled-components'
 import Dashboard from '@/dex/components/PageDashboard/index'
+import { useChainId } from '@/dex/hooks/useChainId'
 import Settings from '@/dex/layout/default/Settings'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
-import { useChainId } from '@/dex/utils/utilsRouter'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
 export const PageDashboard = (props: NetworkUrlParams) => {
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curveApi = null, connectState } = useConnection()
   const rChainId = useChainId(props.network)
   const { provider, connect: connectWallet } = useWallet()
   return (
@@ -30,7 +30,7 @@ export const PageDashboard = (props: NetworkUrlParams) => {
       ) : (
         <Container>
           {rChainId ? (
-            <Dashboard curve={curve} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
+            <Dashboard curve={curveApi} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
           ) : (
             <SpinnerWrapper minHeight="50vh">
               <Spinner />

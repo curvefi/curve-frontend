@@ -9,11 +9,6 @@ const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as cons
 
 export const getAllNetworks = memoizee(getNetworks, options)
 
-export async function getNetworkConfig(networkId: string) {
-  const networks = await getAllNetworks()
-  return Object.values(networks).find((n) => n.id === networkId)
-}
-
 export const getPoolName = async (
   { network: networkId, pool: poolFromUrl }: PoolUrlParams,
   httpHeaders: ReadonlyHeaders,

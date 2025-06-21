@@ -9,7 +9,7 @@ export const recordValues = <K extends keyof any, T>(obj: Record<K, T> | Partial
   Object.values(obj) as T[]
 
 /** Object.fromEntries with better type inference for records */
-export const fromEntries = <K extends string, V>(values: (readonly [K, V])[]): Record<K, V> =>
+export const fromEntries = <K extends keyof any, V>(values: (readonly [K, V])[]): Record<K, V> =>
   Object.fromEntries(values) as Record<K, V>
 
 /**

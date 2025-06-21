@@ -5,11 +5,12 @@ import styled from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
+import { useChainId } from '@/dex/hooks/useChainId'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
-import type { CurveApi, NetworkUrlParams } from '@/dex/types/main.types'
-import { getPath, useChainId } from '@/dex/utils/utilsRouter'
+import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -26,7 +27,7 @@ type PageProps = NetworkUrlParams
 export const PagePoolList = (params: PageProps) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { lib: curve = null } = useConnection<CurveApi>()
+  const { curveApi = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const rChainId = useChainId(params.network)
@@ -85,7 +86,7 @@ export const PagePoolList = (params: PageProps) => {
 
       // validate filter key
       const foundFilterKey = poolFilters.find((f) => f === paramFilterKey)
-      if ((paramFilterKey === 'user' && !!curve && !curve?.signerAddress) || !foundFilterKey) {
+      if ((paramFilterKey === 'user' && !!curveApi && !curveApi?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
           sortBy: paramSortBy as SortKey,
@@ -102,7 +103,7 @@ export const PagePoolList = (params: PageProps) => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
+  }, [curveApi?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
 
   return (
     <>
@@ -110,7 +111,7 @@ export const PagePoolList = (params: PageProps) => {
         {rChainId && parsedSearchParams && (
           <PoolList
             rChainId={rChainId}
-            curve={curve}
+            curve={curveApi}
             params={params}
             isLite={isLite}
             tableLabels={TABLE_LABEL}

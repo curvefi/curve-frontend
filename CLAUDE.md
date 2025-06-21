@@ -213,5 +213,5 @@ The existing codes that run every commit do not need any fork.
 - The existing code is often not pure, so be careful when refactoring - use only immutable data structures
 - Do not use hardcoded values but instead use constants/enums.
 - In the codebase, data is sometimes set incorrectly to 0, '' or NaN when errors occur. Please leave the data as undefined or null, and actually display unexpected errors.
-- Never use `any` or `ts-ignore` comments. If you need to, please create a type for it or ask for help.
+- **Never** use `any` or `ts-ignore` comments. If you need to, please create a type for it or ask for help.
 - We are trying to get rid of all `eslint-disable-next-line react-hooks/exhaustive-deps` comments, feel free to refactor the code and add proper dependencies to the useEffect hooks. However, be careful not to create infinite loops.

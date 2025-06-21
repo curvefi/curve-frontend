@@ -1,13 +1,9 @@
 import { usePathname } from 'next/navigation'
-import useStore from '@/dex/store/useStore'
-import { type ChainId, NetworkEnum, type UrlParams } from '@/dex/types/main.types'
+import { type UrlParams } from '@/dex/types/main.types'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('dex', network, route)
-
-export const useChainId = (networkId: NetworkEnum): ChainId =>
-  useStore((state) => state.networks.networksIdMapper[networkId])
 
 /**
  * Get the part of a path after the network, removing the leading slash and the first two parts.
