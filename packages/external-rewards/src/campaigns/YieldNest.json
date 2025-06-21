@@ -1,0 +1,45 @@
+{
+  "campaignName": "YND",
+  "platform": "YieldNest",
+  "description": "External token rewards for providing liquidity.",
+  "platformImageId": "yieldnest.png",
+  "dashboardLink": "https://dao.yieldnest.finance/plugins/rewards/#/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "This pool is actively rewarded with YND. Please visit Yieldnest's Dapp for more information. No user action is required.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x4daAcF1af85AB4728FCB63901EFc2E984b006D37",
+      "network": "ink",
+      "multiplier": "ynd",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "This pool is actively rewarded with YND. Please visit Yieldnest's Dapp for more information. No user action is required.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xD65ed4BcE447195187f37cE7D82f56AdF1826F8F",
+      "network": "ethereum",
+      "multiplier": "ynd",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "This pool is actively rewarded with YND. Please visit Yieldnest's Dapp for more information. No user action is required.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x8e6f84d924CB70b67A3872f9CA4f99C851dc7D48",
+      "network": "ethereum",
+      "multiplier": "ynd",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
