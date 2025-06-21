@@ -39,7 +39,7 @@ import TurtleTotems from './TurtleTotems.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
-import YieldNest from './YieldNestTokens.json'
+import YieldNest from './YieldNest.json'
 
 export {
   DLCLink,
