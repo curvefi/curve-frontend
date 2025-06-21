@@ -243,13 +243,33 @@ export const Metric = ({
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
-  // Converge the various notional types to an array of Notional
-  const notionals =
-    typeof notional === 'number'
-      ? [{ value: notional }]
-      : notional && !Array.isArray(notional)
-        ? [notional]
-        : (notional ?? [])
+  const notionals = useMemo(() => {
+    // Converge the various notional types to an array of Notional
+    const ns =
+      typeof notional === 'number'
+        ? [{ value: notional }]
+        : notional && !Array.isArray(notional)
+          ? [notional]
+          : (notional ?? [])
+
+    return ns
+      .map((notional) => {
+        const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
+
+        const { symbol, position, abbreviate } =
+          typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+
+        return [
+          position === 'prefix' ? symbol : '',
+          formatter(abbreviate ? abbreviateNumber(value) : value),
+          abbreviate ? scaleSuffix(value) : '',
+          position === 'suffix' ? symbol : '',
+        ]
+          .filter(Boolean)
+          .join('')
+      })
+      .join(' + ')
+  }, [notional])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
@@ -289,29 +309,9 @@ export const Metric = ({
         <MetricValue {...metricValueProps} />
       </WithSkeleton>
 
-      {notionals.length > 0 && (
+      {notionals && (
         <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionals
-            .map((notional) => {
-              const {
-                value,
-                decimals = 1,
-                formatter = (value: number) => formatNotionalValue(value, decimals),
-              } = notional
-
-              const { symbol, position, abbreviate } =
-                typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
-
-              return [
-                position === 'prefix' ? symbol : '',
-                formatter(abbreviate ? abbreviateNumber(value) : value),
-                abbreviate ? scaleSuffix(value) : '',
-                position === 'suffix' ? symbol : '',
-              ]
-                .filter(Boolean)
-                .join('')
-            })
-            .join(' + ')}
+          {notionals}
         </Typography>
       )}
 
