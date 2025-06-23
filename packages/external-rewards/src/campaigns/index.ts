@@ -40,6 +40,7 @@ import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 import YieldNestTokens from './YieldNestTokens.json'
+import Yieldoor from './Yieldoor.json'
 
 export {
   DLCLink,
@@ -84,4 +85,5 @@ export {
   YieldNestTokens,
   Falcon,
   Hyperwave,
+  Yieldoor,
 }

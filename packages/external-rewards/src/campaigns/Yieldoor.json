@@ -1,0 +1,21 @@
+{
+  "campaignName": "ycvxCRV Rewards",
+  "platform": "Yieldoor",
+  "description": "Earn autocompounding staked cvxCRV (ycvxCRV) tokens for supplying crvUSD.",
+  "platformImageId": "ycvxcrv.png",
+  "dashboardLink": "https://ycvxcrv.com/",
+  "pools": [
+    {
+      "id": "ycvxcrv-supply-rewards",
+      "action": "supply",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xe5Ee62F37825EEd77215c9D2e9d424B79C62124a",
+      "network": "ethereum",
+      "multiplier": "ycvxCRV",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
