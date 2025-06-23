@@ -20,7 +20,7 @@ export const CollateralMetric = ({ collateralValue }: CollateralMetricProps) => 
       label={t`Collateral Value`}
       value={collateralValue?.totalValue}
       loading={collateralValue?.totalValue == null && collateralValue?.loading}
-      unit="dollar"
+      valueOptions={{ unit: 'dollar' }}
       hideTooltip
     />
   </Tooltip>

@@ -29,10 +29,8 @@ export const HealthDetails = ({ health }: { health: Health }) => (
         <Metric
           label={t`Health`}
           value={Number(health?.value)}
-          abbreviate
           loading={health?.loading}
-          unit="percentage"
-          decimals={2}
+          valueOptions={{ unit: 'percentage', decimals: 2 }}
           size="large"
         />
         <HealthBar health={Number(health?.value)} />

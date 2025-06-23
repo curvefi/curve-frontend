@@ -45,13 +45,13 @@ export const BorrowInformation = ({
         label={t`7D Avg Borrow Rate`}
         value={rate?.value}
         loading={rate?.value == null && rate?.loading}
-        unit="percentage"
+        valueOptions={{ unit: 'percentage' }}
       />
       {app === 'lend' && (
         <Metric
           size="small"
           label={t`PNL`}
-          unit="dollar"
+          valueOptions={{ unit: 'dollar' }}
           value={pnl?.value}
           change={pnl?.percentageChange ?? undefined}
           loading={pnl?.value == null && pnl?.loading}
@@ -63,7 +63,7 @@ export const BorrowInformation = ({
         label={t`Current LTV`}
         value={ltv?.value}
         loading={ltv?.value == null && ltv?.loading}
-        unit="percentage"
+        valueOptions={{ unit: 'percentage' }}
       />
       {app === 'lend' && leverage?.value && leverage?.value > 1 && (
         <Metric
@@ -71,23 +71,22 @@ export const BorrowInformation = ({
           label={t`Leverage`}
           value={leverage?.value}
           loading={leverage?.value == null && leverage?.loading}
-          unit="multiplier"
+          valueOptions={{ unit: 'multiplier' }}
         />
       )}
       <Metric
         size="small"
         label={t`Liquidation Threshold`}
-        abbreviate={false}
         value={liquidationThreshold?.value}
         loading={liquidationThreshold?.value == null && liquidationThreshold?.loading}
-        unit="dollar"
+        valueOptions={{ unit: 'dollar' }}
       />
       <Metric
         size="small"
         label={t`Total Debt`}
         value={totalDebt?.value}
         loading={totalDebt?.value == null && totalDebt?.loading}
-        unit="dollar"
+        valueOptions={{ unit: 'dollar' }}
       />
     </Box>
   </Box>
