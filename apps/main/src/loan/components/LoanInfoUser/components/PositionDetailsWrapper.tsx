@@ -58,8 +58,12 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       value: sevenDayAvgRate,
       loading: isSnapshotsLoading || !llamma?.controller,
     },
-    liquidationThreshold: {
-      value: userLoanDetails?.userPrices ? Number(userLoanDetails.userPrices[1]) : null,
+    liquidationRange: {
+      value: userLoanDetails?.userPrices ? userLoanDetails.userPrices.map(Number) : null,
+      loading: userLoanDetails?.loading ?? true,
+    },
+    bandRange: {
+      value: userLoanDetails?.userBands ? userLoanDetails.userBands : null,
       loading: userLoanDetails?.loading ?? true,
     },
     collateralValue: {

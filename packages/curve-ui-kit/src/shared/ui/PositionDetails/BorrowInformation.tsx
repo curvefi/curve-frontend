@@ -8,10 +8,12 @@ import type {
   CollateralValue,
   Ltv,
   TotalDebt,
-  LiquidationThreshold,
+  LiquidationRange,
   App,
+  BandRange,
 } from '@ui-kit/shared/ui/PositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
+import { LiqThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiqThresholdMetricTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -23,7 +25,8 @@ type BorrowInformationProps = {
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
   leverage: Leverage | undefined | null
-  liquidationThreshold: LiquidationThreshold | undefined | null
+  liquidationRange: LiquidationRange | undefined | null
+  bandRange: BandRange | undefined | null
   totalDebt: TotalDebt | undefined | null
 }
 
@@ -34,7 +37,8 @@ export const BorrowInformation = ({
   collateralValue,
   ltv,
   leverage,
-  liquidationThreshold,
+  liquidationRange,
+  bandRange,
   totalDebt,
 }: BorrowInformationProps) => (
   <Box>
@@ -89,9 +93,15 @@ export const BorrowInformation = ({
       <Metric
         size="small"
         label={t`Liquidation Threshold`}
-        value={liquidationThreshold?.value}
-        loading={liquidationThreshold?.value == null && liquidationThreshold?.loading}
+        value={liquidationRange?.value?.[1]}
+        loading={liquidationRange?.value == null && liquidationRange?.loading}
         valueOptions={{ unit: 'dollar' }}
+        valueTooltip={{
+          title: t`Liquidation Threshold`,
+          body: <LiqThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
+          placement: 'top',
+          arrow: false,
+        }}
       />
       <Metric
         size="small"

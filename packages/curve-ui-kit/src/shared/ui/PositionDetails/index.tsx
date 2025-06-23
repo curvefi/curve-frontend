@@ -11,7 +11,8 @@ export type App = 'mint' | 'borrow' | 'lend'
 export type Pnl = { value: number | undefined | null; percentageChange: number | undefined | null; loading: boolean }
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowRate = { value: number | undefined | null; loading: boolean }
-export type LiquidationThreshold = { value: number | undefined | null; loading: boolean }
+export type LiquidationRange = { value: number[] | undefined | null; loading: boolean }
+export type BandRange = { value: number[] | undefined | null; loading: boolean }
 export type Leverage = { value: number | undefined | null; loading: boolean }
 export type CollateralValue = {
   totalValue: number | undefined | null
@@ -36,7 +37,8 @@ export type PositionDetailsProps = {
   health: Health
   borrowRate: BorrowRate
   pnl?: Pnl // doesn't exist yet for crvusd
-  liquidationThreshold: LiquidationThreshold
+  liquidationRange: LiquidationRange
+  bandRange: BandRange
   leverage?: Leverage // doesn't exist yet for crvusd
   collateralValue: CollateralValue
   ltv: Ltv
@@ -49,7 +51,8 @@ export const PositionDetails = ({
   health,
   borrowRate,
   pnl,
-  liquidationThreshold,
+  liquidationRange,
+  bandRange,
   leverage,
   collateralValue,
   ltv,
@@ -83,7 +86,8 @@ export const PositionDetails = ({
       collateralValue={collateralValue}
       ltv={ltv}
       leverage={leverage}
-      liquidationThreshold={liquidationThreshold}
+      liquidationRange={liquidationRange}
+      bandRange={bandRange}
       totalDebt={totalDebt}
     />
   </Box>

@@ -65,8 +65,12 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       value: sevenDayAvgRate,
       loading: isSnapshotsLoading || !market?.addresses.controller,
     },
-    liquidationThreshold: {
-      value: userLoanDetails?.prices ? Number(userLoanDetails.prices[1]) : null,
+    liquidationRange: {
+      value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
+      loading: isFetchingAll ?? true,
+    },
+    bandRange: {
+      value: userLoanDetails?.bands ? userLoanDetails.bands : null,
       loading: isFetchingAll ?? true,
     },
     collateralValue: {

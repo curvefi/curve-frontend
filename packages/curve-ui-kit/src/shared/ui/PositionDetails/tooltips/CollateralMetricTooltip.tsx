@@ -49,7 +49,7 @@ export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricToo
     : '-'
 
   return (
-    <Stack gap={3} sx={{ maxWidth: '320px' }}>
+    <Stack gap={3} sx={{ maxWidth: '20rem' }}>
       <Typography variant="bodySRegular">{t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include crvUSD due to liquidation protection.`}</Typography>
 
       <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
