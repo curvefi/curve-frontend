@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { Box } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
@@ -196,7 +197,9 @@ const MetricValue = ({
           {content}
         </Tooltip>
       ) : (
-        content
+        <Box onClick={copyValue} sx={{ cursor: 'pointer' }}>
+          {content}
+        </Box>
       )}
 
       {(change || change === 0) && (
@@ -222,7 +225,7 @@ type Props = {
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
-  /** If the tooltip should be hidden */
+  /** If the component tooltip should be hidden in order to be able to wrap the component with a custom tooltip */
   hideTooltip?: boolean
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
@@ -252,6 +255,7 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
+  ...props
 }: Props) => {
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
@@ -286,7 +290,7 @@ export const Metric = ({
   }
 
   return (
-    <Stack alignItems={alignment} data-testid={testId}>
+    <Stack alignItems={alignment} data-testid={testId} {...props}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (
