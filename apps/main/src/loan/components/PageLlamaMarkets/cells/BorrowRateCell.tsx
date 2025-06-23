@@ -23,7 +23,7 @@ export const BorrowRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   return (
     <Tooltip
       clickable
-      title={t`Borrow APR`}
+      title={t`Borrow APY`}
       body={<RateTooltipContent market={row.original} type="borrow" />}
       placement="top"
     >
@@ -32,7 +32,7 @@ export const BorrowRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
           {borrow != null && formatPercentFixed(borrow)}
         </Typography>
 
-        {borrow != null && poolRewards.length > 0 && (
+        {poolRewards.length > 0 && (
           <Stack direction="row" gap={Spacing.xs} alignSelf="end">
             <Chip
               icon={<RewardIcons size="sm" rewards={poolRewards} />}

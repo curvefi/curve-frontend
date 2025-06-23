@@ -34,7 +34,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     ? {
         snapshots: (showLendGraph && poolSnapshots) || null,
         isLoading: !enabled || lendIsLoading,
-        snapshotKey: `${type}Apr` as const,
+        snapshotKey: type === 'borrow' ? (`borrowApy` as const) : (`lendApr` as const),
         error: poolError,
       }
     : {

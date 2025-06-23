@@ -16,12 +16,12 @@ const { Spacing } = SizesAndSpaces
 
 const rateName = {
   borrow: t`Borrow APY`,
-  lend: t`Lending APR`,
+  lend: t`Supply APR`,
 }
 
 const paragraphs = {
   borrow: [
-    t`The borrow APR is the cost related to your borrow and varies according to the market and crvUSD's peg.`,
+    t`The borrow APY is the cost related to your borrow and varies according to the market and crvUSD's peg.`,
     t`The collateral of this market is yield bearing and offer extra yield.`,
   ],
   lend: [

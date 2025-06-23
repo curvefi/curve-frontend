@@ -36,7 +36,7 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
             ` - ${formatPercentFixed(lendApr + lendCrvAprBoosted)}`}
         </Typography>
 
-        {lendApr != null && poolRewards.length > 0 && (
+        {poolRewards.length > 0 && (
           <Stack direction="row" gap={Spacing.xs} alignSelf="end">
             <Chip
               icon={<RewardIcons size="sm" rewards={poolRewards} />}
