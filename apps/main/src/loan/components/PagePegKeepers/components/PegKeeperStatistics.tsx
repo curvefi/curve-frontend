@@ -23,14 +23,14 @@ export const PegKeeperStatistics = () => {
         <Metric
           loading={isLoading}
           label="Peg Stabilisation Reserve"
-          unit={CRVUSD_OPTION}
+          valueOptions={{ unit: CRVUSD_OPTION }}
           value={pegKeepersDebt && Number(pegKeepersDebt)}
         />
         <Metric
           loading={isLoading}
           label="% of  crvUSD supply in reserve"
-          unit="percentage"
           value={formattedDebtFraction}
+          valueOptions={{ unit: 'percentage' }}
         />
       </Box>
     </Box>
