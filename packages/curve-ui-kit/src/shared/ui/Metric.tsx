@@ -245,7 +245,6 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
-  ...props
 }: Props) => {
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
