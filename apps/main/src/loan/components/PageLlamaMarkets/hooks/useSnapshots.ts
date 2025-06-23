@@ -19,7 +19,7 @@ type UseSnapshotsResult<T> = {
 export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: RateType,
-  enabled: boolean,
+  enabled: boolean = true,
 ): UseSnapshotsResult<T> {
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
@@ -29,12 +29,12 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
-  const currentValue = rates[type] ?? null
+  const currentValue = isLend ? rates.lendApr : rates.borrow
   const { snapshots, isLoading, snapshotKey, error } = isLend
     ? {
         snapshots: (showLendGraph && poolSnapshots) || null,
         isLoading: !enabled || lendIsLoading,
-        snapshotKey: `${type}Apy` as const,
+        snapshotKey: `${type}Apr` as const,
         error: poolError,
       }
     : {

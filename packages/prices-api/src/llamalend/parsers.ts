@@ -15,6 +15,9 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   rate: x.rate,
   apyBorrow: x.borrow_apy,
   apyLend: x.lend_apy,
+  aprLend: x.lend_apr,
+  aprLendCrv0Boost: x.lend_apr_crv_0_boost,
+  aprLendCrvMaxBoost: x.lend_apr_crv_max_boost,
   nLoans: x.n_loans,
   priceOracle: x.price_oracle,
   ammPrice: x.amm_price,
@@ -51,8 +54,11 @@ export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
 
 export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number]): Models.Snapshot => ({
   rate: parseFloat(x.rate),
-  borrowApy: parseFloat(x.borrow_apy) / 100,
-  lendApy: parseFloat(x.lend_apy) / 100,
+  borrowApy: x.borrow_apy / 100,
+  lendApy: x.lend_apy / 100,
+  lendApr: x.lend_apr / 100,
+  lendAprCrv0Boost: x.lend_apr_crv_0_boost / 100,
+  lendAprCrvMaxBoost: x.lend_apr_crv_max_boost / 100,
   numLoans: x.n_loans,
   priceOracle: parseFloat(x.price_oracle),
   ammPrice: parseFloat(x.amm_price),
@@ -101,7 +107,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   timestamp: toDate(x.timestamp),
 })
 
-export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse) => ({
+export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse): Models.UserMarketEarnings => ({
   user: x.user as Address,
   earnings: parseFloat(x.earnings),
   deposited: parseFloat(x.deposited),

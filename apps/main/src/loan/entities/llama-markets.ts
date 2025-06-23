@@ -38,7 +38,9 @@ export type LlamaMarket = {
   utilizationPercent: number
   liquidityUsd: number
   rates: {
-    lend: number | null // apy %, only for pools
+    lendApr: number | null
+    lendCrvAprUnboosted: number | null
+    lendCrvAprBoosted: number | null
     borrow: number // apy %
   }
   type: LlamaMarketType
@@ -72,7 +74,9 @@ const convertLendingVault = (
     borrowedBalance,
     borrowedBalanceUsd,
     apyBorrow,
-    apyLend,
+    aprLend: lendApr,
+    aprLendCrv0Boost: lendCrvAprUnboosted,
+    aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
@@ -101,7 +105,7 @@ const convertLendingVault = (
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    rates: { lend: apyLend, borrow: apyBorrow },
+    rates: { lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, borrow: apyBorrow },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
       'lend',
@@ -158,7 +162,7 @@ const convertMintMarket = (
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     liquidityUsd: borrowable,
-    rates: { borrow: rate * 100, lend: null },
+    rates: { borrow: rate * 100, lendApr: null, lendCrvAprBoosted: null, lendCrvAprUnboosted: null },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getPath(
