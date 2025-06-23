@@ -279,7 +279,7 @@ export const Metric = ({
   }
 
   return (
-    <Stack alignItems={alignment} data-testid={testId} {...props}>
+    <Stack alignItems={alignment} data-testid={testId}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
