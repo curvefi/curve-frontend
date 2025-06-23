@@ -123,6 +123,47 @@ function runFormatter(value: number, formatter: (value: number) => string, abbre
   return formatter(abbreviate ? abbreviateNumber(value) : value)
 }
 
+/**
+ * Converts notional values to a formatted string representation.
+ * Handles single numbers, single notional objects, or arrays of notional objects.
+ *
+ * @param notionals - The notional value(s) to format. Can be:
+ *   - A number (converted to basic notional object)
+ *   - A single Notional object with value, unit, decimals, and formatter
+ *   - An array of Notional objects
+ * @returns A string with formatted notional values joined by ' + '
+ *
+ * @example
+ * notionalsToString(1000) // "1000"
+ * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
+ * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
+ */
+function notionalsToString(notionals: Props['notional']) {
+  const ns =
+    typeof notionals === 'number'
+      ? [{ value: notionals }]
+      : notionals && !Array.isArray(notionals)
+        ? [notionals]
+        : (notionals ?? [])
+
+  return ns
+    .map((notional) => {
+      const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
+      const { symbol, position, abbreviate } =
+        typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+
+      return [
+        position === 'prefix' ? symbol : '',
+        formatter(abbreviate ? abbreviateNumber(value) : value),
+        abbreviate ? scaleSuffix(value) : '',
+        position === 'suffix' ? symbol : '',
+      ]
+        .filter(Boolean)
+        .join('')
+    })
+    .join(' + ')
+}
+
 type MetricValueProps = Pick<Props, 'value'> &
   Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
     change?: number
@@ -243,33 +284,7 @@ export const Metric = ({
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
-  const notionals = useMemo(() => {
-    // Converge the various notional types to an array of Notional
-    const ns =
-      typeof notional === 'number'
-        ? [{ value: notional }]
-        : notional && !Array.isArray(notional)
-          ? [notional]
-          : (notional ?? [])
-
-    return ns
-      .map((notional) => {
-        const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
-
-        const { symbol, position, abbreviate } =
-          typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
-
-        return [
-          position === 'prefix' ? symbol : '',
-          formatter(abbreviate ? abbreviateNumber(value) : value),
-          abbreviate ? scaleSuffix(value) : '',
-          position === 'suffix' ? symbol : '',
-        ]
-          .filter(Boolean)
-          .join('')
-      })
-      .join(' + ')
-  }, [notional])
+  const notionals = useMemo(() => notionalsToString(notional), [notional])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
