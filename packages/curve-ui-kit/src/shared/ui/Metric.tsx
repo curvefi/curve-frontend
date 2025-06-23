@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
+import { Box } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
@@ -131,6 +132,7 @@ type MetricValueProps = Pick<Props, 'value'> &
     fontVariant: TypographyVariantKey
     fontVariantUnit: TypographyVariantKey
     copyValue: () => void
+    hideTooltip?: boolean
   }
 
 const MetricValue = ({
@@ -142,6 +144,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
+  hideTooltip,
 }: MetricValueProps) => {
   const numberValue: number | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -152,42 +155,52 @@ const MetricValue = ({
 
   const { symbol, position, abbreviate = false } = unit ?? {}
 
+  const content = (
+    <Stack direction="row" alignItems="baseline">
+      {position === 'prefix' && numberValue !== null && (
+        <Typography variant={fontVariantUnit} color="textSecondary">
+          {symbol}
+        </Typography>
+      )}
+
+      <Typography variant={fontVariant} color="textPrimary">
+        {useMemo(
+          () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
+          [numberValue, formatter, abbreviate, symbol],
+        )}
+      </Typography>
+
+      {numberValue !== null && abbreviate && (
+        <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+          {scaleSuffix(numberValue)}
+        </Typography>
+      )}
+
+      {position === 'suffix' && numberValue !== null && (
+        <Typography variant={fontVariantUnit} color="textSecondary">
+          {symbol}
+        </Typography>
+      )}
+    </Stack>
+  )
+
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-      <Tooltip
-        arrow
-        placement="bottom"
-        title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
-        onClick={copyValue}
-        sx={{ cursor: 'pointer' }}
-      >
-        <Stack direction="row" alignItems="baseline">
-          {position === 'prefix' && numberValue !== null && (
-            <Typography variant={fontVariantUnit} color="textSecondary">
-              {symbol}
-            </Typography>
-          )}
-
-          <Typography variant={fontVariant} color="textPrimary">
-            {useMemo(
-              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
-              [numberValue, formatter, abbreviate, symbol],
-            )}
-          </Typography>
-
-          {numberValue !== null && abbreviate && (
-            <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-              {scaleSuffix(numberValue)}
-            </Typography>
-          )}
-
-          {position === 'suffix' && numberValue !== null && (
-            <Typography variant={fontVariantUnit} color="textSecondary">
-              {symbol}
-            </Typography>
-          )}
-        </Stack>
-      </Tooltip>
+      {!hideTooltip ? (
+        <Tooltip
+          arrow
+          placement="bottom"
+          title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
+          onClick={copyValue}
+          sx={{ cursor: 'pointer' }}
+        >
+          {content}
+        </Tooltip>
+      ) : (
+        <Box onClick={copyValue} sx={{ cursor: 'pointer' }}>
+          {content}
+        </Box>
+      )}
 
       {(change || change === 0) && (
         <Typography
@@ -212,6 +225,8 @@ type Props = {
   label: string
   /** Optional tooltip content shown next to the label */
   tooltip?: string
+  /** If the component tooltip should be hidden in order to be able to wrap the component with a custom tooltip */
+  hideTooltip?: boolean
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -231,6 +246,7 @@ export const Metric = ({
 
   label,
   tooltip,
+  hideTooltip = false,
   copyText,
 
   notional,
@@ -239,6 +255,7 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
+  ...props
 }: Props) => {
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
@@ -269,10 +286,11 @@ export const Metric = ({
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
+    hideTooltip,
   }
 
   return (
-    <Stack alignItems={alignment} data-testid={testId}>
+    <Stack alignItems={alignment} data-testid={testId} {...props}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {tooltip && (
