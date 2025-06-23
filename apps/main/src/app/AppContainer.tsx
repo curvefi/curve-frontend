@@ -1,7 +1,10 @@
 import { type ReactNode, useMemo, useRef } from 'react'
+import daoNetworks from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
 import { useLendAppStats } from '@/lend/hooks/useLendAppStats'
+import lendNetworks from '@/lend/networks'
 import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
+import crvusdNetworks from '@/loan/networks'
 import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
@@ -26,6 +29,14 @@ export const useAppRoutes = (chainId: CurveChainId) => ({
   lend: APP_LINK.lend.routes,
   dex: useDexRoutes(chainId),
 })
+
+export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
+  ({
+    dao: daoNetworks,
+    crvusd: crvusdNetworks,
+    lend: lendNetworks,
+    dex: allNetworks,
+  })[app]
 
 export const AppContainer = <TId extends string, TChainId extends number>({
   children,
@@ -52,6 +63,8 @@ export const AppContainer = <TId extends string, TChainId extends number>({
     [layoutHeight],
   )
 
+  const supportedNetworks = useAppSupportedNetworks(networks, currentApp)
+
   return (
     <Box
       sx={{
@@ -68,7 +81,7 @@ export const AppContainer = <TId extends string, TChainId extends number>({
         networkId={network.id}
         mainNavRef={mainNavRef}
         currentMenu={currentApp}
-        networks={networks}
+        supportedNetworks={supportedNetworks}
         globalAlertRef={globalAlertRef}
         isLite={network.isLite}
         appStats={useAppStats(currentApp, network)}

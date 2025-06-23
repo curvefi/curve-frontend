@@ -26,7 +26,7 @@ export const DesktopHeader = ({
   mainNavRef,
   currentMenu,
   chainId,
-  networks,
+  supportedNetworks,
   globalAlertRef,
   height, // height above + banner height
   pages,
@@ -66,7 +66,7 @@ export const DesktopHeader = ({
                 </>
               )}
 
-              <ChainSwitcher chainId={chainId} networks={networks} headerHeight={height} />
+              <ChainSwitcher chainId={chainId} networks={supportedNetworks} headerHeight={height} />
               <ConnectWalletIndicator />
             </Box>
           </Container>
