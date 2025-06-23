@@ -62,16 +62,16 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="large"
               label={t`Your crvUSD Staked`}
               value={userScrvUsdBalanceInCrvUsd}
+              valueOptions={{ unit: CRVUSD_OPTIONS }}
               loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
-              unit={CRVUSD_OPTIONS}
             />
           </Grid>
           <Grid flexGrow={1}>
             <Metric
               size="large"
               label={t`Your share of the vault`}
-              unit="percentage"
               value={userShareOfTotalScrvUsdSupply}
+              valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
             />
           </Grid>
@@ -81,8 +81,8 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
             <Metric
               size="small"
               label={t`30 Days Projection`}
-              unit="dollar"
               value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
@@ -91,8 +91,8 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
             <Metric
               size="small"
               label={t`1 Year Projection`}
-              unit="dollar"
               value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
               tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
             />
@@ -101,8 +101,8 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
             <Metric
               size="small"
               label={t`scrvUSD Staking Rate`}
-              unit="percentage"
               value={scrvUsdApy}
+              valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
               tooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
 This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}

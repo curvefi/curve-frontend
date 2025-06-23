@@ -46,6 +46,7 @@ export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 export type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
+  /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
 }
 
@@ -76,6 +77,20 @@ const UNIT_MAP = {
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
+/** Options for any being used, whether it's the main value or a notional it doesn't matter */
+type ValueOptions = {
+  /** A unit can be a currency symbol or percentage, prefix or suffix */
+  unit?: Unit | undefined
+  /** The number of decimals the value should contain */
+  decimals?: number
+  /** Optional formatter for value */
+  formatter?: (value: number) => string
+}
+
+type Notional = ValueOptions & {
+  value: number
+}
+
 // Default value formatter.
 const formatValue = (value: number, decimals?: number): string =>
   value.toLocaleString(undefined, {
@@ -100,15 +115,6 @@ const formatChange = (value: number) => {
   })
 }
 
-type MetricValueProps = Required<Pick<Props, 'value' | 'formatter' | 'abbreviate'>> & {
-  change?: number
-  unit: UnitOptions | undefined
-  size: keyof typeof MetricSize
-  fontVariant: TypographyVariantKey
-  fontVariantUnit: TypographyVariantKey
-  copyValue: () => void
-}
-
 function runFormatter(value: number, formatter: (value: number) => string, abbreviate: boolean, symbol?: string) {
   if (symbol === '$' && value > MAX_USD_VALUE) {
     console.warn(`USD value is too large: ${value}`)
@@ -117,11 +123,20 @@ function runFormatter(value: number, formatter: (value: number) => string, abbre
   return formatter(abbreviate ? abbreviateNumber(value) : value)
 }
 
+type MetricValueProps = Pick<Props, 'value'> &
+  Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
+    change?: number
+    unit: UnitOptions | undefined
+    size: keyof typeof MetricSize
+    fontVariant: TypographyVariantKey
+    fontVariantUnit: TypographyVariantKey
+    copyValue: () => void
+  }
+
 const MetricValue = ({
   value,
   formatter,
   change,
-  abbreviate,
   unit,
   size,
   fontVariant,
@@ -135,6 +150,8 @@ const MetricValue = ({
     return null
   }, [value])
 
+  const { symbol, position, abbreviate = false } = unit ?? {}
+
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
       <Tooltip
@@ -145,16 +162,16 @@ const MetricValue = ({
         sx={{ cursor: 'pointer' }}
       >
         <Stack direction="row" alignItems="baseline">
-          {unit?.position === 'prefix' && numberValue !== null && (
+          {position === 'prefix' && numberValue !== null && (
             <Typography variant={fontVariantUnit} color="textSecondary">
-              {unit.symbol}
+              {symbol}
             </Typography>
           )}
 
           <Typography variant={fontVariant} color="textPrimary">
             {useMemo(
-              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, unit?.symbol)),
-              [numberValue, formatter, abbreviate, unit?.symbol],
+              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
+              [numberValue, formatter, abbreviate, symbol],
             )}
           </Typography>
 
@@ -164,9 +181,9 @@ const MetricValue = ({
             </Typography>
           )}
 
-          {unit?.position === 'suffix' && numberValue !== null && (
+          {position === 'suffix' && numberValue !== null && (
             <Typography variant={fontVariantUnit} color="textSecondary">
-              {unit.symbol}
+              {symbol}
             </Typography>
           )}
         </Stack>
@@ -187,17 +204,10 @@ const MetricValue = ({
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  /** A unit can be a currency symbol or percentage, prefix or suffix */
-  unit?: Unit | undefined
-  /** The number of decimals the value should contain */
-  decimals?: number
-  /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate?: boolean
+  valueOptions: ValueOptions
+
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
-  /** Optional formatter for metric value */
-  formatter?: (value: number) => string
-
   /** Label that goes above the value */
   label: string
   /** Optional tooltip content shown next to the label */
@@ -206,11 +216,7 @@ type Props = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: number
-  notionalFormatter?: (value: number) => string
-  notionalAbbreviate?: boolean
-  notionalDecimals?: number
-  notionalUnit?: Unit
+  notional?: number | Notional | Notional[]
 
   size?: keyof typeof MetricSize
   alignment?: Alignment
@@ -220,32 +226,30 @@ type Props = {
 
 export const Metric = ({
   value,
-  unit,
-  abbreviate,
+  valueOptions = {},
   change,
-  decimals = 1,
-  formatter = (value: number) => formatValue(value, decimals),
 
   label,
   tooltip,
   copyText,
 
   notional,
-  notionalFormatter = (value: number) => formatNotionalValue(value, notionalDecimals),
-  notionalAbbreviate,
-  notionalUnit,
-  notionalDecimals,
 
   size = 'medium',
   alignment = 'start',
   loading = false,
   testId,
 }: Props) => {
-  unit = typeof unit === 'string' ? UNIT_MAP[unit] : unit
-  abbreviate ??= unit?.abbreviate ?? false
+  const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
+  const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
-  notionalUnit = typeof notionalUnit === 'string' ? UNIT_MAP[notionalUnit] : notionalUnit
-  notionalAbbreviate ??= notionalUnit?.abbreviate ?? false
+  // Converge the various notional types to an array of Notional
+  const notionals =
+    typeof notional === 'number'
+      ? [{ value: notional }]
+      : notional && !Array.isArray(notional)
+        ? [notional]
+        : (notional ?? [])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
@@ -259,7 +263,6 @@ export const Metric = ({
   const metricValueProps = {
     value,
     unit,
-    abbreviate,
     change,
     formatter,
     size,
@@ -286,12 +289,29 @@ export const Metric = ({
         <MetricValue {...metricValueProps} />
       </WithSkeleton>
 
-      {notional !== undefined && (
+      {notionals.length > 0 && (
         <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionalUnit?.position === 'prefix' && notionalUnit.symbol}
-          {notionalFormatter(notionalAbbreviate ? abbreviateNumber(notional) : notional)}
-          {notionalAbbreviate && scaleSuffix(notional)}
-          {notionalUnit?.position === 'suffix' && notionalUnit.symbol}
+          {notionals
+            .map((notional) => {
+              const {
+                value,
+                decimals = 1,
+                formatter = (value: number) => formatNotionalValue(value, decimals),
+              } = notional
+
+              const { symbol, position, abbreviate } =
+                typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+
+              return [
+                position === 'prefix' ? symbol : '',
+                formatter(abbreviate ? abbreviateNumber(value) : value),
+                abbreviate ? scaleSuffix(value) : '',
+                position === 'suffix' ? symbol : '',
+              ]
+                .filter(Boolean)
+                .join('')
+            })
+            .join(' + ')}
         </Typography>
       )}
 
