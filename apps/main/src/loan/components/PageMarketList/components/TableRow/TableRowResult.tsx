@@ -8,6 +8,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
@@ -32,7 +33,7 @@ const TableRowResult = ({
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
   const loanExists = useStore((state) => state.loans.existsMapper[collateralId]?.loanExists)
   const searchedByAddresses = useStore((state) => state.collateralList.searchedByAddresses[collateralId])

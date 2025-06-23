@@ -1,14 +1,12 @@
 import styled from 'styled-components'
 import Chip from 'ui/src/Typography/Chip'
-import useStore from '@/lend/store/useStore'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import Box from '@ui/Box'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 export const UserInfoPnl = ({ userActiveKey }: { userActiveKey: string }) => {
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
 
   if (error) return '?'
 

@@ -4,13 +4,13 @@ import { LineGraphCell } from '@/loan/components/PageLlamaMarkets/cells'
 import { LlamaMarketColumnId } from '@/loan/components/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/loan/components/PageLlamaMarkets/FavoriteMarketButton'
 import { useUserMarketStats } from '@/loan/entities/llama-market-stats'
-import useStore from '@/loan/store/useStore'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
 import Grid from '@mui/material/Grid2'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
@@ -23,7 +23,7 @@ import { LlamaMarketType } from '../../entities/llama-markets'
 const { Spacing } = SizesAndSpaces
 
 function useMobileGraphSize() {
-  const pageWidth = useStore((state) => state.layout.windowWidth)
+  const pageWidth = useLayoutStore((state) => state.windowWidth)
   const isTiny = useIsTiny()
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
@@ -57,24 +57,23 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           ></CardHeader>
         </Grid>
         <Grid size={6}>
-          <Metric label={t`Borrow Rate`} value={rates.borrow} unit="percentage" />
+          <Metric label={t`Borrow Rate`} value={rates.borrow} valueOptions={{ unit: 'percentage' }} />
         </Grid>
         {leverage > 0 && (
           <Grid size={6}>
-            <Metric label={t`Leverage 🔥`} value={leverage} unit="multiplier" />
+            <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
           </Grid>
         )}
         <Grid size={6}>
           <Metric
             label={t`Utilization`}
             value={utilizationPercent}
-            unit="percentage"
+            valueOptions={{ unit: 'percentage', decimals: 2 }}
             testId="metric-utilizationPercent"
-            decimals={2}
           />
         </Grid>
         <Grid size={6}>
-          <Metric label={t`Available Liquidity`} value={liquidityUsd} unit="dollar" />
+          <Metric label={t`Available Liquidity`} value={liquidityUsd} valueOptions={{ unit: 'dollar' }} />
         </Grid>
         <Grid size={12} data-testid="llama-market-graph">
           <Stack direction="column" alignItems="center">
@@ -93,7 +92,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Grid>
           {earnings?.earnings != null && (
             <Grid size={6}>
-              <Metric label={t`Earnings`} value={earnings.earnings.earnings} unit="dollar" />
+              <Metric label={t`Earnings`} value={earnings.earnings.earnings} valueOptions={{ unit: 'dollar' }} />
             </Grid>
           )}
           {deposited?.earnings != null && (
@@ -101,7 +100,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               <Metric
                 label={t`Supplied Amount`}
                 value={deposited.earnings.deposited}
-                unit={type === LlamaMarketType.Lend ? borrowedUnit : 'dollar'}
+                valueOptions={{ unit: type === LlamaMarketType.Lend ? borrowedUnit : 'dollar' }}
               />
             </Grid>
           )}

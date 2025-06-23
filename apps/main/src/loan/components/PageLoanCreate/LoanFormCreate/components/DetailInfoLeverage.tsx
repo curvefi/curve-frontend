@@ -8,6 +8,7 @@ import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTol
 import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageLoanCreate/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import DetailInfo from '@ui/DetailInfo'
@@ -41,7 +42,7 @@ const DetailInfoLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 

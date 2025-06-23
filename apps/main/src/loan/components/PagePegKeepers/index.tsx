@@ -5,11 +5,12 @@ import { PEG_KEEPERS } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Provider } from '@/loan/types/loan.types'
 import { breakpoints } from '@ui/utils/responsive'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchDetails = useStore((state) => state.pegKeepers.fetchDetails)
   const resetState = useStore((state) => state.pegKeepers.resetState)
 

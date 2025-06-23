@@ -3,15 +3,15 @@ import styled from 'styled-components'
 import { useAccount } from 'wagmi'
 import SubNav from '@/dao/components/SubNav'
 import { SubNavItem } from '@/dao/components/SubNav/types'
-import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import GaugesList from './GaugeList'
 import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 
 const Gauges = () => {
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const { address: userAddress } = useAccount()
 
   const [navSelection, setNavSelection] = useState('gaugeList')

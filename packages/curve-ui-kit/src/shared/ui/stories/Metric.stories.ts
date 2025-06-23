@@ -27,51 +27,33 @@ const meta: Meta<typeof Metric> = {
       control: 'number',
       description: 'The value of the component',
     },
-    decimals: {
-      control: 'number',
-      description: 'The number of decimals used in value rounding when using the default value formatter',
-    },
-    abbreviate: {
-      control: 'boolean',
-      description: 'Should the value be abbreviated together with a suffix? Does not work with a postfix unit.',
-    },
-    unit: {
-      control: 'select',
-      options: UNITS,
-      description: 'Optional unit like dollars or percentage to give context to the number',
+    valueOptions: {
+      control: 'object',
+      description: 'Options for formatting the value including decimals, abbreviation, and unit',
     },
     change: {
       control: 'number',
       description: 'Optional value to denote a change in percentage since last time, whenever that may be',
     },
     notional: {
-      control: 'number',
-      description: 'Optional notional value that gives context or underlying value of the key metric',
-    },
-    notionalAbbreviate: {
-      control: 'boolean',
-    },
-    notionalDecimals: {
-      control: 'number',
-    },
-    notionalUnit: {
-      control: 'select',
-      options: UNITS,
+      control: 'object',
+      description: 'Optional notional values that gives context or underlying value of the key metric',
     },
   },
   args: {
     size: 'medium',
     alignment: 'start',
     value: 26539422,
-    decimals: 1,
+    valueOptions: {
+      decimals: 1,
+      unit: 'dollar',
+    },
     label: 'Metrics label',
     copyText: 'Copied metric value',
-    unit: 'dollar',
   },
 }
 
 type Story = StoryObj<typeof Metric>
-
 export const Default: Story = {
   parameters: {
     docs: {
@@ -86,8 +68,10 @@ export const Default: Story = {
 export const Percentage: Story = {
   args: {
     value: 1337.42,
-    decimals: 2,
-    unit: 'percentage',
+    valueOptions: {
+      decimals: 2,
+      unit: 'percentage',
+    },
   },
 }
 
@@ -121,23 +105,44 @@ export const Loading: Story = {
 
 export const Notional: Story = {
   args: {
-    notional: 50012345.345353,
-    notionalAbbreviate: true,
-    notionalDecimals: 2,
-    notionalUnit: {
-      symbol: ' ETH',
-      position: 'suffix',
-      abbreviate: true,
+    notional: {
+      value: 50012345.345353,
+      decimals: 2,
+      unit: { symbol: ' ETH', position: 'suffix', abbreviate: true },
     },
+  },
+}
+
+export const Notionals: Story = {
+  args: {
+    value: 650450,
+    valueOptions: { unit: 'dollar' },
+    label: 'Collateral to recover',
+    size: 'large',
+    alignment: 'center',
+    notional: [
+      {
+        value: 26539422,
+        decimals: 0,
+        unit: { symbol: ' ETH', position: 'suffix', abbreviate: false },
+      },
+      {
+        value: 12450,
+        decimals: 2,
+        unit: { symbol: ' crvUSD', position: 'suffix', abbreviate: true },
+      },
+    ],
   },
 }
 
 export const CustomUnit: Story = {
   args: {
-    unit: {
-      symbol: '¥',
-      position: 'prefix',
-      abbreviate: true,
+    valueOptions: {
+      unit: {
+        symbol: '¥',
+        position: 'prefix',
+        abbreviate: true,
+      },
     },
     change: 0,
   },

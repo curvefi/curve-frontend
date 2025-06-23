@@ -10,6 +10,9 @@ const { getQueryOptions: getFavoriteMarketOptions, invalidate: invalidateFavorit
   validationSuite: EmptyValidationSuite,
 })
 
+/**
+ * Adapts `useFavoriteMarkets` to a single market address.
+ */
 export function useFavoriteMarket(address: Address) {
   const [favorites, setFavorites] = useFavoriteMarkets()
   const isFavorite = useMemo(() => favorites.includes(address), [favorites, address])

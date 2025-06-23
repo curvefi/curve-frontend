@@ -16,6 +16,7 @@ import CellLoanState from '@/lend/components/SharedCellData/CellLoanState'
 import CellLoss from '@/lend/components/SharedCellData/CellLoss'
 import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
 import { TITLE } from '@/lend/constants'
+import { useUserLoanStatus } from '@/lend/hooks/useUserLoanDetails'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps, TitleKey } from '@/lend/types/lend.types'
@@ -30,19 +31,16 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
 
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isSoftLiquidation = useUserLoanStatus(userActiveKey) === 'soft_liquidation'
 
-  // TODO: handle error
-  const { details: userLoanDetails } = userLoanDetailsResp ?? {}
   const { signerAddress } = api ?? {}
 
   const pricesApiAvailable = networks[rChainId]?.pricesData
   const showConnectWallet = typeof signerAddress !== 'undefined' && !signerAddress
   const foundLoan = typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists
-  const isSoftLiquidation = userLoanDetails?.status?.colorKey === 'soft_liquidation'
 
   const cellProps = {
     rChainId,

@@ -13,9 +13,9 @@ import {
 import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
-import useStore from '@/loan/store/useStore'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
@@ -66,7 +66,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
   const { data, isError, isLoading } = useLlamaMarkets(address)
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
-  const bannerHeight = useStore((state) => state.layout.height.globalAlert)
+  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const headerHeight = useHeaderHeight(bannerHeight)
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (

@@ -9,6 +9,7 @@ import { useOneWayMarketMapping } from '@/lend/entities/chain'
 import { _getActiveKey } from '@/lend/store/createMarketListSlice'
 import useStore from '@/lend/store/useStore'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -21,7 +22,7 @@ const MarketList = (pageProps: PageMarketList) => {
   const prevActiveKey = useStore((state) => state.marketList.activeKey)
   const initialLoaded = useStore((state) => state.marketList.initialLoaded)
   const formStatus = useStore((state) => state.marketList.formStatus)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
   const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
   const results = useStore((state) => state.marketList.result)
