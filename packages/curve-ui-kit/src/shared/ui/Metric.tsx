@@ -2,13 +2,12 @@ import { useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import type { PopperProps } from '@mui/material/Popper'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
@@ -78,15 +77,6 @@ const UNIT_MAP = {
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
-type Placement = PopperProps['placement']
-/** Optional tooltip to replace the default tooltip shown when hovering over the value */
-type ValueTooltipOptions = {
-  title?: string
-  body?: React.ReactNode
-  placement?: Placement
-  arrow?: boolean
-}
-
 /** Options for any being used, whether it's the main value or a notional it doesn't matter */
 type ValueOptions = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
@@ -141,7 +131,7 @@ type MetricValueProps = Pick<Props, 'value'> &
     fontVariant: TypographyVariantKey
     fontVariantUnit: TypographyVariantKey
     copyValue: () => void
-    valueTooltip?: ValueTooltipOptions
+    tooltip?: Props['valueTooltip']
   }
 
 const MetricValue = ({
@@ -153,7 +143,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
-  valueTooltip,
+  tooltip,
 }: MetricValueProps) => {
   const numberValue: number | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -167,12 +157,12 @@ const MetricValue = ({
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
       <Tooltip
-        arrow={valueTooltip?.arrow ?? true}
-        placement={valueTooltip?.placement ?? 'bottom'}
-        title={valueTooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        arrow
+        placement="bottom"
         onClick={copyValue}
         sx={{ cursor: 'pointer' }}
-        body={valueTooltip?.body}
+        {...tooltip}
+        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
       >
         <Stack direction="row" alignItems="baseline">
           {position === 'prefix' && numberValue !== null && (
@@ -224,9 +214,9 @@ type Props = {
   /** Label that goes above the value */
   label: string
   /** Optional tooltip content shown next to the label with an info icon */
-  labelTooltip?: string
+  labelTooltip?: Omit<TooltipProps, 'children'>
   /** Optional replacement tooltip content shown when hovering over the value */
-  valueTooltip?: ValueTooltipOptions
+  valueTooltip?: Omit<TooltipProps, 'children'>
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -294,7 +284,7 @@ export const Metric = ({
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
-          <Tooltip arrow placement="top" title={labelTooltip}>
+          <Tooltip arrow placement="top" {...labelTooltip}>
             <span>
               {' '}
               <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />

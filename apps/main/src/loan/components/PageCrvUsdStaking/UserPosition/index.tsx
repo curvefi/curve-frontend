@@ -84,7 +84,9 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
-              labelTooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
           <Grid flexGrow={1}>
@@ -94,7 +96,9 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
               valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
-              labelTooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
           <Grid flexGrow={1}>
@@ -104,8 +108,10 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               value={scrvUsdApy}
               valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
-              labelTooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
-This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
+This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
         </Grid>

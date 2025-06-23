@@ -41,7 +41,9 @@ const StatsBanner = () => {
           value={scrvUsdApy ? oneMonthProjectionYield(scrvUsdApy, exampleBalance) : undefined}
           valueOptions={{ unit: 'dollar' }}
           loading={isStatisticsLoading}
-          labelTooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          labelTooltip={{
+            title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+          }}
           copyText={t`Copied 30 days projection`}
         />
         <Metric
@@ -49,7 +51,9 @@ const StatsBanner = () => {
           value={scrvUsdApy ? oneYearProjectionYield(scrvUsdApy, exampleBalance) : undefined}
           valueOptions={{ unit: 'dollar' }}
           loading={isStatisticsLoading}
-          labelTooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          labelTooltip={{
+            title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+          }}
           copyText={t`Copied 1 year projection`}
         />
         <Metric
@@ -57,8 +61,10 @@ const StatsBanner = () => {
           value={scrvUsdApy}
           valueOptions={{ unit: 'percentage' }}
           loading={isStatisticsLoading}
-          labelTooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
-This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+          labelTooltip={{
+            title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
+This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+          }}
           copyText={t`Copied estimated APY`}
         />
       </Stack>
