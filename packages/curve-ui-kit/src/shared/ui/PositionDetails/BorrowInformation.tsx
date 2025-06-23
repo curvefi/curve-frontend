@@ -4,8 +4,6 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import type {
   Pnl,
   BorrowRate,
-  AccruedInterest,
-  LiquidationRange,
   Leverage,
   CollateralValue,
   Ltv,
@@ -25,10 +23,8 @@ type BorrowInformationProps = {
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
   leverage: Leverage | undefined | null
-  liquidationRange: LiquidationRange | undefined | null
   liquidationThreshold: LiquidationThreshold | undefined | null
   totalDebt: TotalDebt | undefined | null
-  accruedInterest: AccruedInterest | undefined | null
 }
 
 export const BorrowInformation = ({
@@ -38,10 +34,8 @@ export const BorrowInformation = ({
   collateralValue,
   ltv,
   leverage,
-  liquidationRange,
   liquidationThreshold,
   totalDebt,
-  accruedInterest,
 }: BorrowInformationProps) => (
   <Box>
     <CardHeader title={t`Borrow Information`} size="small" />
@@ -82,14 +76,6 @@ export const BorrowInformation = ({
       )}
       <Metric
         size="small"
-        label={t`Liquidation Range`}
-        value={liquidationRange?.value}
-        loading={liquidationRange?.value == null && liquidationRange?.loading}
-        abbreviate={false}
-        unit="dollar"
-      />
-      <Metric
-        size="small"
         label={t`Liquidation Threshold`}
         abbreviate={false}
         value={liquidationThreshold?.value}
@@ -103,13 +89,6 @@ export const BorrowInformation = ({
         loading={totalDebt?.value == null && totalDebt?.loading}
         unit="dollar"
       />
-      {/* <Metric
-        size="small"
-        label={t`Accrued Interest`}
-        value={accruedInterest?.value)}
-        loading={accruedInterest?.value == null && accruedInterest?.loading}
-        unit="dollar"
-      /> */}
     </Box>
   </Box>
 )

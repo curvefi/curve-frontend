@@ -58,14 +58,6 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       value: sevenDayAvgRate,
       loading: isSnapshotsLoading || !llamma?.controller,
     },
-    accruedInterest: {
-      value: null, // this data point doesn't yet exist on API
-      loading: userLoanDetails?.loading ?? true,
-    },
-    liquidationRange: {
-      value: userLoanDetails?.userPrices?.map(Number) ?? null,
-      loading: userLoanDetails?.loading ?? true,
-    },
     liquidationThreshold: {
       value: userLoanDetails?.userPrices ? Number(userLoanDetails.userPrices[1]) : null,
       loading: userLoanDetails?.loading ?? true,

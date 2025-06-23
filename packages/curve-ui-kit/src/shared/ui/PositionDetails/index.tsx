@@ -11,8 +11,6 @@ export type App = 'mint' | 'borrow' | 'lend'
 export type Pnl = { value: number | undefined | null; percentageChange: number | undefined | null; loading: boolean }
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowRate = { value: number | undefined | null; loading: boolean }
-export type AccruedInterest = { value: number | undefined | null; loading: boolean }
-export type LiquidationRange = { value: number[] | undefined | null; loading: boolean }
 export type LiquidationThreshold = { value: number | undefined | null; loading: boolean }
 export type Leverage = { value: number | undefined | null; loading: boolean }
 export type CollateralValue = {
@@ -37,9 +35,7 @@ export type PositionDetailsProps = {
   isSoftLiquidation: boolean
   health: Health
   borrowRate: BorrowRate
-  accruedInterest?: AccruedInterest // doesn't yet exist on API for any app
   pnl?: Pnl // doesn't exist yet for crvusd
-  liquidationRange: LiquidationRange
   liquidationThreshold: LiquidationThreshold
   leverage?: Leverage // doesn't exist yet for crvusd
   collateralValue: CollateralValue
@@ -52,9 +48,7 @@ export const PositionDetails = ({
   isSoftLiquidation,
   health,
   borrowRate,
-  accruedInterest,
   pnl,
-  liquidationRange,
   liquidationThreshold,
   leverage,
   collateralValue,
@@ -89,10 +83,8 @@ export const PositionDetails = ({
       collateralValue={collateralValue}
       ltv={ltv}
       leverage={leverage}
-      liquidationRange={liquidationRange}
       liquidationThreshold={liquidationThreshold}
       totalDebt={totalDebt}
-      accruedInterest={accruedInterest}
     />
   </Box>
 )

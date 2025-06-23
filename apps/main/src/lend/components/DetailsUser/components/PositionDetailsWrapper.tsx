@@ -65,14 +65,6 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       value: sevenDayAvgRate,
       loading: isSnapshotsLoading || !market?.addresses.controller,
     },
-    accruedInterest: {
-      value: null, // this data point doesn't yet exist on API
-      loading: isFetchingAll ?? true,
-    },
-    liquidationRange: {
-      value: userLoanDetails?.prices?.map(Number) ?? null,
-      loading: isFetchingAll ?? true,
-    },
     liquidationThreshold: {
       value: userLoanDetails?.prices ? Number(userLoanDetails.prices[1]) : null,
       loading: isFetchingAll ?? true,
@@ -89,7 +81,7 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading: isFetchingAll || collateralUsdRateLoading,
+      loading: isFetchingAll || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
       value: collateralTotalValue ? (Number(userLoanDetails?.state?.debt) / collateralTotalValue) * 100 : null,
