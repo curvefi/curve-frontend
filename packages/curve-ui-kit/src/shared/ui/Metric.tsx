@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
-import { Box } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
+import type { PopperProps } from '@mui/material/Popper'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -78,6 +78,15 @@ const UNIT_MAP = {
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
+type Placement = PopperProps['placement']
+/** Optional tooltip to replace the default tooltip shown when hovering over the value */
+type ValueTooltipOptions = {
+  title?: string
+  body?: React.ReactNode
+  placement?: Placement
+  arrow?: boolean
+}
+
 /** Options for any being used, whether it's the main value or a notional it doesn't matter */
 type ValueOptions = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
@@ -132,7 +141,7 @@ type MetricValueProps = Pick<Props, 'value'> &
     fontVariant: TypographyVariantKey
     fontVariantUnit: TypographyVariantKey
     copyValue: () => void
-    hideTooltip?: boolean
+    valueTooltip?: ValueTooltipOptions
   }
 
 const MetricValue = ({
@@ -144,7 +153,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
-  hideTooltip,
+  valueTooltip,
 }: MetricValueProps) => {
   const numberValue: number | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -155,52 +164,43 @@ const MetricValue = ({
 
   const { symbol, position, abbreviate = false } = unit ?? {}
 
-  const content = (
-    <Stack direction="row" alignItems="baseline">
-      {position === 'prefix' && numberValue !== null && (
-        <Typography variant={fontVariantUnit} color="textSecondary">
-          {symbol}
-        </Typography>
-      )}
-
-      <Typography variant={fontVariant} color="textPrimary">
-        {useMemo(
-          () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
-          [numberValue, formatter, abbreviate, symbol],
-        )}
-      </Typography>
-
-      {numberValue !== null && abbreviate && (
-        <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-          {scaleSuffix(numberValue)}
-        </Typography>
-      )}
-
-      {position === 'suffix' && numberValue !== null && (
-        <Typography variant={fontVariantUnit} color="textSecondary">
-          {symbol}
-        </Typography>
-      )}
-    </Stack>
-  )
-
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
-      {!hideTooltip ? (
-        <Tooltip
-          arrow
-          placement="bottom"
-          title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
-          onClick={copyValue}
-          sx={{ cursor: 'pointer' }}
-        >
-          {content}
-        </Tooltip>
-      ) : (
-        <Box onClick={copyValue} sx={{ cursor: 'pointer' }}>
-          {content}
-        </Box>
-      )}
+      <Tooltip
+        arrow={valueTooltip?.arrow ?? true}
+        placement={valueTooltip?.placement ?? 'bottom'}
+        title={valueTooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        onClick={copyValue}
+        sx={{ cursor: 'pointer' }}
+        body={valueTooltip?.body}
+      >
+        <Stack direction="row" alignItems="baseline">
+          {position === 'prefix' && numberValue !== null && (
+            <Typography variant={fontVariantUnit} color="textSecondary">
+              {symbol}
+            </Typography>
+          )}
+
+          <Typography variant={fontVariant} color="textPrimary">
+            {useMemo(
+              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
+              [numberValue, formatter, abbreviate, symbol],
+            )}
+          </Typography>
+
+          {numberValue !== null && abbreviate && (
+            <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
+              {scaleSuffix(numberValue)}
+            </Typography>
+          )}
+
+          {position === 'suffix' && numberValue !== null && (
+            <Typography variant={fontVariantUnit} color="textSecondary">
+              {symbol}
+            </Typography>
+          )}
+        </Stack>
+      </Tooltip>
 
       {(change || change === 0) && (
         <Typography
@@ -223,10 +223,10 @@ type Props = {
   change?: number
   /** Label that goes above the value */
   label: string
-  /** Optional tooltip content shown next to the label */
-  tooltip?: string
-  /** If the component tooltip should be hidden in order to be able to wrap the component with a custom tooltip */
-  hideTooltip?: boolean
+  /** Optional tooltip content shown next to the label with an info icon */
+  labelTooltip?: string
+  /** Optional replacement tooltip content shown when hovering over the value */
+  valueTooltip?: ValueTooltipOptions
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -245,8 +245,8 @@ export const Metric = ({
   change,
 
   label,
-  tooltip,
-  hideTooltip = false,
+  labelTooltip,
+  valueTooltip,
   copyText,
 
   notional,
@@ -286,15 +286,15 @@ export const Metric = ({
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
-    hideTooltip,
+    valueTooltip,
   }
 
   return (
     <Stack alignItems={alignment} data-testid={testId} {...props}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
-        {tooltip && (
-          <Tooltip arrow placement="top" title={tooltip}>
+        {labelTooltip && (
+          <Tooltip arrow placement="top" title={labelTooltip}>
             <span>
               {' '}
               <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />

@@ -11,7 +11,7 @@ import type {
   LiquidationThreshold,
   App,
 } from '@ui-kit/shared/ui/PositionDetails'
-import { CollateralMetric } from '@ui-kit/shared/ui/PositionDetails/CollateralMetric'
+import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -57,7 +57,19 @@ export const BorrowInformation = ({
           loading={pnl?.value == null && pnl?.loading}
         />
       )}
-      <CollateralMetric collateralValue={collateralValue} />
+      <Metric
+        size="small"
+        label={t`Collateral Value`}
+        value={collateralValue?.totalValue}
+        loading={collateralValue?.totalValue == null && collateralValue?.loading}
+        valueOptions={{ unit: 'dollar' }}
+        valueTooltip={{
+          title: t`Collateral Value`,
+          body: <CollateralMetricTooltip collateralValue={collateralValue} />,
+          placement: 'top',
+          arrow: false,
+        }}
+      />
       <Metric
         size="small"
         label={t`Current LTV`}
