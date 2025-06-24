@@ -12,6 +12,7 @@ type UseSnapshotsResult<T> = {
   snapshotKey: keyof T
   rate: number | null
   averageRate: number | null
+  maxBoostedAprAverage: number | null
   error: unknown
   period: '7D' // this will be extended in the future
 }
@@ -48,12 +49,22 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     [snapshots, snapshotKey],
   )
 
+  const maxBoostedAprAverage = useMemo(
+    () =>
+      snapshots &&
+      isLend &&
+      type === 'lend' &&
+      meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
+    [snapshots, isLend, type],
+  )
+
   return {
     snapshots,
     isLoading,
     snapshotKey,
     rate: type === 'borrow' ? rates.borrow : rates.lendApr,
     averageRate,
+    maxBoostedAprAverage,
     error,
     period: '7D',
   } as UseSnapshotsResult<T>

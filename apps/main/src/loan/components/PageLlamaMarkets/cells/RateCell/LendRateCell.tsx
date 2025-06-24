@@ -7,8 +7,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useFilteredRewards, formatPercentFixed } from './cell.format'
-import { RateTooltipContent } from './RateCellTooltip'
+import { useFilteredRewards, formatPercentFixed } from '../cell.format'
+import { LendRateTooltipContent } from './LendRateTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -16,19 +16,14 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const {
     rewards,
     type: marketType,
-    rates: { lendApr, lendCrvAprUnboosted },
+    rates: { lendApr },
   } = row.original
   const poolRewards = useFilteredRewards(rewards, marketType, 'lend')
   return (
-    <Tooltip
-      clickable
-      title={t`Supply APR`}
-      body={<RateTooltipContent type="lend" market={row.original} />}
-      placement="top"
-    >
+    <Tooltip clickable title={t`Lending APR`} body={<LendRateTooltipContent market={row.original} />} placement="top">
       <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
-          {lendApr != null && formatPercentFixed(lendApr + (lendCrvAprUnboosted ?? 0))}
+          {lendApr != null && formatPercentFixed(lendApr)}
         </Typography>
 
         {poolRewards.length > 0 && (

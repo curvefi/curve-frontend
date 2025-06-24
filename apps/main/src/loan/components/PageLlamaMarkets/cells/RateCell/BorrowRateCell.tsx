@@ -7,8 +7,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercentFixed, useFilteredRewards } from './cell.format'
-import { RateTooltipContent } from './RateCellTooltip'
+import { formatPercentFixed, useFilteredRewards } from '../cell.format'
+import { BorrowRateTooltipContent } from './BorrowRateTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,12 +20,7 @@ export const BorrowRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   } = row.original
   const poolRewards = useFilteredRewards(rewards, marketType, 'borrow')
   return (
-    <Tooltip
-      clickable
-      title={t`Borrow APY`}
-      body={<RateTooltipContent market={row.original} type="borrow" />}
-      placement="top"
-    >
+    <Tooltip clickable title={t`Borrow APY`} body={<BorrowRateTooltipContent market={row.original} />} placement="top">
       <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
           {borrow != null && formatPercentFixed(borrow)}
