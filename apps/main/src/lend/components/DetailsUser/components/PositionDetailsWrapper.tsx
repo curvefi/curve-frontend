@@ -1,6 +1,7 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { useLendingSnapshots } from '@/lend/entities/lending-snapshots'
+import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import { useTokenUsdRate } from '@/lend/entities/token'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -11,13 +12,16 @@ import { PositionDetails, type PositionDetailsProps } from '@ui-kit/shared/ui/Po
 type PositionDetailsWrapperProps = {
   rChainId: ChainId
   market: OneWayMarketTemplate | undefined
+  marketId: string
   userActiveKey: string
 }
 
-export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: PositionDetailsWrapperProps) => {
+export const PositionDetailsWrapper = ({ rChainId, market, marketId, userActiveKey }: PositionDetailsWrapperProps) => {
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const isFetchingAll = useStore((state) => state.markets.isFetchingAll)
+  const marketRate = useStore((state) => state.markets.ratesMapper[rChainId]?.[marketId])
 
+  const { data: onchainData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({ chainId: rChainId, marketId })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: rChainId,
     tokenAddress: market?.addresses?.collateral_token,
@@ -34,23 +38,25 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
     contractAddress: market?.addresses?.controller as Address,
   })
 
-  const sevenDayAvgRate = useMemo(() => {
+  const thirtyDayAvgRate = useMemo(() => {
     if (!crvUsdSnapshots) return null
 
-    const sevenDaysAgo = new Date()
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > sevenDaysAgo)
+    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
 
     if (recentSnapshots.length === 0) return null
 
     return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
   }, [crvUsdSnapshots])
 
+  const borrowApy = onchainData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
+
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !userLoanDetails?.state?.collateral) return null
     return (
-      Number(userLoanDetails?.state?.collateral) * Number(collateralUsdRate) + Number(userLoanDetails?.state?.borrowed) // assuming crvusd is borrowed
+      Number(userLoanDetails?.state?.collateral) * Number(collateralUsdRate) + Number(userLoanDetails?.state?.borrowed)
     )
   }, [userLoanDetails?.state?.collateral, userLoanDetails?.state?.borrowed, collateralUsdRate])
 
@@ -62,8 +68,9 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       loading: isFetchingAll ?? true,
     },
     borrowRate: {
-      value: sevenDayAvgRate,
-      loading: isSnapshotsLoading || !market?.addresses.controller,
+      value: borrowApy != null ? Number(borrowApy) : null,
+      thirtyDayAvgRate: thirtyDayAvgRate,
+      loading: isOnchainRatesLoading || isSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {
       value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
@@ -92,7 +99,9 @@ export const PositionDetailsWrapper = ({ rChainId, market, userActiveKey }: Posi
       loading: isFetchingAll ?? true,
     },
     pnl: {
-      value: userLoanDetails?.pnl?.currentProfit ? Number(userLoanDetails.pnl.currentProfit) : null,
+      currentProfit: userLoanDetails?.pnl?.currentProfit ? Number(userLoanDetails.pnl.currentProfit) : null,
+      currentPositionValue: userLoanDetails?.pnl?.currentPosition ? Number(userLoanDetails.pnl.currentPosition) : null,
+      depositedValue: userLoanDetails?.pnl?.deposited ? Number(userLoanDetails.pnl.deposited) : null,
       percentageChange: userLoanDetails?.pnl?.percentage ? Number(userLoanDetails.pnl.percentage) : null,
       loading: isFetchingAll ?? true,
     },

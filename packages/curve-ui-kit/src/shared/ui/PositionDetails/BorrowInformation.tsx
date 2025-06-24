@@ -14,6 +14,7 @@ import type {
 } from '@ui-kit/shared/ui/PositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
 import { LiqThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiqThresholdMetricTooltip'
+import { PnlMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/PnlMetricTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -46,7 +47,7 @@ export const BorrowInformation = ({
     <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
       <Metric
         size="small"
-        label={t`7D Avg Borrow Rate`}
+        label={t`Borrow Rate`}
         value={rate?.value}
         loading={rate?.value == null && rate?.loading}
         valueOptions={{ unit: 'percentage' }}
@@ -56,9 +57,15 @@ export const BorrowInformation = ({
           size="small"
           label={t`PNL`}
           valueOptions={{ unit: 'dollar' }}
-          value={pnl?.value}
+          value={pnl?.currentProfit}
           change={pnl?.percentageChange ?? undefined}
-          loading={pnl?.value == null && pnl?.loading}
+          loading={pnl?.currentProfit == null && pnl?.loading}
+          valueTooltip={{
+            title: t`Position PNL`,
+            body: <PnlMetricTooltip pnl={pnl} />,
+            placement: 'top',
+            arrow: false,
+          }}
         />
       )}
       <Metric
