@@ -6,4 +6,4 @@ export const formatPercent = (rate: number) => `${rate.toPrecision(4)}%`
 export const formatPercentFixed = (rate: number) => `${rate.toFixed(2)}%`
 
 export const getRewardsAction = (marketType: LlamaMarketType, type: RateType): RewardsAction =>
-  marketType === LlamaMarketType.Mint ? 'loan' : type == 'borrow' ? 'borrow' : 'supply'
+  type == 'borrow' ? (marketType === LlamaMarketType.Mint ? 'loan' : 'borrow') : 'supply'

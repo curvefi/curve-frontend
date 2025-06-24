@@ -1,7 +1,9 @@
 import type { ReactNode } from 'react'
+import { getRewardsDescription } from '@/loan/components/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { LlamaMarket, LlamaMarketType } from '@/loan/entities/llama-markets'
 import Button from '@mui/material/Button'
 import MuiLink from '@mui/material/Link'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -9,8 +11,7 @@ import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
-import { formatPercent } from './cell.format'
-import { getRewardsDescription } from './MarketTitleCell/cell.utils'
+import { formatPercent, getRewardsAction } from './cell.format'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,7 +36,7 @@ const learnMoreLinks = {
   [LlamaMarketType.Mint]: 'https://resources.curve.finance/crvusd/loan-concepts/#borrow-rate',
 }
 
-const Item = ({ icon, title, children }: { icon?: ReactNode; title: string; children: string }) => (
+const Item = ({ icon, title, children }: { icon?: ReactNode; title: ReactNode; children: string }) => (
   <Typography component={Stack} color="textSecondary" direction="row" justifyContent="space-between">
     <Stack direction="row" flexShrink={1} gap={1}>
       {icon}
@@ -47,8 +48,10 @@ const Item = ({ icon, title, children }: { icon?: ReactNode; title: string; chil
 
 export const RateTooltipContent = ({ type, market }: { type: RateType; market: LlamaMarket }) => {
   const { rate, averageRate, period } = useSnapshots(market, type)
-  const { rewards, rates } = market
+  const { rewards, rates, type: marketType } = market
   const { lendCrvAprBoosted, lendCrvAprUnboosted } = rates
+  const rewardsAction = getRewardsAction(marketType, 'borrow')
+  const poolRewards = rewards.filter((r) => r.action === rewardsAction)
   return (
     <>
       <Stack gap={2}>
@@ -72,8 +75,17 @@ export const RateTooltipContent = ({ type, market }: { type: RateType; market: L
             )}
           </>
         )}
-        {rewards.map((r, i) => (
-          <Item key={i} title={getRewardsDescription(r)} icon={<RewardIcon size="md" imageId={r.platformImageId} />}>
+        {poolRewards.map((r, i) => (
+          <Item
+            key={i}
+            title={
+              <Stack>
+                {getRewardsDescription(r)}
+                {r.dashboardLink && <Link href={r.dashboardLink} target="_blank">{t`Go to issuer`}</Link>}
+              </Stack>
+            }
+            icon={<RewardIcon size="md" imageId={r.platformImageId} />}
+          >
             {r.multiplier}
           </Item>
         ))}
