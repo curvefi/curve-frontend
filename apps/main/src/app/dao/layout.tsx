@@ -9,7 +9,7 @@ import { type UrlParams } from '@/dao/types/dao.types'
 import { useHydration } from '@ui-kit/hooks/useHydration'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export default function App({ children }: { children: ReactNode }) {
   const { network = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const hydrate = useStore((s) => s.hydrate)
   const chainId = networksIdMapper[network]

@@ -13,7 +13,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export default function App({ children }: { children: ReactNode }) {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()

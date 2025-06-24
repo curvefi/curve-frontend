@@ -10,7 +10,7 @@ import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useHydration } from '@ui-kit/hooks/useHydration'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 
-export const App = ({ children }: { children: ReactNode }) => {
+export default function App({ children }: { children: ReactNode }) {
   const networks = use(getNetworkDefs())
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const [appLoaded, setAppLoaded] = useState(false)
