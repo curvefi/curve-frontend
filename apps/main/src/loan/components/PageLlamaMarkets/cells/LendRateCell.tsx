@@ -16,7 +16,7 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const {
     rewards,
     type: marketType,
-    rates: { lendApr, lendCrvAprUnboosted, lendCrvAprBoosted },
+    rates: { lendApr, lendCrvAprUnboosted },
   } = row.original
   const rewardsAction = getRewardsAction(marketType, 'lend')
   const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
@@ -30,10 +30,6 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
       <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
           {lendApr != null && formatPercentFixed(lendApr + (lendCrvAprUnboosted ?? 0))}
-          {lendApr != null &&
-            lendCrvAprBoosted != null &&
-            lendCrvAprBoosted > 0 &&
-            ` - ${formatPercentFixed(lendApr + lendCrvAprBoosted)}`}
         </Typography>
 
         {poolRewards.length > 0 && (

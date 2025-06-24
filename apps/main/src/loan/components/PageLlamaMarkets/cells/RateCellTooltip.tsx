@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
 import { formatPercent, getRewardsAction } from './cell.format'
@@ -21,14 +22,8 @@ const rateName = {
 }
 
 const paragraphs = {
-  borrow: [
-    t`The borrow APY is the cost related to your borrow and varies according to the market and crvUSD's peg.`,
-    t`The collateral of this market is yield bearing and offer extra yield.`,
-  ],
-  lend: [
-    t`The supply APR is the yield offered by the market and depends on the monetary policy of the market.`,
-    t`The lent asset of this market offers extra points.`,
-  ],
+  [LlamaMarketType.Lend]: t`Lending markets let users earn by lending assets or borrow using collateral.`,
+  [LlamaMarketType.Mint]: t`Mint markets lets users borrow by minting crvUSD against collateral.`,
 }
 
 const learnMoreLinks = {
@@ -36,13 +31,25 @@ const learnMoreLinks = {
   [LlamaMarketType.Mint]: 'https://resources.curve.finance/crvusd/loan-concepts/#borrow-rate',
 }
 
-const Item = ({ icon, title, children }: { icon?: ReactNode; title: ReactNode; children: string }) => (
+const Item = ({
+  icon,
+  title,
+  children,
+  loading = false,
+}: {
+  icon?: ReactNode
+  title: ReactNode
+  children: string
+  loading?: boolean
+}) => (
   <Typography component={Stack} color="textSecondary" direction="row" justifyContent="space-between">
     <Stack direction="row" flexShrink={1} gap={1}>
       {icon}
       {title}
     </Stack>
-    {children}
+    <WithSkeleton loading={loading}>
+      <Typography variant="bodyMRegular">{children}</Typography>
+    </WithSkeleton>
   </Typography>
 )
 
@@ -55,16 +62,16 @@ export const RateTooltipContent = ({ type, market }: { type: RateType; market: L
   return (
     <>
       <Stack gap={2}>
-        {paragraphs[type].map((p) => (
-          <Typography color="textSecondary" key={p}>
-            {p}
-          </Typography>
-        ))}
+        <Typography color="textSecondary">{paragraphs[marketType]}</Typography>
       </Stack>
       <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
         <Typography variant="bodyMBold" color="textPrimary">{t`Rates Breakdown`}</Typography>
-        {averageRate != null && <Item title={`${period} ${rateName[type]}`}>{formatPercent(averageRate)}</Item>}
-        {rate != null && <Item title={`${t`Current`} ${rateName[type]}`}>{formatPercent(rate)}</Item>}
+        <Item loading={averageRate == null} title={`${period} ${rateName[type]}`}>
+          {formatPercent(averageRate)}
+        </Item>
+        <Item loading={rate == null} title={`${t`Current`} ${rateName[type]}`}>
+          {formatPercent(rate)}
+        </Item>
         {type === 'lend' && (
           <>
             {lendCrvAprUnboosted != null && lendCrvAprUnboosted && (
