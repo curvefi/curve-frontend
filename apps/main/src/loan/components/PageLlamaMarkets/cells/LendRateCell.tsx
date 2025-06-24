@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercentFixed, getRewardsAction } from './cell.format'
+import { useFilteredRewards, formatPercentFixed } from './cell.format'
 import { RateTooltipContent } from './RateCellTooltip'
 
 const { Spacing } = SizesAndSpaces
@@ -18,8 +18,7 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
     type: marketType,
     rates: { lendApr, lendCrvAprUnboosted },
   } = row.original
-  const rewardsAction = getRewardsAction(marketType, 'lend')
-  const poolRewards = rewards.filter(({ action }) => action == rewardsAction)
+  const poolRewards = useFilteredRewards(rewards, marketType, 'lend')
   return (
     <Tooltip
       clickable

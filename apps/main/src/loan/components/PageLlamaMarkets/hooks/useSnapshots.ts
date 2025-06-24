@@ -16,7 +16,7 @@ type UseSnapshotsResult<T> = {
   period: '7D' // this will be extended in the future
 }
 
-export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
+export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: RateType,
   enabled: boolean = true,
@@ -29,7 +29,6 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 
-  const currentValue = isLend ? rates.lendApr : rates.borrow
   const { snapshots, isLoading, snapshotKey, error } = isLend
     ? {
         snapshots: (showLendGraph && poolSnapshots) || null,
@@ -53,7 +52,7 @@ export function useSnapshots<T = CrvUsdSnapshot | LendingSnapshot>(
     snapshots,
     isLoading,
     snapshotKey,
-    rate: currentValue,
+    rate: type === 'borrow' ? rates.borrow : rates.lendApr,
     averageRate,
     error,
     period: '7D',

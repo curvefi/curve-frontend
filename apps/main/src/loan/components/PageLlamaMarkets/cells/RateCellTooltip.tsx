@@ -12,7 +12,7 @@ import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { RateType, useSnapshots } from '../hooks/useSnapshots'
-import { formatPercent, getRewardsAction } from './cell.format'
+import { formatPercent, useFilteredRewards } from './cell.format'
 
 const { Spacing } = SizesAndSpaces
 
@@ -57,12 +57,12 @@ export const RateTooltipContent = ({ type, market }: { type: RateType; market: L
   const { rate, averageRate, period } = useSnapshots(market, type)
   const { rewards, rates, type: marketType } = market
   const { lendCrvAprBoosted, lendCrvAprUnboosted } = rates
-  const rewardsAction = getRewardsAction(marketType, 'borrow')
-  const poolRewards = rewards.filter((r) => r.action === rewardsAction)
+  const poolRewards = useFilteredRewards(rewards, marketType, 'borrow')
   return (
     <>
       <Stack gap={2}>
         <Typography color="textSecondary">{paragraphs[marketType]}</Typography>
+        {process.env.NODE_ENV === 'development' && <Stack>{JSON.stringify({ rate, averageRate, rates, type })}</Stack>}
       </Stack>
       <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
         <Typography variant="bodyMBold" color="textPrimary">{t`Rates Breakdown`}</Typography>
