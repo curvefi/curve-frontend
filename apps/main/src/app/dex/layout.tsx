@@ -1,9 +1,42 @@
-import type { ReactNode } from 'react'
-import { App } from '@/app/dex/client'
+'use client'
+import '@/global-extensions'
+import { useParams } from 'next/navigation'
+import { type ReactNode, use, useEffect, useState } from 'react'
+import Page from '@/dex/layout/default'
 import { getNetworkDefs } from '@/dex/lib/networks'
+import useStore from '@/dex/store/useStore'
+import { type UrlParams } from '@/dex/types/main.types'
+import { recordValues } from '@curvefi/prices-api/objects.util'
+import { useHydration } from '@ui-kit/hooks/useHydration'
+import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 
-// We need to keep this layout here otherwise the whole app gets unmounted on network change
-// Because of that we cannot parse the URL params in the server component
-const Layout = async ({ children }: { children: ReactNode }) => <App networks={await getNetworkDefs()}>{children}</App>
+export const App = ({ children }: { children: ReactNode }) => {
+  const networks = use(getNetworkDefs())
+  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const [appLoaded, setAppLoaded] = useState(false)
+  const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
+  const hydrate = useStore((s) => s.hydrate)
 
-export default Layout
+  const network = recordValues(networks).find((n) => n.id === networkId)!
+  const isHydrated = useHydration('curveApi', hydrate, network.chainId)
+  useRedirectToEth(network, networkId, isHydrated)
+
+  useEffect(() => {
+    const abort = new AbortController()
+    void (async () => {
+      try {
+        await fetchNetworks()
+      } finally {
+        if (!abort.signal.aborted) {
+          setAppLoaded(true)
+        }
+      }
+    })()
+    return () => {
+      setAppLoaded(false)
+      abort.abort()
+    }
+  }, [fetchNetworks])
+
+  return <Page network={network}>{appLoaded && isHydrated && children}</Page>
+}
