@@ -6,7 +6,7 @@ import { isWalletMatching } from '@ui-kit/features/connect-wallet/lib/utils'
 /**
  * Hook to hydrate a specific library in the connection context.
  * It will call the provided hydrate function with the current library and previous library state.
- * The hydration will only happen once per library key.
+ * The hydration will only happen once per library key unless chainId or signerAddress changes.
  */
 export const useHydration = <K extends LibKey, ChainId extends number>(
   libKey: K,

@@ -57,7 +57,7 @@ export const DesktopHeader = <TChainId extends number>({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {isBeta && !isCypress && typeof window !== 'undefined' ? (
+              {isBeta && !isCypress ? (
                 <UserProfileButton />
               ) : (
                 <>

@@ -12,12 +12,12 @@ export function getFromLocalStorage<T>(storageKey: string): T | null {
   return item && JSON.parse(item)
 }
 
-const get = <Type, Default = Type>(key: string, initialValue?: Default): Type | Default => {
-  const existing = getFromLocalStorage<Type>(key)
-  return existing == null ? (initialValue as Default) : existing
+const get = <T>(key: string, initialValue: T): T => {
+  const existing = getFromLocalStorage<T>(key)
+  return existing == null ? initialValue : existing
 }
 
-const set = <Type, Default = Type>(storageKey: string, value: Type | Default) => {
+const set = <T>(storageKey: string, value: T) => {
   if (value == null) {
     return window.localStorage.removeItem(storageKey)
   }
@@ -30,13 +30,11 @@ const set = <Type, Default = Type>(storageKey: string, value: Type | Default) =>
  *
  * It is not exported, as we want to keep an overview of all the local storage keys used in the app.
  */
-const useLocalStorage = <Type, Default = Type>(key: string, initialValue: Default) =>
-  useStoredState<Type, Default>({ key, initialValue, get, set })
+const useLocalStorage = <T>(key: string, initialValue: T) => useStoredState<T>({ key, initialValue, get, set })
 
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
-export const useNewDomainNotificationSeen = () => useLocalStorage<boolean>('isNewDomainNotificationSeen', false)
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 

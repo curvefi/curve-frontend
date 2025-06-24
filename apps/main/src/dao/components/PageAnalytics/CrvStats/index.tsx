@@ -12,8 +12,7 @@ import { Chain } from '@ui-kit/utils/network'
 const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
-  const { curveApi } = useConnection()
-  const chainId = curveApi?.chainId
+  const { curveApi: { chainId } = {} } = useConnection()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const usdRatesLoading = useStore((state) => state.usdRates.loading)
