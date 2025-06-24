@@ -63,7 +63,7 @@ const Layout = ({ children }: { children: ReactNode }) => (
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
       <style dangerouslySetInnerHTML={{ __html: baseCss }} />
     </head>
-    <body>
+    <body style={{ height: '100%' }}>
       <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
     </body>
   </html>
