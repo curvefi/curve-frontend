@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
@@ -172,6 +172,7 @@ type MetricValueProps = Pick<Props, 'value'> &
     fontVariant: TypographyVariantKey
     fontVariantUnit: TypographyVariantKey
     copyValue: () => void
+    tooltip?: Props['valueTooltip']
   }
 
 const MetricValue = ({
@@ -183,6 +184,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
+  tooltip,
 }: MetricValueProps) => {
   const numberValue: number | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -198,9 +200,10 @@ const MetricValue = ({
       <Tooltip
         arrow
         placement="bottom"
-        title={numberValue !== null ? numberValue.toLocaleString() : t`N/A`}
         onClick={copyValue}
         sx={{ cursor: 'pointer' }}
+        {...tooltip}
+        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
       >
         <Stack direction="row" alignItems="baseline">
           {position === 'prefix' && numberValue !== null && (
@@ -251,8 +254,10 @@ type Props = {
   change?: number
   /** Label that goes above the value */
   label: string
-  /** Optional tooltip content shown next to the label */
-  tooltip?: string
+  /** Optional tooltip content shown next to the label with an info icon */
+  labelTooltip?: Omit<TooltipProps, 'children'>
+  /** Optional replacement tooltip content shown when hovering over the value */
+  valueTooltip?: Omit<TooltipProps, 'children'>
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -271,7 +276,8 @@ export const Metric = ({
   change,
 
   label,
-  tooltip,
+  labelTooltip,
+  valueTooltip,
   copyText,
 
   notional,
@@ -304,14 +310,15 @@ export const Metric = ({
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
+    valueTooltip,
   }
 
   return (
     <Stack alignItems={alignment} data-testid={testId}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
-        {tooltip && (
-          <Tooltip arrow placement="top" title={tooltip}>
+        {labelTooltip && (
+          <Tooltip arrow placement="top" {...labelTooltip}>
             <span>
               {' '}
               <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />
