@@ -163,7 +163,7 @@ const convertMintMarket = (
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getPath(
       { network: chain as NetworkEnum },
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage/loan' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
