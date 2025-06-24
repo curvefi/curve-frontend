@@ -44,8 +44,7 @@ const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined)
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }
 
-// todo: rename to LlamaMarketsTable
-export const LendingMarketsTable = ({
+export const LlamaMarketsTable = ({
   onReload,
   result,
   headerHeight,

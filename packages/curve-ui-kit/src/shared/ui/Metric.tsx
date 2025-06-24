@@ -8,7 +8,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
@@ -133,6 +133,47 @@ function runFormatter(value: number, formatter: (value: number) => string, abbre
   return formatter(abbreviate ? abbreviateNumber(value) : value)
 }
 
+/**
+ * Converts notional values to a formatted string representation.
+ * Handles single numbers, single notional objects, or arrays of notional objects.
+ *
+ * @param notionals - The notional value(s) to format. Can be:
+ *   - A number (converted to basic notional object)
+ *   - A single Notional object with value, unit, decimals, and formatter
+ *   - An array of Notional objects
+ * @returns A string with formatted notional values joined by ' + '
+ *
+ * @example
+ * notionalsToString(1000) // "1000"
+ * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
+ * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
+ */
+function notionalsToString(notionals: Props['notional']) {
+  const ns =
+    typeof notionals === 'number'
+      ? [{ value: notionals }]
+      : notionals && !Array.isArray(notionals)
+        ? [notionals]
+        : (notionals ?? [])
+
+  return ns
+    .map((notional) => {
+      const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
+      const { symbol, position, abbreviate } =
+        typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+
+      return [
+        position === 'prefix' ? symbol : '',
+        formatter(abbreviate ? abbreviateNumber(value) : value),
+        abbreviate ? scaleSuffix(value) : '',
+        position === 'suffix' ? symbol : '',
+      ]
+        .filter(Boolean)
+        .join('')
+    })
+    .join(' + ')
+}
+
 type MetricValueProps = Pick<Props, 'value'> &
   Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
     change?: number
@@ -141,7 +182,7 @@ type MetricValueProps = Pick<Props, 'value'> &
     fontVariant: TypographyVariantKey
     fontVariantUnit: TypographyVariantKey
     copyValue: () => void
-    valueTooltip?: ValueTooltipOptions
+    tooltip?: Props['valueTooltip']
   }
 
 const MetricValue = ({
@@ -153,7 +194,7 @@ const MetricValue = ({
   fontVariant,
   fontVariantUnit,
   copyValue,
-  valueTooltip,
+  tooltip,
 }: MetricValueProps) => {
   const numberValue: number | null = useMemo(() => {
     if (typeof value === 'number' && isFinite(value)) {
@@ -167,12 +208,12 @@ const MetricValue = ({
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
       <Tooltip
-        arrow={valueTooltip?.arrow ?? true}
-        placement={valueTooltip?.placement ?? 'bottom'}
-        title={valueTooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        arrow
+        placement="bottom"
         onClick={copyValue}
         sx={{ cursor: 'pointer' }}
-        body={valueTooltip?.body}
+        {...tooltip}
+        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
       >
         <Stack direction="row" alignItems="baseline">
           {position === 'prefix' && numberValue !== null && (
@@ -224,9 +265,9 @@ type Props = {
   /** Label that goes above the value */
   label: string
   /** Optional tooltip content shown next to the label with an info icon */
-  labelTooltip?: string
+  labelTooltip?: Omit<TooltipProps, 'children'>
   /** Optional replacement tooltip content shown when hovering over the value */
-  valueTooltip?: ValueTooltipOptions
+  valueTooltip?: Omit<TooltipProps, 'children'>
   /** The text to display when the value is copied to the clipboard */
   copyText?: string
 
@@ -260,13 +301,7 @@ export const Metric = ({
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
-  // Converge the various notional types to an array of Notional
-  const notionals =
-    typeof notional === 'number'
-      ? [{ value: notional }]
-      : notional && !Array.isArray(notional)
-        ? [notional]
-        : (notional ?? [])
+  const notionals = useMemo(() => notionalsToString(notional), [notional])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
 
@@ -294,7 +329,7 @@ export const Metric = ({
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
-          <Tooltip arrow placement="top" title={labelTooltip}>
+          <Tooltip arrow placement="top" {...labelTooltip}>
             <span>
               {' '}
               <InfoOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />
@@ -307,29 +342,9 @@ export const Metric = ({
         <MetricValue {...metricValueProps} />
       </WithSkeleton>
 
-      {notionals.length > 0 && (
+      {notionals && (
         <Typography variant="highlightXsNotional" color="textTertiary">
-          {notionals
-            .map((notional) => {
-              const {
-                value,
-                decimals = 1,
-                formatter = (value: number) => formatNotionalValue(value, decimals),
-              } = notional
-
-              const { symbol, position, abbreviate } =
-                typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
-
-              return [
-                position === 'prefix' ? symbol : '',
-                formatter(abbreviate ? abbreviateNumber(value) : value),
-                abbreviate ? scaleSuffix(value) : '',
-                position === 'suffix' ? symbol : '',
-              ]
-                .filter(Boolean)
-                .join('')
-            })
-            .join(' + ')}
+          {notionals}
         </Typography>
       )}
 

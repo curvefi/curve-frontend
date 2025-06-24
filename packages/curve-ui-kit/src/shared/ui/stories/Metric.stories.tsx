@@ -1,5 +1,6 @@
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react'
-import { Metric, SIZES, ALIGNMENTS, UNITS } from '../Metric'
+import { Metric, SIZES, ALIGNMENTS } from '../Metric'
 
 const meta: Meta<typeof Metric> = {
   title: 'UI Kit/Widgets/Metric',
@@ -19,9 +20,13 @@ const meta: Meta<typeof Metric> = {
       control: 'text',
       description: 'The label on top of the value describing it',
     },
-    tooltip: {
+    labelTooltip: {
       control: 'text',
       description: 'Optional tooltip shown next to the label',
+    },
+    valueTooltip: {
+      control: 'text',
+      description: 'Optional tooltip shown when hovering the metric value',
     },
     value: {
       control: 'number',
@@ -77,7 +82,7 @@ export const Percentage: Story = {
 
 export const Tooltip: Story = {
   args: {
-    tooltip: "Alu's future portfolio value",
+    labelTooltip: { title: "Alu's future portfolio value", body: <Typography variant="headingXxl">ZERO</Typography> },
   },
 }
 
