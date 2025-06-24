@@ -51,8 +51,8 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
       networkId={networkId}
       chainId={rChainId}
       mainNavRef={mainNavRef}
-      currentMenu="crvusd"
-      routes={APP_LINK.crvusd.routes}
+      currentMenu="llamalend"
+      routes={APP_LINK.llamalend.routes}
       chains={visibleNetworksList}
       appStats={[
         {

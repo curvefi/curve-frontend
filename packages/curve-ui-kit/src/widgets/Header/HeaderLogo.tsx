@@ -21,8 +21,7 @@ export type HeaderLogoProps = {
 
 const APP_NAMES = {
   dex: 'Curve',
-  lend: 'LLAMALEND',
-  crvusd: 'crvUSD',
+  llamalend: 'LLAMALEND',
   dao: 'DAO',
 } as const satisfies Record<AppMenuOption, string>
 
