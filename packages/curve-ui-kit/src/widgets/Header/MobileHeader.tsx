@@ -36,7 +36,7 @@ export const MobileHeader = ({
   appStats,
   sections,
   chainId,
-  networks,
+  supportedNetworks,
   globalAlertRef,
   height,
   isLite = false,
@@ -67,7 +67,7 @@ export const MobileHeader = ({
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
-            ChainProps={{ chainId, networks, headerHeight: height }}
+            ChainProps={{ chainId, networks: supportedNetworks, headerHeight: height }}
             currentMenu={currentMenu}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}

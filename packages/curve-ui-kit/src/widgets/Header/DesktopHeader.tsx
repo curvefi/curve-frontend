@@ -26,7 +26,7 @@ export const DesktopHeader = ({
   mainNavRef,
   currentMenu,
   chainId,
-  networks,
+  supportedNetworks,
   globalAlertRef,
   height, // height above + banner height
   pages,
@@ -57,7 +57,7 @@ export const DesktopHeader = ({
             <Box sx={{ flexGrow: 1 }} />
 
             <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {isBeta && !isCypress && typeof window !== 'undefined' ? (
+              {isBeta && !isCypress ? (
                 <UserProfileButton />
               ) : (
                 <>
@@ -66,7 +66,7 @@ export const DesktopHeader = ({
                 </>
               )}
 
-              <ChainSwitcher chainId={chainId} networks={networks} headerHeight={height} />
+              <ChainSwitcher chainId={chainId} networks={supportedNetworks} headerHeight={height} />
               <ConnectWalletIndicator />
             </Box>
           </Container>

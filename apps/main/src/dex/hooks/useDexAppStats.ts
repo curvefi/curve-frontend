@@ -4,7 +4,6 @@ import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import type { ChainId } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber, type NetworkDef } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -31,25 +30,27 @@ export const useDexAppStats = (network: NetworkDef | undefined) => {
   ]
 }
 
-export function useDexRoutes(rChainId: ChainId) {
-  const hasRouter = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasRouter)
-  const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const networks = useStore((state) => state.networks.networks)
-  const network = networks[rChainId]
+const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
+
+export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
+  const routerCached = useStore((state) => state.storeCache.routerFormValues[chainId])
+  const network = useStore((state) => state.networks.networks[chainId])
   return useMemo(
     () => [
-      ...(hasRouter && routerCached && (!network || network.showRouterSwap)
-        ? [
-            {
-              app: 'dex' as const,
-              route: _createSwapPath(network.swap, routerCached),
-              label: () => t`Quickswap`,
-            },
-          ]
+      ...(showRouterSwap
+        ? routerCached && network
+          ? [
+              {
+                app: 'dex' as const,
+                route: _createSwapPath(network.swap, routerCached),
+                label: () => t`Quickswap`,
+              },
+            ]
+          : [swapRoute]
         : []),
-      ...APP_LINK.dex.routes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+      ...dexRoutes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
     ],
-    [hasRouter, network, routerCached],
+    [showRouterSwap, network, routerCached],
   )
 }
 

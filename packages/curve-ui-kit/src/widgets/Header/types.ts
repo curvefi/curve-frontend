@@ -34,7 +34,7 @@ export type HeaderBaseProps = {
   globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: string // ID of the network as displayed in the URL
   chainId: number
-  networks: NetworkMapping
+  supportedNetworks: NetworkMapping
   appStats?: { label: string; value: string }[]
 }
 
