@@ -14,6 +14,7 @@ import Button from '@ui/Button'
 import { ExternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
+import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
 type Props = {
   setStableFeeValue: Dispatch<SetStateAction<string>>
@@ -221,10 +222,13 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
             <PresetMessage>
               {t`Can't find the pool preset you want? Check out`}
               <StyledExternalLink
-                onClick={() => window.open(`#${getPath(params, '/pools')}`)}
+                target="_blank"
+                href={getPath(params, DEX_ROUTES.PAGE_POOLS)}
               >{t`existing pools`}</StyledExternalLink>
               {t`with similar assets for inspiration (or use`}
-              <StyledExternalLink href="https://github.com/curveresearch/curvesim">curvesim</StyledExternalLink>
+              <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">
+                curvesim
+              </StyledExternalLink>
               {t`to sim).`}
             </PresetMessage>
           </SelectPresetWrapper>

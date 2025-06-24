@@ -2,8 +2,8 @@
 import { useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import type { CrvUsdServerData } from '@/app/api/crvusd/types'
-import { LendingMarketsTable } from '@/loan/components/PageLlamaMarkets/LendingMarketsTable'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
+import { LlamaMarketsTable } from '@/loan/components/PageLlamaMarkets/LlamaMarketsTable'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import {
   invalidateAllUserLendingVaults,
@@ -74,7 +74,7 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
       {showSkeleton ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
-        <LendingMarketsTable
+        <LlamaMarketsTable
           onReload={() => onReload(address)}
           result={data}
           headerHeight={headerHeight}
