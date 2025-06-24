@@ -90,7 +90,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
             </AlertContent>
           )}
 
-          <PositionDetailsWrapper rChainId={rChainId} market={market} userActiveKey={userActiveKey} />
+          <PositionDetailsWrapper rChainId={rChainId} market={market} marketId={rOwmId} userActiveKey={userActiveKey} />
 
           <ContentWrapper paddingTop isBorderBottom>
             <StatsWrapper>

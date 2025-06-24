@@ -17,6 +17,7 @@ type PositionDetailsWrapperProps = {
 
 export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: PositionDetailsWrapperProps) => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const usdRatesLoading = useStore((state) => state.usdRates.loading)
   const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
   const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
@@ -26,13 +27,13 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
     contractAddress: llamma?.controller as Address,
   })
 
-  const sevenDayAvgRate = useMemo(() => {
+  const thirtyDayAvgRate = useMemo(() => {
     if (!crvUsdSnapshots) return null
 
-    const sevenDaysAgo = new Date()
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    const thirtyDaysAgo = new Date()
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > sevenDaysAgo)
+    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
 
     if (recentSnapshots.length === 0) return null
 
@@ -55,7 +56,8 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       loading: userLoanDetails?.loading ?? true,
     },
     borrowRate: {
-      value: sevenDayAvgRate,
+      value: Number(loanDetails?.parameters?.rate) ?? null,
+      thirtyDayAvgRate: thirtyDayAvgRate,
       loading: isSnapshotsLoading || !llamma?.controller,
     },
     liquidationRange: {

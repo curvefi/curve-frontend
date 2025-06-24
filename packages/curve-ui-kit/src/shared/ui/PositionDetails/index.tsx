@@ -8,9 +8,19 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 export type App = 'mint' | 'borrow' | 'lend'
-export type Pnl = { value: number | undefined | null; percentageChange: number | undefined | null; loading: boolean }
+export type Pnl = {
+  currentProfit: number | undefined | null
+  currentPositionValue: number | undefined | null
+  depositedValue: number | undefined | null
+  percentageChange: number | undefined | null
+  loading: boolean
+}
 export type Health = { value: number | undefined | null; loading: boolean }
-export type BorrowRate = { value: number | undefined | null; loading: boolean }
+export type BorrowRate = {
+  value: number | undefined | null
+  thirtyDayAvgRate: number | undefined | null
+  loading: boolean
+}
 export type LiquidationRange = { value: number[] | undefined | null; loading: boolean }
 export type BandRange = { value: number[] | undefined | null; loading: boolean }
 export type Leverage = { value: number | undefined | null; loading: boolean }
