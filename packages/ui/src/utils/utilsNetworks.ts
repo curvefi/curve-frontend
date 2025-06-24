@@ -191,6 +191,7 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   showInSelectNetwork: boolean
   logoSrc: string
   logoSrcDark: string
+  showRouterSwap: boolean
 }
 
 export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<

@@ -5,7 +5,6 @@ import { useLendAppStats } from '@/lend/hooks/useLendAppStats'
 import lendNetworks from '@/lend/networks'
 import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import crvusdNetworks from '@/loan/networks'
-import type { IChainId as CurveChainId } from '@curvefi/api/lib/interfaces'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
@@ -23,11 +22,11 @@ const useAppStats = (currentApp: string, network: NetworkDef) =>
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
   })[currentApp]
 
-export const useAppRoutes = (chainId: CurveChainId) => ({
+export const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   crvusd: APP_LINK.crvusd.routes,
   lend: APP_LINK.lend.routes,
-  dex: useDexRoutes(chainId),
+  dex: useDexRoutes(network),
 })
 
 export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
@@ -85,7 +84,7 @@ export const AppContainer = <TId extends string, TChainId extends number>({
         globalAlertRef={globalAlertRef}
         isLite={network.isLite}
         appStats={useAppStats(currentApp, network)}
-        routes={useAppRoutes(network.chainId)}
+        routes={useAppRoutes(network)}
       />
       <Box
         component="main"
