@@ -56,9 +56,9 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
       loading: userLoanDetails?.loading ?? true,
     },
     borrowRate: {
-      value: Number(loanDetails?.parameters?.rate) ?? null,
+      value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
-      loading: isSnapshotsLoading || !llamma?.controller,
+      loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     liquidationRange: {
       value: userLoanDetails?.userPrices ? userLoanDetails.userPrices.map(Number) : null,

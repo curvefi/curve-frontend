@@ -89,13 +89,22 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
     },
     fetchLoanDetails: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId
+
+      get()[sliceKey].setStateByActiveKey('detailsMapper', llamma.id, {
+        ...get()[sliceKey].detailsMapper[llamma.id],
+        loading: true,
+      })
+
+      console.info('set loan details loading')
+      console.info(get()[sliceKey].detailsMapper[llamma.id])
+
       const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
         networks[chainId].api.detailInfo.priceInfo(llamma),
         networks[chainId].api.loanCreate.exists(llamma, curve.signerAddress),
       ])
 
-      const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo }
+      const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }
 
       get()[sliceKey].setStateByActiveKey('detailsMapper', collateralId, fetchedLoanDetails)
       get()[sliceKey].setStateByActiveKey('existsMapper', collateralId, loanExists)
