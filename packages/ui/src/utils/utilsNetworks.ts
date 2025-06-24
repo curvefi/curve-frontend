@@ -214,10 +214,10 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   orgUIPath: string
 }
 
-export function getBaseNetworksConfig<T extends string, ChainId extends number>(
+export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
   chainId: ChainId,
   networkConfig: any,
-): BaseConfig<T> {
+): BaseConfig<TId> {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
 
