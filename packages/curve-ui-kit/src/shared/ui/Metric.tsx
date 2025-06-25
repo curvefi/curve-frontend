@@ -77,13 +77,12 @@ const UNIT_MAP = {
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
-/** Options for any being used, whether it's the main value or a notional it doesn't matter */
+/** Options for any value being used, whether it's the main value or a notional it doesn't matter */
 type ValueOptions = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
   decimals?: number
-  fontColor?: TypographyProps['color']
   /** Optional formatter for value */
   formatter?: (value: number) => string
 }
@@ -167,6 +166,7 @@ function notionalsToString(notionals: Props['notional']) {
 
 type MetricValueProps = Pick<Props, 'value'> &
   Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
+    valueColor?: TypographyProps['color']
     change?: number
     unit: UnitOptions | undefined
     size: keyof typeof MetricSize
@@ -184,7 +184,7 @@ const MetricValue = ({
   size,
   fontVariant,
   fontVariantUnit,
-  fontColor,
+  valueColor,
   copyValue,
   tooltip,
 }: MetricValueProps) => {
@@ -214,7 +214,7 @@ const MetricValue = ({
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color={fontColor}>
+          <Typography variant={fontVariant} color={valueColor ?? 'textPrimary'}>
             {useMemo(
               () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
               [numberValue, formatter, abbreviate, symbol],
@@ -250,7 +250,7 @@ const MetricValue = ({
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: ValueOptions
+  valueOptions: ValueOptions & { valueColor?: TypographyProps['color'] }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
@@ -289,11 +289,7 @@ export const Metric = ({
   loading = false,
   testId,
 }: Props) => {
-  const {
-    decimals = 1,
-    fontColor = 'textPrimary',
-    formatter = (value: number) => formatValue(value, decimals),
-  } = valueOptions
+  const { decimals = 1, valueColor, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
   const notionals = useMemo(() => notionalsToString(notional), [notional])
@@ -313,7 +309,7 @@ export const Metric = ({
     change,
     formatter,
     size,
-    fontColor,
+    valueColor,
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
