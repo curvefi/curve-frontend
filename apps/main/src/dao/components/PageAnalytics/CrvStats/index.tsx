@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
-import type { CurveApi } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'
 import { formatNumber } from '@ui/utils'
@@ -13,8 +12,7 @@ import { Chain } from '@ui-kit/utils/network'
 const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
-  const { lib: curve } = useConnection<CurveApi>()
-  const chainId = curve?.chainId
+  const { curveApi: { chainId } = {} } = useConnection()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const usdRatesLoading = useStore((state) => state.usdRates.loading)

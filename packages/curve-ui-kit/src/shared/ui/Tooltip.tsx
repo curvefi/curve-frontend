@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { InvertTheme } from './ThemeProvider'
 
-type TooltipProps = MuiTooltipProps & {
+export type TooltipProps = MuiTooltipProps & {
   body?: ReactNode
   clickable?: boolean
 }

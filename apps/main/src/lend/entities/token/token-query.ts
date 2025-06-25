@@ -1,5 +1,4 @@
 import { TokenParams, TokenQuery } from '@/lend/entities/token/index'
-import type { Api } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from './validation'
@@ -13,7 +12,7 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
-  queryFn: ({ tokenAddress }: TokenQuery): Promise<number> => requireLib<Api>().getUsdRate(tokenAddress),
+  queryFn: ({ tokenAddress }: TokenQuery): Promise<number> => requireLib('llamaApi').getUsdRate(tokenAddress),
   staleTime: '5m',
   refetchInterval: '1m',
   validationSuite: tokenValidationSuite,
