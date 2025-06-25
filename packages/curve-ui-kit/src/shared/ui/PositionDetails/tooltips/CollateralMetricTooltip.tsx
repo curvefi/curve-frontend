@@ -10,40 +10,41 @@ type CollateralMetricTooltipProps = {
   collateralValue: CollateralValue | undefined | null
 }
 
+const formatMetricValue = (value?: number | null) => {
+  if (value === 0) return '0'
+  if (value) return formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  return '-'
+}
+
+const formatPercentage = (
+  value: number | undefined | null,
+  totalValue: number | undefined | null,
+  usdRate: number | undefined | null,
+) => {
+  if (value === 0) return '0.00%'
+  if (value && totalValue && usdRate) {
+    return formatNumber(((value * usdRate) / totalValue) * 100, {
+      ...FORMAT_OPTIONS.PERCENT,
+    })
+  }
+  return null
+}
+
 export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricTooltipProps) => {
-  const collateralValueFormatted =
-    collateralValue?.collateral?.value === 0
-      ? '0'
-      : collateralValue?.collateral?.value
-        ? formatNumber(collateralValue.collateral.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '-'
-  const collateralPercentage =
-    collateralValue?.collateral?.value === 0
-      ? '0.00%'
-      : collateralValue?.collateral?.value && collateralValue?.totalValue && collateralValue?.collateral?.usdRate
-        ? formatNumber(
-            ((collateralValue.collateral.value * collateralValue.collateral.usdRate) / collateralValue.totalValue) *
-              100,
-            {
-              ...FORMAT_OPTIONS.PERCENT,
-            },
-          )
-        : null
-  const crvUSDValueFormatted =
-    collateralValue?.borrow?.value === 0
-      ? '0'
-      : collateralValue?.borrow?.value
-        ? formatNumber(collateralValue.borrow.value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-        : '-'
-  const crvUSDPercentage =
-    collateralValue?.borrow?.value === 0
-      ? '0.00%'
-      : collateralValue?.borrow?.value && collateralValue?.totalValue && collateralValue?.borrow?.usdRate
-        ? formatNumber(
-            ((collateralValue.borrow.value * collateralValue.borrow.usdRate) / collateralValue.totalValue) * 100,
-            { ...FORMAT_OPTIONS.PERCENT },
-          )
-        : null
+  const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
+  const collateralPercentage = formatPercentage(
+    collateralValue?.collateral?.value,
+    collateralValue?.totalValue,
+    collateralValue?.collateral?.usdRate,
+  )
+
+  const crvUSDValueFormatted = formatMetricValue(collateralValue?.borrow?.value)
+  const crvUSDPercentage = formatPercentage(
+    collateralValue?.borrow?.value,
+    collateralValue?.totalValue,
+    collateralValue?.borrow?.usdRate,
+  )
+
   const totalValueFormatted = collateralValue?.totalValue
     ? formatNumber(collateralValue.totalValue, { ...FORMAT_OPTIONS.USD })
     : '-'

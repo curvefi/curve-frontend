@@ -12,18 +12,13 @@ const LABEL_GAP = '0.125rem' // 2px
 
 type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
 
-const getLineColor = (color: LineColor) => (t: Theme) => {
-  switch (color) {
-    case 'red':
-      return t.design.Color.Tertiary[600]
-    case 'orange':
-      return t.design.Color.Tertiary[400]
-    case 'dark-green':
-      return t.design.Color.Secondary[600]
-    case 'green':
-      return t.design.Color.Secondary[500]
-  }
-}
+const getLineColor = (color: LineColor) => (t: Theme) =>
+  ({
+    red: t.design.Color.Tertiary[600],
+    orange: t.design.Color.Tertiary[400],
+    ['dark-green']: t.design.Color.Secondary[600],
+    green: t.design.Color.Secondary[500],
+  })[color]
 
 const Line = ({ first, position, color }: { first?: boolean; position: string; color: LineColor }) => (
   <Box
@@ -64,6 +59,7 @@ const Label = ({
 )
 
 export const HealthBar = ({ health }: HealthBarProps) => {
+  // Clamps health percentage between 0 and 100
   const healthPercentage = Math.max(0, Math.min(health ?? 0, 100))
   const trackColor = health != null && health < 5 ? Reds[500] : Blues[500]
 

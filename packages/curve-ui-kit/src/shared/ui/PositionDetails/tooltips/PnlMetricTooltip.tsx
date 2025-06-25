@@ -12,7 +12,7 @@ type PnlMetricTooltipProps = {
 
 export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
-    <Typography variant="bodySRegular">{t`PnL is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}</Typography>
+    <Typography variant="bodySRegular">{t`Profit and Loss (PnL) is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}</Typography>
 
     <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
       <Typography variant="bodySBold">{t`Breakdown`}</Typography>

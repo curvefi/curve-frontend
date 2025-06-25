@@ -6,12 +6,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-type LiqThresholdTooltipProps = {
+type LiquidityThresholdTooltipProps = {
   liquidationRange: LiquidationRange | undefined | null
   bandRange: BandRange | undefined | null
 }
 
-export const LiqThresholdTooltip = ({ liquidationRange, bandRange }: LiqThresholdTooltipProps) => (
+export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: LiquidityThresholdTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
     <Typography variant="bodySRegular">{t`The price at which your position enters liquidation protechtion and your collateral starts to be eroded.`}</Typography>
 

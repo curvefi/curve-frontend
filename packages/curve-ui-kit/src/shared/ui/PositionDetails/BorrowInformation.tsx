@@ -13,7 +13,7 @@ import type {
   BandRange,
 } from '@ui-kit/shared/ui/PositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
-import { LiqThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiqThresholdMetricTooltip'
+import { LiquidityThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiquidityThresholdMetricTooltip'
 import { PnlMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/PnlMetricTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -123,7 +123,7 @@ export const BorrowInformation = ({
         valueOptions={dollarUnitOptions}
         valueTooltip={{
           title: t`Liquidation Threshold`,
-          body: <LiqThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
+          body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
           placement: 'top',
           arrow: false,
         }}
