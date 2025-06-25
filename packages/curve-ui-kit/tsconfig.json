@@ -13,6 +13,7 @@
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
       "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"],
       "@ui-kit/*": ["./*"]
     }
   },
