@@ -166,7 +166,7 @@ function notionalsToString(notionals: Props['notional']) {
 
 type MetricValueProps = Pick<Props, 'value'> &
   Required<Omit<Formatting, 'decimals' | 'unit'>> & {
-    valueColor?: TypographyProps['color']
+    color?: Props['valueOptions']['color']
     change?: number
     unit: UnitOptions | undefined
     size: keyof typeof MetricSize
@@ -184,7 +184,7 @@ const MetricValue = ({
   size,
   fontVariant,
   fontVariantUnit,
-  valueColor,
+  color,
   copyValue,
   tooltip,
 }: MetricValueProps) => {
@@ -214,7 +214,7 @@ const MetricValue = ({
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color={valueColor ?? 'textPrimary'}>
+          <Typography variant={fontVariant} color={color ?? 'textPrimary'}>
             {useMemo(
               () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
               [numberValue, formatter, abbreviate, symbol],
@@ -250,7 +250,7 @@ const MetricValue = ({
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: Formatting & { valueColor?: TypographyProps['color'] }
+  valueOptions: Formatting & { color?: TypographyProps['color'] }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
@@ -289,7 +289,7 @@ export const Metric = ({
   loading = false,
   testId,
 }: Props) => {
-  const { decimals = 1, valueColor, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
+  const { decimals = 1, color, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
   const notionals = useMemo(() => notionalsToString(notional), [notional])
@@ -309,7 +309,7 @@ export const Metric = ({
     change,
     formatter,
     size,
-    valueColor,
+    color,
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
