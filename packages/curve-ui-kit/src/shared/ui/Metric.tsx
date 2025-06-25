@@ -110,20 +110,24 @@ function runFormatter(value: number, formatter: (value: number) => string, abbre
 
 /**
  * Converts notional values to a formatted string representation.
- * Handles single numbers, single notional objects, or arrays of notional objects.
+ * Handles single numbers, strings, single notional objects, or arrays of notional objects.
  *
  * @param notionals - The notional value(s) to format. Can be:
+ *   - A string (returned as-is)
  *   - A number (converted to basic notional object)
  *   - A single Notional object with value, unit, decimals, and formatter
  *   - An array of Notional objects
  * @returns A string with formatted notional values joined by ' + '
  *
  * @example
+ * notionalsToString("Custom text") // "Custom text"
  * notionalsToString(1000) // "1000"
  * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
  * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
  */
 function notionalsToString(notionals: Props['notional']) {
+  if (typeof notionals === 'string') return notionals
+
   const ns =
     typeof notionals === 'number'
       ? [{ value: notionals }]
@@ -230,7 +234,7 @@ type Props = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: number | Notional | Notional[]
+  notional?: number | string | Notional | Notional[]
 
   size?: keyof typeof MetricSize
   alignment?: Alignment

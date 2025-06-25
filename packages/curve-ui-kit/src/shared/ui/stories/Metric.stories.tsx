@@ -144,6 +144,12 @@ export const Notionals: Story = {
   },
 }
 
+export const NotionalString: Story = {
+  args: {
+    notional: '1337.69% close to reckage',
+  },
+}
+
 export const CustomUnit: Story = {
   args: {
     valueOptions: {
