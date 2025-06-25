@@ -301,7 +301,7 @@ export const Metric = ({
     setOpenCopyAlert(true)
   }
 
-  const metricValueProps = {
+  const metricValueProps: MetricValueProps = {
     value,
     unit,
     change,
@@ -310,7 +310,7 @@ export const Metric = ({
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,
-    valueTooltip,
+    tooltip: valueTooltip,
   }
 
   return (
