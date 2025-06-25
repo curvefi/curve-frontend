@@ -4,7 +4,7 @@ import { PositionDetails } from '@ui-kit/shared/ui/PositionDetails'
 
 type PositionDetailsWrapperProps = {
   rChainId: ChainId
-  market: OneWayMarketTemplate | undefined
+  market: OneWayMarketTemplate | null | undefined
   marketId: string
   userActiveKey: string
 }

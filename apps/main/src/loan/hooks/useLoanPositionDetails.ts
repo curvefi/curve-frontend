@@ -10,7 +10,7 @@ import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
 
 type UseLoanPositionDetailsProps = {
   rChainId: ChainId
-  llamma: Llamma | undefined
+  llamma: Llamma | null | undefined
   llammaId: string
   health: string | undefined
 }

@@ -11,7 +11,7 @@ import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
 
 type UsePositionDetailsProps = {
   rChainId: ChainId
-  market: OneWayMarketTemplate | undefined
+  market: OneWayMarketTemplate | null | undefined
   marketId: string
   userActiveKey: string
 }

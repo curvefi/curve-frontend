@@ -4,7 +4,7 @@ import { PositionDetails } from '@ui-kit/shared/ui/PositionDetails'
 
 type PositionDetailsWrapperProps = {
   rChainId: ChainId
-  llamma: Llamma | undefined
+  llamma: Llamma | null | undefined
   llammaId: string
   health: string | undefined
 }
