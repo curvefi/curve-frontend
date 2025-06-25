@@ -42,7 +42,7 @@ jobs:
       - run: yarn build
 
       - name: Start dev server
-        run: yarn start | tee dev-server.log &
+        run: yarn start 2>&1 | tee dev-server.log &
         working-directory: apps/main
 
       - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}

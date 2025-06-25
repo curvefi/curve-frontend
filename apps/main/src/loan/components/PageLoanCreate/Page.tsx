@@ -40,7 +40,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()

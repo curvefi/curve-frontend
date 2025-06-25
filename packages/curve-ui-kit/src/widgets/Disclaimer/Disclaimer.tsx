@@ -1,6 +1,9 @@
 'use client'
+import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher, useTabFromUrl } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Footer } from './Footer'
@@ -20,11 +23,13 @@ const TABS = [
   { value: 'scrvusd', label: t`Savings crvUSD` },
 ] as const
 
-export type DisclaimerTabId = (typeof TABS)[number]['value']
+export type DisclaimerProps = {
+  network: CurveNetworkId | LlamaNetworkId
+  currentApp: AppName
+}
 
-export type DisclaimerProps = { defaultTab: DisclaimerTabId; network: string }
-
-export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
+export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
+  const defaultTab = currentApp === 'dao' ? 'dex' : currentApp
   const [tab, tabs] = useTabFromUrl(TABS, defaultTab)
   return (
     <Stack
@@ -57,7 +62,7 @@ export const Disclaimer = ({ defaultTab, network }: DisclaimerProps) => {
 
         <TabPanel>
           {tab === 'dex' && <Dex />}
-          {tab === 'lend' && <LlamaLend network={network} />}
+          {tab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
           {tab === 'crvusd' && <CrvUsd />}
           {tab === 'scrvusd' && <SCrvUsd />}
           <Footer />

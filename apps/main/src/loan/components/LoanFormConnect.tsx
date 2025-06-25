@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import type { LlamaApi } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
@@ -14,7 +13,7 @@ const LoanFormConnect = ({
   haveSigner: boolean
   loading?: boolean
 }) => {
-  const { connectState } = useConnection<LlamaApi>()
+  const { connectState } = useConnection()
   const { connect } = useWallet()
   return (
     <>
