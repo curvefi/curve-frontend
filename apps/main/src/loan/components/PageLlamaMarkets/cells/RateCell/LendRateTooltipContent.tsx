@@ -40,24 +40,19 @@ export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
             {formatPercent(averageRate)}
           </TooltipItem>
         </Stack>
-        <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
-          {(lendCrvAprUnboosted ?? 0) > 0 && (
+        {(lendCrvAprBoosted ?? 0) > 0 && (
+          <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
             <TooltipItem subitem title={t`Extra CRV (veCRV Boost)`}>
-              {formatPercent(lendCrvAprUnboosted)}
-            </TooltipItem>
-          )}
-          {(lendCrvAprBoosted ?? 0) > 0 && (
-            <TooltipItem subitem title={t`Extra CRV (Max. Boost)`}>
               {formatPercent(lendCrvAprBoosted)}
             </TooltipItem>
-          )}
-        </Stack>
+          </Stack>
+        )}
         {lendCrvAprBoosted ? (
           <Stack>
             <TooltipItem loading={rate == null} title={`${t`Current max veCRV APR`}`}>
               {formatPercent(rate! + lendCrvAprBoosted)}
             </TooltipItem>
-            <TooltipItem loading={maxBoostedAprAverage == null} title={t`7D average`}>
+            <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
               {formatPercent(maxBoostedAprAverage)}
             </TooltipItem>
           </Stack>
