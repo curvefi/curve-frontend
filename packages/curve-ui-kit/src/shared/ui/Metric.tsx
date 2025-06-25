@@ -56,6 +56,9 @@ const UNIT_MAP = { dollar, percentage, multiplier } as const
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
+/** Helper function to get UnitOptions from the more liberal Unit type. */
+const getUnit = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
+
 /** Options for any value being used, whether it's the main value or a notional it doesn't matter */
 type Formatting = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
@@ -132,7 +135,7 @@ function notionalsToString(notionals: Props['notional']) {
     .map((notional) => {
       const { value } = notional
       const { abbreviate, formatter } = getFormattingDefaults(notional)
-      const { symbol, position } = typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+      const { symbol, position } = getUnit(notional.unit) ?? {}
 
       return [
         position === 'prefix' ? symbol : '',
@@ -156,7 +159,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: 
   const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
   const { color = 'textPrimary', unit } = valueOptions
   const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
-  const { symbol, position } = typeof unit === 'string' ? UNIT_MAP[unit] : (unit ?? {})
+  const { symbol, position } = getUnit(unit) ?? {}
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
 
