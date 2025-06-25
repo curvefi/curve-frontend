@@ -11,7 +11,7 @@ describe('Disclaimers', () => {
         cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
         cy.get(`[data-testid='footer'] a`).contains('disclaimer', { matchCase: false }).click()
         cy.url(LOAD_TIMEOUT).should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
-        cy.get(`[data-testid='disclaimer']`).should('be.visible')
+        cy.get(`[data-testid='disclaimer']`, LOAD_TIMEOUT).should('be.visible')
       })
     })
   })
