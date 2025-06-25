@@ -78,7 +78,7 @@ type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
 /** Options for any value being used, whether it's the main value or a notional it doesn't matter */
-type ValueOptions = {
+type Formatting = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
@@ -87,7 +87,7 @@ type ValueOptions = {
   formatter?: (value: number) => string
 }
 
-type Notional = ValueOptions & {
+type Notional = Formatting & {
   value: number
 }
 
@@ -165,7 +165,7 @@ function notionalsToString(notionals: Props['notional']) {
 }
 
 type MetricValueProps = Pick<Props, 'value'> &
-  Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
+  Required<Omit<Formatting, 'decimals' | 'unit'>> & {
     valueColor?: TypographyProps['color']
     change?: number
     unit: UnitOptions | undefined
@@ -250,7 +250,7 @@ const MetricValue = ({
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: ValueOptions & { valueColor?: TypographyProps['color'] }
+  valueOptions: Formatting & { valueColor?: TypographyProps['color'] }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
