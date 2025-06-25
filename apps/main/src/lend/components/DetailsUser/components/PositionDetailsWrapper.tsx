@@ -20,6 +20,7 @@ export const PositionDetailsWrapper = ({ rChainId, market, marketId, userActiveK
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const isFetchingAll = useStore((state) => state.markets.isFetchingAll)
   const marketRate = useStore((state) => state.markets.ratesMapper[rChainId]?.[marketId])
+  const prices = useStore((state) => state.markets.pricesMapper[rChainId]?.[marketId])
 
   const { data: onchainData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({ chainId: rChainId, marketId })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
@@ -74,6 +75,10 @@ export const PositionDetailsWrapper = ({ rChainId, market, marketId, userActiveK
     },
     liquidationRange: {
       value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
+      rangeToLiquidation:
+        prices?.prices?.oraclePrice && userLoanDetails?.prices
+          ? (Number(userLoanDetails?.prices?.[1]) / Number(prices.prices.oraclePrice)) * 100
+          : null,
       loading: isFetchingAll ?? true,
     },
     bandRange: {

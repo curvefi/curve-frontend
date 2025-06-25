@@ -62,6 +62,10 @@ export const PositionDetailsWrapper = ({ rChainId, llamma, llammaId, health }: P
     },
     liquidationRange: {
       value: userLoanDetails?.userPrices ? userLoanDetails.userPrices.map(Number) : null,
+      rangeToLiquidation:
+        loanDetails?.priceInfo?.oraclePrice && userLoanDetails?.userPrices
+          ? (Number(userLoanDetails?.userPrices?.[1]) / Number(loanDetails.priceInfo.oraclePrice)) * 100
+          : null,
       loading: userLoanDetails?.loading ?? true,
     },
     bandRange: {

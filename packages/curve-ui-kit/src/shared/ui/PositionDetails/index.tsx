@@ -21,7 +21,11 @@ export type BorrowRate = {
   thirtyDayAvgRate: number | undefined | null
   loading: boolean
 }
-export type LiquidationRange = { value: number[] | undefined | null; loading: boolean }
+export type LiquidationRange = {
+  value: number[] | undefined | null
+  rangeToLiquidation: number | undefined | null
+  loading: boolean
+}
 export type BandRange = { value: number[] | undefined | null; loading: boolean }
 export type Leverage = { value: number | undefined | null; loading: boolean }
 export type CollateralValue = {

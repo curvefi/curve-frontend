@@ -19,6 +19,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+const dollarUnitOptions = {
+  unit: {
+    symbol: '$',
+    position: 'prefix' as const,
+    abbreviate: false,
+  },
+}
+
 type BorrowInformationProps = {
   app: App
   rate: BorrowRate | undefined | null
@@ -51,8 +59,16 @@ export const BorrowInformation = ({
         value={rate?.value}
         loading={rate?.value == null && rate?.loading}
         valueOptions={{ unit: 'percentage' }}
+        notional={
+          rate?.thirtyDayAvgRate
+            ? {
+                value: rate.thirtyDayAvgRate,
+                unit: { symbol: '% 30D Avg', position: 'suffix', abbreviate: true },
+              }
+            : undefined
+        }
       />
-      {app === 'lend' && (
+      {app === 'lend' && ( // PNL is only available on lend for now
         <Metric
           size="small"
           label={t`PNL`}
@@ -88,27 +104,37 @@ export const BorrowInformation = ({
         loading={ltv?.value == null && ltv?.loading}
         valueOptions={{ unit: 'percentage' }}
       />
-      {app === 'lend' && leverage?.value && leverage?.value > 1 && (
-        <Metric
-          size="small"
-          label={t`Leverage`}
-          value={leverage?.value}
-          loading={leverage?.value == null && leverage?.loading}
-          valueOptions={{ unit: 'multiplier' }}
-        />
-      )}
+      {app === 'lend' &&
+        leverage?.value &&
+        leverage?.value > 1 && ( // Leverage is only available on lend for now
+          <Metric
+            size="small"
+            label={t`Leverage`}
+            value={leverage?.value}
+            loading={leverage?.value == null && leverage?.loading}
+            valueOptions={{ unit: 'multiplier' }}
+          />
+        )}
       <Metric
         size="small"
         label={t`Liquidation Threshold`}
         value={liquidationRange?.value?.[1]}
         loading={liquidationRange?.value == null && liquidationRange?.loading}
-        valueOptions={{ unit: 'dollar' }}
+        valueOptions={dollarUnitOptions}
         valueTooltip={{
           title: t`Liquidation Threshold`,
           body: <LiqThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
           placement: 'top',
           arrow: false,
         }}
+        notional={
+          liquidationRange?.rangeToLiquidation
+            ? {
+                value: liquidationRange.rangeToLiquidation,
+                unit: { symbol: '% Buffer to liquidation', position: 'suffix', abbreviate: true },
+              }
+            : undefined
+        }
       />
       <Metric
         size="small"
