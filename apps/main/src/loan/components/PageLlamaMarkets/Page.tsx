@@ -4,22 +4,25 @@ import { useAccount } from 'wagmi'
 import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { LendTableFooter } from '@/loan/components/PageLlamaMarkets/LendTableFooter'
 import { LlamaMarketsTable } from '@/loan/components/PageLlamaMarkets/LlamaMarketsTable'
+import { LlamaUserPositionTabs } from '@/loan/components/PageLlamaMarkets/LlamaUserPositionTabs'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import {
+  invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
   setLendingVaults,
 } from '@/loan/entities/lending-vaults'
-import { invalidateAllUserLendingSupplies } from '@/loan/entities/lending-vaults'
 import { useLlamaMarkets } from '@/loan/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/loan/entities/mint-markets'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
+import Stack from '@mui/material/Stack'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { logSuccess } from '@ui-kit/lib'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
@@ -74,13 +77,34 @@ export const LlamaMarketsPage = (props: CrvUsdServerData) => {
       {showSkeleton ? (
         <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
       ) : (
-        <LlamaMarketsTable
-          onReload={() => onReload(address)}
-          result={data}
-          headerHeight={headerHeight}
-          isError={isError}
-          minLiquidity={minLiquidity}
-        />
+        <>
+          {data?.hasPositions && (
+            <LlamaUserPositionTabs
+              onReload={() => onReload(address)}
+              result={data}
+              headerHeight={headerHeight}
+              isError={isError}
+              minLiquidity={minLiquidity}
+            />
+          )}
+          <Stack
+            sx={{
+              marginBlockStart: Spacing.xl,
+              marginBlockEnd: Spacing.xxl,
+              maxWidth: MaxWidth.table,
+            }}
+          >
+            <LlamaMarketsTable
+              title={t`Llamalend Markets`}
+              subtitle={t`Borrow with the power of Curve soft liquidations`}
+              onReload={() => onReload(address)}
+              result={data}
+              headerHeight={headerHeight}
+              isError={isError}
+              minLiquidity={minLiquidity}
+            />
+          </Stack>
+        </>
       )}
       <LendTableFooter />
     </Box>

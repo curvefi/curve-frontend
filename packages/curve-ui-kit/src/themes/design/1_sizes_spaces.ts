@@ -286,7 +286,7 @@ export const SizesAndSpaces = {
     modal: MappedModalHeight,
   },
   MinHeight: {
-    tableNoResults: '35vh',
+    tableNoResults: MappedSizing['3xl'],
   },
   MaxHeight: {
     popover: '17rem', // 272px

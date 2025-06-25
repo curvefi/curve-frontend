@@ -53,7 +53,7 @@ export const DataTable = <T extends TableItem>({
       >
         {children && <FilterRow table={table}>{children}</FilterRow>}
 
-        {headerGroups.map((headerGroup, _, headerGroups) => (
+        {headerGroups.map((headerGroup) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header, index) => (
               <HeaderCell
