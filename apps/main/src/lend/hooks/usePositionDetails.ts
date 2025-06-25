@@ -67,7 +67,6 @@ export const usePositionDetails = ({
   }, [userLoanDetails?.state?.collateral, userLoanDetails?.state?.borrowed, collateralUsdRate])
 
   return {
-    app: 'lend',
     isSoftLiquidation: userLoanDetails?.status?.colorKey === 'soft_liquidation',
     health: {
       value: Number(userLoanDetails?.healthFull),

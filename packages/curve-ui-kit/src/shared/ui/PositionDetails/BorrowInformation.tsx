@@ -9,7 +9,6 @@ import type {
   Ltv,
   TotalDebt,
   LiquidationRange,
-  App,
   BandRange,
 } from '@ui-kit/shared/ui/PositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
@@ -28,7 +27,6 @@ const dollarUnitOptions = {
 }
 
 type BorrowInformationProps = {
-  app: App
   rate: BorrowRate | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
@@ -40,7 +38,6 @@ type BorrowInformationProps = {
 }
 
 export const BorrowInformation = ({
-  app,
   rate,
   pnl,
   collateralValue,
@@ -68,7 +65,7 @@ export const BorrowInformation = ({
             : undefined
         }
       />
-      {app === 'lend' && ( // PNL is only available on lend for now
+      {pnl && ( // PNL is only available on lend for now
         <Metric
           size="small"
           label={t`PNL`}
@@ -104,7 +101,7 @@ export const BorrowInformation = ({
         loading={ltv?.value == null && ltv?.loading}
         valueOptions={{ unit: 'percentage' }}
       />
-      {app === 'lend' &&
+      {leverage &&
         leverage?.value &&
         leverage?.value > 1 && ( // Leverage is only available on lend for now
           <Metric

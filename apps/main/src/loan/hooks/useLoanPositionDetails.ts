@@ -54,7 +54,6 @@ export const useLoanPositionDetails = ({
   }, [userLoanDetails?.userState?.collateral, userLoanDetails?.userState?.stablecoin, collateralUsdRate])
 
   return {
-    app: 'mint',
     isSoftLiquidation: userLoanDetails?.userStatus?.colorKey === 'soft_liquidation',
     health: {
       value: Number(health),

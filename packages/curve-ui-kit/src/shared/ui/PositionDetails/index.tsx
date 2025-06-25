@@ -7,7 +7,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-export type App = 'mint' | 'borrow' | 'lend'
 export type Pnl = {
   currentProfit: number | undefined | null
   currentPositionValue: number | undefined | null
@@ -46,7 +45,6 @@ export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
 export type PositionDetailsProps = {
-  app: App
   isSoftLiquidation: boolean
   health: Health
   borrowRate: BorrowRate
@@ -60,7 +58,6 @@ export type PositionDetailsProps = {
 }
 
 export const PositionDetails = ({
-  app,
   isSoftLiquidation,
   health,
   borrowRate,
@@ -94,7 +91,6 @@ export const PositionDetails = ({
     )}
     <HealthDetails health={health} />
     <BorrowInformation
-      app={app}
       rate={borrowRate}
       pnl={pnl}
       collateralValue={collateralValue}
