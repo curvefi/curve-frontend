@@ -155,8 +155,6 @@ type MetricValueProps = Pick<Props, 'value'> &
     change?: number
     unit: UnitOptions | undefined
     size: keyof typeof MetricSize
-    fontVariant: TypographyVariantKey
-    fontVariantUnit: TypographyVariantKey
     copyValue: () => void
     tooltip?: Props['valueTooltip']
   }
@@ -168,8 +166,6 @@ const MetricValue = ({
   change,
   unit,
   size,
-  fontVariant,
-  fontVariantUnit,
   color,
   copyValue,
   tooltip,
@@ -182,6 +178,8 @@ const MetricValue = ({
   }, [value])
 
   const { symbol, position } = unit ?? {}
+  const fontVariant = MetricSize[size]
+  const fontVariantUnit = MetricUnitSize[size]
 
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
@@ -302,8 +300,6 @@ export const Metric = ({
     formatter,
     size,
     color,
-    fontVariant: MetricSize[size],
-    fontVariantUnit: MetricUnitSize[size],
     copyValue,
     tooltip: valueTooltip,
   }
