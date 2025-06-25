@@ -1,20 +1,11 @@
 import { ethers } from 'ethers'
 import curvejsApi from '@/dao/lib/curvejs'
-import type curveApi from '@curvefi/api'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import type { Address } from '@ui-kit/utils'
 
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { CurveApi, Wallet } from '@ui-kit/features/connect-wallet'
 
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
-export type CurveApi = typeof curveApi & { chainId: number }
 export type ChainId = number
 export type NetworkEnum = INetworkName
 
@@ -26,7 +17,7 @@ export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
 export type VeCrvUrlParams = NetworkUrlParams & { formType: [FormType] }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
   api: typeof curvejsApi
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
@@ -216,17 +207,6 @@ export type UserGaugeVoteWeight = {
   poolUrl: string
   relativeWeight: number
   totalVeCrv: number
-}
-
-export type UserGaugeVoteWeightsMapper = {
-  [userAddress: string]: {
-    fetchingState: FetchingState
-    data: {
-      powerUsed: number
-      veCrvUsed: number
-      gauges: UserGaugeVoteWeight[]
-    }
-  }
 }
 
 export interface FnStepEstGasApprovalResponse {

@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import FormCompensation from '@/dex/components/PageCompensation/index'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
+import { useChainId } from '@/dex/hooks/useChainId'
 import Settings from '@/dex/layout/default/Settings'
-import { type CurveApi, type NetworkUrlParams, Provider } from '@/dex/types/main.types'
-import { useChainId } from '@/dex/utils/utilsRouter'
+import { type NetworkUrlParams, Provider } from '@/dex/types/main.types'
 import Box, { BoxHeader } from '@ui/Box'
 import Button from '@ui/Button'
 import IconButton from '@ui/IconButton'
@@ -16,7 +16,7 @@ import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wa
 import { t } from '@ui-kit/lib/i18n'
 
 export const PageCompensation = ({ network }: NetworkUrlParams) => {
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
   const rChainId = useChainId(network)
@@ -72,7 +72,7 @@ export const PageCompensation = ({ network }: NetworkUrlParams) => {
               <Spinner />
             </SpinnerWrapper>
           ) : (
-            <FormCompensation curve={curve} rChainId={rChainId} contracts={contracts} provider={provider} />
+            <FormCompensation curve={curveApi} rChainId={rChainId} contracts={contracts} provider={provider} />
           )}
           <i>
             For additional information, please see{' '}

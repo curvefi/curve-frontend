@@ -13,7 +13,6 @@ export type StateKey = string
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }
   hasRouter: { [chainId: string]: boolean | null }
-  loaded: boolean
 }
 
 export interface GlobalSlice extends GlobalState {
@@ -21,7 +20,7 @@ export interface GlobalSlice extends GlobalState {
   setNetworkConfigFromApi(curve: CurveApi): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curveApi: CurveApi | null, prevCurveApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(curveApi: CurveApi | undefined, prevCurveApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
@@ -34,7 +33,6 @@ export interface GlobalSlice extends GlobalState {
 const DEFAULT_STATE = {
   hasDepositAndStake: {},
   hasRouter: {},
-  loaded: false,
 } satisfies GlobalState
 
 const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSlice => ({

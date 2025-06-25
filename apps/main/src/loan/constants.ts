@@ -13,13 +13,6 @@ export const ROUTE = {
   PAGE_404: '/404',
 }
 
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
-} as const
-
 export const SCRVUSD_GAS_ESTIMATE = {
   FIRST_DEPOSIT: 95500,
   FOLLOWING_DEPOSIT: 78500,

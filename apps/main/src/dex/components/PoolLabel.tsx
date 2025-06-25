@@ -103,7 +103,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
               </>
             )}
             {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
-            {pool && <ChipPool poolAddress={pool.address} poolName={pool.name} isHighlightPoolName />}
+            {pool && <ChipPool poolId={pool.id} poolAddress={pool.address} poolName={pool.name} />}
           </Box>
 
           <PoolLabelTokensWrapper>

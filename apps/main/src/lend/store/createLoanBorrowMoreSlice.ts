@@ -98,7 +98,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByKey('formValues', { ...formValues, debtError })
     },
     refetchMaxRecv: async (market, isLeverage) => {
-      const api = getLib<Api>()
+      const api = getLib('llamaApi')
       const { activeKeyMax, formValues, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed } = formValues
 

@@ -1,12 +1,10 @@
 import styled from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
-import type { CurveApi } from '@/dao/types/dao.types'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import CurrentVotes from './CurrentVotes'
 
 const GaugeVoting = ({ userAddress }: { userAddress: string | undefined }) => {
-  const { connectState, lib: curve } = useConnection<CurveApi>()
-  const chainId = curve?.chainId
+  const { connectState, curveApi: { chainId } = {} } = useConnection()
   const { provider, connect } = useWallet()
 
   if (!provider)

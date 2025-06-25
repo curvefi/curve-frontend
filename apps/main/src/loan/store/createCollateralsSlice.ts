@@ -44,7 +44,7 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
     ...DEFAULT_STATE,
 
     fetchCollaterals: async (curve: LlamaApi) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const llammasMapper = networks[chainId].api.helpers.getLlammas(curve)
 
       // mapper
