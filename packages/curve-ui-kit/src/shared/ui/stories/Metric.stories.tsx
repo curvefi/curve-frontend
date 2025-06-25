@@ -154,10 +154,17 @@ export const CustomUnit: Story = {
   },
 }
 
-export const CustomFontColor: Story = {
+export const CustomValueFontColor: Story = {
   args: {
     valueOptions: {
       fontColor: 'danger',
+    },
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Demonstrates the Metric component when the value font color is customized.',
+      },
     },
   },
 }
