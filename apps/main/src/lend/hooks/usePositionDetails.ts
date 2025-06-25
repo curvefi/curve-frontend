@@ -1,12 +1,12 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
-import { useLendingSnapshots } from '@/lend/entities/lending-snapshots'
 import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import { useTokenUsdRate } from '@/lend/entities/token'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
+import { useLendingSnapshots } from '@ui-kit/hooks/useLendingSnapshots'
 import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
 
 type UsePositionDetailsProps = {

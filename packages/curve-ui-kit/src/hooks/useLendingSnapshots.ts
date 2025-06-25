@@ -1,4 +1,4 @@
-import { getSnapshots, Snapshot } from '@curvefi/prices-api/llamalend'
+import { getSnapshots, Snapshot } from '@curvefi/prices-api/src/llamalend'
 import { ContractParams, ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 
