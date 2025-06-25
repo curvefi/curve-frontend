@@ -1,16 +1,18 @@
+import { ReactElement } from 'react'
 import { RewardsTooltipItems } from '@/loan/components/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
 import { TooltipItem } from '@/loan/components/PageLlamaMarkets/cells/RateCell/TooltipItem'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { formatPercent } from '../cell.format'
 
 const { Spacing } = SizesAndSpaces
 
-export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
+const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { rate, averageRate, period, maxBoostedAprAverage } = useSnapshots(market, 'lend')
   const {
     rates: { lendCrvAprBoosted, lendCrvAprUnboosted },
@@ -64,3 +66,9 @@ export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     </Stack>
   )
 }
+
+export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
+  <Tooltip clickable title={t`Supply Yield`} body={<LendRateTooltipContent market={market} />} placement="top">
+    {children}
+  </Tooltip>
+)
