@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import type { PopperProps } from '@mui/material/Popper'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -77,15 +76,6 @@ const UNIT_MAP = {
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
-
-type Placement = PopperProps['placement']
-/** Optional tooltip to replace the default tooltip shown when hovering over the value */
-type ValueTooltipOptions = {
-  title?: string
-  body?: React.ReactNode
-  placement?: Placement
-  arrow?: boolean
-}
 
 /** Options for any being used, whether it's the main value or a notional it doesn't matter */
 type ValueOptions = {
@@ -296,7 +286,6 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
-  ...props
 }: Props) => {
   const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
@@ -325,7 +314,7 @@ export const Metric = ({
   }
 
   return (
-    <Stack alignItems={alignment} data-testid={testId} {...props}>
+    <Stack alignItems={alignment} data-testid={testId}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
