@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@curvefi/api": "^2.67.6",
-    "@curvefi/llamalend-api": "^1.0.21",
+    "@curvefi/llamalend-api": "1.0.22-beta.1",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
@@ -27,7 +27,7 @@
     "@types/memoizee": "^0.4.12",
     "bignumber.js": "^9.3.0",
     "curve-ui-kit": "*",
-    "ethers": "^6.14.1",
+    "ethers": "*",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "immer": "^9.0.21",

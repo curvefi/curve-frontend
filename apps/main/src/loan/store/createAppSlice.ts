@@ -3,7 +3,7 @@ import produce from 'immer'
 import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import { type State } from '@/loan/store/useStore'
-import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
+import { type ChainId, type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 import { Interface } from '@ethersproject/abi'
 
@@ -22,7 +22,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(curve: LlamaApi | null, prevCurveApi: LlamaApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(curve: LlamaApi | undefined, prevCurveApi: LlamaApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -83,7 +83,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     await loans.fetchLoansDetails(curveApi, collateralDatas)
 
     if (!prevCurveApi || isNetworkSwitched) {
-      campaigns.initCampaignRewards(curveApi.chainId)
+      campaigns.initCampaignRewards(curveApi.chainId as ChainId)
       void usdRates.fetchAllStoredUsdRates(curveApi)
     }
 

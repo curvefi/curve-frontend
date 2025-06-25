@@ -1,24 +1,33 @@
 import { t } from '@ui-kit/lib/i18n'
 import type { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
+export const PAGE_DISCLAIMER = '/disclaimer'
+export const PAGE_INTEGRATIONS = '/integrations'
+
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
   PAGE_POOLS: '/pools',
   PAGE_CREATE_POOL: '/create-pool',
   PAGE_DASHBOARD: '/dashboard',
+  PAGE_DEPLOY_GAUGE: '/deploy-gauge',
+  PAGE_COMPENSATION: '/compensation',
+  PAGE_DISCLAIMER,
+  PAGE_INTEGRATIONS,
 }
 
 export const LEND_ROUTES = {
   PAGE_MARKETS: '/markets',
-  PAGE_DISCLAIMER: '/disclaimer',
+  PAGE_DISCLAIMER,
+  PAGE_INTEGRATIONS,
 }
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
-  PAGE_DISCLAIMER: '/disclaimer',
+  PAGE_DISCLAIMER,
   PAGE_PEGKEEPERS: '/pegkeepers',
+  PAGE_INTEGRATIONS,
 }
 
 export const DAO_ROUTES = {
@@ -29,7 +38,8 @@ export const DAO_ROUTES = {
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
   DISCUSSION: 'https://gov.curve.finance/',
-  PAGE_DISCLAIMER: '/disclaimer',
+  PAGE_DISCLAIMER,
+  PAGE_INTEGRATIONS,
 }
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
@@ -85,4 +95,20 @@ export const routeToPage = (
     label: label(),
     isActive: pathname?.startsWith(href.split('?')[0]),
   }
+}
+
+export const replaceNetworkInPath = (path: string, networkId: string) => {
+  const [, app, _network, ...rest] = path.split('/')
+  if (!app) return path // if no app, return original path
+  return ['', app, networkId, ...rest].join('/')
+}
+
+export const getCurrentApp = (path: string | null): AppName => {
+  const [, app] = path?.split('/') || []
+  return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
+}
+
+export const getCurrentNetwork = (path: string | null): string => {
+  const [, , networkId] = path?.split('/') || []
+  return networkId
 }

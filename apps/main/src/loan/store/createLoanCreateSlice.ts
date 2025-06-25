@@ -214,7 +214,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const signerAddress = curve.signerAddress
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey
@@ -380,7 +380,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         step: 'APPROVAL',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { collateral } = formValues
       const approveFn = networks[chainId].api.loanCreate.approve
       const resp = await approveFn(activeKey, provider, llamma, isLeverage, collateral)
@@ -406,7 +406,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 

@@ -1,5 +1,4 @@
 import { ReactNode } from 'react'
-import type { Api } from '@/lend/types/lend.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
 import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
@@ -14,7 +13,7 @@ const LoanFormConnect = ({
   loading?: boolean
   children: ReactNode
 }) => {
-  const { connectState } = useConnection<Api>()
+  const { connectState } = useConnection()
   const { connect } = useWallet()
   return (
     <>

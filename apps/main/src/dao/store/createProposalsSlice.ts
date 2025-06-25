@@ -6,7 +6,6 @@ import { helpers } from '@/dao/lib/curvejs'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
 import {
-  type CurveApi,
   ProposalListFilter,
   CurveJsProposalType,
   SortByFilterProposals,
@@ -85,7 +84,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
     },
     castVote: async (voteId: number, voteType: ProposalType, support: boolean) => {
       const voteIdKey = `${voteId}-${voteType}`
-      const curve = getLib<CurveApi>()
+      const curve = getLib('curveApi')
       const { provider } = useWallet.getState()
 
       const fetchGasInfo = get().gas.fetchGasInfo
@@ -187,7 +186,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       }
     },
     executeProposal: async (voteId: number, voteType: ProposalType) => {
-      const curve = getLib<CurveApi>()
+      const curve = getLib('curveApi')
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()

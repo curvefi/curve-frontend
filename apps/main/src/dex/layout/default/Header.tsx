@@ -2,10 +2,9 @@ import { type RefObject, useMemo, useRef } from 'react'
 import { ROUTE } from '@/dex/constants'
 import { useAppStatsTvl } from '@/dex/entities/appstats-tvl'
 import { useAppStatsVolume } from '@/dex/entities/appstats-volume'
+import { useChainId } from '@/dex/hooks/useChainId'
 import type { SwapFormValuesCache } from '@/dex/store/createCacheSlice'
 import useStore from '@/dex/store/useStore'
-import { type CurveApi } from '@/dex/types/main.types'
-import { useChainId } from '@/dex/utils/utilsRouter'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -24,7 +23,7 @@ type HeaderProps = {
 const QuickSwap = () => t`Quickswap`
 export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => {
   const mainNavRef = useRef<HTMLDivElement>(null)
-  const { lib: curve = {} } = useConnection<CurveApi>()
+  const { curveApi = {} } = useConnection()
   const rChainId = useChainId(networkId)
   const setLayoutHeight = useLayoutStore((state) => state.setLayoutHeight)
   useLayoutHeight(mainNavRef, 'mainNav', setLayoutHeight)
@@ -35,8 +34,8 @@ export const Header = ({ sections, globalAlertRef, networkId }: HeaderProps) => 
   const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
 
-  const { data: tvlTotal } = useAppStatsTvl(curve)
-  const { data: volumeTotal } = useAppStatsVolume(curve)
+  const { data: tvlTotal } = useAppStatsTvl(curveApi)
+  const { data: volumeTotal } = useAppStatsVolume(curveApi)
 
   const network = networks[rChainId]
 

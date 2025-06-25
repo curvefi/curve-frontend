@@ -5,16 +5,12 @@ import FormClaimFeesButtons from '@/dex/components/PageDashboard/components/Form
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import useStore from '@/dex/store/useStore'
+import { claimButtonsKey } from '@/dex/types/main.types'
 import type { Step } from '@ui/Stepper/types'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
-
-export enum claimButtonsKey {
-  '3CRV' = '3CRV',
-  crvUSD = 'crvUSD',
-}
 
 const FormClaimFees = () => {
   const {

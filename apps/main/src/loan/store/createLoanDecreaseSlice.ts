@@ -178,7 +178,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
       })
 
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const { debt, isFullRepay } = formValues
       const approveFn = networks[chainId].api.loanDecrease.approve
       const resp = await approveFn(activeKey, provider, llamma, debt, isFullRepay)
@@ -205,7 +205,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
         step: 'PAY',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
       if (activeKey === get()[sliceKey].activeKey) {

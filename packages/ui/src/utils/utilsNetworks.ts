@@ -179,16 +179,21 @@ export const NETWORK_BASE_CONFIG = {
   },
 } as const
 
-export type BaseConfig<TId = string> = {
+export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
   id: TId
   name: string
-  chainId: number
-  symbol: string
-  networkId: string
+  chainId: TChainId
   explorerUrl: string
+  isTestnet: boolean
+  symbol: string
+  rpcUrl: string
+  showInSelectNetwork: boolean
+}
+
+export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
+  networkId: string
   hex: string
   blocknativeSupport: boolean
-  isTestnet: boolean
   gasL2: boolean
   gasPricesUnit: string
   gasPricesUrl: string
@@ -197,14 +202,16 @@ export type BaseConfig<TId = string> = {
   logoSrcDark: string
   integrations: { listUrl: string; tagsUrl: string }
   rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
-  rpcUrl: string
   scanAddressPath: (hash: string) => string
   scanTxPath: (hash: string) => string
   scanTokenPath: (hash: string) => string
   orgUIPath: string
 }
 
-export function getBaseNetworksConfig<T>(chainId: number, networkConfig: any): BaseConfig<T> {
+export function getBaseNetworksConfig<TId extends string, ChainId extends number>(
+  chainId: ChainId,
+  networkConfig: any,
+): BaseConfig<TId> {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
 

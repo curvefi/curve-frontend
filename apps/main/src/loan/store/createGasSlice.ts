@@ -43,7 +43,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>) => ({
     ...DEFAULT_STATE,
 
     fetchGasInfo: async (curve: LlamaApi) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const rpcUrl = networks[chainId].rpcUrl
       log('fetchGasInfo', chainId)
 
