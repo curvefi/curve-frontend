@@ -20,7 +20,7 @@ export const BorrowRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   } = row.original
   const poolRewards = useFilteredRewards(rewards, marketType, 'borrow')
   return (
-    <Tooltip clickable title={t`Borrow APY`} body={<BorrowRateTooltipContent market={row.original} />} placement="top">
+    <Tooltip clickable title={t`Borrow Rate`} body={<BorrowRateTooltipContent market={row.original} />} placement="top">
       <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
           {borrow != null && formatPercentFixed(borrow)}

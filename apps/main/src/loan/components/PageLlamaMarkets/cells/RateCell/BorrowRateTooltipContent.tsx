@@ -12,19 +12,12 @@ const { Spacing } = SizesAndSpaces
 
 export const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { rate, averageRate, period } = useSnapshots(market, 'borrow')
-  const {
-    assets: { collateral },
-  } = market
-  const yieldBearing = collateral.symbol === 'wstETH' // todo: show yield bearing assets APR with API data
   return (
     <>
       <Stack gap={2}>
         <Typography color="textSecondary">
           {t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`}
         </Typography>
-        {yieldBearing && (
-          <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offer extra yield.`}</Typography>
-        )}
       </Stack>
       <Stack>
         <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
@@ -34,7 +27,7 @@ export const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) =>
           <RewardsTooltipItems title={t`Borrowing incentives`} market={market} type="borrow" />
         </Stack>
         <Stack>
-          <TooltipItem loading={rate == null} title={t`Total Borrow APR`}>
+          <TooltipItem primary loading={rate == null} title={t`Total Borrow Rate`}>
             {formatPercent(rate)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>

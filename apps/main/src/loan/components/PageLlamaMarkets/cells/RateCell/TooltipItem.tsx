@@ -11,15 +11,18 @@ export const TooltipItem = ({
   children,
   loading = false,
   subitem = false,
+  primary = false,
 }: {
   title: ReactNode
   children?: ReactNode
   loading?: boolean
   subitem?: boolean
+  primary?: boolean
 }) => (
   <Typography
     component={Stack}
     color={subitem ? 'textTertiary' : 'textSecondary'}
+    variant={subitem ? 'bodyMRegular' : 'bodyMBold'}
     direction="row"
     justifyContent="space-between"
     {...(subitem && {
@@ -32,7 +35,9 @@ export const TooltipItem = ({
       {title}
     </Stack>
     <WithSkeleton loading={loading}>
-      <Typography variant="bodyMRegular">{children}</Typography>
+      <Typography variant={subitem ? 'bodyMRegular' : 'bodyMBold'} color={primary ? 'primary' : 'textSecondary'}>
+        {children}
+      </Typography>
     </WithSkeleton>
   </Typography>
 )

@@ -36,7 +36,7 @@ export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           <RewardsTooltipItems market={market} title={t`Staking incentives`} type="lend" />
         </Stack>
         <Stack>
-          <TooltipItem loading={rate == null} title={`${t`Current base APR`}`}>
+          <TooltipItem primary loading={rate == null} title={`${t`Current base APR`}`}>
             {formatPercent(rate)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
@@ -52,7 +52,7 @@ export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         )}
         {lendCrvAprBoosted ? (
           <Stack>
-            <TooltipItem loading={rate == null} title={`${t`Current max veCRV APR`}`}>
+            <TooltipItem primary loading={rate == null} title={`${t`Current max veCRV APR`}`}>
               {formatPercent(rate! + lendCrvAprBoosted)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
