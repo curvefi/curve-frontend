@@ -361,7 +361,7 @@
       "campaignEnd": "1770000000",
       "address": "0x5eD490a9B71fa797231d2c5D9bE25bf91a953C19",
       "network": "sonic",
-      "multiplier": "4x",
+      "multiplier": "12x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -373,7 +373,7 @@
       "campaignEnd": "1770000000",
       "address": "0xDC06056e208aB92bF173FF6DD662F1018ea0E483",
       "network": "sonic",
-      "multiplier": "4x",
+      "multiplier": "12x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -385,7 +385,7 @@
       "campaignEnd": "1770000000",
       "address": "0xB8C93fb97884Ea07c2Eb0eA741f78D10e8C5aF9F",
       "network": "sonic",
-      "multiplier": "4x",
+      "multiplier": "12x",
       "tags": ["points"],
       "lock": "false"
     },
@@ -397,7 +397,7 @@
       "campaignEnd": "1770000000",
       "address": "0xbb7A0C558Fd34234Dc1608f4CD0a334E0075D73a",
       "network": "sonic",
-      "multiplier": "6x",
+      "multiplier": "8x",
       "tags": ["points"],
       "lock": "false"
     },
