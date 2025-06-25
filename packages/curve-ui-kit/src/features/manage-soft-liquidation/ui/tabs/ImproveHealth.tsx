@@ -7,7 +7,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
-import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
+import { AlertRepayDebtToIncreaseHealth } from '../AlertRepayDebtToIncreaseHealth'
 
 const { Spacing } = SizesAndSpaces
 
@@ -82,7 +82,7 @@ export const ImproveHealth = ({
         }}
       />
 
-      <AlertCollateralAtRisk />
+      <AlertRepayDebtToIncreaseHealth />
 
       <ButtonMenu
         primary={t`Repay debt & increase health`}

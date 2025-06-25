@@ -5,7 +5,7 @@ import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
-import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
+import { AlertClosePosition } from '../AlertClosePosition'
 
 const { Spacing } = SizesAndSpaces
 
@@ -77,7 +77,7 @@ export const ClosePosition = ({
         />
       </Stack>
 
-      <AlertCollateralAtRisk />
+      <AlertClosePosition />
 
       <ButtonMenu
         primary={t`Repay debt & close position`}
