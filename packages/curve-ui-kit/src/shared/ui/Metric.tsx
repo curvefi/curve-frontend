@@ -4,7 +4,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import Typography, { TypographyProps } from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -83,6 +83,7 @@ type ValueOptions = {
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
   decimals?: number
+  fontColor?: TypographyProps['color']
   /** Optional formatter for value */
   formatter?: (value: number) => string
 }
@@ -183,6 +184,7 @@ const MetricValue = ({
   size,
   fontVariant,
   fontVariantUnit,
+  fontColor,
   copyValue,
   tooltip,
 }: MetricValueProps) => {
@@ -212,7 +214,7 @@ const MetricValue = ({
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color="textPrimary">
+          <Typography variant={fontVariant} color={fontColor}>
             {useMemo(
               () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
               [numberValue, formatter, abbreviate, symbol],
@@ -287,7 +289,11 @@ export const Metric = ({
   loading = false,
   testId,
 }: Props) => {
-  const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
+  const {
+    decimals = 1,
+    fontColor = 'textPrimary',
+    formatter = (value: number) => formatValue(value, decimals),
+  } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
   const notionals = useMemo(() => notionalsToString(notional), [notional])
@@ -307,6 +313,7 @@ export const Metric = ({
     change,
     formatter,
     size,
+    fontColor,
     fontVariant: MetricSize[size],
     fontVariantUnit: MetricUnitSize[size],
     copyValue,

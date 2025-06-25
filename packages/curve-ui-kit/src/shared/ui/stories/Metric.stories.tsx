@@ -52,6 +52,7 @@ const meta: Meta<typeof Metric> = {
     valueOptions: {
       decimals: 1,
       unit: 'dollar',
+      fontColor: 'textPrimary',
     },
     label: 'Metrics label',
     copyText: 'Copied metric value',
@@ -150,6 +151,14 @@ export const CustomUnit: Story = {
       },
     },
     change: 0,
+  },
+}
+
+export const CustomFontColor: Story = {
+  args: {
+    valueOptions: {
+      fontColor: 'danger',
+    },
   },
 }
 
