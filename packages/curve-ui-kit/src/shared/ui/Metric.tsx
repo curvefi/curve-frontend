@@ -149,11 +149,10 @@ function notionalsToString(notionals: Props['notional']) {
     .join(' + ')
 }
 
-type MetricValueProps = Pick<Props, 'value' | 'valueOptions'> & {
-  change?: number
-  size: keyof typeof MetricSize
-  copyValue: () => void
+type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change'> & {
+  size: NonNullable<Props['size']>
   tooltip?: Props['valueTooltip']
+  copyValue: () => void
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
