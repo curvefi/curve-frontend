@@ -4,9 +4,9 @@ import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/Deplo
 import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'
 import ProcessSummary from '@/dex/components/PageDeployGauge/ProcessSummary'
+import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
-import { type CurveApi, type NetworkUrlParams } from '@/dex/types/main.types'
-import { useChainId } from '@/dex/utils/utilsRouter'
+import { type NetworkUrlParams } from '@/dex/types/main.types'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box, { BoxHeader } from '@ui/Box'
@@ -19,7 +19,7 @@ import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 export const DeployGauge = (props: NetworkUrlParams) => {
-  const { lib: curve = null, connectState } = useConnection<CurveApi>()
+  const { curveApi = null, connectState } = useConnection()
   const chainId = useChainId(props.network)
   const isLite = useStore((state) => state.networks.networks[chainId]?.isLite ?? false)
 
@@ -119,7 +119,7 @@ export const DeployGauge = (props: NetworkUrlParams) => {
               <DeployGaugeButton
                 disabled={!validateDeployButton}
                 chainId={chainId}
-                curve={curve}
+                curve={curveApi}
                 pageLoaded={!isLoading(connectState)}
               />
             </ButtonWrapper>

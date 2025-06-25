@@ -11,6 +11,7 @@ import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -152,7 +153,14 @@ const ActionInfo = ({
         )}
 
         {link && (
-          <IconButton component={Link} href={link} target="_blank" rel="noopener" size="small" color="primary">
+          <IconButton
+            component={link.startsWith('http') ? Link : RouterLink}
+            href={link}
+            target="_blank"
+            rel="noopener"
+            size="small"
+            color="primary"
+          >
             <CallMade />
           </IconButton>
         )}

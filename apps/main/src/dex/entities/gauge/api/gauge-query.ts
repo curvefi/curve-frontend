@@ -1,6 +1,5 @@
 import { type Address, zeroAddress } from 'viem'
 import { DepositRewardApproveQuery } from '@/dex/entities/gauge/types'
-import type { CurveApi } from '@/dex/types/main.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { GaugeQuery } from '@ui-kit/lib/model/query'
 import { BD } from '@ui-kit/utils'
@@ -10,7 +9,7 @@ export const queryGaugeManager = async ({ poolId }: GaugeQuery): Promise<Address
   return gaugeManager === zeroAddress ? null : gaugeManager
 }
 
-export const getGauge = (poolId: string) => requireLib<CurveApi>().getPool(poolId).gauge
+export const getGauge = (poolId: string) => requireLib('curveApi').getPool(poolId).gauge
 
 export const queryGaugeDistributors = async ({ poolId }: GaugeQuery) => getGauge(poolId).gaugeDistributors()
 

@@ -152,6 +152,20 @@ const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
           </div>
         ),
       },
+      '0x85e30b8b263bc64d94b827ed450f2edfee8579da': {
+        alertType: 'warning',
+        address: '0x85e30b8b263bc64d94b827ed450f2edfee8579da',
+        message: (
+          <div>
+            <Trans>
+              The Asymmetry USDaf token will be redeployed. Users advised to unwind USDaf positions.{' '}
+              <StyledExternalLink href="https://x.com/asymmetryfin/status/1936870408743223518">
+                Learn more here
+              </StyledExternalLink>
+            </Trans>
+          </div>
+        ),
+      },
     }
 
     const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])

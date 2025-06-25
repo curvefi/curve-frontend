@@ -3,15 +3,15 @@ import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import type { DexServerSideNetworkCache } from '@/app/api/dex/types'
 import { getServerData } from '@/background'
+import { getNetworkDef } from '@/dex/lib/networks'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { InjectServeSideData } from './InjectServeSideData'
-import { getNetworkConfig } from './pools.util'
 
 type NetworkLayoutProps = { params: Promise<NetworkUrlParams>; children: ReactNode }
 
 const Layout = async ({ children, params }: NetworkLayoutProps) => {
   const [urlParams, httpHeaders] = await Promise.all([params, headers()])
-  const network = await getNetworkConfig(urlParams.network)
+  const network = await getNetworkDef(urlParams)
   if (!network) {
     return notFound()
   }

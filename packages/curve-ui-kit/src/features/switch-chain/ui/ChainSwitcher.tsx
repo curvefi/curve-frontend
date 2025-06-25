@@ -6,7 +6,6 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
-import { CONNECT_STAGE, isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -37,7 +36,6 @@ export const ChainSwitcher = <TChainId extends number>({
   chainId,
   headerHeight,
 }: ChainSwitcherProps<TChainId>) => {
-  const { connectState } = useConnection()
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
@@ -49,12 +47,7 @@ export const ChainSwitcher = <TChainId extends number>({
   const onClick = options.length > 1 ? toggle : openSnackbar
   return (
     <>
-      <IconButton
-        size="small"
-        disabled={isLoading(connectState, CONNECT_STAGE.SWITCH_NETWORK)}
-        onClick={onClick}
-        data-testid="btn-change-chain"
-      >
+      <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
         {selectedNetwork && <ChainSwitcherIcon chain={selectedNetwork} />}
         {options.length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>

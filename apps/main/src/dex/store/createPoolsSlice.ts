@@ -480,7 +480,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
-      const curve = requireLib<CurveApi>()
+      const curve = requireLib('curveApi')
       const chainId = curve.chainId
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)

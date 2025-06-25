@@ -150,7 +150,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         step: 'APPROVAL',
       })
       await get().gas.fetchGasInfo(curve)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const collateralIncreaseApproveFn = networks[chainId].api.collateralIncrease.approve
       const resp = await collateralIncreaseApproveFn(activeKey, provider, llamma, formValues.collateral)
       if (activeKey === get()[sliceKey].activeKey) {
@@ -177,7 +177,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         isInProgress: true,
         step: 'ADD',
       })
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       await get().gas.fetchGasInfo(curve)
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
@@ -212,7 +212,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

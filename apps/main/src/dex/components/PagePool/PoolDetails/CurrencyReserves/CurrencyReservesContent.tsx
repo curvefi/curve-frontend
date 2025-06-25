@@ -10,6 +10,7 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Chip from '@ui/Typography/Chip'
 import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -49,9 +50,9 @@ const CurrencyReservesContent = ({
           </TooltipButton>
 
           {tokenLink && (
-            <TokenLink $noStyles href={tokenLink}>
+            <RouterLink href={tokenLink}>
               <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
-            </TokenLink>
+            </RouterLink>
           )}
         </Box>
       </Box>
@@ -101,9 +102,4 @@ export const ExternalLinkToken = styled(TextEllipsis)`
   font-weight: bold;
   text-transform: initial;
 `
-
-export const TokenLink = styled(ExternalLink)`
-  color: inherit;
-`
-
 export default CurrencyReservesContent

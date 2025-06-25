@@ -166,7 +166,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       }
     },
     fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
-      const api = getLib<Api>()
+      const api = getLib('llamaApi')
       const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
 
       const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]
