@@ -160,13 +160,6 @@ export const CustomValueFontColor: Story = {
       fontColor: 'danger',
     },
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Demonstrates the Metric component when the value font color is customized.',
-      },
-    },
-  },
 }
 
 export const NotAvailable: Story = {
