@@ -153,11 +153,7 @@ type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change'> & {
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
-  const numberValue: number | null = useMemo(
-    () => (typeof value === 'number' && isFinite(value) ? value : null),
-    [value],
-  )
-
+  const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
   const { color = 'textPrimary', unit } = valueOptions
   const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
   const { symbol, position } = typeof unit === 'string' ? UNIT_MAP[unit] : (unit ?? {})
