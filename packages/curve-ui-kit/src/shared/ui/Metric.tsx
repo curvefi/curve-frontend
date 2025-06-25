@@ -72,15 +72,16 @@ type Notional = Formatting & {
   value: number
 }
 
-// Default value formatter.
-const formatValue = (value: number, decimals?: number): string =>
-  value.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
+/** Merges default formatting options with user-provided formatting options. */
+const getFormattingDefaults = (formatting: Formatting) => ({
+  abbreviate: true,
+  decimals: 1,
+  formatter: (value: number) => formatValue(value, formatting.decimals ?? 1),
+  ...formatting,
+})
 
-// Default notional value formatter.
-const formatNotionalValue = (value: number, decimals?: number): string =>
+/** Default formatter for values and notionals. */
+const formatValue = (value: number, decimals?: number): string =>
   value.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -129,12 +130,8 @@ function notionalsToString(notionals: Props['notional']) {
 
   return ns
     .map((notional) => {
-      const {
-        value,
-        abbreviate = true,
-        decimals = 1,
-        formatter = (value: number) => formatNotionalValue(value, decimals),
-      } = notional
+      const { value } = notional
+      const { abbreviate, formatter } = getFormattingDefaults(notional)
       const { symbol, position } = typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
 
       return [
@@ -161,14 +158,8 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: 
     [value],
   )
 
-  const {
-    color = 'textPrimary',
-    abbreviate = true,
-    decimals = 1,
-    formatter = (value: number) => formatValue(value, decimals),
-    unit,
-  } = valueOptions
-
+  const { color = 'textPrimary', unit } = valueOptions
+  const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
   const { symbol, position } = typeof unit === 'string' ? UNIT_MAP[unit] : (unit ?? {})
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
