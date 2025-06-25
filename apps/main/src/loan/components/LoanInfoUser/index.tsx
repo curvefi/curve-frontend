@@ -15,6 +15,7 @@ import { ChainId } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { PositionDetailsWrapper } from './components/PositionDetailsWrapper'
 
@@ -29,6 +30,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isSoftLiquidation = useUserLoanStatus(llammaId) === 'soft_liquidation'
+  const [isBeta] = useBetaFlag()
 
   const { oraclePriceBand } = loanDetails ?? {}
 
@@ -55,16 +57,20 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   return (
     <Wrapper>
-      <PositionDetailsWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} health={healthMode.percent} />
-      <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
-        <UserInfos
-          llammaId={llammaId}
-          llamma={llamma}
-          isSoftLiquidation={isSoftLiquidation}
-          healthMode={healthMode}
-          titleMapper={titleMapper}
-        />
-      </StatsWrapper>
+      {isBeta && (
+        <PositionDetailsWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} health={healthMode.percent} />
+      )}
+      {!isBeta && (
+        <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
+          <UserInfos
+            llammaId={llammaId}
+            llamma={llamma}
+            isSoftLiquidation={isSoftLiquidation}
+            healthMode={healthMode}
+            titleMapper={titleMapper}
+          />
+        </StatsWrapper>
+      )}
 
       {!chartExpanded && (
         <div className="wrapper">

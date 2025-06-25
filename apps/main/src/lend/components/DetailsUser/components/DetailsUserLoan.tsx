@@ -25,6 +25,7 @@ import Box from '@ui/Box'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { breakpoints } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { PositionDetailsWrapper } from './PositionDetailsWrapper'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
@@ -35,6 +36,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isSoftLiquidation = useUserLoanStatus(userActiveKey) === 'soft_liquidation'
+  const [isBeta] = useBetaFlag()
 
   const { signerAddress } = api ?? {}
 
@@ -84,34 +86,43 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
         <DetailsConnectWallet />
       ) : foundLoan ? (
         <div>
-          {isSoftLiquidation && (
+          {!isBeta && isSoftLiquidation && (
             <AlertContent>
               <DetailsUserLoanAlertSoftLiquidation {...pageProps} />
             </AlertContent>
           )}
 
-          <PositionDetailsWrapper rChainId={rChainId} market={market} marketId={rOwmId} userActiveKey={userActiveKey} />
+          {isBeta && (
+            <PositionDetailsWrapper
+              rChainId={rChainId}
+              market={market}
+              marketId={rOwmId}
+              userActiveKey={userActiveKey}
+            />
+          )}
 
-          <ContentWrapper paddingTop isBorderBottom>
-            <StatsWrapper>
-              <CellUserMain {...pageProps} market={cellProps.market} type="borrow" />
+          {!isBeta && (
+            <ContentWrapper paddingTop isBorderBottom>
+              <StatsWrapper>
+                <CellUserMain {...pageProps} market={cellProps.market} type="borrow" />
 
-              {/* stats */}
-              <ListInfoItemsWrapper>
-                {contents.map((groupedContents, idx) => (
-                  <ListInfoItems key={`contents${idx}`}>
-                    {groupedContents
-                      .filter(({ show }) => _showContent(show))
-                      .map(({ titleKey, content }, idx) => (
-                        <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
-                          {content}
-                        </ListInfoItem>
-                      ))}
-                  </ListInfoItems>
-                ))}
-              </ListInfoItemsWrapper>
-            </StatsWrapper>
-          </ContentWrapper>
+                {/* stats */}
+                <ListInfoItemsWrapper>
+                  {contents.map((groupedContents, idx) => (
+                    <ListInfoItems key={`contents${idx}`}>
+                      {groupedContents
+                        .filter(({ show }) => _showContent(show))
+                        .map(({ titleKey, content }, idx) => (
+                          <ListInfoItem key={`content${idx}`} {...titleMapper[titleKey]}>
+                            {content}
+                          </ListInfoItem>
+                        ))}
+                    </ListInfoItems>
+                  ))}
+                </ListInfoItemsWrapper>
+              </StatsWrapper>
+            </ContentWrapper>
+          )}
 
           {/* CHARTS */}
           <ContentWrapper>
