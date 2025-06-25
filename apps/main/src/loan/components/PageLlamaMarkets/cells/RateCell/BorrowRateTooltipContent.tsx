@@ -19,7 +19,9 @@ export const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) =>
   return (
     <>
       <Stack gap={2}>
-        <Typography color="textSecondary">{t`The borrow APR is the cost related to your borrow and varies according to the market and crvUSD’s peg.`}</Typography>
+        <Typography color="textSecondary">
+          {t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`}
+        </Typography>
         {yieldBearing && (
           <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offer extra yield.`}</Typography>
         )}

@@ -20,7 +20,10 @@ export const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   return (
     <Stack gap={Spacing.sm}>
       <Stack>
-        <Typography color="textSecondary">{t`The lending APR is the estimated earnings related to your share of the pool. It varies according to the market and the monetary policy.`}</Typography>
+        <Typography color="textSecondary">
+          {t`The supply yield is the estimated earnings related to your share of the pool`}
+          {t`It varies according to the market and the monetary policy.`}
+        </Typography>
         {yieldBearing && (
           <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offer extra yield.`}</Typography>
         )}

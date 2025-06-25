@@ -20,7 +20,7 @@ export const LendRateCell = ({ row }: CellContext<LlamaMarket, number>) => {
   } = row.original
   const poolRewards = useFilteredRewards(rewards, marketType, 'lend')
   return (
-    <Tooltip clickable title={t`Lending APR`} body={<LendRateTooltipContent market={row.original} />} placement="top">
+    <Tooltip clickable title={t`Supply Yield`} body={<LendRateTooltipContent market={row.original} />} placement="top">
       <Stack gap={Spacing.xs}>
         <Typography variant="tableCellMBold" color="textPrimary">
           {lendApr != null && formatPercentFixed(lendApr)}
