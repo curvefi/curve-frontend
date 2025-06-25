@@ -10,7 +10,7 @@ import Box from '@mui/material/Box'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
-import { APP_LINK, type AppName } from '@ui-kit/shared/routes'
+import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { Header as Header, useHeaderHeight } from '@ui-kit/widgets/Header'
 
@@ -24,10 +24,17 @@ const useAppStats = (currentApp: string, network: NetworkDef) =>
 
 export const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
-  crvusd: APP_LINK.crvusd.routes,
-  lend: APP_LINK.lend.routes,
+  llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
 })
+
+export const useAppMenu = (app: AppName): AppMenuOption =>
+  ({
+    dao: 'dao' as const,
+    crvusd: 'llamalend' as const,
+    lend: 'llamalend' as const,
+    dex: 'dex' as const,
+  })[app]
 
 export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
@@ -79,7 +86,7 @@ export const AppContainer = <TId extends string, TChainId extends number>({
         chainId={network.chainId}
         networkId={network.id}
         mainNavRef={mainNavRef}
-        currentMenu={currentApp}
+        currentMenu={useAppMenu(currentApp)}
         supportedNetworks={supportedNetworks}
         globalAlertRef={globalAlertRef}
         isLite={network.isLite}

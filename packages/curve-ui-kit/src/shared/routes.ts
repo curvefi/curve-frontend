@@ -45,7 +45,7 @@ export const DAO_ROUTES = {
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
 export type AppName = (typeof AppNames)[number]
 
-export const AppMenuOptions = AppNames // llamalend contains links to crvusd and lend
+export const AppMenuOptions = ['dex', 'llamalend', 'dao'] as const
 export type AppMenuOption = (typeof AppMenuOptions)[number]
 
 export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
@@ -58,18 +58,15 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
       { app: 'dex', route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
     ],
   },
-  crvusd: {
-    label: 'crvUSD',
+  llamalend: {
+    label: 'Llamalend',
     routes: [
+      { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Markets`, betaFeature: true },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Llama (beta)`, betaFeature: true },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
+      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
     ],
-  },
-  lend: {
-    label: 'Lend',
-    routes: [{ app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` }],
   },
   dao: {
     label: 'DAO',
