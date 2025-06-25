@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -149,7 +149,7 @@ function notionalsToString(notionals: Props['notional']) {
 type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change'> & {
   size: NonNullable<Props['size']>
   tooltip?: Props['valueTooltip']
-  copyValue: () => void
+  copyValue?: () => void
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
@@ -166,7 +166,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: 
         arrow
         placement="bottom"
         onClick={copyValue}
-        sx={{ cursor: 'pointer' }}
+        sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
         title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
       >
@@ -255,22 +255,22 @@ export const Metric = ({
   const notionals = useMemo(() => notionalsToString(notional), [notional])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
-
-  const copyValue = () => {
-    if (value) {
-      void copyToClipboard(value.toString())
-    }
+  const copyValue = useCallback(() => {
+    void copyToClipboard(value!.toString())
     setOpenCopyAlert(true)
-  }
+  }, [value])
 
-  const metricValueProps: MetricValueProps = {
-    value,
-    valueOptions,
-    change,
-    size,
-    copyValue,
-    tooltip: valueTooltip,
-  }
+  const metricValueProps: MetricValueProps = useMemo(
+    () => ({
+      value,
+      valueOptions,
+      change,
+      size,
+      copyValue: value != null ? copyValue : undefined,
+      tooltip: valueTooltip,
+    }),
+    [change, copyValue, size, value, valueOptions, valueTooltip],
+  )
 
   return (
     <Stack alignItems={alignment} data-testid={testId}>
