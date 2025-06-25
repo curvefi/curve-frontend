@@ -10,6 +10,7 @@ function createLightSurfaces() {
     Feedback: {
       Success: Greens[600],
       Warning: Reds[400],
+      Danger: Reds[400],
       Error: Reds[500],
       Inverted: Grays[50],
     },
@@ -37,6 +38,7 @@ function createLightSurfaces() {
       Info: Blues[500],
       Success: Greens[600],
       Warning: Reds[300],
+      Danger: Reds[400],
       Error: Reds[500],
     },
   } as const
@@ -86,6 +88,7 @@ function createDarkSurfaces() {
     Feedback: {
       Success: Greens[400],
       Warning: Reds[300],
+      Danger: Reds[400],
       Error: Reds[500],
       Inverted: Grays[950],
     },
@@ -113,6 +116,7 @@ function createDarkSurfaces() {
       Info: Blues[50],
       Success: Greens[300],
       Warning: Reds[400],
+      Danger: Reds[400],
       Error: Reds[500],
     },
   } as const
@@ -162,6 +166,7 @@ function createChadSurfaces() {
     Feedback: {
       Success: Greens[600],
       Warning: Reds[400],
+      Danger: Reds[400],
       Error: Reds[500],
       Inverted: Grays[50],
     },
@@ -188,6 +193,7 @@ function createChadSurfaces() {
       Info: Violet[700],
       Success: Greens[600],
       Warning: Reds[300],
+      Danger: Reds[400],
       Error: Reds[500],
     },
   } as const
