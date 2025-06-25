@@ -157,12 +157,10 @@ type MetricValueProps = Pick<Props, 'value' | 'valueOptions'> & {
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
-  const numberValue: number | null = useMemo(() => {
-    if (typeof value === 'number' && isFinite(value)) {
-      return value
-    }
-    return null
-  }, [value])
+  const numberValue: number | null = useMemo(
+    () => (typeof value === 'number' && isFinite(value) ? value : null),
+    [value],
+  )
 
   const {
     color = 'textPrimary',
