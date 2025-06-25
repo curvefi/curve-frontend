@@ -46,33 +46,12 @@ export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 export type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
-  /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate: boolean
 }
 
-const dollar: UnitOptions = {
-  symbol: '$',
-  position: 'prefix',
-  abbreviate: true,
-}
-
-const percentage: UnitOptions = {
-  symbol: '%',
-  position: 'suffix',
-  abbreviate: false,
-}
-
-const multiplier: UnitOptions = {
-  symbol: 'x',
-  position: 'suffix',
-  abbreviate: true,
-}
-
-const UNIT_MAP = {
-  dollar,
-  percentage,
-  multiplier,
-} as const
+const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
+const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
+const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
+const UNIT_MAP = { dollar, percentage, multiplier } as const
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
@@ -83,6 +62,8 @@ type Formatting = {
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
   decimals?: number
+  /** If the value should be abbreviated to 1.23k or 3.45m */
+  abbreviate?: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
 }
@@ -148,9 +129,13 @@ function notionalsToString(notionals: Props['notional']) {
 
   return ns
     .map((notional) => {
-      const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
-      const { symbol, position, abbreviate } =
-        typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+      const {
+        value,
+        abbreviate = true,
+        decimals = 1,
+        formatter = (value: number) => formatNotionalValue(value, decimals),
+      } = notional
+      const { symbol, position } = typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
 
       return [
         position === 'prefix' ? symbol : '',
@@ -179,6 +164,7 @@ type MetricValueProps = Pick<Props, 'value'> &
 const MetricValue = ({
   value,
   formatter,
+  abbreviate,
   change,
   unit,
   size,
@@ -195,7 +181,7 @@ const MetricValue = ({
     return null
   }, [value])
 
-  const { symbol, position, abbreviate = false } = unit ?? {}
+  const { symbol, position } = unit ?? {}
 
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
@@ -289,7 +275,12 @@ export const Metric = ({
   loading = false,
   testId,
 }: Props) => {
-  const { decimals = 1, color, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
+  const {
+    color,
+    abbreviate = true,
+    decimals = 1,
+    formatter = (value: number) => formatValue(value, decimals),
+  } = valueOptions
   const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
 
   const notionals = useMemo(() => notionalsToString(notional), [notional])
@@ -305,6 +296,7 @@ export const Metric = ({
 
   const metricValueProps: MetricValueProps = {
     value,
+    abbreviate,
     unit,
     change,
     formatter,

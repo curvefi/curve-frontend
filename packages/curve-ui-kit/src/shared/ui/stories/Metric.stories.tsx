@@ -73,7 +73,7 @@ export const Default: Story = {
 
 export const Percentage: Story = {
   args: {
-    value: 1337.42,
+    value: 133.42,
     valueOptions: {
       decimals: 2,
       unit: 'percentage',
@@ -114,7 +114,8 @@ export const Notional: Story = {
     notional: {
       value: 50012345.345353,
       decimals: 2,
-      unit: { symbol: ' ETH', position: 'suffix', abbreviate: true },
+      abbreviate: true,
+      unit: { symbol: ' ETH', position: 'suffix' },
     },
   },
 }
@@ -130,12 +131,14 @@ export const Notionals: Story = {
       {
         value: 26539422,
         decimals: 0,
-        unit: { symbol: ' ETH', position: 'suffix', abbreviate: false },
+        abbreviate: false,
+        unit: { symbol: ' ETH', position: 'suffix' },
       },
       {
         value: 12450,
         decimals: 2,
-        unit: { symbol: ' crvUSD', position: 'suffix', abbreviate: true },
+        abbreviate: true,
+        unit: { symbol: ' crvUSD', position: 'suffix' },
       },
     ],
   },
@@ -147,7 +150,6 @@ export const CustomUnit: Story = {
       unit: {
         symbol: '¥',
         position: 'prefix',
-        abbreviate: true,
       },
     },
     change: 0,
