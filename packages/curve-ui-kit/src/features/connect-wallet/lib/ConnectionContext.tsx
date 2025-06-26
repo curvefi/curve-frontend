@@ -37,9 +37,11 @@ function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
   const { isReconnecting, isConnected } = useAccount()
+
+  const connected = isConnected && !!address // `useAccount` and `useClient` are not always in sync, so we check both
+  const reconnecting = isReconnecting && !connected // wagmi isReconnecting is true when switching pages
   return {
-    // wagmi flips to isReconnecting when switching pages, but leaves isConnected as true
-    isReconnecting: isReconnecting && !(isConnected && !!address),
+    isReconnecting: reconnecting,
     ...(useMemo(() => {
       const wallet = address &&
         client?.transport.request && {
@@ -76,6 +78,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   const libKey = AppLibs[app]
 
   useEffect(() => {
+    console.log({ isReconnecting, wallet })
     if (isReconnecting || !network) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
