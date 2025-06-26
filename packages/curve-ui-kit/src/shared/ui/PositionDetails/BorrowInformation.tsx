@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import type {
   Pnl,
-  BorrowRate,
+  BorrowAPR,
   Leverage,
   CollateralValue,
   Ltv,
@@ -28,7 +28,7 @@ const dollarUnitOptions = {
 }
 
 type BorrowInformationProps = {
-  rate: BorrowRate | undefined | null
+  borrowAPR: BorrowAPR | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
@@ -39,7 +39,7 @@ type BorrowInformationProps = {
 }
 
 export const BorrowInformation = ({
-  rate,
+  borrowAPR,
   pnl,
   collateralValue,
   ltv,
@@ -54,13 +54,13 @@ export const BorrowInformation = ({
       <Metric
         size="small"
         label={t`Borrow APR`}
-        value={rate?.value}
-        loading={rate?.value == null && rate?.loading}
+        value={borrowAPR?.value}
+        loading={borrowAPR?.value == null && borrowAPR?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
-          rate?.thirtyDayAvgRate
+          borrowAPR?.thirtyDayAvgRate
             ? {
-                value: rate.thirtyDayAvgRate,
+                value: borrowAPR.thirtyDayAvgRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
               }
             : undefined

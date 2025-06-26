@@ -36,7 +36,7 @@ export const HealthDetails = ({ health }: { health: Health }) => (
           label={t`Health`}
           value={Number(health?.value)}
           loading={health?.loading}
-          valueOptions={{ unit: 'percentage', decimals: 2, fontColor: getHealthValueColor(health?.value ?? 0) }}
+          valueOptions={{ unit: 'percentage', decimals: 2, color: getHealthValueColor(health?.value ?? 0) }}
           size="large"
         />
         <HealthBar health={Number(health?.value)} />

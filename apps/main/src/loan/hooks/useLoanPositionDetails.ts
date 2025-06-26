@@ -59,7 +59,7 @@ export const useLoanPositionDetails = ({
       value: Number(health),
       loading: userLoanDetails?.loading ?? true,
     },
-    borrowRate: {
+    borrowAPR: {
       value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),

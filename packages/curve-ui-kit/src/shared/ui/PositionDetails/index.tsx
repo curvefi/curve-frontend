@@ -15,7 +15,7 @@ export type Pnl = {
   loading: boolean
 }
 export type Health = { value: number | undefined | null; loading: boolean }
-export type BorrowRate = {
+export type BorrowAPR = {
   value: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
   loading: boolean
@@ -47,7 +47,7 @@ export type TotalDebt = { value: number | undefined | null; loading: boolean }
 export type PositionDetailsProps = {
   isSoftLiquidation: boolean
   health: Health
-  borrowRate: BorrowRate
+  borrowAPR: BorrowAPR
   pnl?: Pnl // doesn't exist yet for crvusd
   liquidationRange: LiquidationRange
   bandRange: BandRange
@@ -60,7 +60,7 @@ export type PositionDetailsProps = {
 export const PositionDetails = ({
   isSoftLiquidation,
   health,
-  borrowRate,
+  borrowAPR,
   pnl,
   liquidationRange,
   bandRange,
@@ -91,7 +91,7 @@ export const PositionDetails = ({
     )}
     <HealthDetails health={health} />
     <BorrowInformation
-      rate={borrowRate}
+      borrowAPR={borrowAPR}
       pnl={pnl}
       collateralValue={collateralValue}
       ltv={ltv}
