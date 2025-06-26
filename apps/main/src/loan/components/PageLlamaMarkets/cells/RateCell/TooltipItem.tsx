@@ -17,7 +17,7 @@ export const TooltipItem = ({
   children?: ReactNode
   loading?: boolean // shows skeleton instead of children
   subitem?: boolean // adds some extra padding and non-bold font weight
-  primary?: boolean // used for the sum, displayed in primary color
+  primary?: boolean // used for the sum rows, displayed in primary color
 }) => (
   <Stack direction="row" justifyContent="space-between">
     <Typography
