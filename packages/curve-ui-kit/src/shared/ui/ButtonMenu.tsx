@@ -1,6 +1,5 @@
 import { useRef } from 'react'
 import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
@@ -8,21 +7,9 @@ import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Spinner } from './Spinner'
 
 const { Spacing, ButtonSize, IconSize } = SizesAndSpaces
-
-const Spinner = () => (
-  <CircularProgress
-    size={20}
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: '0 auto',
-      color: 'inherit',
-    }}
-  />
-)
 
 /** Represents a selectable option in the dropdown menu */
 type Option<T extends string> = {
