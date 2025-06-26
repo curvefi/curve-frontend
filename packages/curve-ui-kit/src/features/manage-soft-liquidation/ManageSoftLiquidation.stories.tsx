@@ -6,16 +6,26 @@ import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type CloseP
 
 const actionInfos = {
   health: { new: 69, old: 42.123 },
-  borrowRate: { old: 0.02, new: 0.02 },
-  debt: { symbol: 'crvUSD', amount: 3700000, new: 2700000 },
-  collateral: [
-    { symbol: 'ETH', amount: 7.52 },
-    { symbol: 'crvUSD', amount: 2457 },
-  ],
-  ltv: { old: 45.23, new: 24.15 },
-  leverage: { old: 9.0, new: 10.1 },
-  borrowedCollateral: { symbol: 'wETH', amount: 300.69 },
-  estimatedTxCost: { eth: 0.0024, gwei: 0.72, dollars: 0.48 },
+  loan: {
+    borrowRate: { old: 0.02, new: 0.02 },
+    debt: { symbol: 'crvUSD', amount: 3700000, new: 0 },
+    ltv: { old: 45.23, new: 24.15 },
+    collateral: [
+      { symbol: 'ETH', amount: 7.52 },
+      { symbol: 'crvUSD', amount: 2457 },
+    ],
+  },
+  collateral: {
+    borrowed: { symbol: 'wETH', amount: 300.69 },
+    leverage: { old: 9.0, new: 10.1 },
+    assetsToWithdraw: [
+      { symbol: 'ETH', amount: 7.52 },
+      { symbol: 'crvUSD', amount: 2457 },
+    ],
+  },
+  transaction: {
+    estimatedTxCost: { eth: 0.0024, gwei: 0.72, dollars: 0.48 },
+  },
 }
 
 type Token = TokenOption & { balance: number }
