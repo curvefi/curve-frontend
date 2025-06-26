@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
+import type { Address } from '@ui-kit/utils'
 import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
@@ -32,15 +33,24 @@ type Token = TokenOption & { balance: number }
 
 const debtToken: Token = {
   symbol: 'crvUSD',
-  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E',
+  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
   balance: 321.01,
 }
 
-const collateralToken: Token = {
-  symbol: 'ETH',
-  address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
-  balance: 1337,
-}
+const collateralToRecover = [
+  {
+    symbol: 'ETH',
+    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address,
+    balance: 26539422,
+    usd: 638000,
+  },
+  {
+    symbol: 'crvUSD',
+    address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
+    balance: 12450,
+    usd: 12450,
+  },
+]
 
 type ImproveHealthStatus = ImproveHealthProps['status']
 type ClosePositionStatus = ClosePositionProps['status']
@@ -49,10 +59,10 @@ const ManageSoftLiquidationWithState = (props: Props) => {
   const [improveHealthStatus, setImproveHealthStatus] = useState<ImproveHealthStatus>('idle')
   const [withdrawStatus, setWithdrawStatus] = useState<ClosePositionStatus>('idle')
 
-  const mockExecution = (status: ImproveHealthStatus | ClosePositionStatus, type: 'improve-health' | 'withdraw') => {
+  const mockExecution = (status: ImproveHealthStatus | ClosePositionStatus, type: 'improve-health' | 'close') => {
     const setState = type === 'improve-health' ? setImproveHealthStatus : setWithdrawStatus
 
-    setState(status)
+    setState(status as any)
     setTimeout(() => setState('idle'), 3000)
   }
 
@@ -80,15 +90,7 @@ const ManageSoftLiquidationWithState = (props: Props) => {
         status: withdrawStatus,
         onClose: (...args) => {
           props.closePosition.onClose(...args)
-          mockExecution('repay', 'withdraw')
-        },
-        onApproveLimited: (...args) => {
-          props.closePosition.onApproveLimited(...args)
-          mockExecution('approve-limited', 'withdraw')
-        },
-        onApproveInfinite: (...args) => {
-          props.closePosition.onApproveInfinite(...args)
-          mockExecution('approve-infinite', 'withdraw')
+          mockExecution('close', 'close')
         },
       }}
     />
@@ -123,11 +125,9 @@ export const Default: Story = {
     },
     closePosition: {
       debtToken,
-      collateralToken,
+      collateralToRecover,
       status: 'idle' as const,
       onClose: fn(),
-      onApproveLimited: fn(),
-      onApproveInfinite: fn(),
     },
   },
 }
