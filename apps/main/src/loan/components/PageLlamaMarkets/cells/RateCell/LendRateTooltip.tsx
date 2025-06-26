@@ -1,7 +1,6 @@
-import { ReactElement } from 'react'
-import { RewardsTooltipItems } from '@/loan/components/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
-import { TooltipItem } from '@/loan/components/PageLlamaMarkets/cells/RateCell/TooltipItem'
+import { ReactElement, useMemo } from 'react'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -9,6 +8,8 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { formatPercent } from '../cell.format'
+import { RewardsTooltipItems } from './RewardsTooltipItems'
+import { TooltipItem, TooltipItems } from './TooltipItem'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,6 +20,10 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     assets: { collateral },
   } = market
   const yieldBearing = collateral.symbol === 'wstETH' // todo: show yield bearing assets APR with API data
+  const extraIncentives = useMemo(
+    () => notFalsy(lendCrvAprUnboosted && { title: t`CRV`, percentage: lendCrvAprUnboosted }),
+    [lendCrvAprUnboosted],
+  )
   return (
     <Stack gap={Spacing.sm}>
       <Stack>
@@ -31,36 +36,41 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         )}
       </Stack>
       <Stack>
-        <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
+        <TooltipItems secondary>
           <TooltipItem loading={rate == null} title={t`Lending fees`}>
             {formatPercent(rate)}
           </TooltipItem>
-          <RewardsTooltipItems market={market} title={t`Staking incentives`} type="lend" />
-        </Stack>
-        <Stack>
+          <RewardsTooltipItems
+            market={market}
+            title={t`Staking incentives`}
+            type="lend"
+            extraIncentives={extraIncentives}
+          />
+        </TooltipItems>
+        <TooltipItems>
           <TooltipItem primary loading={rate == null} title={`${t`Current base APR`}`}>
-            {formatPercent(rate)}
+            {formatPercent(rate && rate + (lendCrvAprUnboosted ?? 0))}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
             {formatPercent(averageRate)}
           </TooltipItem>
-        </Stack>
+        </TooltipItems>
         {(lendCrvAprBoosted ?? 0) > 0 && (
-          <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
+          <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm}>
             <TooltipItem subitem title={t`Extra CRV (veCRV Boost)`}>
               {formatPercent(lendCrvAprBoosted)}
             </TooltipItem>
           </Stack>
         )}
         {lendCrvAprBoosted ? (
-          <Stack>
+          <TooltipItems>
             <TooltipItem primary loading={rate == null} title={`${t`Current max veCRV APR`}`}>
-              {formatPercent(rate! + lendCrvAprBoosted)}
+              {formatPercent(rate && rate + lendCrvAprBoosted)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
               {formatPercent(maxBoostedAprAverage)}
             </TooltipItem>
-          </Stack>
+          </TooltipItems>
         ) : null}
       </Stack>
     </Stack>

@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import { RewardsTooltipItems } from '@/loan/components/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
-import { TooltipItem } from '@/loan/components/PageLlamaMarkets/cells/RateCell/TooltipItem'
+import { TooltipItem, TooltipItems } from '@/loan/components/PageLlamaMarkets/cells/RateCell/TooltipItem'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -15,29 +15,27 @@ const { Spacing } = SizesAndSpaces
 const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { rate, averageRate, period } = useSnapshots(market, 'borrow')
   return (
-    <>
-      <Stack gap={2}>
-        <Typography color="textSecondary">
-          {t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`}
-        </Typography>
-      </Stack>
+    <Stack gap={Spacing.sm}>
+      <Typography color="textSecondary">
+        {t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`}
+      </Typography>
       <Stack>
-        <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm} marginBlock={Spacing.sm}>
+        <TooltipItems secondary>
           <TooltipItem loading={rate == null} title={t`Borrow Rate`}>
             {formatPercent(rate)}
           </TooltipItem>
           <RewardsTooltipItems title={t`Borrowing incentives`} market={market} type="borrow" />
-        </Stack>
-        <Stack>
+        </TooltipItems>
+        <TooltipItems>
           <TooltipItem primary loading={rate == null} title={t`Total Borrow Rate`}>
             {formatPercent(rate)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
             {formatPercent(averageRate)}
           </TooltipItem>
-        </Stack>
+        </TooltipItems>
       </Stack>
-    </>
+    </Stack>
   )
 }
 

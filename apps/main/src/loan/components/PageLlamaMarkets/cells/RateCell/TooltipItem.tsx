@@ -15,29 +15,32 @@ export const TooltipItem = ({
 }: {
   title: ReactNode
   children?: ReactNode
-  loading?: boolean
-  subitem?: boolean
-  primary?: boolean
+  loading?: boolean // shows skeleton instead of children
+  subitem?: boolean // adds some extra padding and non-bold font weight
+  primary?: boolean // used for the sum, displayed in primary color
 }) => (
-  <Typography
-    component={Stack}
-    color={subitem ? 'textTertiary' : 'textSecondary'}
-    variant={subitem ? 'bodyMRegular' : 'bodyMBold'}
-    direction="row"
-    justifyContent="space-between"
-    {...(subitem && {
-      sx: {
-        marginLeft: Spacing.md,
-      },
-    })}
-  >
-    <Stack direction="row" flexShrink={1} gap={1}>
+  <Stack direction="row" justifyContent="space-between">
+    <Typography
+      color={primary ? 'textPrimary' : subitem ? 'textTertiary' : 'textSecondary'}
+      variant={subitem ? 'bodyMRegular' : 'bodyMBold'}
+      {...(subitem && {
+        sx: {
+          marginLeft: Spacing.md,
+        },
+      })}
+    >
       {title}
-    </Stack>
+    </Typography>
     <WithSkeleton loading={loading}>
       <Typography variant={subitem ? 'bodyMRegular' : 'bodyMBold'} color={primary ? 'primary' : 'textSecondary'}>
         {children}
       </Typography>
     </WithSkeleton>
-  </Typography>
+  </Stack>
+)
+
+export const TooltipItems = ({ children, secondary }: { children: ReactNode; secondary?: boolean }) => (
+  <Stack padding={Spacing.sm} {...(secondary && { bgcolor: (t) => t.design.Layer[2].Fill })}>
+    {children}
+  </Stack>
 )

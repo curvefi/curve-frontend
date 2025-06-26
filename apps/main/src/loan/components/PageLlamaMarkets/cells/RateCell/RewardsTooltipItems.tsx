@@ -1,4 +1,5 @@
-import { useFilteredRewards } from '@/loan/components/PageLlamaMarkets/cells/cell.format'
+import { sum } from 'lodash'
+import { formatPercent, useFilteredRewards } from '@/loan/components/PageLlamaMarkets/cells/cell.format'
 import { TooltipItem } from '@/loan/components/PageLlamaMarkets/cells/RateCell/TooltipItem'
 import { RateType } from '@/loan/components/PageLlamaMarkets/hooks/useSnapshots'
 import { LlamaMarket } from '@/loan/entities/llama-markets'
@@ -13,25 +14,26 @@ export const RewardsTooltipItems = ({
   market: { rewards, type: marketType },
   title,
   type,
+  extraIncentives,
 }: {
   title: string
   market: LlamaMarket
   type: RateType
+  extraIncentives?: { title: string; percentage: number }[]
 }) => {
   const poolRewards = useFilteredRewards(rewards, marketType, type)
+  const percentage = extraIncentives?.length && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
+  const hasIncentives = Boolean(poolRewards.length || percentage)
   return (
     <>
-      {poolRewards.length > 0 && <TooltipItem title={title} />}
+      {hasIncentives && <TooltipItem title={title}>{percentage}</TooltipItem>}
+      {extraIncentives?.map(({ percentage, title }, i) => (
+        <TooltipItem key={i} subitem title={title}>
+          {formatPercent(percentage)}
+        </TooltipItem>
+      ))}
       {poolRewards.map((r, i) => (
-        <TooltipItem
-          subitem
-          key={i}
-          title={
-            <Stack direction="row" flexWrap="wrap">
-              {t`Points`}
-            </Stack>
-          }
-        >
+        <TooltipItem subitem key={i} title={t`Points`}>
           <Stack
             component={Link}
             href={r.dashboardLink}
