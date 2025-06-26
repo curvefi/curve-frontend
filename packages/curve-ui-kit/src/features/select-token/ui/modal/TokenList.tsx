@@ -13,6 +13,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { searchByText } from '@ui-kit/utils/searchText'
+import { blacklist } from '../../blacklist'
 import type { TokenOption as Option } from '../../types'
 import { ErrorAlert } from './ErrorAlert'
 import { FavoriteTokens } from './FavoriteTokens'
@@ -69,16 +70,23 @@ const TokenSection = ({
       )}
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => (
-          <TokenOption
-            key={token.address}
-            {...token}
-            balance={balances[token.address]}
-            tokenPrice={tokenPrices[token.address]}
-            disabled={disabledTokens.includes(token.address)}
-            onToken={() => onToken(token)}
-          />
-        ))}
+        {displayTokens.map((token) => {
+          const blacklistEntry = blacklist.find(
+            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
+          )
+
+          return (
+            <TokenOption
+              key={token.address}
+              {...token}
+              balance={balances[token.address]}
+              tokenPrice={tokenPrices[token.address]}
+              disabled={disabledTokens.includes(token.address) || !!blacklistEntry}
+              disabledReason={blacklistEntry?.reason}
+              onToken={() => onToken(token)}
+            />
+          )
+        })}
 
         {hasMore && (
           <Button
