@@ -97,6 +97,25 @@ export type GetAllUserMarketsResponse = {
   chains: Record<Chain, Pick<GetUserMarketsResponse, 'markets' | 'count'>>
 }
 
+export type GetUserLendingPositionsResponse = {
+  user: Address
+  markets: {
+    market_name: string
+    vault_address: Address
+    first_deposit: string
+    last_activity: string
+    current_shares: string
+  }[]
+  page: number
+  per_page: number
+  count: number
+}
+
+export type GetAllUserLendingPositionsResponse = {
+  user: Address
+  chains: Record<Chain, Pick<GetUserLendingPositionsResponse, 'markets' | 'count'>>
+}
+
 type UserMarketStats = {
   health: number
   health_full: number

@@ -2,6 +2,7 @@ import type { Address } from '../index'
 import { fromEntries, recordEntries } from '../objects.util'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
+import { UserMarketEarnings } from './models'
 import type * as Responses from './responses'
 
 export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Models.Market => ({
@@ -71,12 +72,26 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   discountLoan: x.loan_discount,
 })
 
-export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarkets =>
+export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
   x.markets.map((market) => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
     snapshotLast: toDate(market.last_snapshot),
+  }))
+
+export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPositionsResponse) =>
+  fromEntries(recordEntries(x.chains).map(([chain, markets]) => [chain, parseUserLendingPositions(markets)]))
+
+export const parseUserLendingPositions = (
+  x: Pick<Responses.GetUserLendingPositionsResponse, 'markets'>,
+): Models.UserLendingPosition[] =>
+  x.markets.map((market) => ({
+    marketName: market.market_name,
+    vaultAddress: market.vault_address,
+    firstDeposit: toDate(market.first_deposit),
+    lastActivity: toDate(market.last_activity),
+    currentShares: parseFloat(market.current_shares),
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
@@ -101,7 +116,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
   timestamp: toDate(x.timestamp),
 })
 
-export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse) => ({
+export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse): UserMarketEarnings => ({
   user: x.user as Address,
   earnings: parseFloat(x.earnings),
   deposited: parseFloat(x.deposited),
