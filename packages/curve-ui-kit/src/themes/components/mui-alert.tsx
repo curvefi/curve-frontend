@@ -91,6 +91,7 @@ export const defineMuiAlertTitle = (
       ...bodySBold,
       height: IconSize.sm,
       marginBlockEnd: '4px',
+      marginBlockStart: 0, // For some reason margin-top is -2px in MUI by default
     }),
   },
 })
