@@ -7,6 +7,12 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
+const getHealthValueColor = (value: number) => {
+  if (value < 5) return 'error'
+  if (value < 15) return 'warning'
+  return 'textPrimary'
+}
+
 export const HealthDetails = ({ health }: { health: Health }) => (
   <Box
     display="flex"
@@ -30,7 +36,7 @@ export const HealthDetails = ({ health }: { health: Health }) => (
           label={t`Health`}
           value={Number(health?.value)}
           loading={health?.loading}
-          valueOptions={{ unit: 'percentage', decimals: 2 }}
+          valueOptions={{ unit: 'percentage', decimals: 2, fontColor: getHealthValueColor(health?.value ?? 0) }}
           size="large"
         />
         <HealthBar health={Number(health?.value)} />
