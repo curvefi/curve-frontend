@@ -7,7 +7,7 @@ export enum LlamaMarketColumnId {
   UserHasPosition = 'userHasPosition',
   BorrowRate = 'rates_borrow',
   BorrowChart = 'borrowChart',
-  LendRate = 'rates_lendApr',
+  LendRate = 'rates_lend',
   UtilizationPercent = 'utilizationPercent',
   LiquidityUsd = 'liquidityUsd',
   Chain = 'chain',

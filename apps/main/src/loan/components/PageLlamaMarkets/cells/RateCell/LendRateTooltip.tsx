@@ -49,7 +49,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         </TooltipItems>
         <TooltipItems>
           <TooltipItem primary loading={rate == null} title={`${t`Total base APR`}`}>
-            {formatPercent(rate && rate + (lendCrvAprUnboosted ?? 0))}
+            {formatPercent((rate ?? 0) + (lendCrvAprUnboosted ?? 0))}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
             {formatPercent(averageRate)}
@@ -65,7 +65,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         {lendCrvAprBoosted ? (
           <TooltipItems>
             <TooltipItem primary loading={rate == null} title={`${t`Total max veCRV APR`}`}>
-              {formatPercent(rate && rate + lendCrvAprBoosted)}
+              {formatPercent((rate ?? 0) + lendCrvAprBoosted)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
               {formatPercent(maxBoostedAprAverage)}

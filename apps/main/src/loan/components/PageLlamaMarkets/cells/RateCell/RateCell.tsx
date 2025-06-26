@@ -21,8 +21,14 @@ const TooltipComponents = {
   borrow: BorrowRateTooltip,
 } as const
 
-export const RateCell = ({ row: { original: market }, getValue, column: { id } }: CellContext<LlamaMarket, number>) => {
+export const RateCell = ({
+  row: { original: market },
+  getValue,
+  column: { id },
+}: CellContext<LlamaMarket, number | null>) => {
   const rate = getValue()
+  if (rate == null) return null // mint markets do not have a supply rate
+
   const rateType = RateTypes[id as keyof typeof RateTypes]
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType]
