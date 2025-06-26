@@ -84,12 +84,12 @@ export const BorrowInformation = ({
       )}
       <Metric
         size="small"
-        label={t`Collateral Value`}
+        label={t`Collateral value`}
         value={collateralValue?.totalValue}
         loading={collateralValue?.totalValue == null && collateralValue?.loading}
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
-          title: t`Collateral Value`,
+          title: t`Collateral value`,
           body: <CollateralMetricTooltip collateralValue={collateralValue} />,
           placement: 'top',
           arrow: false,
@@ -115,12 +115,12 @@ export const BorrowInformation = ({
         )}
       <Metric
         size="small"
-        label={t`Liquidation Threshold`}
+        label={t`Liquidation threshold`}
         value={liquidationRange?.value?.[1]}
         loading={liquidationRange?.value == null && liquidationRange?.loading}
         valueOptions={dollarUnitOptions}
         valueTooltip={{
-          title: t`Liquidation Threshold`,
+          title: t`Liquidation threshold`,
           body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
           placement: 'top',
           arrow: false,
@@ -136,7 +136,7 @@ export const BorrowInformation = ({
       />
       <Metric
         size="small"
-        label={t`Total Debt`}
+        label={t`Total debt`}
         value={totalDebt?.value}
         loading={totalDebt?.value == null && totalDebt?.loading}
         valueOptions={{ unit: 'dollar' }}
