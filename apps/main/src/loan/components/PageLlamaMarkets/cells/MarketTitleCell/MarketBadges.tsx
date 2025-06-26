@@ -21,8 +21,8 @@ const poolTypeNames: Record<LlamaMarketType, () => string> = {
 }
 
 const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
-  [LlamaMarketType.Lend]: () => t`Lend markets allow you to earn interest on your assets.`,
-  [LlamaMarketType.Mint]: () => t`Mint markets allow you to borrow assets against your collateral.`,
+  [LlamaMarketType.Lend]: () => t`Lending markets let users earn by lending assets or borrow using collateral.`,
+  [LlamaMarketType.Mint]: () => t`Mint markets lets users borrow by minting crvUSD against collateral.`,
 }
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */

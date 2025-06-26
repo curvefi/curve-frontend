@@ -32,7 +32,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const { address, assets, leverage, liquidityUsd, rates, type, url, userHasPosition, utilizationPercent } = market
-  const borrowedUnit: UnitOptions = { symbol: assets.borrowed.symbol, position: 'suffix', abbreviate: true }
+  const borrowedUnit: UnitOptions = { symbol: assets.borrowed.symbol, position: 'suffix' }
   const graphSize = useMobileGraphSize()
   return (
     <>

@@ -10,9 +10,11 @@ const { Spacing, MaxWidth } = SizesAndSpaces
 
 export const defineMuiTooltip = (design: DesignSystem, typography: TypographyOptions): Components['MuiTooltip'] => ({
   defaultProps: {
-    enterDelay: Duration.TooltipEnter,
-    enterNextDelay: Duration.TooltipEnter,
-    enterTouchDelay: Duration.TooltipEnter,
+    enterDelay: Duration.Tooltip.Enter,
+    enterNextDelay: Duration.Tooltip.Enter,
+    enterTouchDelay: Duration.Tooltip.Enter,
+    leaveDelay: Duration.Tooltip.Exit,
+    leaveTouchDelay: Duration.Tooltip.Exit,
   },
   styleOverrides: {
     tooltip: {
