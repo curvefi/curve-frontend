@@ -88,6 +88,9 @@ function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
   return theme
 }
 
+/**
+ * This is the part of the root layout that needs to be a client component.
+ */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
