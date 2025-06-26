@@ -52,15 +52,15 @@ export const BorrowInformation = ({
     <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
       <Metric
         size="small"
-        label={t`Borrow Rate`}
+        label={t`Borrow APR`}
         value={rate?.value}
         loading={rate?.value == null && rate?.loading}
-        valueOptions={{ unit: 'percentage' }}
+        valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
           rate?.thirtyDayAvgRate
             ? {
                 value: rate.thirtyDayAvgRate,
-                unit: { symbol: '% 30D Avg', position: 'suffix', abbreviate: true },
+                unit: { symbol: '% 30D Avg', position: 'suffix' },
               }
             : undefined
         }
@@ -117,7 +117,10 @@ export const BorrowInformation = ({
         label={t`Liquidation Threshold`}
         value={liquidationRange?.value?.[1]}
         loading={liquidationRange?.value == null && liquidationRange?.loading}
-        valueOptions={dollarUnitOptions}
+        valueOptions={{
+          ...dollarUnitOptions,
+          abbreviate: false,
+        }}
         valueTooltip={{
           title: t`Liquidation Threshold`,
           body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
@@ -128,7 +131,7 @@ export const BorrowInformation = ({
           liquidationRange?.rangeToLiquidation
             ? {
                 value: liquidationRange.rangeToLiquidation,
-                unit: { symbol: '% Buffer to liquidation', position: 'suffix', abbreviate: true },
+                unit: { symbol: '% Buffer to liquidation', position: 'suffix' },
               }
             : undefined
         }
