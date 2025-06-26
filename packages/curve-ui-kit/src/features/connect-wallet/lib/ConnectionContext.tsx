@@ -78,7 +78,6 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   const libKey = AppLibs[app]
 
   useEffect(() => {
-    console.log({ isReconnecting, wallet })
     if (isReconnecting || !network) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
