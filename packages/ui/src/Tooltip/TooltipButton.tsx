@@ -1,6 +1,6 @@
 import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { Tooltip } from 'curve-ui-kit/src/shared/ui/Tooltip'
-import { MouseEvent, ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
@@ -8,12 +8,46 @@ import { breakpoints } from 'ui/src/utils'
 
 export type IconStyles = { $svgTop?: string }
 
+/**
+ * Hook to handle mobile tooltip behavior, using click events to open the tooltip
+ */
+function useMobileTooltip(onClick: { (): void | undefined } | (() => void) | undefined) {
+  const isMobile = useIsMobile()
+  const [open, setOpen] = useState(false)
+  const [scrollY, setScrollY] = useState<number | null>(null)
+
+  const handleScroll = useCallback(() => {
+    if (scrollY !== window.scrollY) {
+      setOpen(false)
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [scrollY])
+
+  return {
+    isMobile,
+    open,
+    onClick: useCallback(() => {
+      onClick?.()
+      // handle mobile click tooltip
+      if (isMobile) {
+        setOpen(true)
+        setScrollY(window.scrollY)
+        window.addEventListener('scroll', handleScroll)
+      }
+    }, [handleScroll, onClick, isMobile]),
+    onClose: useCallback(() => {
+      setOpen(false)
+      window.removeEventListener('scroll', handleScroll)
+    }, [handleScroll]),
+  }
+}
+
 function TooltipButton({
   className = '',
   children,
   showIcon,
   customIcon,
-  onClick,
+  onClick: parentOnClick,
   increaseZIndex,
   iconStyles = {},
   as,
@@ -29,52 +63,12 @@ function TooltipButton({
   onClick?: () => void
   iconStyles?: IconStyles
 }) {
-  const isMobile = useIsMobile()
-  const [open, setOpen] = useState(false)
-  const [scrollY, setScrollY] = useState<number | null>(null)
-
-  const handleScroll = useCallback(() => {
-    if (scrollY !== window.scrollY) {
-      setOpen(false)
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [scrollY])
-
-  const handleBtnClick = useCallback(
-    (evt: MouseEvent<HTMLElement>) => {
-      if (typeof onClick === 'function') onClick()
-
-      // handle mobile click tooltip
-      if (isMobile) {
-        setOpen(true)
-        setScrollY(window.scrollY)
-        window.addEventListener('scroll', handleScroll)
-      }
-    },
-    [handleScroll, onClick, isMobile],
-  )
-
-  const handleClose = useCallback(() => {
-    setOpen(false)
-    window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
-
-  const tooltipContent = (
-    // @ts-ignore TODO: as error
-    <StyledTooltipButton {...(as ? { as } : {})}>
-      <Button className={`${className} tooltip-button`} onClick={handleBtnClick}>
-        {showIcon || customIcon
-          ? (customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />)
-          : children}
-      </Button>
-    </StyledTooltipButton>
-  )
-
+  const { isMobile, open, onClick, onClose } = useMobileTooltip(parentOnClick)
   return (
     <Tooltip
       title={props.tooltip}
-      open={isMobile ? open : undefined}
-      onClose={isMobile ? handleClose : undefined}
+      key={`${isMobile}`} // force remount when switching so we don't change from controlled to uncontrolled
+      {...(isMobile && { open, onClose })}
       placement={(props.placement as any) || 'top'}
       disableInteractive={!isMobile}
       arrow
@@ -91,7 +85,13 @@ function TooltipButton({
         },
       }}
     >
-      {tooltipContent}
+      <StyledTooltipButton {...(as ? { as } : {})}>
+        <Button className={`${className} tooltip-button`} onClick={onClick}>
+          {showIcon || customIcon
+            ? (customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />)
+            : children}
+        </Button>
+      </StyledTooltipButton>
     </Tooltip>
   )
 }
