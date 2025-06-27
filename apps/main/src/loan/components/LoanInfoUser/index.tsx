@@ -9,6 +9,7 @@ import ChartUserLiquidationRange from '@/loan/components/LoanInfoUser/components
 import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useUserLoanDetails, useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
@@ -17,7 +18,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { PositionDetailsWrapper } from './components/PositionDetailsWrapper'
+import { PositionDetails } from '@ui-kit/shared/ui/PositionDetails'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
@@ -35,6 +36,12 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
+  const positionDetailsProps = useLoanPositionDetails({
+    rChainId,
+    llamma,
+    llammaId,
+    health: healthMode.percent,
+  })
 
   useEffect(() => {
     if (!isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
@@ -57,9 +64,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   return (
     <Wrapper>
-      {isBeta && (
-        <PositionDetailsWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} health={healthMode.percent} />
-      )}
+      {isBeta && <PositionDetails {...positionDetailsProps} />}
       {!isBeta && (
         <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
           <UserInfos

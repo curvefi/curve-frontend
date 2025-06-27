@@ -6,6 +6,7 @@ import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -33,9 +34,11 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { MarketDetails } from '@ui-kit/shared/ui/MarketDetails'
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
@@ -69,6 +72,13 @@ const Page = (params: CollateralUrlParams) => {
   const isReady = !!llamma
   const isValidRouterParams = !!rChainId && !!rCollateralId
   const isLeverage = rFormType === 'leverage'
+
+  const [isBeta] = useBetaFlag()
+  const marketDetailsProps = useMarketDetails({
+    rChainId,
+    llamma,
+    llammaId,
+  })
 
   const fetchInitial = useCallback(
     (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
@@ -207,7 +217,8 @@ const Page = (params: CollateralUrlParams) => {
         <AppPageInfoWrapper>
           {isMdUp && !chartExpanded && <TitleComp />}
           <AppPageInfoContentWrapper variant="secondary">
-            <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+            {isBeta && <MarketDetails {...marketDetailsProps} />}
+            {!isBeta && <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>}
             {isValidRouterParams && rChainId && (
               <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
             )}
