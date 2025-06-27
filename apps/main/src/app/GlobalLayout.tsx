@@ -88,7 +88,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       />
       <Box
         component="main"
-        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: `calc(100vh - ${minHeight}px)` }}
+        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: `calc(100vh - ${minHeight}px)`, width: '100%' }}
       >
         {children}
       </Box>
