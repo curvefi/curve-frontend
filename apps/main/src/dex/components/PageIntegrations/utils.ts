@@ -1,13 +1,12 @@
 import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 import type { FilterKey } from '@/dex/types/integrations.types'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { IntegrationsTags } from '@ui/Integration/types'
-import type { ChainOption } from '@ui-kit/features/switch-chain'
 
 export function parseSearchParams(
   searchParams: ReadonlyURLSearchParams | null,
   rChainId: ChainId | '',
-  visibleNetworksList: Iterable<ChainOption<ChainId>>,
+  visibleNetworksList: NetworkConfig[],
   integrationsTags: IntegrationsTags | null,
 ) {
   const pFilterKey = searchParams?.get('filter')
@@ -24,8 +23,8 @@ export function parseSearchParams(
 
   if (pNetworkId) {
     parsed.filterNetworkId =
-      Array.from(visibleNetworksList)
-        .find(({ chainId }) => Number(pNetworkId) === chainId)
+      visibleNetworksList
+        .find(({ chainId, showInSelectNetwork }) => showInSelectNetwork && Number(pNetworkId) === chainId)
         ?.chainId?.toString() ?? ''
   }
 

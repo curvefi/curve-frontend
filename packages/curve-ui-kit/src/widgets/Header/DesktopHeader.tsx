@@ -22,18 +22,18 @@ import { HeaderImplementationProps } from './types'
 
 export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
 
-export const DesktopHeader = <TChainId extends number>({
+export const DesktopHeader = ({
   mainNavRef,
   currentMenu,
   chainId,
-  chains,
+  supportedNetworks,
   globalAlertRef,
   height, // height above + banner height
   pages,
   appStats,
   networkId,
   isLite = false,
-}: HeaderImplementationProps<TChainId>) => {
+}: HeaderImplementationProps) => {
   const [menu, setMenu] = useState<AppMenuOption>(currentMenu)
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
@@ -66,7 +66,7 @@ export const DesktopHeader = <TChainId extends number>({
                 </>
               )}
 
-              <ChainSwitcher chainId={chainId} options={chains} headerHeight={height} />
+              <ChainSwitcher chainId={chainId} networks={supportedNetworks} headerHeight={height} />
               <ConnectWalletIndicator />
             </Box>
           </Container>

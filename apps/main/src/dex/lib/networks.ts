@@ -398,6 +398,10 @@ const createNetworkDef = ({
   symbol,
   rpcUrl,
   showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
+  showRouterSwap,
 }: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
   id: id as NetworkEnum,
   name,
@@ -407,6 +411,10 @@ const createNetworkDef = ({
   symbol,
   rpcUrl,
   showInSelectNetwork,
+  isLite,
+  logoSrc,
+  logoSrcDark,
+  showRouterSwap,
 })
 
 export const getNetworkDefs = memoize(
@@ -426,7 +434,5 @@ export const getNetworkDef = async ({
   return config && createNetworkDef(config)
 }
 
-export const getChainId = async ({ network }: NetworkUrlParams): Promise<number | undefined> => {
-  const find = recordValues(await getNetworks()).find((n) => n.id === network)
-  return find?.chainId
-}
+export const getChainId = async ({ network }: NetworkUrlParams): Promise<number | undefined> =>
+  recordValues(await getNetworks()).find((n) => n.id === network)?.chainId

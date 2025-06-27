@@ -29,19 +29,19 @@ const paddingBlock = 3
 /** Calculates the height of the mobile header */
 export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(paddingBlock)} + ${DEFAULT_BAR_SIZE}`
 
-export const MobileHeader = <TChainId extends number>({
+export const MobileHeader = ({
   mainNavRef,
   currentMenu,
   pages,
   appStats,
   sections,
   chainId,
-  chains,
+  supportedNetworks,
   globalAlertRef,
   height,
   isLite = false,
   networkId,
-}: HeaderImplementationProps<TChainId>) => {
+}: HeaderImplementationProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
@@ -67,7 +67,7 @@ export const MobileHeader = <TChainId extends number>({
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
-            ChainProps={{ chainId, options: chains, headerHeight: height }}
+            ChainProps={{ chainId, networks: supportedNetworks, headerHeight: height }}
             currentMenu={currentMenu}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}

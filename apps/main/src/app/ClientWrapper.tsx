@@ -3,6 +3,7 @@ import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
+import { GlobalLayout } from '@/app/GlobalLayout'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -87,13 +88,16 @@ function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
   return theme
 }
 
-export const ClientWrapper = <ChainId extends number, NetworkConfig extends NetworkDef>({
+/**
+ * This is the part of the root layout that needs to be a client component.
+ */
+export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
   preferredScheme,
 }: {
   children: ReactNode
-  networks: Record<ChainId, NetworkConfig>
+  networks: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
 }) => {
   const theme = useThemeAfterSsr(preferredScheme)
@@ -114,6 +118,7 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
   )
   const network = useNetworkFromUrl(networks)
 
+  const currentApp = getCurrentApp(pathname)
   return (
     network && (
       <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>
@@ -122,12 +127,10 @@ export const ClientWrapper = <ChainId extends number, NetworkConfig extends Netw
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <WagmiProvider config={config}>
-                <ConnectionProvider
-                  app={getCurrentApp(pathname)}
-                  network={network}
-                  onChainUnavailable={onChainUnavailable}
-                >
-                  {children}
+                <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
+                  <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+                    {children}
+                  </GlobalLayout>
                 </ConnectionProvider>
               </WagmiProvider>
             </QueryProvider>

@@ -180,6 +180,7 @@ export const NETWORK_BASE_CONFIG = {
 } as const
 
 export type NetworkDef<TId extends string = string, TChainId extends number = number> = {
+  isLite?: boolean
   id: TId
   name: string
   chainId: TChainId
@@ -188,7 +189,15 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
+  logoSrc: string
+  logoSrcDark: string
+  showRouterSwap: boolean
 }
+
+export type NetworkMapping<TId extends string = string, TChainId extends number = number> = Record<
+  TChainId,
+  NetworkDef<TId, TChainId>
+>
 
 export type BaseConfig<TId extends string = string, TChainId extends number = number> = NetworkDef<TId, TChainId> & {
   networkId: string
@@ -198,8 +207,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesUnit: string
   gasPricesUrl: string
   gasPricesDefault: number
-  logoSrc: string
-  logoSrcDark: string
   integrations: { listUrl: string; tagsUrl: string }
   rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
   scanAddressPath: (hash: string) => string
