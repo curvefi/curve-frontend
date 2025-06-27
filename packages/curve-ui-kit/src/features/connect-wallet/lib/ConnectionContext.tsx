@@ -37,9 +37,11 @@ function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
   const { isReconnecting, isConnected } = useAccount()
+
+  const connected = isConnected && !!address // `useAccount` and `useClient` are not always in sync, so we check both
+  const reconnecting = isReconnecting && !connected // wagmi isReconnecting is true when switching pages
   return {
-    // wagmi flips to isReconnecting when switching pages, but leaves isConnected as true
-    isReconnecting: isReconnecting && !isConnected,
+    isReconnecting: reconnecting,
     ...(useMemo(() => {
       const wallet = address &&
         client?.transport.request && {
@@ -104,6 +106,13 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
 
         if (signal.aborted) return
         setConnectState(LOADING)
+        console.info(
+          `Initializing ${libKey} for ${network.name} (${network.chainId})`,
+          `Wallet ${wallet?.account?.address} with chain ${walletChainId}`,
+          prevLib
+            ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
+            : `First lib initialization`,
+        )
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
