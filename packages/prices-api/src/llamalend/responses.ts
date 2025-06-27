@@ -17,6 +17,9 @@ export type GetMarketsResponse = {
     rate: number
     borrow_apy: number
     lend_apy: number
+    lend_apr: number
+    lend_apr_crv_0_boost: number
+    lend_apr_crv_max_boost: number
     n_loans: number
     price_oracle: number
     amm_price: number
@@ -57,8 +60,11 @@ export type GetSnapshotsResponse = {
   data: [
     {
       rate: string
-      borrow_apy: string
-      lend_apy: string
+      borrow_apy: number
+      lend_apy: number
+      lend_apr: number
+      lend_apr_crv_0_boost: number
+      lend_apr_crv_max_boost: number
       n_loans: number
       price_oracle: string
       amm_price: string

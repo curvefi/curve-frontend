@@ -5,8 +5,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
+import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
 import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveHealth'
-import { Withdraw, type Props as WithdrawProps } from './tabs/Withdraw'
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
@@ -14,17 +14,17 @@ const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation`, href: '
 
 const TABS_SUB = [
   { value: 'improve-health', label: t`Improve health`, href: '' },
-  { value: 'withdraw', label: t`Withdraw`, href: '' },
+  { value: 'close-position', label: t`Close position`, href: '' },
 ] as const
 type SubTab = (typeof TABS_SUB)[number]['value']
 
 export type Props = {
   actionInfos: ActionInfosProps
   improveHealth: ImproveHealthProps
-  withdraw: WithdrawProps
+  closePosition: ClosePositionProps
 }
 
-export const ManageSoftLiquidation = ({ actionInfos, improveHealth, withdraw }: Props) => {
+export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePosition }: Props) => {
   const [subTab, setSubTab] = useState<SubTab>(TABS_SUB[0].value)
 
   return (
@@ -48,7 +48,7 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, withdraw }: 
           />
 
           {subTab === 'improve-health' && <ImproveHealth {...improveHealth} />}
-          {subTab === 'withdraw' && <Withdraw {...withdraw} />}
+          {subTab === 'close-position' && <ClosePosition {...closePosition} />}
         </Box>
       </Stack>
 
