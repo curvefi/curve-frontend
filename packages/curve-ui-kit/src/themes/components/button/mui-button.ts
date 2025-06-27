@@ -83,6 +83,8 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
             props: { variant: 'inline' },
             style: {
               '&.MuiButton-inline': {
+                display: 'inline',
+                verticalAlign: 'baseline',
                 textTransform: 'none',
                 padding: 0,
                 border: 0,

@@ -26,8 +26,8 @@ export const Header = ({
       networkId={networkId}
       chainId={chainId}
       mainNavRef={{ current: null }} // not used in lend
-      currentMenu="lend"
-      routes={APP_LINK.lend.routes}
+      currentMenu="llamalend"
+      routes={APP_LINK.llamalend.routes}
       chains={visibleNetworksList}
       appStats={[
         {

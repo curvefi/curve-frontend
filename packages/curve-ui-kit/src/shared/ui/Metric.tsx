@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import Typography, { TypographyProps } from '@mui/material/Typography'
 import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
@@ -46,60 +46,45 @@ export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 export type UnitOptions = {
   symbol: string
   position: 'prefix' | 'suffix'
-  /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate: boolean
 }
 
-const dollar: UnitOptions = {
-  symbol: '$',
-  position: 'prefix',
-  abbreviate: true,
-}
-
-const percentage: UnitOptions = {
-  symbol: '%',
-  position: 'suffix',
-  abbreviate: false,
-}
-
-const multiplier: UnitOptions = {
-  symbol: 'x',
-  position: 'suffix',
-  abbreviate: true,
-}
-
-const UNIT_MAP = {
-  dollar,
-  percentage,
-  multiplier,
-} as const
+const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
+const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
+const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
+const UNIT_MAP = { dollar, percentage, multiplier } as const
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
-/** Options for any being used, whether it's the main value or a notional it doesn't matter */
-type ValueOptions = {
+/** Helper function to get UnitOptions from the more liberal Unit type. */
+const getUnit = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
+
+/** Options for any value being used, whether it's the main value or a notional it doesn't matter */
+type Formatting = {
   /** A unit can be a currency symbol or percentage, prefix or suffix */
   unit?: Unit | undefined
   /** The number of decimals the value should contain */
   decimals?: number
+  /** If the value should be abbreviated to 1.23k or 3.45m */
+  abbreviate?: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
 }
 
-type Notional = ValueOptions & {
+type Notional = Formatting & {
   value: number
 }
 
-// Default value formatter.
-const formatValue = (value: number, decimals?: number): string =>
-  value.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
+/** Merges default formatting options with user-provided formatting options. */
+const getFormattingDefaults = (formatting: Formatting) => ({
+  abbreviate: true,
+  decimals: 1,
+  formatter: (value: number) => formatValue(value, formatting.decimals ?? 1),
+  ...formatting,
+})
 
-// Default notional value formatter.
-const formatNotionalValue = (value: number, decimals?: number): string =>
+/** Default formatter for values and notionals. */
+const formatValue = (value: number, decimals?: number): string =>
   value.toLocaleString(undefined, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
@@ -125,20 +110,24 @@ function runFormatter(value: number, formatter: (value: number) => string, abbre
 
 /**
  * Converts notional values to a formatted string representation.
- * Handles single numbers, single notional objects, or arrays of notional objects.
+ * Handles single numbers, strings, single notional objects, or arrays of notional objects.
  *
  * @param notionals - The notional value(s) to format. Can be:
+ *   - A string (returned as-is)
  *   - A number (converted to basic notional object)
  *   - A single Notional object with value, unit, decimals, and formatter
  *   - An array of Notional objects
  * @returns A string with formatted notional values joined by ' + '
  *
  * @example
+ * notionalsToString("Custom text") // "Custom text"
  * notionalsToString(1000) // "1000"
  * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
  * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
  */
 function notionalsToString(notionals: Props['notional']) {
+  if (typeof notionals === 'string') return notionals
+
   const ns =
     typeof notionals === 'number'
       ? [{ value: notionals }]
@@ -148,9 +137,9 @@ function notionalsToString(notionals: Props['notional']) {
 
   return ns
     .map((notional) => {
-      const { value, decimals = 1, formatter = (value: number) => formatNotionalValue(value, decimals) } = notional
-      const { symbol, position, abbreviate } =
-        typeof notional.unit === 'string' ? UNIT_MAP[notional.unit] : (notional.unit ?? {})
+      const { value } = notional
+      const { abbreviate, formatter } = getFormattingDefaults(notional)
+      const { symbol, position } = getUnit(notional.unit) ?? {}
 
       return [
         position === 'prefix' ? symbol : '',
@@ -164,36 +153,19 @@ function notionalsToString(notionals: Props['notional']) {
     .join(' + ')
 }
 
-type MetricValueProps = Pick<Props, 'value'> &
-  Required<Omit<ValueOptions, 'decimals' | 'unit'>> & {
-    change?: number
-    unit: UnitOptions | undefined
-    size: keyof typeof MetricSize
-    fontVariant: TypographyVariantKey
-    fontVariantUnit: TypographyVariantKey
-    copyValue: () => void
-    tooltip?: Props['valueTooltip']
-  }
+type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change'> & {
+  size: NonNullable<Props['size']>
+  tooltip?: Props['valueTooltip']
+  copyValue?: () => void
+}
 
-const MetricValue = ({
-  value,
-  formatter,
-  change,
-  unit,
-  size,
-  fontVariant,
-  fontVariantUnit,
-  copyValue,
-  tooltip,
-}: MetricValueProps) => {
-  const numberValue: number | null = useMemo(() => {
-    if (typeof value === 'number' && isFinite(value)) {
-      return value
-    }
-    return null
-  }, [value])
-
-  const { symbol, position, abbreviate = false } = unit ?? {}
+const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
+  const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
+  const { color = 'textPrimary', unit } = valueOptions
+  const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
+  const { symbol, position } = getUnit(unit) ?? {}
+  const fontVariant = MetricSize[size]
+  const fontVariantUnit = MetricUnitSize[size]
 
   return (
     <Stack direction="row" gap={Spacing.xxs} alignItems="baseline">
@@ -201,7 +173,7 @@ const MetricValue = ({
         arrow
         placement="bottom"
         onClick={copyValue}
-        sx={{ cursor: 'pointer' }}
+        sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
         title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
       >
@@ -212,7 +184,7 @@ const MetricValue = ({
             </Typography>
           )}
 
-          <Typography variant={fontVariant} color="textPrimary">
+          <Typography variant={fontVariant} color={color}>
             {useMemo(
               () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
               [numberValue, formatter, abbreviate, symbol],
@@ -248,7 +220,7 @@ const MetricValue = ({
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: ValueOptions
+  valueOptions: Formatting & { color?: TypographyProps['color'] }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
@@ -262,7 +234,7 @@ type Props = {
   copyText?: string
 
   /** Notional values give extra context to the metric, like underlying value */
-  notional?: number | Notional | Notional[]
+  notional?: number | string | Notional | Notional[]
 
   size?: keyof typeof MetricSize
   alignment?: Alignment
@@ -287,31 +259,25 @@ export const Metric = ({
   loading = false,
   testId,
 }: Props) => {
-  const { decimals = 1, formatter = (value: number) => formatValue(value, decimals) } = valueOptions
-  const unit = typeof valueOptions.unit === 'string' ? UNIT_MAP[valueOptions.unit] : valueOptions.unit
-
   const notionals = useMemo(() => notionalsToString(notional), [notional])
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
-
-  const copyValue = () => {
-    if (value) {
-      void copyToClipboard(value.toString())
-    }
+  const copyValue = useCallback(() => {
+    void copyToClipboard(value!.toString())
     setOpenCopyAlert(true)
-  }
+  }, [value])
 
-  const metricValueProps: MetricValueProps = {
-    value,
-    unit,
-    change,
-    formatter,
-    size,
-    fontVariant: MetricSize[size],
-    fontVariantUnit: MetricUnitSize[size],
-    copyValue,
-    tooltip: valueTooltip,
-  }
+  const metricValueProps: MetricValueProps = useMemo(
+    () => ({
+      value,
+      valueOptions,
+      change,
+      size,
+      copyValue: value != null ? copyValue : undefined,
+      tooltip: valueTooltip,
+    }),
+    [change, copyValue, size, value, valueOptions, valueTooltip],
+  )
 
   return (
     <Stack alignItems={alignment} data-testid={testId}>

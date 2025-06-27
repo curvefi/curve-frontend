@@ -1,13 +1,13 @@
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Stack from '@mui/material/Stack'
-import { TokenSelector, type TokenOption } from '@ui-kit/features/select-token'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ButtonMenu } from '@ui-kit/shared/ui/ButtonMenu'
-import { LargeTokenInput, type LargeTokenInputRef } from '@ui-kit/shared/ui/LargeTokenInput'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TOKEN_SELECT_WIDTH } from '../../lib/constants'
-import { AlertCollateralAtRisk } from '../AlertCollateralAtRisk'
+import type { Token } from '../../types'
+import { AlertRepayDebtToIncreaseHealth } from '../AlertRepayDebtToIncreaseHealth'
 
 const { Spacing } = SizesAndSpaces
 
@@ -20,21 +20,17 @@ type OptionId = (typeof BUTTON_OPTIONS)[number]['id']
 type Status = 'idle' | 'repay' | OptionId
 
 type ImproveHealthProps = {
-  /** Array of available debt tokens that can be selected for repayment */
-  debtTokens: TokenOption[]
-  /** Currently selected debt token with its balance, undefined if none selected */
-  selectedDebtToken: (TokenOption & { balance: number }) | undefined
+  /** The token that's been borrowed that has to be paid back */
+  debtToken: Token
   /** Current status of the improve health operation */
   status: Status
 }
 
 type ImproveHealthCallbacks = {
-  /** Callback triggered when a debt token is selected */
-  onDebtToken: (token: TokenOption) => void
   /** Callback triggered when debt balance amount changes */
   onDebtBalance: (balance: number) => void
   /** Callback triggered when repay action is initiated */
-  onRepay: (debtToken: TokenOption, debtBalance: number) => void
+  onRepay: (debtToken: Token, debtBalance: number) => void
   /** Callback triggered when limited approval is requested */
   onApproveLimited: () => void
   /** Callback triggered when infinite approval is requested */
@@ -44,10 +40,8 @@ type ImproveHealthCallbacks = {
 export type Props = ImproveHealthProps & ImproveHealthCallbacks
 
 export const ImproveHealth = ({
-  debtTokens,
-  selectedDebtToken,
+  debtToken,
   status = 'idle',
-  onDebtToken,
   onDebtBalance,
   onRepay,
   onApproveLimited,
@@ -56,32 +50,23 @@ export const ImproveHealth = ({
   const [isOpen, open, close] = useSwitch(false)
   const [debtBalance, setDebtBalance] = useState(0)
 
-  const repayInputRef = useRef<LargeTokenInputRef>(null)
-
   const BUTTON_OPTION_CALLBACKS: Record<OptionId, () => void> = {
     'approve-limited': onApproveLimited,
     'approve-infinite': onApproveInfinite,
   }
 
-  const maxBalance = useMemo(() => ({ ...selectedDebtToken, showSlider: false }), [selectedDebtToken])
+  const maxBalance = useMemo(() => ({ ...debtToken, showSlider: false }), [debtToken])
 
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
-        ref={repayInputRef}
         label={t`Debt to repay`}
         tokenSelector={
-          <TokenSelector
-            selectedToken={selectedDebtToken}
-            tokens={debtTokens}
-            showSearch={false}
-            showManageList={false}
-            compact
-            onToken={(newToken) => {
-              onDebtToken(newToken)
-              repayInputRef.current?.resetBalance()
-            }}
-            sx={{ minWidth: TOKEN_SELECT_WIDTH }}
+          <TokenLabel
+            blockchainId={debtToken.chain}
+            tooltip={debtToken.symbol}
+            address={debtToken.address}
+            label={debtToken.symbol}
           />
         }
         maxBalance={maxBalance}
@@ -97,15 +82,15 @@ export const ImproveHealth = ({
         }}
       />
 
-      <AlertCollateralAtRisk />
+      <AlertRepayDebtToIncreaseHealth />
 
       <ButtonMenu
         primary={t`Repay debt & increase health`}
         options={BUTTON_OPTIONS}
         open={isOpen}
         executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-        disabled={!selectedDebtToken || debtBalance === 0}
-        onPrimary={() => onRepay(selectedDebtToken!, debtBalance)}
+        disabled={!debtToken || debtBalance === 0}
+        onPrimary={() => onRepay(debtToken!, debtBalance)}
         onOption={(id) => {
           close()
           BUTTON_OPTION_CALLBACKS[id]()
