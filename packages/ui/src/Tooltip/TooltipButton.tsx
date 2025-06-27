@@ -1,11 +1,8 @@
 import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
-import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
-import { useTooltipTrigger } from 'react-aria'
-import type { TooltipTriggerProps } from 'react-stately'
-import { useTooltipTriggerState } from 'react-stately'
+import { Tooltip } from 'curve-ui-kit/src/shared/ui/Tooltip'
+import { MouseEvent, ReactNode, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import Icon from 'ui/src/Icon'
-import Tooltip from 'ui/src/Tooltip/Tooltip'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 import { breakpoints } from 'ui/src/utils'
 
@@ -21,61 +18,81 @@ function TooltipButton({
   iconStyles = {},
   as,
   ...props
-}: TooltipTriggerProps &
-  TooltipProps & {
-    children?: ReactNode
-    as?: string
-    className?: string
-    tooltip: ReactNode
-    showIcon?: boolean
-    customIcon?: ReactNode
-    increaseZIndex?: boolean
-    onClick?: () => void
-    iconStyles?: IconStyles
-  }) {
-  const state = useTooltipTriggerState({ delay: 0, ...props })
+}: TooltipProps & {
+  children?: ReactNode
+  as?: string
+  className?: string
+  tooltip: ReactNode
+  showIcon?: boolean
+  customIcon?: ReactNode
+  increaseZIndex?: boolean
+  onClick?: () => void
+  iconStyles?: IconStyles
+}) {
   const isMobile = useIsMobile()
-  const ref = useRef<HTMLButtonElement>(null)
-  const { triggerProps, tooltipProps } = useTooltipTrigger(props, state, ref)
-
+  const [open, setOpen] = useState(false)
   const [scrollY, setScrollY] = useState<number | null>(null)
 
   const handleScroll = useCallback(() => {
     if (scrollY !== window.scrollY) {
-      state.close()
+      setOpen(false)
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [scrollY, state])
+  }, [scrollY])
 
   const handleBtnClick = useCallback(
-    (evt: MouseEvent<HTMLButtonElement>) => {
-      if (typeof triggerProps.onClick === 'function') triggerProps.onClick(evt)
+    (evt: MouseEvent<HTMLElement>) => {
       if (typeof onClick === 'function') onClick()
 
       // handle mobile click tooltip
       if (isMobile) {
-        state.open()
+        setOpen(true)
         setScrollY(window.scrollY)
         window.addEventListener('scroll', handleScroll)
       }
     },
-    [handleScroll, onClick, state, triggerProps, isMobile],
+    [handleScroll, onClick, isMobile],
   )
 
-  return (
+  const handleClose = useCallback(() => {
+    setOpen(false)
+    window.removeEventListener('scroll', handleScroll)
+  }, [handleScroll])
+
+  const tooltipContent = (
     // @ts-ignore TODO: as error
     <StyledTooltipButton {...(as ? { as } : {})}>
-      <Button ref={ref} {...triggerProps} className={`${className} tooltip-button`} onClick={handleBtnClick}>
+      <Button className={`${className} tooltip-button`} onClick={handleBtnClick}>
         {showIcon || customIcon
           ? (customIcon ?? <StyledIcon {...iconStyles} name="InformationSquare" size={16} />)
           : children}
       </Button>
-      {state.isOpen && (
-        <Tooltip state={state} buttonNode={ref?.current} {...props} {...tooltipProps} increaseZIndex={increaseZIndex}>
-          {props.tooltip}
-        </Tooltip>
-      )}
     </StyledTooltipButton>
+  )
+
+  return (
+    <Tooltip
+      title={props.tooltip}
+      open={isMobile ? open : undefined}
+      onClose={isMobile ? handleClose : undefined}
+      placement={(props.placement as any) || 'top'}
+      disableInteractive={!isMobile}
+      arrow
+      slotProps={{
+        popper: {
+          sx: {
+            zIndex: increaseZIndex ? 2 : undefined,
+            '& .MuiTooltip-tooltip': {
+              maxWidth: props.minWidth || '20rem',
+              textAlign: props.textAlign,
+              ...(props.noWrap && { whiteSpace: 'nowrap' }),
+            },
+          },
+        },
+      }}
+    >
+      {tooltipContent}
+    </Tooltip>
   )
 }
 
@@ -83,9 +100,10 @@ const StyledTooltipButton = styled.span`
   position: relative;
 `
 
-const Button = styled.span`
+const Button = styled.button`
   align-items: center;
   background-color: transparent;
+  border: none;
   color: inherit;
   cursor: pointer;
   display: inline-flex;
