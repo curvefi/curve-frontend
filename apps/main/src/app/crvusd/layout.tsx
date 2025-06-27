@@ -2,7 +2,6 @@
 import '@/global-extensions'
 import { useParams } from 'next/navigation'
 import { type ReactNode } from 'react'
-import Page from '@/loan/layout'
 import { networks, networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { UrlParams } from '@/loan/types/loan.types'
@@ -13,7 +12,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-export default function App({ children }: { children: ReactNode }) {
+export default function CrvUsdLayout({ children }: { children: ReactNode }) {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()
@@ -37,5 +36,5 @@ export default function App({ children }: { children: ReactNode }) {
 
   useRedirectToEth(networks[chainId], networkId, isHydrated)
 
-  return <Page>{isHydrated && children}</Page>
+  return isHydrated && children
 }
