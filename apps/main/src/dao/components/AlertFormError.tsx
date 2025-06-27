@@ -43,7 +43,7 @@ const AlertFormError = ({ errorKey, ...props }: Props) => {
     // locale will update inside component
     const messages: { [key: AlertFormErrorKey | string]: string } = {
       // quick swap and pool swap
-      [AlertFormErrorKey.SWAP_NOT_AVAILABLE]: t`Swap is not available.`,
+      [AlertFormErrorKey.SWAP_NOT_AVAILABLE]: t`Swap route is not available on Curve. Try an aggregator.`,
       [AlertFormErrorKey.SWAP_EXCHANGE_AND_OUTPUT]: t`Unable to get exchange rates and swap amount`,
       [AlertFormErrorKey.STEP_SWAP]: t`Unable to swap`,
 

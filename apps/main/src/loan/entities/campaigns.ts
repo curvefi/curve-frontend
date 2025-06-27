@@ -11,10 +11,11 @@ export type PoolRewards = {
   description: string | null
   platformImageId: string
   period?: readonly [Date, Date]
+  dashboardLink: string
 }
 
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
-  (result, { pools, platformImageId }: CampaignRewardsItem) => ({
+  (result, { pools, platformImageId, dashboardLink }: CampaignRewardsItem) => ({
     ...result,
     ...pools.reduce(
       (
@@ -25,6 +26,7 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
         [address.toLowerCase()]: [
           ...(result[address.toLowerCase()] ?? []),
           {
+            dashboardLink,
             multiplier,
             tags,
             action,

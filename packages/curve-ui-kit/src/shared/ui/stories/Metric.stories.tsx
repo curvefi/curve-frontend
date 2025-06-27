@@ -52,6 +52,7 @@ const meta: Meta<typeof Metric> = {
     valueOptions: {
       decimals: 1,
       unit: 'dollar',
+      color: 'textPrimary',
     },
     label: 'Metrics label',
     copyText: 'Copied metric value',
@@ -72,7 +73,7 @@ export const Default: Story = {
 
 export const Percentage: Story = {
   args: {
-    value: 1337.42,
+    value: 133.42,
     valueOptions: {
       decimals: 2,
       unit: 'percentage',
@@ -113,7 +114,8 @@ export const Notional: Story = {
     notional: {
       value: 50012345.345353,
       decimals: 2,
-      unit: { symbol: ' ETH', position: 'suffix', abbreviate: true },
+      abbreviate: true,
+      unit: { symbol: ' ETH', position: 'suffix' },
     },
   },
 }
@@ -129,14 +131,22 @@ export const Notionals: Story = {
       {
         value: 26539422,
         decimals: 0,
-        unit: { symbol: ' ETH', position: 'suffix', abbreviate: false },
+        abbreviate: false,
+        unit: { symbol: ' ETH', position: 'suffix' },
       },
       {
         value: 12450,
         decimals: 2,
-        unit: { symbol: ' crvUSD', position: 'suffix', abbreviate: true },
+        abbreviate: true,
+        unit: { symbol: ' crvUSD', position: 'suffix' },
       },
     ],
+  },
+}
+
+export const NotionalString: Story = {
+  args: {
+    notional: '1337.69% close to reckage',
   },
 }
 
@@ -146,10 +156,17 @@ export const CustomUnit: Story = {
       unit: {
         symbol: '¥',
         position: 'prefix',
-        abbreviate: true,
       },
     },
     change: 0,
+  },
+}
+
+export const CustomValueFontColor: Story = {
+  args: {
+    valueOptions: {
+      color: 'danger',
+    },
   },
 }
 

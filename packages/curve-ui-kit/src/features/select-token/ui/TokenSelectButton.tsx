@@ -1,25 +1,12 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import CircularProgress from '@mui/material/CircularProgress'
 import Select from '@mui/material/Select'
 import type { SxProps } from '@mui/system'
+import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../types'
 
 const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
-
-const Spinner = () => (
-  <CircularProgress
-    size={20}
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: '0 auto',
-      color: (theme) => theme.palette.text.secondary,
-    }}
-  />
-)
 
 export type TokenSelectButtonCallbacks = {
   onClick: () => void
@@ -53,7 +40,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
           disabled={disabled}
         />
       ) : (
-        <Spinner />
+        <Spinner useTheme={true} />
       )
     }
     IconComponent={KeyboardArrowDownIcon}
