@@ -6,6 +6,7 @@ import lendNetworks from '@/lend/networks'
 import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import crvusdNetworks from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -85,12 +86,12 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
         appStats={useAppStats(currentApp, network)}
         routes={useAppRoutes(network)}
       />
-      <Stack
+      <Box
         component="main"
-        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: `calc(100vh - ${minHeight}px)`, width: `100%` }}
+        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: `calc(100vh - ${minHeight}px)` }}
       >
         {children}
-      </Stack>
+      </Box>
       <Footer appName={currentApp} networkId={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
     </Stack>
   )
