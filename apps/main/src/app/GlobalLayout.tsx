@@ -6,7 +6,7 @@ import lendNetworks from '@/lend/networks'
 import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import crvusdNetworks from '@/loan/networks'
 import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useLayoutHeight } from '@ui-kit/hooks/useResizeObserver'
@@ -44,7 +44,7 @@ export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppNam
     dex: allNetworks,
   })[app]
 
-export const AppContainer = <TId extends string, TChainId extends number>({
+export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
   currentApp,
   network,
@@ -72,15 +72,7 @@ export const AppContainer = <TId extends string, TChainId extends number>({
   const supportedNetworks = useAppSupportedNetworks(networks, currentApp)
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        position: 'relative',
-        width: '100%',
-        minHeight: `calc(100vh - ${layoutHeight?.globalAlert}px)`,
-      }}
-    >
+    <Stack sx={{ minHeight: `calc(100vh - ${layoutHeight?.globalAlert}px)` }}>
       <Header
         currentApp={currentApp}
         chainId={network.chainId}
@@ -93,20 +85,13 @@ export const AppContainer = <TId extends string, TChainId extends number>({
         appStats={useAppStats(currentApp, network)}
         routes={useAppRoutes(network)}
       />
-      <Box
+      <Stack
         component="main"
-        sx={{
-          margin: `0 auto`,
-          maxWidth: `var(--width)`,
-          minHeight: `calc(100vh - ${minHeight}px)`,
-          width: `100%`,
-          display: `flex`,
-          flexDirection: `column`,
-        }}
+        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: `calc(100vh - ${minHeight}px)`, width: `100%` }}
       >
         {children}
-      </Box>
+      </Stack>
       <Footer appName={currentApp} networkId={network.id} headerHeight={useHeaderHeight(bannerHeight)} />
-    </Box>
+    </Stack>
   )
 }
