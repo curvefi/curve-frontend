@@ -10,7 +10,6 @@ import { LendingMarketsFilters } from '@/loan/components/PageLlamaMarkets/Lendin
 import { LlamaMarketExpandedPanel } from '@/loan/components/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/loan/components/PageLlamaMarkets/MarketsFilterChips'
 import { type LlamaMarketsResult } from '@/loan/entities/llama-markets'
-import Stack from '@mui/material/Stack'
 import {
   ExpandedState,
   getCoreRowModel,
@@ -50,12 +49,16 @@ export const LlamaMarketsTable = ({
   headerHeight,
   isError,
   minLiquidity,
+  title,
+  subtitle,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   headerHeight: string
   isError: boolean
   minLiquidity: number
+  title: string
+  subtitle: string
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
@@ -82,60 +85,52 @@ export const LlamaMarketsTable = ({
     [setColumnFilter],
   )
   return (
-    <Stack
-      sx={{
-        marginBlockStart: Spacing.xl,
-        marginBlockEnd: Spacing.xxl,
-        maxWidth: MaxWidth.table,
-      }}
+    <DataTable
+      table={table}
+      headerHeight={headerHeight}
+      emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      expandedPanel={LlamaMarketExpandedPanel}
+      shouldStickFirstColumn={useIsTablet() && !!hasPositions}
     >
-      <DataTable
-        table={table}
-        headerHeight={headerHeight}
-        emptyText={isError ? t`Could not load markets` : t`No markets found`}
-        expandedPanel={LlamaMarketExpandedPanel}
-        shouldStickFirstColumn={useIsTablet() && !!hasPositions}
-      >
-        <TableFilters<LlamaMarketColumnId>
-          title={t`Llamalend Markets`}
-          subtitle={t`Borrow with the power of Curve soft liquidations`}
-          onReload={onReload}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
-          onSearch={onSearch}
-          collapsible={
-            <LendingMarketsFilters
-              columnFilters={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              data={data}
-              minLiquidity={minLiquidity}
-            />
-          }
-          chips={
-            <MarketsFilterChips
-              onSearch={onSearch}
-              hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              hasFilters={columnFilters.length > 0}
-              hasPositions={hasPositions}
-              hasFavorites={hasFavorites}
-              resetFilters={resetFilters}
-            />
-          }
-          sort={
-            <SelectFilter
-              name="sort"
-              options={useLlamaMarketSortOptions()}
-              onSelected={useCallback(
-                ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
-                [onSortingChange],
-              )}
-              value={sortField}
-            />
-          }
-        />
-      </DataTable>
-    </Stack>
+      <TableFilters<LlamaMarketColumnId>
+        title={title}
+        subtitle={subtitle}
+        onReload={onReload}
+        visibilityGroups={columnSettings}
+        toggleVisibility={toggleVisibility}
+        onSearch={onSearch}
+        collapsible={
+          <LendingMarketsFilters
+            columnFilters={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            data={data}
+            minLiquidity={minLiquidity}
+          />
+        }
+        chips={
+          <MarketsFilterChips
+            onSearch={onSearch}
+            hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            hasFilters={columnFilters.length > 0}
+            hasPositions={hasPositions}
+            hasFavorites={hasFavorites}
+            resetFilters={resetFilters}
+          />
+        }
+        sort={
+          <SelectFilter
+            name="sort"
+            options={useLlamaMarketSortOptions()}
+            onSelected={useCallback(
+              ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
+              [onSortingChange],
+            )}
+            value={sortField}
+          />
+        }
+      />
+    </DataTable>
   )
 }

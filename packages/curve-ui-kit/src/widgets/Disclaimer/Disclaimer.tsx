@@ -1,14 +1,11 @@
 'use client'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { MouseEvent, useMemo } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, useTabFromUrl } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 import { Footer } from './Footer'
 import { LastUpdated } from './LastUpdated'
 import { TabPanel } from './TabPanel'
@@ -32,19 +29,8 @@ export type DisclaimerProps = {
 }
 
 export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
-  const pathname = usePathname()
-  const tab = useSearchParams()?.get('tab') ?? (currentApp === 'dao' ? 'dex' : currentApp)
-  const tabs = useMemo(
-    () => [
-      ...TABS.map(({ value, ...props }) => ({
-        ...props,
-        value,
-        href: { query: { tab: value }, pathname },
-        onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
-      })),
-    ],
-    [pathname],
-  )
+  const defaultTab = currentApp === 'dao' ? 'dex' : currentApp
+  const [tab, tabs] = useTabFromUrl(TABS, defaultTab)
   return (
     <Stack
       alignItems="center"
