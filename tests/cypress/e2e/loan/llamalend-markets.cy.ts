@@ -38,7 +38,7 @@ describe(`LlamaLend Markets`, () => {
 
     cy.viewport(width, height)
     cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
-    cy.visit('/crvusd/ethereum/beta-markets/', {
+    cy.visit('/llamalend/ethereum/markets/', {
       onBeforeLoad: (window) => {
         window.localStorage.clear()
         hideDomainBanner(window)
