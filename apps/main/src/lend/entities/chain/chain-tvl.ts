@@ -6,11 +6,11 @@ import { FETCHING, PartialQueryResult, READY } from '@ui-kit/lib/queries'
 import { useOneWayMarketMapping } from './chain-hooks'
 import { calculateChainTvl } from './tvl'
 
-export const useTvl = (chainId: ChainId): PartialQueryResult<number> => {
+export const useTvl = (chainId: ChainId | undefined): PartialQueryResult<number> => {
   const marketMapping = useOneWayMarketMapping({ chainId }).data
-  const marketsCollateralMapper = useStore((state) => state.markets.statsAmmBalancesMapper[chainId])
-  const marketsTotalSupplyMapper = useStore((state) => state.markets.totalLiquidityMapper[chainId])
-  const marketsTotalDebtMapper = useStore((state) => state.markets.statsTotalsMapper[chainId])
+  const marketsCollateralMapper = useStore((state) => chainId && state.markets.statsAmmBalancesMapper[chainId])
+  const marketsTotalSupplyMapper = useStore((state) => chainId && state.markets.totalLiquidityMapper[chainId])
+  const marketsTotalDebtMapper = useStore((state) => chainId && state.markets.statsTotalsMapper[chainId])
   const tokenAddresses = useMemo(
     () =>
       Object.values(marketMapping ?? {})

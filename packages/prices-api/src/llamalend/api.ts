@@ -68,6 +68,31 @@ export async function getUserMarkets(userAddr: string, chain: Chain, options?: O
   return Parsers.parseUserMarkets(resp)
 }
 
+export async function getAllUserLendingPositions(
+  userAddr: string,
+  params: { include_closed?: boolean } = { include_closed: false },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetAllUserLendingPositionsResponse>(
+    `${host}/v1/lending/users/lending_positions/all/${userAddr}${addQueryString(params)}`,
+  )
+  return Parsers.parseAllUserLendingPositions(resp)
+}
+
+export async function getUserLendingPositions(
+  userAddr: string,
+  chain: Chain,
+  params: { include_closed?: boolean } = { include_closed: false },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetUserLendingPositionsResponse>(
+    `${host}/v1/lending/users/lending_positions/${chain}/${userAddr}${addQueryString(params)}`,
+  )
+  return Parsers.parseUserLendingPositions(resp)
+}
+
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserMarketStatsResponse>(

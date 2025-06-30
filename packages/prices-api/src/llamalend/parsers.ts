@@ -77,12 +77,26 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   discountLoan: x.loan_discount,
 })
 
-export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarkets =>
+export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
   x.markets.map((market) => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
     snapshotLast: toDate(market.last_snapshot),
+  }))
+
+export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPositionsResponse) =>
+  fromEntries(recordEntries(x.chains).map(([chain, markets]) => [chain, parseUserLendingPositions(markets)]))
+
+export const parseUserLendingPositions = (
+  x: Pick<Responses.GetUserLendingPositionsResponse, 'markets'>,
+): Models.UserLendingPosition[] =>
+  x.markets.map((market) => ({
+    marketName: market.market_name,
+    vaultAddress: market.vault_address,
+    firstDeposit: toDate(market.first_deposit),
+    lastActivity: toDate(market.last_activity),
+    currentShares: parseFloat(market.current_shares),
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
