@@ -75,6 +75,28 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   const libKey = AppLibs[app]
 
   useEffect(() => {
+    /**
+     * Updates the wallet chain if the network changes or the wallet is connected to a different chain.
+     * This is separate from the rest of initApp to avoid unnecessary reinitialization, as isFocused can change frequently.
+     */
+    async function updateWalletChain() {
+      const chainId = Number(network.chainId) as TChainId
+      if (wallet && wallet?.chainId !== chainId) {
+        setConnectState(LOADING)
+        if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
+          setConnectState(FAILURE)
+          onChainUnavailable([chainId, wallet?.chainId as TChainId])
+        }
+        return // hook is called again after since it depends on walletChainId
+      }
+    }
+    updateWalletChain().catch((e) => {
+      console.error('Error updating wallet chain', e)
+      setConnectState(FAILURE)
+    })
+  }, [isFocused, network.chainId, onChainUnavailable, switchChainAsync, wallet])
+
+  useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect
     const abort = new AbortController()
     const signal = abort.signal
@@ -86,13 +108,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
       const chainId = Number(network.chainId) as TChainId
       try {
         if (wallet && wallet?.chainId !== chainId) {
-          setConnectState(LOADING)
-          if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
-            if (signal.aborted) return
-            setConnectState(FAILURE)
-            onChainUnavailable([chainId, wallet?.chainId as TChainId])
-          }
-          return // hook is called again after since it depends on walletChainId
+          return // wait for the wallet to be connected to the right chain
         }
 
         const prevLib = globalLibs.get(libKey)
@@ -122,7 +138,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     }
     void initApp()
     return () => abort.abort()
-  }, [isReconnecting, network, libKey, onChainUnavailable, switchChainAsync, wallet, isFocused])
+  }, [isReconnecting, libKey, network, wallet])
 
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
