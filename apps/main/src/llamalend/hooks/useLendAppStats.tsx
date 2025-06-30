@@ -7,7 +7,7 @@ import { useConnection } from '@ui-kit/features/connect-wallet'
 export function useLlamalendAppStats(enabled: boolean) {
   const address = useConnection().wallet?.account.address
   const { data } = useLlamaMarkets(address, enabled)
-  const tvl = useMemo(() => sum(data?.markets?.map((market) => market.assets.collateral.usdPrice)), [data])
+  const tvl = useMemo(() => sum(data?.markets?.map((market) => market.assets.collateral.balanceUsd)), [data])
   return [
     {
       label: 'TVL',

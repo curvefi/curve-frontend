@@ -27,6 +27,7 @@ export type AssetDetails = {
   address: string
   chain: Chain
   usdPrice: number | null
+  balanceUsd: number | null
 }
 
 export type LlamaMarket = {
@@ -97,11 +98,13 @@ const convertLendingVault = (
         ...borrowedToken,
         usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
         chain,
+        balanceUsd: borrowedBalanceUsd,
       },
       collateral: {
         ...collateralToken,
         chain,
         usdPrice: collateralBalanceUsd / collateralBalance,
+        balanceUsd: collateralBalanceUsd,
       },
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
@@ -153,12 +156,14 @@ const convertMintMarket = (
         address: stablecoinToken.address,
         usdPrice: stablecoin_price,
         chain,
+        balanceUsd: borrowed * stablecoin_price,
       },
       collateral: {
         symbol: getCollateralSymbol(collateralToken),
         address: collateralToken.address,
         usdPrice: collateralAmountUsd / collateralAmount,
         chain,
+        balanceUsd: collateralAmountUsd,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
