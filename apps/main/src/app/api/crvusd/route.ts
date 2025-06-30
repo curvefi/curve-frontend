@@ -2,13 +2,12 @@ import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { refreshDataInBackground } from '@/background'
 import { fetchAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
 import { getAllMarkets } from '@curvefi/prices-api/crvusd'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 
 const CrvUsdServerSideCache: CrvUsdServerData = {}
 
 const getCrvUsdServerSideData = async () => {
   const [markets, dailyVolume] = await Promise.all([getAllMarkets(), fetchAppStatsDailyVolume({})])
-  CrvUsdServerSideCache.mintMarkets = recordValues(markets).flat()
+  CrvUsdServerSideCache.mintMarkets = markets
   CrvUsdServerSideCache.dailyVolume = dailyVolume
 }
 

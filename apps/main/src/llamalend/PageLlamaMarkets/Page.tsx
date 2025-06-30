@@ -43,7 +43,7 @@ const {
 
 function useInjectServerData(props: LlamalendServerData) {
   useEffect(() => {
-    const { lendingVaults, mintMarkets, dailyVolume } = props
+    const { lendingVaults, mintMarkets } = props
     lendingVaults && setLendingVaults({}, lendingVaults)
     mintMarkets && setMintMarkets({}, mintMarkets)
 
