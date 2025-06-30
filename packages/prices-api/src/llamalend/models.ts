@@ -15,6 +15,9 @@ export type Market = {
   rate: number
   apyBorrow: number
   apyLend: number
+  aprLend: number
+  aprLendCrv0Boost: number
+  aprLendCrvMaxBoost: number
   nLoans: number
   priceOracle: number
   ammPrice: number
@@ -46,12 +49,13 @@ export type Market = {
   leverage: number
 }
 
-export type MarketPair = { long?: Market; short?: Market }
-
 export type Snapshot = {
   rate: number
   borrowApy: number
   lendApy: number
+  lendApr: number
+  lendAprCrv0Boost: number
+  lendAprCrvMaxBoost: number
   numLoans: number
   priceOracle: number
   ammPrice: number
@@ -71,12 +75,20 @@ export type Snapshot = {
 }
 
 /** More specifically, the markets where a user holds a position */
-export type UserMarkets = {
+export type UserMarket = {
   name: string
   controller: Address
   snapshotFirst: Date
   snapshotLast: Date
-}[]
+}
+
+export type UserLendingPosition = {
+  marketName: string
+  vaultAddress: Address
+  firstDeposit: Date
+  lastActivity: Date
+  currentShares: number
+}
 
 export type UserMarketStats = {
   health: number

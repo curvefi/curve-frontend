@@ -4,6 +4,7 @@ import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } fr
 import { getUserLendingSuppliesOptions } from '@/loan/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/loan/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
@@ -36,7 +37,10 @@ export type LlamaMarket = {
   utilizationPercent: number
   liquidityUsd: number
   rates: {
-    lend: number | null // apy %, only for pools
+    lend: number | null // lendApr + incentives (for now only lendCrvAprUnboosted)
+    lendApr: number | null
+    lendCrvAprUnboosted: number | null
+    lendCrvAprBoosted: number | null
     borrow: number // apy %
   }
   type: LlamaMarketType
@@ -70,7 +74,9 @@ const convertLendingVault = (
     borrowedBalance,
     borrowedBalanceUsd,
     apyBorrow,
-    apyLend,
+    aprLend: lendApr,
+    aprLendCrv0Boost: lendCrvAprUnboosted,
+    aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
@@ -79,8 +85,9 @@ const convertLendingVault = (
   userSupplied: Set<Address>,
 ): LlamaMarket => {
   const hasBorrow = userBorrows.has(controller)
-  const hasLend = userSupplied.has(controller)
+  const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
+  const lend = lendApr + (lendCrvAprUnboosted ?? 0)
   return {
     chain,
     address: vault,
@@ -99,7 +106,7 @@ const convertLendingVault = (
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    rates: { lend: apyLend, borrow: apyBorrow },
+    rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, borrow: apyBorrow },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
       'lend',
@@ -156,13 +163,13 @@ const convertMintMarket = (
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     liquidityUsd: borrowable,
-    rates: { borrow: rate * 100, lend: null },
+    rates: { borrow: rate * 100, lend: null, lendApr: null, lendCrvAprBoosted: null, lendCrvAprUnboosted: null },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getInternalUrl(
       'crvusd',
       chain,
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage/loan' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
@@ -202,16 +209,10 @@ export const useLlamaMarkets = (userAddress?: Address) =>
         userSuppliedMarkets,
         userMintMarkets,
       ] = results
-      const favoriteMarketsSet = new Set<Address>(favoriteMarkets.data)
-      const userBorrows = new Set<Address>(Object.values(userLendingVaults.data ?? {}).flat())
-      const userMints = new Set<Address>(Object.values(userMintMarkets.data ?? {}).flat())
-      const userSupplied = new Set<Address>(
-        Object.values(userSuppliedMarkets.data ?? {}).flatMap((positions) =>
-          Object.entries(positions)
-            .filter(([, positions]) => positions.deposited > 0)
-            .map(([address]) => address as Address),
-        ),
-      )
+      const favoriteMarketsSet = new Set(favoriteMarkets.data)
+      const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
+      const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
+      const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError

@@ -24,7 +24,7 @@ const formatValue = (x?: number, decimals: number = 2) =>
         maximumFractionDigits: decimals,
       })
 
-type Token = { symbol: string; amount: number }
+type TokenAmount = { symbol: string; amount: number }
 
 /**
  * Formats collateral into a readable string representation.
@@ -32,24 +32,24 @@ type Token = { symbol: string; amount: number }
  * For arrays, concatenates all entries with ' + ' separator.
  * Uses abbreviateNumber and scaleSuffix for compact number formatting.
  *
- * @param collaterals - Single collateral object or array of collateral objects
+ * @param tokens - Single collateral object or array of collateral objects
  * @returns Formatted string combining all collateral values and symbols
  *
  * @example
- * formatCollaterals({ symbol: 'ETH', amount: 10.5 })
+ * formatTokens({ symbol: 'ETH', amount: 10.5 })
  * // Returns: "10.5 ETH"
  *
- * formatCollaterals({ symbol: 'USDC', amount: 1500000 })
+ * formatTokens({ symbol: 'USDC', amount: 1500000 })
  * // Returns: "1.5m USDC"
  *
- * formatCollaterals([
+ * formatTokens([
  *   { symbol: 'ETH', amount: 10.5 },
  *   { symbol: 'BTC', amount: 2500000 }
  * ])
  * // Returns: "10.5 ETH + 2.5m BTC"
  */
-const formatCollaterals = (collaterals: Token | Token[]) =>
-  (Array.isArray(collaterals) ? collaterals : [collaterals])
+const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
+  (Array.isArray(tokens) ? tokens : [tokens])
     .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
     .join(' + ')
 
@@ -65,6 +65,9 @@ const formatCollaterals = (collaterals: Token | Token[]) =>
 const newHealthColor = (health: Props['health']): React.ComponentProps<typeof Typography>['color'] =>
   health.new == null || health.new === 0 ? 'textPrimary' : health.new < health.old ? 'error' : 'success'
 
+/** Describes a change in value for a certain action info. New is optional as it we await input. */
+type Delta = { old: number; new?: number }
+
 /**
  * Props for ActionInfos component.
  *
@@ -72,24 +75,31 @@ const newHealthColor = (health: Props['health']): React.ComponentProps<typeof Ty
  * will display comparisons with previous values. Optional properties only render when provided.
  */
 export type Props = {
-  /** Health values with old value and optional new value */
-  health: { old: number; new?: number }
-  /** Borrow rate values with old value and optional new value */
-  borrowRate: { old: number; new?: number }
-  /** Debt token with amount and optional new amount for comparison */
-  debt: Token & { new?: number }
-  /** Array of collateral assets - only renders when provided */
-  collateral?: Token[]
-  /** LTV values with old value and optional new value */
-  ltv: { old: number; new?: number }
-  /** Leverage values with old value and optional new value */
-  leverage: { old: number; new?: number }
-  /** Borrowed collateral token information */
-  borrowedCollateral: Token
-  /** Assets to withdraw - only renders when provided */
-  assetsToWithdraw?: Token[]
-  /** Transaction cost breakdown in ETH, GWEI, and USD */
-  estimatedTxCost: { eth: number; gwei: number; dollars: number }
+  /** Loan health value and the accordion title. Below 0 means hard-liquidated. */
+  health: Delta
+  loan: {
+    /** Borrow rate values the user is paying to keep the loan open */
+    borrowRate: Delta
+    /** Debt token with amount and optional new amount for comparison */
+    debt: TokenAmount & { new?: number }
+    /** LTV value indicates how big the loan is compared to the collateral */
+    ltv: Delta
+    /** Array of collateral assets - only renders when provided */
+    collateral: TokenAmount[]
+  }
+  collateral: {
+    /** Borrowed collateral token information */
+    borrowed: TokenAmount
+    /** The leverage multiplier if present, like 9x or 10x */
+    leverage?: Delta
+    /** Assets the user gets when withdrawing or closing the position */
+    assetsToWithdraw?: TokenAmount[]
+  }
+  /** Meta information about to the potential transaction itself */
+  transaction: {
+    /** Transaction cost breakdown in ETH, GWEI, and USD */
+    estimatedTxCost: { eth: number; gwei: number; dollars: number }
+  }
 }
 
 /**
@@ -102,14 +112,9 @@ export type Props = {
  */
 export const ActionInfos = ({
   health,
-  borrowRate,
-  debt,
-  collateral,
-  ltv,
-  leverage,
-  borrowedCollateral,
-  assetsToWithdraw,
-  estimatedTxCost,
+  loan: { borrowRate, debt, ltv, collateral },
+  collateral: { borrowed, leverage, assetsToWithdraw },
+  transaction: { estimatedTxCost },
 }: Props) => (
   <Accordion
     ghost
@@ -125,46 +130,46 @@ export const ActionInfos = ({
       />
     }
   >
-    <Stack>
-      <ActionInfo
-        label="Borrow Rate"
-        value={`${formatValue(borrowRate.new)}%`}
-        prevValue={`${formatValue(borrowRate.old)}%`}
-      />
+    <Stack gap={Spacing.md}>
+      <Stack>
+        <ActionInfo
+          label="Borrow Rate"
+          value={`${formatValue(borrowRate.new)}%`}
+          prevValue={`${formatValue(borrowRate.old)}%`}
+        />
 
-      <ActionInfo
-        label="Debt"
-        value={`${formatCollaterals({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
-        prevValue={`${formatCollaterals({ symbol: debt.symbol, amount: debt.amount })}`}
-      />
+        <ActionInfo
+          label="Debt"
+          value={`${formatTokens({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
+          prevValue={`${formatTokens({ symbol: debt.symbol, amount: debt.amount })}`}
+        />
 
-      {collateral && <ActionInfo label="Collateral" value={`${formatCollaterals(collateral)}`} />}
+        <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />
 
-      <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />
+        {collateral.map((c, i) => (
+          <ActionInfo key={`collateral-${c.symbol}`} label={i === 0 ? 'Collateral' : ''} value={`${formatTokens(c)}`} />
+        ))}
+      </Stack>
 
-      <ActionInfo
-        label="Leverage"
-        value={`${formatValue(leverage.new, 1)}x`}
-        prevValue={`${formatValue(leverage.old, 1)}x`}
-      />
+      <Stack>
+        {leverage && (
+          <ActionInfo
+            label="Leverage"
+            value={`${formatValue(leverage.new, 1)}x`}
+            prevValue={`${formatValue(leverage.old, 1)}x`}
+          />
+        )}
 
-      <ActionInfo label="Collateral" value={`${formatCollaterals(borrowedCollateral)}`} />
+        <ActionInfo label="Collateral" value={`${formatTokens(borrowed)}`} />
 
-      {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatCollaterals(assetsToWithdraw)}`} />}
+        {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatTokens(assetsToWithdraw)}`} />}
+      </Stack>
 
       <ActionInfo
         label="Estimated tx cost"
-        valueLeft={
-          <GasIcon
-            sx={{
-              width: IconSize.md,
-              height: IconSize.md,
-            }}
-          />
-        }
+        valueLeft={<GasIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
         value={`$${formatValue(estimatedTxCost.dollars)}`}
         valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
-        sx={{ marginTop: Spacing.md }}
       />
     </Stack>
   </Accordion>

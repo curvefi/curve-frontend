@@ -113,8 +113,8 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, sx, onM
       <MaxButton
         underline={false}
         onClick={() => onMax?.(balance)}
-        // Grow max button and place it all the way at the end
-        sx={{ flexGrow: 1, '&.MuiButtonBase-root': { justifyContent: 'end' } }}
+        // Right-align without flex grow for precise click area
+        sx={{ marginLeft: 'auto' }}
       >
         Max
       </MaxButton>

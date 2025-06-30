@@ -71,7 +71,7 @@ const IntegrationsComp = ({
 
       push(pathname)
     },
-    [searchParams, rChainId, visibleNetworksList, integrationsTags, params, push],
+    [integrationsTags, push, params, rChainId, searchParams, visibleNetworksList],
   )
 
   const filterKeyLabel = useMemo(() => {

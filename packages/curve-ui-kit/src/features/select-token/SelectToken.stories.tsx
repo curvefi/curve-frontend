@@ -143,6 +143,13 @@ const defaultTokens: TokenOption[] = [
     label: 'f(x)',
     volume: 0.8,
   },
+  {
+    chain: 'ethereum',
+    address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38',
+    symbol: 'A7A5',
+    label: 'Ruble regulation circumvention token',
+    volume: 2.5,
+  },
 ]
 
 const defaultBalances = {

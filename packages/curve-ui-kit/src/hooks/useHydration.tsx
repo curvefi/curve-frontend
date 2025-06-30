@@ -21,13 +21,12 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
 
   useEffect(() => {
     if (lib && !isWalletMatching(wallet, lib, chainId)) {
-      return
+      return setHydrated(false)
     }
 
     const abort = new AbortController()
     void (async () => {
       try {
-        setHydrated(false)
         // todo: keep hydration when switching apps, only hydrate when wallet/chain changes
         await hydrate(lib, prev.current, wallet)
       } catch (error) {
