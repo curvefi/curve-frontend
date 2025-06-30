@@ -20,6 +20,7 @@ export const AppLibs: Record<AppName, LibKey> = {
   dao: 'curveApi',
   dex: 'curveApi',
   lend: 'llamaApi',
+  llamalend: 'llamaApi',
 }
 
 /**

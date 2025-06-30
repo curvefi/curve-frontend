@@ -23,10 +23,15 @@ export const LEND_ROUTES = {
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
-  BETA_PAGE_MARKETS: '/beta-markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_DISCLAIMER,
   PAGE_PEGKEEPERS: '/pegkeepers',
+  PAGE_INTEGRATIONS,
+}
+
+export const LLAMALEND_ROUTES = {
+  PAGE_MARKETS: '/markets',
+  PAGE_DISCLAIMER,
   PAGE_INTEGRATIONS,
 }
 
@@ -42,7 +47,7 @@ export const DAO_ROUTES = {
   PAGE_INTEGRATIONS,
 }
 
-export const AppNames = ['dex', 'lend', 'crvusd', 'dao'] as const
+export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend'] as const
 export type AppName = (typeof AppNames)[number]
 
 export const AppMenuOptions = ['dex', 'llamalend', 'dao'] as const
@@ -61,7 +66,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   llamalend: {
     label: 'Llamalend',
     routes: [
-      { app: 'crvusd', route: CRVUSD_ROUTES.BETA_PAGE_MARKETS, label: () => t`Markets`, betaFeature: true },
+      { app: 'llamalend', route: LLAMALEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
       { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
