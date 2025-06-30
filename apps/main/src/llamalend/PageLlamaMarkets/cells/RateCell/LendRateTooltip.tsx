@@ -28,7 +28,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     <Stack gap={Spacing.sm}>
       <Stack>
         <Typography color="textSecondary">
-          {t`The supply yield is the estimated earnings related to your share of the pool`}
+          {t`The supply yield is the estimated earnings related to your share of the pool. `}
           {t`It varies according to the market and the monetary policy.`}
         </Typography>
         {yieldBearing && (
