@@ -17,7 +17,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   return (
     <Stack gap={Spacing.sm}>
       <Typography color="textSecondary">
-        {t`The borrow rate is the cost related to your borrow and varies according to the market, borrow incentives and crvUSD's peg.`}
+        {t`The borrow rate is the cost related to your borrow and varies according to the market and its utilization.`}
       </Typography>
       <Stack>
         <TooltipItems secondary>
