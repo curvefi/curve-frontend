@@ -100,10 +100,10 @@ const StyledTooltipButton = styled.span`
   position: relative;
 `
 
-const Button = styled.button`
+// not a button to avoid "button inside button" errors (`TheadButton` is already a button)
+const Button = styled.span`
   align-items: center;
   background-color: transparent;
-  border: none;
   color: inherit;
   cursor: pointer;
   display: inline-flex;
