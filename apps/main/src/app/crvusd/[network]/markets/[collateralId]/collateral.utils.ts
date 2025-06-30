@@ -4,6 +4,6 @@ import { getServerData } from '@/background'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 
 export const getCollateralName = async ({ network, collateralId }: CollateralUrlParams) =>
-  (await getServerData<CrvUsdServerData>('crvusd', await headers())).mintMarkets?.find(
-    (m) => m.chain === network && m.collateralToken.symbol.toLowerCase() === collateralId.toLowerCase(),
+  (await getServerData<CrvUsdServerData>('crvusd', await headers())).mintMarkets?.[network].find(
+    (m) => m.collateralToken.symbol.toLowerCase() === collateralId.toLowerCase(),
   )?.name ?? collateralId
