@@ -56,6 +56,18 @@ const nextConfiguration = {
     destination: '/dex/:network/pools/',
     permanent: false
   }, {
+    source: '/crvusd/:network/beta-markets',
+    destination: '/llamalend/:network/markets/',
+    permanent: false
+  }, {
+    source: '/llamalend',
+    destination: '/llamalend/ethereum/markets/',
+    permanent: false
+  }, {
+    source: '/llamalend/:network',
+    destination: '/llamalend/ethereum/markets/',
+    permanent: false
+  }, {
     source: '/crvusd/:network',
     destination: '/crvusd/:network/markets/',
     permanent: false

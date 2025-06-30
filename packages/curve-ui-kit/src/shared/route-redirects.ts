@@ -1,7 +1,7 @@
 'use client'
-import { type AppName, AppNames, CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES } from './routes'
+import { type AppName, AppNames, CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES, LLAMALEND_ROUTES } from './routes'
 
-const defaultPages = { dex: 'pools', lend: 'markets', crvusd: 'markets', dao: 'proposals' }
+const defaultPages = { dex: 'pools', lend: 'markets', crvusd: 'markets', dao: 'proposals', llamalend: 'markets' }
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const
 
 // old redirects that were hardcoded in the react-router routes. The network name gets added in the redirect.
@@ -31,6 +31,7 @@ const OldRoutes: Record<AppName, string[]> = {
     DAO_ROUTES.PAGE_VECRV,
   ],
   lend: [LEND_ROUTES.PAGE_MARKETS, LEND_ROUTES.PAGE_DISCLAIMER, LEND_ROUTES.PAGE_INTEGRATIONS],
+  llamalend: [LLAMALEND_ROUTES.PAGE_MARKETS, LLAMALEND_ROUTES.PAGE_DISCLAIMER, LLAMALEND_ROUTES.PAGE_INTEGRATIONS],
 }
 
 /**
