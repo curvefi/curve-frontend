@@ -68,7 +68,7 @@ const TooltipWrapper = styled.div`
 
 const TooltipTitle = styled.h3`
   font-size: var(--font-size-3);
-  font-weight: var(--semi-bold);
+  font-weight: var(--bold);
   text-align: left;
 `
 
@@ -81,7 +81,6 @@ const TooltipDisclaimer = styled.p`
   text-align: left;
   font-weight: normal;
   font-size: var(--font-size-2);
-  font-style: italic;
 `
 
 export default TooltipMessage
