@@ -69,9 +69,9 @@ export const defineMuiChip = (
         '& .MuiChip-label': {
           paddingInlineStart: 0,
           paddingInlineEnd: Spacing.xs.desktop,
-          '&:empty': { display: 'none' },
         },
       },
+      '& .MuiChip-label:empty': { display: 'none' },
     },
   },
   variants: [
