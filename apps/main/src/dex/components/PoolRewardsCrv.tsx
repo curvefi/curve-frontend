@@ -93,7 +93,7 @@ const PoolRewardsCrv = ({
           isBold={isHighlight}
           size="md"
           tooltip={!!rewardsApy ? t`CRV LP reward annualized (max tAPR can be reached with max boost of 2.50)` : ''}
-          tooltipProps={{ placement: 'bottom end' }}
+          tooltipProps={{ placement: 'bottom-end' }}
         >
           {rewardsCrvLabel}
         </Chip>

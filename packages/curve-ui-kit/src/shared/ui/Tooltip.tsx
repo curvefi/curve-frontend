@@ -22,7 +22,7 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
       sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill, width: '100%' }}
       onClick={(e) => e.stopPropagation()} // prevent changing pages when clicking on the tooltip
     >
-      <Typography variant="bodyMBold" color="textPrimary">
+      <Typography variant="bodyMBold" color="textPrimary" component="div">
         {title}
       </Typography>
       {children}
