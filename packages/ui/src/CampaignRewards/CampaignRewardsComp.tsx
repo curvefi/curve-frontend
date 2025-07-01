@@ -12,6 +12,7 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
 
   return (
     <Tooltip
+      clickable
       tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
       minWidth={'200px'}
       placement={mobile ? 'top' : 'auto'}

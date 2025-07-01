@@ -51,7 +51,7 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
         External rewards are project dependent, always check with the token issuer to make sure you have taken all the
         necessary actions to benefit from their rewards program.
       </TooltipDisclaimer>
-      <ExternalLink $noStyles href={dashboardLink}>
+      <ExternalLink $noStyles href={dashboardLink} target="_blank">
         Go to issuer
       </ExternalLink>
     </TooltipWrapper>

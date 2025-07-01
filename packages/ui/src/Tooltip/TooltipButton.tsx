@@ -56,7 +56,7 @@ function TooltipButton({
   clickable,
   textAlign,
   minWidth,
-  placement,
+  placement = 'top',
 }: TooltipProps & {
   children?: ReactNode
   as?: string
@@ -75,13 +75,11 @@ function TooltipButton({
       title={tooltip}
       key={`${isMobile}`} // force remount when switching so we don't change from controlled to uncontrolled
       {...(isMobile && { open, onClose })}
-      placement={(placement as any) || 'top'}
-      disableInteractive={!isMobile}
-      arrow
+      placement={placement}
       slotProps={{
         popper: {
           sx: {
-            zIndex: increaseZIndex ? 2 : undefined,
+            ...(increaseZIndex && { zIndex: 2 }),
             '& .MuiTooltip-tooltip': {
               maxWidth: minWidth || '20rem',
               textAlign: textAlign,
