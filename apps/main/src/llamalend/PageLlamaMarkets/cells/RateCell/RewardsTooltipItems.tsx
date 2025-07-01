@@ -6,8 +6,9 @@ import { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
+import { RCCrvLogoMD } from '@ui/images'
 import { t } from '@ui-kit/lib/i18n'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import { RewardIcon, RewardsImg } from '@ui-kit/shared/ui/RewardIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
 export const RewardsTooltipItems = ({
@@ -29,7 +30,10 @@ export const RewardsTooltipItems = ({
       {hasIncentives && <TooltipItem title={title}>{percentage}</TooltipItem>}
       {extraIncentives?.map(({ percentage, title }, i) => (
         <TooltipItem key={i} subitem title={title}>
-          {formatPercent(percentage)}
+          <Stack direction="row">
+            <RewardsImg src={RCCrvLogoMD} alt={t`CRV`} width={20} />
+            {formatPercent(percentage)}
+          </Stack>
         </TooltipItem>
       ))}
       {poolRewards.map((r, i) => (
