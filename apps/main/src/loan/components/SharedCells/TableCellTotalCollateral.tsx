@@ -45,7 +45,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
 
   if (collateralUsdRate === 'NaN' || +collateralUsdRate === 0) {
     return (
-      <Chip tooltip={t`Unable to get USD rate`} tooltipProps={{ placement: 'bottom end' }}>
+      <Chip tooltip={t`Unable to get USD rate`} tooltipProps={{ placement: 'bottom-end' }}>
         ?
       </Chip>
     )

@@ -112,7 +112,7 @@ const DetailInfoLiqRange = ({
             tooltip={t`The range of prices where collateral is managed by the market-maker.  Collateral begins to be sold off when its price enters your liquidation range ("soft liquidation").  If the market-maker cannot keep the position sufficiently collateralized, an externally triggered "hard" liquidation may take place.`}
             tooltipProps={{
               minWidth: '250px',
-              placement: 'top start',
+              placement: 'top-start',
             }}
           >
             {t`Liquidation range:`} <Icon name="InformationSquare" size={16} className="svg-tooltip" />

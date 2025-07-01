@@ -15,7 +15,7 @@ type Props = {
 const CellInPool = ({ isIn, isMobile, type, tooltip, ...rest }: Props) => (
   <Td {...rest} $isIn={isIn} $isMobile={isMobile} className={isIn ? 'active' : ''}>
     {isIn && (
-      <Chip tooltip={tooltip} tooltipProps={{ placement: 'top left' }}>
+      <Chip tooltip={tooltip} tooltipProps={{ placement: 'top-start' }}>
         <StyledIcon name="CurrencyDollar" size={16} />
       </Chip>
     )}

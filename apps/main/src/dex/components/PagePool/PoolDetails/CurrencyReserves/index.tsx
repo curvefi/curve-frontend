@@ -52,7 +52,7 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
         {t`USD total`}
         <StyledChip size="md">
           {formatNumber(tvl?.value, FORMAT_OPTIONS.USD)}{' '}
-          <IconTooltip placement="bottom end">{t`USD total balance updates every ~5 minute`}</IconTooltip>
+          <IconTooltip placement="bottom-end">{t`USD total balance updates every ~5 minute`}</IconTooltip>
         </StyledChip>
       </StyledStats>
     </article>
