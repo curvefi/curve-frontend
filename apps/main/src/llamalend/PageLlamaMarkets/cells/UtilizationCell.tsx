@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
-import { t } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -36,6 +36,12 @@ const Currency = ({
   </Stack>
 )
 
+const Primary = ({ children }: { children: string }) => (
+  <Typography color="primary" component="span" display="inline">
+    {children}
+  </Typography>
+)
+
 const UtilizationTooltipContent = ({
   market: {
     debtCeiling,
@@ -47,8 +53,10 @@ const UtilizationTooltipContent = ({
 }) => (
   <Stack gap={Spacing.sm}>
     <Typography color="textSecondary">
-      {t`LlamaLend offers 2 types of markets: Mint and Lend Markets. `}
-      {t`Mint markets have a fixed cap determined by the DAO, while lend markets are capped by the amount of liquidity provided.`}
+      <Trans>
+        LlamaLend offers 2 types of markets: <Primary>Mint</Primary> and <Primary>Lend</Primary> Markets. Mint markets
+        have a fixed cap determined by the DAO, while lend markets are capped by the amount of liquidity provided.
+      </Trans>
     </Typography>
     <Stack>
       <TooltipItems secondary>
