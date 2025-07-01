@@ -45,7 +45,7 @@ const CurrencyReservesContent = ({
 
         <Box flex flexAlignItems="center" gridGap={2}>
           <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
-          <TooltipButton onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
+          <TooltipButton clickable onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
             <Icon name="Copy" size={16} />
           </TooltipButton>
 

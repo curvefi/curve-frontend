@@ -51,7 +51,12 @@ function TooltipButton({
   increaseZIndex,
   iconStyles = {},
   as,
-  ...props
+  tooltip,
+  noWrap,
+  clickable,
+  textAlign,
+  minWidth,
+  placement,
 }: TooltipProps & {
   children?: ReactNode
   as?: string
@@ -66,10 +71,11 @@ function TooltipButton({
   const { isMobile, open, onClick, onClose } = useMobileTooltip(parentOnClick)
   return (
     <Tooltip
-      title={props.tooltip}
+      clickable={clickable}
+      title={tooltip}
       key={`${isMobile}`} // force remount when switching so we don't change from controlled to uncontrolled
       {...(isMobile && { open, onClose })}
-      placement={(props.placement as any) || 'top'}
+      placement={(placement as any) || 'top'}
       disableInteractive={!isMobile}
       arrow
       slotProps={{
@@ -77,9 +83,9 @@ function TooltipButton({
           sx: {
             zIndex: increaseZIndex ? 2 : undefined,
             '& .MuiTooltip-tooltip': {
-              maxWidth: props.minWidth || '20rem',
-              textAlign: props.textAlign,
-              ...(props.noWrap && { whiteSpace: 'nowrap' }),
+              maxWidth: minWidth || '20rem',
+              textAlign: textAlign,
+              ...(noWrap && { whiteSpace: 'nowrap' }),
             },
           },
         },
