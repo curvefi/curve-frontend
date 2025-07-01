@@ -7,7 +7,7 @@
   },
   "scripts": {
     "next": "next",
-    "dev": "next dev --port 3000",
+    "dev": "next dev --turbopack --port 3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -34,7 +34,7 @@
     "lightweight-charts": "^5.0.7",
     "lodash": "4.17.21",
     "memoizee": "^0.4.17",
-    "next": "15.2.4",
+    "next": "15.3.4",
     "next-images": "^1.8.5",
     "react": "*",
     "react-dom": "*",
@@ -50,7 +50,7 @@
     "zustand": "^4.5.7"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^15.3.2",
+    "@next/bundle-analyzer": "15.3.4",
     "@svgr/webpack": "^8.1.0",
     "@types/lodash": "^4.17.17",
     "@types/memoizee": "^0.4.12",
