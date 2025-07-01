@@ -62,7 +62,8 @@ const UtilizationTooltipContent = ({
       <TooltipItems secondary>
         <TooltipItem primary title={t`Utilization breakdown`} />
         <TooltipItem title={t`Total supplied`}>
-          <Currency {...collateral} />
+          {/* as we are displaying the utilization breakdown, display everything as borrowed token */}
+          <Currency {...borrowed} balance={collateral.balanceUsd} />
         </TooltipItem>
         <TooltipItem title={t`Total borrowed`}>
           <Currency {...borrowed} />
