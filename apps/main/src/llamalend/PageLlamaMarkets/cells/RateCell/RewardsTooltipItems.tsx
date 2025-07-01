@@ -1,7 +1,7 @@
 import { sum } from 'lodash'
+import { TooltipItem } from '@/llamalend/components/TooltipItem'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { formatPercent, useFilteredRewards } from '@/llamalend/PageLlamaMarkets/cells/cell.format'
-import { TooltipItem } from '@/llamalend/PageLlamaMarkets/cells/RateCell/TooltipItem'
 import { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'

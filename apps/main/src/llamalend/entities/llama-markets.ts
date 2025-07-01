@@ -27,6 +27,7 @@ export type AssetDetails = {
   address: string
   chain: Chain
   usdPrice: number | null
+  balance: number | null
   balanceUsd: number | null
 }
 
@@ -37,6 +38,7 @@ export type LlamaMarket = {
   assets: Assets
   utilizationPercent: number
   liquidityUsd: number
+  debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lend: number | null // lendApr + incentives (for now only lendCrvAprUnboosted)
     lendApr: number | null
@@ -66,14 +68,11 @@ const convertLendingVault = (
     chain,
     totalAssets,
     totalAssetsUsd,
+    totalDebt,
     totalDebtUsd,
     vault,
     collateralToken,
-    collateralBalance,
-    collateralBalanceUsd,
     borrowedToken,
-    borrowedBalance,
-    borrowedBalanceUsd,
     apyBorrow,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -96,18 +95,21 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
-        usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
+        usdPrice: totalDebt && totalDebtUsd / totalDebt,
         chain,
-        balanceUsd: borrowedBalanceUsd,
+        balance: totalDebt,
+        balanceUsd: totalDebtUsd,
       },
       collateral: {
         ...collateralToken,
         chain,
-        usdPrice: collateralBalanceUsd / collateralBalance,
-        balanceUsd: collateralBalanceUsd,
+        usdPrice: totalAssets && totalAssetsUsd / totalAssets,
+        balance: totalAssets,
+        balanceUsd: totalAssetsUsd,
       },
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
+    debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, borrow: apyBorrow },
     type: LlamaMarketType.Lend,
@@ -156,6 +158,7 @@ const convertMintMarket = (
         address: stablecoinToken.address,
         usdPrice: stablecoin_price,
         chain,
+        balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
       },
       collateral: {
@@ -163,10 +166,12 @@ const convertMintMarket = (
         address: collateralToken.address,
         usdPrice: collateralAmountUsd / collateralAmount,
         chain,
+        balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
+    debtCeiling,
     liquidityUsd: borrowable,
     rates: { borrow: rate * 100, lend: null, lendApr: null, lendCrvAprBoosted: null, lendCrvAprUnboosted: null },
     type: LlamaMarketType.Mint,
