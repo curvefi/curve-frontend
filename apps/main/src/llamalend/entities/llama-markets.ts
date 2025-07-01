@@ -1,3 +1,4 @@
+import { ethAddress } from 'viem'
 import { getCampaignsOptions, PoolRewards } from '@/llamalend/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
 import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/llamalend/entities/lending-vaults'
@@ -123,8 +124,9 @@ const convertLendingVault = (
   }
 }
 
-/** We show WETH as ETH in the UI and market URL */
-const getCollateralSymbol = ({ symbol }: { symbol: string }) => (symbol == 'WETH' ? 'ETH' : symbol)
+/** We show WETH as ETH in the UI and market URL. Also change address so the symbol is correct */
+const getCollateral = ({ address, symbol }: { address: Address; symbol: string }) =>
+  symbol == 'WETH' ? ['ETH', ethAddress] : [symbol, address]
 
 const convertMintMarket = (
   {
@@ -146,6 +148,7 @@ const convertMintMarket = (
   userMintMarkets: Set<Address>,
 ): LlamaMarket => {
   const hasBorrow = userMintMarkets.has(address)
+  const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   return {
     chain,
     address: llamma,
@@ -159,8 +162,8 @@ const convertMintMarket = (
         balanceUsd: borrowed * stablecoin_price,
       },
       collateral: {
-        symbol: getCollateralSymbol(collateralToken),
-        address: collateralToken.address,
+        symbol: collateralSymbol,
+        address: collateralAddress,
         usdPrice: collateralAmountUsd / collateralAmount,
         chain,
         balanceUsd: collateralAmountUsd,
@@ -174,7 +177,7 @@ const convertMintMarket = (
     url: getInternalUrl(
       'crvusd',
       chain,
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage/loan' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralSymbol}/${hasBorrow ? 'manage/loan' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
