@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import { TooltipItem, TooltipItems } from '@/llamalend/components/TooltipItem'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
 import { PercentageCell } from '@/llamalend/PageLlamaMarkets/cells/PercentageCell'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -47,6 +47,7 @@ const UtilizationTooltipContent = ({
     debtCeiling,
     liquidityUsd,
     assets: { collateral, borrowed },
+    type,
   },
 }: {
   market: LlamaMarket
@@ -61,10 +62,12 @@ const UtilizationTooltipContent = ({
     <Stack>
       <TooltipItems secondary>
         <TooltipItem primary title={t`Utilization breakdown`} />
-        <TooltipItem title={t`Total supplied`}>
-          {/* as we are displaying the utilization breakdown, display everything as borrowed token */}
-          <Currency {...borrowed} balance={collateral.balanceUsd} />
-        </TooltipItem>
+        {type === LlamaMarketType.Lend && (
+          <TooltipItem title={t`Total supplied`}>
+            {/* as we are displaying the utilization breakdown, display everything as borrowed token */}
+            <Currency {...borrowed} balance={collateral.balanceUsd} />
+          </TooltipItem>
+        )}
         <TooltipItem title={t`Total borrowed`}>
           <Currency {...borrowed} />
         </TooltipItem>
