@@ -85,6 +85,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
 
 export const UtilizationCell = (context: CellContext<LlamaMarket, number>) => (
   <UtilizationTooltip market={context.row.original}>
+    {/* Tooltip won't open without an extra stack. Don't ask me why 😭 */}
     <Stack>
       <PercentageCell {...context} />
     </Stack>
