@@ -51,7 +51,11 @@ const CurrencyReservesContent = ({
 
           {tokenLink && (
             <RouterLink href={tokenLink}>
-              <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
+              <IconTooltip
+                clickable
+                noWrap
+                customIcon={<Icon name="StoragePool" size={16} />}
+              >{t`Visit pool`}</IconTooltip>
             </RouterLink>
           )}
         </Box>
