@@ -1,6 +1,5 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,10 +19,6 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     assets: { collateral },
   } = market
   const yieldBearing = collateral.symbol === 'wstETH' // todo: show yield bearing assets APR with API data
-  const extraIncentives = useMemo(
-    () => notFalsy(lendCrvAprUnboosted && { title: t`CRV`, percentage: lendCrvAprUnboosted }),
-    [lendCrvAprUnboosted],
-  )
   return (
     <Stack gap={Spacing.sm}>
       <Stack>
@@ -40,12 +35,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           <TooltipItem loading={rate == null} title={t`Lending fees`}>
             {formatPercent(rate)}
           </TooltipItem>
-          <RewardsTooltipItems
-            market={market}
-            title={t`Staking incentives`}
-            type="lend"
-            extraIncentives={extraIncentives}
-          />
+          <RewardsTooltipItems market={market} title={t`Staking incentives`} type="lend" />
         </TooltipItems>
         <TooltipItems>
           <TooltipItem primary loading={rate == null} title={`${t`Total base APR`}`}>
