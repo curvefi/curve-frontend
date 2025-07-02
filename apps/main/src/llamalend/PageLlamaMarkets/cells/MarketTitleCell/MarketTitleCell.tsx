@@ -20,8 +20,14 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
       <TokenPair chain={market.chain} assets={market.assets} />
-      <Stack direction="column" justifyContent="center">
-        <Typography component={Stack} variant={isMobile ? 'tableCellMBold' : 'tableCellL'} direction="row" gap={2}>
+      <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
+        <Typography
+          component={Stack}
+          alignItems="center"
+          variant={isMobile ? 'tableCellMBold' : 'tableCellL'}
+          direction="row"
+          gap={2}
+        >
           <RouterLink
             color="inherit"
             underline="none"
@@ -41,7 +47,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
               paddingBlock: { mobile: '5px', tablet: 0 },
             }}
           >
-            {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
+            {market.assets.collateral.symbol} &bull; {market.assets.borrowed.symbol}
           </RouterLink>
           <CopyIconButton
             className={`${DesktopOnlyHoverClass} ${ClickableInRowClass}`}

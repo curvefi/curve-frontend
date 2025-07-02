@@ -22,6 +22,7 @@ import { logSuccess } from '@ui-kit/lib'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
 import { useHeaderHeight } from '@ui-kit/widgets/Header'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
 /**
  * Reloads the lending vaults and mint markets.
@@ -68,9 +69,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
-      {showSkeleton ? (
-        <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
-      ) : (
+      <WithSkeleton loading={showSkeleton} variant="rectangular" height={ModalHeight.md.height}>
         <LlamaMarketsTable
           onReload={() => onReload(address)}
           result={data}
@@ -78,7 +77,8 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
           isError={isError}
           minLiquidity={minLiquidity}
         />
-      )}
+      </WithSkeleton>
+
       <LendTableFooter />
     </Box>
   )
