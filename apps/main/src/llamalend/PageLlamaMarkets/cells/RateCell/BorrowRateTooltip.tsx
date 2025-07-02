@@ -15,7 +15,7 @@ const { Spacing } = SizesAndSpaces
 
 const messages = {
   [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market and its utilization.`,
-  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market and the crvUSD peg (or price).`,
+  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market and the crvUSD price.`,
 }
 
 const rateType = 'borrow' as const
