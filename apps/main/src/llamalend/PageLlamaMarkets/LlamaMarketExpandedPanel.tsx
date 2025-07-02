@@ -4,6 +4,7 @@ import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
+import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -19,6 +20,7 @@ import { Metric, type UnitOptions } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarket } from '../entities/llama-markets'
 import { LlamaMarketType } from '../entities/llama-markets'
+import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 
 const { Spacing } = SizesAndSpaces
 
@@ -28,10 +30,20 @@ function useMobileGraphSize() {
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
 
+const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string; type: RateType }) =>
+  market.rates[type] != null && (
+    <Grid size={6}>
+      <Stack direction="row" alignItems="center" gap={2}>
+        <Metric label={title} value={market.rates[type]} valueOptions={{ unit: 'percentage' }} />
+        <RewardsIcons market={market} rateType="borrow" />
+      </Stack>
+    </Grid>
+  )
+
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
-  const { address, assets, leverage, liquidityUsd, rates, type, url, userHasPosition, utilizationPercent } = market
+  const { address, assets, leverage, liquidityUsd, type, url, userHasPosition, utilizationPercent } = market
   const borrowedUnit: UnitOptions = { symbol: assets.borrowed.symbol, position: 'suffix' }
   const graphSize = useMobileGraphSize()
   return (
@@ -56,9 +68,8 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
             sx={{ paddingInline: 0 }}
           ></CardHeader>
         </Grid>
-        <Grid size={6}>
-          <Metric label={t`Borrow Rate`} value={rates.borrow} valueOptions={{ unit: 'percentage' }} />
-        </Grid>
+        <RateItem market={market} type="borrow" title={t`Borrow rate`} />
+        <RateItem market={market} type="lend" title={t`Supply yield`} />
         {leverage > 0 && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />

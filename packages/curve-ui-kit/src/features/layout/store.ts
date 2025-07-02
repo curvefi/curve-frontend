@@ -32,7 +32,7 @@ interface LayoutActions {
 }
 
 const DEFAULT_STATE: LayoutState = {
-  navHeight: 96, // Default height for desktop
+  navHeight: 96, // Default height for desktop, will be updated on mount
   windowWidth: 0,
   pageWidth: null,
   isLgUp: false,

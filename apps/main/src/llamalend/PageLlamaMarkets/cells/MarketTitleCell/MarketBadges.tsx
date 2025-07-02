@@ -1,15 +1,12 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
-import { getRewardsDescription } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/cell.utils'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
-import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
-import { RewardIcons } from '@ui-kit/shared/ui/RewardIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -27,7 +24,7 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
-  const { address, rewards, type, leverage, deprecatedMessage } = market
+  const { address, type, leverage, deprecatedMessage } = market
   const isSmall = useMediaQuery('(max-width:1250px)')
   const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
   return (
@@ -52,17 +49,6 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
               label={t`🔥 ${leverage.toPrecision(2)}x ${isSmall ? '' : t`leverage`}`}
             />
           )}
-        </Tooltip>
-      )}
-
-      {rewards.length > 0 && (
-        <Tooltip
-          title={rewards.map((r, i) => (
-            <Box key={i}>{getRewardsDescription(r)}</Box>
-          ))}
-          placement="top"
-        >
-          <RewardIcons data-testid="rewards-badge" size="md" rewards={rewards} />
         </Tooltip>
       )}
 

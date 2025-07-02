@@ -60,27 +60,24 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   currentApp: AppName
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
-}) => {
-  const supportedNetworks = useAppSupportedNetworks(networks, currentApp)
-  return (
-    <Stack>
-      <Header
-        currentApp={currentApp}
-        chainId={network.chainId}
-        networkId={network.id}
-        currentMenu={useAppMenu(currentApp)}
-        supportedNetworks={supportedNetworks}
-        isLite={network.isLite}
-        appStats={useAppStats(currentApp, network)}
-        routes={useAppRoutes(network)}
-      />
-      <Box
-        component="main"
-        sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
-      >
-        {children}
-      </Box>
-      <Footer appName={currentApp} networkId={network.id} />
-    </Stack>
-  )
-}
+}) => (
+  <Stack>
+    <Header
+      currentApp={currentApp}
+      chainId={network.chainId}
+      networkId={network.id}
+      currentMenu={useAppMenu(currentApp)}
+      supportedNetworks={useAppSupportedNetworks(networks, currentApp)}
+      isLite={network.isLite}
+      appStats={useAppStats(currentApp, network)}
+      routes={useAppRoutes(network)}
+    />
+    <Box
+      component="main"
+      sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
+    >
+      {children}
+    </Box>
+    <Footer appName={currentApp} networkId={network.id} />
+  </Stack>
+)
