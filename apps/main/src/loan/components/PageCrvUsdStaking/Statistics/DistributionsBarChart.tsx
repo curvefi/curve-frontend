@@ -47,7 +47,9 @@ const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributio
             />
             <Tooltip content={DistributionsChartTooltip} cursor={{ opacity: 0.3 }} />
             <Bar dataKey="weeklyRevenue" label={false} fill={barColor} isAnimationActive={false}>
-              {data?.epochs.map((_, index) => <Cell key={`$cell-${index}`} fill={barColor} />)}
+              {data?.epochs.map((_, index) => (
+                <Cell key={`$cell-${index}`} fill={barColor} />
+              ))}
             </Bar>
           </BarChart>
         </ResponsiveContainer>
