@@ -23,7 +23,9 @@ export const SidebarSection = ({ pages, title, children }: SidebarSectionProps) 
     }
     sx={{ marginTop: 3 }}
   >
-    {pages?.map((page) => <SidebarItem child key={page.href} page={page} />)}
+    {pages?.map((page) => (
+      <SidebarItem child key={page.href} page={page} />
+    ))}
     {children}
   </List>
 )
