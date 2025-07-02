@@ -4,9 +4,8 @@ import { immer } from 'zustand/middleware/immer'
 import type { PageWidthClassName } from './types'
 
 interface LayoutState {
-  // Layout heights
   windowWidth: number
-  navHeight: number
+  navHeight: number // size of the header plus the global banners, used for sticky elements below the header
 
   // Page width and responsiveness. Prefer to use `useMediaQuery` hook instead of these flags.
   pageWidth: PageWidthClassName | null

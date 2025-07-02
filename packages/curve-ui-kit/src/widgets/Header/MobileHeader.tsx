@@ -4,13 +4,12 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
-import { Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
-import { DEFAULT_BAR_SIZE, MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
+import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { HeaderStats } from './HeaderStats'
 import { MobileTopBar } from './MobileTopBar'
 import { SideBarFooter } from './SideBarFooter'
@@ -27,9 +26,6 @@ const HIDE_SCROLLBAR = {
 }
 
 const paddingBlock = 3
-
-/** Calculates the height of the mobile header */
-export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(paddingBlock)} + ${DEFAULT_BAR_SIZE}`
 
 export const MobileHeader = ({
   currentMenu,
@@ -61,66 +57,61 @@ export const MobileHeader = ({
     [currentMenu, networkId, pathname],
   )
   return (
-    <>
-      <AppBar
-        color="transparent"
-        ref={useMainNavRef()}
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-        data-testid="mobile-main-bar"
-      >
-        <GlobalBanner networkId={networkId} chainId={chainId} />
-        <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
-          <MobileTopBar
-            isLite={isLite}
-            ChainProps={{ chainId, networks: supportedNetworks }}
-            currentMenu={currentMenu}
-            isSidebarOpen={isSidebarOpen}
-            toggleSidebar={toggleSidebar}
-          />
+    <AppBar
+      color="transparent"
+      ref={useMainNavRef()}
+      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+      data-testid="mobile-main-bar"
+    >
+      <GlobalBanner networkId={networkId} chainId={chainId} />
+      <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
+        <MobileTopBar
+          isLite={isLite}
+          ChainProps={{ chainId, networks: supportedNetworks }}
+          currentMenu={currentMenu}
+          isSidebarOpen={isSidebarOpen}
+          toggleSidebar={toggleSidebar}
+        />
 
-          <Drawer
-            anchor="left"
-            onClose={closeSidebar}
-            open={isSidebarOpen}
-            slotProps={{
-              paper: {
-                sx: {
-                  top,
-                  ...MOBILE_SIDEBAR_WIDTH,
-                  ...HIDE_SCROLLBAR,
-                },
+        <Drawer
+          anchor="left"
+          onClose={closeSidebar}
+          open={isSidebarOpen}
+          slotProps={{
+            paper: {
+              sx: {
+                top,
+                ...MOBILE_SIDEBAR_WIDTH,
+                ...HIDE_SCROLLBAR,
               },
-            }}
-            sx={{ top }}
-            variant="temporary"
-            hideBackdrop
-            data-testid="mobile-drawer"
-          >
-            <Box>
-              <Stack padding={4}>
-                <HeaderStats appStats={appStats} />
-              </Stack>
+            },
+          }}
+          sx={{ top }}
+          variant="temporary"
+          hideBackdrop
+          data-testid="mobile-drawer"
+        >
+          <Box>
+            <Stack padding={4}>
+              <HeaderStats appStats={appStats} />
+            </Stack>
 
-              <SidebarSection title={APP_LINK[currentMenu].label} pages={pages} />
+            <SidebarSection title={APP_LINK[currentMenu].label} pages={pages} />
 
-              {otherAppSections.map(({ appName, ...props }) => (
-                <SidebarSection key={appName} {...props} />
-              ))}
+            {otherAppSections.map(({ appName, ...props }) => (
+              <SidebarSection key={appName} {...props} />
+            ))}
 
-              {sections.map(({ title, links }) => (
-                <SidebarSection key={title} title={title} pages={links} />
-              ))}
+            {sections.map(({ title, links }) => (
+              <SidebarSection key={title} title={title} pages={links} />
+            ))}
 
-              <SocialSidebarSection title={t`Community`} />
-            </Box>
+            <SocialSidebarSection title={t`Community`} />
+          </Box>
 
-            <SideBarFooter onConnect={closeSidebar} />
-          </Drawer>
-        </Toolbar>
-      </AppBar>
-
-      {/* create an empty box to take the place behind the header */}
-      <Box height={top} />
-    </>
+          <SideBarFooter onConnect={closeSidebar} />
+        </Drawer>
+      </Toolbar>
+    </AppBar>
   )
 }

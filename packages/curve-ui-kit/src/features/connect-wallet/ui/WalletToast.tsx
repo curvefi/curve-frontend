@@ -24,6 +24,7 @@ const Titles = {
 
 export const WalletToast = () => {
   const [notifications, setNotifications] = useState<WalletNotification[]>([])
+  const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => {
     const timeouts: number[] = []
@@ -50,7 +51,7 @@ export const WalletToast = () => {
       open={notifications.length > 0}
       onClose={() => setNotifications([])}
       anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-      sx={{ top: useLayoutStore((state) => state.navHeight) }}
+      sx={{ top }}
     >
       <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
         {notifications.map(({ id, type, message }) => (

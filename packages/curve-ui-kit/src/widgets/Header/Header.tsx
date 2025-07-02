@@ -1,7 +1,9 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
+import Box from '@mui/material/Box'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -9,6 +11,11 @@ import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, route
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
+
+/* empty box to take the place behind the header (given it's sticky) */
+export const HeaderSpacer = () => (
+  <Box data-testid="header-spacer" height={useLayoutStore((state) => state.navHeight)} />
+)
 
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
@@ -30,8 +37,9 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
       ) : (
         <MobileHeader pages={pages} sections={sections} {...props} />
       )}
-      <WagmiConnectModal />
       <WalletToast />
+      <HeaderSpacer />
+      <WagmiConnectModal />
     </>
   )
 }

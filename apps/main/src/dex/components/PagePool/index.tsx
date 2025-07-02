@@ -205,7 +205,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
 
       <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={useLayoutStore((state) => state.navHeight)} className="grid-transfer">
+        <AppPageFormsWrapper className="grid-transfer">
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
             <AppFormHeader
