@@ -47,7 +47,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
               paddingBlock: { mobile: '5px', tablet: 0 },
             }}
           >
-            {market.assets.collateral.symbol} - {market.assets.borrowed.symbol}
+            {market.assets.collateral.symbol} &bull; {market.assets.borrowed.symbol}
           </RouterLink>
           <CopyIconButton
             className={`${DesktopOnlyHoverClass} ${ClickableInRowClass}`}
