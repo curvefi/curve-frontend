@@ -23,7 +23,7 @@ export const RewardsTooltipItems = ({
 }) => {
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
   const extraIncentives = useMarketExtraIncentives(rateType, rates)
-  const percentage = extraIncentives?.length && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
+  const percentage = extraIncentives.length > 0 && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
   const hasIncentives = Boolean(poolRewards.length || percentage)
   return (
     <>
