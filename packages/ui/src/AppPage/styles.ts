@@ -39,15 +39,13 @@ export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   }
 `
 
-export const AppPageFormsWrapper = styled(Box)<{ navHeight: number | string }>`
+export const AppPageFormsWrapper = styled(Box)`
   margin-bottom: 2rem;
 
   @media (min-width: ${breakpoints.md}rem) {
     align-self: flex-start;
     min-width: 23.3125rem;
     max-width: 23.3125rem;
-    //position: sticky;
-    top: ${({ navHeight }) => (typeof navHeight == 'string' ? `calc(${navHeight} - 40px)` : `${navHeight + 40}px;`)};
   }
 `
 

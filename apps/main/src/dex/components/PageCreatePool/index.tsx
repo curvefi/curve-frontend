@@ -24,6 +24,7 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
+import { useLayoutStore } from '@ui-kit/features/layout/store'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -31,6 +32,7 @@ type Props = {
 }
 
 const CreatePool = ({ curve }: Props) => {
+  const navHeight = useLayoutStore((state) => state.navHeight)
   const networks = useStore((state) => state.networks.networks)
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
@@ -259,7 +261,7 @@ const CreatePool = ({ curve }: Props) => {
             </NavButtonsBox>
           </CreateWrapper>
           {/* Nav for small viewport width */}
-          <NavButtonsBoxFixed>
+          <NavButtonsBoxFixed $navHeight={navHeight}>
             {navigationIndex > 0 && (
               <NavButtonStyles variant={'icon-filled'} onClick={() => setNavigationIndex(navigationIndex - 1)}>
                 <Icon name={'ChevronLeft'} size={24} aria-label={t`Chevron left`} /> {t`Previous`}
@@ -398,12 +400,12 @@ const CreateFlowContainer = styled(Box)`
   padding-top: var(--spacing-wide);
 `
 
-const NavButtonsBoxFixed = styled.div`
+const NavButtonsBoxFixed = styled.div<{ $navHeight: number }>`
   position: fixed;
   z-index: var(--z-index-page-nav);
   display: flex;
   justify-content: space-between;
-  margin-top: calc(100vh - var(--footer-create-pool-height) - var(--header-height));
+  margin-top: calc(100vh - var(--footer-create-pool-height) - ${(props) => props.$navHeight}px);
   width: 100%;
   padding: var(--spacing-narrow) var(--spacing-normal);
   background: var(--box_header--primary--background-color);

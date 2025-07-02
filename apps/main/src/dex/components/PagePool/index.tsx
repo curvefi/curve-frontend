@@ -75,7 +75,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const layoutHeight = useLayoutStore((state) => state.height)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -117,8 +116,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
     return pool.isCrypto ? '0.1' : '0.03'
   }, [storeMaxSlippage, pool])
-
-  const navHeight = useMemo(() => layoutHeight.mainNav + layoutHeight.globalAlert, [layoutHeight])
 
   const fetchData = useCallback(() => {
     if (isPageVisible && curve && poolData) {
@@ -208,7 +205,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       )}
 
       <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight} className="grid-transfer">
+        <AppPageFormsWrapper className="grid-transfer">
           {!isMdUp && <TitleComp />}
           <AppFormContent variant="primary" shadowed>
             <AppFormHeader

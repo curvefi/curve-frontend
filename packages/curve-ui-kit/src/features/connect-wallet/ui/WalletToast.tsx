@@ -4,6 +4,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Container from '@mui/material/Container'
 import Snackbar from '@mui/material/Snackbar'
 import Typography from '@mui/material/Typography'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { listenWalletNotifications, type WalletNotification } from '../lib/notify'
 
@@ -21,8 +22,9 @@ const Titles = {
   success: t`Success`,
 } satisfies Record<WalletNotification['type'], string>
 
-export const WalletToast = ({ headerHeight }: { headerHeight: string }) => {
+export const WalletToast = () => {
   const [notifications, setNotifications] = useState<WalletNotification[]>([])
+  const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => {
     const timeouts: number[] = []
@@ -49,7 +51,7 @@ export const WalletToast = ({ headerHeight }: { headerHeight: string }) => {
       open={notifications.length > 0}
       onClose={() => setNotifications([])}
       anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-      sx={{ top: headerHeight }}
+      sx={{ top }}
     >
       <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
         {notifications.map(({ id, type, message }) => (
