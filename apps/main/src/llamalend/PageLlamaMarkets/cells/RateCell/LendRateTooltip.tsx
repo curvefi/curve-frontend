@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useMarketExtraIncentives } from '@/llamalend/hooks/useMarketExtraIncentives'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
@@ -7,17 +8,24 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TooltipItem, TooltipItems } from '../../../components/TooltipItem'
 import { useSnapshots } from '../../hooks/useSnapshots'
-import { formatPercent } from '../cell.format'
+import { formatPercent, useFilteredRewards } from '../cell.format'
 import { RewardsTooltipItems } from './RewardsTooltipItems'
 
 const { Spacing } = SizesAndSpaces
 
+const rateType = 'lend' as const
+
 const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
-  const { rate, averageRate, period, maxBoostedAprAverage } = useSnapshots(market, 'lend')
+  const { rate, averageRate, period, maxBoostedAprAverage } = useSnapshots(market, rateType)
   const {
+    rates,
     rates: { lendCrvAprBoosted, lendCrvAprUnboosted },
     assets: { collateral },
+    rewards,
+    type: marketType,
   } = market
+  const poolRewards = useFilteredRewards(rewards, marketType, rateType)
+  const extraIncentives = useMarketExtraIncentives(rateType, rates)
   const yieldBearing = collateral.symbol === 'wstETH' // todo: show yield bearing assets APR with API data
   return (
     <Stack gap={Spacing.sm}>
@@ -35,7 +43,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           <TooltipItem loading={rate == null} title={t`Lending fees`}>
             {formatPercent(rate)}
           </TooltipItem>
-          <RewardsTooltipItems market={market} title={t`Staking incentives`} type="lend" />
+          <RewardsTooltipItems title={t`Staking incentives`} {...{ poolRewards, extraIncentives }} />
         </TooltipItems>
         <TooltipItems>
           <TooltipItem primary loading={rate == null} title={`${t`Total base APR`}`}>

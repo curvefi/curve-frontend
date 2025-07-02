@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { useMemo } from 'react'
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'
+import { BorrowRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/BorrowRateTooltip'
+import { LendRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/LendRateTooltip'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
 import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
@@ -24,21 +26,33 @@ import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 
 const { Spacing } = SizesAndSpaces
 
+const TooltipComponents = {
+  lend: LendRateTooltip,
+  borrow: BorrowRateTooltip,
+} as const
+
 function useMobileGraphSize() {
   const pageWidth = useLayoutStore((state) => state.windowWidth)
   const isTiny = useIsTiny()
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
 
-const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string; type: RateType }) =>
-  market.rates[type] != null && (
-    <Grid size={6}>
-      <Stack direction="row" alignItems="center" gap={2}>
-        <Metric label={title} value={market.rates[type]} valueOptions={{ unit: 'percentage' }} />
-        <RewardsIcons market={market} rateType="borrow" />
-      </Stack>
-    </Grid>
+const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string; type: RateType }) => {
+  const Tooltip = TooltipComponents[type]
+  return (
+    market.rates[type] != null && (
+      <Grid size={6}>
+        <Tooltip market={market}>
+          <Stack direction="row" alignItems="center" gap={2}>
+            {/* todo: omit metric component tooltip */}
+            <Metric label={title} value={market.rates[type]} valueOptions={{ unit: 'percentage' }} />
+            <RewardsIcons market={market} rateType="borrow" />
+          </Stack>
+        </Tooltip>
+      </Grid>
+    )
   )
+}
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
