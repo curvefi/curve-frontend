@@ -20,7 +20,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
       <TokenPair chain={market.chain} assets={market.assets} />
-      <Stack direction="column" justifyContent="center">
+      <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
         <Typography
           component={Stack}
           alignItems="center"
