@@ -47,13 +47,11 @@ const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined)
 export const LlamaMarketsTable = ({
   onReload,
   result,
-  headerHeight,
   isError,
   minLiquidity,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
-  headerHeight: string
   isError: boolean
   minLiquidity: number
 }) => {
@@ -91,7 +89,6 @@ export const LlamaMarketsTable = ({
     >
       <DataTable
         table={table}
-        headerHeight={headerHeight}
         emptyText={isError ? t`Could not load markets` : t`No markets found`}
         expandedPanel={LlamaMarketExpandedPanel}
         shouldStickFirstColumn={useIsTablet() && !!hasPositions}

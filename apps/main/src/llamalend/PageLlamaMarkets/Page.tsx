@@ -13,15 +13,13 @@ import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } f
 import { LendTableFooter } from '@/llamalend/PageLlamaMarkets/LendTableFooter'
 import { LlamaMarketsTable } from '@/llamalend/PageLlamaMarkets/LlamaMarketsTable'
 import Box from '@mui/material/Box'
-import Skeleton from '@mui/material/Skeleton'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { logSuccess } from '@ui-kit/lib'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
-import { useHeaderHeight } from '@ui-kit/widgets/Header'
 
 /**
  * Reloads the lending vaults and mint markets.
@@ -63,22 +61,18 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   const { data, isError, isLoading } = useLlamaMarkets(address)
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
-  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
-  const headerHeight = useHeaderHeight(bannerHeight)
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
-      {showSkeleton ? (
-        <Skeleton variant="rectangular" width={MaxWidth.table} height={ModalHeight.md.height} />
-      ) : (
+      <WithSkeleton loading={showSkeleton} variant="rectangular" height={ModalHeight.md.height}>
         <LlamaMarketsTable
           onReload={() => onReload(address)}
           result={data}
-          headerHeight={headerHeight}
           isError={isError}
           minLiquidity={minLiquidity}
         />
-      )}
+      </WithSkeleton>
+
       <LendTableFooter />
     </Box>
   )

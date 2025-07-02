@@ -19,16 +19,12 @@ import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { HeaderImplementationProps } from './types'
-
-export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
+import { useMainNavRef } from './useMainNavRef'
 
 export const DesktopHeader = ({
-  mainNavRef,
   currentMenu,
   chainId,
   supportedNetworks,
-  globalAlertRef,
-  height, // height above + banner height
   pages,
   appStats,
   networkId,
@@ -40,60 +36,60 @@ export const DesktopHeader = ({
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
   const [isBeta] = useBetaFlag()
-
   return (
-    <>
-      <AppBar color="transparent" ref={mainNavRef}>
-        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={chainId} />
+    <AppBar
+      color="transparent"
+      ref={useMainNavRef()}
+      data-testid="desktop-main-nav"
+      sx={{ position: 'sticky', top: 0 }}
+    >
+      <GlobalBanner networkId={networkId} chainId={chainId} />
 
-        <Toolbar
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
-          data-testid="main-nav"
-        >
-          <Container>
-            <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
-            <AppButtonLinks currentMenu={menu} onChange={setMenu} networkId={networkId} />
+      <Toolbar
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
+        data-testid="main-nav"
+      >
+        <Container>
+          <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
+          <AppButtonLinks currentMenu={menu} onChange={setMenu} networkId={networkId} />
 
-            <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ flexGrow: 1 }} />
 
-            <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-              {isBeta && !isCypress ? (
-                <UserProfileButton />
-              ) : (
-                <>
-                  <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} label={t`Advanced`} />
-                  <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
-                </>
-              )}
+          <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
+            {isBeta && !isCypress ? (
+              <UserProfileButton />
+            ) : (
+              <>
+                <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} label={t`Advanced`} />
+                <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+              </>
+            )}
 
-              <ChainSwitcher chainId={chainId} networks={supportedNetworks} headerHeight={height} />
-              <ConnectWalletIndicator />
-            </Box>
-          </Container>
-        </Toolbar>
-        <Toolbar
-          sx={{
-            backgroundColor: (t) => t.design.Layer[2].Fill,
-            justifyContent: 'space-around',
-            borderWidth: '1px 0',
-            borderColor: (t) => t.design.Layer[2].Outline,
-            borderStyle: 'solid',
-            boxSizing: 'content-box',
-            height: DEFAULT_BAR_SIZE,
-          }}
-          data-testid="subnav"
-        >
-          <Container>
-            <PageTabs pages={pages} />
-            <Box flexGrow={1} />
-            <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
-              <HeaderStats appStats={appStats} />
-            </Box>
-          </Container>
-        </Toolbar>
-      </AppBar>
-      {/* create an empty box to take the place behind the header */}
-      <Box height={height} />
-    </>
+            <ChainSwitcher chainId={chainId} networks={supportedNetworks} />
+            <ConnectWalletIndicator />
+          </Box>
+        </Container>
+      </Toolbar>
+      <Toolbar
+        sx={{
+          backgroundColor: (t) => t.design.Layer[2].Fill,
+          justifyContent: 'space-around',
+          borderWidth: '1px 0',
+          borderColor: (t) => t.design.Layer[2].Outline,
+          borderStyle: 'solid',
+          boxSizing: 'content-box',
+          height: DEFAULT_BAR_SIZE,
+        }}
+        data-testid="subnav"
+      >
+        <Container>
+          <PageTabs pages={pages} />
+          <Box flexGrow={1} />
+          <Box display="flex" gap={3} alignItems="center" sx={{ textOverflow: 'ellipsis', overflow: 'hidden' }}>
+            <HeaderStats appStats={appStats} />
+          </Box>
+        </Container>
+      </Toolbar>
+    </AppBar>
   )
 }

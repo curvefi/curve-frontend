@@ -108,7 +108,7 @@ const Page = (params: MarketUrlParams) => {
     <>
       {provider ? (
         <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
-          <AppPageFormsWrapper navHeight="var(--nav-height)">
+          <AppPageFormsWrapper>
             {(!isMdUp || !isAdvancedMode) && <TitleComp />}
             {rChainId && rOwmId && <Vault {...pageProps} params={params} />}
           </AppPageFormsWrapper>

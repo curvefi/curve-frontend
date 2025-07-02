@@ -8,6 +8,7 @@ import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 import type { NetworkMapping } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,10 +22,9 @@ import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 export type ChainSwitcherProps = {
   chainId: number
   networks: NetworkMapping
-  headerHeight: string
 }
 
-export const ChainSwitcher = ({ networks, chainId, headerHeight }: ChainSwitcherProps) => {
+export const ChainSwitcher = ({ networks, chainId }: ChainSwitcherProps) => {
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()
@@ -41,6 +41,7 @@ export const ChainSwitcher = ({ networks, chainId, headerHeight }: ChainSwitcher
   )
 
   const onClick = options.length > 1 ? toggle : openSnackbar
+  const top = useLayoutStore((state) => state.navHeight)
   return (
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
@@ -52,7 +53,7 @@ export const ChainSwitcher = ({ networks, chainId, headerHeight }: ChainSwitcher
         open={isSnackbarOpen}
         onClose={hideSnackbar}
         anchorOrigin={{ horizontal: 'center', vertical: 'top' }}
-        sx={{ top: headerHeight }}
+        sx={{ top }}
         autoHideDuration={Duration.Snackbar}
       >
         <Container sx={{ justifyContent: 'end', marginTop: 4 }}>
