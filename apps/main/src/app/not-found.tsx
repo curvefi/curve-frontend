@@ -1,11 +1,12 @@
-import Error404 from '@ui/Error404'
+import type { Metadata } from 'next'
 import { t } from '@ui-kit/lib/i18n'
+import { PageNotFound } from '@ui-kit/pages/PageNotFound'
 
-const Page404 = () => (
-  <>
-    <title>{t`Error 404` + ' - Curve'}</title>
-    <Error404 />
-  </>
-)
+export const metadata: Metadata = {
+  title: t`Error 404` + ' - Curve',
+  description: t`Page not found`,
+}
 
-export default Page404
+export default function NotFound() {
+  return <PageNotFound />
+}
