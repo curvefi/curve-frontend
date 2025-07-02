@@ -13,7 +13,7 @@ const TableCellVolume = ({ isHighLight, volumeCached, volume }: Props) => (
     isBold={isHighLight}
     size="md"
     tooltip={formatNumber(volume?.value, FORMAT_OPTIONS.USD)}
-    tooltipProps={{ placement: 'bottom end' }}
+    tooltipProps={{ placement: 'bottom-end' }}
   >
     {formatNumber(volume?.value ?? volumeCached?.value, {
       currency: 'USD',

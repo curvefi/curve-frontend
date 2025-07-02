@@ -91,12 +91,12 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
             {!isMobile && (
               <>
                 {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
-                  <AlertTooltipIcon minWidth="300px" placement="start" {...poolAlert}>
+                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...poolAlert}>
                     {poolAlert.message}
                   </AlertTooltipIcon>
                 )}
                 {tokenAlert && (
-                  <AlertTooltipIcon minWidth="300px" placement="start" {...tokenAlert}>
+                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...tokenAlert}>
                     {tokenAlert.message}
                   </AlertTooltipIcon>
                 )}

@@ -67,9 +67,7 @@ const PoolParameters = ({
                 isBold={liquidityUtilization !== '-'}
                 size="md"
                 tooltip={t`24h Volume/Liquidity ratio`}
-                tooltipProps={{
-                  placement: 'bottom end',
-                }}
+                tooltipProps={{ placement: 'bottom-end' }}
               >
                 {liquidityUtilization}
                 <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
@@ -101,9 +99,7 @@ const PoolParameters = ({
               isBold={parameters?.virtualPrice !== ''}
               size="md"
               tooltip={t`Measures pool growth; this is not a dollar value`}
-              tooltipProps={{
-                placement: 'bottom end',
-              }}
+              tooltipProps={{ placement: 'bottom-end' }}
             >
               {formatNumber(parameters?.virtualPrice, { maximumFractionDigits: 8, defaultValue: '-' })}
               <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />

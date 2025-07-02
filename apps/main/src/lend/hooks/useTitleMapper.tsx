@@ -37,7 +37,7 @@ const useTitleMapper = (): TitleMapper => ({
         </p>
       </Box>
     ),
-    tooltipProps: { minWidth: '250px' },
+    tooltipProps: { minWidth: '250px', clickable: true },
   },
   healthPercent: { title: t`Health %` },
   liquidationRange: { title: t`Liquidation range` },

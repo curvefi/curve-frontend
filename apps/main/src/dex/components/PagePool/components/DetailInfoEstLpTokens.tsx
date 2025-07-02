@@ -38,7 +38,7 @@ const DetailInfoEstLpTokens = ({
       label={t`Minimum LP Tokens:`}
       tooltip={
         showTooltip ? (
-          <IconTooltip placement="top end" noWrap>
+          <IconTooltip placement="top-end" noWrap>
             {formatNumber(1)} LP token = {parsedVirtualPrice}
           </IconTooltip>
         ) : (
