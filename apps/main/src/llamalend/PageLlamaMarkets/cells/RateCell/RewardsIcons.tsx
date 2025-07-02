@@ -12,7 +12,15 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 const RewardChip = ({ icon }: { icon: ReactElement }) => (
-  <Chip icon={icon} size="small" color="highlight" sx={{ '&:not(:last-child)': { marginInline: '-8px' } }} />
+  <Chip
+    icon={icon}
+    size="small"
+    color="highlight"
+    sx={{
+      borderRadius: '100%', // Make reward chips border round, regardless of theme
+      '&:not(:last-child)': { marginInline: '-8px' },
+    }}
+  />
 )
 
 export const RewardsIcons = ({
