@@ -247,6 +247,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="chip-rewards"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     })
+    expandFirstRowOnMobile()
     cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
     withFilterChips(() => {
       cy.get(`[data-testid="chip-rewards"]`).click()

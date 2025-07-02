@@ -26,7 +26,7 @@ export const RewardsIcons = ({
   const extraIncentives = useMarketExtraIncentives(rateType, rates)
   return (
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
-      <Stack direction="row" alignSelf="end" minWidth={IconSize.md} data-testid="rewards-icons">
+      <Stack direction="row" minWidth={IconSize.md} data-testid="rewards-icons">
         {extraIncentives.map(({ title, image }) => (
           <RewardChip key={title} icon={<RewardsImg src={image} alt={title} />} />
         ))}

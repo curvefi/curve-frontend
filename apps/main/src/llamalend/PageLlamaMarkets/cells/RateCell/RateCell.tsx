@@ -34,7 +34,7 @@ export const RateCell = ({
   const Tooltip = TooltipComponents[rateType]
   return (
     <Tooltip market={market}>
-      <Stack gap={Spacing.xs}>
+      <Stack gap={Spacing.xs} alignItems="flex-end">
         <Typography variant="tableCellMBold" color="textPrimary">
           {formatPercent(rate)}
         </Typography>
