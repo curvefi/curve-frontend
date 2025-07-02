@@ -1,4 +1,5 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
@@ -33,14 +34,17 @@ export const RateCell = ({
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType]
   return (
-    <Tooltip market={market}>
-      <Stack gap={Spacing.xs} alignItems="flex-end">
-        <Typography variant="tableCellMBold" color="textPrimary">
-          {formatPercent(rate)}
-        </Typography>
+    // The box container makes sure the tooltip doens't span the entire cell, so the tooltip arrow is placed correctly
+    <Box display="flex" justifyContent="end">
+      <Tooltip market={market}>
+        <Stack gap={Spacing.xs} alignItems="end">
+          <Typography variant="tableCellMBold" color="textPrimary">
+            {formatPercent(rate)}
+          </Typography>
 
-        <RewardsIcons market={market} rateType={rateType} />
-      </Stack>
-    </Tooltip>
+          <RewardsIcons market={market} rateType={rateType} />
+        </Stack>
+      </Tooltip>
+    </Box>
   )
 }
