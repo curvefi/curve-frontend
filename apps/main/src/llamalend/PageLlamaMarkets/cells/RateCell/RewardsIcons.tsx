@@ -1,4 +1,5 @@
 import uniq from 'lodash/uniq'
+import type { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useMarketExtraIncentives } from '@/llamalend/hooks/useMarketExtraIncentives'
 import { useFilteredRewards } from '@/llamalend/PageLlamaMarkets/cells/cell.format'
@@ -10,7 +11,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
-const RewardChip = ({ icon }: { icon: React.ReactElement }) => (
+const RewardChip = ({ icon }: { icon: ReactElement }) => (
   <Chip icon={icon} size="small" color="highlight" sx={{ '&:not(:last-child)': { marginInline: '-8px' } }} />
 )
 
@@ -22,7 +23,7 @@ export const RewardsIcons = ({
   rateType: RateType
 }) => {
   const filteredRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rates)
+  const extraIncentives = useMarketExtraIncentives(rateType, rates)
   return (
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
       <Stack direction="row" alignSelf="end" minWidth={IconSize.md} data-testid="rewards-icons">

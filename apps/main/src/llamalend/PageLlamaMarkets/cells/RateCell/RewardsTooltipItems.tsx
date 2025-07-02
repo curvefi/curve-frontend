@@ -14,15 +14,15 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 export const RewardsTooltipItems = ({
   market: { rewards, type: marketType, rates },
   title,
-  type,
+  type: rateType,
 }: {
   title: string
   market: LlamaMarket
   type: RateType
   extraIncentives?: { title: string; percentage: number; image: string }[]
 }) => {
-  const poolRewards = useFilteredRewards(rewards, marketType, type)
-  const extraIncentives = useMarketExtraIncentives(rates)
+  const poolRewards = useFilteredRewards(rewards, marketType, rateType)
+  const extraIncentives = useMarketExtraIncentives(rateType, rates)
   const percentage = extraIncentives?.length && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
   const hasIncentives = Boolean(poolRewards.length || percentage)
   return (
