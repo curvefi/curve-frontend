@@ -14,7 +14,7 @@ const UserInfoDebt = ({
   stablecoin: string | undefined
   stablecoinAddress: string | undefined
 }) => {
-  const { userState } = useUserLoanDetails(llammaId)
+  const { userState } = useUserLoanDetails(llammaId) ?? {}
 
   return (
     <ListInfoItem title={t`Debt`} titleDescription={`(${stablecoin})`} mainValue={formatNumber(userState?.debt)}>
