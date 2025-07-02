@@ -68,7 +68,7 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
         label={t`Est. update profit:`}
         tooltip={
           <StyledIconTooltip
-            placement="top end"
+            placement="top-end"
             minWidth="200px"
             textAlign="left"
           >{t`Profit is denominated in ${poolName} LP Tokens`}</StyledIconTooltip>

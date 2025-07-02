@@ -17,14 +17,15 @@ const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, ma
   const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
   const totalResp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
-  const { collateral_token, borrowed_token } = market ?? {}
+  const { borrowed_token } = market ?? {}
   const { cap, available } = resp ?? {}
   const { totalDebt } = totalResp ?? {}
 
   const items = useMemo(
     () => [
       {
-        label: t`Total ${collateral_token?.symbol ?? ''} Supplied`,
+        // as we are displaying the utilization breakdown, display everything with borrowed token
+        label: t`Total ${borrowed_token?.symbol ?? ''} Supplied`,
         content: formatNumber(cap, { notation: 'compact', defaultValue: '-' }),
       },
       {
@@ -36,7 +37,7 @@ const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, ma
         content: formatNumber(available, { notation: 'compact', defaultValue: '-' }),
       },
     ],
-    [available, borrowed_token?.symbol, cap, collateral_token?.symbol, totalDebt],
+    [available, borrowed_token?.symbol, cap, totalDebt],
   )
 
   return (

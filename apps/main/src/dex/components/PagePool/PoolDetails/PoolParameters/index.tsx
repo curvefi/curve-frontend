@@ -221,9 +221,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       tooltip={t`Slowly changing ${
                         rampADetails.isRampUp ? 'up' : 'down'
                       } A so that it doesn't negatively change virtual price growth of shares`}
-                      tooltipProps={{
-                        placement: 'bottom end',
-                      }}
+                      tooltipProps={{ placement: 'bottom-end' }}
                     >
                       {formatNumber(initial_A, { useGrouping: false })} →{' '}
                       {formatNumber(future_A, { useGrouping: false })}{' '}

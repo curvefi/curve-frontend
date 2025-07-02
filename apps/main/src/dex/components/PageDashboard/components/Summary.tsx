@@ -22,7 +22,7 @@ import { t } from '@ui-kit/lib/i18n'
 type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
 
 export const tooltipProps: TooltipProps = {
-  placement: 'bottom end',
+  placement: 'bottom-end',
   textAlign: 'end',
   noWrap: true,
 }

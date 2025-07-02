@@ -12,8 +12,9 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
 
   return (
     <Tooltip
+      clickable
       tooltip={<TooltipMessage rewardsPool={rewardsPool} />}
-      minWidth={'200px'}
+      minWidth={'400px'}
       placement={mobile ? 'top' : 'auto'}
       increaseZIndex={banner}
     >

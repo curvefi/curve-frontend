@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
-import Box from '@ui/Box'
+import Box from '@mui/material/Box'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

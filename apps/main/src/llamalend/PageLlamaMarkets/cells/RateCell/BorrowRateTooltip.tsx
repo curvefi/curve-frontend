@@ -1,7 +1,7 @@
 import { ReactElement } from 'react'
+import { TooltipItem, TooltipItems } from '@/llamalend/components/TooltipItem'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { RewardsTooltipItems } from '@/llamalend/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
-import { TooltipItem, TooltipItems } from '@/llamalend/PageLlamaMarkets/cells/RateCell/TooltipItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
