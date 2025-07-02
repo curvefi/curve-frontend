@@ -71,7 +71,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
         appStats={useAppStats(currentApp, network)}
         routes={useAppRoutes(network)}
       />
-      <Box component="main" sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: '50vh', width: '100%' }}>
+      <Box component="main" sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: '80vh', width: '100%' }}>
         {children}
       </Box>
       <Footer appName={currentApp} networkId={network.id} />

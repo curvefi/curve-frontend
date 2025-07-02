@@ -1,18 +1,18 @@
+'use client'
+import { useLayoutStore } from 'curve-ui-kit/src/features/layout'
 import Image from 'next/image'
 import styled from 'styled-components'
 import Box from 'ui/src/Box'
 import { NOT_FOUND_IMAGE_URL } from 'ui/src/utils'
 import { breakpoints } from 'ui/src/utils/responsive'
 
-export function Error404() {
-  return (
-    <Container variant="secondary">
-      <Image src={NOT_FOUND_IMAGE_URL} alt="404" layout="fill" />
-      <Title>404</Title>
-      <Description>Page not found</Description>
-    </Container>
-  )
-}
+export const Error404 = () => (
+  <Container variant="secondary" $navHeight={useLayoutStore((state) => state.navHeight)}>
+    <Image src={NOT_FOUND_IMAGE_URL} alt="404" layout="fill" />
+    <Title>404</Title>
+    <Description>Page not found</Description>
+  </Container>
+)
 
 const Description = styled.p`
   font-size: 2rem;
@@ -31,12 +31,12 @@ const Title = styled.h2`
   }
 `
 
-const Container = styled(Box)`
+const Container = styled(Box)<{ $navHeight: number }>`
   align-items: center;
   display: flex;
   flex-direction: column;
   position: relative;
-  min-height: calc(100vh - var(--header-height));
+  min-height: calc(100vh - ${(props) => props.$navHeight}px);
   justify-content: center;
   border: none;
 
