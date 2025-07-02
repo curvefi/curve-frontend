@@ -85,7 +85,7 @@ const DetailInfoEstGas = ({
   )
 
   const Tooltip = tooltip && (
-    <IconTooltip placement="top end" noWrap>
+    <IconTooltip placement="top-end" noWrap>
       {tooltip}
     </IconTooltip>
   )

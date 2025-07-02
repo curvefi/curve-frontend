@@ -9,6 +9,7 @@ type CopyIconButtonProps = {
 
 const CopyIconButton = ({ copyContent, tooltip }: CopyIconButtonProps) => (
   <TooltipButton
+    clickable
     onClick={() => copyToClipboard(copyContent)}
     noWrap
     tooltip={tooltip}

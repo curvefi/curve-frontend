@@ -6,10 +6,10 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TooltipItem, TooltipItems } from '../../../components/TooltipItem'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { formatPercent } from '../cell.format'
 import { RewardsTooltipItems } from './RewardsTooltipItems'
-import { TooltipItem, TooltipItems } from './TooltipItem'
 
 const { Spacing } = SizesAndSpaces
 

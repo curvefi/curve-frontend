@@ -33,7 +33,7 @@ const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
                 size="md"
                 tooltip={!!base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
                 tooltipProps={{
-                  placement: 'bottom end',
+                  placement: 'bottom-end',
                   textAlign: 'left',
                   ...(base && Number(base.day) < 0 ? { minWidth: '200px' } : {}),
                 }}

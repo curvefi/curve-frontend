@@ -1,3 +1,4 @@
+import { ethAddress } from 'viem'
 import { getCampaignsOptions, PoolRewards } from '@/llamalend/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
 import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/llamalend/entities/lending-vaults'
@@ -27,6 +28,7 @@ export type AssetDetails = {
   address: string
   chain: Chain
   usdPrice: number | null
+  balance: number | null
   balanceUsd: number | null
 }
 
@@ -37,6 +39,7 @@ export type LlamaMarket = {
   assets: Assets
   utilizationPercent: number
   liquidityUsd: number
+  debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lend: number | null // lendApr + incentives (for now only lendCrvAprUnboosted)
     lendApr: number | null
@@ -66,14 +69,11 @@ const convertLendingVault = (
     chain,
     totalAssets,
     totalAssetsUsd,
+    totalDebt,
     totalDebtUsd,
     vault,
     collateralToken,
-    collateralBalance,
-    collateralBalanceUsd,
     borrowedToken,
-    borrowedBalance,
-    borrowedBalanceUsd,
     apyBorrow,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -96,18 +96,21 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
-        usdPrice: borrowedBalance ? borrowedBalanceUsd / borrowedBalance : totalAssets / totalAssetsUsd,
+        usdPrice: totalDebt && totalDebtUsd / totalDebt,
         chain,
-        balanceUsd: borrowedBalanceUsd,
+        balance: totalDebt,
+        balanceUsd: totalDebtUsd,
       },
       collateral: {
         ...collateralToken,
         chain,
-        usdPrice: collateralBalanceUsd / collateralBalance,
-        balanceUsd: collateralBalanceUsd,
+        usdPrice: totalAssets && totalAssetsUsd / totalAssets,
+        balance: totalAssets,
+        balanceUsd: totalAssetsUsd,
       },
     },
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
+    debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, borrow: apyBorrow },
     type: LlamaMarketType.Lend,
@@ -123,8 +126,9 @@ const convertLendingVault = (
   }
 }
 
-/** We show WETH as ETH in the UI and market URL */
-const getCollateralSymbol = ({ symbol }: { symbol: string }) => (symbol == 'WETH' ? 'ETH' : symbol)
+/** We show WETH as ETH in the UI and market URL. Also change address so the symbol is correct */
+const getCollateral = ({ address, symbol }: { address: Address; symbol: string }) =>
+  symbol == 'WETH' ? ['ETH', ethAddress] : [symbol, address]
 
 const convertMintMarket = (
   {
@@ -146,6 +150,7 @@ const convertMintMarket = (
   userMintMarkets: Set<Address>,
 ): LlamaMarket => {
   const hasBorrow = userMintMarkets.has(address)
+  const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
   return {
     chain,
     address: llamma,
@@ -156,17 +161,20 @@ const convertMintMarket = (
         address: stablecoinToken.address,
         usdPrice: stablecoin_price,
         chain,
+        balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
       },
       collateral: {
-        symbol: getCollateralSymbol(collateralToken),
-        address: collateralToken.address,
+        symbol: collateralSymbol,
+        address: collateralAddress,
         usdPrice: collateralAmountUsd / collateralAmount,
         chain,
+        balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
+    debtCeiling,
     liquidityUsd: borrowable,
     rates: { borrow: rate * 100, lend: null, lendApr: null, lendCrvAprBoosted: null, lendCrvAprUnboosted: null },
     type: LlamaMarketType.Mint,
@@ -174,7 +182,7 @@ const convertMintMarket = (
     url: getInternalUrl(
       'crvusd',
       chain,
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${getCollateralSymbol(collateralToken)}/${hasBorrow ? 'manage/loan' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralSymbol}/${hasBorrow ? 'manage/loan' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],

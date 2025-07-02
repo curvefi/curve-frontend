@@ -13,7 +13,7 @@ const TableCellTvl = ({ isHighLight, tvlCached, tvl }: Props) => (
     isBold={isHighLight}
     size="md"
     tooltip={formatNumber(tvl?.value, FORMAT_OPTIONS.USD)}
-    tooltipProps={{ placement: 'bottom end' }}
+    tooltipProps={{ placement: 'bottom-end' }}
   >
     {formatNumber(tvl?.value ?? tvlCached?.value, { currency: 'USD', notation: 'compact' })}
   </Chip>

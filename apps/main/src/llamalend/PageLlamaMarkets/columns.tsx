@@ -3,13 +3,16 @@ import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { CompactUsdCell, LineGraphCell, MarketTitleCell, PercentageCell, PriceCell, RateCell } from './cells'
+import {
+  CompactUsdCell,
+  LineGraphCell,
+  MarketTitleCell,
+  PercentageCell,
+  PriceCell,
+  RateCell,
+  UtilizationCell,
+} from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
-
-const {
-  Width: { column: ColumnWidth },
-} = SizesAndSpaces
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
@@ -80,7 +83,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,
-    cell: PercentageCell,
+    cell: UtilizationCell,
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
