@@ -24,7 +24,7 @@ export const RotatableIcon = ({
       verticalAlign: 'text-bottom',
       fontSize,
       transition: `transform ${TransitionFunction}, font-size ${TransitionFunction}`,
-      visibility: isEnabled ? 'visible' : 'hidden', // render it invisible to avoid layout shift
+      ...(!isEnabled && { visibility: 'hidden' }), // render it invisible to avoid layout shift
       ...sx,
     }}
     data-testid={testId}
