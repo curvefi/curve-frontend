@@ -4,6 +4,7 @@ import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -18,13 +19,11 @@ const { Sizing } = SizesAndSpaces
  */
 export const DataTable = <T extends TableItem>({
   table,
-  headerHeight,
   emptyText,
   children,
   ...rowProps
 }: {
   table: TanstackTable<T>
-  headerHeight: string
   emptyText: string
   children?: ReactNode // passed to <FilterRow />
   minRowHeight?: number
@@ -33,6 +32,7 @@ export const DataTable = <T extends TableItem>({
   const { shouldStickFirstColumn } = rowProps
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
+  const top = useLayoutStore((state) => state.navHeight)
   return (
     <Table
       sx={{
@@ -45,7 +45,7 @@ export const DataTable = <T extends TableItem>({
         sx={(t) => ({
           zIndex: t.zIndex.tableHeader,
           position: 'sticky',
-          top: headerHeight,
+          top,
           backgroundColor: t.design.Table.Header.Fill,
           marginBlock: Sizing['sm'],
         })}
@@ -53,7 +53,7 @@ export const DataTable = <T extends TableItem>({
       >
         {children && <FilterRow table={table}>{children}</FilterRow>}
 
-        {headerGroups.map((headerGroup, _, headerGroups) => (
+        {headerGroups.map((headerGroup) => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header, index) => (
               <HeaderCell

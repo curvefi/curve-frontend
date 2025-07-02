@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type { LayoutHeight, PageWidthClassName } from './types'
+import type { PageWidthClassName } from './types'
 
 interface LayoutState {
   // Layout heights
-  height: LayoutHeight
   windowWidth: number
   navHeight: number
 
@@ -27,22 +26,14 @@ interface LayoutState {
 
 interface LayoutActions {
   setLayoutWidth: (pageWidthClassName: PageWidthClassName) => void
-  setLayoutHeight: (key: keyof LayoutHeight, value: number) => void
+  setNavHeight: (value: number) => void
   updateShowScrollButton: (scrollY: number) => void
   setScrollY: (scrollY: number) => void
   setPageVisible: (visible: boolean) => void
 }
 
-const DEFAULT_LAYOUT_HEIGHT: LayoutHeight = {
-  globalAlert: 0,
-  mainNav: 0,
-  secondaryNav: 0,
-  footer: 0,
-}
-
 const DEFAULT_STATE: LayoutState = {
-  height: DEFAULT_LAYOUT_HEIGHT,
-  navHeight: 0,
+  navHeight: 96, // Default height for desktop
   windowWidth: 0,
   pageWidth: null,
   isLgUp: false,
@@ -73,10 +64,9 @@ const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
       state.isXXSm = isXXSm
     })
   },
-  setLayoutHeight: (key: keyof LayoutHeight, value: number) =>
+  setNavHeight: (value: number) =>
     set((state) => {
-      state.height[key] = value
-      state.navHeight = state.height.mainNav + state.height.secondaryNav
+      state.navHeight = value
     }),
   updateShowScrollButton: (scrollY) =>
     set((state) => {

@@ -68,14 +68,3 @@ export default function useResizeObserver(
 
   return dimensions
 }
-
-export function useLayoutHeight<T extends string>(
-  elementRef: RefObject<Element | null>,
-  key: T,
-  updateLayoutHeight: (key: T, height: number) => void,
-) {
-  const [, height] = useResizeObserver(elementRef) ?? []
-  useEffect(() => {
-    if (height != null) updateLayoutHeight(key, height)
-  }, [height, key, updateLayoutHeight])
-}

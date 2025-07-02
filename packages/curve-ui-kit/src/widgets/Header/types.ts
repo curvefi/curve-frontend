@@ -1,4 +1,3 @@
-import type { RefObject } from 'react'
 import type { NetworkMapping } from '@ui/utils'
 import type { AppMenuOption, AppName } from '@ui-kit/shared/routes'
 
@@ -28,10 +27,8 @@ export type NavigationSection = {
 }
 
 export type HeaderBaseProps = {
-  mainNavRef: RefObject<HTMLDivElement | null>
   currentMenu: AppMenuOption
   isLite: boolean | undefined
-  globalAlertRef: RefObject<HTMLDivElement | null>
   networkId: string // ID of the network as displayed in the URL
   chainId: number
   supportedNetworks: NetworkMapping
@@ -41,7 +38,6 @@ export type HeaderBaseProps = {
 export type HeaderImplementationProps = HeaderBaseProps & {
   pages: AppPage[]
   sections: NavigationSection[]
-  height: string
 }
 
 export type HeaderProps = HeaderBaseProps & {

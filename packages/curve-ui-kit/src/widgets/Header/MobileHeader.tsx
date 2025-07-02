@@ -4,8 +4,9 @@ import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
-import { type Theme } from '@mui/material/styles'
+import { Theme } from '@mui/material/styles'
 import Toolbar from '@mui/material/Toolbar'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -16,6 +17,7 @@ import { SideBarFooter } from './SideBarFooter'
 import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
+import { useMainNavRef } from './useMainNavRef'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -30,15 +32,12 @@ const paddingBlock = 3
 export const calcMobileHeaderHeight = (theme: Theme) => `2 * ${theme.spacing(paddingBlock)} + ${DEFAULT_BAR_SIZE}`
 
 export const MobileHeader = ({
-  mainNavRef,
   currentMenu,
   pages,
   appStats,
   sections,
   chainId,
   supportedNetworks,
-  globalAlertRef,
-  height,
   isLite = false,
   networkId,
 }: HeaderImplementationProps) => {
@@ -46,6 +45,7 @@ export const MobileHeader = ({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
+  const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
@@ -62,12 +62,17 @@ export const MobileHeader = ({
   )
   return (
     <>
-      <AppBar color="transparent" ref={mainNavRef} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={chainId} />
+      <AppBar
+        color="transparent"
+        ref={useMainNavRef()}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+        data-testid="mobile-main-bar"
+      >
+        <GlobalBanner networkId={networkId} chainId={chainId} />
         <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
           <MobileTopBar
             isLite={isLite}
-            ChainProps={{ chainId, networks: supportedNetworks, headerHeight: height }}
+            ChainProps={{ chainId, networks: supportedNetworks }}
             currentMenu={currentMenu}
             isSidebarOpen={isSidebarOpen}
             toggleSidebar={toggleSidebar}
@@ -80,13 +85,13 @@ export const MobileHeader = ({
             slotProps={{
               paper: {
                 sx: {
-                  top: height,
+                  top,
                   ...MOBILE_SIDEBAR_WIDTH,
                   ...HIDE_SCROLLBAR,
                 },
               },
             }}
-            sx={{ top: height }}
+            sx={{ top }}
             variant="temporary"
             hideBackdrop
             data-testid="mobile-drawer"
@@ -115,7 +120,7 @@ export const MobileHeader = ({
       </AppBar>
 
       {/* create an empty box to take the place behind the header */}
-      <Box height={height} />
+      <Box height={top} />
     </>
   )
 }

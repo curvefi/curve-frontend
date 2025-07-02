@@ -1,19 +1,16 @@
 import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
-import { useTheme } from '@mui/material/styles'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
-import { DESKTOP_HEADER_HEIGHT, DesktopHeader } from './DesktopHeader'
-import { calcMobileHeaderHeight, MobileHeader } from './MobileHeader'
+import { DesktopHeader } from './DesktopHeader'
+import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
 
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
-  const bannerHeight = useLayoutStore((state) => state.height.globalAlert)
   const isDesktop = useIsDesktop()
   const [isBeta] = useBetaFlag()
   const pathname = usePathname()
@@ -26,28 +23,17 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
     [currentMenu, isBeta, networkId, pathname, routes],
   )
   const sections = useMemo(() => getSections(currentApp, props.networkId), [currentApp, props.networkId])
-  const height = useHeaderHeight(bannerHeight)
   return (
     <>
       {isDesktop ? (
-        <DesktopHeader pages={pages} sections={sections} height={height} {...props} />
+        <DesktopHeader pages={pages} sections={sections} {...props} />
       ) : (
-        <MobileHeader pages={pages} sections={sections} height={height} {...props} />
+        <MobileHeader pages={pages} sections={sections} {...props} />
       )}
       <WagmiConnectModal />
-      <WalletToast headerHeight={height} />
+      <WalletToast />
     </>
   )
-}
-
-/**
- * Helper function to calculate the header height based on the banner height and the current screen size
- */
-export const useHeaderHeight = (bannerHeight: number | undefined) => {
-  const isDesktop = useIsDesktop()
-  const theme = useTheme()
-  const headerHeight = isDesktop ? DESKTOP_HEADER_HEIGHT : calcMobileHeaderHeight(theme)
-  return `calc(${headerHeight} + ${bannerHeight ?? 0}px)`
 }
 
 const getSections = (currentApp: AppName, networkId: string): NavigationSection[] => [

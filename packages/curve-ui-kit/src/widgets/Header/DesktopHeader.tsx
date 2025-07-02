@@ -4,6 +4,7 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
@@ -19,16 +20,15 @@ import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
 import { PageTabs } from './PageTabs'
 import { HeaderImplementationProps } from './types'
+import { useMainNavRef } from './useMainNavRef'
 
-export const DESKTOP_HEADER_HEIGHT = '96px' // note: hardcoded height is tested in cypress
+/* empty box to take the place behind the header (given it's sticky) */
+const Spacer = () => <Box data-testid="desktop-spacer" height={useLayoutStore((state) => state.navHeight)} />
 
 export const DesktopHeader = ({
-  mainNavRef,
   currentMenu,
   chainId,
   supportedNetworks,
-  globalAlertRef,
-  height, // height above + banner height
   pages,
   appStats,
   networkId,
@@ -40,11 +40,10 @@ export const DesktopHeader = ({
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
   const [isBeta] = useBetaFlag()
-
   return (
     <>
-      <AppBar color="transparent" ref={mainNavRef}>
-        <GlobalBanner networkId={networkId} ref={globalAlertRef} chainId={chainId} />
+      <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav">
+        <GlobalBanner networkId={networkId} chainId={chainId} />
 
         <Toolbar
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, justifyContent: 'space-around', paddingY: 3 }}
@@ -66,7 +65,7 @@ export const DesktopHeader = ({
                 </>
               )}
 
-              <ChainSwitcher chainId={chainId} networks={supportedNetworks} headerHeight={height} />
+              <ChainSwitcher chainId={chainId} networks={supportedNetworks} />
               <ConnectWalletIndicator />
             </Box>
           </Container>
@@ -92,8 +91,7 @@ export const DesktopHeader = ({
           </Container>
         </Toolbar>
       </AppBar>
-      {/* create an empty box to take the place behind the header */}
-      <Box height={height} />
+      <Spacer />
     </>
   )
 }
