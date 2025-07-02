@@ -89,7 +89,7 @@ export const defineMuiAlertTitle = (
   styleOverrides: {
     root: handleBreakpoints({
       ...bodySBold,
-      height: IconSize.sm,
+      minHeight: IconSize.sm,
       marginBlockEnd: '4px',
       marginBlockStart: 0, // For some reason margin-top is -2px in MUI by default
     }),
