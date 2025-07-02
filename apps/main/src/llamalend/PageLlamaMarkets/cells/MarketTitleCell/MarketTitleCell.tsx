@@ -21,7 +21,13 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
       <TokenPair chain={market.chain} assets={market.assets} />
       <Stack direction="column" justifyContent="center">
-        <Typography component={Stack} variant={isMobile ? 'tableCellMBold' : 'tableCellL'} direction="row" gap={2}>
+        <Typography
+          component={Stack}
+          alignItems="center"
+          variant={isMobile ? 'tableCellMBold' : 'tableCellL'}
+          direction="row"
+          gap={2}
+        >
           <RouterLink
             color="inherit"
             underline="none"
