@@ -37,7 +37,12 @@ export const DesktopHeader = ({
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
   const [isBeta] = useBetaFlag()
   return (
-    <AppBar color="transparent" ref={useMainNavRef()} data-testid="desktop-main-nav">
+    <AppBar
+      color="transparent"
+      ref={useMainNavRef()}
+      data-testid="desktop-main-nav"
+      sx={{ position: 'sticky', top: 0 }}
+    >
       <GlobalBanner networkId={networkId} chainId={chainId} />
 
       <Toolbar
