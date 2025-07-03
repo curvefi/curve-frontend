@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { formatDisplayDate } from '@/dao/utils'
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { PoolData } from '@/dex/types/main.types'
 import Item from '@ui/Items/Item'
@@ -34,9 +35,9 @@ const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] })
                 {rampADetails && rampADetails?.isFutureATimePassedToday && (
                   <>
                     <br />{' '}
-                    {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
-                      future_A_time,
-                    ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
+                    {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
+                      dayjs(future_A_time),
+                    )}, when A ramped from ${initial_A} to ${future_A}.`}
                   </>
                 )}
               </>
@@ -63,7 +64,7 @@ const PoolParametersA = ({ parameters }: { parameters: PoolData['parameters'] })
           </Item>
           <Item>
             <strong>
-              {dayjs(initial_A_time).format('ll')} to {dayjs(future_A_time).format('ll')}
+              {formatDisplayDate(dayjs(initial_A_time))} to {formatDisplayDate(dayjs(future_A_time))}
             </strong>
           </Item>
         </>

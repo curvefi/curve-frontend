@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
+import { formatDisplayDate } from '@/dao/utils'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
@@ -193,9 +194,9 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       {rampADetails && rampADetails?.isFutureATimePassedToday && (
                         <>
                           <br />{' '}
-                          {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
-                            future_A_time,
-                          ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
+                          {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
+                            dayjs(future_A_time),
+                          )}, when A ramped from ${initial_A} to ${future_A}.`}
                         </>
                       )}
                     </>
