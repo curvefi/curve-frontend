@@ -16,7 +16,6 @@ interface LayoutState {
   isXXSm: boolean
 
   // Scroll state
-  scrollY: number
   showScrollButton: boolean
 
   // Page visibility
@@ -27,7 +26,6 @@ interface LayoutActions {
   setLayoutWidth: (pageWidthClassName: PageWidthClassName) => void
   setNavHeight: (value: number) => void
   updateShowScrollButton: (scrollY: number) => void
-  setScrollY: (scrollY: number) => void
   setPageVisible: (visible: boolean) => void
 }
 
@@ -40,7 +38,6 @@ const DEFAULT_STATE: LayoutState = {
   isSmUp: false,
   isXSmDown: false,
   isXXSm: false,
-  scrollY: 0,
   showScrollButton: false,
   isPageVisible: true,
 }
@@ -69,12 +66,7 @@ const layoutStore = immer<LayoutState & LayoutActions>((set) => ({
     }),
   updateShowScrollButton: (scrollY) =>
     set((state) => {
-      state.scrollY = scrollY
       state.showScrollButton = scrollY > 30
-    }),
-  setScrollY: (scrollY) =>
-    set((state) => {
-      state.scrollY = scrollY
     }),
   setPageVisible: (visible) =>
     set((state) => {

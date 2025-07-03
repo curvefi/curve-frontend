@@ -25,7 +25,7 @@ const useLayoutStoreResponsive = () => {
   const pageWidth = useLayoutStore((state) => state.pageWidth)
   const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
   const setPageVisible = useLayoutStore((state) => state.setPageVisible)
-  const setScrollY = useLayoutStore((state) => state.setScrollY)
+  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
 
   const handleResizeListener = useCallback(() => {
     if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
@@ -39,7 +39,7 @@ const useLayoutStoreResponsive = () => {
 
   useEffect(() => {
     if (!window || !document) return
-    const handleScrollListener = () => setScrollY(window.scrollY)
+    const handleScrollListener = () => updateShowScrollButton(window.scrollY)
     const handleVisibilityChange = () => setPageVisible(!document.hidden)
 
     handleResizeListener()
@@ -54,7 +54,7 @@ const useLayoutStoreResponsive = () => {
       window.removeEventListener('resize', () => handleResizeListener())
       window.removeEventListener('scroll', () => handleScrollListener())
     }
-  }, [document, handleResizeListener, setPageVisible, setScrollY])
+  }, [document, handleResizeListener, setPageVisible, updateShowScrollButton])
 }
 
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
