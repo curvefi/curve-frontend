@@ -10,7 +10,6 @@ import { useLlamaMarketSortOptions } from '@/llamalend/PageLlamaMarkets/hooks/us
 import { LendingMarketsFilters } from '@/llamalend/PageLlamaMarkets/LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from '@/llamalend/PageLlamaMarkets/LlamaMarketExpandedPanel'
 import { MarketsFilterChips } from '@/llamalend/PageLlamaMarkets/MarketsFilterChips'
-import Stack from '@mui/material/Stack'
 import {
   ExpandedState,
   getCoreRowModel,
@@ -80,59 +79,51 @@ export const LlamaMarketsTable = ({
     [setColumnFilter],
   )
   return (
-    <Stack
-      sx={{
-        marginBlockStart: Spacing.xl,
-        marginBlockEnd: Spacing.xxl,
-        maxWidth: MaxWidth.table,
-      }}
+    <DataTable
+      table={table}
+      emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      expandedPanel={LlamaMarketExpandedPanel}
+      shouldStickFirstColumn={useIsTablet() && !!hasPositions}
     >
-      <DataTable
-        table={table}
-        emptyText={isError ? t`Could not load markets` : t`No markets found`}
-        expandedPanel={LlamaMarketExpandedPanel}
-        shouldStickFirstColumn={useIsTablet() && !!hasPositions}
-      >
-        <TableFilters<LlamaMarketColumnId>
-          title={t`Llamalend Markets`}
-          subtitle={t`Borrow with the power of Curve soft liquidations`}
-          onReload={onReload}
-          visibilityGroups={columnSettings}
-          toggleVisibility={toggleVisibility}
-          onSearch={onSearch}
-          collapsible={
-            <LendingMarketsFilters
-              columnFilters={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              data={data}
-              minLiquidity={minLiquidity}
-            />
-          }
-          chips={
-            <MarketsFilterChips
-              onSearch={onSearch}
-              hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              hasFilters={columnFilters.length > 0}
-              hasPositions={hasPositions}
-              hasFavorites={hasFavorites}
-              resetFilters={resetFilters}
-            />
-          }
-          sort={
-            <SelectFilter
-              name="sort"
-              options={useLlamaMarketSortOptions()}
-              onSelected={useCallback(
-                ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
-                [onSortingChange],
-              )}
-              value={sortField}
-            />
-          }
-        />
-      </DataTable>
-    </Stack>
+      <TableFilters<LlamaMarketColumnId>
+        title={t`Llamalend Markets`}
+        subtitle={t`Borrow with the power of Curve soft liquidations`}
+        onReload={onReload}
+        visibilityGroups={columnSettings}
+        toggleVisibility={toggleVisibility}
+        onSearch={onSearch}
+        collapsible={
+          <LendingMarketsFilters
+            columnFilters={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            data={data}
+            minLiquidity={minLiquidity}
+          />
+        }
+        chips={
+          <MarketsFilterChips
+            onSearch={onSearch}
+            hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            hasFilters={columnFilters.length > 0}
+            hasPositions={hasPositions}
+            hasFavorites={hasFavorites}
+            resetFilters={resetFilters}
+          />
+        }
+        sort={
+          <SelectFilter
+            name="sort"
+            options={useLlamaMarketSortOptions()}
+            onSelected={useCallback(
+              ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
+              [onSortingChange],
+            )}
+            value={sortField}
+          />
+        }
+      />
+    </DataTable>
   )
 }
