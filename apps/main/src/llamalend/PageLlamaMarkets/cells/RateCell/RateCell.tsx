@@ -34,7 +34,7 @@ export const RateCell = ({
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType]
   return (
-    // The box container makes sure the tooltip doens't span the entire cell, so the tooltip arrow is placed correctly
+    // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box display="flex" justifyContent="end">
       <Tooltip market={market}>
         <Stack gap={Spacing.xs} alignItems="end">
