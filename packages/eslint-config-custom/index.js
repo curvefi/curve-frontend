@@ -20,8 +20,8 @@ module.exports = {
           ...['dex', 'dao', 'lend', 'loan', 'llamalend']
             .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`, `apps/main/src/app/api/${app}`])
             .map((from, index, paths) => ({
-              target: paths.filter((_, i) => i !== index).flat(),
-              from,
+              target: paths.filter((_, i) => i !== index).flat(), // target ==> all apps except the one importing from
+              from, // from ==> the app importing
             })),
         ],
       },
