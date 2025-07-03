@@ -13,7 +13,6 @@ export type StateKey = string
 
 type SliceState = {
   isPageVisible: boolean
-  scrollY: number
 }
 
 // prettier-ignore
@@ -32,7 +31,6 @@ export interface AppSlice extends SliceState {
 
 const DEFAULT_STATE: SliceState = {
   isPageVisible: true,
-  scrollY: 0,
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
