@@ -66,7 +66,8 @@ export const LlamaMarketsTable = ({
     data,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
+    // only pass the filtered model once loaded, it causes an error: https://github.com/TanStack/table/issues/5026
+    getFilteredRowModel: result && getFilteredRowModel(),
     onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel(),
     state: { expanded, sorting, columnVisibility, columnFilters },
@@ -103,7 +104,7 @@ export const LlamaMarketsTable = ({
         chips={
           <MarketsFilterChips
             onSearch={onSearch}
-            hiddenMarketCount={data.length - table.getFilteredRowModel().rows.length}
+            hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
             columnFiltersById={columnFiltersById}
             setColumnFilter={setColumnFilter}
             hasFilters={columnFilters.length > 0}

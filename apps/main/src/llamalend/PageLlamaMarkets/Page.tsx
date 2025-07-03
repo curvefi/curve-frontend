@@ -70,20 +70,12 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
             minHeight: MinHeight.pageContent,
           }}
         >
-          {/*
-           do not render the table in the server:
-           - useReactTable throws "Can't perform a React state update on a component that hasn't mounted yet"
-           - it raises a hydration error when the user is connected
-           - the stack should be enough to give the skeleton its size
-            */}
-          {!showSkeleton && (
-            <LlamaMarketsTable
-              onReload={() => onReload(address)}
-              result={data}
-              isError={isError}
-              minLiquidity={minLiquidity}
-            />
-          )}
+          <LlamaMarketsTable
+            onReload={() => onReload(address)}
+            result={data}
+            isError={isError}
+            minLiquidity={minLiquidity}
+          />
         </Stack>
       </WithSkeleton>
 
