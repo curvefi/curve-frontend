@@ -85,17 +85,17 @@ export type Props = {
   health: Delta
   loan: {
     /** Borrow rate values the user is paying to keep the loan open */
-    borrowRate: Delta
+    borrowRate?: Delta
     /** Debt token with amount and optional new amount for comparison */
-    debt: TokenAmount & { new?: number }
+    debt?: TokenAmount & { new?: number }
     /** LTV value indicates how big the loan is compared to the collateral */
-    ltv: Delta
+    ltv?: Delta
     /** Array of collateral assets - only renders when provided */
-    collateral: TokenAmount[]
+    collateral?: TokenAmount[]
   }
   collateral: {
     /** Borrowed collateral token information */
-    borrowed: TokenAmount
+    borrowed?: TokenAmount
     /** The leverage multiplier if present, like 9x or 10x */
     leverage?: Delta
     /** Assets the user gets when withdrawing or closing the position */
@@ -104,7 +104,7 @@ export type Props = {
   /** Meta information about to the potential transaction itself */
   transaction: {
     /** Transaction cost breakdown in ETH, GWEI, and USD */
-    estimatedTxCost: { eth: number; gwei: number; dollars: number }
+    estimatedTxCost?: { eth: number; gwei: number; dollars: number }
   }
 }
 
@@ -150,23 +150,32 @@ export const ActionInfos = ({
   >
     <Stack gap={Spacing.md}>
       <Stack>
-        <ActionInfo
-          label="Borrow Rate"
-          value={`${formatValue(borrowRate.new)}%`}
-          prevValue={`${formatValue(borrowRate.old)}%`}
-        />
+        {borrowRate && (
+          <ActionInfo
+            label="Borrow Rate"
+            value={`${formatValue(borrowRate.new)}%`}
+            prevValue={`${formatValue(borrowRate.old)}%`}
+          />
+        )}
 
-        <ActionInfo
-          label="Debt"
-          value={`${formatTokens({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
-          prevValue={`${formatTokens({ symbol: debt.symbol, amount: debt.amount })}`}
-        />
+        {debt && (
+          <ActionInfo
+            label="Debt"
+            value={`${formatTokens({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
+            prevValue={`${formatTokens({ symbol: debt.symbol, amount: debt.amount })}`}
+          />
+        )}
 
-        <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />
+        {ltv && <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />}
 
-        {collateral.map((c, i) => (
-          <ActionInfo key={`collateral-${c.symbol}`} label={i === 0 ? 'Collateral' : ''} value={`${formatTokens(c)}`} />
-        ))}
+        {collateral &&
+          collateral.map((c, i) => (
+            <ActionInfo
+              key={`collateral-${c.symbol}`}
+              label={i === 0 ? 'Collateral' : ''}
+              value={`${formatTokens(c)}`}
+            />
+          ))}
       </Stack>
 
       <Stack>
@@ -178,17 +187,19 @@ export const ActionInfos = ({
           />
         )}
 
-        <ActionInfo label="Collateral" value={`${formatTokens(borrowed)}`} />
+        {borrowed && <ActionInfo label="Collateral" value={`${formatTokens(borrowed)}`} />}
 
         {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatTokens(assetsToWithdraw)}`} />}
       </Stack>
 
-      <ActionInfo
-        label="Estimated tx cost"
-        valueLeft={<GasIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
-        value={`$${formatValue(estimatedTxCost.dollars)}`}
-        valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
-      />
+      {estimatedTxCost && (
+        <ActionInfo
+          label="Estimated tx cost"
+          valueLeft={<GasIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
+          value={`$${formatValue(estimatedTxCost.dollars)}`}
+          valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
+        />
+      )}
     </Stack>
   </Accordion>
 )
