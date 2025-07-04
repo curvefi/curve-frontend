@@ -85,6 +85,7 @@ export const MarketsFilterChips = ({
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
+  const isConnected = hasPositions != null && !!address
   return (
     <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
       {!useIsMobile() && <TableSearchField onSearch={onSearch} />}
@@ -103,7 +104,7 @@ export const MarketsFilterChips = ({
         />
       </Grid>
       <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-        {address && (
+        {isConnected && (
           <GridChip
             label={t`My Markets`}
             selected={myMarkets}
@@ -127,7 +128,7 @@ export const MarketsFilterChips = ({
           toggle={toggleRewards}
           icon={<PointsIcon />}
           data-testid="chip-rewards"
-          {...(address && { size: 12 })}
+          {...(isConnected && { size: 12 })}
           extraMargin
         />
       </Grid>

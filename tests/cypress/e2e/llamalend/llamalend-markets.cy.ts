@@ -19,7 +19,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
+import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
