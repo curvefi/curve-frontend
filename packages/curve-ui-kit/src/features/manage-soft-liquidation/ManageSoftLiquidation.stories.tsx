@@ -29,25 +29,25 @@ const actionInfos = {
   },
 }
 
-type Token = TokenOption & { balance: number }
+type Token = TokenOption & { amount: number }
 
 const debtToken: Token = {
   symbol: 'crvUSD',
   address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
-  balance: 321.01,
+  amount: 321.01,
 }
 
 const collateralToRecover = [
   {
     symbol: 'ETH',
     address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address,
-    balance: 26539422,
+    amount: 26539422,
     usd: 638000,
   },
   {
     symbol: 'crvUSD',
     address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
-    balance: 12450,
+    amount: 12450,
     usd: 12450,
   },
 ]
@@ -122,6 +122,7 @@ export const Default: Story = {
     actionInfos,
     improveHealth: {
       debtToken,
+      userBalance: 6900,
       status: 'idle' as const,
       onDebtBalance: fn(),
       onRepay: fn(),
