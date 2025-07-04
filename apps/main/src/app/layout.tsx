@@ -1,11 +1,14 @@
 import Head from 'next/head'
-import { headers } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import { type ReactNode } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 import { getNetworkDefs } from '@/dex/lib/networks'
 import '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import type { UserProfileState } from '@ui-kit/features/user-profile/store'
+import { USER_PROFILE_COOKIE_NAME } from '@ui-kit/lib/cookie-storage'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
 
 const injectIpfsPrefix = `
@@ -26,8 +29,21 @@ const injectHeader = `
   })()
 `
 
-async function getScheme() {
-  return (await headers()).get('Sec-CH-Prefers-Color-Scheme') as 'dark' | 'light' | null
+const getScheme = async () => (await headers()).get('Sec-CH-Prefers-Color-Scheme') as 'dark' | 'light' | null
+
+export const getUserProfileCookie = async () => {
+  const cookie = (await cookies()).get(USER_PROFILE_COOKIE_NAME)
+  return cookie ? (JSON.parse(cookie.value) as UserProfileState) : null
+}
+
+const getClientProps = async () => {
+  const [networks, preferredScheme, userProfileCookie] = await Promise.all([
+    getNetworkDefs(),
+    getScheme(),
+    getUserProfileCookie(),
+  ])
+  useUserProfileStore.setState(userProfileCookie)
+  return { networks, preferredScheme, userProfileCookie }
 }
 
 const Layout = async ({ children }: { children: ReactNode }) => (
@@ -72,9 +88,7 @@ const Layout = async ({ children }: { children: ReactNode }) => (
     </Head>
     <body>
       <StyledComponentsRegistry>
-        <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>
-          {children}
-        </ClientWrapper>
+        <ClientWrapper {...await getClientProps()}>{children}</ClientWrapper>
       </StyledComponentsRegistry>
     </body>
   </html>

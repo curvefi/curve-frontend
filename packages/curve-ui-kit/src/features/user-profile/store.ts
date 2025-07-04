@@ -7,10 +7,11 @@ import type { PersistOptions } from 'zustand/middleware/persist'
 import type { Address } from '@curvefi/prices-api'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { isBetaDefault } from '@ui-kit/utils'
+import { createCookieStorage, USER_PROFILE_COOKIE_NAME } from '../../lib/cookie-storage'
 
 export const SMALL_POOL_TVL = 10000
 
-type State = {
+export type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
@@ -47,16 +48,11 @@ type Action = {
   setFavoriteMarkets: (markets: Address[]) => void
 }
 
-type Store = State & Action
+type Store = UserProfileState & Action
 
-const INITIAL_THEME =
-  typeof window !== 'undefined'
-    ? window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
-    : 'light'
+const INITIAL_THEME = 'light' // Default theme, will be overridden by cookie if available
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
   isAdvancedMode: false,
@@ -119,6 +115,7 @@ const store: StateCreator<Store> = (set) => ({
 
 const cache: PersistOptions<Store> = {
   name: 'user-profile',
+  storage: createCookieStorage(USER_PROFILE_COOKIE_NAME),
   merge: (persistedState, currentState) => merge(currentState, persistedState),
   version: 1,
 }
@@ -127,13 +124,6 @@ const useUserProfileStore =
   process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
 
 export default useUserProfileStore
-
-// Hook-compatible exports for backward compatibility
-export const useBetaFlag = () => {
-  const beta = useUserProfileStore((state) => state.beta)
-  const setBeta = useUserProfileStore((state) => state.setBeta)
-  return [beta, setBeta] as const
-}
 
 export const useFilterExpanded = (tableTitle: string) => {
   const key = `filter-expanded-${kebabCase(tableTitle)}`
@@ -148,11 +138,3 @@ export const useFilterExpanded = (tableTitle: string) => {
   }
   return [expanded, setExpanded] as const
 }
-
-export const useFavoriteMarkets = () => {
-  const favoriteMarkets = useUserProfileStore((state) => state.favoriteMarkets)
-  const setFavoriteMarkets = useUserProfileStore((state) => state.setFavoriteMarkets)
-  return [favoriteMarkets, setFavoriteMarkets] as const
-}
-
-export const getFavoriteMarkets = () => useUserProfileStore.getState().favoriteMarkets

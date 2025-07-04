@@ -7,7 +7,7 @@ import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
-import { UserProfileButton, useUserProfileStore, useBetaFlag } from '@ui-kit/features/user-profile'
+import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -34,7 +34,7 @@ export const DesktopHeader = ({
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
-  const [isBeta] = useBetaFlag()
+  const isBeta = useUserProfileStore((state) => state.beta)
   return (
     <AppBar
       color="transparent"

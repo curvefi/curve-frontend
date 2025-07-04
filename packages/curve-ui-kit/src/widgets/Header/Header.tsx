@@ -2,7 +2,7 @@ import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
-import { useBetaFlag } from '@ui-kit/features/user-profile/store'
+import useUserProfileStore from '@ui-kit/features/user-profile/store'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
@@ -12,7 +12,7 @@ import { HeaderProps, NavigationSection } from './types'
 
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
-  const [isBeta] = useBetaFlag()
+  const isBeta = useUserProfileStore((state) => state.beta)
   const pathname = usePathname()
   const { networkId, currentMenu } = props
   const pages = useMemo(

@@ -2,7 +2,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
-import { useBetaFlag } from '@ui-kit/features/user-profile/store'
+import useUserProfileStore from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
@@ -27,7 +27,8 @@ type FooterProps = {
 export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
-  const [isBeta, setIsBeta] = useBetaFlag()
+  const isBeta = useUserProfileStore((state) => state.beta)
+  const setIsBeta = useUserProfileStore((state) => state.setBeta)
   const isTiny = useIsTiny()
   return (
     <Box

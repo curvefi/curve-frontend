@@ -2,7 +2,7 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
-import { useBetaFlag } from '@ui-kit/features/user-profile/store'
+import useUserProfileStore from '@ui-kit/features/user-profile/store'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
@@ -20,7 +20,8 @@ const { IconSize } = SizesAndSpaces
 const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
-  const [isBeta, setIsBeta] = useBetaFlag()
+  const isBeta = useUserProfileStore((state) => state.beta)
+  const setIsBeta = useUserProfileStore((state) => state.setBeta)
   const showBetaBanner = isBeta && !isCypress
 
   const { isConnected } = useAccount()

@@ -1,7 +1,7 @@
 'use client'
 import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
 import GlobalStyle from '@/globalStyle'
@@ -16,7 +16,6 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = () => {
@@ -76,35 +75,28 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
 }
 
 /**
- * During SSR, we cannot access the user's theme preference, so that can lead to hydration mismatch.
- * TODO: Store the preference in a cookie so we can read it from the server.
- */
-function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
-  const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
-  const storeTheme = useUserProfileStore((state) => state.theme)
-  useEffect(() => {
-    setTheme(storeTheme)
-  }, [setTheme, storeTheme])
-  return theme
-}
-
-/**
  * This is the part of the root layout that needs to be a client component.
  */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
   preferredScheme,
+  userProfileCookie,
 }: {
   children: ReactNode
   networks: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
+  userProfileCookie?: string
 }) => {
-  const theme = useThemeAfterSsr(preferredScheme)
+  const theme = useUserProfileStore((state) => state.theme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
   useLayoutStoreResponsive()
+  useEffect(() => {
+    // set the store state to match the server rendering
+    userProfileCookie && useUserProfileStore.setState(JSON.parse(userProfileCookie).state)
+  }, [userProfileCookie])
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
