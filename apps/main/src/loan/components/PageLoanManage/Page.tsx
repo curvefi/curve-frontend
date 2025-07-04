@@ -11,6 +11,7 @@ import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
+import { useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -47,6 +48,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LoanManageSoftLiq } from './LoanManageSoftLiq'
 
 const { Spacing } = SizesAndSpaces
 
@@ -72,10 +74,11 @@ const Page = (params: CollateralUrlParams) => {
   const { provider, connect: connectWallet } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const [isBeta] = useBetaFlag()
+  const isManageSoftLiq = useUserLoanStatus(llammaId) !== 'healthy' && isBeta
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
-  const [isBeta] = useBetaFlag()
 
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!llamma
@@ -190,7 +193,8 @@ const Page = (params: CollateralUrlParams) => {
         <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
           <AppPageFormsWrapper>
             {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
-            {isValidRouterParams && (
+            {isManageSoftLiq && <LoanManageSoftLiq market={llamma} />}
+            {isValidRouterParams && !isManageSoftLiq && (
               <LoanMange
                 {...formProps}
                 params={params}
