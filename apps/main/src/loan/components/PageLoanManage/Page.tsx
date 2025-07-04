@@ -9,6 +9,7 @@ import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
+import { useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -35,9 +36,11 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { LoanManageSoftLiq } from './LoanManageSoftLiq'
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
@@ -61,6 +64,8 @@ const Page = (params: CollateralUrlParams) => {
   const { provider, connect: connectWallet } = useWallet()
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const [isBeta] = useBetaFlag()
+  const isManageSoftLiq = useUserLoanStatus(llammaId) !== 'healthy' && isBeta
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
@@ -170,7 +175,8 @@ const Page = (params: CollateralUrlParams) => {
       <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper>
           {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
-          {isValidRouterParams && (
+          {isManageSoftLiq && <LoanManageSoftLiq market={llamma} />}
+          {isValidRouterParams && !isManageSoftLiq && (
             <LoanMange
               {...formProps}
               params={params}
