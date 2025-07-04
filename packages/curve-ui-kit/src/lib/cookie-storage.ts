@@ -9,8 +9,7 @@ const COOKIE_OPTIONS = {
 
 function readCookie(cookieName: string) {
   const value = Cookies.get(cookieName)
-  if (!value) return null
-  return JSON.parse(value)
+  return value == null ? null : JSON.parse(value)
 }
 
 export const USER_PROFILE_COOKIE_NAME = 'curve-user-profile'
@@ -20,15 +19,15 @@ export const createCookieStorage = <T>(cookieName: string): PersistStorage<T> =>
   setItem: (name, value) =>
     Cookies.set(
       cookieName,
-      {
+      JSON.stringify({
         ...readCookie(cookieName),
         [name]: JSON.stringify(value),
-      },
+      }),
       COOKIE_OPTIONS,
     ),
   removeItem: (name) => {
     const cookie = readCookie(cookieName)
     delete cookie[name]
-    Cookies.set(cookieName, cookie, COOKIE_OPTIONS)
+    Cookies.set(cookieName, JSON.stringify(cookie), COOKIE_OPTIONS)
   },
 })

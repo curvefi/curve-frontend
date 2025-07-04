@@ -1,13 +1,13 @@
 import Head from 'next/head'
 import { cookies, headers } from 'next/headers'
 import { type ReactNode } from 'react'
+import type { StorageValue } from 'zustand/middleware/persist'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 import { getNetworkDefs } from '@/dex/lib/networks'
 import '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import type { UserProfileState } from '@ui-kit/features/user-profile/store'
+import useUserProfileStore, { type UserProfileState } from '@ui-kit/features/user-profile/store'
 import { USER_PROFILE_COOKIE_NAME } from '@ui-kit/lib/cookie-storage'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
 
@@ -33,7 +33,7 @@ const getScheme = async () => (await headers()).get('Sec-CH-Prefers-Color-Scheme
 
 export const getUserProfileCookie = async () => {
   const cookie = (await cookies()).get(USER_PROFILE_COOKIE_NAME)
-  return cookie ? (JSON.parse(cookie.value) as UserProfileState) : null
+  return cookie ? (JSON.parse(cookie.value) as StorageValue<UserProfileState>).state : null
 }
 
 const getClientProps = async () => {
@@ -42,8 +42,8 @@ const getClientProps = async () => {
     getScheme(),
     getUserProfileCookie(),
   ])
-  useUserProfileStore.setState(userProfileCookie)
-  return { networks, preferredScheme, userProfileCookie }
+  if (userProfileCookie) useUserProfileStore.setState(userProfileCookie)
+  return { networks, preferredScheme, ...(userProfileCookie && { userProfileCookie }) }
 }
 
 const Layout = async ({ children }: { children: ReactNode }) => (

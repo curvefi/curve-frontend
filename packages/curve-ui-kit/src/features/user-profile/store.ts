@@ -6,8 +6,13 @@ import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
 import type { Address } from '@curvefi/prices-api'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { isBetaDefault } from '@ui-kit/utils'
 import { createCookieStorage, USER_PROFILE_COOKIE_NAME } from '../../lib/cookie-storage'
+
+export const isBetaDefault =
+  process.env.NODE_ENV === 'development' ||
+  (typeof window !== 'undefined' &&
+    window.location.hostname !== 'curve.finance' &&
+    window.location.hostname !== 'www.curve.finance')
 
 export const SMALL_POOL_TVL = 10000
 

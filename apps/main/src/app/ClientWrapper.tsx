@@ -12,6 +12,7 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import type { UserProfileState } from '@ui-kit/features/user-profile/store'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
@@ -75,28 +76,55 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
 }
 
 /**
+ * Remove the old user profile from localStorage and migrate it to cookies so it can be read by the server.
+ */
+const useLocalStorageToCookieMigration = (userProfileCookie: UserProfileState | undefined) =>
+  /* Example of the old localStorage values:
+  "user-profile": { "state": { "theme": "light", "maxSlippage": { "crypto": "0.1", "stable": "0.03" }, "isAdvancedMode": true, "hideSmallPools": true }, "version": 1 },
+  "beta": false,
+  "filter-expanded-llamalend-markets": false,
+  "favoriteMarkets": ["0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]
+   */
+  useEffect(() => {
+    const oldValues = Object.fromEntries(
+      ['user-profile', 'beta', 'filter-expanded-llamalend-markets', 'favoriteMarkets']
+        .map((key) => [key, localStorage.getItem(key)])
+        .filter(([, value]) => value != null)
+        .map(([key, value]) => [key, JSON.parse(value as string)]),
+    )
+    const newState = {
+      ...oldValues['user-profile']?.state,
+      ...('filter-expanded-llamalend-markets' in oldValues && {
+        filterExpanded: { 'filter-expanded-llamalend-markets': oldValues['filter-expanded-llamalend-markets'] },
+      }),
+      ...('favoriteMarkets' in oldValues && { favoriteMarkets: oldValues['favoriteMarkets'] }),
+      ...('beta' in oldValues && { beta: oldValues['beta'] }),
+    }
+    console.warn(`Migrating user profile from localStorage to cookies`, newState)
+    useUserProfileStore.setState(newState)
+    Object.keys(oldValues).forEach((key) => localStorage.removeItem(key))
+  }, [userProfileCookie])
+
+/**
  * This is the part of the root layout that needs to be a client component.
  */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
-  preferredScheme,
+  preferredScheme, // todo: the theme in the store should be undefined, use this to set it when so
   userProfileCookie,
 }: {
   children: ReactNode
   networks: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
-  userProfileCookie?: string
+  userProfileCookie?: UserProfileState
 }) => {
   const theme = useUserProfileStore((state) => state.theme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
   useLayoutStoreResponsive()
-  useEffect(() => {
-    // set the store state to match the server rendering
-    userProfileCookie && useUserProfileStore.setState(JSON.parse(userProfileCookie).state)
-  }, [userProfileCookie])
+  useLocalStorageToCookieMigration(userProfileCookie)
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {

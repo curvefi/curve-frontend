@@ -1,4 +1,5 @@
 import { getAddress, isAddress } from 'viem'
+import { isBetaDefault } from '@ui-kit/features/user-profile/store'
 
 export * from './address'
 export * from './BigDecimal'
@@ -11,11 +12,6 @@ export * from './searchText'
 export * from './mui'
 
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
-export const isBetaDefault =
-  process.env.NODE_ENV === 'development' ||
-  (typeof window !== 'undefined' &&
-    window.location.hostname !== 'curve.finance' &&
-    window.location.hostname !== 'www.curve.finance')
 export const enableLogging = isBetaDefault
 
 /**
