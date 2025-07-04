@@ -287,6 +287,7 @@ export const SizesAndSpaces = {
   },
   MinHeight: {
     tableNoResults: '35vh',
+    pageContent: '80vh',
   },
   MaxHeight: {
     popover: '17rem', // 272px

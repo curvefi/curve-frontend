@@ -24,6 +24,6 @@ type BlacklistEntry = {
 export const blacklist: BlacklistEntry[] = [
   {
     address: '0x0D57436F2d39c0664C6f0f2E349229483f87EA38', // A7A5 token
-    reason: 'Regulatory concerns',
+    reason: 'Adverse media detected',
   },
 ]
