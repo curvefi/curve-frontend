@@ -53,6 +53,9 @@ const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
     .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
     .join(' + ')
 
+/** Short-hand type for MUI Typography color */
+type TextColor = React.ComponentProps<typeof Typography>['color']
+
 /**
  * Determines the color for displaying new health values based on comparison with old values.
  *
@@ -62,8 +65,11 @@ const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
  *   - 'error' if new value is less than old value (health decreased)
  *   - 'success' if new value is greater than or equal to old value (health improved/maintained)
  */
-const newHealthColor = (health: Props['health']): React.ComponentProps<typeof Typography>['color'] =>
+const newHealthColor = (health: Props['health']): TextColor =>
   health.new == null || health.new === 0 ? 'textPrimary' : health.new < health.old ? 'error' : 'success'
+
+/** Health color when not changing it */
+const healthColor = (health: number): TextColor => (health <= 5 ? 'error' : health <= 15 ? 'warning' : 'success')
 
 /** Describes a change in value for a certain action info. New is optional as it we await input. */
 type Delta = { old: number; new?: number }
@@ -120,12 +126,24 @@ export const ActionInfos = ({
     ghost
     size="small"
     title={
+      /**
+       * Health display logic for the accordion title.
+       * Shows current health value with appropriate color coding:
+       * - When health is changing (new value exists): displays new value with comparison colors
+       * - When health is static: displays current value with standard health color thresholds
+       *
+       * Note: Health change colors indicate direction of change rather than absolute health status.
+       * A decrease from 150% to 140% shows as red (worse) even though 140% is still healthy.
+       * This is subject to change if it turns out to be bad UX.
+       */
       <ActionInfo
         label="Health"
-        value={`${formatValue(health.new)}%`}
-        valueColor={newHealthColor(health)}
-        prevValue={`${formatValue(health.old)}%`}
-        prevValueColor="textTertiary"
+        value={`${formatValue(health.new ?? health.old)}%`}
+        valueColor={health.new != null ? newHealthColor(health) : healthColor(health.old)}
+        {...(health.new != null && {
+          prevValue: `${formatValue(health.old)}%`,
+          prevValueColor: 'textTertiary',
+        })}
         sx={{ flexGrow: 1 }}
       />
     }
