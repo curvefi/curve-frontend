@@ -13,7 +13,7 @@ type Status = 'idle' | 'close'
 
 type ClosePositionProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken: Token
+  debtToken?: Token
   /** The tokens the user gets when closing his position */
   collateralToRecover: (Token & { usd: number })[]
   /** Current operation status */
@@ -35,8 +35,9 @@ export const ClosePosition = ({ debtToken, collateralToRecover, status = 'idle',
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
         label={t`Debt to repay`}
-        value={debtToken.balance}
-        valueOptions={{ decimals: 2, unit: { symbol: debtToken.symbol, position: 'suffix' }, abbreviate: true }}
+        value={debtToken?.balance}
+        valueOptions={{ decimals: 2, abbreviate: true }}
+        notional={debtToken?.symbol ?? ''}
         alignment="center"
         size="large"
       />
