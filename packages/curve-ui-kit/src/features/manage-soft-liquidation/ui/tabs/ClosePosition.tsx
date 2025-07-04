@@ -65,7 +65,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, status = 'idle',
       onClick={() => onClose(debtToken, collateralToRecover)}
       sx={{ position: 'relative' }}
     >
-      {t`Repay debt & close position`}
+        {status === 'idle' ? t`Repay debt & close position` : t`Closing position`}
       {status === 'close' && <Spinner sx={{ position: 'absolute', right: Spacing.lg }} />}
     </Button>
   </Stack>

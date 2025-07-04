@@ -85,7 +85,7 @@ export const ImproveHealth = ({
       <AlertRepayDebtToIncreaseHealth />
 
       <ButtonMenu
-        primary={t`Repay debt & increase health`}
+          primary={status === 'idle' ? t`Repay debt & increase health` : t`Repaying debt`}
         options={BUTTON_OPTIONS}
         open={isOpen}
         executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
