@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
-import { formatDisplayDate } from '@/dao/utils'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'

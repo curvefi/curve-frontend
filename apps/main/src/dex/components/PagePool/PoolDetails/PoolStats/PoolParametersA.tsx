@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { formatDisplayDate } from '@/dao/utils'
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import { PoolData } from '@/dex/types/main.types'
 import { formatDisplayDate } from '@/dex/utils/utilsDates'
