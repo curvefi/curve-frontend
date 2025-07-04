@@ -21,7 +21,7 @@ type Status = 'idle' | 'repay' | OptionId
 
 type ImproveHealthProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken: Token
+  debtToken?: Token
   /** Current status of the improve health operation */
   status: Status
 }
@@ -63,10 +63,10 @@ export const ImproveHealth = ({
         label={t`Debt to repay`}
         tokenSelector={
           <TokenLabel
-            blockchainId={debtToken.chain}
-            tooltip={debtToken.symbol}
-            address={debtToken.address}
-            label={debtToken.symbol}
+            blockchainId={debtToken?.chain}
+            tooltip={debtToken?.symbol}
+            address={debtToken?.address}
+            label={debtToken?.symbol ?? '?'}
           />
         }
         maxBalance={maxBalance}
