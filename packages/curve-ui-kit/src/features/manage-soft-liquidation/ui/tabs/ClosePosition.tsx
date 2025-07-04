@@ -6,6 +6,7 @@ import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
 import { AlertClosePosition } from '../AlertClosePosition'
+import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,13 +61,17 @@ export const ClosePosition = ({ debtToken, collateralToRecover, status = 'idle',
 
     <AlertClosePosition />
 
-    <Button
-      disabled={status === 'close'}
-      onClick={() => onClose(debtToken, collateralToRecover)}
-      sx={{ position: 'relative' }}
-    >
+    <Stack gap={Spacing.xs}>
+      <Button
+        disabled={status === 'close'}
+        onClick={() => onClose(debtToken, collateralToRecover)}
+        sx={{ position: 'relative' }}
+      >
         {status === 'idle' ? t`Repay debt & close position` : t`Closing position`}
-      {status === 'close' && <Spinner sx={{ position: 'absolute', right: Spacing.lg }} />}
-    </Button>
+        {status === 'close' && <Spinner sx={{ position: 'absolute', right: Spacing.lg }} />}
+      </Button>
+
+      <ButtonGetCrvUsd />
+    </Stack>
   </Stack>
 )

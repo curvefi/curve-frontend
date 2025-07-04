@@ -8,6 +8,7 @@ import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
 import { AlertRepayDebtToIncreaseHealth } from '../AlertRepayDebtToIncreaseHealth'
+import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
@@ -84,20 +85,24 @@ export const ImproveHealth = ({
 
       <AlertRepayDebtToIncreaseHealth />
 
-      <ButtonMenu
+      <Stack gap={Spacing.xs}>
+        <ButtonMenu
           primary={status === 'idle' ? t`Repay debt & increase health` : t`Repaying debt`}
-        options={BUTTON_OPTIONS}
-        open={isOpen}
-        executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-        disabled={!debtToken || debtBalance === 0}
-        onPrimary={() => onRepay(debtToken!, debtBalance)}
-        onOption={(id) => {
-          close()
-          BUTTON_OPTION_CALLBACKS[id]()
-        }}
-        onOpen={open}
-        onClose={close}
-      />
+          options={BUTTON_OPTIONS}
+          open={isOpen}
+          executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
+          disabled={!debtToken || debtBalance === 0}
+          onPrimary={() => onRepay(debtToken!, debtBalance)}
+          onOption={(id) => {
+            close()
+            BUTTON_OPTION_CALLBACKS[id]()
+          }}
+          onOpen={open}
+          onClose={close}
+        />
+
+        <ButtonGetCrvUsd />
+      </Stack>
     </Stack>
   )
 }
