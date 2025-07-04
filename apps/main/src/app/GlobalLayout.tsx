@@ -11,8 +11,11 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { Header as Header } from '@ui-kit/widgets/Header'
+
+const { MinHeight } = SizesAndSpaces
 
 const useAppStats = (currentApp: string, network: NetworkDef) =>
   ({
@@ -69,7 +72,10 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       appStats={useAppStats(currentApp, network)}
       routes={useAppRoutes(network)}
     />
-    <Box component="main" sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: '80vh', width: '100%' }}>
+    <Box
+      component="main"
+      sx={{ margin: `0 auto`, maxWidth: `var(--width)`, minHeight: MinHeight.pageContent, width: '100%' }}
+    >
       {children}
     </Box>
     <Footer appName={currentApp} networkId={network.id} />
