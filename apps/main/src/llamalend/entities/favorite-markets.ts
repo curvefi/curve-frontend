@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
-import { getFavoriteMarkets, useFavoriteMarkets } from '@ui-kit/hooks/useLocalStorage'
+import { getFavoriteMarkets, useFavoriteMarkets } from '@ui-kit/features/user-profile/store'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 
