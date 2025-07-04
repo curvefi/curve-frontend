@@ -95,7 +95,7 @@ export type Props = {
   }
   collateral: {
     /** Borrowed collateral token information */
-    borrowed?: TokenAmount
+    borrowed?: TokenAmount & { new?: number }
     /** The leverage multiplier if present, like 9x or 10x */
     leverage?: Delta
     /** Assets the user gets when withdrawing or closing the position */
@@ -187,7 +187,13 @@ export const ActionInfos = ({
           />
         )}
 
-        {borrowed && <ActionInfo label="Collateral" value={`${formatTokens(borrowed)}`} />}
+        {borrowed && (
+          <ActionInfo
+            label="Collateral"
+            value={`${formatTokens({ symbol: borrowed.symbol, amount: borrowed.new ?? borrowed.amount })}`}
+            prevValue={`${formatTokens({ symbol: borrowed.symbol, amount: borrowed.amount })}`}
+          />
+        )}
 
         {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatTokens(assetsToWithdraw)}`} />}
       </Stack>
