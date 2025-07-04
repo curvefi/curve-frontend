@@ -52,6 +52,11 @@ const collateralToRecover = [
   },
 ]
 
+const canClose = {
+  requiredToClose: 100,
+  missing: 42,
+}
+
 type ImproveHealthStatus = ImproveHealthProps['status']
 type ClosePositionStatus = ClosePositionProps['status']
 
@@ -126,6 +131,7 @@ export const Default: Story = {
     closePosition: {
       debtToken,
       collateralToRecover,
+      canClose,
       status: 'idle' as const,
       onClose: fn(),
     },
