@@ -1,7 +1,7 @@
 'use client'
 import delay from 'lodash/delay'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
 import GlobalStyle from '@/globalStyle'
@@ -12,11 +12,11 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import type { UserProfileState } from '@ui-kit/features/user-profile/store'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
-import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = () => {
@@ -76,17 +76,51 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
 }
 
 /**
- * During SSR, we cannot access the user's theme preference, so that can lead to hydration mismatch.
- * TODO: Store the preference in a cookie so we can read it from the server.
+ * Remove the old user profile from localStorage and migrate it to cookies so it can be read by the server.
  */
-function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
-  const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
-  const storeTheme = useUserProfileStore((state) => state.theme)
+const useLocalStorageToCookieMigration = (userProfileCookie: UserProfileState | undefined) =>
+  /* Example of the old localStorage values:
+  "user-profile": { "state": { "theme": "light", "maxSlippage": { "crypto": "0.1", "stable": "0.03" }, "isAdvancedMode": true, "hideSmallPools": true }, "version": 1 },
+  "beta": false,
+  "filter-expanded-llamalend-markets": false,
+  "favoriteMarkets": ["0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]
+   */
   useEffect(() => {
-    setTheme(storeTheme)
-  }, [setTheme, storeTheme])
-  return theme
-}
+    const oldValues = Object.fromEntries(
+      ['user-profile', 'beta', 'filter-expanded-llamalend-markets', 'favoriteMarkets']
+        .map((key) => [key, localStorage.getItem(key)])
+        .filter(([, value]) => value != null)
+        .map(([key, value]) => [key, JSON.parse(value as string)]),
+    )
+    const newState = {
+      ...oldValues['user-profile']?.state,
+      ...('filter-expanded-llamalend-markets' in oldValues && {
+        filterExpanded: { 'filter-expanded-llamalend-markets': oldValues['filter-expanded-llamalend-markets'] },
+      }),
+      ...('favoriteMarkets' in oldValues && { favoriteMarkets: oldValues['favoriteMarkets'] }),
+      ...('beta' in oldValues && { beta: oldValues['beta'] }),
+    }
+    if (Object.keys(oldValues).length) {
+      console.warn(`Migrating user profile from localStorage to cookies`, newState)
+      useUserProfileStore.setState(newState)
+      Object.keys(oldValues).forEach((key) => localStorage.removeItem(key))
+    }
+  }, [userProfileCookie])
+
+/**
+ * Hook to determine the initial theme based on the preferred scheme and user profile cookie.
+ * If the cookie or the localStorage user profile is not set, it will set the theme to the preferred scheme.
+ */
+const useInitialTheme = (preferredScheme: 'light' | 'dark' | null, userProfileCookie: UserProfileState | undefined) =>
+  useMemo(() => {
+    const state = useUserProfileStore.getState()
+    const userProfileStorage = typeof window === 'undefined' || !localStorage.getItem('user-profile')
+    if (preferredScheme && !userProfileCookie && userProfileStorage) {
+      state.setTheme(preferredScheme)
+      return preferredScheme
+    }
+    return state.theme
+  }, [preferredScheme, userProfileCookie])
 
 /**
  * This is the part of the root layout that needs to be a client component.
@@ -95,16 +129,19 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
   preferredScheme,
+  userProfileCookie,
 }: {
   children: ReactNode
   networks: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
+  userProfileCookie?: UserProfileState
 }) => {
-  const theme = useThemeAfterSsr(preferredScheme)
+  const theme = useInitialTheme(preferredScheme, userProfileCookie)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
   useLayoutStoreResponsive()
+  useLocalStorageToCookieMigration(userProfileCookie)
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {

@@ -7565,6 +7565,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/js-cookie@npm:^3.0.6":
+  version: 3.0.6
+  resolution: "@types/js-cookie@npm:3.0.6"
+  checksum: 10c0/173afaf5ea9d86c22395b9d2a00b6adb0006dcfef165d6dcb0395cdc32f5a5dcf9c3c60f97194119963a15849b8f85121e1ae730b03e40bc0c29b84396ba22f9
+  languageName: node
+  linkType: hard
+
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.15, @types/json-schema@npm:^7.0.8, @types/json-schema@npm:^7.0.9":
   version: 7.0.15
   resolution: "@types/json-schema@npm:7.0.15"
@@ -11053,6 +11060,7 @@ __metadata:
     "@tanstack/react-query-devtools": "npm:5.81.5"
     "@tanstack/react-query-persist-client": "npm:5.81.5"
     "@tanstack/react-table": "npm:8.21.3"
+    "@types/js-cookie": "npm:^3.0.6"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     dayjs: "npm:^1.11.13"
@@ -11060,6 +11068,7 @@ __metadata:
     eslint-config-custom: "npm:*"
     ethers: "npm:*"
     immer: "npm:^9.0.21"
+    js-cookie: "npm:^3.0.5"
     next: "npm:*"
     pino-pretty: "npm:^13.0.0"
     react: "npm:*"
@@ -15077,6 +15086,13 @@ __metadata:
   version: 3.1.1
   resolution: "joycon@npm:3.1.1"
   checksum: 10c0/131fb1e98c9065d067fd49b6e685487ac4ad4d254191d7aa2c9e3b90f4e9ca70430c43cad001602bdbdabcf58717d3b5c5b7461c1bd8e39478c8de706b3fe6ae
+  languageName: node
+  linkType: hard
+
+"js-cookie@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "js-cookie@npm:3.0.5"
+  checksum: 10c0/04a0e560407b4489daac3a63e231d35f4e86f78bff9d792011391b49c59f721b513411cd75714c418049c8dc9750b20fcddad1ca5a2ca616c3aca4874cce5b3a
   languageName: node
   linkType: hard
 

@@ -1,18 +1,30 @@
 import { produce } from 'immer'
+import { kebabCase } from 'lodash'
 import merge from 'lodash/merge'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
+import type { Address } from '@curvefi/prices-api'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import { createCookieStorage, USER_PROFILE_COOKIE_NAME } from '../../lib/cookie-storage'
+
+export const isBetaDefault =
+  process.env.NODE_ENV === 'development' ||
+  (typeof window !== 'undefined' &&
+    window.location.hostname !== 'curve.finance' &&
+    window.location.hostname !== 'www.curve.finance')
 
 export const SMALL_POOL_TVL = 10000
 
-type State = {
+export type UserProfileState = {
   theme: ThemeKey
   /** Key is either 'crypto', 'stable' or a chainIdPoolId from getChainPoolIdActiveKey. */
   maxSlippage: { crypto: string; stable: string } & Partial<Record<string, string>>
   isAdvancedMode: boolean
   hideSmallPools: boolean
+  beta: boolean
+  filterExpanded: Record<string, boolean>
+  favoriteMarkets: Address[]
 }
 
 type Action = {
@@ -36,22 +48,23 @@ type Action = {
   setMaxSlippage: (slippage: string | null, key?: string) => boolean
   setAdvancedMode: (isAdvanced: boolean) => void
   setHideSmallPools: (hideSmallPools: boolean) => void
+  setBeta: (beta: boolean) => void
+  setFilterExpanded: (key: string, expanded: boolean) => void
+  setFavoriteMarkets: (markets: Address[]) => void
 }
 
-type Store = State & Action
+type Store = UserProfileState & Action
 
-const INITIAL_THEME =
-  typeof window !== 'undefined'
-    ? window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'dark'
-      : 'light'
-    : 'light'
+const INITIAL_THEME = 'light' // Default theme, will be overridden by cookie if available
 
-const INITIAL_STATE: State = {
+const INITIAL_STATE: UserProfileState = {
   theme: INITIAL_THEME,
   maxSlippage: { crypto: '0.1', stable: '0.03' },
   isAdvancedMode: false,
   hideSmallPools: true,
+  beta: isBetaDefault,
+  filterExpanded: {},
+  favoriteMarkets: [],
 }
 
 const store: StateCreator<Store> = (set) => ({
@@ -95,10 +108,19 @@ const store: StateCreator<Store> = (set) => ({
 
   setAdvancedMode: (isAdvancedMode) => set((state) => ({ ...state, isAdvancedMode })),
   setHideSmallPools: (hideSmallPools) => set((state) => ({ ...state, hideSmallPools })),
+  setBeta: (beta) => set((state) => ({ ...state, beta })),
+  setFilterExpanded: (key, expanded) =>
+    set(
+      produce((state) => {
+        state.filterExpanded[key] = expanded
+      }),
+    ),
+  setFavoriteMarkets: (favoriteMarkets) => set((state) => ({ ...state, favoriteMarkets })),
 })
 
 const cache: PersistOptions<Store> = {
   name: 'user-profile',
+  storage: createCookieStorage(USER_PROFILE_COOKIE_NAME),
   merge: (persistedState, currentState) => merge(currentState, persistedState),
   version: 1,
 }
@@ -107,3 +129,17 @@ const useUserProfileStore =
   process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
 
 export default useUserProfileStore
+
+export const useFilterExpanded = (tableTitle: string) => {
+  const key = `filter-expanded-${kebabCase(tableTitle)}`
+  const expanded = useUserProfileStore((state) => state.filterExpanded[key] ?? false)
+  const setFilterExpanded = useUserProfileStore((state) => state.setFilterExpanded)
+  const setExpanded = (value: boolean | ((prev: boolean) => boolean)) => {
+    if (typeof value === 'function') {
+      setFilterExpanded(key, value(expanded))
+    } else {
+      setFilterExpanded(key, value)
+    }
+  }
+  return [expanded, setExpanded] as const
+}
