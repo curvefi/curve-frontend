@@ -100,10 +100,27 @@ const useLocalStorageToCookieMigration = (userProfileCookie: UserProfileState | 
       ...('favoriteMarkets' in oldValues && { favoriteMarkets: oldValues['favoriteMarkets'] }),
       ...('beta' in oldValues && { beta: oldValues['beta'] }),
     }
-    console.warn(`Migrating user profile from localStorage to cookies`, newState)
-    useUserProfileStore.setState(newState)
-    Object.keys(oldValues).forEach((key) => localStorage.removeItem(key))
+    if (Object.keys(oldValues).length) {
+      console.warn(`Migrating user profile from localStorage to cookies`, newState)
+      useUserProfileStore.setState(newState)
+      Object.keys(oldValues).forEach((key) => localStorage.removeItem(key))
+    }
   }, [userProfileCookie])
+
+/**
+ * Hook to determine the initial theme based on the preferred scheme and user profile cookie.
+ * If the cookie or the localStorage user profile is not set, it will set the theme to the preferred scheme.
+ */
+const useInitialTheme = (preferredScheme: 'light' | 'dark' | null, userProfileCookie: UserProfileState | undefined) =>
+  useMemo(() => {
+    const state = useUserProfileStore.getState()
+    const userProfileStorage = typeof window === 'undefined' || !localStorage.getItem('user-profile')
+    if (preferredScheme && !userProfileCookie && userProfileStorage) {
+      state.setTheme(preferredScheme)
+      return preferredScheme
+    }
+    return state.theme
+  }, [preferredScheme, userProfileCookie])
 
 /**
  * This is the part of the root layout that needs to be a client component.
@@ -111,7 +128,7 @@ const useLocalStorageToCookieMigration = (userProfileCookie: UserProfileState | 
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
   networks,
-  preferredScheme, // todo: the theme in the store should be undefined, use this to set it when so
+  preferredScheme,
   userProfileCookie,
 }: {
   children: ReactNode
@@ -119,7 +136,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   preferredScheme: 'light' | 'dark' | null
   userProfileCookie?: UserProfileState
 }) => {
-  const theme = useUserProfileStore((state) => state.theme)
+  const theme = useInitialTheme(preferredScheme, userProfileCookie)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
   const { push } = useRouter()
