@@ -15,9 +15,9 @@ type Status = 'idle' | 'close'
 
 type ClosePositionProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken?: Token
+  debtToken?: Token & { amount: number }
   /** The tokens the user gets when closing his position */
-  collateralToRecover: (Token & { usd: number })[]
+  collateralToRecover: (Token & { amount?: number; usd: number })[]
   /** Whether the user has sufficient stablecoins to close the position */
   canClose: { requiredToClose: number; missing: number }
   /** Current operation status */
@@ -39,7 +39,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
         label={t`Debt to repay`}
-        value={debtToken?.balance}
+        value={debtToken?.amount}
         valueOptions={{ decimals: 2, abbreviate: true }}
         notional={debtToken?.symbol ?? ''}
         alignment="center"
@@ -51,9 +51,9 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
         value={collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
         valueOptions={{ decimals: 2, unit: 'dollar' }}
         notional={collateralToRecover
-          .filter((x) => x.balance ?? 0 > 0)
+          .filter((x) => x.amount ?? 0 > 0)
           .map((x) => ({
-            value: x.balance!,
+            value: x.amount!,
             unit: { symbol: ` ${x.symbol}`, position: 'suffix' },
             abbreviate: true,
           }))}
@@ -69,7 +69,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
 
     <Stack gap={Spacing.xs}>
       <Button
-        disabled={status === 'close' || canClose.missing > 0 || (debtToken?.balance ?? 0) <= 0}
+        disabled={status === 'close' || canClose.missing > 0 || (debtToken?.amount ?? 0) <= 0}
         onClick={() => onClose(debtToken, collateralToRecover)}
         sx={{ position: 'relative' }}
       >

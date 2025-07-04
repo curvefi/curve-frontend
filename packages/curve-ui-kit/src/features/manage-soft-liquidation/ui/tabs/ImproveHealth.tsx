@@ -22,7 +22,9 @@ type Status = 'idle' | 'repay' | OptionId
 
 type ImproveHealthProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken?: Token
+  debtToken?: Token & { amount: number }
+  /** the amount of tokens the user has in his wallet to repay debt with */
+  userBalance?: number
   /** Current status of the improve health operation */
   status: Status
 }
@@ -42,6 +44,7 @@ export type Props = ImproveHealthProps & ImproveHealthCallbacks
 
 export const ImproveHealth = ({
   debtToken,
+  userBalance,
   status = 'idle',
   onDebtBalance,
   onRepay,
@@ -56,7 +59,14 @@ export const ImproveHealth = ({
     'approve-infinite': onApproveInfinite,
   }
 
-  const maxBalance = useMemo(() => ({ ...debtToken, showSlider: false }), [debtToken])
+  const maxBalance = useMemo(
+    () => ({
+      balance: debtToken && userBalance && Math.min(debtToken.amount, userBalance),
+      symbol: debtToken?.symbol,
+      showSlider: false,
+    }),
+    [debtToken, userBalance],
+  )
 
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
@@ -91,7 +101,7 @@ export const ImproveHealth = ({
           options={BUTTON_OPTIONS}
           open={isOpen}
           executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-          disabled={!debtToken || debtBalance === 0}
+          disabled={!debtToken || debtBalance === 0 || debtBalance > (userBalance ?? 0)}
           onPrimary={() => onRepay(debtToken!, debtBalance)}
           onOption={(id) => {
             close()
