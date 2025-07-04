@@ -18,7 +18,7 @@ export const AlertClosePosition = () => (
       </Typography>
 
       <Typography variant="bodySRegular" color="textSecondary">
-        {t`While soft liquidation is active, you only repay debt to increase health or withdraw collateral.`}
+        {t`While soft liquidation is active, you may only repay debt to increase health or withdraw collateral.`}
 
         <Button
           href="https://resources.curve.finance/crvusd/loan-concepts"
