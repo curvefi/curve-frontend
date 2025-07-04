@@ -5,6 +5,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
+import { AlertAdditionalCrvUsd } from '../AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../AlertClosePosition'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
@@ -17,6 +18,8 @@ type ClosePositionProps = {
   debtToken?: Token
   /** The tokens the user gets when closing his position */
   collateralToRecover: (Token & { usd: number })[]
+  /** Whether the user has sufficient stablecoins to close the position */
+  canClose: { requiredToClose: number; missing: number }
   /** Current operation status */
   status: Status
 }
@@ -31,7 +34,7 @@ type ClosePositionCallbacks = {
 
 export type Props = ClosePositionProps & ClosePositionCallbacks
 
-export const ClosePosition = ({ debtToken, collateralToRecover, status = 'idle', onClose }: Props) => (
+export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status = 'idle', onClose }: Props) => (
   <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
@@ -60,10 +63,13 @@ export const ClosePosition = ({ debtToken, collateralToRecover, status = 'idle',
     </Stack>
 
     <AlertClosePosition />
+    {canClose.missing > 0 && debtToken?.symbol && (
+      <AlertAdditionalCrvUsd debtTokenSymbol={debtToken?.symbol} missing={canClose.missing} />
+    )}
 
     <Stack gap={Spacing.xs}>
       <Button
-        disabled={status === 'close'}
+        disabled={status === 'close' || canClose.missing > 0 || (debtToken?.balance ?? 0) <= 0}
         onClick={() => onClose(debtToken, collateralToRecover)}
         sx={{ position: 'relative' }}
       >
