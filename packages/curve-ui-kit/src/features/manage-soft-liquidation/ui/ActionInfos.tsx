@@ -53,6 +53,9 @@ const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
     .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
     .join(' + ')
 
+/** Short-hand type for MUI Typography color */
+type TextColor = React.ComponentProps<typeof Typography>['color']
+
 /**
  * Determines the color for displaying new health values based on comparison with old values.
  *
@@ -62,8 +65,11 @@ const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
  *   - 'error' if new value is less than old value (health decreased)
  *   - 'success' if new value is greater than or equal to old value (health improved/maintained)
  */
-const newHealthColor = (health: Props['health']): React.ComponentProps<typeof Typography>['color'] =>
+const newHealthColor = (health: Props['health']): TextColor =>
   health.new == null || health.new === 0 ? 'textPrimary' : health.new < health.old ? 'error' : 'success'
+
+/** Health color when not changing it */
+const healthColor = (health: number): TextColor => (health <= 5 ? 'error' : health <= 15 ? 'warning' : 'success')
 
 /** Describes a change in value for a certain action info. New is optional as it we await input. */
 type Delta = { old: number; new?: number }
@@ -79,17 +85,17 @@ export type Props = {
   health: Delta
   loan: {
     /** Borrow rate values the user is paying to keep the loan open */
-    borrowRate: Delta
+    borrowRate?: Delta
     /** Debt token with amount and optional new amount for comparison */
-    debt: TokenAmount & { new?: number }
+    debt?: TokenAmount & { new?: number }
     /** LTV value indicates how big the loan is compared to the collateral */
-    ltv: Delta
+    ltv?: Delta
     /** Array of collateral assets - only renders when provided */
-    collateral: TokenAmount[]
+    collateral?: TokenAmount[]
   }
   collateral: {
     /** Borrowed collateral token information */
-    borrowed: TokenAmount
+    borrowed?: TokenAmount & { new?: number }
     /** The leverage multiplier if present, like 9x or 10x */
     leverage?: Delta
     /** Assets the user gets when withdrawing or closing the position */
@@ -98,7 +104,7 @@ export type Props = {
   /** Meta information about to the potential transaction itself */
   transaction: {
     /** Transaction cost breakdown in ETH, GWEI, and USD */
-    estimatedTxCost: { eth: number; gwei: number; dollars: number }
+    estimatedTxCost?: { eth: number; gwei: number; dollars: number }
   }
 }
 
@@ -120,35 +126,56 @@ export const ActionInfos = ({
     ghost
     size="small"
     title={
+      /**
+       * Health display logic for the accordion title.
+       * Shows current health value with appropriate color coding:
+       * - When health is changing (new value exists): displays new value with comparison colors
+       * - When health is static: displays current value with standard health color thresholds
+       *
+       * Note: Health change colors indicate direction of change rather than absolute health status.
+       * A decrease from 150% to 140% shows as red (worse) even though 140% is still healthy.
+       * This is subject to change if it turns out to be bad UX.
+       */
       <ActionInfo
         label="Health"
-        value={`${formatValue(health.new)}%`}
-        valueColor={newHealthColor(health)}
-        prevValue={`${formatValue(health.old)}%`}
-        prevValueColor="textTertiary"
+        value={`${formatValue(health.new ?? health.old)}%`}
+        valueColor={health.new != null ? newHealthColor(health) : healthColor(health.old)}
+        {...(health.new != null && {
+          prevValue: `${formatValue(health.old)}%`,
+          prevValueColor: 'textTertiary',
+        })}
         sx={{ flexGrow: 1 }}
       />
     }
   >
     <Stack gap={Spacing.md}>
       <Stack>
-        <ActionInfo
-          label="Borrow Rate"
-          value={`${formatValue(borrowRate.new)}%`}
-          prevValue={`${formatValue(borrowRate.old)}%`}
-        />
+        {borrowRate && (
+          <ActionInfo
+            label="Borrow Rate"
+            value={`${formatValue(borrowRate.new)}%`}
+            prevValue={`${formatValue(borrowRate.old)}%`}
+          />
+        )}
 
-        <ActionInfo
-          label="Debt"
-          value={`${formatTokens({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
-          prevValue={`${formatTokens({ symbol: debt.symbol, amount: debt.amount })}`}
-        />
+        {debt && (
+          <ActionInfo
+            label="Debt"
+            value={`${formatTokens({ symbol: debt.symbol, amount: debt.new ?? debt.amount })}`}
+            prevValue={`${formatTokens({ symbol: debt.symbol, amount: debt.amount })}`}
+          />
+        )}
 
-        <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />
+        {ltv && <ActionInfo label="LTV" value={`${formatValue(ltv.new)}%`} prevValue={`${formatValue(ltv.old)}%`} />}
 
-        {collateral.map((c, i) => (
-          <ActionInfo key={`collateral-${c.symbol}`} label={i === 0 ? 'Collateral' : ''} value={`${formatTokens(c)}`} />
-        ))}
+        {collateral &&
+          collateral.map((c, i) => (
+            <ActionInfo
+              key={`collateral-${c.symbol}`}
+              label={i === 0 ? 'Collateral' : ''}
+              value={`${formatTokens(c)}`}
+            />
+          ))}
       </Stack>
 
       <Stack>
@@ -160,17 +187,25 @@ export const ActionInfos = ({
           />
         )}
 
-        <ActionInfo label="Collateral" value={`${formatTokens(borrowed)}`} />
+        {borrowed && (
+          <ActionInfo
+            label="Collateral"
+            value={`${formatTokens({ symbol: borrowed.symbol, amount: borrowed.new ?? borrowed.amount })}`}
+            prevValue={`${formatTokens({ symbol: borrowed.symbol, amount: borrowed.amount })}`}
+          />
+        )}
 
         {assetsToWithdraw && <ActionInfo label="Assets to withdraw" value={`${formatTokens(assetsToWithdraw)}`} />}
       </Stack>
 
-      <ActionInfo
-        label="Estimated tx cost"
-        valueLeft={<GasIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
-        value={`$${formatValue(estimatedTxCost.dollars)}`}
-        valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
-      />
+      {estimatedTxCost && (
+        <ActionInfo
+          label="Estimated tx cost"
+          valueLeft={<GasIcon sx={{ width: IconSize.md, height: IconSize.md }} />}
+          value={`$${formatValue(estimatedTxCost.dollars)}`}
+          valueTooltip={`${estimatedTxCost.eth} ETH at ${estimatedTxCost.gwei} GWEI`}
+        />
+      )}
     </Stack>
   </Accordion>
 )
