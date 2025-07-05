@@ -5,8 +5,8 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
-import { AlertAdditionalCrvUsd } from '../AlertAdditionalCrvUsd'
-import { AlertClosePosition } from '../AlertClosePosition'
+import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
+import { AlertClosePosition } from '../alerts/AlertClosePosition'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
