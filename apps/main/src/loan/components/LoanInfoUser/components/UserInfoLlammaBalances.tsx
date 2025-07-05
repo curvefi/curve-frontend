@@ -6,7 +6,7 @@ import ListInfoItem from '@ui/ListInfo'
 import { formatNumber } from '@ui/utils'
 
 const UserInfoLlammaBalances = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
-  const { userState } = useUserLoanDetails(llammaId)
+  const { userState } = useUserLoanDetails(llammaId) ?? {}
 
   const {
     coins: [stablecoin, collateral],

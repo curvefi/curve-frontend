@@ -78,7 +78,7 @@ const LoanDeleverage = ({
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
-  const { userState } = userLoanDetails || {}
+  const { userState } = userLoanDetails ?? {}
   const { collateral: collateralName } = getTokenName(llamma)
 
   const updateFormValues = useCallback(
@@ -146,7 +146,9 @@ const LoanDeleverage = ({
     ) => {
       const { isComplete, step } = formStatus
       const isValidForm =
-        +formValues.collateral > 0 && !formValues.collateralError && +userState.collateral >= +formValues.collateral
+        +formValues.collateral > 0 &&
+        !formValues.collateralError &&
+        +(userState?.collateral ?? 0) >= +formValues.collateral
       const isValid = !!curve.signerAddress && isValidForm && !formStatus.error && !detailInfo.loading
 
       const stepsObj: { [key: string]: Step } = {
@@ -299,11 +301,11 @@ const LoanDeleverage = ({
             value={formValues.collateral}
             onChange={(collateral) => updateFormValues({ collateral }, '', false)}
           />
-          <InputMaxBtn onClick={() => updateFormValues({ collateral: userState.collateral }, '', false)} />
+          <InputMaxBtn onClick={() => updateFormValues({ collateral: userState?.collateral }, '', false)} />
         </InputProvider>
         {formValues.collateralError === 'too-much' ? (
           <StyledInpChip size="xs" isDarkBg isError>
-            {t`Amount must be <= ${formatNumber(userState.collateral)}`}
+            {t`Amount must be <= ${formatNumber(userState?.collateral)}`}
           </StyledInpChip>
         ) : (
           <StyledInpChip size="xs">

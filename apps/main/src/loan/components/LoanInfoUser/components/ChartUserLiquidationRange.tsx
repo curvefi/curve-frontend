@@ -7,7 +7,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const { userPrices: currPrices } = useUserLoanDetails(llammaId)
+  const { userPrices: currPrices } = useUserLoanDetails(llammaId) ?? {}
 
   const theme = useUserProfileStore((state) => state.theme)
 
