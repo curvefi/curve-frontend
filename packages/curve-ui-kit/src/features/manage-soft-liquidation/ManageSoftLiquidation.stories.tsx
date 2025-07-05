@@ -6,11 +6,11 @@ import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
 const actionInfos = {
-  health: { new: 69, old: 42.123 },
+  health: { current: 42.123, next: 69 },
   loan: {
-    borrowRate: { old: 0.02, new: 0.02 },
-    debt: { symbol: 'crvUSD', amount: 3700000, new: 0 },
-    ltv: { old: 45.23, new: 24.15 },
+    borrowRate: { current: 0.02, next: 0.02 },
+    debt: { symbol: 'crvUSD', amount: 3700000, next: 0 },
+    ltv: { current: 45.23, next: 24.15 },
     collateral: [
       { symbol: 'ETH', amount: 7.52 },
       { symbol: 'crvUSD', amount: 2457 },
@@ -18,7 +18,7 @@ const actionInfos = {
   },
   collateral: {
     borrowed: { symbol: 'wETH', amount: 300.69 },
-    leverage: { old: 9.0, new: 10.1 },
+    leverage: { current: 9.0, next: 10.1 },
     assetsToWithdraw: [
       { symbol: 'ETH', amount: 7.52 },
       { symbol: 'crvUSD', amount: 2457 },
