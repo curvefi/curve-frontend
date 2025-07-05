@@ -17,7 +17,7 @@ type ClosePositionProps = {
   /** The token that's been borrowed that has to be paid back */
   debtToken?: Token & { amount: number }
   /** The tokens the user gets when closing his position */
-  collateralToRecover: (Token & { amount?: number; usd: number })[]
+  collateralToRecover?: (Token & { amount?: number; usd: number })[]
   /** Whether the user has sufficient stablecoins to close the position */
   canClose: { requiredToClose: number; missing: number }
   /** Current operation status */
@@ -48,9 +48,9 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
 
       <Metric
         label={t`Collateral to recover`}
-        value={collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
+        value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
         valueOptions={{ decimals: 2, unit: 'dollar' }}
-        notional={collateralToRecover
+        notional={(collateralToRecover ?? [])
           .filter((x) => x.amount ?? 0 > 0)
           .map((x) => ({
             value: x.amount!,
