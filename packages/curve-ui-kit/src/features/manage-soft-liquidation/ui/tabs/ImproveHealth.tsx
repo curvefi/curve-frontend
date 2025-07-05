@@ -7,7 +7,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
-import { AlertRepayDebtToIncreaseHealth } from '../AlertRepayDebtToIncreaseHealth'
+import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
