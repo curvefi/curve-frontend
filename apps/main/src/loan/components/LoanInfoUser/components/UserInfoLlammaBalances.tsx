@@ -15,13 +15,13 @@ const UserInfoLlammaBalances = ({ llammaId, llamma }: { llammaId: string; llamma
 
   return (
     <Box flex gridGap={3}>
-      <ListInfoItem title={collateral}>
+      <ListInfoItem title={collateral} as="div">
         <Box grid>
           {formatNumber(userState?.collateral, { defaultValue: '-' })}
           <InpChipUsdRate hideRate address={collateralAddress} amount={userState?.collateral} />
         </Box>
       </ListInfoItem>
-      <ListInfoItem title={stablecoin}>
+      <ListInfoItem title={stablecoin} as="div">
         <Box grid>
           {formatNumber(userState?.stablecoin, { defaultValue: '' })}
           <InpChipUsdRate hideRate address={stablecoinAddress} amount={userState?.stablecoin} />
