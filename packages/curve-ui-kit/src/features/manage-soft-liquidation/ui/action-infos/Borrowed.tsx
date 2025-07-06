@@ -7,8 +7,8 @@ export type Props = TokenAmount & { next?: number }
 /** Borrowed collateral token information */
 export const Borrowed = ({ symbol, amount, next }: Props) => (
   <ActionInfo
-    label="Collateral"
+    label="Borrowed collateral"
     value={`${formatTokens({ symbol, amount: next ?? amount })}`}
-    prevValue={`${formatTokens({ symbol, amount })}`}
+    {...(next != null && { prevValue: `${formatTokens({ symbol, amount })}` })}
   />
 )

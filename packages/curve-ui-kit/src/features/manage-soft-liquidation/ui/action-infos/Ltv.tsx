@@ -6,5 +6,9 @@ export type Props = Delta
 
 /** LTV value indicates how big the loan is compared to the collateral */
 export const Ltv = ({ current, next }: Props) => (
-  <ActionInfo label="LTV" value={`${formatValue(next)}%`} prevValue={`${formatValue(current)}%`} />
+  <ActionInfo
+    label="LTV"
+    value={`${formatValue(next ?? current)}%`}
+    {...(next != null && { prevValue: `${formatValue(current)}%` })}
+  />
 )

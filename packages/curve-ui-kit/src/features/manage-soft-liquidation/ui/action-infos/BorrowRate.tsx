@@ -6,5 +6,9 @@ export type Props = Delta
 
 /** Borrow rate values the user is paying to keep the loan open */
 export const BorrowRate = ({ current, next }: Props) => (
-  <ActionInfo label="Borrow Rate" value={`${formatValue(next)}%`} prevValue={`${formatValue(current)}%`} />
+  <ActionInfo
+    label="Borrow Rate"
+    value={`${formatValue(next ?? current)}%`}
+    {...(next != null && { prevValue: `${formatValue(current)}%` })}
+  />
 )

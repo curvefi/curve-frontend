@@ -9,6 +9,6 @@ export const Debt = ({ symbol, amount, next }: Props) => (
   <ActionInfo
     label="Debt"
     value={`${formatTokens({ symbol, amount: next ?? amount })}`}
-    prevValue={`${formatTokens({ symbol, amount })}`}
+    {...(next != null && { prevValue: `${formatTokens({ symbol, amount })}` })}
   />
 )

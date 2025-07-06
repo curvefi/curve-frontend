@@ -6,5 +6,9 @@ export type Props = Delta
 
 /** The leverage multiplier if present, like 9x or 10x */
 export const Leverage = ({ current, next }: Props) => (
-  <ActionInfo label="Leverage" value={`${formatValue(next, 1)}x`} prevValue={`${formatValue(current, 1)}x`} />
+  <ActionInfo
+    label="Leverage"
+    value={`${formatValue(next ?? current, 1)}x`}
+    {...(next != null && { prevValue: `${formatValue(current, 1)}x` })}
+  />
 )
