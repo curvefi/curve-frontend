@@ -120,7 +120,6 @@ const ActionInfo = ({
           />
         )}
 
-        {/** Additional stack to add some space between left (icon), value and right (icon) */}
         <Tooltip
           title={valueTooltip}
           placement="top"
@@ -133,6 +132,7 @@ const ActionInfo = ({
             },
           }}
         >
+          {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
             {valueLeft}
 
