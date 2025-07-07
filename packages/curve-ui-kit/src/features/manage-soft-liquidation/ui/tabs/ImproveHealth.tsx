@@ -7,7 +7,8 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
-import { AlertRepayDebtToIncreaseHealth } from '../AlertRepayDebtToIncreaseHealth'
+import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
+import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,7 +22,9 @@ type Status = 'idle' | 'repay' | OptionId
 
 type ImproveHealthProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken: Token
+  debtToken?: Token & { amount: number }
+  /** the amount of tokens the user has in his wallet to repay debt with */
+  userBalance?: number
   /** Current status of the improve health operation */
   status: Status
 }
@@ -41,6 +44,7 @@ export type Props = ImproveHealthProps & ImproveHealthCallbacks
 
 export const ImproveHealth = ({
   debtToken,
+  userBalance,
   status = 'idle',
   onDebtBalance,
   onRepay,
@@ -55,7 +59,14 @@ export const ImproveHealth = ({
     'approve-infinite': onApproveInfinite,
   }
 
-  const maxBalance = useMemo(() => ({ ...debtToken, showSlider: false }), [debtToken])
+  const maxBalance = useMemo(
+    () => ({
+      balance: debtToken && userBalance && Math.min(debtToken.amount, userBalance),
+      symbol: debtToken?.symbol,
+      showSlider: false,
+    }),
+    [debtToken, userBalance],
+  )
 
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
@@ -63,10 +74,10 @@ export const ImproveHealth = ({
         label={t`Debt to repay`}
         tokenSelector={
           <TokenLabel
-            blockchainId={debtToken.chain}
-            tooltip={debtToken.symbol}
-            address={debtToken.address}
-            label={debtToken.symbol}
+            blockchainId={debtToken?.chain}
+            tooltip={debtToken?.symbol}
+            address={debtToken?.address}
+            label={debtToken?.symbol ?? '?'}
           />
         }
         maxBalance={maxBalance}
@@ -84,20 +95,24 @@ export const ImproveHealth = ({
 
       <AlertRepayDebtToIncreaseHealth />
 
-      <ButtonMenu
-        primary={t`Repay debt & increase health`}
-        options={BUTTON_OPTIONS}
-        open={isOpen}
-        executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-        disabled={!debtToken || debtBalance === 0}
-        onPrimary={() => onRepay(debtToken!, debtBalance)}
-        onOption={(id) => {
-          close()
-          BUTTON_OPTION_CALLBACKS[id]()
-        }}
-        onOpen={open}
-        onClose={close}
-      />
+      <Stack gap={Spacing.xs}>
+        <ButtonMenu
+          primary={status === 'idle' ? t`Repay debt & increase health` : t`Repaying debt`}
+          options={BUTTON_OPTIONS}
+          open={isOpen}
+          executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
+          disabled={!debtToken || debtBalance === 0 || debtBalance > (userBalance ?? 0)}
+          onPrimary={() => onRepay(debtToken!, debtBalance)}
+          onOption={(id) => {
+            close()
+            BUTTON_OPTION_CALLBACKS[id]()
+          }}
+          onOpen={open}
+          onClose={close}
+        />
+
+        <ButtonGetCrvUsd />
+      </Stack>
     </Stack>
   )
 }
