@@ -24,7 +24,6 @@ export const ButtonGetCrvUsd = () => {
       color="ghost"
       href={href}
       target="_blank"
-      rel="noopener noreferrer"
       size="extraSmall"
       endIcon={<CallMade sx={{ width: IconSize.md, height: IconSize.md }} />}
     >
