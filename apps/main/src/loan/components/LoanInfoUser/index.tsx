@@ -23,7 +23,7 @@ interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'title
 
 const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId)
+  const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const { chartExpanded } = useStore((state) => state.ohlcCharts)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)

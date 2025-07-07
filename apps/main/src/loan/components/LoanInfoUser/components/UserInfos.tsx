@@ -26,7 +26,7 @@ const UserInfos = ({
   healthMode: HealthMode
   titleMapper: TitleMapper
 }) => {
-  const { userBandsPct, userStatus } = useUserLoanDetails(llammaId)
+  const { userBandsPct, userStatus } = useUserLoanDetails(llammaId) ?? {}
   const colorKey = useUserLoanStatus(llammaId)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
