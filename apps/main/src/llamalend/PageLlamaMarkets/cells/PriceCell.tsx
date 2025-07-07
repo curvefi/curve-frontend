@@ -15,12 +15,11 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const columnId = column.id as LlamaMarketColumnId
   const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
   const { borrowed, earnings: earningsData } = stats ?? {}
-  const { earnings, deposited } = earningsData ?? {}
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: borrowed,
-      [LlamaMarketColumnId.UserEarnings]: earnings, // todo: handle other claimable rewards
-      [LlamaMarketColumnId.UserDeposited]: deposited,
+      [LlamaMarketColumnId.UserEarnings]: earningsData?.earnings, // todo: handle other claimable rewards
+      [LlamaMarketColumnId.UserDeposited]: earningsData?.totalCurrentAssets,
     }[column.id] ?? getValue()
   if (!value) {
     return statsError && <ErrorCell error={statsError} />

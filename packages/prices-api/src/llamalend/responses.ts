@@ -111,6 +111,7 @@ export type GetUserLendingPositionsResponse = {
     first_deposit: string
     last_activity: string
     current_shares: string
+    current_shares_in_gauge: string
   }[]
   page: number
   per_page: number
@@ -144,7 +145,7 @@ type UserMarketStats = {
 export type GetUserMarketStatsResponse = UserMarketStats
 
 type UserMarketEarnings = {
-  user: string
+  user: Address
   earnings: string
   deposited: string
   withdrawn: string
@@ -152,6 +153,22 @@ type UserMarketEarnings = {
   transfers_out_shares: string
   transfers_in_assets: string
   transfers_out_assets: string
+  transfers_shares_to_gauge: string
+  transfers_shares_from_gauge: string
+  transfers_assets_to_gauge: string
+  transfers_assets_from_gauge: string
+  transfers_shares_to_convex: string
+  transfers_shares_from_convex: string
+  transfers_assets_to_convex: string
+  transfers_assets_from_convex: string
+  current_shares: string
+  current_shares_in_gauge: string
+  current_shares_in_convex: string
+  current_assets: string
+  current_assets_in_gauge: string
+  current_assets_in_convex: string
+  total_current_shares: string
+  total_current_assets: string
 }
 
 export type GetUserMarketEarningsResponse = UserMarketEarnings
