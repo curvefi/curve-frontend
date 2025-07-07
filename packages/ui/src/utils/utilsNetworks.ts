@@ -63,7 +63,7 @@ export const NETWORK_BASE_CONFIG = {
     gasPricesUrl: 'https://gasstation.polygon.technology/v2',
     gasPricesDefault: 0,
     rpcUrl: 'https://polygon-rpc.com',
-    nativeCurrencySymbol: 'MATIC',
+    nativeCurrencySymbol: 'POL',
     explorerUrl: 'https://polygonscan.com/',
     orgUIPath: 'https://polygon.curve.finance',
   },
