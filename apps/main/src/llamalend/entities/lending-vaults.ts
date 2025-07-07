@@ -95,7 +95,7 @@ const {
     return fromEntries(
       recordEntries(positions).map(([chain, positions]) => [
         chain,
-        positions.filter((p) => p.currentShares).map((position) => position.vaultAddress),
+        positions.filter((p) => p.currentShares || p.currentSharesInGauge).map((position) => position.vaultAddress),
       ]),
     )
   },

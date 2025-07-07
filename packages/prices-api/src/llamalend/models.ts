@@ -88,6 +88,7 @@ export type UserLendingPosition = {
   firstDeposit: Date
   lastActivity: Date
   currentShares: number
+  currentSharesInGauge: number
 }
 
 export type UserMarketStats = {
@@ -118,6 +119,22 @@ export type UserMarketEarnings = {
   transfersOutAssets: number
   transfersInAssets: number
   transfersOutShares: number
+  transfersSharesToGauge: number
+  transfersSharesFromGauge: number
+  transfersAssetsToGauge: number
+  transfersAssetsFromGauge: number
+  transfersSharesToConvex: number
+  transfersSharesFromConvex: number
+  transfersAssetsToConvex: number
+  transfersAssetsFromConvex: number
+  currentShares: number
+  currentSharesInGauge: number
+  currentSharesInConvex: number
+  currentAssets: number
+  currentAssetsInGauge: number
+  currentAssetsInConvex: number
+  totalCurrentShares: number
+  totalCurrentAssets: number
 }
 
 export type UserMarketSnapshots = UserMarketStats[]
