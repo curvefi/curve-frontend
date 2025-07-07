@@ -27,7 +27,7 @@ export const hyperliquid = defineChain({
   testnet: false,
   nativeCurrency: { name: 'Hype', symbol: 'HYPE', decimals: 18 },
   rpcUrls: { default: { http: RPC[ChainId.Hyperliquid] } },
-  blockExplorers: { default: { name: 'Hyperscan', url: 'https://www.hyperscan.com/' } },
+  blockExplorers: { default: { name: 'hyperevmscan', url: 'https://hyperevmscan.io/' } },
 })
 
 export const tac = defineChain({
