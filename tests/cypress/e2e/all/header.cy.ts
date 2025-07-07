@@ -172,6 +172,7 @@ describe('Header', () => {
       dao: 'proposal-title',
       crvusd: 'btn-connect-prompt',
       lend: 'btn-connect-prompt',
+      llamalend: 'data-table-head',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
     cy.get(`[data-testid='${testId}']`, LOAD_TIMEOUT).should('be.visible')
