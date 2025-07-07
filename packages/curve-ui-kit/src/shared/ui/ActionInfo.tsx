@@ -2,12 +2,12 @@ import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import { Stack, Tooltip } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
+import Stack from '@mui/material/Stack/Stack'
 import Typography from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -16,6 +16,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard, type SxProps } from '@ui-kit/utils'
+import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -120,31 +121,20 @@ const ActionInfo = ({
           />
         )}
 
-        {/** Additional stack to add some space between left (icon), value and right (icon) */}
-        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
-          {valueLeft}
+        <Tooltip title={valueTooltip} placement="top">
+          {/** Additional stack to add some space between left (icon), value and right (icon) */}
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+            {valueLeft}
 
-          <WithSkeleton loading={!!loading}>
-            <Tooltip
-              title={valueTooltip}
-              placement="top"
-              slotProps={{
-                popper: {
-                  sx: {
-                    userSelect: 'none',
-                    pointerEvents: 'none',
-                  },
-                },
-              }}
-            >
+            <WithSkeleton loading={!!loading}>
               <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
                 {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
               </Typography>
-            </Tooltip>
-          </WithSkeleton>
+            </WithSkeleton>
 
-          {valueRight}
-        </Stack>
+            {valueRight}
+          </Stack>
+        </Tooltip>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">
