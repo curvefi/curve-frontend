@@ -5,8 +5,10 @@ import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
+import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
+import { Chip } from '@ui/Typography'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
@@ -60,7 +62,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       <Box flex flexColumn>
         <StatsTitleRow>
           <h6>{t`Gauge`}</h6>
-          <h6>{t`Current Week Emissions (CRV)`}</h6>
+          <h6>{chainId === 1 ? t`Current Week Emissions (CRV)` : t`Next Week Emissions (CRV)`}</h6>
           <h6>{t`Created`}</h6>
         </StatsTitleRow>
         <StatsRow>
@@ -74,13 +76,24 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
           </Box>
-          <h5>
-            {gaugeData.emissions
-              ? formatNumber(gaugeData.emissions, {
-                  showDecimalIfSmallNumberOnly: true,
-                })
-              : 'N/A'}
-          </h5>
+          <Chip
+            size="md"
+            tooltip={
+              chainId !== 1 &&
+              t`Side chain gauge emissions are on a 1-week delay, as they first have to be accumulated before they can be bridged to the designated chain`
+            }
+          >
+            <h5>
+              {gaugeData.emissions
+                ? formatNumber(gaugeData.emissions, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })
+                : 'N/A'}
+              {chainId !== 1 && (
+                <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
+              )}
+            </h5>
+          </Chip>
           <h5>{formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}</h5>
         </StatsRow>
       </Box>
