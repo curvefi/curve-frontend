@@ -2,12 +2,8 @@ import { type Mutation, MutationCache, QueryCache } from '@tanstack/react-query'
 import { logError, logMutation, logSuccess } from '@ui-kit/lib/logging'
 
 export const queryCache = new QueryCache({
-  onError: (error: Error, query) => {
-    logError(query.queryKey, error, error.message)
-  },
-  onSuccess: (data, query) => {
-    logSuccess(query.queryKey, ...[data ? [data] : []])
-  },
+  onError: (error: Error, query) => logError(query.queryKey, error, error.message),
+  onSuccess: (data, query) => logSuccess(query.queryKey, ...[data ? [data] : []]),
 })
 
 const getMutationKey = (mutation: Mutation<unknown, unknown, unknown, unknown>, variables: unknown) => {

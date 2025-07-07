@@ -8,10 +8,10 @@ import {
   useMemo,
   useState,
 } from 'react'
-import { claimButtonsKey } from '@/dex/components/PageDashboard/components/FormClaimFees'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
 import useStore from '@/dex/store/useStore'
+import { claimButtonsKey } from '@/dex/types/main.types'
 import Button from '@ui/Button'
 import type { ButtonProps } from '@ui/Button/types'
 import Stepper from '@ui/Stepper'

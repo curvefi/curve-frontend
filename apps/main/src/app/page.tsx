@@ -1,9 +1,9 @@
-import { HashRouterRedirect } from '@ui-kit/shared/HashRouterRedirect'
+import Skeleton from '@mui/material/Skeleton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-export const metadata = {
-  title: 'Curve.finance',
-}
+const { MinHeight } = SizesAndSpaces
 
-const RootPage = () => <HashRouterRedirect />
+/** Redirect is handled by the `ClientWrapper` component, as we need the client to access the url after # */
+const RootPage = () => <Skeleton width="100%" height={MinHeight.pageContent} />
 
 export default RootPage

@@ -12,6 +12,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
@@ -38,7 +39,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const formValues = useStore((state) => state.loanCollateralAdd.formValues)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const userDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details)
+  const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralAdd.fetchStepIncrease)
   const setFormValues = useStore((state) => state.loanCollateralAdd.setFormValues)
@@ -101,7 +102,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
               pendingMessage={notifyMessage}
               market={market}
               receive={formValues.collateral}
-              userState={userDetails?.state}
+              userState={userState}
               userWallet={userBalances}
               type="change"
             />
@@ -144,7 +145,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, handleBtnClickAdd, userBalances, userDetails?.state],
+    [fetchStepApprove, handleBtnClickAdd, userBalances, userState],
   )
 
   // onMount
@@ -171,7 +172,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
       setSteps(updatedSteps)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoaded, activeKey, formEstGas?.loading, formStatus, formValues, userBalances, userDetails?.state])
+  }, [isLoaded, activeKey, formEstGas?.loading, formStatus, formValues, userBalances, userState])
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step

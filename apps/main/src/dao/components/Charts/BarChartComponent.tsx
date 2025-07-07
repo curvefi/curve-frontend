@@ -48,7 +48,6 @@ const BarChartComponent = <T extends Record<string, any>>({ data, dataKey, Custo
             interval={data.length > 50 ? 1 : 0}
             tick={{
               fill: 'var(--page--text-color)',
-
               fontSize: 'var(--font-size-1)',
               textAnchor: 'end',
             }}

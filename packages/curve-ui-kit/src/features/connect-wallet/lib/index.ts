@@ -1,13 +1,6 @@
-export type { Wallet } from './types'
+export type { WagmiChainId } from './wagmi/wagmi-config'
+export type { Wallet, CurveApi, LlamaApi } from './types'
+export { getLib, requireLib } from './utils'
 export { useWallet } from './useWallet'
 export { notify } from './notify'
-export {
-  ConnectionProvider,
-  useConnection,
-  CONNECT_STAGE,
-  isLoading,
-  isFailure,
-  isSuccess,
-  getLib,
-  requireLib,
-} from './ConnectionContext'
+export { ConnectionProvider, useConnection, isLoading, isFailure, isSuccess } from './ConnectionContext'

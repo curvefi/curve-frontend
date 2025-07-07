@@ -10,7 +10,7 @@ import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import type { CollateralUrlParams, LlamaApi } from '@/loan/types/loan.types'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getCollateralListPathname,
@@ -33,6 +33,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -41,15 +42,17 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
 
-  const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId])
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isPageVisible = useStore((state) => state.isPageVisible)
-  const navHeight = useStore((state) => state.layout.navHeight)
+  const { llamma, displayName } =
+    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
+  const llammaId = llamma?.id || ''
+
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
@@ -62,8 +65,6 @@ const Page = (params: CollateralUrlParams) => {
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
 
-  const llamma = collateralData?.llamma
-  const llammaId = llamma?.id || ''
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!llamma
 
@@ -133,7 +134,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
-      <Title>{collateralData?.displayName || getTokenName(llamma).collateral}</Title>
+      <Title>{displayName || getTokenName(llamma).collateral}</Title>
     </AppPageFormTitleWrapper>
   )
 
@@ -167,7 +168,7 @@ const Page = (params: CollateralUrlParams) => {
         </PriceAndTradesExpandedContainer>
       )}
       <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight}>
+        <AppPageFormsWrapper>
           {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
           {isValidRouterParams && (
             <LoanMange

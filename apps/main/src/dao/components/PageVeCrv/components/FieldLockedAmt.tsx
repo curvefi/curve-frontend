@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
-import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 
 const FieldLockedAmt = ({
   curve,
@@ -71,7 +71,7 @@ const FieldLockedAmt = ({
       {!!crv && lockedAmtError ? (
         <Chip size="xs" isError>
           Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
-          <StyledExternalLink href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}>here</StyledExternalLink>.
+          <RouterLink href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}>here</RouterLink>.
         </Chip>
       ) : isAdjustCrv ? (
         <Chip size="xs">{t`CRV Locked: ${formatNumber(lockedAmount)}`}</Chip>
@@ -86,12 +86,4 @@ const StyledInputProvider = styled(InputProvider)`
   padding: var(--spacing-1) var(--spacing-2);
 `
 
-export const StyledExternalLink = styled(ExternalLink)`
-  color: inherit;
-  font-weight: var(--bold);
-
-  &:hover {
-    cursor: pointer;
-  }
-`
 export default FieldLockedAmt

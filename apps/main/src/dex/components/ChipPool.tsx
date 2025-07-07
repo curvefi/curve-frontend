@@ -1,11 +1,16 @@
 import { useMemo, useRef } from 'react'
-import { useButton } from 'react-aria'
 import type { AriaButtonProps } from 'react-aria'
+import { useButton } from 'react-aria'
 import styled from 'styled-components'
 import { getAddress } from 'viem'
+import { ROUTE } from '@/dex/constants'
+import type { NetworkEnum } from '@/dex/types/main.types'
+import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
+import { useConnection } from '@ui-kit/features/connect-wallet'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
@@ -35,24 +40,14 @@ const ChipPoolCopyButton = styled.button`
   }
 `
 
-interface ChipPoolProps extends AriaButtonProps {
-  className?: string
-  isHighlightPoolName?: boolean // highlight name if it is part of pool list search result
-  isHighlightPoolAddress?: boolean
-  amount?: string
-  showUsdAmount?: boolean // display amount instead of token name
+interface ChipPoolProps {
+  poolId: string
   poolName: string
   poolAddress: string
 }
 
-const ChipPool = ({
-  className,
-  isHighlightPoolName,
-  isHighlightPoolAddress,
-  poolName,
-  poolAddress,
-  ...props
-}: ChipPoolProps) => {
+const ChipPool = ({ poolId, poolName, poolAddress }: ChipPoolProps) => {
+  const network = useConnection().network?.id as NetworkEnum
   const parsedPoolAddress = useMemo(() => {
     if (poolAddress) {
       return `${shortenAddress(poolAddress)}`
@@ -61,15 +56,22 @@ const ChipPool = ({
   }, [poolAddress])
 
   return (
-    <ChipPoolWrapper className={className}>
+    <ChipPoolWrapper>
       <ChipPoolName>
-        {isHighlightPoolName || isHighlightPoolAddress ? <strong>{poolName}</strong> : poolName}{' '}
+        <RouterLink
+          href={getPath({ network }, `${ROUTE.PAGE_POOLS}/${encodeURIComponent(poolId)}${ROUTE.PAGE_POOL_DEPOSIT}`)}
+          sx={{
+            textDecoration: 'none',
+            color: 'inherit',
+            fontWeight: 'bold',
+          }}
+        >
+          {poolName}
+        </RouterLink>{' '}
       </ChipPoolName>
       <ChipPoolAdditionalInfo>
-        <Button {...props} onPress={() => copyToClipboard(poolAddress)}>
-          <ChipPoolAddress>
-            {isHighlightPoolAddress ? <mark>{parsedPoolAddress}</mark> : parsedPoolAddress}
-          </ChipPoolAddress>
+        <Button onPress={() => copyToClipboard(poolAddress)}>
+          <ChipPoolAddress>{parsedPoolAddress}</ChipPoolAddress>
           <ChipPoolCopyButtonIcon name="Copy" size={16} />
         </Button>
       </ChipPoolAdditionalInfo>
@@ -109,12 +111,14 @@ const ChipPoolAddress = styled.span`
 const ChipPoolName = styled(TextEllipsis)`
   font-size: var(--font-size-4);
 
+  max-width: 13.125rem; // 200px
+
   @media (min-width: ${breakpoints.sm}rem) {
     font-size: 1.25rem; // 20px
-    max-width: 13.75rem; // 220px
+    max-width: 16.25rem; // 260px
   }
   @media (min-width: ${breakpoints.lg}rem) {
-    max-width: 13.125rem; // 210px
+    max-width: 16.25rem; // 260px
   }
 `
 

@@ -267,9 +267,9 @@ export const SizesAndSpaces = {
     column: MappedColumnWidth,
   },
   MinWidth: {
-    table: { desktop: '60rem' }, // 960px
     tableHeader: '50rem', // 800px
     select: '5rem', // 80px
+    actionCard: '20rem', // 320px
   },
   MaxWidth: {
     disclaimer: '43rem', // 688px
@@ -287,6 +287,7 @@ export const SizesAndSpaces = {
   },
   MinHeight: {
     tableNoResults: '35vh',
+    pageContent: '80vh',
   },
   MaxHeight: {
     popover: '17rem', // 272px

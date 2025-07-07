@@ -1,14 +1,14 @@
 import styled, { keyframes } from 'styled-components'
-import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 type Props = {
   showScrollButton?: boolean
 }
 
 const Settings = ({ showScrollButton }: Props) => {
-  const scrollY = useStore((state) => state.scrollY)
+  const isShowScrollButton = useLayoutStore((state) => state.showScrollButton)
 
   const handleScrollTopClick = () => {
     window.scroll({
@@ -21,8 +21,8 @@ const Settings = ({ showScrollButton }: Props) => {
   return (
     <Wrapper>
       <StyledScrollUpButton
-        className={showScrollButton && scrollY > 30 ? 'pop-in' : ''}
-        $show={showScrollButton ? scrollY > 30 : false}
+        className={showScrollButton && isShowScrollButton ? 'pop-in' : ''}
+        $show={showScrollButton ? isShowScrollButton : false}
         variant="icon-filled"
         onClick={handleScrollTopClick}
       >

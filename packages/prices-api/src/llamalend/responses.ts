@@ -5,6 +5,7 @@ export type GetChainsResponse = {
 }
 
 export type GetMarketsResponse = {
+  count: number
   data: {
     name: string
     controller: Address
@@ -16,6 +17,9 @@ export type GetMarketsResponse = {
     rate: number
     borrow_apy: number
     lend_apy: number
+    lend_apr: number
+    lend_apr_crv_0_boost: number
+    lend_apr_crv_max_boost: number
     n_loans: number
     price_oracle: number
     amm_price: number
@@ -48,12 +52,19 @@ export type GetMarketsResponse = {
   }[]
 }
 
+export type GetAllMarketsResponse = {
+  chains: Record<Chain, GetMarketsResponse>
+}
+
 export type GetSnapshotsResponse = {
   data: [
     {
       rate: string
-      borrow_apy: string
-      lend_apy: string
+      borrow_apy: number
+      lend_apy: number
+      lend_apr: number
+      lend_apr_crv_0_boost: number
+      lend_apr_crv_max_boost: number
       n_loans: number
       price_oracle: string
       amm_price: string
@@ -85,6 +96,30 @@ export type GetUserMarketsResponse = {
     first_snapshot: string
     last_snapshot: string
   }[]
+}
+
+export type GetAllUserMarketsResponse = {
+  user: Address
+  chains: Record<Chain, Pick<GetUserMarketsResponse, 'markets' | 'count'>>
+}
+
+export type GetUserLendingPositionsResponse = {
+  user: Address
+  markets: {
+    market_name: string
+    vault_address: Address
+    first_deposit: string
+    last_activity: string
+    current_shares: string
+  }[]
+  page: number
+  per_page: number
+  count: number
+}
+
+export type GetAllUserLendingPositionsResponse = {
+  user: Address
+  chains: Record<Chain, Pick<GetUserLendingPositionsResponse, 'markets' | 'count'>>
 }
 
 type UserMarketStats = {

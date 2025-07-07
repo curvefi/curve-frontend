@@ -2,7 +2,7 @@ import type { Eip1193Provider } from 'ethers'
 import cloneDeep from 'lodash/cloneDeep'
 import sortBy from 'lodash/sortBy'
 import networks from '@/loan/networks'
-import { BandBalance, ChainId, type LlamaApi, HeathColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { BandBalance, ChainId, type LlamaApi, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
@@ -39,14 +39,14 @@ export function getLiquidationStatus(
   userIsCloseToLiquidation: boolean,
   userStateStablecoin: string,
 ) {
-  const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
+  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
     tooltip: '',
   }
 
   if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidation'
+    userStatus.label = 'Hard liquidatable'
     userStatus.colorKey = 'hard_liquidation'
     userStatus.tooltip =
       'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'

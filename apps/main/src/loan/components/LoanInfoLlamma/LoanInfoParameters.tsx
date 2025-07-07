@@ -23,7 +23,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           <Chip
             size="md"
             tooltip={formatNumber(loanDetails.basePrice, { showAllFractionDigits: true })}
-            tooltipProps={{ placement: 'top end' }}
+            tooltipProps={{ placement: 'top-end' }}
           >
             {formatNumber(loanDetails.basePrice)}
           </Chip>
@@ -34,7 +34,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           <Chip
             size="md"
             tooltip={formatNumber(priceInfo.oraclePrice, { showAllFractionDigits: true })}
-            tooltipProps={{ placement: 'top end' }}
+            tooltipProps={{ placement: 'top-end' }}
           >
             {formatNumber(priceInfo.oraclePrice)}
           </Chip>
@@ -45,7 +45,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           <Chip
             size="md"
             tooltip={formatNumber(parameters.rate, { showAllFractionDigits: true, style: 'percent' })}
-            tooltipProps={{ placement: 'top end' }}
+            tooltipProps={{ placement: 'top-end' }}
           >
             {formatNumber(parameters.rate, FORMAT_OPTIONS.PERCENT)}
           </Chip>

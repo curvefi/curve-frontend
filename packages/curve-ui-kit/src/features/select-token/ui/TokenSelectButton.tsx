@@ -1,42 +1,12 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import CircularProgress from '@mui/material/CircularProgress'
 import Select from '@mui/material/Select'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import type { SxProps } from '@mui/system'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { Spinner } from '@ui-kit/shared/ui/Spinner'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TokenOption } from '../types'
 
 const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
-
-const ButtonContent = ({ token, disabled }: { token: TokenOption; disabled: boolean }) => (
-  <Stack direction="row" gap={Spacing.xxs} alignItems="center">
-    <TokenIcon
-      blockchainId={token.chain}
-      address={token.address}
-      size="mui-md"
-      sx={{
-        opacity: disabled ? 0.5 : 1,
-        filter: disabled ? 'saturate(0)' : 'none',
-      }}
-    />
-    <Typography variant="bodyMBold">{token.symbol}</Typography>
-  </Stack>
-)
-
-const Spinner = () => (
-  <CircularProgress
-    size={20}
-    sx={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: '0 auto',
-      color: (theme) => theme.palette.text.secondary,
-    }}
-  />
-)
 
 export type TokenSelectButtonCallbacks = {
   onClick: () => void
@@ -60,7 +30,19 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     open={false}
     disabled={disabled}
     displayEmpty
-    renderValue={() => (!!token ? <ButtonContent token={token} disabled={disabled} /> : <Spinner />)}
+    renderValue={() =>
+      !!token ? (
+        <TokenLabel
+          blockchainId={token.chain}
+          address={token.address}
+          size="mui-md"
+          label={token.symbol}
+          disabled={disabled}
+        />
+      ) : (
+        <Spinner useTheme={true} />
+      )
+    }
     IconComponent={KeyboardArrowDownIcon}
     sx={{
       minHeight: ButtonSize.sm,

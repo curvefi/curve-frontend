@@ -1,25 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
-import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Balance, type Props as BalanceProps } from './Balance'
+import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
-
-function clampBalance(balance: number | string, maxBalance?: number) {
-  const newBalance = Math.max(0, Number(balance)) // Disallow negative values
-
-  if (maxBalance == null) {
-    return newBalance
-  }
-
-  // We only clamp the positive side if there's a max balance.
-  // This is up to debate and might be removed, it could be considered annoying UX.
-  return Math.min(newBalance, maxBalance)
-}
 
 type HelperMessageProps = {
   message: string | React.ReactNode
@@ -46,15 +34,14 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
 )
 
 type BalanceTextFieldProps = {
-  balance: number
+  balance: number | undefined
   maxBalance?: number
   isError: boolean
-  onChange: (balance: number) => void
+  onCommit: (balance: number | undefined) => void
 }
 
-const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTextFieldProps) => (
-  <TextField
-    type="number"
+const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps) => (
+  <NumericTextField
     placeholder="0.00"
     variant="standard"
     value={balance}
@@ -68,37 +55,16 @@ const BalanceTextField = ({ balance, maxBalance, isError, onChange }: BalanceTex
           fontSize: FontSize.xl,
           fontWeight: FontWeight.Bold,
           color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
-          // Sadly there's no standardized CSS method to remove the number input spin buttons.
-          input: { textAlign: 'right' },
-          '& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button': {
-            display: 'none',
-          },
-          '& input': {
-            padding: 0,
-          },
         },
       },
     }}
-    /**
-     * Select all content when clicked.
-     * This prevents unintended behavior when users click on the input field.
-     * For example, if the field contains "5000" and a user clicks on the left
-     * to type "4", it would become "45000" instead of the likely intended "4".
-     */
-    onFocus={(e) => (e.target as HTMLInputElement).select()}
-    onChange={(e) => {
-      /**
-       * We clamp here and not in the onChange handler passed as property, because
-       * we need to remove leading zeros from the new balance. We don't want to pass
-       * `e.target` as a callback parameter.
-       */
-      const newBalance = clampBalance(e.target.value, maxBalance)
-      e.target.value = String(newBalance) // remove leading zeros
-
-      onChange(newBalance)
-    }}
+    onBlur={onCommit}
   />
 )
+
+export interface LargeTokenInputRef {
+  resetBalance: () => void
+}
 
 /**
  * Configuration for maximum balance display and input.
@@ -120,6 +86,8 @@ type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 
 }
 
 type Props = {
+  ref?: React.Ref<LargeTokenInputRef>
+
   /**
    * The token selector UI element to be rendered.
    *
@@ -130,7 +98,6 @@ type Props = {
    * 1. Slot in any token selector implementation
    * 2. Handle the callbacks of the token selector in the parent component
    * 3. Feed props back to LargeTokenInput via its properties
-   * 4. Customize labels like 'You pay' more easily
    *
    * See the storybook for simple implementation examples of LargeTokenInput.
    *
@@ -152,6 +119,9 @@ type Props = {
    */
   message?: string | React.ReactNode
 
+  /** Optional label explaining what the input is all about. */
+  label?: string
+
   /**
    * Whether the input is in an error state.
    * @default false
@@ -168,34 +138,44 @@ type Props = {
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
-  onBalance: (balance: number) => void
+  onBalance: (balance: number | undefined) => void
 }
 
 export const LargeTokenInput = ({
+  ref,
   tokenSelector,
   maxBalance,
   message,
+  label,
   isError = false,
   balanceDecimals = 4,
   onBalance,
 }: Props) => {
-  const [percentage, setPercentage] = useState(0)
-  const [balance, setBalance] = useState(0)
+  const [percentage, setPercentage] = useState<number | undefined>(undefined)
+  const [balance, setBalance] = useState<number | undefined>(undefined)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
+  const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
-    (newPercentage: number) => {
+    (newPercentage: number | undefined) => {
+      setPercentage(newPercentage)
+
       if (!maxBalance?.balance) return
+
+      if (newPercentage == null) {
+        setBalance(undefined)
+        onBalance(undefined)
+        return
+      }
 
       let newBalance = (maxBalance.balance * newPercentage) / 100
       if (balanceDecimals != null) {
         newBalance = Number(newBalance.toFixed(balanceDecimals))
       }
 
-      setPercentage(newPercentage)
       setBalance(newBalance)
       onBalance(newBalance)
     },
@@ -203,15 +183,17 @@ export const LargeTokenInput = ({
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: number) => {
+    (newBalance: number | undefined) => {
       setBalance(newBalance)
       onBalance(newBalance)
 
-      if (maxBalance?.balance) {
+      if (maxBalance?.balance && newBalance) {
         // Calculate percentage based on new balance and round to 2 decimal places
         const calculatedPercentage = (newBalance / maxBalance.balance) * 100
         const newPercentage = Math.min(Math.round(calculatedPercentage * 100) / 100, 100)
         setPercentage(newPercentage)
+      } else {
+        setPercentage(undefined)
       }
     },
     [maxBalance, onBalance],
@@ -219,21 +201,25 @@ export const LargeTokenInput = ({
 
   /**
    * When maxBalance changes, adjust the slider and balance values accordingly
+   * This ensures the slider percentage accurately reflects the balance/maxBalance ratio
    *
-   * This ensures:
-   * 1. The current balance remains valid relative to the new max
-   * 2. The slider percentage accurately reflects the balance/maxBalance ratio
+   * Changing the percentage changes the balance, which in turn triggers this useEffect,
+   * which in turn changes the percentage again. While I am using the current balance,
+   * I really only care about triggering it when maxBalance changes.
    */
   useEffect(() => {
-    handleBalanceChange(clampBalance(balance, maxBalance?.balance))
-
-    /**
-     * Changing the percentage changes the balance, which in turn triggers this useEffect,
-     * which in turn changes the percentage again. While I am using the current balance,
-     * I really only care about triggering it when maxBalance changes.  *
-     */
+    handleBalanceChange(balance)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxBalance])
+
+  const resetBalance = useCallback(() => {
+    setPercentage(undefined)
+    setBalance(undefined)
+    onBalance(undefined)
+  }, [onBalance])
+
+  // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
+  useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
   return (
     <Stack
@@ -245,20 +231,27 @@ export const LargeTokenInput = ({
       }}
     >
       <Stack gap={Spacing.xs}>
-        {/** First row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="end" gap={Spacing.md}>
-          {tokenSelector}
+        {/** First row is an optional label describing the input */}
+        {label && (
+          <Typography variant="bodyXsRegular" color="textSecondary">
+            {label}
+          </Typography>
+        )}
 
+        {/** Second row containing the token selector and balance input text */}
+        <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
             maxBalance={maxBalance?.balance}
             isError={isError}
-            onChange={handleBalanceChange}
+            onCommit={handleBalanceChange}
           />
+
+          {tokenSelector}
         </Stack>
 
-        {/** Second row containing (max) balance and sliders */}
-        {maxBalance && (
+        {/** Third row containing (max) balance and sliders */}
+        {showMaxBalance && (
           <Stack
             direction="row"
             gap={Spacing.sm}
@@ -272,23 +265,25 @@ export const LargeTokenInput = ({
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValue={maxBalance.notionalValue}
-                max={maxBalance ? 'balance' : 'off'}
+                max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
+                // Stretch the balance component if there's no slider so the max button can reach the end
+                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
             )}
 
             {showSlider && (
               <TradingSlider
                 percentage={percentage}
-                onPercentageChange={handlePercentageChange}
-                onPercentageCommitted={handlePercentageChange}
+                onChange={handlePercentageChange}
+                onCommit={handlePercentageChange}
               />
             )}
           </Stack>
         )}
       </Stack>
 
-      {/** Third row containing optional helper (or error) message */}
+      {/** Fourth row containing optional helper (or error) message */}
       {message && <HelperMessage message={message} isError={isError} />}
     </Stack>
   )

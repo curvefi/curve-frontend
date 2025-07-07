@@ -11,6 +11,10 @@ import { ExternalLink, InternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils'
 import { shortenAddress } from '@ui-kit/utils'
 
+/**
+ * CrossCurve does not use the usual chainId of networks, but its internal id.
+ * In addition, part of the necessary networks are missing in the Chain enum (e.g. Mode)
+ */
 enum CrossCurveChain {
   Ethereum = 13,
   Optimism = 19,

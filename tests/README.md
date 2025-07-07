@@ -38,19 +38,19 @@ Nodes for each network start on port `8545 + chainId`. For example, the Ethereum
 
 Cypress tests require the necessary nodes to be started before running. Make sure the nodes are running before executing the tests.
 
-To open Cypress for the main configuration:
+To open Cypress:
 
 ```sh
-yarn cy:open:e2e:main
+yarn cy:open:e2e
+yarn cy:open:component
 ```
 
-To run Cypress tests in headless mode for the main configuration:
+To run Cypress tests in headless mode:
 
 ```sh
-yarn cy:run:e2e:main
+yarn cy:run:e2e
+yarn cy:run:component
 ```
-
-Other configurations (lend, loan) can be run similarly by replacing `main` with `lend` or `loan`.
 
 ### Writing New Tests
 
@@ -59,6 +59,10 @@ Tests for each DApp are created in the corresponding directory:
 - `tests/cypress/e2e/main`
 - `tests/cypress/e2e/loan`
 - `tests/cypress/e2e/lend`
+
+Tests for just components can be found in
+
+- `tests/cypress/component`
 
 Helper functions can be found in the `tests/cypress/support/helpers` directory.
 

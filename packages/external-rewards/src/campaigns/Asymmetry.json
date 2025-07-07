@@ -9,11 +9,11 @@
       "id": "null",
       "action": "lp",
       "description": "null",
-      "campaignStart": "1748433600",
-      "campaignEnd": "1779969600",
-      "address": "0x95591348FE9718bE8bfa3afcC9b017D9Ec18A7fa",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x7956FAd09a1D1C47550331E7f06bF7c7B7C2aF08",
       "network": "ethereum",
-      "multiplier": "30x",
+      "multiplier": "15x",
       "tags": ["points"],
       "lock": "false"
     }

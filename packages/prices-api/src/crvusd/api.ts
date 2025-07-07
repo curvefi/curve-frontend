@@ -18,6 +18,17 @@ export async function getMarkets(
   return resp.data.map(Parsers.parseMarket)
 }
 
+export async function getAllMarkets(
+  params: {
+    fetch_on_chain?: boolean
+  } = { fetch_on_chain: false },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetAllMarketsResponse>(`${host}/v1/crvusd/markets${addQueryString(params)}`)
+  return Parsers.parseAllMarkets(resp)
+}
+
 export async function getSnapshots(
   chain: Chain,
   marketAddr: string,
@@ -57,6 +68,18 @@ export async function getUserMarkets(userAddr: string, chain: Chain, options?: O
     `${host}/v1/crvusd/users/${chain}/${userAddr}?page=1&per_page=100&include_closed=false`,
   )
   return Parsers.parseUserMarkets(resp)
+}
+
+export async function getAllUserMarkets(
+  userAddr: string,
+  params: { include_closed?: boolean } = { include_closed: false },
+  options?: Options,
+) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetAllUserMarketsResponse>(
+    `${host}/v1/crvusd/users/all/${userAddr}${addQueryString(params)}`,
+  )
+  return Parsers.parseAllUserMarkets(resp)
 }
 
 export async function getUserMarketStats(userAddr: string, chain: Chain, marketController: string, options?: Options) {

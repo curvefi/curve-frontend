@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { HealthMode, HeathColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
+import { HealthMode, HealthColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { getIsUserCloseToLiquidation } from '@/loan/utils/utilsCurvejs'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
@@ -113,11 +113,11 @@ const DetailInfoHealth = ({
       loadingSkeleton={[85, 20]}
       label={t`Health:`}
       tooltip={
-        <IconTooltip placement="top end" textAlign="left" minWidth="250px">
+        <IconTooltip clickable placement="top-end" textAlign="left" minWidth="250px">
           <Box grid gridGap={2}>
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
-              {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+              {t`Hard liquidation may be triggered when health is 0 or below.`}{' '}
               <ExternalLink href="https://resources.curve.finance/crvusd/loan-concepts/#hard-liquidations" $noStyles>
                 Click here to learn more.
               </ExternalLink>
@@ -151,7 +151,7 @@ const DetailInfoHealth = ({
   )
 }
 
-const HealthPercent = styled.span<{ colorKey: HeathColorKey }>`
+const HealthPercent = styled.span<{ colorKey: HealthColorKey }>`
   color: ${({ colorKey }) => `var(--health_mode_${colorKey}_darkBg--color)`};
 `
 
@@ -196,7 +196,7 @@ export function getHealthMode(
     }
 
     healthMode = {
-      percent: healthNotFull,
+      percent: +healthNotFull < 0 ? healthNotFull : healthFull,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

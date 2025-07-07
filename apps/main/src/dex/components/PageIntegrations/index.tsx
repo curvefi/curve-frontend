@@ -3,10 +3,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Key, useCallback, useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
-import type { FormValues } from '@/dex/components/PageIntegrations/types'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
+import type { FormValues } from '@/dex/types/integrations.types'
 import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
@@ -37,7 +37,7 @@ const IntegrationsComp = ({
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
   const networks = useStore((state) => state.networks.networks)
-  const visibleNetworksList = useStore((state) => state.networks.visibleNetworksList)
+  const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
   const { filterKey, filterNetworkId } = parseSearchParams(

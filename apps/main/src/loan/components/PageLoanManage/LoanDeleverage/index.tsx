@@ -23,6 +23,7 @@ import {
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -39,6 +40,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -60,9 +62,9 @@ const LoanDeleverage = ({
   const formEstGas = useStore((state) => state.loanDeleverage.formEstGas[activeKey]) ?? DEFAULT_FORM_EST_GAS
   const formStatus = useStore((state) => state.loanDeleverage.formStatus)
   const formValues = useStore((state) => state.loanDeleverage.formValues)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
@@ -76,7 +78,7 @@ const LoanDeleverage = ({
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
-  const { userState } = userLoanDetails || {}
+  const { userState } = userLoanDetails ?? {}
   const { collateral: collateralName } = getTokenName(llamma)
 
   const updateFormValues = useCallback(
@@ -144,7 +146,9 @@ const LoanDeleverage = ({
     ) => {
       const { isComplete, step } = formStatus
       const isValidForm =
-        +formValues.collateral > 0 && !formValues.collateralError && +userState.collateral >= +formValues.collateral
+        +formValues.collateral > 0 &&
+        !formValues.collateralError &&
+        +(userState?.collateral ?? 0) >= +formValues.collateral
       const isValid = !!curve.signerAddress && isValidForm && !formStatus.error && !detailInfo.loading
 
       const stepsObj: { [key: string]: Step } = {
@@ -297,11 +301,11 @@ const LoanDeleverage = ({
             value={formValues.collateral}
             onChange={(collateral) => updateFormValues({ collateral }, '', false)}
           />
-          <InputMaxBtn onClick={() => updateFormValues({ collateral: userState.collateral }, '', false)} />
+          <InputMaxBtn onClick={() => updateFormValues({ collateral: userState?.collateral }, '', false)} />
         </InputProvider>
         {formValues.collateralError === 'too-much' ? (
           <StyledInpChip size="xs" isDarkBg isError>
-            {t`Amount must be <= ${formatNumber(userState.collateral)}`}
+            {t`Amount must be <= ${formatNumber(userState?.collateral)}`}
           </StyledInpChip>
         ) : (
           <StyledInpChip size="xs">

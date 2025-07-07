@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
+import { formatDisplayDate } from '@/dex/utils/utilsDates'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -193,9 +194,9 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       {rampADetails && rampADetails?.isFutureATimePassedToday && (
                         <>
                           <br />{' '}
-                          {t`Last change occurred between ${dayjs(initial_A_time).format('ll')} and ${dayjs(
-                            future_A_time,
-                          ).format('ll')}, when A ramped from ${initial_A} to ${future_A}.`}
+                          {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
+                            dayjs(future_A_time),
+                          )}, when A ramped from ${initial_A} to ${future_A}.`}
                         </>
                       )}
                     </>
@@ -221,9 +222,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                       tooltip={t`Slowly changing ${
                         rampADetails.isRampUp ? 'up' : 'down'
                       } A so that it doesn't negatively change virtual price growth of shares`}
-                      tooltipProps={{
-                        placement: 'bottom end',
-                      }}
+                      tooltipProps={{ placement: 'bottom-end' }}
                     >
                       {formatNumber(initial_A, { useGrouping: false })} →{' '}
                       {formatNumber(future_A, { useGrouping: false })}{' '}

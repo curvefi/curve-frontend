@@ -1,4 +1,3 @@
-import type { ImgHTMLAttributes } from 'react'
 import Box from '@mui/material/Box'
 import { getImageBaseUrl } from '@ui/utils/utilsConstants'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
@@ -10,12 +9,26 @@ const DEFAULT_IMAGE = '/images/default-crypto.png'
 
 const { IconSize } = SizesAndSpaces
 
-export interface TokenIconProps extends ImgHTMLAttributes<HTMLImageElement> {
+// TODO: For another time, we should infer the size type from `keyof typeof IconSize` and generate
+// the corresponding size classes programmatically. This component is also used in legacy UI,
+// where 'sm' differs from MUI's 'sm'. At the moment of writing this refactor is out of scope.
+export type Size = 'sm' | 'mui-sm' | 'mui-md' | 'lg' | 'xl'
+
+export const DEFAULT_SIZE: Size = 'sm'
+
+export type TokenIconProps = {
+  /** Additional CSS class name to apply to the token icon */
   className?: string
+  /** Blockchain ID used for constructing the image URL */
   blockchainId?: string
+  /** Tooltip text to display on hover */
   tooltip?: string
+  /** Size variant for the token icon */
+  size?: Size
+  /** Token contract address used for fetching the icon image */
   address?: string | null
-  size?: 'sm' | 'mui-sm' | 'mui-md' | 'xl'
+  /** Whether the icon should appear disabled (greyed out) */
+  disabled?: boolean
   sx?: SxProps
 }
 
@@ -23,8 +36,9 @@ export const TokenIcon = ({
   className = '',
   blockchainId = '',
   tooltip = '',
-  size = 'sm',
+  size = DEFAULT_SIZE,
   address,
+  disabled,
   sx,
 }: TokenIconProps) => (
   <Tooltip title={tooltip} placement="top">
@@ -39,7 +53,6 @@ export const TokenIcon = ({
       src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
       loading="lazy"
       sx={(theme) => ({
-        border: '1px solid transparent',
         borderRadius: '50%',
         // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
         // I didn't want to break the existing interface as it's used everywhere.
@@ -53,8 +66,13 @@ export const TokenIcon = ({
         }),
         ...(size === 'mui-sm' && handleBreakpoints({ width: IconSize['sm'], height: IconSize['sm'] })),
         ...(size === 'mui-md' && handleBreakpoints({ width: IconSize['md'], height: IconSize['md'] })),
+        ...(size === 'lg' && handleBreakpoints({ width: IconSize['lg'], height: IconSize['lg'] })),
         ...(size === 'xl' && handleBreakpoints({ width: IconSize['xl'], height: IconSize['xl'] })),
         ...applySxProps(sx, theme),
+        ...(disabled && {
+          opacity: 0.5,
+          filter: 'saturate(0)',
+        }),
       })}
     />
   </Tooltip>

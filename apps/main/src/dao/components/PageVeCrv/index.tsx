@@ -6,9 +6,9 @@ import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
 import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
-import type { CurveApi } from '@/dao/types/dao.types'
 import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -23,9 +23,9 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   const tabsRef = useRef<HTMLDivElement>(null)
   const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
-  const { connectState } = useConnection<CurveApi>()
+  const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
   const signerAddress = curve?.signerAddress

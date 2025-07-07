@@ -31,10 +31,12 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
-  const totalScrvUsdSupply = statisticsData?.supply ?? 0
-  const scrvUsdApy = statisticsData?.aprProjected ?? 0
+  const totalScrvUsdSupply = statisticsData?.supply
+  const scrvUsdApy = statisticsData?.aprProjected
 
-  const userShareOfTotalScrvUsdSupply = Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
+  const userShareOfTotalScrvUsdSupply = totalScrvUsdSupply
+    ? Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
+    : undefined
 
   return (
     <Card
@@ -60,16 +62,16 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
               size="large"
               label={t`Your crvUSD Staked`}
               value={userScrvUsdBalanceInCrvUsd}
+              valueOptions={{ unit: CRVUSD_OPTIONS }}
               loading={userBalanceLoading || usdRateLoading || exchangeRateLoading}
-              unit={CRVUSD_OPTIONS}
             />
           </Grid>
           <Grid flexGrow={1}>
             <Metric
               size="large"
               label={t`Your share of the vault`}
-              unit="percentage"
               value={userShareOfTotalScrvUsdSupply}
+              valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
             />
           </Grid>
@@ -79,31 +81,37 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
             <Metric
               size="small"
               label={t`30 Days Projection`}
-              unit="dollar"
-              value={oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              value={scrvUsdApy && oneMonthProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
-              tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
           <Grid flexGrow={1}>
             <Metric
               size="small"
               label={t`1 Year Projection`}
-              unit="dollar"
-              value={oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              value={scrvUsdApy && oneYearProjectionYield(scrvUsdApy, userScrvUsdBalance)}
+              valueOptions={{ unit: 'dollar' }}
               loading={isStatisticsLoading || userBalanceLoading}
-              tooltip={t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`This is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
           <Grid flexGrow={1}>
             <Metric
               size="small"
               label={t`scrvUSD Staking Rate`}
-              unit="percentage"
               value={scrvUsdApy}
+              valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
-              tooltip={t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
-This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`}
+              labelTooltip={{
+                title: t`Annual percentage yield (APY) refers to how much interest is distributed on savings and takes compounded interest into account. 
+This value is an indicator based on the historical yield of the crvUSD Savings Vault. It does not guarantee any future yield.`,
+              }}
             />
           </Grid>
         </Grid>

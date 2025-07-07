@@ -2,7 +2,6 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import TableStats from '@/loan/components/PageMarketList/components/TableStats'
 import CollateralList from '@/loan/components/PageMarketList/index'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
@@ -11,7 +10,7 @@ import useSearchTermMapper from '@/loan/hooks/useSearchTermMapper'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import Settings from '@/loan/layout/Settings'
 import useStore from '@/loan/store/useStore'
-import type { CollateralUrlParams, LlamaApi } from '@/loan/types/loan.types'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
@@ -26,7 +25,7 @@ enum SEARCH {
 const Page = (params: CollateralUrlParams) => {
   const { push } = useRouter()
   const searchParams = useSearchParams()
-  const { connectState, lib: curve = null } = useConnection<LlamaApi>()
+  const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const searchTermMapper = useSearchTermMapper()
@@ -92,7 +91,6 @@ const Page = (params: CollateralUrlParams) => {
               />
             )}
           </Content>
-          {rChainId && <TableStats />}
         </Container>
       ) : (
         <Box display="flex" fillWidth>

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import useStore from '@/loan/store/useStore'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
@@ -9,9 +9,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 const AlertSoftLiquidation = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
-
-  const { collateral = '0', stablecoin = '0' } = userLoanDetails?.userState ?? {}
+  const { collateral = '0', stablecoin = '0' } = useUserLoanDetails(llammaId)?.userState ?? {}
 
   const softLiquidationAmountText = useMemo(() => {
     let text = ''
@@ -30,7 +28,7 @@ const AlertSoftLiquidation = ({ llammaId, llamma }: { llammaId: string; llamma: 
       <Box grid gridGap={3}>
         <p>{t`You are in soft-liquidation mode. The amount currently at risk is ${softLiquidationAmountText}. In this mode, you cannot partially withdraw or add more collateral to your position. To reduce the risk of hard liquidation, you can repay or, to exit soft liquidation, you can close (self-liquidate).`}</p>
         <p>
-          {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+          {t`Hard liquidation may be triggered when health is 0 or below.`}{' '}
           <ExternalLink href="https://resources.curve.finance/crvusd/loan-concepts/#hard-liquidations" $noStyles>
             Click here to learn more.
           </ExternalLink>

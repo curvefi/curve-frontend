@@ -23,9 +23,7 @@ const DaoFee = ({ adminFee }: DaoFeeProps) => (
         isBold
         size="md"
         tooltip={t`The total fee on each trade is split in two parts: one part goes to the pool’s Liquidity Providers, another part goes to the DAO (i.e. Curve veCRV holders)`}
-        tooltipProps={{
-          placement: 'bottom end',
-        }}
+        tooltipProps={{ placement: 'bottom-end' }}
       >
         {formatNumber(adminFee, { style: 'percent', maximumFractionDigits: 4 })}
         <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />

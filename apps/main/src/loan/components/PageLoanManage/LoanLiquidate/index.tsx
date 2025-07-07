@@ -8,10 +8,11 @@ import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
 import useStore from '@/loan/store/useStore'
-import { LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
@@ -36,7 +37,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const formEstGas = useStore((state) => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanLiquidate.formStatus)
   const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
@@ -91,7 +92,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
         !formEstGas.loading &&
         !error &&
         haveEnoughCrvusdForLiquidation(userWalletBalances?.stablecoin, liquidationAmt)
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
 
       const stepsObj: { [key: string]: Step } = {
         APPROVAL: {

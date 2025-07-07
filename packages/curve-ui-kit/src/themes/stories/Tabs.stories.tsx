@@ -1,14 +1,24 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
-import { Tabs } from '@mui/material'
+import { useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react'
 import { TabsSwitcher } from '../../shared/ui/TabsSwitcher'
 
-type Story = StoryObj<typeof Tabs>
+const TABS = [
+  { value: '1', label: 'Tab One', href: '' },
+  { value: '2', label: 'Tab Two', href: '' },
+  { value: '3', label: 'Tab Three', href: '' },
+  { value: '4', label: 'Tab Four', href: '' },
+] as const
+type Tab = (typeof TABS)[number]['value']
+
+const TabsSwitcherComponent = (props: React.ComponentProps<typeof TabsSwitcher>) => {
+  const [value, setValue] = useState<Tab>(TABS[0].value)
+
+  return <TabsSwitcher {...props} options={TABS} value={value} onChange={setValue} />
+}
 
 const meta: Meta<typeof TabsSwitcher> = {
   title: 'UI Kit/Primitives/Tabs',
-  component: TabsSwitcher,
+  component: TabsSwitcherComponent,
   argTypes: {
     variant: {
       control: 'select',
@@ -27,19 +37,18 @@ const meta: Meta<typeof TabsSwitcher> = {
   },
 }
 
-export const Contained: Story = {
-  render: (args) => {
-    const [value, setValue] = useState<number>(1)
+type Story = StoryObj<typeof TabsSwitcher>
 
-    return (
-      <TabsSwitcher
-        options={[1, 2, 3, 4].map((value) => ({ label: `Tab ${value}`, value }))}
-        value={value}
-        onChange={setValue}
-        {...args}
-      />
-    )
+export const Default: Story = {
+  render: (args) => <TabsSwitcherComponent {...args} />,
+}
+
+export const NoInactiveBorders: Story = {
+  args: {
+    variant: 'underlined',
+    hideInactiveBorders: true,
   },
+  render: (args) => <TabsSwitcherComponent {...args} />,
 }
 
 export default meta

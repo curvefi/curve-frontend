@@ -4,7 +4,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import { ethAddress } from 'viem'
 import useStore from '@/dex/store/useStore'
-import { ChainId, CurveApi, EstimatedGas } from '@/dex/types/main.types'
+import { ChainId, EstimatedGas } from '@/dex/types/main.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -31,7 +31,7 @@ const DetailInfoEstGas = ({
   activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
-  const { lib: curve } = useConnection<CurveApi>()
+  const { curveApi } = useConnection()
   const networks = useStore((state) => state.networks.networks)
   const { gasPricesDefault } = networks[chainId]
   const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
@@ -50,7 +50,7 @@ const DetailInfoEstGas = ({
         typeof estimatedGas === 'number'
       ) {
         gasCostInWei = gasInfo.l2GasPriceWei * estimatedGas
-      } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curve) {
+      } else if (networks[chainId].gasL2 && Array.isArray(estimatedGas) && curveApi) {
         if (gasInfo?.l2GasPriceWei && gasInfo?.l1GasPriceWei) {
           const [l2GasUsedWei, l1GasUsedWei] = estimatedGas
           const l2GasCostWei = l2GasUsedWei * gasInfo.l2GasPriceWei
@@ -74,7 +74,7 @@ const DetailInfoEstGas = ({
     estimatedGas,
     basePlusPriority,
     chainId,
-    curve,
+    curveApi,
     chainTokenUsdRate,
     gasInfo?.l2GasPriceWei,
     gasInfo?.l1GasPriceWei,
@@ -92,7 +92,7 @@ const DetailInfoEstGas = ({
   )
 
   const Tooltip = tooltip && (
-    <IconTooltip placement="top end" noWrap>
+    <IconTooltip placement="top-end" noWrap>
       {tooltip}
     </IconTooltip>
   )

@@ -3,7 +3,7 @@ import isEqual from 'lodash/isEqual'
 import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
-import { Api, Wallet } from '@/lend/types/lend.types'
+import { Api, ChainId, Wallet } from '@/lend/types/lend.types'
 import { log } from '@ui-kit/lib/logging'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -11,8 +11,7 @@ export type SliceKey = keyof State | ''
 export type StateKey = string
 
 type SliceState = {
-  isPageVisible: boolean
-  scrollY: number
+  hydratedChainId: ChainId | null
 }
 
 // prettier-ignore
@@ -20,7 +19,7 @@ export interface AppSlice extends SliceState {
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: Api | null, prevApi: Api | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: Api | undefined, prevApi: Api | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean): void
@@ -29,8 +28,7 @@ export interface AppSlice extends SliceState {
 }
 
 const DEFAULT_STATE: SliceState = {
-  isPageVisible: true,
-  scrollY: 0,
+  hydratedChainId: null,
 }
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
@@ -43,13 +41,14 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     )
   },
   hydrate: async (api, prevApi, wallet) => {
+    get().updateGlobalStoreByKey('hydratedChainId', null)
     if (!api) return
 
     const isNetworkSwitched = !!prevApi?.chainId && prevApi.chainId !== api.chainId
     const isUserSwitched = !!prevApi?.signerAddress && prevApi.signerAddress !== api.signerAddress
     const state = get()
 
-    log('Hydrating Lend', api?.chainId, {
+    log('Hydrating Lend', api.chainId, {
       wallet: wallet?.chainId ?? '',
       chainId: [prevApi?.chainId, api.chainId],
       signerAddress: [prevApi?.signerAddress, api.signerAddress],
@@ -79,6 +78,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     await prefetchMarkets({ chainId: api.chainId })
 
     log('Hydrating Lend - Complete')
+    get().updateGlobalStoreByKey('hydratedChainId', api.chainId)
   },
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(

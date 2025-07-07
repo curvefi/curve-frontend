@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import useStore from '@/lend/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -11,6 +12,7 @@ import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/type
 import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
@@ -25,7 +27,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const userPrices = useStore((state) => state.user.loansDetailsMapper[userActiveKey]?.details?.prices ?? null)
+  const userPrices = useUserLoanDetails(userActiveKey)?.prices ?? null
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
   const repayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -39,7 +41,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   )
   const theme = useUserProfileStore((state) => state.theme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
   const timeOption = useStore((state) => state.ohlcCharts.timeOption)

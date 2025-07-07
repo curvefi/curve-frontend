@@ -10,11 +10,11 @@ import { TITLE } from '@/loan/constants'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import { getActiveKey } from '@/loan/store/createCollateralListSlice'
 import useStore from '@/loan/store/useStore'
-import type { LlamaApi } from '@/loan/types/loan.types'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody, Tr } from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -24,12 +24,12 @@ const CollateralList = (pageProps: PageCollateralList) => {
   const titleMapper = useTitleMapper()
 
   const activeKey = getActiveKey(rChainId, searchParams)
-  const { lib: curve = null } = useConnection<LlamaApi>()
+  const { llamaApi: curve = null } = useConnection()
   const prevActiveKey = useStore((state) => state.collateralList.activeKey)
   const formStatus = useStore((state) => state.collateralList.formStatus)
   const initialLoaded = useStore((state) => state.collateralList.initialLoaded)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const collateralDatas = useStore((state) => state.collaterals.collateralDatas[rChainId])
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
   const results = useStore((state) => state.collateralList.result)

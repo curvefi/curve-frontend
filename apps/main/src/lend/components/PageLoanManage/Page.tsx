@@ -32,19 +32,20 @@ import {
 } from '@ui/Chart/styles'
 import Tabs, { Tab } from '@ui/Tab'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
-  const { lib: api = null, connectState } = useConnection<Api>()
+  const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isMdUp = useStore((state) => state.layout.isMdUp)
-  const isPageVisible = useStore((state) => state.isPageVisible)
+  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
@@ -145,7 +146,7 @@ const Page = (params: MarketUrlParams) => {
           )}
 
           <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
-            <AppPageFormsWrapper navHeight="var(--header-height)">
+            <AppPageFormsWrapper>
               {!isMdUp && <TitleComp />}
               {rChainId && rOwmId && <LoanMange {...pageProps} />}
             </AppPageFormsWrapper>

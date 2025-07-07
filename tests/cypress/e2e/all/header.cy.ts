@@ -30,7 +30,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(`/${appPath}/`, {
+      cy.visit(`/${appPath}`, {
         onBeforeLoad: (win) => {
           isDarkMode = checkIsDarkMode(win)
           hideDomainBanner(win)
@@ -128,9 +128,10 @@ describe('Header', () => {
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
       cy.url().then((url) => {
-        const clickIndex = ['crvusd', 'lend'].includes(appPath) ? 1 : 0 // first option is the default page for crvUSD/lend
-        cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).should('have.attr', 'href').and('not.equal', url)
-        cy.get('[data-testid^="sidebar-item-"]').eq(clickIndex).click()
+        const pathname = new URL(url).pathname
+        const index = appPath === 'llamalend' ? 1 : 0 // LlamaLend's first option is the default page
+        cy.get('[data-testid^="sidebar-item-"]').eq(index).should('have.attr', 'href').and('not.equal', pathname)
+        cy.get('[data-testid^="sidebar-item-"]').eq(index).click()
         cy.url(LOAD_TIMEOUT).should('not.equal', url)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
@@ -172,6 +173,7 @@ describe('Header', () => {
       dao: 'proposal-title',
       crvusd: 'btn-connect-prompt',
       lend: 'btn-connect-prompt',
+      llamalend: 'data-table-head',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
     cy.get(`[data-testid='${testId}']`, LOAD_TIMEOUT).should('be.visible')

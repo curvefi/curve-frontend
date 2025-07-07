@@ -267,7 +267,7 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): CreatePoolSlice => ({
   createPool: {
     ...DEFAULT_CREATE_POOL_STATE,
     setNavigationIndex: (index: number) => {
@@ -514,19 +514,18 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
           state.createPool.tokensInPool.tokenAmount = amount
         }),
       ),
-    updateUserAddedTokens: (address: string, symbol: string, haveSameTokenName: boolean, basePool: boolean) => {
+    updateUserAddedTokens: (address, symbol, haveSameTokenName, basePool) =>
       set(
         produce((state) => {
           state.createPool.userAddedTokens.push({
             address: address.toLowerCase(),
-            symbol: symbol,
-            haveSameTokenName: haveSameTokenName,
+            symbol,
+            haveSameTokenName,
             userAddedToken: true,
-            basePool: basePool,
+            basePool,
           })
         }),
-      )
-    },
+      ),
     updateInitialPrice: (tokenA: number, tokenB: number, tokenC: number) =>
       set(
         produce((state) => {
@@ -703,12 +702,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>) => ({
       set(
         produce((state) => {
           state.createPool.poolSymbol = symbol
-        }),
-      ),
-    updateAssetType: (type: string) =>
-      set(
-        produce((state) => {
-          state.createPool.assetType = type
         }),
       ),
     updatePoolTypeValidation: (poolType: boolean) => {

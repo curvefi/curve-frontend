@@ -1,3 +1,4 @@
+import merge from 'lodash/merge'
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
@@ -5,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { InvertTheme } from './ThemeProvider'
 
-type TooltipProps = MuiTooltipProps & {
+export type TooltipProps = MuiTooltipProps & {
   body?: ReactNode
   clickable?: boolean
 }
@@ -22,7 +23,7 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
       sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill, width: '100%' }}
       onClick={(e) => e.stopPropagation()} // prevent changing pages when clicking on the tooltip
     >
-      <Typography variant="bodyMBold" color="textPrimary">
+      <Typography variant="bodyMBold" color="textPrimary" component="div">
         {title}
       </Typography>
       {children}
@@ -36,11 +37,12 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
  */
 export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) => (
   <MuiTooltip
+    arrow
     title={title && <TooltipContent title={title}>{body}</TooltipContent>}
-    slotProps={{
+    slotProps={merge(slotProps, {
       ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
       tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
-    }}
+    })}
     {...props}
   >
     {children}

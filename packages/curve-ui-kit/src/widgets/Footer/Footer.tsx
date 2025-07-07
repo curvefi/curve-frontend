@@ -2,6 +2,7 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid2'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
+import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
@@ -20,14 +21,14 @@ const Llama = styled('img')({
 
 type FooterProps = {
   networkId: string
-  headerHeight: string
   appName: AppName
 }
 
-export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
+export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
   const [isBeta, setIsBeta] = useBetaFlag()
+  const isTiny = useIsTiny()
   return (
     <Box
       component="footer"
@@ -68,7 +69,7 @@ export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
               desktop: 3,
             }}
           >
-            <Section {...section} networkId={networkId} appName={appName} />
+            <Section {...section} networkId={networkId} appName={appName} isTiny={isTiny} />
           </Grid>
         ))}
 
@@ -92,12 +93,7 @@ export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
         )}
 
         {isBetaSnackbarVisible != null && (
-          <BetaSnackbar
-            open={isBetaSnackbarVisible}
-            onClose={closeBetaSnackbar}
-            headerHeight={headerHeight}
-            isBeta={isBeta}
-          />
+          <BetaSnackbar open={isBetaSnackbarVisible} onClose={closeBetaSnackbar} isBeta={isBeta} />
         )}
       </Grid>
     </Box>

@@ -46,9 +46,9 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
         <RewardsContainer>
           <Box flex fillWidth>
             <RewardsTitle>{t`Base vAPY`}</RewardsTitle>
-            <StyledTooltip placement="bottom" tooltip={t`Variable APY based on today's trading activity.`}>
+            <Tooltip placement="bottom" tooltip={t`Variable APY based on today's trading activity.`}>
               <StyledInformationIcon name="InformationSquare" size={16} />
-            </StyledTooltip>
+            </Tooltip>
             <StyledDescriptionChip>
               <ExternalLink $noStyles href="https://resources.curve.finance/pools/calculating-yield/#base-vapy">
                 {t`Learn more`}
@@ -87,12 +87,9 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
         <RewardsContainer>
           <Box flex fillWidth>
             <RewardsTitle>{t`Rewards tAPR`}</RewardsTitle>
-            <StyledTooltip
-              placement="bottom"
-              tooltip={t`Token APR based on current prices of tokens and reward rates.`}
-            >
+            <Tooltip placement="bottom" tooltip={t`Token APR based on current prices of tokens and reward rates.`}>
               <StyledInformationIcon name="InformationSquare" size={16} />
-            </StyledTooltip>
+            </Tooltip>
           </Box>
 
           <Box margin="var(--spacing-2) 0 0 0">
@@ -169,8 +166,6 @@ const TokenWrapper = styled(Box)`
     padding-top: 0.3125rem;
   }
 `
-
-const StyledTooltip = styled(Tooltip)``
 
 const StyledStyledStats = styled(StyledStats)`
   padding: var(--spacing-1);

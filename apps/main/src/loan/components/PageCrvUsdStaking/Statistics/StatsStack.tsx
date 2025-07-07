@@ -31,37 +31,36 @@ const StatsStack = () => {
       <Grid>
         <Metric
           label="Total crvUSD Staked"
-          value={yieldData?.[yieldData.length - 1]?.supply ?? 0}
+          value={yieldData?.[yieldData.length - 1]?.supply}
+          valueOptions={{ unit: CRVUSD_OPTION }}
           loading={yieldIsFetching}
-          unit={CRVUSD_OPTION}
           copyText={t`Copied total crvUSD staked`}
         />
       </Grid>
       <Grid>
         <Metric
           label="Current APY"
-          value={statisticsData?.aprProjected ?? 0}
+          value={statisticsData?.aprProjected}
+          valueOptions={{ unit: 'percentage', decimals: 2 }}
           loading={statisticsIsFetching}
-          decimals={2}
-          unit="percentage"
           copyText={t`Copied current APY`}
         />
       </Grid>
       <Grid>
         <Metric
           label="Total Revenue Distributed"
-          value={weiToEther(Number(revenueData?.totalDistributed)) ?? 0}
+          value={revenueData?.totalDistributed ? weiToEther(Number(revenueData.totalDistributed)) : undefined}
+          valueOptions={{ unit: CRVUSD_OPTION }}
           loading={revenueIsFetching}
-          unit={CRVUSD_OPTION}
           copyText={t`Copied total revenue distributed`}
         />
       </Grid>
       <Grid>
         <Metric
           label="Weekly Accumulated Revenue"
-          value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue ?? 0}
+          value={revenueData?.epochs[revenueData.epochs.length - 1].weeklyRevenue}
+          valueOptions={{ unit: CRVUSD_OPTION }}
           loading={revenueIsFetching}
-          unit={CRVUSD_OPTION}
           copyText={t`Copied weekly accumulated revenue`}
         />
       </Grid>

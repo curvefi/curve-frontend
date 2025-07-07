@@ -12,10 +12,11 @@ import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoan
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import useStore from '@/loan/store/useStore'
-import { LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import AlertBox from '@ui/AlertBox'
@@ -41,7 +42,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const formStatus = useStore((state) => state.loanCollateralIncrease.formStatus)
   const formValues = useStore((state) => state.loanCollateralIncrease.formValues)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
@@ -97,7 +98,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
   const handleBtnClickAdd = useCallback(
     async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const chainId = curve.chainId
+      const chainId = curve.chainId as ChainId
       const notifyMessage = t`Please confirm depositing ${formValues.collateral} ${llamma.collateralSymbol}`
       const notification = notify(notifyMessage, 'pending')
       const resp = await fetchStepIncrease(payloadActiveKey, curve, llamma, formValues)

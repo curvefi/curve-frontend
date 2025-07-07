@@ -1,3 +1,4 @@
+import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useRouter } from 'next/navigation'
 import styled from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
@@ -66,7 +67,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
                     {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                <StyledExternalLink href={networks[1].scanTxPath(vote.txHash)}>
+                <StyledExternalLink href={networks[Chain.Ethereum].scanTxPath(vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { notation: 'compact' })} (
                     {formatNumber(vote.relativePower, { notation: 'compact' })}%)

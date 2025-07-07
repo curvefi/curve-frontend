@@ -8,27 +8,14 @@ import { log } from '@ui-kit/lib'
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
-export type LayoutHeight = {
-  globalAlert: number
-  mainNav: number
-  secondaryNav: number
-  footer: number
-}
-
-type SliceState = {
-  isPageVisible: boolean
-  layoutHeight: LayoutHeight
-  showScrollButton: boolean
-}
+type SliceState = {}
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => void
-  updateShowScrollButton(scrollY: number): void
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => void
 
   /** Hydrate resets states and refreshes store data from the API */
-  hydrate(api: CurveApi | null, prevApi: CurveApi | null, wallet: Wallet | null): Promise<void>
+  hydrate(api: CurveApi | undefined, prevApi: CurveApi | undefined, wallet: Wallet | undefined): Promise<void>
 
   setAppStateByActiveKey<T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T): void
   setAppStateByKey<T>(sliceKey: SliceKey, key: StateKey, value: T): void
@@ -36,36 +23,10 @@ export interface AppSlice extends SliceState {
   resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
-const DEFAULT_STATE = {
-  isPageVisible: true,
-  layoutHeight: {
-    globalAlert: 0,
-    mainNav: 0,
-    secondaryNav: 0,
-    footer: 0,
-  },
-  showScrollButton: false,
-} satisfies SliceState
+const DEFAULT_STATE = {} satisfies SliceState
 
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
-  updateLayoutHeight: (key: keyof LayoutHeight, value: number | null) => {
-    set(
-      produce((state: State) => {
-        if (value !== null) state.layoutHeight[key] = value
-      }),
-    )
-  },
-  updateShowScrollButton: (scrollY: number) => {
-    const showScrollButton = scrollY > 30
-    if (get().showScrollButton !== showScrollButton) {
-      set(
-        produce((state) => {
-          state.showScrollButton = showScrollButton
-        }),
-      )
-    }
-  },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
       produce((state) => {

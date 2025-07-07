@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
+import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import useVaultShares from '@/lend/hooks/useVaultShares'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -23,10 +24,9 @@ const CellUserMain = ({
 }) => {
   const { borrowed_token } = market ?? {}
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const resp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
 
   const { vaultShares = '0', gauge = '0', error: userBalancesError } = userBalancesResp ?? {}
-  const { details, error } = resp ?? {}
+  const { error, ...details } = useUserLoanDetails(userActiveKey)
   const totalVaultShares = +vaultShares + +gauge
   const { borrowedAmount, borrowedAmountUsd } = useVaultShares(rChainId, rOwmId, totalVaultShares)
 

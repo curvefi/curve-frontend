@@ -38,10 +38,7 @@ const DetailInfoExchangeRate = ({
               noWrap
               size="md"
               tooltip={`${formatNumber(1)} ${from} = ${formatNumber(value, { showAllFractionDigits: true })} ${to}`}
-              tooltipProps={{
-                placement: 'bottom end',
-                noWrap: true,
-              }}
+              tooltipProps={{ placement: 'bottom-end', noWrap: true }}
             >
               {formatNumber(value, { ...getFractionDigitsOptions(value, 5) })}
             </Chip>

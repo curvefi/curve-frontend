@@ -16,7 +16,7 @@ import {
   ExpectedBorrowed,
   ExpectedCollateral,
   FutureRates,
-  HeathColorKey,
+  HealthColorKey,
   LiqRangeResp,
   MarketMaxLeverage,
   MarketPrices,
@@ -2002,14 +2002,14 @@ export default apiLending
  * But user is at risk of liquidation if not full < 0
  */
 function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
-  const userStatus: { label: string; colorKey: HeathColorKey; tooltip: string } = {
+  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
     tooltip: '',
   }
 
   if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidation'
+    userStatus.label = 'Hard liquidatable'
     userStatus.colorKey = 'hard_liquidation'
     userStatus.tooltip =
       'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'

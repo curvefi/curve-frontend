@@ -1,17 +1,5 @@
-import type { Eip1193Provider } from 'ethers'
-import cloneDeep from 'lodash/cloneDeep'
-import { CurveApi, ChainId, RewardsApy } from '@/dex/types/main.types'
+import { RewardsApy } from '@/dex/types/main.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-
-export async function initCurveJs(chainId: ChainId, provider?: Eip1193Provider) {
-  const curveApi = cloneDeep((await import('@curvefi/api')).default) as CurveApi
-  if (provider) {
-    await curveApi.init('Web3', { network: { chainId }, externalProvider: provider }, { chainId })
-  } else {
-    await curveApi.init('NoRPC', 'NoRPC', { chainId })
-  }
-  return curveApi
-}
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {

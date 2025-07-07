@@ -13,13 +13,6 @@ export const ROUTE = {
   PAGE_404: '/404',
 }
 
-export const CONNECT_STAGE = {
-  CONNECT_API: 'api',
-  CONNECT_WALLET: 'connect-wallet',
-  DISCONNECT_WALLET: 'disconnect-wallet',
-  SWITCH_NETWORK: 'switch-network',
-} as const
-
 export const SCRVUSD_GAS_ESTIMATE = {
   FIRST_DEPOSIT: 95500,
   FOLLOWING_DEPOSIT: 78500,
@@ -88,20 +81,6 @@ export const PEG_KEEPERS = {
       underlyingCoins: ['PYUSD', 'crvUSD'],
       underlyingCoinAddresses: [
         '0x6c3ea9036406852006290770bedfcaba0e23a0e8',
-        '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
-      ],
-    },
-  },
-  '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8': {
-    address: '0x503e1bf274e7a6c64152395ae8eb57ec391f91f8',
-    token: 'USDM',
-    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-154/deposit`),
-    pool: {
-      id: 'factory-stable-ng-154',
-      name: 'crvUSD/USDM',
-      underlyingCoins: ['USDM', 'crvUSD'],
-      underlyingCoinAddresses: [
-        '0x59d9356e565ab3a36dd77763fc0d87feaf85508c',
         '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
       ],
     },

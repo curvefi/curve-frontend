@@ -1,17 +1,17 @@
 import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
-import type llamaApi from '@curvefi/llamalend-api'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
-export type { Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+export type { Wallet } from '@ui-kit/features/connect-wallet'
 
+export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
-export type Api = typeof llamaApi & { chainId: ChainId }
 export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
 export type MarketListType = 'borrow' | 'supply'
@@ -22,7 +22,8 @@ export type NetworkUrlParams = { network: NetworkEnum }
 export type MarketUrlParams = NetworkUrlParams & { market: string; formType: [] | [RFormType] }
 export type UrlParams = NetworkUrlParams & Partial<MarketUrlParams>
 
-export interface NetworkConfig extends BaseConfig<NetworkEnum> {
+export interface NetworkConfig<TId extends string = string, TChainId extends number = number>
+  extends BaseConfig<TId, TChainId> {
   smallMarketAmount: number
   isActiveNetwork: boolean
   showInSelectNetwork: boolean
@@ -77,13 +78,7 @@ export type ExpectedBorrowed = {
   avgPrice: string
 }
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
-export type PageWidthClassName =
-  | 'page-wide'
-  | 'page-large'
-  | 'page-medium'
-  | 'page-small'
-  | 'page-small-x'
-  | 'page-small-xx'
+
 export type PageContentProps = {
   params: UrlParams
   rChainId: ChainId
@@ -91,14 +86,14 @@ export type PageContentProps = {
   rFormType: string | null
   userActiveKey: string
   isLoaded: boolean
-  api: Api | null
+  api: LlamaApi | null
   market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
 }
-export type HeathColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
+export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {
   percent: string
-  colorKey: HeathColorKey
+  colorKey: HealthColorKey
   icon: ReactNode
   message: string | null
   warningTitle: string
@@ -235,7 +230,7 @@ export type UserLoanDetails = {
     prices: string[]
     range: number | null
     state: { collateral: string; borrowed: string; debt: string; N: string }
-    status: { label: string; colorKey: HeathColorKey; tooltip: string }
+    status: { label: string; colorKey: HealthColorKey; tooltip: string }
     leverage: string
     pnl: Record<string, string>
   } | null

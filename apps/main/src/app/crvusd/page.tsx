@@ -1,19 +1,9 @@
-import { ROUTE } from '@/loan/constants'
-import { HashRouterRedirect } from '@ui-kit/shared/HashRouterRedirect'
+import Skeleton from '@mui/material/Skeleton'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-export const metadata = {
-  title: 'Curve.finance',
-}
+const { MinHeight } = SizesAndSpaces
 
-// old redirects that were hardcoded in the react-router routes. The network name gets added in the redirect.
-const REDIRECTS = [
-  ROUTE.PAGE_MARKETS,
-  ROUTE.PAGE_CRVUSD_STAKING,
-  ROUTE.PAGE_DISCLAIMER,
-  ROUTE.PAGE_PEGKEEPERS,
-  ROUTE.PAGE_INTEGRATIONS,
-].map((root) => `${root}/`)
-
-const CrvUsdRootPage = () => <HashRouterRedirect app="crvusd" redirects={REDIRECTS} />
+/** Redirect is handled by the `ClientWrapper` component, as we need the client to access the url after # */
+const CrvUsdRootPage = () => <Skeleton width="100%" height={MinHeight.pageContent} />
 
 export default CrvUsdRootPage

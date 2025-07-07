@@ -37,9 +37,10 @@ export default function useResizeObserver(
   const [dimensions, setDimensions] = useState<[number, number] | null>(null)
 
   useEffect(() => {
-    const node = elementRef?.current
-
-    if (!node) return
+    const node = elementRef.current
+    if (!node) {
+      return console.warn(`Could not find the element to observe for resize: ${elementRef}`)
+    }
 
     const { width, height } = node.getBoundingClientRect()
     setDimensions([width, height])
@@ -66,15 +67,4 @@ export default function useResizeObserver(
   }, [elementRef, threshold])
 
   return dimensions
-}
-
-export function useLayoutHeight<T extends string>(
-  elementRef: RefObject<Element | null>,
-  key: T,
-  updateLayoutHeight: (key: T, height: number) => void,
-) {
-  const [, height] = useResizeObserver(elementRef) ?? []
-  useEffect(() => {
-    if (height != null) updateLayoutHeight(key, height)
-  }, [height, key, updateLayoutHeight])
 }

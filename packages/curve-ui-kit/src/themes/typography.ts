@@ -102,7 +102,7 @@ export const TYPOGRAPHY_VARIANTS = {
   highlightS: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm' },
   highlightM: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'sm' },
   highlightL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md' },
-  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px' },
+  highlightXl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[400], letterSpacing: '-1.28px' },
   highlightXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
 } as const satisfies Record<string, TypographyVariantDefinition>
 

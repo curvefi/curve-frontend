@@ -7,11 +7,11 @@ import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import { TooltipAlert as AlertTooltipIcon } from '@ui/Tooltip'
 import { Chip } from '@ui/Typography'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
 type PoolListProps = {
@@ -43,7 +43,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
   const poolAlert = usePoolAlert(poolData)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const isMobile = useMediaQuery((t) => t.breakpoints.down('tablet'))
+  const isMobile = useIsMobile()
   const searchedTerms = useStore((state) => state.poolList.searchedTerms)
 
   const { quickViewValue, onClick } = poolListProps ?? {}
@@ -91,19 +91,19 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
             {!isMobile && (
               <>
                 {(poolAlert?.isInformationOnly || poolAlert?.isInformationOnlyAndShowInForm) && (
-                  <AlertTooltipIcon minWidth="300px" placement="start" {...poolAlert}>
+                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...poolAlert}>
                     {poolAlert.message}
                   </AlertTooltipIcon>
                 )}
                 {tokenAlert && (
-                  <AlertTooltipIcon minWidth="300px" placement="start" {...tokenAlert}>
+                  <AlertTooltipIcon minWidth="300px" placement="right-start" {...tokenAlert}>
                     {tokenAlert.message}
                   </AlertTooltipIcon>
                 )}
               </>
             )}
             {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
-            {pool && <ChipPool poolAddress={pool.address} poolName={pool.name} isHighlightPoolName />}
+            {pool && <ChipPool poolId={pool.id} poolAddress={pool.address} poolName={pool.name} />}
           </Box>
 
           <PoolLabelTokensWrapper>

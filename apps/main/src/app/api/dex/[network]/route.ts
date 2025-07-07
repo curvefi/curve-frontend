@@ -1,8 +1,8 @@
-import cloneDeep from 'lodash/cloneDeep'
 import { getAllNetworks } from '@/app/dex/[network]/pools.util'
 import { refreshDataInBackground } from '@/background'
 import { getPools } from '@/dex/lib/pools'
 import { CurveApi, NetworkConfig, PoolDataMapper, type ValueMapperCached } from '@/dex/types/main.types'
+import { createCurve } from '@curvefi/api'
 import type { DexServerSideNetworkCache } from '../types'
 
 const DexServerSideCache: Record<string, DexServerSideNetworkCache> = {}
@@ -39,7 +39,7 @@ const getVolumeCache = async (network: NetworkConfig, pools: PoolDataMapper) => 
  * Unfortunately we cannot use an API as the pool names are generated in CurveJS
  */
 const getServerSideCache = async (network: NetworkConfig) => {
-  const curveJS = cloneDeep((await import('@curvefi/api')).default) as CurveApi
+  const curveJS = createCurve() as CurveApi
   await curveJS.init('NoRPC', 'NoRPC', { chainId: network.chainId })
   await Promise.all([
     curveJS.factory.fetchPools(),

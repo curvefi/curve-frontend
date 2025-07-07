@@ -1,7 +1,6 @@
 import produce from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
 import chunk from 'lodash/chunk'
-import cloneDeep from 'lodash/cloneDeep'
 import countBy from 'lodash/countBy'
 import groupBy from 'lodash/groupBy'
 import isNaN from 'lodash/isNaN'
@@ -354,7 +353,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       ])
 
       const { balances } = balancesResp
-      const isEmpty = balances.length === 0 || balances.every((b) => +b === 0)
+      const isEmpty = !balances?.length || balances.every((b) => +b === 0)
       const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
@@ -363,7 +362,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const tokenAddress = tokenAddresses[idx]
         const usdRate = usdRatesMapper[tokenAddress] ?? 0
         const usdRateError = isNaN(usdRate)
-        const balance = Number(balances[idx])
+        const balance = Number(balances?.[idx])
         const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
 
         total += balance
@@ -467,10 +466,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
         set(
           produce((state: State) => {
-            state.pools.poolsMapper[chainId][pool.id].parameters = parameters
-
-            if (volume === null) return
-            state.pools.volumeMapper[chainId][pool.id] = volume
+            if (parameters) {
+              state.pools.poolsMapper[chainId][pool.id].parameters = parameters
+            }
+            if (volume && state.pools.volumeMapper[chainId]) {
+              // volume mapper might not be initialized yet when loading the pool details page
+              state.pools.volumeMapper[chainId][pool.id] = volume
+            }
           }),
         )
       } catch (error) {
@@ -478,16 +480,18 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     setPoolIsWrapped: (poolData, isWrapped) => {
-      const curve = requireLib<CurveApi>()
+      const curve = requireLib('curveApi')
       const chainId = curve.chainId
 
       const tokens = curvejsApi.pool.poolTokens(poolData.pool, isWrapped)
       const tokenAddresses = curvejsApi.pool.poolTokenAddresses(poolData.pool, isWrapped)
-      const cPoolData = cloneDeep(poolData)
-      cPoolData.isWrapped = isWrapped
-      cPoolData.tokens = tokens
-      cPoolData.tokensCountBy = countBy(tokens)
-      cPoolData.tokenAddresses = tokenAddresses
+      const cPoolData = {
+        ...poolData,
+        isWrapped,
+        tokens,
+        tokensCountBy: countBy(tokens),
+        tokenAddresses,
+      }
 
       set(
         produce((state) => {

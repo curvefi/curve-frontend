@@ -3,6 +3,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -19,11 +20,12 @@ const formatNumber = (value?: number): string => {
 type MaxButtonProps = {
   children: React.ReactNode
   underline: boolean
+  sx?: SxProps
   onClick?: () => void
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick }: MaxButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
@@ -42,6 +44,7 @@ const MaxButton = ({ children, underline, onClick }: MaxButtonProps) => (
           textDecoration: 'underline',
         },
       }),
+      ...sx,
     }}
   >
     {children}
@@ -83,12 +86,13 @@ export type Props = {
   notionalValue?: number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
+  sx?: SxProps
   /** Callback function when max button/balance is clicked */
   onMax?: (maxValue: number) => void
 }
 
-export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }: Props) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center">
+export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
+  <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
@@ -106,7 +110,12 @@ export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, onMax }
     )}
 
     {max === 'button' && balance != null && (
-      <MaxButton underline={false} onClick={() => onMax?.(balance)}>
+      <MaxButton
+        underline={false}
+        onClick={() => onMax?.(balance)}
+        // Right-align without flex grow for precise click area
+        sx={{ marginLeft: 'auto' }}
+      >
         Max
       </MaxButton>
     )}
