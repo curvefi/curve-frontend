@@ -1,4 +1,4 @@
-import type Typography from '@mui/material/Typography'
+import type { TypographyProps } from '@mui/material/Typography'
 
 /**
  * Describes a change in value for a certain action info. The `next` value is optional as we await input.
@@ -12,4 +12,4 @@ export type Delta = { current: number; next?: number }
 export type TokenAmount = { symbol: string; amount: number }
 
 /** Short-hand type for MUI Typography color */
-export type TextColor = React.ComponentProps<typeof Typography>['color']
+export type TextColor = TypographyProps['color']
