@@ -8,7 +8,7 @@ import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack/Stack'
-import Typography from '@mui/material/Typography'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -28,11 +28,11 @@ type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
   /** Custom color for the label text */
-  labelColor?: React.ComponentProps<typeof Typography>['color']
+  labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
   value: string
   /** Custom color for the value text */
-  valueColor?: React.ComponentProps<typeof Typography>['color']
+  valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
   valueLeft?: ReactNode
   /** Optional content to display to the right of the value */
@@ -42,7 +42,7 @@ type ActionInfoProps = {
   /** Previous value (if needed for comparison) */
   prevValue?: string
   /** Custom color for the previous value text */
-  prevValueColor?: React.ComponentProps<typeof Typography>['color']
+  prevValueColor?: TypographyProps['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Whether or not the value can be copied */
