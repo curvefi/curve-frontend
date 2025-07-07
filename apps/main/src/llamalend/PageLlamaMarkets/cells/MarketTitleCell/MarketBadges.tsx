@@ -25,7 +25,7 @@ const poolTypeTooltips: Record<LlamaMarketType, () => string> = {
 /** Displays badges for a pool, such as the chain icon and the pool type. */
 export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobile: boolean }) => {
   const { address, type, leverage, deprecatedMessage } = market
-  const isSmall = useMediaQuery('(max-width:1250px)')
+  const isSmall = useMediaQuery('(max-width:1250px)', { defaultMatches: false })
   const { isCollateralEroded } = useUserMarketStats(market)?.data ?? {}
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" {...(isMobile && { height: Sizing.md.mobile })}>

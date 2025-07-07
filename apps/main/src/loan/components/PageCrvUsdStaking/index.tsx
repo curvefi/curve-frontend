@@ -17,6 +17,7 @@ import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MaxWidth } = SizesAndSpaces
+const columnViewBreakPoint = '65.625rem'
 
 const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
@@ -45,8 +46,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     !address ||
     (!isConnecting && !isUserScrvUsdBalanceFetching && isUserScrvUsdBalanceZero)
 
-  const columnViewBreakPoint = '65.625rem'
-  const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
+  const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`, { defaultMatches: false })
 
   useEffect(() => {
     const fetchData = async () => {

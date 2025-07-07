@@ -34,6 +34,7 @@ type StatisticsProps = {
   hideExpandChart: boolean
 }
 
+const smallBreakPoint = '35.9375rem' // 575px
 const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
   const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
   const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
@@ -43,8 +44,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
   const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
 
-  const smallBreakPoint = '35.9375rem' // 575px
-  const smallView = useMediaQuery(`(max-width: ${smallBreakPoint})`)
+  const smallView = useMediaQuery(`(max-width: ${smallBreakPoint})`, { defaultMatches: false })
 
   return (
     <Stack
