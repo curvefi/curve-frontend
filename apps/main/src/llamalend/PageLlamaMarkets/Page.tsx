@@ -12,6 +12,7 @@ import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/llamalend/entities/mint-markets'
 import { LendTableFooter } from '@/llamalend/PageLlamaMarkets/LendTableFooter'
 import { LlamaMarketsTable } from '@/llamalend/PageLlamaMarkets/LlamaMarketsTable'
+import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -33,11 +34,7 @@ const onReload = (userAddress?: Address) => {
   invalidateAllUserMintMarkets(userAddress)
 }
 
-const {
-  Spacing,
-  MaxWidth,
-  Height: { modal: ModalHeight },
-} = SizesAndSpaces
+const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 
 function useInjectServerData(props: LlamalendServerData) {
   useEffect(() => {
@@ -64,13 +61,22 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
-      <WithSkeleton loading={showSkeleton} variant="rectangular" height={ModalHeight.md.height}>
-        <LlamaMarketsTable
-          onReload={() => onReload(address)}
-          result={data}
-          isError={isError}
-          minLiquidity={minLiquidity}
-        />
+      <WithSkeleton loading={showSkeleton} variant="rectangular" sx={{ maxWidth: 'none' }}>
+        <Stack
+          sx={{
+            marginBlockStart: Spacing.xl,
+            marginBlockEnd: Spacing.xxl,
+            maxWidth: MaxWidth.table,
+            minHeight: MinHeight.pageContent,
+          }}
+        >
+          <LlamaMarketsTable
+            onReload={() => onReload(address)}
+            result={data}
+            isError={isError}
+            minLiquidity={minLiquidity}
+          />
+        </Stack>
       </WithSkeleton>
 
       <LendTableFooter />
