@@ -124,7 +124,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
             <Grid size={6}>
               <Metric
                 label={t`Supplied Amount`}
-                value={deposited.earnings.deposited}
+                value={deposited.earnings.totalCurrentAssets}
                 valueOptions={{ unit: type === LlamaMarketType.Lend ? borrowedUnit : 'dollar' }}
               />
             </Grid>
