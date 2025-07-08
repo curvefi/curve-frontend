@@ -175,7 +175,7 @@ export const NETWORK_BASE_CONFIG = {
     chainId: Chain.Hyperliquid,
     rpcUrl: `https://rpc.hyperliquid.xyz/evm`,
     nativeCurrencySymbol: 'HYPE',
-    explorerUrl: 'https://www.hyperscan.com/',
+    explorerUrl: 'https://hyperevmscan.io/',
   },
 } as const
 
