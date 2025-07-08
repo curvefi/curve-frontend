@@ -221,7 +221,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
 ): BaseConfig<TId> {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
-
   return {
     ...rest,
     name: formatNetworkName(name || id),
@@ -234,6 +233,7 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,
     isTestnet,
+    explorerUrl,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
     ...(chainId === ChainIds.Hyperliquid // explorer doesn't support the /token syntax

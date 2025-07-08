@@ -376,13 +376,11 @@ export async function getNetworks() {
         pricesApi: isUpgraded,
         isLite: !isUpgraded,
         isCrvRewardsEnabled: isUpgraded,
-        isTestnet: config.isTestnet,
       }
       return prev
     },
     {} as Record<number, NetworkConfig>,
   )
-
   return { ...defaultNetworks, ...liteNetworks }
 }
 
