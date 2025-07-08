@@ -55,9 +55,11 @@ export const RangeSliderFilter = <T extends unknown>({
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultValue[i]) ? undefined : (newRange as NumberRange),
+          newRange.every((value, i) => value === defaultValue[i])
+            ? undefined // remove the filter if the range is the same as the default
+            : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
         ),
-      [defaultValue, id, setColumnFilter],
+      [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
     ),
   )
 

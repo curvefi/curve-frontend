@@ -26,9 +26,6 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing, MaxWidth } = SizesAndSpaces
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -43,6 +40,8 @@ const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined)
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }
 
+const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+
 export const LlamaMarketsTable = ({
   onReload,
   result,
@@ -55,7 +54,7 @@ export const LlamaMarketsTable = ({
   minLiquidity: number
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, [
     { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
   ])
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
@@ -87,7 +86,7 @@ export const LlamaMarketsTable = ({
       shouldStickFirstColumn={useIsTablet() && !!hasPositions}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={t`Llamalend Markets`}
+        title={TITLE}
         subtitle={t`Borrow with the power of Curve soft liquidations`}
         onReload={onReload}
         visibilityGroups={columnSettings}
