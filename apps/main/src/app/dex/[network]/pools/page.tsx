@@ -1,11 +1,8 @@
-import type { Metadata } from 'next'
 import { PagePoolList } from '@/dex/components/PagePoolList/Page'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
+import { useParams } from 'react-router-dom'
 
-type PoolListPageProps = { params: Promise<NetworkUrlParams> }
-
-export const metadata: Metadata = { title: 'Pools - Curve' }
-
-const PoolListPage = async ({ params }: PoolListPageProps) => <PagePoolList {...await params} />
-
-export default PoolListPage
+export default function Component() {
+  const params = useParams<NetworkUrlParams>()
+  return <PagePoolList {...params} />
+}

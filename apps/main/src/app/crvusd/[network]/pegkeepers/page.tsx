@@ -1,11 +1,11 @@
-import type { Metadata } from 'next'
 import PegKeepers from '@/loan/components/PagePegKeepers/Page'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import type { Route } from './+types/page'
 
-type PegKeepersPageProps = { params: Promise<NetworkUrlParams> }
+export default function Component({ params }: Route.ComponentProps) {
+  const networkParams: NetworkUrlParams = {
+    network: params.network,
+  }
 
-export const metadata: Metadata = { title: 'PegKeepers - Curve' }
-
-const PegKeepersPage = async ({ params }: PegKeepersPageProps) => <PegKeepers {...await params} />
-
-export default PegKeepersPage
+  return <PegKeepers {...networkParams} />
+}

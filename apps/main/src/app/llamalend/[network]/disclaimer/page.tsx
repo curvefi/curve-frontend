@@ -1,16 +1,8 @@
-import type { Metadata } from 'next'
 import { NetworkUrlParams } from '@/llamalend/llamalend.types'
-import { t } from '@ui-kit/lib/i18n'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
+import { useParams } from 'react-router'
 
-export const metadata: Metadata = { title: t`Risk Disclaimer - Curve Llamalend` }
-
-type DisclaimerPageProps = {
-  params: Promise<NetworkUrlParams>
+export default function Component() {
+  const params = useParams<NetworkUrlParams>()
+  return <Disclaimer currentApp="llamalend" {...params} />
 }
-
-const DisclaimerPage = async ({ params }: DisclaimerPageProps) => (
-  <Disclaimer currentApp="llamalend" {...await params} />
-)
-
-export default DisclaimerPage

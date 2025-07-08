@@ -1,11 +1,11 @@
-import type { Metadata } from 'next'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import type { Route } from './+types/page'
 
-type CrvStakingPageProps = { params: Promise<NetworkUrlParams> }
+export default function Component({ params }: Route.ComponentProps) {
+  const networkParams: NetworkUrlParams = {
+    network: params.network,
+  }
 
-export const metadata: Metadata = { title: 'Savings crvUSD - Curve' }
-
-const CrvStakingPage = async ({ params }: CrvStakingPageProps) => <CrvStaking {...await params} />
-
-export default CrvStakingPage
+  return <CrvStaking {...networkParams} />
+}

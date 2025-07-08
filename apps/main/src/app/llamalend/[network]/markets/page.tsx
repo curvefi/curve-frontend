@@ -1,17 +1,22 @@
-import type { Metadata } from 'next'
-import { cookies, headers } from 'next/headers'
 import type { LlamalendServerData } from '@/app/api/llamalend/types'
 import { getServerData } from '@/background'
 import { LlamaMarketsPage } from '@/llamalend/PageLlamaMarkets/Page'
+import type { ClientLoaderFunctionArgs } from 'react-router'
+import { useLoaderData } from 'react-router'
 
-export const metadata: Metadata = { title: 'Llamalend Beta Markets - Curve' }
+export async function clientLoader({ request }: ClientLoaderFunctionArgs) {
+  const isCypress = document.cookie.includes('cypress')
+  if (isCypress) {
+    return {}
+  }
 
-const Page = async () => {
-  const [requestCookies, requestHeaders] = await Promise.all([cookies(), headers()])
-  const isCypress = requestCookies.get('cypress') ?? false
-  return (
-    <LlamaMarketsPage {...(!isCypress && (await getServerData<LlamalendServerData>('llamalend', requestHeaders)))} />
-  )
+  // Convert request headers to the format expected by getServerData
+  const headers = new Headers(request.headers)
+  const serverData = await getServerData<LlamalendServerData>('llamalend', headers as any)
+  return serverData
 }
 
-export default Page
+export default function Component() {
+  const serverData = useLoaderData() as LlamalendServerData
+  return <LlamaMarketsPage {...serverData} />
+}

@@ -1,10 +1,11 @@
-import type { Metadata } from 'next'
 import Integrations from '@/loan/components/PageIntegrations/Page'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { t } from '@ui-kit/lib/i18n'
+import type { Route } from './+types/page'
 
-export const metadata: Metadata = { title: t`Integrations - Curve` }
+export default function Component({ params }: Route.ComponentProps) {
+  const networkParams: NetworkUrlParams = {
+    network: params.network,
+  }
 
-const IntegrationsPage = async ({ params }: { params: Promise<NetworkUrlParams> }) => <Integrations {...await params} />
-
-export default IntegrationsPage
+  return <Integrations {...networkParams} />
+}

@@ -1,16 +1,13 @@
-import type { Metadata } from 'next'
-import { getCollateralName } from '@/app/crvusd/[network]/markets/[collateralId]/collateral.utils'
 import CreateLoan from '@/loan/components/PageLoanCreate/Page'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
-import { t } from '@ui-kit/lib/i18n'
+import type { Route } from './+types/page'
 
-type CreateLoanPageProps = { params: Promise<CollateralUrlParams> }
+export default function Component({ params }: Route.ComponentProps) {
+  const collateralParams: CollateralUrlParams = {
+    network: params.network,
+    collateralId: params.collateralId,
+    formType: params.formType,
+  }
 
-export async function generateMetadata({ params }: CreateLoanPageProps): Promise<Metadata> {
-  const collateralName = await getCollateralName(await params)
-  return { title: [t`Create`, collateralName, 'Curve'].join(' - ') }
+  return <CreateLoan {...collateralParams} />
 }
-
-const CreateLoanPage = async ({ params }: CreateLoanPageProps) => <CreateLoan {...await params} />
-
-export default CreateLoanPage
