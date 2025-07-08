@@ -1,4 +1,4 @@
-import { Chain, ChainIds } from 'curve-ui-kit/src/utils/network'
+import { Chain } from 'curve-ui-kit/src/utils/network'
 import { ethers } from 'ethers'
 import { CDN_ROOT_URL, CURVE_CDN_URL } from './utilsConstants'
 
@@ -175,7 +175,7 @@ export const NETWORK_BASE_CONFIG = {
     chainId: Chain.Hyperliquid,
     rpcUrl: `https://rpc.hyperliquid.xyz/evm`,
     nativeCurrencySymbol: 'HYPE',
-    explorerUrl: 'https://www.hyperscan.com/',
+    explorerUrl: 'https://hyperevmscan.io/',
   },
 } as const
 
@@ -221,7 +221,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
 ): BaseConfig<TId> {
   const config = { ...NETWORK_BASE_CONFIG_DEFAULT, ...networkConfig }
   const { name, explorerUrl, id, nativeCurrencySymbol, rpcUrl, isTestnet = false, ...rest } = config
-
   return {
     ...rest,
     name: formatNetworkName(name || id),
@@ -234,11 +233,10 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,
     isTestnet,
+    explorerUrl,
     scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
     scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
-    ...(chainId === ChainIds.Hyperliquid // explorer doesn't support the /token syntax
-      ? { scanTokenPath: (hash: string) => `${explorerUrl}address/${hash}` }
-      : { scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}` }),
+    scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}`,
   }
 }
 
