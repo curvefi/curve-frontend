@@ -346,25 +346,13 @@ export const defaultNetworks = Object.entries({
 
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
-
   const liteNetworks = Object.values(resp).reduce(
     (prev, { chainId, ...config }) => {
-      const isUpgraded = [Chain.Sonic, Chain.Hyperliquid].includes(chainId) // networks upgraded from lite to full
       const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
-
-      /**
-       * Determines the final configuration for a network based on its upgrade status.
-       *
-       * For upgraded networks (moved from lite to full), the front-end repository
-       * configuration takes precedence over the curve-lite deployment YAML config.
-       * This ensures that upgraded networks use the most up-to-date configuration
-       * values defined locally rather than relying on outdated external deployment configs.
-       */
-      const finalConfig = isUpgraded && baseConfig ? { ...config, ...baseConfig } : config
-
+      const isUpgraded = !!baseConfig // networks upgraded from lite to full
       prev[chainId] = {
-        ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), finalConfig),
         ...DEFAULT_NETWORK_CONFIG,
+        ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
         ...(isUpgraded && {
           poolFilters: [
             'all',
@@ -388,13 +376,11 @@ export async function getNetworks() {
         pricesApi: isUpgraded,
         isLite: !isUpgraded,
         isCrvRewardsEnabled: isUpgraded,
-        isTestnet: finalConfig.isTestnet,
       }
       return prev
     },
     {} as Record<number, NetworkConfig>,
   )
-
   return { ...defaultNetworks, ...liteNetworks }
 }
 

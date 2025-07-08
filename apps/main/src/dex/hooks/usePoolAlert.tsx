@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import styled from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/dex/constants'
-import { PoolAlert, type UrlParams } from '@/dex/types/main.types'
+import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Box from '@ui/Box'
 import { RCCrossCurve } from '@ui/images'
@@ -70,8 +70,12 @@ class CrossCurveLabel {
   }
 }
 
-const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: boolean | undefined) => {
+const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   const params = useParams() as UrlParams
+
+  const poolAddress = poolData?.pool.address
+  const hasVyperVulnerability = poolData?.hasVyperVulnerability
+  const [token1, token2] = poolData?.tokenAddresses ?? []
 
   return useMemo(() => {
     // Ethereum
@@ -270,14 +274,30 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       '0x8818a9bb44fbf33502be7c15c500d0c783b73067': synthetixAlert(),
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       '0x2dded6da1bf5dbdf597c45fcfaa3194e53ecfeaf': ironbankAlert(),
+      "0x4f493b7de8aac7d55f71853688b1f7c8f0243c85": crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x3ee841f47947fefbe510366e4bbb49e145484195': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x74345504eaea3d9408fc69ae7eb2d14095643c5b': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x5018be882dcce5e3f2f3b0913ae2096b9b3fb61f': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x383e6b4437b59fff47b619cba855ca29342a8559': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x744793b5110f6ca9cc7cdfe1ce16677c3eb192ef': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x6691dbb44154a9f23f8357c56fc9ff5548a8bdc4': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x5f6c431ac417f0f430b84a666a563fabe681da94': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0xab96aa0ee764924f49fbb372f3b4db9c2cb24ea2': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x90455bd11ce8a67c57d467e634dc142b8e4105aa': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x167478921b907422f8e88b43c4af2b8bea278d3a': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0xce6431d21e3fb1036ce9973a3312368ed96f5ce7': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x5dc1bf6f1e983c0b21efb003c105133736fa0743': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x1d08e7adc263cfc70b1babe6dc5bb339c16eec52': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x14100f81e33c33ecc7cdac70181fb45b6e78569f': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x4dece678ceceb27446b35c672dc7d61f30bad69e': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+      '0x390f3595bca2df7d23783dfd126427cceb997bf4': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
+
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
       // sonic
       "0x38dd6b3c096c8cbe649fa0039cc144f333be8e61": crossCurveAlert([CrossCurveLabel.mint('0x38dd6b3c096c8cbe649fa0039cc144f333be8e61'), CrossCurveLabel.redeem('0x38dd6b3c096c8cbe649fa0039cc144f333be8e61'), CrossCurveLabel.swap(CrossCurveChain.Arbitrum, '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978', CrossCurveChain.Ethereum, '0xd533a949740bb3306d119cc777fa900ba034cd52')]), // CrossCurve xCRV
-      "0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84": crossCurveAlert([CrossCurveLabel.mint('0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84'), CrossCurveLabel.redeem('0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84'), CrossCurveLabel.swap(CrossCurveChain.Sonic, '0xd3dce716f3ef535c5ff8d041c1a41c3bd89b97ae', CrossCurveChain.Sonic, '0x80eede496655fb9047dd39d9f418d5483ed600df')]), // CrossCurve xfrxUSD
-      "0x346704605c72d9f5f9f02d651e5a3dcce6964f3d": crossCurveAlert([CrossCurveLabel.mint('0x346704605c72d9f5f9f02d651e5a3dcce6964f3d'), CrossCurveLabel.redeem('0x346704605c72d9f5f9f02d651e5a3dcce6964f3d'), CrossCurveLabel.swap(CrossCurveChain.Sonic, '0x3bce5cb273f0f148010bbea2470e7b5df84c7812', CrossCurveChain.Sonic, '0x43edd7f3831b08fe70b7555ddd373c8bf65a9050')]), // CrossCurve xfrxETH
       "0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384": crossCurveAlert([CrossCurveLabel.mint('0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384'), CrossCurveLabel.redeem('0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384'), CrossCurveLabel.swap(CrossCurveChain.Ethereum, '0xdac17f958d2ee523a2206206994597c13d831ec7', CrossCurveChain.Sonic, '0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84')]), // CrossCurve xsEthereum
       "0xf159c51297306839b7d44cbb5cb9360e4623ae5a": crossCurveAlert([CrossCurveLabel.mint('0xf159c51297306839b7d44cbb5cb9360e4623ae5a'), CrossCurveLabel.redeem('0xf159c51297306839b7d44cbb5cb9360e4623ae5a'), CrossCurveLabel.swap(CrossCurveChain.Bsc, '0x55d398326f99059ff775485246999027b3197955', CrossCurveChain.Sonic, '0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84')]), // CrossCurve xsBSC
       "0xdac15649b025ba0047718512111c34096e9545e8": crossCurveAlert([CrossCurveLabel.mint('0xdac15649b025ba0047718512111c34096e9545e8'), CrossCurveLabel.redeem('0xdac15649b025ba0047718512111c34096e9545e8'), CrossCurveLabel.swap(CrossCurveChain.Avalanche, '0x9702230a8ea53601f5cd2dc00fdbc13d4df4a8c7', CrossCurveChain.Sonic, '0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84')]), // CrossCurve xsAvalanche
@@ -329,7 +349,7 @@ const usePoolAlert = (poolAddress: string | undefined, hasVyperVulnerability: bo
       }
     }
     return null
-  }, [poolAddress, params, hasVyperVulnerability])
+  }, [poolAddress, params, hasVyperVulnerability, token1, token2])
 }
 
 const MessageWrapper = styled.div`
