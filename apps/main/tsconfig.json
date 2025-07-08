@@ -1,5 +1,5 @@
 {
-  "extends": "tsconfig/nextjs.json",
+  "extends": "tsconfig/ui.json",
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
@@ -10,12 +10,7 @@
       "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
       "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+    }
   },
   "exclude": ["node_modules", "cypress"],
   "include": [
@@ -25,5 +20,7 @@
     "../../packages/ui/**/*.d.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts"
-  ]
+  ],
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
