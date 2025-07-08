@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useMemo } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'

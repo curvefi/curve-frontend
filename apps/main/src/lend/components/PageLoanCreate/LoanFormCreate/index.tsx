@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'

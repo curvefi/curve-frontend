@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'

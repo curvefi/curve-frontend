@@ -1,5 +1,5 @@
-import { useParams } from 'react-router'
-import { useParams } from 'react-router'
+import { useParams } from '@ui-kit/hooks/router'
+import { useParams } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import {
   STABLESWAP,

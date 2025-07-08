@@ -1,6 +1,6 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from 'react-router'
+import { useParams } from '@ui-kit/hooks/router'
 import { type ReactNode } from 'react'
 import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'

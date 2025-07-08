@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'

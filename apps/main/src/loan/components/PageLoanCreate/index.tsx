@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback } from 'react'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'

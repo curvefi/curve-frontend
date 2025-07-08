@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
-import { reactRouter } from '@react-router/dev/vite'
 import { resolve } from 'path'
+import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -8,10 +8,7 @@ export default defineConfig(({ command, mode }) => ({
     port: 3000,
     hmr: true,
   },
-  plugins: [reactRouter()],
-  // ssr: {
-  //   noExternal: ['styled-components', '@mui/material', '@mui/icons-material'],
-  // },
+  plugins: [react()],
   optimizeDeps: {
     include: ['styled-components', '@mui/material', '@mui/icons-material'],
   },

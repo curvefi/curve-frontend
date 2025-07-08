@@ -1,5 +1,5 @@
 'use client'
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'

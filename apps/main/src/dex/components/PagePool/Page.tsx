@@ -1,5 +1,5 @@
 'use client'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useEffect, useMemo } from 'react'
 import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'

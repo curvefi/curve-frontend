@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'

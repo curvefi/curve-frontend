@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'

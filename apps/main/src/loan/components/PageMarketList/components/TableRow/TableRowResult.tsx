@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'

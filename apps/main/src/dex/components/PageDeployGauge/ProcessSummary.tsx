@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'

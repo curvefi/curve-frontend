@@ -1,5 +1,5 @@
 'use client'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'

@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'

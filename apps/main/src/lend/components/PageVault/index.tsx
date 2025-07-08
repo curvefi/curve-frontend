@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useRef, useEffect } from 'react'
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'

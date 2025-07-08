@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useEffect, useMemo } from 'react'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import type { FormType } from '@/lend/components/PageLoanCreate/types'

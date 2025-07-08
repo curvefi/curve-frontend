@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { getPath, getRestFullPathname } from '@/dao/utils/utilsRouter'
 import Button from '@ui/Button'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'

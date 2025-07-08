@@ -1,5 +1,5 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import networks from '@/dao/networks'

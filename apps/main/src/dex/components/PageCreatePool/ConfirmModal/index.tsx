@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import ModalPendingTx from 'ui/src/ModalPendingTx'

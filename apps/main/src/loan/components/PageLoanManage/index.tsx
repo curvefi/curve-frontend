@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'

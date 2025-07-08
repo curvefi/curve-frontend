@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Key, useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'

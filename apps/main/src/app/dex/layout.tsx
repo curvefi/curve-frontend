@@ -1,6 +1,6 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from 'react-router'
+import { useParams } from '@ui-kit/hooks/router'
 import { type ReactNode, use, useCallback, useEffect, useState } from 'react'
 import curvejsApi from '@/dex/lib/curvejs'
 import { getNetworkDefs } from '@/dex/lib/networks'

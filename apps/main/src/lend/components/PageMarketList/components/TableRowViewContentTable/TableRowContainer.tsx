@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'

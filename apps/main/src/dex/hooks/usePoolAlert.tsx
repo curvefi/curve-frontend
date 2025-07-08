@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useParams } from '@ui-kit/hooks/router'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'

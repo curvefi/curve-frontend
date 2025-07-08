@@ -1,5 +1,5 @@
 'use client'
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'

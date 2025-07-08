@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'

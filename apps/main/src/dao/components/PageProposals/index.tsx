@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { Key, useCallback } from 'react'
 import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'

@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useLocation, useNavigate } from 'react-router'
+import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'

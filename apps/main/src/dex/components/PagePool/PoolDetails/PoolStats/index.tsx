@@ -1,4 +1,4 @@
-import { useParams } from 'react-router'
+import { useParams } from '@ui-kit/hooks/router'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'

@@ -1,4 +1,4 @@
-import { useNavigate, useSearchParams } from 'react-router'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'

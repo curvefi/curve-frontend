@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router'
+import { useLocation } from '@ui-kit/hooks/router'
 import { type UrlParams } from '@/dex/types/main.types'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 
