@@ -28,18 +28,18 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const isSubscribed = useRef(false)
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
-  const activeKey = useStore((state) => state.vaultDepositMint.activeKey)
-  const formEstGas = useStore((state) => state.vaultDepositMint.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.vaultDepositMint.formStatus)
-  const formValues = useStore((state) => state.vaultDepositMint.formValues)
-  const detailInfo = useStore((state) => state.vaultDepositMint.detailInfo[activeKey])
+  const activeKey = useStore(state => state.vaultDepositMint.activeKey)
+  const formEstGas = useStore(state => state.vaultDepositMint.formEstGas[activeKey])
+  const formStatus = useStore(state => state.vaultDepositMint.formStatus)
+  const formValues = useStore(state => state.vaultDepositMint.formValues)
+  const detailInfo = useStore(state => state.vaultDepositMint.detailInfo[activeKey])
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
-  const maxResp = useStore((state) => state.vaultDepositMint.max[maxActiveKey])
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepApprove = useStore((state) => state.vaultDepositMint.fetchStepApprove)
-  const fetchStepDepositMint = useStore((state) => state.vaultDepositMint.fetchStepDepositMint)
-  const setFormValues = useStore((state) => state.vaultDepositMint.setFormValues)
-  const resetState = useStore((state) => state.vaultDepositMint.resetState)
+  const maxResp = useStore(state => state.vaultDepositMint.max[maxActiveKey])
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepApprove = useStore(state => state.vaultDepositMint.fetchStepApprove)
+  const fetchStepDepositMint = useStore(state => state.vaultDepositMint.fetchStepDepositMint)
+  const setFormValues = useStore(state => state.vaultDepositMint.setFormValues)
+  const resetState = useStore(state => state.vaultDepositMint.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -141,12 +141,12 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['DEPOSIT_MINT'] : ['APPROVAL', 'DEPOSIT_MINT']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickDeposit],
   )

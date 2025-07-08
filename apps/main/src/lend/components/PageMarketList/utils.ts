@@ -40,14 +40,14 @@ export function _getMarketList(markets: OneWayMarketTemplate[]) {
 
   // filter crvusd
   const crvUsdAddress = markets
-    .map((m) => m.borrowed_token)
+    .map(m => m.borrowed_token)
     .find(({ symbol }) => symbol.toLowerCase() === 'crvusd')?.address
   if (crvUsdAddress) {
     delete marketListMapper[crvUsdAddress]
     delete marketListMapperCache[crvUsdAddress]
   }
 
-  const sortedMarketListMapperCache = sortBy(marketListMapperCache, (l) => l.symbol)
+  const sortedMarketListMapperCache = sortBy(marketListMapperCache, l => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }
 }
 

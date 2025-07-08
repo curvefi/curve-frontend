@@ -40,14 +40,14 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchDetails: async (provider) => {
+    fetchDetails: async provider => {
       const state = get()
       const { detailsMapper, ...sliceState } = get()[sliceKey]
 
       try {
         const pegKeeperAddresses = PEG_KEEPERS_ADDRESSES
         const contractsToProcess = await Promise.all(
-          pegKeeperAddresses.map(async (address) => ({
+          pegKeeperAddresses.map(async address => ({
             address,
             contract: await state.getContract('pegKeeper', address, provider),
           })),
@@ -73,7 +73,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
               debtCeiling: 'Error',
             }
           })
-          .process(async (item) => {
+          .process(async item => {
             const { address: pegKeeperAddress, contract } = item
             if (!contract) {
               console.warn(`Contract instance not available for ${pegKeeperAddress}`)

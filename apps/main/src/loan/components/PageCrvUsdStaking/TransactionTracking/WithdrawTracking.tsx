@@ -20,8 +20,8 @@ type WithdrawTrackingProps = {
 }
 
 const WithdrawTracking = ({ className }: WithdrawTrackingProps) => {
-  const withdrawTransaction = useStore((state) => state.scrvusd.withdrawTransaction)
-  const setTransactionsReset = useStore((state) => state.scrvusd.setTransactionsReset)
+  const withdrawTransaction = useStore(state => state.scrvusd.withdrawTransaction)
+  const setTransactionsReset = useStore(state => state.scrvusd.setTransactionsReset)
 
   const withdrawConfirmed = txIsSuccess(withdrawTransaction.transactionStatus)
   const withdrawConfirming = txIsConfirming(withdrawTransaction.transactionStatus)

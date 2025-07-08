@@ -9,7 +9,7 @@ import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable'
  */
 export const createLlamaMarketsMobileColumns = (sortBy: LlamaMarketColumnId) =>
   fromEntries(
-    recordValues(LlamaMarketColumnId).map((key) => [key, key === LlamaMarketColumnId.Assets || key === sortBy]),
+    recordValues(LlamaMarketColumnId).map(key => [key, key === LlamaMarketColumnId.Assets || key === sortBy]),
   )
 
 /**

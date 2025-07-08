@@ -49,7 +49,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     data: addRewardTokenData,
   } = useAddRewardToken({ chainId, poolId })
 
-  const network = useStore((state) => state.networks.networks[chainId])
+  const network = useStore(state => state.networks.networks[chainId])
 
   const onSubmit = useCallback(
     ({ rewardTokenId, distributorId }: AddRewardFormValues) => {

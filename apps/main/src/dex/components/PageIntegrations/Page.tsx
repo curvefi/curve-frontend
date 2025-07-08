@@ -12,8 +12,8 @@ import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (props: NetworkUrlParams) => {
   const rChainId = useChainId(props.network)
-  const init = useStore((state) => state.integrations.init)
-  const integrationsTags = useStore((state) => state.integrations.integrationsTags)
+  const init = useStore(state => state.integrations.init)
+  const integrationsTags = useStore(state => state.integrations.integrationsTags)
 
   useEffect(() => {
     void init(rChainId)

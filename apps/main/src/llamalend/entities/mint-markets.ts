@@ -25,9 +25,9 @@ export type MintMarket = MintMarketFromApi & {
  * I requested benber86 to add stablecoin prices to the API, but it may take some time.
  */
 async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMarketFromApi[] }) {
-  const stablecoinAddresses = uniq(data.map((market) => market.stablecoinToken.address))
+  const stablecoinAddresses = uniq(data.map(market => market.stablecoinToken.address))
   const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
-  return data.map((market) => ({
+  return data.map(market => ({
     ...market,
     chain,
     stablecoin_price: stablecoinPrices[market.stablecoinToken.address],
@@ -62,7 +62,7 @@ const {
     Object.fromEntries(
       Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
         chain,
-        userMarkets.map((market) => market.controller),
+        userMarkets.map(market => market.controller),
       ]),
     ) as Record<Chain, Address[]>,
   validationSuite: userAddressValidationSuite,
@@ -81,7 +81,7 @@ const { useQuery: useUserMintMarketStatsQuery, invalidate: invalidateUserMintMar
 export const invalidateAllUserMintMarkets = (userAddress: Address | undefined) => {
   invalidateUserMintMarkets({ userAddress })
   recordEntries(getCurrentUserMintMarkets({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) =>
-    contracts.forEach((contractAddress) =>
+    contracts.forEach(contractAddress =>
       invalidateUserMintMarketStats({
         userAddress,
         blockchainId,

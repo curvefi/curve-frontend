@@ -38,7 +38,7 @@ const useTokenAlert = (tokenAddressAll: string[]): TokenAlert | null =>
       '0xafe7131a57e44f832cb2de78ade38cad644aac2f': maAlert,
     }
 
-    const tokenAddressWithAlert = (tokenAddressAll ?? []).find((tokenAddress) => !!alerts[tokenAddress])
+    const tokenAddressWithAlert = (tokenAddressAll ?? []).find(tokenAddress => !!alerts[tokenAddress])
     return tokenAddressWithAlert ? alerts[tokenAddressWithAlert] : null
   }, [tokenAddressAll])
 

@@ -44,28 +44,28 @@ const LoanCreate = ({
   const isSubscribed = useRef(false)
   const isLeverage = rFormType === 'leverage'
 
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanCreate.formStatus)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const maxRecv = useStore((state) =>
+  const activeKey = useStore(state => state.loanCreate.activeKey)
+  const activeKeyLiqRange = useStore(state => state.loanCreate.activeKeyLiqRange)
+  const formEstGas = useStore(state => state.loanCreate.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanCreate.formStatus)
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const maxRecv = useStore(state =>
     isLeverage
       ? (state.loanCreate.maxRecvLeverage[activeKey]?.maxBorrowable ?? '')
       : (state.loanCreate.maxRecv[activeKey] ?? ''),
   )
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
-  const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
-  const setFormValues = useStore((state) => state.loanCreate.setFormValues)
-  const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
-  const resetState = useStore((state) => state.loanCreate.resetState)
+  const fetchStepApprove = useStore(state => state.loanCreate.fetchStepApprove)
+  const fetchStepCreate = useStore(state => state.loanCreate.fetchStepCreate)
+  const setFormValues = useStore(state => state.loanCreate.setFormValues)
+  const setStateByKey = useStore(state => state.loanCreate.setStateByKey)
+  const resetState = useStore(state => state.loanCreate.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -180,13 +180,13 @@ const LoanCreate = ({
                     <DialogHealthLeverageWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ) : (
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
@@ -212,12 +212,12 @@ const LoanCreate = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['CREATE'] : ['APPROVAL', 'CREATE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleClickCreate, healthMode],
   )
@@ -292,7 +292,7 @@ const LoanCreate = ({
                 : {}),
             }}
             value={formValues.collateral}
-            onChange={(val) => handleInpChange('collateral', val)}
+            onChange={val => handleInpChange('collateral', val)}
           />
           <InputMaxBtn onClick={() => handleInpChange('collateral', userWalletBalances.collateral)} />
         </StyledInputProvider>
@@ -318,7 +318,7 @@ const LoanCreate = ({
             type="number"
             labelProps={{ label: llamma ? t`${getTokenName(llamma).stablecoin} borrow amount` : '' }}
             value={formValues.debt}
-            onChange={(val) => handleInpChange('debt', val)}
+            onChange={val => handleInpChange('debt', val)}
           />
           <InputMaxBtn disabled={!maxRecv} onClick={() => handleInpChange('debt', maxRecv)} />
         </InputProvider>

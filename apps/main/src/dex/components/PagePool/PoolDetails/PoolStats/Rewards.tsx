@@ -31,7 +31,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const campaignRewardsMapper = useCampaignRewardsMapper()
   const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
-  const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
+  const { isLite, scanTokenPath } = useStore(state => state.networks.networks[chainId])
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },

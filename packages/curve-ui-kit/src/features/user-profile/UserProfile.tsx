@@ -17,7 +17,7 @@ export const UserProfile = ({ open, onClose }: Props) => (
         minWidth: SizesAndSpaces.Width.modal.lg,
         paddingInline: SizesAndSpaces.Spacing.md,
         paddingBlock: SizesAndSpaces.Spacing.lg,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
       },
     }}
   >

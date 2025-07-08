@@ -90,7 +90,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
         return // hook is called again after since it depends on walletChainId
       }
     }
-    updateWalletChain().catch((e) => {
+    updateWalletChain().catch(e => {
       console.error('Error updating wallet chain', e)
       setConnectState(FAILURE)
     })

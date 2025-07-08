@@ -9,7 +9,7 @@ export const Header = ({ children }: { children?: ReactNode }) => (
   <Stack
     justifyContent="end"
     sx={{
-      borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: t => `1px solid ${t.design.Layer[1].Outline}`,
       paddingBlockStart: Spacing.lg,
       paddingInline: Spacing.md,
     }}
@@ -32,9 +32,9 @@ export const Paragraph = ({ children }: { children?: ReactNode }) => (
 
 export const Section = ({ children }: { children?: ReactNode }) => {
   const childArray = Children.toArray(children)
-  const title = childArray.find((child) => typeof child === 'object' && 'type' in child && child.type === Title)
+  const title = childArray.find(child => typeof child === 'object' && 'type' in child && child.type === Title)
   const paragraphs = childArray.filter(
-    (child) => typeof child === 'object' && 'type' in child && child.type === Paragraph,
+    child => typeof child === 'object' && 'type' in child && child.type === Paragraph,
   )
 
   return (

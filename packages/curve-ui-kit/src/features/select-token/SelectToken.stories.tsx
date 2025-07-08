@@ -181,7 +181,7 @@ const TokenSelectorComponent = ({
     <TokenSelector
       {...props}
       selectedToken={selectedToken}
-      onToken={(newToken) => {
+      onToken={newToken => {
         action('onToken')(newToken)
         setSelectedToken(newToken)
       }}

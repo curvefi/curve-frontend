@@ -48,19 +48,19 @@ const Page = (params: CollateralUrlParams) => {
   const rChainId = useChainId(params)
 
   const { llamma, displayName } =
-    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
+    useStore(state => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
   const llammaId = llamma?.id || ''
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
-  const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
-  const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanExists = useStore(state => state.loans.existsMapper[rCollateralId])
+  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
+  const fetchUserLoanDetails = useStore(state => state.loans.fetchUserLoanDetails)
+  const resetUserDetailsState = useStore(state => state.loans.resetUserDetailsState)
+  const { chartExpanded, setChartExpanded } = useStore(state => state.ohlcCharts)
   const { provider, connect: connectWallet } = useWallet()
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)

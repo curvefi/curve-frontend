@@ -244,6 +244,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
 
 /** Capitalizes and separates words in a string by replacing hyphens and underscores with spaces. */
 function formatNetworkName(id: string) {
-  const formattedText = id.replace(/[-_]./g, (match) => ' ' + match.charAt(1).toUpperCase())
+  const formattedText = id.replace(/[-_]./g, match => ' ' + match.charAt(1).toUpperCase())
   return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)
 }

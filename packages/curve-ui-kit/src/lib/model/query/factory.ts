@@ -12,7 +12,7 @@ export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, 
   assertValidity: (data: TParams, fields?: TField[]) => TQuery,
 ) {
   const queryParams = Object.fromEntries(
-    queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : [])),
+    queryKey.flatMap(i => (i && typeof i === 'object' ? Object.entries(i) : [])),
   ) as TParams
   return assertValidity(queryParams)
 }
@@ -45,7 +45,7 @@ export function queryFactory<
     sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery
 
   const isEnabled = (params: TParams) =>
-    checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
+    checkValidity(validationSuite, params) && !dependencies?.(params).some(key => !queryClient.getQueryData(key))
 
   const queryFn = ({ queryKey }: QueryFunctionContext<TKey>) => {
     logQuery(queryKey)
@@ -70,12 +70,12 @@ export function queryFactory<
     isEnabled,
     queryKey,
     getQueryOptions,
-    getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
+    getQueryData: params => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
     prefetchQuery: (params, staleTime = 0) =>
       queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
     fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
     useQuery: createQueryHook(getQueryOptions),
-    invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
+    invalidate: params => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }
 }

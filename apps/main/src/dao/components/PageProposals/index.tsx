@@ -19,14 +19,14 @@ import { PROPOSAL_FILTERS, PROPOSAL_SORTING_METHODS } from './constants'
 import Proposal from './Proposal'
 
 const Proposals = () => {
-  const activeSortBy = useStore((state) => state.proposals.activeSortBy)
-  const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
-  const setActiveSortBy = useStore((state) => state.proposals.setActiveSortBy)
-  const setActiveSortDirection = useStore((state) => state.proposals.setActiveSortDirection)
-  const setActiveFilter = useStore((state) => state.proposals.setActiveFilter)
-  const setSearchValue = useStore((state) => state.proposals.setSearchValue)
-  const searchValue = useStore((state) => state.proposals.searchValue)
-  const activeFilter = useStore((state) => state.proposals.activeFilter)
+  const activeSortBy = useStore(state => state.proposals.activeSortBy)
+  const activeSortDirection = useStore(state => state.proposals.activeSortDirection)
+  const setActiveSortBy = useStore(state => state.proposals.setActiveSortBy)
+  const setActiveSortDirection = useStore(state => state.proposals.setActiveSortDirection)
+  const setActiveFilter = useStore(state => state.proposals.setActiveFilter)
+  const setSearchValue = useStore(state => state.proposals.setSearchValue)
+  const searchValue = useStore(state => state.proposals.searchValue)
+  const activeFilter = useStore(state => state.proposals.activeFilter)
   const { push } = useRouter()
 
   const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
@@ -58,7 +58,7 @@ const Proposals = () => {
             id="inpSearchProposals"
             placeholder={t`Search`}
             variant="small"
-            handleInputChange={(val) => setSearchValue(val)}
+            handleInputChange={val => setSearchValue(val)}
             handleSearchClose={() => setSearchValue('')}
             value={searchValue}
           />

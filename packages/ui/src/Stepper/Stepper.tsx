@@ -63,7 +63,7 @@ const Number = styled(Box)<{ status: StepStatus }>`
   font-weight: var(--button--font-weight);
 
   color: var(--button--color);
-  background-color: ${(props) => statusColorMap(props.status)};
+  background-color: ${props => statusColorMap(props.status)};
   box-shadow: 2px 2px 0 var(--box--primary--shadow-color);
   transition: all 0.5s ease;
 

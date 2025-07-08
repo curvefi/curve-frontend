@@ -4,8 +4,8 @@ import useUserProfileStore from '../../store'
 import { SettingLabel, Setting } from '../Setting'
 
 export const AdvancedMode = () => {
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore(state => state.setAdvancedMode)
 
   return (
     <Setting>

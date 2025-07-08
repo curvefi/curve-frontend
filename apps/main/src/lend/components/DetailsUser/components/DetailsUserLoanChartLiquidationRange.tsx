@@ -8,9 +8,9 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 const DetailsUserLoanChartLiquidationRange = ({ rChainId, rOwmId, userActiveKey }: PageContentProps) => {
-  const loanDetailsPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
+  const loanDetailsPrices = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices)
 
-  const theme = useUserProfileStore((state) => state.theme)
+  const theme = useUserProfileStore(state => state.theme)
 
   const { prices: currPrices, status } = useUserLoanDetails(userActiveKey)
 

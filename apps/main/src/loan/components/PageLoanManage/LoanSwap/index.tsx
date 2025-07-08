@@ -35,26 +35,26 @@ interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId
 const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanSwap.activeKey)
-  const detailInfo = useStore((state) => state.loanSwap.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
-  const formEstGas = useStore((state) => state.loanSwap.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanSwap.formStatus)
-  const formValues = useStore((state) => state.loanSwap.formValues)
-  const maxSwappableActiveKey = useStore((state) => state.loanSwap.maxSwappableActiveKey)
-  const maxSwappable = useStore((state) => state.loanSwap.maxSwappable[maxSwappableActiveKey] ?? '')
+  const activeKey = useStore(state => state.loanSwap.activeKey)
+  const detailInfo = useStore(state => state.loanSwap.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
+  const formEstGas = useStore(state => state.loanSwap.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanSwap.formStatus)
+  const formValues = useStore(state => state.loanSwap.formValues)
+  const maxSwappableActiveKey = useStore(state => state.loanSwap.maxSwappableActiveKey)
+  const maxSwappable = useStore(state => state.loanSwap.maxSwappable[maxSwappableActiveKey] ?? '')
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
 
-  const init = useStore((state) => state.loanSwap.init)
-  const fetchMaxSwappable = useStore((state) => state.loanSwap.fetchMaxSwappable)
-  const fetchStepApprove = useStore((state) => state.loanSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.loanSwap.fetchStepSwap)
-  const setFormValues = useStore((state) => state.loanSwap.setFormValues)
-  const setStateByKey = useStore((state) => state.loanSwap.setStateByKey)
-  const resetState = useStore((state) => state.loanSwap.resetState)
+  const init = useStore(state => state.loanSwap.init)
+  const fetchMaxSwappable = useStore(state => state.loanSwap.fetchMaxSwappable)
+  const fetchStepApprove = useStore(state => state.loanSwap.fetchStepApprove)
+  const fetchStepSwap = useStore(state => state.loanSwap.fetchStepSwap)
+  const setFormValues = useStore(state => state.loanSwap.setFormValues)
+  const setStateByKey = useStore(state => state.loanSwap.setStateByKey)
+  const resetState = useStore(state => state.loanSwap.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -181,12 +181,12 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [detailInfo?.amount, fetchStepApprove, handleBtnClickSwap],
   )
@@ -245,7 +245,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
               }}
               delay={700}
               value={formValues.item1 || detailInfo.amount}
-              onChange={(val) => handleInpChange(val, 0)}
+              onChange={val => handleInpChange(val, 0)}
             />
             <InputMaxBtn onClick={() => handleInpChange(maxSwappable, 0)} />
           </InputProvider>
@@ -286,7 +286,7 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
             }}
             delay={700}
             value={formValues.item2 || detailInfo.amount}
-            onChange={(val) => handleInpChange(val, 1)}
+            onChange={val => handleInpChange(val, 1)}
           />
         </InputProvider>
       </Box>

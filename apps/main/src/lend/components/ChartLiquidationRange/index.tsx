@@ -53,7 +53,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
               interval="preserveStartEnd"
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
-              tickFormatter={(tick) => `${formatNumber(tick, { showDecimalIfSmallNumberOnly: true })}`}
+              tickFormatter={tick => `${formatNumber(tick, { showDecimalIfSmallNumberOnly: true })}`}
               domain={([dataMin, dataMax]) => {
                 // add 0.1 spacing to min and max data
                 const min = Math.floor(dataMin - dataMin * 0.1)
@@ -88,8 +88,8 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
               content={({ active, payload }) => {
                 if (active && payload && payload.length && !!oraclePrice) {
                   // should be same order as chart Line, Bar, Bar
-                  const currPrices = isManage ? payload.find((p) => p.name === 'curr') : undefined
-                  const newPrices = isManage ? payload.find((p) => p.name === 'new') : payload[0]
+                  const currPrices = isManage ? payload.find(p => p.name === 'curr') : undefined
+                  const newPrices = isManage ? payload.find(p => p.name === 'new') : payload[0]
 
                   const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
                   const [np1, np2] = (newPrices?.payload.new as string[]) ?? []

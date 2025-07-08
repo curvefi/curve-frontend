@@ -24,12 +24,12 @@ const Titles = {
 
 export const WalletToast = () => {
   const [notifications, setNotifications] = useState<WalletNotification[]>([])
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
 
   useEffect(() => {
     const timeouts: number[] = []
     const dismiss = (notification: WalletNotification): void => {
-      setNotifications((prevNotifications: WalletNotification[]) => prevNotifications.filter((n) => n !== notification))
+      setNotifications((prevNotifications: WalletNotification[]) => prevNotifications.filter(n => n !== notification))
     }
     const add = (notification: WalletNotification): void => {
       setNotifications((prevNotifications: WalletNotification[]) => [...prevNotifications, notification])

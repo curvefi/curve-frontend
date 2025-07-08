@@ -133,7 +133,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { parameters: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const parameters = await market.stats.parameters()
         results[market.id] = { parameters, error: '' }
       })
@@ -150,7 +150,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[id] = { bands: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const [balances, bandsInfo, bandsBalances] = await Promise.all([
           market.stats.balances(),
           market.stats.bandsInfo(),
@@ -194,7 +194,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { borrowed: '', collateral: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const resp = await market.stats.ammBalances(useMultiCall, USE_API)
         results[market.id] = { ...resp, error: '' }
       })
@@ -212,7 +212,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { cap: '', available: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const resp = await market.stats.capAndAvailable(useMultiCall, USE_API)
         results[market.id] = { ...resp, error: '' }
       })
@@ -230,7 +230,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { totalDebt: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const totalDebt = await market.stats.totalDebt(useMultiCall, USE_API)
         results[market.id] = { totalDebt, error: '' }
       })
@@ -247,7 +247,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { prices: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const [oraclePrice, oraclePriceBand, price, basePrice] = await Promise.all([
           market.oraclePrice(),
           market.oraclePriceBand(),
@@ -279,7 +279,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { rates: null, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const rates = await market.stats.rates(useMultiCall, USE_API)
         results[market.id] = { rates, error: '' }
       })
@@ -296,7 +296,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { totalLiquidity: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const totalLiquidity = await market.vault.totalLiquidity()
         results[market.id] = { totalLiquidity, error: '' }
       })
@@ -308,7 +308,7 @@ const market = {
     log('fetchMarketsVaultsRewards', markets.length)
     const results: { [id: string]: MarketRewards } = {}
 
-    await PromisePool.for(markets).process(async (market) => {
+    await PromisePool.for(markets).process(async market => {
       const resp: MarketRewards = {
         rewards: {
           other: [],
@@ -358,7 +358,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { maxLeverage: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
         results[market.id] = { maxLeverage, error: '' }
       })
@@ -375,7 +375,7 @@ const market = {
         const error = getErrorMessage(errorObj, 'error-api')
         results[market.id] = { total: null, tooltipContent: [], error }
       })
-      .process(async (marketData) => {
+      .process(async marketData => {
         const market = marketData
         const { collateral_token, borrowed_token } = market
 
@@ -420,7 +420,7 @@ const user = {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         results[userActiveKey] = { owmId: market.id, loanExists: false, error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const loanExists = await market.userLoanExists()
         results[userActiveKey] = { owmId: market.id, loanExists, error: '' }
@@ -439,7 +439,7 @@ const user = {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         results[userActiveKey] = { healthFull: '', healthNotFull: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const [healthFull, healthNotFull] = await Promise.all([market.userHealth(), market.userHealth(false)])
 
@@ -459,7 +459,7 @@ const user = {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         results[userActiveKey] = { collateral: '', borrowed: '', debt: '', N: '', error }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const state = await market.userState()
         results[userActiveKey] = { ...state, error: '' }
@@ -482,7 +482,7 @@ const user = {
           error,
         }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
 
         const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
@@ -564,7 +564,7 @@ const user = {
           error,
         }
       })
-      .process(async (market) => {
+      .process(async market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const resp = await market.wallet.balances()
         const vaultSharesConverted = +resp.vaultShares > 0 ? await market.vault.convertToAssets(resp.vaultShares) : '0'
@@ -2031,7 +2031,7 @@ function _reverseBands(bands: [number, number] | number[]) {
 }
 
 function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
+  const sortedKeys = sortBy(Object.keys(bandsBalances), k => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
     // @ts-ignore
@@ -2049,15 +2049,15 @@ async function _fetchChartBandBalancesData(
   // filter out bands that doesn't have borrowed or collaterals
   const ns = isMarket
     ? bandsBalancesArr
-        .filter((b) => {
+        .filter(b => {
           const { borrowed, collateral } = bandsBalances[b.band] ?? {}
           return +borrowed > 0 || +collateral > 0
         })
-        .map((b) => b.band)
-    : bandsBalancesArr.map((b) => b.band)
+        .map(b => b.band)
+    : bandsBalancesArr.map(b => b.band)
 
   // TODO: handle errors
-  const { results } = await PromisePool.for(ns).process(async (n) => {
+  const { results } = await PromisePool.for(ns).process(async n => {
     const { collateral, borrowed } = bandsBalances[n]
     const [p_up, p_down] = await market.calcBandPrices(+n)
     const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
@@ -2134,5 +2134,5 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 }
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
-  return (args.find((a) => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
+  return (args.find(a => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
 }

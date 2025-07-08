@@ -25,8 +25,8 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}

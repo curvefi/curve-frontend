@@ -32,8 +32,8 @@ const _fetchUserProposalVotes = async ({ userAddress }: { userAddress: string })
     mapper[`${vote.proposal.id}-${vote.proposal.type.toLowerCase()}`] = {
       voteId: vote.proposal.id,
       voteType: vote.proposal.type,
-      voteFor: Number(vote.votes.find((v) => v.supports)?.weight ?? 0) / 1e18,
-      voteAgainst: Number(vote.votes.find((v) => !v.supports)?.weight ?? 0) / 1e18,
+      voteFor: Number(vote.votes.find(v => v.supports)?.weight ?? 0) / 1e18,
+      voteAgainst: Number(vote.votes.find(v => !v.supports)?.weight ?? 0) / 1e18,
       voteOpen: vote.proposal.start,
       voteClose: vote.proposal.start + WEEK,
       voteTotalSupply: vote.proposal.totalSupply,

@@ -30,11 +30,11 @@ const sortGauges = (gauges: UserGaugeVoteWeight[], order: SortDirection, sortBy:
   [...gauges].sort((a, b) => (order === 'asc' ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy]))
 
 const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
-  const setUserGaugeVoteWeightsSortBy = useStore((state) => state.user.setUserGaugeVoteWeightsSortBy)
-  const userGaugeVoteWeightsSortBy = useStore((state) => state.user.userGaugeVoteWeightsSortBy)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
-  const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
+  const setUserGaugeVoteWeightsSortBy = useStore(state => state.user.setUserGaugeVoteWeightsSortBy)
+  const userGaugeVoteWeightsSortBy = useStore(state => state.user.userGaugeVoteWeightsSortBy)
+  const gaugeMapper = useStore(state => state.gauges.gaugeMapper)
+  const selectedGauge = useStore(state => state.gauges.selectedGauge)
+  const gaugesLoading = useStore(state => state.gauges.gaugesLoading)
   const userAddress = userAddressProp ?? ''
 
   const {
@@ -56,7 +56,7 @@ const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
 
   const userGauges = useMemo(
     () =>
-      userGaugeWeightVotes?.gauges.map((gauge) => ({
+      userGaugeWeightVotes?.gauges.map(gauge => ({
         ...gauge,
         rootGaugeAddress: findRootGauge(gauge.gaugeAddress, gaugeMapper),
       })) ?? [],
@@ -105,7 +105,7 @@ const CurrentVotes = ({ userAddress: userAddressProp }: CurrentVotesProps) => {
           sortBy={userGaugeVoteWeightsSortBy}
           errorMessage={t`An error occurred while fetching user gauge weight votes.`}
           noDataMessage={t`No gauge votes found`}
-          setSortBy={(key) => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
+          setSortBy={key => setUserGaugeVoteWeightsSortBy(key as UserGaugeVoteWeightSortBy)}
           getData={() => invalidateUserGaugeWeightVotesQuery({ chainId: Chain.Ethereum, userAddress })}
           renderRow={(gauge, index) => (
             <Fragment key={index}>

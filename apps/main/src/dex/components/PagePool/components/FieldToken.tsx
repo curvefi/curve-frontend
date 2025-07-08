@@ -70,7 +70,7 @@ const FieldToken = ({
           descriptionLoading: showAvailableBalance && balanceLoading,
           description: showAvailableBalance ? balance : '',
         }}
-        onChange={(val) => handleAmountChange(val, idx)}
+        onChange={val => handleAmountChange(val, idx)}
       />
       {!hideMaxButton && (
         <InputMaxBtn

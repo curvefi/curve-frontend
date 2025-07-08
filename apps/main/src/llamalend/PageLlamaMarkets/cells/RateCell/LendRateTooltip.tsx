@@ -54,7 +54,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           </TooltipItem>
         </TooltipItems>
         {(lendCrvAprBoosted ?? 0) > 0 && (
-          <Stack bgcolor={(t) => t.design.Layer[2].Fill} padding={Spacing.sm}>
+          <Stack bgcolor={t => t.design.Layer[2].Fill} padding={Spacing.sm}>
             <TooltipItem subitem title={t`Extra CRV (veCRV Boost)`}>
               {formatPercent(lendCrvAprBoosted)}
             </TooltipItem>

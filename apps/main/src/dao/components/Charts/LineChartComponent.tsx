@@ -11,7 +11,7 @@ type Props = {
 const LineChartComponent = ({ data, height = 400 }: Props) => {
   const yAxisWidth = 24
 
-  const maxValue = Math.max(...data.map((item) => item.gauge_relative_weight))
+  const maxValue = Math.max(...data.map(item => item.gauge_relative_weight))
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -34,11 +34,11 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           minTickGap={20}
           tickMargin={4}
-          tickFormatter={(unixTime) => formatDateFromTimestamp(unixTime)}
+          tickFormatter={unixTime => formatDateFromTimestamp(unixTime)}
         />
         <YAxis
           tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-          tickFormatter={(value) => `${value}%`}
+          tickFormatter={value => `${value}%`}
           tickLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           axisLine={{ opacity: 0.3, strokeWidth: 0.5 }}
           width={yAxisWidth}

@@ -9,7 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId'> {}
 
 const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
 
   const { parameters, priceInfo } = loanDetails ?? {}
 

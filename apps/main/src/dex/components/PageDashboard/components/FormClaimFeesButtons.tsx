@@ -36,13 +36,13 @@ const FormClaimFeesButtons = ({
   setTxInfoBar: Dispatch<SetStateAction<ReactNode>>
 }) => {
   const { curve, isValidAddress } = useDashboardContext()
-  const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
-  const formProcessing = useStore((state) => state.dashboard.formStatus.formProcessing)
-  const fetchStepClaimFees = useStore((state) => state.dashboard.fetchStepClaimFees)
-  const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
+  const claimFeesAmounts = useStore(state => state.dashboard.claimableFees[activeKey])
+  const formProcessing = useStore(state => state.dashboard.formStatus.formProcessing)
+  const fetchStepClaimFees = useStore(state => state.dashboard.fetchStepClaimFees)
+  const setFormStatus = useStore(state => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {

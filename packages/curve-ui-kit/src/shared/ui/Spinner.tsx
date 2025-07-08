@@ -15,7 +15,7 @@ export const Spinner = ({ useTheme = false, sx }: SpinnerProps) => (
       alignItems: 'center',
       justifyContent: 'center',
       margin: '0 auto',
-      color: useTheme ? (theme) => theme.palette.text.secondary : 'inherit',
+      color: useTheme ? theme => theme.palette.text.secondary : 'inherit',
       ...sx,
     }}
   />

@@ -55,7 +55,7 @@ const TableButtonFiltersMobile = ({
         <ModalDialog title="Filter by" state={{ ...overlayTriggerState, close: handleClose }}>
           <RadioGroup aria-label={`Filter by`} onChange={handleRadioGroupChange} value={filterKey}>
             {filters &&
-              Object.keys(filters).map((k) => {
+              Object.keys(filters).map(k => {
                 const item = filters[k]
                 return <TableButtonFiltersMobileItem key={item.id} item={item} />
               })}

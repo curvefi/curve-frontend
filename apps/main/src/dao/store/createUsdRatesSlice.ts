@@ -56,7 +56,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>): UsdRat
 
       const missing = shouldRefetch
         ? tokenAddresses
-        : tokenAddresses.filter((t) => typeof usdRatesMapper[t] === 'undefined')
+        : tokenAddresses.filter(t => typeof usdRatesMapper[t] === 'undefined')
 
       if (missing.length > 0) {
         sliceState.setStateByKey('loading', true)
@@ -69,7 +69,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>): UsdRat
 
       return get()[sliceKey].usdRatesMapper
     },
-    fetchAllStoredUsdRates: async (curve) => {
+    fetchAllStoredUsdRates: async curve => {
       const tokenAddresses = Object.keys(get().usdRates.usdRatesMapper)
       await get().usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true)
     },

@@ -33,7 +33,7 @@ const SelectFilterBorrowLend = ({
       }
 
       // remove sort key if not in mapper
-      if (updatedSearchParams.sortBy && !tableLabels.some((l) => l.sortIdKey === updatedSearchParams.sortBy)) {
+      if (updatedSearchParams.sortBy && !tableLabels.some(l => l.sortIdKey === updatedSearchParams.sortBy)) {
         updatedSearchParams.sortBy = ''
         updatedSearchParams.sortByOrder = 'desc'
       }

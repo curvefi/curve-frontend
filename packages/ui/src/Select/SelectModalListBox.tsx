@@ -17,7 +17,7 @@ function SelectModalListBox<T>(
 
   return (
     <StyledListBox {...listBoxProps} ref={listBoxRef}>
-      {[...state.collection].map((item) => (
+      {[...state.collection].map(item => (
         <SelectModalListBoxItem key={item.key} state={state} item={item} />
       ))}
     </StyledListBox>

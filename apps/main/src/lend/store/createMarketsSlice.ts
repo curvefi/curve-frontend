@@ -112,7 +112,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
           ? await fnMapper[k](api, shouldRefetch ? markets : missing)
           : await fnMapper[k](shouldRefetch ? markets : missing)
       const cMapper = { ...storedMapper }
-      Object.keys(resp).forEach((owmId) => {
+      Object.keys(resp).forEach(owmId => {
         cMapper[owmId] = resp[owmId]
       })
       sliceState.setStateByActiveKey(k, chainId.toString(), cMapper)
@@ -137,7 +137,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
       // invalidate and refetch onchain data
       invalidateMarketOnChainRates({ chainId, marketId })
-      await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
+      await Promise.all(keys.map(key => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
     },
     fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
       const sliceState = get()[sliceKey]

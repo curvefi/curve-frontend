@@ -79,7 +79,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
   dashboard: {
     ...DEFAULT_STATE,
 
-    fetchClaimablesAndLockedDetails: async (curve) => {
+    fetchClaimablesAndLockedDetails: async curve => {
       const {
         lockedCrv,
         [sliceKey]: {
@@ -319,11 +319,11 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
         noResult: poolIds.length === 0,
       })
     },
-    setFormStatusClaimFees: (updatedFormStatus) => {
+    setFormStatusClaimFees: updatedFormStatus => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatus })
     },
-    setFormStatusVecrv: (updatedFormStatusVecrv) => {
+    setFormStatusVecrv: updatedFormStatusVecrv => {
       const { formStatus, ...sliceState } = get()[sliceKey]
       sliceState.setStateByKey('formStatus', { ...formStatus, ...updatedFormStatusVecrv })
     },
@@ -416,7 +416,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

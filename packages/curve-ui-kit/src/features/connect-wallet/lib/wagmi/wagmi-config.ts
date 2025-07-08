@@ -29,7 +29,7 @@ const DECIMALS: Record<number, number> = {
  */
 export const createWagmiConfig = memoize(
   <ChainId extends number, NetworkConfig extends NetworkDef>(networks: Record<ChainId, NetworkConfig>) => {
-    const wagmi = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+    const wagmi = Object.fromEntries(wagmiChains.map(chain => [chain.id, chain]))
     const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
 
     /**
@@ -80,7 +80,7 @@ export const createWagmiConfig = memoize(
            */
           fallback([
             unstable_connector(injected),
-            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3 } })),
+            ...getRpcUrls(id).map(url => http(url, { batch: { batchSize: 3 } })),
           ]),
         ]),
       ) as Record<ChainId, Transport>,

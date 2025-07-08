@@ -10,9 +10,9 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
   const { curveApi = null } = useConnection()
   const { provider: walletProvider } = useWallet()
-  const staked = useStore((state) => state.pools.stakedMapper[address])
-  const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
-  const { rpcUrl } = useStore((state) => curveApi && state.networks.networks[curveApi.chainId]) ?? {}
+  const staked = useStore(state => state.pools.stakedMapper[address])
+  const setStateByActiveKey = useStore(state => state.pools.setStateByActiveKey)
+  const { rpcUrl } = useStore(state => curveApi && state.networks.networks[curveApi.chainId]) ?? {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {
@@ -24,7 +24,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const getContract = useCallback(
     async (contract: string, address: string, provider: Provider | JsonRpcProvider) => {
       try {
-        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then((module) => module.default.abi)
+        const abi = await import(`@/dex/components/PagePool/abis/${contract}.json`).then(module => module.default.abi)
         const iface = new Interface(abi)
         return new Contract(address, iface.format(), provider)
       } catch (error) {

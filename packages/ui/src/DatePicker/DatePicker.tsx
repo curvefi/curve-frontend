@@ -115,7 +115,7 @@ function CalendarGrid({ state, ...props }: AriaCalendarGridProps & { state: Cale
         </tr>
       </thead>
       <tbody>
-        {[...new Array(weeksInMonth).keys()].map((weekIndex) => (
+        {[...new Array(weeksInMonth).keys()].map(weekIndex => (
           <tr key={weekIndex}>
             {state
               .getDatesInWeek(weekIndex)

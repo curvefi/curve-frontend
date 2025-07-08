@@ -23,9 +23,9 @@ const PegKeeperForm = ({ rChainId, poolName, pegKeeperAddress }: Props) => {
   const isSubscribed = useRef(false)
 
   const { llamaApi: curve, connectState } = useConnection()
-  const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
-  const formStatus = useStore((state) => state.pegKeepers.formStatus)
-  const fetchUpdate = useStore((state) => state.pegKeepers.fetchUpdate)
+  const detailsMapper = useStore(state => state.pegKeepers.detailsMapper)
+  const formStatus = useStore(state => state.pegKeepers.formStatus)
+  const fetchUpdate = useStore(state => state.pegKeepers.fetchUpdate)
 
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 

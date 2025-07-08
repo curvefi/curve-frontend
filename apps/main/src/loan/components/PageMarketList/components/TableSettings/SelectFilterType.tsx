@@ -22,7 +22,7 @@ const SelectFilterType = ({
 }) => {
   const { sortBy, sortByOrder } = searchParams
 
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
+  const isXSmDown = useLayoutStore(state => state.isXSmDown)
 
   const sortSelectMapper = useMemo(
     () =>

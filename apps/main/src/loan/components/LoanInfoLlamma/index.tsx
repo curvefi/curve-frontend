@@ -17,9 +17,9 @@ interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChai
 
 const LoanInfoLlamma = (props: Props) => {
   const { rChainId, llamma, llammaId } = props
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const chartExpanded = useStore(state => state.ohlcCharts.chartExpanded)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   return (
     <Wrapper>

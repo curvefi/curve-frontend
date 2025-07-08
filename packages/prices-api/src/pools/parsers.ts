@@ -20,7 +20,7 @@ export const parsePool = (x: Responses.GetPoolsResponse['data'][number]): Models
   liquidityVolume24h: x.liquidity_volume_24h,
   liquidityFee24h: x.liquidity_fee_24h,
   coins:
-    x.coins?.map((coin) => ({
+    x.coins?.map(coin => ({
       poolIndex: coin.pool_index,
       symbol: coin.symbol,
       address: coin.address,
@@ -28,7 +28,7 @@ export const parsePool = (x: Responses.GetPoolsResponse['data'][number]): Models
   baseDailyApr: x.base_daily_apr,
   baseWeeklyApr: x.base_weekly_apr,
   virtualPrice: x.virtual_price,
-  poolMethods: x.pool_methods?.map((x) => x) ?? [],
+  poolMethods: x.pool_methods?.map(x => x) ?? [],
 })
 
 export const parseVolume = (x: Responses.GetVolumeResponse['data'][number]): Models.Volume => ({

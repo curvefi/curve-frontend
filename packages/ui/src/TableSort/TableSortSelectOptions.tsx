@@ -23,7 +23,7 @@ const TableSortSelectOptions = ({ labelsMapper, value, handleRadioGroupChange, t
     </SortHeader>
     <RadioGroup
       aria-label="Type"
-      onChange={(updatedSortValue) => handleRadioGroupChange(updatedSortValue, toggle)}
+      onChange={updatedSortValue => handleRadioGroupChange(updatedSortValue, toggle)}
       value={value}
     >
       {Object.entries(labelsMapper).map(([key, { name, mobile }]) => {

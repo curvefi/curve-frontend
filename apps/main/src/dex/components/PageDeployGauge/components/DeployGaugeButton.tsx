@@ -27,16 +27,16 @@ interface Props {
 }
 
 const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const networks = useStore(state => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
   const { push } = useRouter()
-  const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
-  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
-  const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)
-  const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
-  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
-  const deployGauge = useStore((state) => state.deployGauge.deployGauge)
+  const lpTokenAddress = useStore(state => state.deployGauge.lpTokenAddress)
+  const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
+  const sidechainGauge = useStore(state => state.deployGauge.sidechainGauge)
+  const sidechainNav = useStore(state => state.deployGauge.sidechainNav)
+  const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
+  const deployGauge = useStore(state => state.deployGauge.deployGauge)
   const { connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
   const restFullPathname = useRestFullPathname()

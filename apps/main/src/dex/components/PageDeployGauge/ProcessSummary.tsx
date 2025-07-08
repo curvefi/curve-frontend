@@ -17,10 +17,10 @@ type Props = {
 }
 
 const ProcessSummary = ({ chainId, isLite }: Props) => {
-  const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
-  const linkPoolAddress = useStore((state) => state.deployGauge.linkPoolAddress)
-  const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
-  const networks = useStore((state) => state.networks.networks)
+  const deploymentStatus = useStore(state => state.deployGauge.deploymentStatus)
+  const linkPoolAddress = useStore(state => state.deployGauge.linkPoolAddress)
+  const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
+  const networks = useStore(state => state.networks.networks)
 
   const { push } = useRouter()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1

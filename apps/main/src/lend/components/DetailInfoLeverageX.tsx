@@ -12,7 +12,7 @@ const DetailInfoLeverageX = ({
   maxLeverage: string | undefined
   loading: boolean
 }) => {
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   return (
     <DetailInfo label={t`Leverage:`} loading={loading} loadingSkeleton={[50, 20]}>

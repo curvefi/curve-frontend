@@ -30,10 +30,10 @@ const SmallScreenCard = ({
   userGaugeVote = false,
   addUserVote = false,
 }: Props) => {
-  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
-  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
-  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const gaugeWeightHistoryMapper = useStore(state => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore(state => state.gauges.getHistoricGaugeWeights)
+  const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
+  const userVeCrv = useStore(state => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
 
   const gaugeHistoryLoading =
@@ -106,7 +106,7 @@ const SmallScreenCard = ({
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
-              <ErrorWrapper onClick={(e) => e.stopPropagation()}>
+              <ErrorWrapper onClick={e => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
                   onClick={(e?: MouseEvent) => {

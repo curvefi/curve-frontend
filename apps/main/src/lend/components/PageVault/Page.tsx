@@ -36,16 +36,16 @@ const Page = (params: MarketUrlParams) => {
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const marketDetailsView = useStore(state => state.markets.marketDetailsView)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  const fetchUserLoanExists = useStore(state => state.user.fetchUserLoanExists)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const rOwmId = market?.id ?? ''
   const { signerAddress } = api ?? {}

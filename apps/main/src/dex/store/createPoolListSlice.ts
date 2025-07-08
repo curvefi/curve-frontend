@@ -150,7 +150,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         searchedByAddresses: highlightResult ? parseSearchTermResults(addressesResult) : {},
       })
 
-      return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
+      return uniqBy([...tokensResult, ...addressesResult], r => r.item.pool.id).map(r => r.item)
     },
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
       const {
@@ -183,7 +183,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       } else if (sortKey.startsWith('rewards')) {
         return orderBy(
           poolDatas,
-          (poolData) => {
+          poolData => {
             const { pool, gauge } = poolData
             const { base, crv = [], other = [] } = rewardsApyMapper[pool.id] ?? {}
             if (sortKey === 'rewardsBase') {
@@ -439,7 +439,7 @@ export function getPoolListActiveKey(chainId: ChainId, searchParams: SearchParam
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
     parsedSearchText = chunk(searchText, 5)
-      .map((group) => group[0])
+      .map(group => group[0])
       .join('')
   }
   return `${chainId}-${filterKey}-${sortBy}-${sortByOrder}-${parsedSearchText}`

@@ -40,7 +40,7 @@ const Page = (params: NetworkUrlParams) => {
   const rChainId = networksIdMapper[params.network]
   const { signerAddress } = api ?? {}
 
-  const setStateByKey = useStore((state) => state.marketList.setStateByKey)
+  const setStateByKey = useStore(state => state.marketList.setStateByKey)
 
   const SIGNER_FILTER_MAPPER: FilterListProps[] = [
     { id: 'all', displayName: t`All` },

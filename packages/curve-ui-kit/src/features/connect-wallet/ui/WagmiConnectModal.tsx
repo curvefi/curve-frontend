@@ -70,7 +70,7 @@ export const WagmiConnectModal = () => {
     [connect],
   )
 
-  const wallets = supportedWallets.map((wallet) => ({
+  const wallets = supportedWallets.map(wallet => ({
     wallet: wallet,
     onConnect: onConnect,
     key: wallet.label,

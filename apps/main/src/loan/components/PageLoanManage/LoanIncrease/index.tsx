@@ -40,28 +40,28 @@ interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma'
 const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanIncrease.activeKey)
-  const detailInfo = useStore((state) => state.loanIncrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
-  const formEstGas = useStore((state) => state.loanIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanIncrease.formStatus)
-  const formValues = useStore((state) => state.loanIncrease.formValues)
+  const activeKey = useStore(state => state.loanIncrease.activeKey)
+  const detailInfo = useStore(state => state.loanIncrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
+  const formEstGas = useStore(state => state.loanIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanIncrease.formStatus)
+  const formValues = useStore(state => state.loanIncrease.formValues)
   const maxRecvActiveKey = llamma ? getMaxRecvActiveKey(llamma, formValues.collateral) : ''
-  const maxRecv = useStore((state) => state.loanIncrease.maxRecv[maxRecvActiveKey])
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const maxRecv = useStore(state => state.loanIncrease.maxRecv[maxRecvActiveKey])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_USER_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_USER_WALLET_BALANCES,
   )
 
-  const init = useStore((state) => state.loanIncrease.init)
-  const fetchStepApprove = useStore((state) => state.loanIncrease.fetchStepApprove)
-  const fetchStepIncrease = useStore((state) => state.loanIncrease.fetchStepIncrease)
-  const setFormValues = useStore((state) => state.loanIncrease.setFormValues)
-  const setStateByKey = useStore((state) => state.loanIncrease.setStateByKey)
-  const resetState = useStore((state) => state.loanIncrease.resetState)
+  const init = useStore(state => state.loanIncrease.init)
+  const fetchStepApprove = useStore(state => state.loanIncrease.fetchStepApprove)
+  const fetchStepIncrease = useStore(state => state.loanIncrease.fetchStepIncrease)
+  const setFormValues = useStore(state => state.loanIncrease.setFormValues)
+  const setStateByKey = useStore(state => state.loanIncrease.setStateByKey)
+  const resetState = useStore(state => state.loanIncrease.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const [confirmedHealthWarning, setConfirmHealthWarning] = useState(false)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -180,7 +180,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                     <DialogHealthWarning
                       {...healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) => setConfirmHealthWarning(val)}
+                      setConfirmed={val => setConfirmHealthWarning(val)}
                     />
                   ),
                   isDismissable: false,
@@ -202,12 +202,12 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       let stepsKey: StepKey[]
 
       if (formStatus.isInProgress || formStatus.isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['BORROW'] : ['APPROVAL', 'BORROW']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [healthMode, fetchStepApprove, handleBtnClickBorrow],
   )
@@ -270,7 +270,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               label: t`${getTokenName(llamma).stablecoin} borrow amount`,
             }}
             value={formValues.debt}
-            onChange={(val) => handleInpChange('debt', val)}
+            onChange={val => handleInpChange('debt', val)}
           />
           <InputMaxBtn disabled={disabled} onClick={() => handleInpChange('debt', maxRecv)} />
         </InputProvider>
@@ -302,7 +302,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               description: formatNumber(userWalletBalances.collateral),
             }}
             value={formValues.collateral}
-            onChange={(val) => handleInpChange('collateral', val)}
+            onChange={val => handleInpChange('collateral', val)}
           />
           <InputMaxBtn
             disabled={disabled}

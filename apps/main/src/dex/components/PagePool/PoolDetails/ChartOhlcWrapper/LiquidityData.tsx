@@ -19,13 +19,13 @@ const LiquidityData = ({
   chainId: ChainId
   coins: PricesApiCoin[]
 }) => {
-  const tokensMapper = useStore((state) => state.tokens.tokensMapper)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const tokensMapper = useStore(state => state.tokens.tokensMapper)
+  const network = useStore(state => state.networks.networks[chainId])
 
   return (
     <>
       {lpEventsData
-        .filter((transaction) => {
+        .filter(transaction => {
           if (transaction.token_amounts.reduce((acc, data) => acc + data, 0) !== 0) return transaction
         })
         .map((transaction, index) => (

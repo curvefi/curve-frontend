@@ -109,10 +109,10 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       const fuse = new Fuse<IntegrationApp>(integrationApps, {
         ignoreLocation: true,
         threshold: 0.01,
-        keys: [{ name: 'name', getFn: (a) => a.name }],
+        keys: [{ name: 'name', getFn: a => a.name }],
       })
 
-      return fuse.search(searchText).map((r) => r.item)
+      return fuse.search(searchText).map(r => r.item)
     },
     setFormValues: (updatedFormValues: FormValues) => {
       get()[sliceKey].setStateByKeys({
@@ -141,7 +141,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
 
         get()[sliceKey].setStateByKeys({
           formStatus: { ...DEFAULT_FORM_STATUS, noResult: results.length === 0 },
-          results: sortBy(results, (r) => r.name),
+          results: sortBy(results, r => r.name),
         })
       }
     },
@@ -171,7 +171,7 @@ function parseIntegrationsTags(integrationsTags: { id: FilterKey; displayName: s
   const INTEGRATIONS_TAGS_COLORS = ['#F60000', '#FF8C00', '#FFEE00', '#4DE94C', '#3783FF', '#4815AA', '#ee82ee']
 
   if (Array.isArray(integrationsTags)) {
-    const filteredIntegrationsTags = integrationsTags.filter((t) => t.id !== 'crvusd')
+    const filteredIntegrationsTags = integrationsTags.filter(t => t.id !== 'crvusd')
     for (const idx in filteredIntegrationsTags) {
       const t = filteredIntegrationsTags[idx]
       const color = t.id === 'all' ? '' : INTEGRATIONS_TAGS_COLORS[+idx - 1]
@@ -215,7 +215,7 @@ function parseIntegrationsList(
     }
   }
 
-  return sortBy(parsedIntegrationsList, (a) => a.name)
+  return sortBy(parsedIntegrationsList, a => a.name)
 }
 
 export default createIntegrationsSlice

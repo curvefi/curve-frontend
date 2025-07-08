@@ -344,7 +344,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
     },
 
     // select token list
-    setPoolListFormValues: (hideSmallPools) => {
+    setPoolListFormValues: hideSmallPools => {
       const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
       storedPoolListFormValues.hideSmallPools = hideSmallPools
       get().poolList.setStateByKey('formValues', storedPoolListFormValues)
@@ -358,7 +358,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       const tokens = Object.entries(tokensMapper)
         .map(([_, v]) => v)
-        .filter((token) => !!token)
+        .filter(token => !!token)
         .map(({ address }) => address)
 
       sliceState.setStateByActiveKey('tokenList', chainId.toString(), tokens)
@@ -367,7 +367,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
       const userBalancesMapper = get().userBalances.userBalancesMapper
       const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
-        (k) => +(userBalancesMapper[k] ?? '0') > 0,
+        k => +(userBalancesMapper[k] ?? '0') > 0,
       )
 
       // Get prices of user balance tokens
@@ -492,7 +492,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -41,5 +41,5 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  */
 export const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
   (Array.isArray(tokens) ? tokens : [tokens])
-    .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
+    .map(x => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
     .join(' + ')

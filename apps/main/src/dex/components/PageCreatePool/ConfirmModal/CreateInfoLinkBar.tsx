@@ -39,8 +39,8 @@ const StyledExternalLink = styled(ExternalLink)<StylesProps>`
   text-decoration: none;
   margin-top: var(--spacing-2);
 
-  color: ${(props) => (props.theme === 'plain' ? 'var(--box--primary--color)' : 'var(--white)')};
-  background-color: ${(props) => (props.theme === 'plain' ? 'var(--primary-400a10)' : 'var(--info-400)')};
+  color: ${props => (props.theme === 'plain' ? 'var(--box--primary--color)' : 'var(--white)')};
+  background-color: ${props => (props.theme === 'plain' ? 'var(--primary-400a10)' : 'var(--info-400)')};
 `
 
 const InfoDescription = styled.span`

@@ -6,7 +6,7 @@ const InpChipUsdRate = ({
   address = '',
   ...props
 }: Omit<InpChipUsdRateProps, 'usdRate'> & { address: string | undefined }) => {
-  const usdRate = useStore((state) => state.usdRates.tokens[address])
+  const usdRate = useStore(state => state.usdRates.tokens[address])
   return <InpChipUsdRateComp {...props} usdRate={usdRate} />
 }
 

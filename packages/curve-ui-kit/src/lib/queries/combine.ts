@@ -13,10 +13,10 @@ import {
 export const combineQueriesMeta = <T extends QueryOptionsArray>(
   results: QueryResultsArray<T>,
 ): Omit<CombinedQueriesResult<T>, 'data'> => ({
-  isLoading: results.some((result) => result.isLoading),
-  isPending: results.some((result) => result.isPending),
-  isError: results.some((result) => result.isError),
-  isFetching: results.some((result) => result.isFetching),
+  isLoading: results.some(result => result.isLoading),
+  isPending: results.some(result => result.isPending),
+  isError: results.some(result => result.isError),
+  isFetching: results.some(result => result.isFetching),
 })
 
 /** Combines the data and metadata of multiple queries into a single object. */

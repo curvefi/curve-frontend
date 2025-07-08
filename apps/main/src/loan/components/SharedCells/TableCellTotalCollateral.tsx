@@ -17,11 +17,11 @@ type Props = {
 }
 
 const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
-  const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const loanDetails = useStore(state => state.loans.detailsMapper[collateralId])
+  const llamma = useStore(state => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
+  const collateralUsdRate = useStore(state => state.usdRates.tokens[llamma?.collateral ?? ''])
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { totalCollateral, totalStablecoin } = loanDetails ?? {}
 

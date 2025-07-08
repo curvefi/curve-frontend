@@ -63,26 +63,26 @@ const QuickSwap = ({
   const isSubscribed = useRef(false)
   const { chainId, signerAddress } = curve ?? {}
   const { tokensNameMapper } = useTokensNameMapper(rChainId)
-  const tokenList = useStore((state) => state.quickSwap.tokenList[rChainId])
-  const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const formEstGas = useStore((state) => state.quickSwap.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.quickSwap.formStatus)
-  const formValues = useStore((state) => state.quickSwap.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const userBalancesLoading = useStore((state) => state.userBalances.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
-  const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
-  const setFormValues = useStore((state) => state.quickSwap.setFormValues)
-  const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const tokenList = useStore(state => state.quickSwap.tokenList[rChainId])
+  const activeKey = useStore(state => state.quickSwap.activeKey)
+  const formEstGas = useStore(state => state.quickSwap.formEstGas[activeKey])
+  const formStatus = useStore(state => state.quickSwap.formStatus)
+  const formValues = useStore(state => state.quickSwap.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const routesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
+  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
+  const userBalancesMapper = useStore(state => state.userBalances.userBalancesMapper)
+  const userBalancesLoading = useStore(state => state.userBalances.loading)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
+  const fetchStepApprove = useStore(state => state.quickSwap.fetchStepApprove)
+  const fetchStepSwap = useStore(state => state.quickSwap.fetchStepSwap)
+  const resetFormErrors = useStore(state => state.quickSwap.resetFormErrors)
+  const setFormValues = useStore(state => state.quickSwap.setFormValues)
+  const updateTokenList = useStore(state => state.quickSwap.updateTokenList)
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
 
-  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
+  const cryptoMaxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore(state => state.maxSlippage.stable)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
   const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
   const slippageImpact = routesAndOutput
@@ -108,14 +108,14 @@ const QuickSwap = ({
     if (isEmpty(tokenList) || isEmpty(tokensMapper)) return []
 
     return tokenList!
-      .map((address) => tokensMapper[address])
-      .filter((token) => !!token)
+      .map(address => tokensMapper[address])
+      .filter(token => !!token)
       .map(toTokenOption(network?.networkId))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenList, tokensMapperStr, network?.networkId])
 
-  const fromToken = tokens.find((x) => x.address.toLocaleLowerCase() == fromAddress)
-  const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
+  const fromToken = tokens.find(x => x.address.toLocaleLowerCase() == fromAddress)
+  const toToken = tokens.find(x => x.address.toLocaleLowerCase() == toAddress)
 
   const updateFormValues = useCallback(
     (
@@ -279,12 +279,12 @@ const QuickSwap = ({
       let stepsKey: StepKey[]
 
       if (formProcessing || formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, slippageImpact?.isExpectedToAmount, steps],
   )
@@ -382,7 +382,7 @@ const QuickSwap = ({
                 }
                 testId="from-amount"
                 value={isMaxLoading ? '' : formValues.fromAmount}
-                onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
+                onChange={fromAmount => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
               />
               <InputMaxBtn
                 loading={isMaxLoading}
@@ -398,7 +398,7 @@ const QuickSwap = ({
                 balances={userBalancesMapper}
                 disabled={isDisable || !fromToken}
                 tokenPrices={usdRatesMapper}
-                onToken={(token) => {
+                onToken={token => {
                   const fromAddress = token.address
                   const toAddress =
                     fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
@@ -443,7 +443,7 @@ const QuickSwap = ({
               }
               testId="to-amount"
               value={formValues.toAmount}
-              onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
+              onChange={toAmount => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
             />
             <TokenSelector
               selectedToken={toToken}
@@ -452,7 +452,7 @@ const QuickSwap = ({
               disabled={isDisable || !toToken}
               tokenPrices={usdRatesMapper}
               disableMyTokens={true}
-              onToken={(token) => {
+              onToken={token => {
                 const toAddress = token.address
                 const fromAddress =
                   toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress

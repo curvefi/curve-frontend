@@ -25,8 +25,8 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const loanExistsResp = useStore(state => state.user.loansExistsMapper[userActiveKey])
+  const { initCampaignRewards, initiated } = useStore(state => state.campaigns)
 
   const FORM_TYPES = useMemo(() => {
     const forms: { key: FormType; label: string }[] = [

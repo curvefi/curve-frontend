@@ -48,22 +48,22 @@ const Page = (params: CollateralUrlParams) => {
   const [loaded, setLoaded] = useState(false)
 
   const { llamma, displayName } =
-    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
+    useStore(state => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
   const llammaId = llamma?.id ?? ''
 
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
-  const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
-  const setFormValues = useStore((state) => state.loanCreate.setFormValues)
-  const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const loanExists = useStore(state => state.loans.existsMapper[rCollateralId]?.loanExists)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchLoanDetails = useStore(state => state.loans.fetchLoanDetails)
+  const fetchUserLoanWalletBalances = useStore(state => state.loans.fetchUserLoanWalletBalances)
+  const resetUserDetailsState = useStore(state => state.loans.resetUserDetailsState)
+  const setFormValues = useStore(state => state.loanCreate.setFormValues)
+  const setStateByKeys = useStore(state => state.loanCreate.setStateByKeys)
+  const { chartExpanded, setChartExpanded } = useStore(state => state.ohlcCharts)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const isReady = !!llamma
   const isValidRouterParams = !!rChainId && !!rCollateralId

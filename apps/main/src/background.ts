@@ -13,14 +13,14 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
   // noinspection InfiniteLoopJS
   while (true) {
     const start = Date.now()
-    await callback().catch((e) => {
+    await callback().catch(e => {
       console.error(`Failed to refresh ${name}`, e)
     })
     const end = new Date()
     const elapsed = end.getTime() - start
     console.info(`${end.toISOString()} Refreshed ${name} in ${elapsed}ms, waiting ${RefreshTimeoutMs}ms`)
     if (elapsed < RefreshTimeoutMs) {
-      await new Promise((resolve) => setTimeout(resolve, RefreshTimeoutMs - elapsed))
+      await new Promise(resolve => setTimeout(resolve, RefreshTimeoutMs - elapsed))
     }
   }
 }

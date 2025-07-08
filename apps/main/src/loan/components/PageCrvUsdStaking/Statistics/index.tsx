@@ -35,10 +35,10 @@ type StatisticsProps = {
 }
 
 const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: StatisticsProps) => {
-  const selectedStatisticsChart = useStore((state) => state.scrvusd.selectedStatisticsChart)
-  const setSelectedStatisticsChart = useStore((state) => state.scrvusd.setSelectedStatisticsChart)
-  const revenueChartTimeOption = useStore((state) => state.scrvusd.revenueChartTimeOption)
-  const setRevenueChartTimeOption = useStore((state) => state.scrvusd.setRevenueChartTimeOption)
+  const selectedStatisticsChart = useStore(state => state.scrvusd.selectedStatisticsChart)
+  const setSelectedStatisticsChart = useStore(state => state.scrvusd.setSelectedStatisticsChart)
+  const revenueChartTimeOption = useStore(state => state.scrvusd.revenueChartTimeOption)
+  const setRevenueChartTimeOption = useStore(state => state.scrvusd.setRevenueChartTimeOption)
 
   const { data: yieldData } = useScrvUsdYield({ timeOption: revenueChartTimeOption })
   const { data: revenueData } = useScrvUsdRevenue({})
@@ -57,7 +57,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
     >
       <Card
         sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
+          backgroundColor: t => t.design.Layer[1].Fill,
           boxShadow: 'none',
         }}
         elevation={0}

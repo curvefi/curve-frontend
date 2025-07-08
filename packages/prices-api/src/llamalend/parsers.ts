@@ -78,7 +78,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
-  x.markets.map((market) => ({
+  x.markets.map(market => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
@@ -91,7 +91,7 @@ export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPosit
 export const parseUserLendingPositions = (
   x: Pick<Responses.GetUserLendingPositionsResponse, 'markets'>,
 ): Models.UserLendingPosition[] =>
-  x.markets.map((market) => ({
+  x.markets.map(market => ({
     marketName: market.market_name,
     vaultAddress: market.vault_address,
     firstDeposit: toDate(market.first_deposit),
@@ -164,7 +164,7 @@ export const parseUserCollateralEvents = (
   totalDepositPrecise: x.total_deposit_precise,
   totalBorrowed: x.total_borrowed,
   totalBorrowedPrecise: x.total_borrowed_precise,
-  events: x.data.map((y) => ({
+  events: x.data.map(y => ({
     timestamp: toDate(y.dt),
     txHash: y.transaction_hash,
     type: y.type,

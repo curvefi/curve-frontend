@@ -17,9 +17,9 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
 
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const { rChainId } = transferProps.routerParams
-  const formType = useStore((state) => state.poolDeposit.formType)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
-  const setStateByKeys = useStore((state) => state.poolDeposit.setStateByKeys)
+  const formType = useStore(state => state.poolDeposit.formType)
+  const resetState = useStore(state => state.poolDeposit.resetState)
+  const setStateByKeys = useStore(state => state.poolDeposit.setStateByKeys)
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
@@ -41,7 +41,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx == -0 ? 0 : domRect.left - tabsDOMRect.left

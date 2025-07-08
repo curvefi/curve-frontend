@@ -98,10 +98,10 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
       const fuse = new Fuse<IntegrationApp>(integrationApps, {
         ignoreLocation: true,
         threshold: 0.01,
-        keys: [{ name: 'name', getFn: (a) => a.name }],
+        keys: [{ name: 'name', getFn: a => a.name }],
       })
 
-      return fuse.search(searchText).map((r) => r.item)
+      return fuse.search(searchText).map(r => r.item)
     },
     setFormValues: (updatedFormValues: FormValues, chainId: ChainId | '') => {
       get()[sliceKey].setStateByKeys({
@@ -130,7 +130,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
 
         get()[sliceKey].setStateByKeys({
           formStatus: { ...DEFAULT_FORM_STATUS, noResult: results.length === 0 },
-          results: sortBy(results, (r) => r.name),
+          results: sortBy(results, r => r.name),
         })
       }
     },
@@ -208,7 +208,7 @@ function parseIntegrationsList(
     }
   }
 
-  return sortBy(parsedIntegrationsList, (a) => a.name)
+  return sortBy(parsedIntegrationsList, a => a.name)
 }
 
 export default createIntegrationsSlice

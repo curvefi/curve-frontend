@@ -36,7 +36,7 @@ export const _getScrvUsdYield = async (params: { timeOption: TimeOption }) => {
     const sevenDaysAgoTimestamp = currentTimestamp - SEVEN_DAYS_IN_MILLISECONDS
 
     const relevantData = array.filter(
-      (dataPoint) =>
+      dataPoint =>
         dataPoint.timestamp.getTime() >= sevenDaysAgoTimestamp &&
         dataPoint.timestamp.getTime() <= currentTimestamp &&
         array.indexOf(dataPoint) <= index, // Only include data points up to current index

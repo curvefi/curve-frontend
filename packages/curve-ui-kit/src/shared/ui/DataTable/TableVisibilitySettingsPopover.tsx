@@ -48,17 +48,17 @@ export const TableVisibilitySettingsPopover = <ColumnIds extends string>({
   >
     <Stack gap={Spacing.md}>
       {visibilityGroups
-        .filter(({ options }) => options.some((o) => o.enabled))
+        .filter(({ options }) => options.some(o => o.enabled))
         .map(({ options, label }) => (
           <Stack key={label} gap={Spacing.sm}>
             <Typography
               variant="headingXsBold"
-              sx={{ paddingBottom: Spacing.xs, borderBottom: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
+              sx={{ paddingBottom: Spacing.xs, borderBottom: t => `1px solid ${t.design.Layer[1].Outline}` }}
             >
               {label}
             </Typography>
             {options
-              .filter((option) => option.enabled)
+              .filter(option => option.enabled)
               .map(
                 ({ columns, active, label, enabled }) =>
                   enabled && (
@@ -118,10 +118,10 @@ export const useVisibilitySettings = <T, ColumnIds extends string>(
   /** toggle visibility of a column by its id */
   const toggleVisibility = useCallback(
     (columns: string[]): void =>
-      setVisibilitySettings((prev) =>
-        prev.map((group) => ({
+      setVisibilitySettings(prev =>
+        prev.map(group => ({
           ...group,
-          options: group.options.map((option) =>
+          options: group.options.map(option =>
             option.columns === columns ? { ...option, active: !option.active } : option,
           ),
         })),
@@ -134,7 +134,7 @@ export const useVisibilitySettings = <T, ColumnIds extends string>(
     () =>
       ({
         ...flatten(visibilitySettings),
-        ...Object.fromEntries(columns.filter((c) => c.meta?.hidden).map((c) => [c.id, false])),
+        ...Object.fromEntries(columns.filter(c => c.meta?.hidden).map(c => [c.id, false])),
       }) as Record<ColumnIds, boolean>,
     [columns, visibilitySettings],
   )

@@ -15,7 +15,7 @@ import { breakpoints } from '@ui/utils'
 const DetailsUserSupply = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, userActiveKey, market, titleMapper } = pageProps
 
-  const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const userBalancesResp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { signerAddress } = api ?? {}
   const { vaultShares, gauge } = userBalancesResp ?? {}

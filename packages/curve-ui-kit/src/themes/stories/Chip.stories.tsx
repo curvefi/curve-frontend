@@ -20,7 +20,7 @@ const ChipStories = ({ clickable, color, variant }: ChipStoryProps) => (
     <Typography variant="headingXxl">
       {clickable ? 'Chips' : 'Badges'}: {color} color
     </Typography>
-    {sizes.map((size) => (
+    {sizes.map(size => (
       <Box key={size} display="flex" flexDirection="row" gap={5} justifyContent="space-evenly">
         {/* simple one */}
         <Chip label={size} size={size} color={color} clickable={clickable} variant={variant} />

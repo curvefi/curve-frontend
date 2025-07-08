@@ -77,7 +77,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   partialize: ({ storeCache }: State) => ({ storeCache }),
   merge,
   storage: {
-    getItem: (name) => JSON.parse(localStorage.getItem(name)!),
+    getItem: name => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.
     setItem: debounce((name, value) => {
       const json = JSON.stringify(value)
@@ -87,7 +87,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
       }
       return localStorage.setItem(name, json)
     }, 1000),
-    removeItem: (name) => localStorage.removeItem(name),
+    removeItem: name => localStorage.removeItem(name),
   },
   version: 19, // update version number to prevent UI from using cache
 }

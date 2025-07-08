@@ -10,7 +10,7 @@ const NumericTextFieldWrapper = (props: any) => {
     <NumericTextField
       {...props}
       value={value}
-      onBlur={(newValue) => {
+      onBlur={newValue => {
         setValue(newValue)
         props.onBlur?.(newValue)
       }}
@@ -70,7 +70,7 @@ const meta: Meta<typeof NumericTextField> = {
 type Story = StoryObj<typeof NumericTextField>
 
 export const Default: Story = {
-  render: (args) => <NumericTextFieldWrapper {...args} />,
+  render: args => <NumericTextFieldWrapper {...args} />,
   parameters: {
     docs: {
       description: {
@@ -88,7 +88,7 @@ export const WithMinMax: Story = {
     label: 'Value (10-100)',
     helperText: 'Enter a value between 10 and 100',
   },
-  render: (args) => <NumericTextFieldWrapper {...args} />,
+  render: args => <NumericTextFieldWrapper {...args} />,
   parameters: {
     docs: {
       description: {
@@ -105,7 +105,7 @@ export const NoMinimum: Story = {
     label: 'Any Number',
     helperText: 'Enter any positive or negative number',
   },
-  render: (args) => <NumericTextFieldWrapper {...args} />,
+  render: args => <NumericTextFieldWrapper {...args} />,
   parameters: {
     docs: {
       description: {

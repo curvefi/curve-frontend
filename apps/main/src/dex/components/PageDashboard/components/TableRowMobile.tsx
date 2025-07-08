@@ -47,7 +47,7 @@ const TableRowMobile = ({
                 poolListProps={{ onClick: () => updatePath(poolId) }}
               />
             )}
-            <IconButton onClick={() => setShowDetail((prev) => !prev)}>
+            <IconButton onClick={() => setShowDetail(prev => !prev)}>
               {showDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
             </IconButton>
           </Box>

@@ -21,8 +21,8 @@ const { Spacing } = SizesAndSpaces
  * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
  */
 const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
-  const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
+  const values = data.map(d => get(d, field) as string)
+  return sortedUniq(sortBy(values, val => val.toLowerCase()))
 }
 
 /**
@@ -65,7 +65,7 @@ export const MultiSelectFilter = <T extends unknown>({
     ({ currentTarget }: MouseEvent<HTMLLIElement>) => {
       const value = currentTarget.getAttribute('value')!
       const options = selectedOptions?.includes(value)
-        ? selectedOptions.filter((v) => v !== value)
+        ? selectedOptions.filter(v => v !== value)
         : [...(selectedOptions ?? []), value]
       setColumnFilter(id, options.length ? options : undefined)
     },
@@ -116,7 +116,7 @@ export const MultiSelectFilter = <T extends unknown>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Box borderBottom={t => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
             <Button
               color="ghost"
               size="extraSmall"
@@ -125,7 +125,7 @@ export const MultiSelectFilter = <T extends unknown>({
               sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
           </Box>
-          {options.map((optionId) => (
+          {options.map(optionId => (
             <InvertOnHover hoverEl={menuRef.current} key={optionId}>
               <MenuItem
                 ref={menuRef}

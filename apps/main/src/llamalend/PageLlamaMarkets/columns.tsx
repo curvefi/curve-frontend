@@ -79,7 +79,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('rates.borrow', {
     id: LlamaMarketColumnId.BorrowChart,
     header: t`7D Rate Chart`,
-    cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
+    cell: c => <LineGraphCell market={c.row.original} type="borrow" />,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,

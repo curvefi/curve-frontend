@@ -79,7 +79,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       // stored
       const k = key as keyof typeof fnMapper
       const storedMapper = get()[sliceKey][k] ?? {}
-      const missing = markets.filter((market) => {
+      const missing = markets.filter(market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         return typeof storedMapper[userActiveKey] === 'undefined'
       })
@@ -89,7 +89,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       if (typeof fnMapper[k] !== 'function') log('missing function', k)
       const resp = await fnMapper[k](api, shouldRefetch ? markets : missing)
       const cMapper = cloneDeep(storedMapper)
-      Object.keys(resp).forEach((userActiveKey) => {
+      Object.keys(resp).forEach(userActiveKey => {
         cMapper[userActiveKey] = resp[userActiveKey]
       })
       get()[sliceKey].setStateByKey(k, cMapper)
@@ -109,7 +109,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const loansExistsMapper = get()[sliceKey].loansExistsMapper ?? {}
       const storedMapper = get()[sliceKey][k] ?? {}
 
-      const missing = markets.filter((market) => {
+      const missing = markets.filter(market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         const { loanExists } = loansExistsMapper[userActiveKey] ?? {}
         return loanExists && typeof storedMapper[userActiveKey] === 'undefined'
@@ -121,7 +121,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       // get only markets with loans
       if (shouldRefetch) {
-        parsedOwmDatas = markets.filter((market) => {
+        parsedOwmDatas = markets.filter(market => {
           const userActiveKey = helpers.getUserActiveKey(api, market)
           return loansExistsMapper[userActiveKey]?.loanExists
         })
@@ -132,7 +132,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const resp = await fnMapper[k](api, parsedOwmDatas)
       const cMapper = { ...storedMapper }
 
-      Object.keys(resp).forEach((userActiveKey) => {
+      Object.keys(resp).forEach(userActiveKey => {
         cMapper[userActiveKey] = resp[userActiveKey]
       })
       get()[sliceKey].setStateByKey(k, cMapper)
@@ -140,7 +140,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     fetchUsersLoansExists: async (api, markets, shouldRefetch) => {
       const storedLoanExistsMapper = get()[sliceKey].loansExistsMapper
 
-      const missing = markets.filter((market) => {
+      const missing = markets.filter(market => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
         return typeof storedLoanExistsMapper[userActiveKey] === 'undefined'
       })
@@ -150,7 +150,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const parsedOwmDatas = shouldRefetch ? markets : missing
       const loansExists = await apiLending.user.fetchLoansExists(api, parsedOwmDatas)
       const cLoanExistsMapper = cloneDeep(storedLoanExistsMapper)
-      Object.keys(loansExists).forEach((owmId) => {
+      Object.keys(loansExists).forEach(owmId => {
         cLoanExistsMapper[owmId] = loansExists[owmId]
       })
       get()[sliceKey].setStateByKey('loansExistsMapper', cLoanExistsMapper)
@@ -184,7 +184,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const userActiveKey = helpers.getUserActiveKey(api, market)
       const keys = ['loansDetailsMapper', 'marketsBalancesMapper'] as const
 
-      await Promise.all(keys.map((key) => get()[sliceKey].fetchLoanDatas(key, api, [market], shouldRefetch)))
+      await Promise.all(keys.map(key => get()[sliceKey].fetchLoanDatas(key, api, [market], shouldRefetch)))
       return {
         userLoanDetailsResp: get()[sliceKey].loansDetailsMapper[userActiveKey],
         userLoanBalancesResp: get()[sliceKey].marketsBalancesMapper[userActiveKey],
@@ -198,7 +198,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

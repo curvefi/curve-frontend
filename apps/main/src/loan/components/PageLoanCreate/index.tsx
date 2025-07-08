@@ -23,7 +23,7 @@ const LoanCreate = ({
   const FORM_TYPES: { key: string; label: string }[] = [
     { label: t`Create Loan`, key: 'create' },
     { label: t`Leverage`, key: 'leverage' },
-  ].filter((f) => {
+  ].filter(f => {
     if (f.key === 'leverage') {
       return hasLeverage(llamma)
     } else {

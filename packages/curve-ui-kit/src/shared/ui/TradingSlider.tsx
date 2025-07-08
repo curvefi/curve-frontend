@@ -40,7 +40,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       min={0}
       max={100}
       step={step}
-      sx={{ [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200] }}
+      sx={{ [SLIDER_BACKGROUND_VAR]: t => t.design.Color.Primary[200] }}
     />
 
     <NumericTextField
@@ -50,12 +50,12 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       value={percentage}
       min={0}
       max={100}
-      onChange={(newPercentage) => onChange?.(newPercentage)}
-      onBlur={(newPercentage) => onCommit?.(newPercentage)}
+      onChange={newPercentage => onChange?.(newPercentage)}
+      onBlur={newPercentage => onCommit?.(newPercentage)}
       slotProps={{
         input: {
           sx: {
-            fontFamily: (t) => t.typography.bodySBold.fontFamily,
+            fontFamily: t => t.typography.bodySBold.fontFamily,
             fontSize: FontSize.sm,
             fontWeight: FontWeight.Bold,
             height: Sizing.sm,

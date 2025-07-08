@@ -19,7 +19,7 @@ const CellMaxLeverage = ({
   rOwmId: string
   showTitle?: boolean
 }) => {
-  const maxLeverageResp = useStore((state) => state.markets.maxLeverageMapper[rChainId]?.[rOwmId])
+  const maxLeverageResp = useStore(state => state.markets.maxLeverageMapper[rChainId]?.[rOwmId])
 
   const { maxLeverage, error } = maxLeverageResp ?? {}
 

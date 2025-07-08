@@ -16,17 +16,17 @@ import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 const backgroundColor = 'background.paper'
 
 export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => {
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
+  const theme = useUserProfileStore(state => state.theme)
+  const setTheme = useUserProfileStore(state => state.setTheme)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const setAdvancedMode = useUserProfileStore(state => state.setAdvancedMode)
 
   return (
     <>
       <Box
         position="fixed"
         bottom={0}
-        sx={(t) => ({
+        sx={t => ({
           ...MOBILE_SIDEBAR_WIDTH,
           zIndex: t.zIndex.drawer + 1,
           backgroundColor,

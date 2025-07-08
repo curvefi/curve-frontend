@@ -33,20 +33,20 @@ import { t } from '@ui-kit/lib/i18n'
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanCollateralRemove.activeKey)
-  const detailInfo = useStore((state) => state.loanCollateralRemove.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanCollateralRemove.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanCollateralRemove.formStatus)
-  const formValues = useStore((state) => state.loanCollateralRemove.formValues)
-  const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanCollateralRemove.activeKey)
+  const detailInfo = useStore(state => state.loanCollateralRemove.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanCollateralRemove.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanCollateralRemove.formStatus)
+  const formValues = useStore(state => state.loanCollateralRemove.formValues)
+  const maxRemovable = useStore(state => state.loanCollateralRemove.maxRemovable)
+  const loanExists = useStore(state => state.user.loansExistsMapper[userActiveKey]?.loanExists)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
-  const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
-  const resetState = useStore((state) => state.loanCollateralRemove.resetState)
+  const fetchStepDecrease = useStore(state => state.loanCollateralRemove.fetchStepDecrease)
+  const setFormValues = useStore(state => state.loanCollateralRemove.setFormValues)
+  const resetState = useStore(state => state.loanCollateralRemove.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -140,7 +140,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
                     <DialogFormWarning
                       health={healthMode}
                       confirmed={confirmedHealthWarning}
-                      setConfirmed={(val) =>
+                      setConfirmed={val =>
                         setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
                       }
                     />
@@ -163,7 +163,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
 
       const stepsKey: StepKey[] = ['REMOVE']
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickRemove, userBalances, userState],
   )
@@ -230,7 +230,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         tokenAddress={market?.collateral_token?.address}
         tokenSymbol={market?.collateral_token?.symbol}
         tokenBalance={userBalances?.collateral}
-        handleInpChange={(collateral) => updateFormValues({ collateral })}
+        handleInpChange={collateral => updateFormValues({ collateral })}
         handleMaxClick={() => updateFormValues({ collateral: maxRemovable ?? '' })}
       />
 

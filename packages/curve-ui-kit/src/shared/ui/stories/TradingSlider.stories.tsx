@@ -12,11 +12,11 @@ const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider
       <TradingSlider
         {...props}
         percentage={percentage}
-        onChange={(newPercentage) => {
+        onChange={newPercentage => {
           setPercentage(newPercentage)
           props.onCommit?.(newPercentage)
         }}
-        onCommit={(newPercentage) => {
+        onCommit={newPercentage => {
           setPercentage(newPercentage)
           props.onCommit?.(newPercentage)
         }}

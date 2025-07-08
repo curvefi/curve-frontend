@@ -99,7 +99,7 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
       type="text"
       value={inputValue}
       inputMode="decimal"
-      onFocus={(e) => {
+      onFocus={e => {
         /**
          * Select all content when clicked.
          * This prevents unintended behavior when users click on the input field.
@@ -109,7 +109,7 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         ;(e.target as HTMLInputElement).select()
         onFocus?.(e)
       }}
-      onChange={(e) => {
+      onChange={e => {
         const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
 

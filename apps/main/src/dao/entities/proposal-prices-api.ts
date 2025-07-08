@@ -19,7 +19,7 @@ const _fetchProposalPricesApi = async ({
   const parsedProposal = {
     ...proposal,
     votes: proposal.votes
-      .map((vote) => ({
+      .map(vote => ({
         ...vote,
         topHolder: TOP_HOLDERS[vote.voter.toLowerCase()]?.title ?? null,
         stake: +vote.votingPower,

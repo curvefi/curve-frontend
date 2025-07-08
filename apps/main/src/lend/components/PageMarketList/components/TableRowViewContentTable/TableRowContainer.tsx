@@ -20,11 +20,11 @@ const TableRowContainer = (
   const params = useParams() as NetworkUrlParams
   const { push } = useRouter()
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
-  const marketsBalancesMapper = useStore((state) => state.user.marketsBalancesMapper)
-  const searchedByAddresses = useStore((state) => state.marketList.searchedByAddresses[owmId])
-  const setMarketsStateByKey = useStore((state) => state.markets.setStateByKey)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const loansExistsMapper = useStore(state => state.user.loansExistsMapper)
+  const marketsBalancesMapper = useStore(state => state.user.marketsBalancesMapper)
+  const searchedByAddresses = useStore(state => state.marketList.searchedByAddresses[owmId])
+  const setMarketsStateByKey = useStore(state => state.markets.setStateByKey)
 
   const market = useOneWayMarket(rChainId, owmId).data!
   const userActiveKey = helpers.getUserActiveKey(api, market)

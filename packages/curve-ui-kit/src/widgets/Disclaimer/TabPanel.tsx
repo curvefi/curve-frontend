@@ -15,7 +15,7 @@ export const TabPanel = ({ children }: Props) => (
     gap={Spacing.md}
     role="tabpanel"
     sx={{
-      backgroundColor: (t) => t.design.Layer[1].Fill,
+      backgroundColor: t => t.design.Layer[1].Fill,
       paddingBlockStart: Spacing.md,
       paddingBlockEnd: Spacing.lg,
     }}

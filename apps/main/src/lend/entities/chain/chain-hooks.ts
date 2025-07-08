@@ -9,7 +9,7 @@ import { useOneWayMarketNames } from './chain-query'
 export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const { chainId } = params
   const { data: marketNames, isSuccess, error } = useOneWayMarketNames(params)
-  const hydratedChainId = useStore((state) => state.hydratedChainId)
+  const hydratedChainId = useStore(state => state.hydratedChainId)
   const { llamaApi: api } = useConnection()
   const apiChainId = api?.chainId
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
@@ -18,8 +18,8 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
       marketNames && api && chainId == apiChainId && hydratedChainId === chainId
         ? Object.fromEntries(
             marketNames
-              .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])
-              .map((name) => [name, api.getLendMarket(name)] as const)
+              .filter(marketName => !networks[chainId!].hideMarketsInUI[marketName])
+              .map(name => [name, api.getLendMarket(name)] as const)
               .flatMap(([name, market]) => [
                 [name, market],
                 [market.addresses.controller, market],

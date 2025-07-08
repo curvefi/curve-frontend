@@ -21,14 +21,14 @@ type Props = {
 }
 
 const DeploySidechain = ({ chainId }: Props) => {
-  const curveNetworks = useStore((state) => state.deployGauge.curveNetworks)
-  const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
-  const setCurrentPoolType = useStore((state) => state.deployGauge.setCurrentPoolType)
-  const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
-  const setCurrentSidechain = useStore((state) => state.deployGauge.setCurrentSidechain)
-  const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
-  const setLpTokenAddress = useStore((state) => state.deployGauge.setLpTokenAddress)
-  const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
+  const curveNetworks = useStore(state => state.deployGauge.curveNetworks)
+  const currentPoolType = useStore(state => state.deployGauge.currentPoolType)
+  const setCurrentPoolType = useStore(state => state.deployGauge.setCurrentPoolType)
+  const currentSidechain = useStore(state => state.deployGauge.currentSidechain)
+  const setCurrentSidechain = useStore(state => state.deployGauge.setCurrentSidechain)
+  const lpTokenAddress = useStore(state => state.deployGauge.lpTokenAddress)
+  const setLpTokenAddress = useStore(state => state.deployGauge.setLpTokenAddress)
+  const sidechainNav = useStore(state => state.deployGauge.sidechainNav)
 
   const currentChainId = sidechainNav === 0 ? chainId : (currentSidechain ?? 1)
 
@@ -74,9 +74,9 @@ const DeploySidechain = ({ chainId }: Props) => {
     () =>
       Object.keys(curveNetworks)
         .filter(
-          (key) => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
+          key => +key !== Chain.Ethereum && !curveNetworks[+key].isTestnet && curveNetworks[+key].isCrvRewardsEnabled,
         )
-        .map((key) => curveNetworks[+key].name)
+        .map(key => curveNetworks[+key].name)
         .sort(),
     [curveNetworks],
   )

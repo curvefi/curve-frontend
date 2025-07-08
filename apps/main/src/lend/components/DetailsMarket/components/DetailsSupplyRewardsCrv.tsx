@@ -15,7 +15,7 @@ const DetailsSupplyRewardsCrv = ({
   rOwmId: string
   isBold?: boolean
 }) => {
-  const rewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
+  const rewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[rOwmId])
 
   const { rewards, error } = rewardsResp ?? {}
 

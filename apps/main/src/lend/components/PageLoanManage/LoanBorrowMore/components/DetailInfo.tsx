@@ -23,12 +23,12 @@ const DetailInfo = ({
   steps: Step[]
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
-  const detailInfo = useStore((state) => state.loanBorrowMore.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
-  const formValues = useStore((state) => state.loanBorrowMore.formValues)
+  const activeKey = useStore(state => state.loanBorrowMore.activeKey)
+  const detailInfo = useStore(state => state.loanBorrowMore.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanBorrowMore.formEstGas[activeKey])
+  const formValues = useStore(state => state.loanBorrowMore.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 

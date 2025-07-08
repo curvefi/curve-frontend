@@ -31,7 +31,7 @@ const Page = (params: CollateralUrlParams) => {
   const searchTermMapper = useSearchTermMapper()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
-  const setStateByKey = useStore((state) => state.collateralList.setStateByKey)
+  const setStateByKey = useStore(state => state.collateralList.setStateByKey)
 
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams>(DEFAULT_SEARCH_PARAMS)

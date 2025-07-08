@@ -18,8 +18,8 @@ const DetailsInfo = ({
   collateralId: string
   titleMapper: TitleMapper
 }) => {
-  const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
-  const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
+  const collateralData = useStore(state => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
+  const collateralDataCached = useStore(state => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
 
   const collateralDataCachedOrApi = collateralData ?? collateralDataCached
 

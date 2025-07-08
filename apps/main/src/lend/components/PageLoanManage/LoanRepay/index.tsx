@@ -48,22 +48,22 @@ const LoanRepay = ({
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
   const { push } = useRouter()
-  const activeKey = useStore((state) => state.loanRepay.activeKey)
-  const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanRepay.formStatus)
-  const formValues = useStore((state) => state.loanRepay.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
+  const activeKey = useStore(state => state.loanRepay.activeKey)
+  const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanRepay.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanRepay.formStatus)
+  const formValues = useStore(state => state.loanRepay.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanExists = useStore(state => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
-  const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
-  const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const setFormValues = useStore((state) => state.loanRepay.setFormValues)
-  const resetState = useStore((state) => state.loanRepay.resetState)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepApprove = useStore(state => state.loanRepay.fetchStepApprove)
+  const fetchStepRepay = useStore(state => state.loanRepay.fetchStepRepay)
+  const fetchAllUserDetails = useStore(state => state.user.fetchAll)
+  const setFormValues = useStore(state => state.loanRepay.setFormValues)
+  const resetState = useStore(state => state.loanRepay.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -217,7 +217,7 @@ const LoanRepay = ({
                         swapFrom: collateral_token.symbol,
                       }}
                       confirmed={confirmedWarning}
-                      setConfirmed={(val) =>
+                      setConfirmed={val =>
                         setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
                       }
                     />
@@ -242,12 +242,12 @@ const LoanRepay = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved && !isApprovedCompleted ? ['REPAY'] : ['APPROVAL', 'REPAY']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [
       confirmedWarning,
@@ -373,7 +373,7 @@ const LoanRepay = ({
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(userState?.collateral, { defaultValue: '-' })}
-                handleInpChange={(stateCollateral) => updateFormValues({ stateCollateral, isFullRepay: false })}
+                handleInpChange={stateCollateral => updateFormValues({ stateCollateral, isFullRepay: false })}
                 handleMaxClick={() =>
                   updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
                 }
@@ -391,7 +391,7 @@ const LoanRepay = ({
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-                handleInpChange={(userCollateral) => updateFormValues({ userCollateral, isFullRepay: false })}
+                handleInpChange={userCollateral => updateFormValues({ userCollateral, isFullRepay: false })}
                 handleMaxClick={() =>
                   updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
                 }
@@ -410,7 +410,7 @@ const LoanRepay = ({
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             debt={userState?.debt ?? '0'}
-            handleInpChange={(userBorrowed) => {
+            handleInpChange={userBorrowed => {
               if (expectedBorrowed) {
                 updateFormValues({ userBorrowed, isFullRepay: false })
                 return
@@ -465,7 +465,7 @@ const LoanRepay = ({
       <Checkbox
         isDisabled={disableCheckbox}
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
-        onChange={(isFullRepay) => {
+        onChange={isFullRepay => {
           if (isFullRepay) {
             updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay })
           } else {

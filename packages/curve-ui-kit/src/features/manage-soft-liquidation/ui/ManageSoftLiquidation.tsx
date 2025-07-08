@@ -33,7 +33,7 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePositio
         <TabsSwitcher variant="contained" size="medium" value="manage" options={TABS_MAIN} />
         <Box
           sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
+            backgroundColor: t => t.design.Layer[1].Fill,
             maxWidth: MaxWidth.actionCard,
             minWidth: MinWidth.actionCard,
           }}

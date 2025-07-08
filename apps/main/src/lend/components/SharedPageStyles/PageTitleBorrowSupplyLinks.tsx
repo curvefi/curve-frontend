@@ -20,7 +20,7 @@ const PageTitleBorrowSupplyLinks = ({
   const { llamaApi: api = null } = useConnection()
   const userActiveKey = helpers.getUserActiveKey(api, market)
 
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
+  const loanExists = useStore(state => state.user.loansExistsMapper[userActiveKey]?.loanExists)
 
   const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
 

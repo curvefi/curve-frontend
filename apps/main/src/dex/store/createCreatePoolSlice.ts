@@ -272,14 +272,14 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     ...DEFAULT_CREATE_POOL_STATE,
     setNavigationIndex: (index: number) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.navigationIndex = index
         }),
       )
     },
     updateAdvanced: (boolean: boolean) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.advanced = boolean
         }),
       )
@@ -293,7 +293,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
         set(
-          produce((state) => {
+          produce(state => {
             state.createPool.tokensInPool.tokenAmount = amount
           }),
         )
@@ -305,7 +305,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
         if (tokenA.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool.tokenAmount = 2
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
             }),
@@ -313,7 +313,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         }
         if (tokenB.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_B] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_B]
               state.createPool.tokensInPool.metaPoolToken = false
             }),
@@ -321,42 +321,42 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         }
         if (tokenC.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_C] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_C]
             }),
           )
         }
         if (tokenD.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_D] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_D]
             }),
           )
         }
         if (tokenE.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_E] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_E]
             }),
           )
         }
         if (tokenF.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_F] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_F]
             }),
           )
         }
         if (tokenG.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_G] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_G]
             }),
           )
         }
         if (tokenH.basePool) {
           set(
-            produce((state) => {
+            produce(state => {
               state.createPool.tokensInPool[TOKEN_H] = DEFAULT_CREATE_POOL_STATE.tokensInPool[TOKEN_H]
             }),
           )
@@ -364,7 +364,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
           state.createPool.swapType = swapType
@@ -373,7 +373,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     updatePoolPresetIndex: (presetIndex: number) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.poolPresetIndex = presetIndex
           state.createPool.parameters = POOL_PRESETS[presetIndex].defaultParams
         }),
@@ -381,7 +381,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     resetPoolPresetIndex: () => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters = DEFAULT_CREATE_POOL_STATE.parameters
           state.createPool.poolPresetIndex = null
         }),
@@ -471,7 +471,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ]
 
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool = tokensInPoolUpdates
           state.createPool.initialPrice = initialPriceUpdates
         }),
@@ -479,7 +479,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     clearToken: (tokenId: TokenId) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool[tokenId] = DEFAULT_CREATE_POOL_STATE.tokensInPool[tokenId]
           state.createPool.tokensInPool.metaPoolToken = get().createPool.tokensInPool[tokenId].basePool
             ? false
@@ -489,34 +489,34 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     updateNgAssetType: (tokenId: TokenId, value: NgAssetType) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool[tokenId].ngAssetType = value
         }),
       )
     },
     updateOracleAddress: (tokenId: TokenId, oracleAddress: string) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool[tokenId].oracleAddress = oracleAddress
         }),
       )
     },
     updateOracleFunction: (tokenId: TokenId, oracleFunction: string) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool[tokenId].oracleFunction = oracleFunction
         }),
       )
     },
     updateTokenAmount: (amount: number) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.tokensInPool.tokenAmount = amount
         }),
       ),
     updateUserAddedTokens: (address, symbol, haveSameTokenName, basePool) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.userAddedTokens.push({
             address: address.toLowerCase(),
             symbol,
@@ -528,7 +528,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateInitialPrice: (tokenA: number, tokenB: number, tokenC: number) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.initialPrice.initialPrice = [
             calculateInitialPrice(tokenA, tokenB),
             calculateInitialPrice(tokenA, tokenC),
@@ -544,7 +544,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         )
 
         set(
-          produce((state) => {
+          produce(state => {
             state.createPool.initialPrice[TOKEN_A] = price
           }),
         )
@@ -557,7 +557,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         )
 
         set(
-          produce((state) => {
+          produce(state => {
             state.createPool.initialPrice[TOKEN_B] = price
           }),
         )
@@ -570,7 +570,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         )
 
         set(
-          produce((state) => {
+          produce(state => {
             state.createPool.initialPrice[TOKEN_C] = price
           }),
         )
@@ -596,7 +596,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       get().createPool.updateInitialPrice(tokenAPrice, tokenBPrice, tokenCPrice)
 
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.initialPrice = {
             ...get().createPool.initialPrice,
             tokenAPrice: tokenAPrice,
@@ -608,37 +608,37 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     updateStableSwapFee: (fee: string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters.stableSwapFee = fee
         }),
       ),
     updateMidFee: (fee: string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters.midFee = fee
         }),
       ),
     updateOutFee: (fee: string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters.outFee = fee
         }),
       ),
     updateStableA: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters.stableA = new BigNumber(value).toString()
         }),
       ),
     updateCryptoA: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.parameters.cryptoA = new BigNumber(value).toString()
         }),
       ),
     updateGamma: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.gamma = value)
             : (state.createPool.parameters.gamma = new BigNumber(value).toString())
@@ -646,7 +646,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateAllowedExtraProfit: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.allowedExtraProfit = value)
             : (state.createPool.parameters.allowedExtraProfit = new BigNumber(value).toString())
@@ -654,7 +654,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateFeeGamma: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.feeGamma = value)
             : (state.createPool.parameters.feeGamma = new BigNumber(value).toString())
@@ -662,7 +662,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateAdjustmentStep: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.adjustmentStep = value)
             : (state.createPool.parameters.adjustmentStep = new BigNumber(value).toString())
@@ -670,7 +670,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateMaHalfTime: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.maHalfTime = value)
             : (state.createPool.parameters.maHalfTime = new BigNumber(value).toString())
@@ -678,7 +678,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateMaExpTime: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.maExpTime = value)
             : (state.createPool.parameters.maExpTime = new BigNumber(value).toString())
@@ -686,7 +686,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updateOffpegFeeMultiplier: (value: number | string) =>
       set(
-        produce((state) => {
+        produce(state => {
           value === typeof 'string'
             ? (state.createPool.parameters.offpegFeeMultiplier = value)
             : (state.createPool.parameters.offpegFeeMultiplier = new BigNumber(value).toString())
@@ -694,40 +694,40 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       ),
     updatePoolName: (name: string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.poolName = name
         }),
       ),
     updatePoolSymbol: (symbol: string) =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.poolSymbol = symbol
         }),
       ),
     updatePoolTypeValidation: (poolType: boolean) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.validation.poolType = poolType
         }),
       )
     },
     updateTokensInPoolValidation: (tokensInPool: boolean) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.validation.tokensInPool = tokensInPool
         }),
       )
     },
     updateParametersValidation: (parameters: boolean) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.validation.parameters = parameters
         }),
       )
     },
     updatePoolInfoValidation: (poolInfo: boolean) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.validation.poolInfo = poolInfo
         }),
       )
@@ -775,7 +775,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool.transactionState.txStatus = 'CONFIRMING'
         }),
       )
@@ -801,7 +801,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               initialPrice.initialPrice,
             )
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
@@ -817,7 +817,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolAddress = await curve.tricryptoFactory.getDeployedPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -832,7 +832,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
             const poolId = await curve.tricryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -840,7 +840,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce((state) => {
+                produce(state => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -852,7 +852,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             }
 
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
               }),
@@ -882,7 +882,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             )
 
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
@@ -898,7 +898,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -913,7 +913,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
             const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -921,7 +921,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce((state) => {
+                produce(state => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -932,7 +932,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               dismissNotificationHandler()
             }
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
               }),
@@ -945,7 +945,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         // convert token address of basepool to pool address of basepool
         const convertTokenAddressToPoolAddress = (val: string) => {
           let newValue = ''
-          basePools[chainId].find((item) => {
+          basePools[chainId].find(item => {
             if (item.token.toLowerCase() === val.toLowerCase()) newValue = item.pool
           })
           return newValue === '' ? val : newValue
@@ -979,7 +979,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               oracleAddress,
             )
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
@@ -996,7 +996,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
             // deploy pool tx success
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -1011,7 +1011,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -1019,7 +1019,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce((state) => {
+                produce(state => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -1030,7 +1030,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               dismissNotificationHandler()
             }
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
               }),
@@ -1043,16 +1043,16 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         // STABLE NG
         if (networks[chainId].stableswapFactory) {
           const coins = [tokenA, tokenB, tokenC, tokenD, tokenE, tokenF, tokenG, tokenH].filter(
-            (coin) => coin.address !== '',
+            coin => coin.address !== '',
           )
 
           try {
-            const coinAddresses = coins.map((coin) => coin.address)
-            const assetTypes = coins.map((coin) => coin.ngAssetType)
-            const oracleAddresses = coins.map((coin) =>
+            const coinAddresses = coins.map(coin => coin.address)
+            const assetTypes = coins.map(coin => coin.ngAssetType)
+            const oracleAddresses = coins.map(coin =>
               coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000',
             )
-            const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
+            const oracleFunctions = coins.map(coin => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
             const deployPoolTx = await curve.stableNgFactory.deployPlainPool(
@@ -1069,7 +1069,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               oracleFunctions,
             )
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
                 state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
@@ -1085,7 +1085,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolAddress = await curve.stableNgFactory.getDeployedPlainPoolAddress(deployPoolTx)
             // deploy pool tx success
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'SUCCESS'
                 state.createPool.transactionState.txSuccess = true
                 state.createPool.transactionState.fetchPoolStatus = 'LOADING'
@@ -1100,7 +1100,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
 
             const poolId = await curve.stableNgFactory.fetchRecentlyDeployedPool(poolAddress)
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.poolId = poolId
               }),
             )
@@ -1108,7 +1108,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
             const poolData = await fetchNewPool(curve, poolId)
             if (poolData) {
               set(
-                produce((state) => {
+                produce(state => {
                   state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
                   state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
                 }),
@@ -1119,7 +1119,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               dismissNotificationHandler()
             }
             set(
-              produce((state) => {
+              produce(state => {
                 state.createPool.transactionState.txStatus = 'ERROR'
                 state.createPool.transactionState.errorMessage = error.message
               }),
@@ -1131,7 +1131,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     resetState: () =>
       set(
-        produce((state) => {
+        produce(state => {
           state.createPool = { ...state.createPool, ...DEFAULT_CREATE_POOL_STATE }
         }),
       ),

@@ -34,7 +34,7 @@ function calculateBalancedValues(
   { tokens, totalUsd }: CurrencyReserves,
 ): Amount[] {
   const reserves = Object.fromEntries(
-    tokens.map((t) => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
+    tokens.map(t => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
   )
   const { reserveRatio: changedRatio, usdPrice: changedUsdPrice } = reserves[tokenAddresses[changedIndex]] ?? {}
   return zip(oldAmounts, tokenAddresses).map((tuple, index) => {
@@ -77,11 +77,11 @@ const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const reserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+  const network = useStore(state => state.networks.networks[rChainId])
+  const balancesLoading = useStore(state => state.user.walletBalancesLoading)
+  const maxLoading = useStore(state => state.poolDeposit.maxLoading)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const reserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const isBalancedAmounts = formValues.isBalancedAmounts
 
   const handleFormAmountChange = (value: string, changedIndex: number) => {
@@ -157,7 +157,7 @@ const FieldsDeposit = ({
           <Checkbox
             isDisabled={isDisabled}
             isSelected={!!formValues.isBalancedAmounts}
-            onChange={(isBalancedAmounts) =>
+            onChange={isBalancedAmounts =>
               updateFormValues({ isBalancedAmounts: isBalancedAmounts ? 'by-wallet' : false }, null, null)
             }
           >
@@ -171,7 +171,7 @@ const FieldsDeposit = ({
           <Checkbox
             isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly?.[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
-            onChange={(isWrapped) => {
+            onChange={isWrapped => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
                 const cFormValues = cloneDeep(formValues)

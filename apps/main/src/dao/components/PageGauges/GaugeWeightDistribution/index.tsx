@@ -27,7 +27,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
+  const { getGauges, gaugesLoading, gaugeMapper } = useStore(state => state.gauges)
 
   const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
   const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'
@@ -37,7 +37,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
   const formattedData: (UserGaugeVoteWeight | GaugeFormattedData)[] = useMemo(() => {
     if (isUserVotes) {
       return (
-        userGaugeWeightVotes?.gauges.map((gauge) => ({
+        userGaugeWeightVotes?.gauges.map(gauge => ({
           ...gauge,
           title: gaugeMapper[gauge.gaugeAddress]?.title ?? '',
         })) ?? []
@@ -45,7 +45,7 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     }
 
     return Object.values(gaugeMapper)
-      .filter((gauge) => gauge.gauge_relative_weight > 0.5)
+      .filter(gauge => gauge.gauge_relative_weight > 0.5)
       .sort((a, b) => b.gauge_relative_weight - a.gauge_relative_weight)
   }, [gaugeMapper, isUserVotes, userGaugeWeightVotes?.gauges])
 

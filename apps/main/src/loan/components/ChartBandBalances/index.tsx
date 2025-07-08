@@ -46,11 +46,11 @@ const ChartBandBalances = ({
   title,
   setBrushIndex,
 }: Props) => {
-  const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
+  const xAxisDisplayType = useStore(state => state.chartBands.xAxisDisplayType)
 
-  const isNGroupeds = useMemo(() => data.filter((d) => d.isNGrouped), [data])
+  const isNGroupeds = useMemo(() => data.filter(d => d.isNGrouped), [data])
 
-  const oraclePriceBandData = data.find((d) => +d.n === oraclePriceBand && (+d.p_up > 0 || +d.p_down > 0))
+  const oraclePriceBandData = data.find(d => +d.n === oraclePriceBand && (+d.p_up > 0 || +d.p_down > 0))
   const chartHeight = 290
   let barWidth = 0
 
@@ -76,10 +76,10 @@ const ChartBandBalances = ({
                   }}
                   height={50}
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(n) => {
+                  tickFormatter={n => {
                     let formattedTick = formatNumber(n, { showAllFractionDigits: true })
                     if (xAxisDisplayType === 'price') {
-                      const d = data.find((d) => d.n === n)
+                      const d = data.find(d => d.n === n)
                       if (d) {
                         formattedTick =
                           d.pUpDownMedian === '' && d.isOraclePriceBand && oraclePrice
@@ -101,7 +101,7 @@ const ChartBandBalances = ({
                   }}
                   width={90}
                   tick={{ fontSize: 12 }}
-                  tickFormatter={(usdValue) => formatNumber(usdValue, { notation: 'compact' })}
+                  tickFormatter={usdValue => formatNumber(usdValue, { notation: 'compact' })}
                 />
                 <Tooltip
                   content={({ active, payload }) => {
@@ -309,7 +309,7 @@ const ChartBandBalances = ({
                 )}
 
                 {/* grouped N */}
-                {isNGroupeds.map((d) => (
+                {isNGroupeds.map(d => (
                   <ReferenceLine
                     isFront
                     key={d.n}

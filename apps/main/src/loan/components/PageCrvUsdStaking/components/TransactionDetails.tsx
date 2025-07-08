@@ -17,10 +17,10 @@ const { IconSize } = SizesAndSpaces
 export const TransactionDetails = () => {
   const { address } = useAccount()
   const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
-    (state) => state.scrvusd,
+    state => state.scrvusd,
   )
-  const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
-  const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(address ?? ''))
+  const fetchStatus = useStore(state => state.scrvusd.estGas.fetchStatus)
+  const estimateGas = useStore(state => state.scrvusd.getEstimateGas(address ?? ''))
 
   const { estGasCostUsd, tooltip } = useEstimateGasConversion(estimateGas)
   const exchangeRateLoading = isLoading(scrvUsdExchangeRate.fetchStatus)
@@ -43,7 +43,7 @@ export const TransactionDetails = () => {
         sx={{
           width: IconSize.sm,
           height: IconSize.sm,
-          color: (t) => t.palette.text.secondary,
+          color: t => t.palette.text.secondary,
         }}
       />
       <WithSkeleton loading={isLoading(fetchStatus)}>

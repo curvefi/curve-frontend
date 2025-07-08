@@ -9,8 +9,8 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
-  const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
+  const marketRewardsResp = useStore(state => state.markets.rewardsMapper[rChainId]?.[rOwmId])
+  const marketRatesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[rOwmId])
   const {
     data: onChainData,
     isError: onChainError,
@@ -50,7 +50,7 @@ function _getTooltipValue(lendApr: number, lendApy: number, crvBase: number, crv
     crvBase,
     crv: crvBase > 0 ? formatNumber(crvBase, FORMAT_OPTIONS.PERCENT) : '',
     crvBoosted: crvBoost > 0 ? formatNumber(crvBoost, FORMAT_OPTIONS.PERCENT) : '',
-    incentives: others.map((o) => `${formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} ${o.symbol}`),
+    incentives: others.map(o => `${formatNumber(o.apy, FORMAT_OPTIONS.PERCENT)} ${o.symbol}`),
     incentivesObj: others,
   }
 }

@@ -10,8 +10,8 @@ type Props = {
 }
 
 const ChartBandBalancesSettingsContent = ({ toggle }: Props) => {
-  const xAxisDisplayType = useStore((state) => state.chartBands.xAxisDisplayType)
-  const setStateByKey = useStore((state) => state.chartBands.setStateByKey)
+  const xAxisDisplayType = useStore(state => state.chartBands.xAxisDisplayType)
+  const setStateByKey = useStore(state => state.chartBands.setStateByKey)
 
   const updateXAxisDisplay = (type: 'price' | 'band') => {
     setStateByKey('xAxisDisplayType', type)

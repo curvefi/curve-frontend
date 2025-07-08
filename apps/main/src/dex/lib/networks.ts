@@ -422,7 +422,7 @@ export const getNetworkDefs = memoize(
     fromEntries(
       recordValues(await getNetworks())
         .map(createNetworkDef)
-        .map((def) => [def.chainId, def] as const),
+        .map(def => [def.chainId, def] as const),
     ),
   { maxAge: 5 * 60 * 1000, promise: true, preFetch: true },
 )
@@ -430,9 +430,9 @@ export const getNetworkDefs = memoize(
 export const getNetworkDef = async ({
   network,
 }: NetworkUrlParams): Promise<NetworkDef<NetworkEnum, ChainId> | undefined> => {
-  const config = recordValues(await getNetworks()).find((n) => n.id === network)
+  const config = recordValues(await getNetworks()).find(n => n.id === network)
   return config && createNetworkDef(config)
 }
 
 export const getChainId = async ({ network }: NetworkUrlParams): Promise<number | undefined> =>
-  recordValues(await getNetworks()).find((n) => n.id === network)?.chainId
+  recordValues(await getNetworks()).find(n => n.id === network)?.chainId

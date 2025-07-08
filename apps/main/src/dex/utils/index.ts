@@ -48,7 +48,7 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
 }
 
 export const sleep = (ms: number = Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)) =>
-  new Promise((resolve) => setTimeout(resolve, ms))
+  new Promise(resolve => setTimeout(resolve, ms))
 
 // curve.finance url
 export function getCurvefiUrl(poolId: string, host: string) {
@@ -69,7 +69,7 @@ export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
   chainId && poolId ? `${chainId}-${poolId}` : ''
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
+export const httpFetcher = (uri: string) => fetch(uri).then(res => res.json())
 
 /**
  * Converts a Token object to a TokenOption object

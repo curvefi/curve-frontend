@@ -8,7 +8,7 @@ const TableCellUser = ({
   type,
   ...props
 }: ChipProps & { collateralId: string; type: 'health' | 'debt' }) => {
-  const userDetails = useStore((state) => state.loans.userDetailsMapper[collateralId])
+  const userDetails = useStore(state => state.loans.userDetailsMapper[collateralId])
 
   const { userHealth, userState } = userDetails ?? {}
   const { debt } = userState ?? {}

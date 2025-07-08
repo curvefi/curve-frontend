@@ -12,8 +12,8 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
   const { push } = useRouter()
 
-  const resetState = useStore((state) => state.loanCreate.resetState)
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const resetState = useStore(state => state.loanCreate.resetState)
+  const { initCampaignRewards, initiated } = useStore(state => state.campaigns)
 
   // form tabs
   const FORM_TYPES = useMemo(() => {

@@ -33,11 +33,11 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
 
   const { data: signerAddress } = useSignerAddress()
   const { data: haveSigner } = useIsSignerConnected()
-  const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
-  const { networkId } = useStore((state) => state.networks.networks[chainId])
+  const isMaxLoading = useStore(state => state.quickSwap.isMaxLoading)
+  const { networkId } = useStore(state => state.networks.networks[chainId])
 
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const tokenPrices = useStore((state) => state.usdRates.usdRatesMapper)
+  const userBalancesMapper = useStore(state => state.userBalances.userBalancesMapper)
+  const tokenPrices = useStore(state => state.usdRates.usdRatesMapper)
 
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -65,7 +65,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
       .filter(
         (token): token is Token =>
           !!token &&
-          activeRewardTokens.some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
+          activeRewardTokens.some(rewardToken => isAddressEqual(rewardToken as Address, token.address as Address)),
       )
       .map(toTokenOption(networkId))
 
@@ -73,7 +73,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     if (
       rewardTokenId &&
       filteredTokens.length > 0 &&
-      !filteredTokens.some((token) => isAddressEqual(token.address, rewardTokenId))
+      !filteredTokens.some(token => isAddressEqual(token.address, rewardTokenId))
     ) {
       setValue('rewardTokenId', filteredTokens[0].address, { shouldValidate: true })
     }
@@ -81,7 +81,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
     return filteredTokens
   }, [isPendingRewardDistributors, rewardDistributors, signerAddress, tokensMapper, getValues, networkId, setValue])
 
-  const token = filteredTokens.find((x) => x.address === rewardTokenId)
+  const token = filteredTokens.find(x => x.address === rewardTokenId)
 
   const onChangeAmount = useCallback(
     (amount: string) => {

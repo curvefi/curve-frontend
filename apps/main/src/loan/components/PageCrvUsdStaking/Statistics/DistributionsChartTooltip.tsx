@@ -26,7 +26,7 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
   return (
     <Paper
       sx={{
-        backgroundColor: (theme) => theme.design.Layer[3].Fill,
+        backgroundColor: theme => theme.design.Layer[3].Fill,
         padding: Spacing.md,
         width: { mobile: TOOLTIP_MAX_WIDTH_MOBILE, tablet: TOOLTIP_MAX_WIDTH },
       }}
@@ -39,7 +39,7 @@ const DistributionsChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
           marginTop: Spacing.sm,
           padding: Spacing.sm,
           gap: 1,
-          backgroundColor: (theme) => theme.design.Layer[2].Fill,
+          backgroundColor: theme => theme.design.Layer[2].Fill,
         }}
       >
         <DataSet label={t`Weekly Revenue`} value={`$${formatNumber(weeklyRevenue, { notation: 'compact' })}`} />

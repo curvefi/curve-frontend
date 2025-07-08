@@ -7,7 +7,7 @@ export function useMarketRates(rChainId: ChainId, rOwmId: string) {
     chainId: rChainId,
     marketId: rOwmId,
   })
-  const ratesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
+  const ratesResp = useStore(state => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
   if (onChainData) {
     return {

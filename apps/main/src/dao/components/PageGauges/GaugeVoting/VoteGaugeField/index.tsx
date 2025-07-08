@@ -20,9 +20,9 @@ type VoteGaugeFieldProps = {
 }
 
 const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = false }: VoteGaugeFieldProps) => {
-  const userAddress = useStore((state) => state.user.userAddress)
-  const castVote = useStore((state) => state.gauges.castVote)
-  const txCastVoteState = useStore((state) => state.gauges.txCastVoteState)
+  const userAddress = useStore(state => state.user.userAddress)
+  const castVote = useStore(state => state.gauges.castVote)
+  const txCastVoteState = useStore(state => state.gauges.txCastVoteState)
   const { data: userGaugeVoteNextTime, isLoading: nextVoteTimeLoading } = useUserGaugeVoteNextTimeQuery({
     chainId: Chain.Ethereum,
     gaugeAddress: userGaugeVoteData?.gaugeAddress,

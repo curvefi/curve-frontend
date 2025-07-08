@@ -8,7 +8,7 @@ type Props = {
 }
 
 const Settings = ({ showScrollButton }: Props) => {
-  const isShowScrollButton = useLayoutStore((state) => state.showScrollButton)
+  const isShowScrollButton = useLayoutStore(state => state.showScrollButton)
 
   const handleScrollTopClick = () => {
     window.scroll({

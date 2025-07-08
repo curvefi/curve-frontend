@@ -33,13 +33,13 @@ const DetailInfoLeverage = ({
   steps: Step[]
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
-  const detailInfo = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
-  const formValues = useStore((state) => state.loanBorrowMore.formValues)
+  const activeKey = useStore(state => state.loanBorrowMore.activeKey)
+  const detailInfo = useStore(state => state.loanBorrowMore.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanBorrowMore.formEstGas[activeKey])
+  const formValues = useStore(state => state.loanBorrowMore.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral, routeImage } = detailInfo ?? {}

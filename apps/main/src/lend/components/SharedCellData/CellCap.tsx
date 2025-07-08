@@ -13,8 +13,8 @@ const CellCap = ({
   rOwmId: string
   type: 'cap' | 'available' | 'cap-utilization' | 'utilization'
 }) => {
-  const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
-  const totalResp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
+  const totalResp = useStore(state => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
   const { cap, available, error } = resp ?? {}
   const { totalDebt } = totalResp ?? {}

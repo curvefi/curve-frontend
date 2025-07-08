@@ -41,7 +41,7 @@ export type Responsive = Record<Breakpoint, string>
  */
 export const handleBreakpoints = (values: Record<keyof CSSObject, number | string | Responsive>): CSSObject =>
   Object.fromEntries(
-    basicMuiTheme.breakpoints.keys.map((breakpoint) => {
+    basicMuiTheme.breakpoints.keys.map(breakpoint => {
       const selector = basicMuiTheme.breakpoints.up(breakpoint)
       return [
         selector,

@@ -25,7 +25,7 @@ const TableButtonFilters = ({
 }) => (
   <Wrapper flex flexAlignItems="center" className={className}>
     {filters &&
-      Object.keys(filters).map((k) => {
+      Object.keys(filters).map(k => {
         const { id, color, displayName } = filters[k]
         const isActive = filterKey === id
         return (

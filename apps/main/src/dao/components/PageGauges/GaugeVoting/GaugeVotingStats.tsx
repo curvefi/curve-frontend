@@ -19,8 +19,8 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const userEns = useStore((state) => state.user.userEns)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const userEns = useStore(state => state.user.userEns)
+  const userVeCrv = useStore(state => state.user.userVeCrv)
 
   const isUserPowerStale = calculateUserPowerStale(
     +userVeCrv.veCrv,

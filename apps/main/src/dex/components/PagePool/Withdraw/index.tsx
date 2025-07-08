@@ -16,9 +16,9 @@ const Withdraw = (transferProps: TransferProps) => {
   const { curve, poolData, poolDataCacheOrApi } = transferProps
   const { signerAddress } = curve ?? {}
 
-  const formType = useStore((state) => state.poolWithdraw.formType)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
+  const formType = useStore(state => state.poolWithdraw.formType)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
+  const setStateByKey = useStore(state => state.poolWithdraw.setStateByKey)
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
@@ -39,7 +39,7 @@ const Withdraw = (transferProps: TransferProps) => {
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx == 0 ? 0 : domRect.left - tabsDOMRect.left

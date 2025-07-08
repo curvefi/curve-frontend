@@ -3,7 +3,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import { formatNumber } from '@ui/utils'
 
 const CellLoanTotalDebt = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
-  const resp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
   const { totalDebt, error } = resp || {}
 

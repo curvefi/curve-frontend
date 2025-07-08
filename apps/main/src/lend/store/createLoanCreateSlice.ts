@@ -82,7 +82,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchMaxLeverage: async (market) => {
+    fetchMaxLeverage: async market => {
       const { formValues, ...sliceState } = get()[sliceKey]
       const { n } = formValues
 

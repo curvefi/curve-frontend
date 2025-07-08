@@ -35,7 +35,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
       data-testid="footer"
       display="flex"
       justifyContent="center"
-      sx={(t) => ({
+      sx={t => ({
         backgroundColor: t.design.Layer[3].Fill,
         paddingInline: SizesAndSpaces.Spacing.lg,
         paddingBlock: SizesAndSpaces.Spacing.xl,
@@ -60,7 +60,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           <Description />
         </Grid>
 
-        {getSections(appName).map((section) => (
+        {getSections(appName).map(section => (
           <Grid
             key={section.title}
             size={{

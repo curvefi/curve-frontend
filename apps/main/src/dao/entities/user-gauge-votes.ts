@@ -14,7 +14,7 @@ export type UserGaugeVoteFormatted = {
 const _fetchUserGaugeVotes = async ({ userAddress }: { userAddress: string }): Promise<UserGaugeVoteFormatted[]> => {
   const votes = await getUserGaugeVotes(userAddress)
 
-  return votes.map((vote) => ({
+  return votes.map(vote => ({
     ...vote,
     timestamp: vote.timestamp.getTime() / 1000,
   }))

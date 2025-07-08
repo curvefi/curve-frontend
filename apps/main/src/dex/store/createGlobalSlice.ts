@@ -105,7 +105,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // get poolList
     const poolIds = (await curvejsApi.network.fetchAllPoolsList(curveApi, network)).filter(
-      (poolId) => !excludePoolsMapper[poolId],
+      poolId => !excludePoolsMapper[poolId],
     )
 
     // if no pools found for network, set tvl, volume and pools state to empty object
@@ -138,7 +138,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[key] = value
       }),
     )
@@ -146,7 +146,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
@@ -171,7 +171,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
           if (showLog) {
@@ -186,7 +186,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           const storedValue = state[sliceKey][key]
           if (!isEqual(storedValue, value)) {
             if (showLog) {
@@ -200,7 +200,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

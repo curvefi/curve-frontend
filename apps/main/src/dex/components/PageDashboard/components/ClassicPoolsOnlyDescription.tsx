@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const ClassicPoolsOnlyDescription = () => {
   const { rChainId, signerAddress } = useDashboardContext()
-  const { missingPools, orgUIPath } = useStore((state) => state.networks.networks[rChainId])
+  const { missingPools, orgUIPath } = useStore(state => state.networks.networks[rChainId])
 
   return (
     !!signerAddress &&

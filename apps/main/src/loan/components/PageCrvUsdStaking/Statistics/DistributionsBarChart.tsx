@@ -36,14 +36,14 @@ const RevenueDistributionsBarChart = ({ data, height = 400 }: RevenueDistributio
               axisLine={false}
               minTickGap={20}
               allowDataOverflow={false}
-              tickFormatter={(time) => formatDate(time)}
+              tickFormatter={time => formatDate(time)}
             />
             <YAxis
               dataKey="weeklyRevenue"
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
               tickLine={{ fill: gridLineColor, strokeWidth: 0.5 }}
               axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-              tickFormatter={(value) => `$${formatNumber(value, { notation: 'compact' })}`}
+              tickFormatter={value => `$${formatNumber(value, { notation: 'compact' })}`}
             />
             <Tooltip content={DistributionsChartTooltip} cursor={{ opacity: 0.3 }} />
             <Bar dataKey="weeklyRevenue" label={false} fill={barColor} isAnimationActive={false}>

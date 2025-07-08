@@ -26,7 +26,7 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
       onItemClick(key.toString())
     },
     items: menuItems,
-    children: (item) => <StyledItem key={item.id}>{item.name}</StyledItem>,
+    children: item => <StyledItem key={item.id}>{item.name}</StyledItem>,
   })
 
   const { menuProps } = useSelect<SandwichMenuItem>(

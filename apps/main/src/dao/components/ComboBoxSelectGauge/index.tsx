@@ -30,11 +30,11 @@ const ComboBoxGauges = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const userAddress = useStore((state) => state.user.userAddress)
-  const selectedGauge = useStore((state) => state.gauges.selectedGauge)
-  const setSelectedGauge = useStore((state) => state.gauges.setSelectedGauge)
-  const setStateByKey = useStore((state) => state.gauges.setStateByKey)
-  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
+  const userAddress = useStore(state => state.user.userAddress)
+  const selectedGauge = useStore(state => state.gauges.selectedGauge)
+  const setSelectedGauge = useStore(state => state.gauges.setSelectedGauge)
+  const setStateByKey = useStore(state => state.gauges.setStateByKey)
+  const gaugeMapper = useStore(state => state.gauges.gaugeMapper)
   const isMobile = useIsMobile()
 
   const { data: userGaugeWeightVotes } = useUserGaugeWeightVotesQuery({
@@ -43,9 +43,9 @@ const ComboBoxGauges = ({
   })
   const gauges = Object.values(gaugeMapper)
     .filter(
-      (gauge) =>
+      gauge =>
         !userGaugeWeightVotes?.gauges.some(
-          (userGauge) =>
+          userGauge =>
             userGauge.gaugeAddress.toLowerCase() ===
             (gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()),
         ),
@@ -128,9 +128,9 @@ function _filter(filterValue: string, endsWith: EndsWith, gauges: GaugeFormatted
   const result = fuse.search(filterValue)
 
   if (result.length > 0) {
-    return result.map((r) => r.item)
+    return result.map(r => r.item)
   } else {
-    return gauges.filter((item) => endsWith(item.address, filterValue))
+    return gauges.filter(item => endsWith(item.address, filterValue))
   }
 }
 

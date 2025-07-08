@@ -44,7 +44,7 @@ const DetailInfoTradeRoute = ({
               </RouteTravelDecor>
             )}
             <ul>
-              {routes.map((route) => (
+              {routes.map(route => (
                 <Item key={`${route.poolId}-${route.outputCoinAddress}`}>
                   <Box flex flexAlignItems="baseline">
                     <DetailInfoTradeRouteRoute

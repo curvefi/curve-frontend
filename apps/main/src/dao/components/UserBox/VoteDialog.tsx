@@ -33,10 +33,10 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
   })
   const proposalKey = createProposalKey(proposalId, proposalType)
   const proposal = proposalsMapper?.[proposalKey] ?? null
-  const castVote = useStore((state) => state.proposals.castVote)
-  const voteTxMapper = useStore((state) => state.proposals.voteTxMapper)
-  const executeProposal = useStore((state) => state.proposals.executeProposal)
-  const executeTxMapper = useStore((state) => state.proposals.executeTxMapper)
+  const castVote = useStore(state => state.proposals.castVote)
+  const voteTxMapper = useStore(state => state.proposals.voteTxMapper)
+  const executeProposal = useStore(state => state.proposals.executeProposal)
+  const executeTxMapper = useStore(state => state.proposals.executeTxMapper)
 
   const voteTx = voteTxMapper[proposalKey] ?? null
   const executeTx = executeTxMapper[proposalKey] ?? null

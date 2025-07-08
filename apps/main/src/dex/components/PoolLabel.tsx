@@ -44,7 +44,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
   const poolAlert = usePoolAlert(poolData?.pool.address, poolData?.hasVyperVulnerability)
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
-  const searchedTerms = useStore((state) => state.poolList.searchedTerms)
+  const searchedTerms = useStore(state => state.poolList.searchedTerms)
 
   const { quickViewValue, onClick } = poolListProps ?? {}
 
@@ -65,7 +65,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
 
     const highlightedTokens = tokens.map(({ symbol, address }) => {
       const isHighLight =
-        searchedTerms.findIndex((searched) => {
+        searchedTerms.findIndex(searched => {
           const parsedToken = symbol.toLowerCase()
           const parsedTokenAddress = address.toLowerCase()
           const parsedSearch = searched.toLowerCase()

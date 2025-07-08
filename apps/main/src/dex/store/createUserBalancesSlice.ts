@@ -49,7 +49,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
 
       // remove bad tokens
       const { excludeTokensBalancesMapper } = networks[chainId]
-      const filteredBadTokens = tokensAddresses.filter((address) => !excludeTokensBalancesMapper[address])
+      const filteredBadTokens = tokensAddresses.filter(address => !excludeTokensBalancesMapper[address])
 
       sliceState.setStateByKey('loading', true)
       const userBalancesMapper = await curvejsApi.wallet.fetchUserBalances(curve, filteredBadTokens)
@@ -60,7 +60,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
 
       return get()[sliceKey].userBalancesMapper
     },
-    fetchAllStoredBalances: async (curve) => {
+    fetchAllStoredBalances: async curve => {
       const tokenAddresses = Object.keys(get().userBalances.userBalancesMapper)
       await get().userBalances.fetchUserBalancesByTokens(curve, tokenAddresses)
     },
@@ -85,7 +85,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

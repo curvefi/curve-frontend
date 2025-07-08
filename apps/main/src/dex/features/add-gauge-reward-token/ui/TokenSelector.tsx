@@ -22,8 +22,8 @@ export const TokenSelector = ({
   disabled: boolean
 }) => {
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
-  const aliasesCrv = useStore((state) => state.networks.aliases[chainId]?.crv)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const aliasesCrv = useStore(state => state.networks.aliases[chainId]?.crv)
+  const network = useStore(state => state.networks.networks[chainId])
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
 
@@ -40,14 +40,14 @@ export const TokenSelector = ({
           token !== undefined &&
           token.decimals === 18 &&
           !aliasesCrv &&
-          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
+          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some(rewardToken =>
             isAddressEqual(rewardToken as Address, token.address as Address),
           ),
       )
       .map(toTokenOption(network?.networkId))
   }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
 
-  const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
+  const selectedToken = filteredTokens.find(x => x.address === rewardTokenId)
 
   useEffect(() => {
     if (!isGaugeRewardsDistributorsSuccess) return
@@ -55,7 +55,7 @@ export const TokenSelector = ({
     const rewardTokenId = getValues('rewardTokenId')
 
     const isRewardTokenInGaugeRewardsDistributors = Object.keys(gaugeRewardsDistributors || {}).some(
-      (gaugeRewardToken) => isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address),
+      gaugeRewardToken => isAddressEqual(gaugeRewardToken as Address, rewardTokenId as Address),
     )
     if (filteredTokens.length > 0 && (isRewardTokenInGaugeRewardsDistributors || rewardTokenId === zeroAddress)) {
       setValue('rewardTokenId', filteredTokens[0].address as Address, { shouldValidate: true })
@@ -69,7 +69,7 @@ export const TokenSelector = ({
         selectedToken={selectedToken}
         tokens={filteredTokens}
         disabled={disabled || filteredTokens.length === 0}
-        onToken={(token) => {
+        onToken={token => {
           setValue('rewardTokenId', token.address, { shouldValidate: true })
         }}
         sx={{

@@ -61,7 +61,7 @@ const TokenSection = ({
             position: 'sticky',
             top: 0,
             zIndex: 1,
-            backgroundColor: (theme) => theme.palette.background.paper,
+            backgroundColor: theme => theme.palette.background.paper,
           }}
         >
           <CardHeader title={title} size="small" />
@@ -70,9 +70,9 @@ const TokenSection = ({
       )}
 
       <MenuList variant="menu" sx={{ paddingBlock: 0 }}>
-        {displayTokens.map((token) => {
+        {displayTokens.map(token => {
           const blacklistEntry = blacklist.find(
-            (x) => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
+            x => x.address.toLocaleLowerCase() === token.address.toLocaleLowerCase(),
           )
 
           return (
@@ -168,7 +168,7 @@ export const TokenList = ({
       other: [],
     })
 
-    return uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
+    return uniqBy([...tokensResult, ...addressesResult], x => x.item.address).map(x => x.item)
   }, [tokens, search])
 
   /**
@@ -183,7 +183,7 @@ export const TokenList = ({
   const myTokens = useMemo(() => {
     if (disableMyTokens) return []
 
-    const balanceTokens = tokensSearched.filter((token) => +(balances[token.address] ?? 0) > 0)
+    const balanceTokens = tokensSearched.filter(token => +(balances[token.address] ?? 0) > 0)
 
     if (!disableSorting) {
       // Sort tokens with balance by balance (USD then raw)
@@ -238,13 +238,13 @@ export const TokenList = ({
   const allTokens = useMemo(() => {
     const allTokensBase = disableMyTokens
       ? tokensSearched
-      : tokensSearched.filter((token) => +(balances[token.address] ?? 0) === 0)
+      : tokensSearched.filter(token => +(balances[token.address] ?? 0) === 0)
 
     // Add tokens that have balance but aren't in the preview (dust tokens)
     // Only add dust tokens if we're still showing the preview (showPreviewMy is true)
     // When showPreviewMy is false, those dust tokens should be in the myTokens section
     const dustTokens = showPreviewMy
-      ? myTokens.filter((token) => !previewMy.some((previewToken) => previewToken.address === token.address))
+      ? myTokens.filter(token => !previewMy.some(previewToken => previewToken.address === token.address))
       : []
 
     allTokensBase.push(...dustTokens)
@@ -275,7 +275,7 @@ export const TokenList = ({
       {showSearch && (
         <SearchField
           name="tokenName"
-          onSearch={(val) => {
+          onSearch={val => {
             setSearch(val)
             onSearch(val)
           }}

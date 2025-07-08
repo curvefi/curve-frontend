@@ -21,8 +21,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { IconSize } = SizesAndSpaces
 
 const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
-  const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
-  const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
+  const withdrawLockedCrv = useStore(state => state.lockedCrv.withdrawLockedCrv)
+  const withdrawLockedCrvStatus = useStore(state => state.lockedCrv.withdrawLockedCrvStatus)
   const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
 
   const { address } = useAccount()

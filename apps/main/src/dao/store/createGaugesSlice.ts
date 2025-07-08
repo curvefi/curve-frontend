@@ -128,7 +128,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
 
         const newGaugeMapper: GaugeMapper = {}
 
-        formattedGauges.gauges.forEach((gauge) => {
+        formattedGauges.gauges.forEach(gauge => {
           // effective_address is the sidechain gauge address
           newGaugeMapper[gauge.effective_address?.toLowerCase() ?? gauge.address.toLowerCase()] = {
             ...gauge,
@@ -152,7 +152,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
     getGaugesData: async () => {
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].gaugeCurveApiData = {
             fetchingState: 'LOADING',
             data: {},
@@ -172,7 +172,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         }, {} as GaugeCurveApiDataMapper)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeCurveApiData = {
               fetchingState: 'SUCCESS',
               data: gaugeDataMapper,
@@ -182,7 +182,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       } catch (error) {
         console.error('Error fetching gauges data:', error)
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeCurveApiData.fetchingState = 'ERROR'
           }),
         )
@@ -192,7 +192,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       const address = gaugeAddress.toLowerCase()
 
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
             fetchingState: 'LOADING',
             votes: [],
@@ -204,13 +204,13 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const response = await fetch(`https://prices.curve.finance/v1/dao/gauges/${address}/votes`)
         const data: GaugeVotesResponse = await response.json()
 
-        const formattedData = data.votes.map((vote) => ({
+        const formattedData = data.votes.map(vote => ({
           ...vote,
           timestamp: new Date(vote.timestamp).getTime(),
         }))
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeVotesMapper[gaugeAddress] = {
               fetchingState: 'SUCCESS',
               votes: formattedData,
@@ -220,7 +220,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       } catch (error) {
         console.error('Error fetching gauge votes:', error)
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeVotesMapper[gaugeAddress].fetchingState = 'ERROR'
           }),
         )
@@ -228,7 +228,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     },
     getHistoricGaugeWeights: async (gaugeAddress: string) => {
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
             loadingState: 'LOADING',
             data: [],
@@ -250,7 +250,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           .sort((a: GaugeWeightHistoryData, b: GaugeWeightHistoryData) => a.epoch - b.epoch)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress] = {
               loadingState: 'SUCCESS',
               data: formattedWeightsData,
@@ -259,7 +259,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         )
       } catch (error) {
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].gaugeWeightHistoryMapper[gaugeAddress].loadingState = 'ERROR'
           }),
         )
@@ -307,7 +307,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].gaugeVotesMapper[address].votes = [...votes].reverse()
             state[sliceKey].gaugeVotesSortBy.order = order
           }),
@@ -316,7 +316,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const sortedEntries = [...votes].sort((a, b) => b[sortBy] - a[sortBy])
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].gaugeVotesSortBy.key = sortBy
             state[sliceKey].gaugeVotesSortBy.order = 'desc'
             state[sliceKey].gaugeVotesMapper[address].votes = sortedEntries
@@ -324,7 +324,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         )
       }
     },
-    setSearchValue: (filterValue) => {
+    setSearchValue: filterValue => {
       get()[sliceKey].setStateByKey('searchValue', filterValue)
     },
     setGaugeListSortBy: (sortByKey: SortByFilterGaugesKeys) => {
@@ -351,7 +351,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       }
       get()[sliceKey].setStateByKey('selectGaugeListResult', result)
     },
-    setSelectedGauge: (gauge) => {
+    setSelectedGauge: gauge => {
       if (!gauge) {
         get()[sliceKey].setStateByKey('selectedGauge', null)
         return
@@ -370,7 +370,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
       const { dismiss: dismissConfirm } = notify(t`Please confirm cast vote.`, 'pending')
 
       set(
-        produce(get(), (state) => {
+        produce(get(), state => {
           state[sliceKey].txCastVoteState = {
             state: 'CONFIRMING',
             hash: '',
@@ -383,7 +383,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         const res = await curve.dao.voteForGauge(address, voteWeight * 100)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'LOADING',
               hash: '',
@@ -399,7 +399,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         await helpers.waitForTransaction(res, provider!)
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'SUCCESS',
               hash: res,
@@ -422,14 +422,14 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         })
 
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].selectedGauge = null
           }),
         )
 
         setTimeout(() => {
           set(
-            produce(get(), (state) => {
+            produce(get(), state => {
               state[sliceKey].txCastVoteState = null
             }),
           )
@@ -438,7 +438,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
         dismissConfirm()
         console.error('Error casting vote:', error)
         set(
-          produce(get(), (state) => {
+          produce(get(), state => {
             state[sliceKey].txCastVoteState = {
               state: 'ERROR',
               hash: '',
@@ -453,7 +453,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -471,7 +471,7 @@ const searchFn = (filterValue: string, gauges: GaugeFormattedData[]) => {
 
   const result = fuse.search(filterValue)
 
-  return result.map((r) => r.item)
+  return result.map(r => r.item)
 }
 
 const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], { endsWith }: FilterOptions) => {
@@ -484,9 +484,9 @@ const selectGaugeFilterFn = (filterValue: string, gauges: GaugeFormattedData[], 
   const result = fuse.search(filterValue)
 
   if (result.length > 0) {
-    return result.map((r) => r.item)
+    return result.map(r => r.item)
   } else {
-    return gauges.filter((item) => endsWith(item.address, filterValue))
+    return gauges.filter(item => endsWith(item.address, filterValue))
   }
 }
 

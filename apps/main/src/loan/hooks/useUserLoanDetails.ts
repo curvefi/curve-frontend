@@ -7,7 +7,7 @@ import type { HealthColorKey, UserLoanDetails } from '@/loan/types/loan.types'
  * @returns User loan details object or undefined if not found
  */
 export const useUserLoanDetails = (llammaId: string): UserLoanDetails | undefined =>
-  useStore((state) => state.loans.userDetailsMapper[llammaId])
+  useStore(state => state.loans.userDetailsMapper[llammaId])
 
 /**
  * Gets the health status color key for a user's loan

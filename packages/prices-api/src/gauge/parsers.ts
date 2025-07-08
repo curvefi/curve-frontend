@@ -18,7 +18,7 @@ export const parseGauge = (x: Responses.GetGaugeResponse): Models.Gauge => ({
         tradingVolume24h: x.pool.trading_volume_24h,
       }
     : undefined,
-  tokens: (x.tokens ?? []).map((token) => ({
+  tokens: (x.tokens ?? []).map(token => ({
     symbol: token.symbol,
     address: token.address,
     precision: token.precision,

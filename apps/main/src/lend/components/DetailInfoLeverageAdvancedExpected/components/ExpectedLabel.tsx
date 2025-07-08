@@ -29,7 +29,7 @@ const ExpectedLabel = ({
           {format(total, { defaultValue: '-' })} {swapToSymbol}
         </strong>
       )}
-      <DetailsButton $isOpen={showDetails} variant="outlined" onClick={() => toggleShowDetails((prev) => !prev)}>
+      <DetailsButton $isOpen={showDetails} variant="outlined" onClick={() => toggleShowDetails(prev => !prev)}>
         Details {showDetails ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
       </DetailsButton>
     </span>

@@ -23,7 +23,7 @@ const CellUserMain = ({
   type: 'borrow' | 'supply'
 }) => {
   const { borrowed_token } = market ?? {}
-  const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const userBalancesResp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { vaultShares = '0', gauge = '0', error: userBalancesError } = userBalancesResp ?? {}
   const { error, ...details } = useUserLoanDetails(userActiveKey)

@@ -26,7 +26,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     setError,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
-  const { scanTxPath } = useStore((state) => state.networks.networks[chainId])
+  const { scanTxPath } = useStore(state => state.networks.networks[chainId])
 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')

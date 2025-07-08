@@ -25,7 +25,7 @@ export const LlamaLend = ({
         <RouterLink
           color="textSecondary"
           href={getInternalUrl(currentApp, network, PAGE_DISCLAIMER + '?tab=dex')}
-          onClick={(e) => pushSearchParams(e, { tab: 'dex' })}
+          onClick={e => pushSearchParams(e, { tab: 'dex' })}
         >
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </RouterLink>

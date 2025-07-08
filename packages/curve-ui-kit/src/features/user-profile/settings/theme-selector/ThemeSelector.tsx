@@ -6,8 +6,8 @@ import useUserProfileStore from '../../store'
 import { SettingLabel, Setting } from '../Setting'
 
 export const ThemeSelector = () => {
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
+  const theme = useUserProfileStore(state => state.theme)
+  const setTheme = useUserProfileStore(state => state.setTheme)
 
   return (
     <Setting>

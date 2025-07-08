@@ -37,14 +37,14 @@ const DetailInfoLeverage = ({
   setHealthMode,
   handleLiqRangesEdit,
 }: FormDetailInfo & FormDetailInfoSharedProps) => {
-  const detailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey] ?? DEFAULT_DETAIL_INFO_LEVERAGE)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
-  const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const detailInfo = useStore(state => state.loanCreate.detailInfoLeverage[activeKey] ?? DEFAULT_DETAIL_INFO_LEVERAGE)
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const isEditLiqRange = useStore(state => state.loanCreate.isEditLiqRange)
+  const liqRanges = useStore(state => state.loanCreate.liqRanges[activeKeyLiqRange])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const LeverageDetail = () => (
     <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>

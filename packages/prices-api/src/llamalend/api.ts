@@ -6,7 +6,7 @@ import type * as Responses from './responses'
 export async function getChains(options?: Options): Promise<Chain[]> {
   const host = getHost(options)
 
-  return fetch<Responses.GetChainsResponse>(`${host}/v1/lending/chains`).then((resp) => resp.data)
+  return fetch<Responses.GetChainsResponse>(`${host}/v1/lending/chains`).then(resp => resp.data)
 }
 
 export async function getAllMarkets(

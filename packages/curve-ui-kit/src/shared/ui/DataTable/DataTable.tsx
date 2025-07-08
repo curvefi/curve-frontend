@@ -32,17 +32,17 @@ export const DataTable = <T extends TableItem>({
   const { shouldStickFirstColumn } = rowProps
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   return (
     <Table
       sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
         borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
       }}
       data-testid="data-table"
     >
       <TableHead
-        sx={(t) => ({
+        sx={t => ({
           zIndex: t.zIndex.tableHeader,
           position: 'sticky',
           top,
@@ -53,7 +53,7 @@ export const DataTable = <T extends TableItem>({
       >
         {children && <FilterRow table={table}>{children}</FilterRow>}
 
-        {headerGroups.map((headerGroup) => (
+        {headerGroups.map(headerGroup => (
           <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
             {headerGroup.headers.map((header, index) => (
               <HeaderCell

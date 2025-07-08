@@ -339,7 +339,7 @@ const ResponsiveContainer = styled.div<{ chartExpanded: boolean; chartHeight: Ch
   flex-direction: column;
   position: relative;
   width: 100%;
-  min-height: ${(props) =>
+  min-height: ${props =>
     props.chartExpanded ? props.chartHeight.expanded.toString() + 'px' : props.chartHeight.standard.toString() + 'px'};
   padding-bottom: var(--spacing-3);
 `

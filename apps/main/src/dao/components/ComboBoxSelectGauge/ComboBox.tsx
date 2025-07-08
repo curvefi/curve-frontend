@@ -41,7 +41,7 @@ const ComboBox = ({
 
   const [topContentHeight, setTopContentHeight] = useState<number | undefined>()
 
-  const filterValue = useStore((state) => state.gauges.selectGaugeFilterValue)
+  const filterValue = useStore(state => state.gauges.selectGaugeFilterValue)
 
   useEffect(() => {
     if (topContentRef?.current) {
@@ -70,7 +70,7 @@ const ComboBox = ({
                       onChange={({ target: { value } }: ChangeEvent<HTMLInputElement>) =>
                         handleInpChange(value, gauges)
                       }
-                      onKeyDown={(evt) => {
+                      onKeyDown={evt => {
                         // scroll to first item on list
                         if (evt.key === 'ArrowDown' && result && result.length > 0 && listRef.current) {
                           const visibleList = listRef.current.querySelector('.visible')

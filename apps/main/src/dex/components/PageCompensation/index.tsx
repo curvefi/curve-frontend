@@ -25,12 +25,12 @@ const FormCompensation = ({
   const [balances, setBalances] = useState<Balances>({})
   const [vestedTotals, setVestedTotals] = useState<VestedTotals>({})
 
-  const groupedContracts = useMemo(() => groupBy(contracts, (c) => c.poolId), [contracts])
+  const groupedContracts = useMemo(() => groupBy(contracts, c => c.poolId), [contracts])
 
   const getBalances = useCallback(async (signerAddress: string, contracts: EtherContract[]) => {
     try {
       setError('')
-      const balances = await Promise.all(contracts.map((c) => c.contract.balanceOf(signerAddress)))
+      const balances = await Promise.all(contracts.map(c => c.contract.balanceOf(signerAddress)))
       const mappedBalances = contracts.map(({ poolId }, idx) => ({ poolId, balance: Number(balances[idx]) / 1e18 }))
       const groupedBalances = groupBy(mappedBalances, ({ poolId }) => poolId)
       setBalances(groupedBalances)
@@ -74,9 +74,9 @@ const FormCompensation = ({
     async (signerAddress: string, contracts: EtherContract[]) => {
       try {
         const signer = await provider.getSigner()
-        const vestAddresses = await Promise.all(contracts.map((c) => c.contract.vest()))
+        const vestAddresses = await Promise.all(contracts.map(c => c.contract.vest()))
         const abi = await import('@/dex/components/PageCompensation/abis/vest_abi.json').then(
-          (module) => module.default,
+          module => module.default,
         )
         // @ts-ignore
         const iface = new Interface(abi)

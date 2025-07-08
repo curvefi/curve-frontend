@@ -39,7 +39,7 @@ const Wrapper = styled.div`
 
 const StyledSandwichButton = styled(IconButton)<{ isOpen: boolean }>`
   padding: var(--spacing-1);
-  background-color: ${(props) => (props.isOpen ? 'var(--tab--content--background-color)' : 'transparent')};
+  background-color: ${props => (props.isOpen ? 'var(--tab--content--background-color)' : 'transparent')};
   &:hover {
     background-color: var(--tab--content--background-color);
   }

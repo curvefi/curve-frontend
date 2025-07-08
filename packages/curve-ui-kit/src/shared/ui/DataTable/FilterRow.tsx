@@ -16,7 +16,7 @@ export const FilterRow = <T extends TableItem>({
   <TableRow>
     <TableCell
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}
-      sx={(t) => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0, borderBottomWidth: 0 })}
+      sx={t => ({ backgroundColor: t.design.Layer[1].Fill, padding: 0, borderBottomWidth: 0 })}
       data-testid="table-filters"
     >
       {children}

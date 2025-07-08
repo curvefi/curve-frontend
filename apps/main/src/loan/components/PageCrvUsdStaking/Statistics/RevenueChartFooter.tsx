@@ -65,7 +65,7 @@ const RevenueChartFooter = ({ timeOptions, activeTimeOption, setActiveTimeOption
         onChange={setActiveTimeOption}
         sx={{ marginLeft: Spacing.md }}
       >
-        {timeOptions.map((option) => (
+        {timeOptions.map(option => (
           <ToggleButton value={option} key={option} size="extraSmall">
             {option}
           </ToggleButton>

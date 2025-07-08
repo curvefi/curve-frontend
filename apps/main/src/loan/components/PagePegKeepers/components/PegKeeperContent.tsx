@@ -22,7 +22,7 @@ type Props = {
 }
 
 const PegKeeperContent = ({ rChainId, pegKeeperAddress, pool }: Props) => {
-  const detailsMapper = useStore((state) => state.pegKeepers.detailsMapper)
+  const detailsMapper = useStore(state => state.pegKeepers.detailsMapper)
 
   const { debt, debtCeiling } = detailsMapper[pegKeeperAddress] ?? {}
 

@@ -36,7 +36,7 @@ export const useAddRewardToken = ({
         queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) }),
       ])
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error adding reward:', error)
       notify(t`Failed to add reward token`, 'error')
     },
@@ -74,7 +74,7 @@ export const useDepositRewardApprove = ({
         queryKey: keys.depositRewardIsApproved({ chainId, poolId, rewardTokenId, amount }),
       })
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error approving deposit reward:', error)
       notify(t`Failed to approve deposit reward`, 'error', 15000)
     },
@@ -110,7 +110,7 @@ export const useDepositReward = ({
       }
       return queryClient.invalidateQueries({ queryKey: keys.isDepositRewardAvailable({ chainId, poolId }) })
     },
-    onError: (error) => {
+    onError: error => {
       console.error('Error depositing reward:', error)
       notify(t`Failed to deposit reward`, 'error', 15000)
     },

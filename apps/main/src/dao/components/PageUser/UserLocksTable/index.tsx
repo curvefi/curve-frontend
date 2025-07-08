@@ -33,8 +33,8 @@ const lockTypeLabel = (lockType: LockType) => {
 
 const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
   const { data: userLocks, isLoading, isError, isSuccess } = useUserLocksQuery({ userAddress })
-  const userLocksSortBy = useStore((state) => state.user.userLocksSortBy)
-  const setUserLocksSortBy = useStore((state) => state.user.setUserLocksSortBy)
+  const userLocksSortBy = useStore(state => state.user.userLocksSortBy)
+  const setUserLocksSortBy = useStore(state => state.user.setUserLocksSortBy)
 
   const gridTemplateColumns = '2fr 1fr 1fr 1fr'
   const minWidth = 36
@@ -49,7 +49,7 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
       columns={LOCKS_LABELS}
       sortBy={userLocksSortBy}
       errorMessage={t`An error occurred while fetching user locking activity.`}
-      setSortBy={(key) => setUserLocksSortBy(key as UserLocksSortBy)}
+      setSortBy={key => setUserLocksSortBy(key as UserLocksSortBy)}
       getData={() => invalidateUserLocks({ userAddress })}
       noDataMessage={t`No locking activity found for this user.`}
       gridTemplateColumns={gridTemplateColumns}

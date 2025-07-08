@@ -3,7 +3,7 @@ import Box from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 
 const DetailsUserSupplyStakedUnstaked = ({ userActiveKey }: { userActiveKey: string }) => {
-  const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const userBalancesResp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { gauge, vaultShares } = userBalancesResp ?? {}
 

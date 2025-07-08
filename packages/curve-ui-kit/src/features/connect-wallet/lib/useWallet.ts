@@ -35,7 +35,7 @@ export const useWallet = () => {
       }
 
       // take the first (injected) as default. This is temporary until we get rid of onboard
-      const walletType = supportedWallets.find((w) => w.connector === connector) ?? supportedWallets[0]!
+      const walletType = supportedWallets.find(w => w.connector === connector) ?? supportedWallets[0]!
       try {
         await connectAsync({ connector: connectors[walletType.connector] })
         setShowModal(false)

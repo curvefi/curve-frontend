@@ -31,7 +31,7 @@ export const parseProposalDetails = (
   ...parseProposal(x),
   txExecution: x.execution_tx ? x.execution_tx : undefined,
   script: x.script,
-  votes: x.votes.map((vote) => ({
+  votes: x.votes.map(vote => ({
     voter: vote.voter,
     supports: vote.supports,
     votingPower: Number(BigInt(vote.voting_power)) / 10 ** 18,
@@ -41,7 +41,7 @@ export const parseProposalDetails = (
 
 export const parseUserProposalVote = (x: Responses.GetUserProposalVotes['data'][number]): Models.UserProposalVote => ({
   proposal: parseProposal(x.proposal),
-  votes: x.votes.map((vote) => ({
+  votes: x.votes.map(vote => ({
     voter: vote.voter,
     supports: vote.supports,
     weight: BigInt(Math.round(parseFloat(vote.voting_power))),

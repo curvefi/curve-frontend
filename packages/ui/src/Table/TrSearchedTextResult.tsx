@@ -106,7 +106,7 @@ function removeDuplicateValues(result: Result) {
   const values = new Set()
   const parsedResult: Result = {}
 
-  Object.keys(result).forEach((k) => {
+  Object.keys(result).forEach(k => {
     const value = result[k].value
     if (!values.has(value)) {
       values.add(value)

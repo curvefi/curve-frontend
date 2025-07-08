@@ -31,7 +31,7 @@ function ListBox<T extends object>(
   return (
     <Ul {...listBoxProps} data-testid={testId} ref={listBoxRef} clientTop={clientTop}>
       {/* @ts-ignore */}
-      {[...state.collection].map((item) => (
+      {[...state.collection].map(item => (
         <Option key={item.key} item={item} activeKey={props.activeKey} state={state} />
       ))}
     </Ul>

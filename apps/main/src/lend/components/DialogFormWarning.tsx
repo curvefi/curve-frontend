@@ -53,7 +53,7 @@ function DialogFormWarning({
 
           {Array.isArray(warning) ? (
             <Warnings>
-              {warning.map((w) => (
+              {warning.map(w => (
                 <WarningItem key={w}>{w}</WarningItem>
               ))}
             </Warnings>

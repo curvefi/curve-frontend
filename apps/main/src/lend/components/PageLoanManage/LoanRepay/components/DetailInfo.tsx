@@ -29,13 +29,13 @@ const DetailInfo = ({
   setHealthMode,
 }: DetailProps & Pick<PageContentProps, 'market'>) => {
   const { borrowed_token, collateral_token } = market ?? {}
-  const detailInfoNonLeverage = useStore((state) => state.loanRepay.detailInfo[activeKey])
-  const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
-  const formValues = useStore((state) => state.loanRepay.formValues)
+  const detailInfoNonLeverage = useStore(state => state.loanRepay.detailInfo[activeKey])
+  const detailInfoLeverage = useStore(state => state.loanRepay.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanRepay.formEstGas[activeKey])
+  const formValues = useStore(state => state.loanRepay.formValues)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const detailInfo = detailInfoNonLeverage ?? detailInfoLeverage
 

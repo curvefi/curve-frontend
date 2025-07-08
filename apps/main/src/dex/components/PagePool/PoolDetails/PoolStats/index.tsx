@@ -24,9 +24,9 @@ type PoolStatsProps = {
 const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrApi, tokensMapper }: PoolStatsProps) => {
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { rChainId, rPoolId } = routerParams
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
+  const tvl = useStore(state => state.pools.tvlMapper[rChainId]?.[rPoolId])
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
 
   const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
 

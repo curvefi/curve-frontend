@@ -38,7 +38,7 @@ export const RewardsIcons = ({
         {extraIncentives.map(({ title, image }) => (
           <RewardChip key={title} icon={<RewardsImg src={image} alt={title} />} />
         ))}
-        {uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
+        {uniq(filteredRewards.map(r => r.platformImageId)).map(img => (
           <RewardChip key={img} icon={<RewardIcon size="sm" key={img} imageId={img} />} />
         ))}
       </Stack>

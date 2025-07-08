@@ -42,7 +42,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
         >
           <Icon size={16} name="ChevronLeft" />
         </PaginationButton>
-        {getPageNumbers().map((number) => (
+        {getPageNumbers().map(number => (
           <PageNumber
             variant="text"
             size="small"
@@ -130,14 +130,14 @@ const SmallScreenRow = styled.div`
 const PageNumber = styled(Button)<{ active: boolean }>`
   padding: var(--spacing-1) var(--spacing-2);
   margin: 0 var(--spacing-1);
-  background-color: ${(props) => (props.active ? 'var(--color-primary)' : 'var(--color-background-secondary)')};
-  color: ${(props) => (props.active ? 'var(--page--text-color)' : 'var(--page--text-color)')};
-  border: ${(props) => (props.active ? '1px solid var(--page--text-color)' : 'none')};
-  font-weight: ${(props) => (props.active ? 'var(--bold)' : 'normal')};
+  background-color: ${props => (props.active ? 'var(--color-primary)' : 'var(--color-background-secondary)')};
+  color: ${props => (props.active ? 'var(--page--text-color)' : 'var(--page--text-color)')};
+  border: ${props => (props.active ? '1px solid var(--page--text-color)' : 'none')};
+  font-weight: ${props => (props.active ? 'var(--bold)' : 'normal')};
   border-radius: var(--border-radius);
   cursor: pointer;
   &:hover {
-    border: ${(props) => (props.active ? '1px solid var(--button_text--hover--color)' : 'none')};
+    border: ${props => (props.active ? '1px solid var(--button_text--hover--color)' : 'none')};
   }
 `
 

@@ -21,10 +21,10 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
   return (
     <Select
       value={value}
-      onChange={(e) => {
+      onChange={e => {
         const selectedToken = e.target.value
         setValue(selectedToken)
-        const selectedOption = TOKEN_OPTIONS.find((option) => option.name === selectedToken)
+        const selectedOption = TOKEN_OPTIONS.find(option => option.name === selectedToken)
 
         if (selectedOption) {
           onTokenChange({
@@ -38,10 +38,10 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
       renderValue={() => <Typography>{value || 'Select token'}</Typography>}
       sx={{
         width: '10rem',
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
       }}
     >
-      {TOKEN_OPTIONS.map((option) => (
+      {TOKEN_OPTIONS.map(option => (
         <MenuItem key={option.name} value={option.name}>
           {option.name}
         </MenuItem>
@@ -76,7 +76,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
       maxBalance={maxBalance}
       tokenSelector={
         <TokenSelector
-          onTokenChange={(newToken) => {
+          onTokenChange={newToken => {
             setTokenInfo(newToken)
             inputRef.current?.resetBalance()
           }}
@@ -131,7 +131,7 @@ const meta: Meta<typeof LargeTokenInput> = {
 type Story = StoryObj<typeof LargeTokenInput>
 
 export const Default: Story = {
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -146,7 +146,7 @@ export const NoMaxBalance: Story = {
   args: {
     maxBalance: undefined,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -164,7 +164,7 @@ export const WithoutSlider: Story = {
       showSlider: false,
     },
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -181,7 +181,7 @@ export const WithoutBalance: Story = {
       showSlider: true,
     },
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -195,7 +195,7 @@ export const WithMessage: Story = {
   args: {
     message: 'This is a helpful message',
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -210,7 +210,7 @@ export const WithError: Story = {
     message: 'This is an error message',
     isError: true,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -234,7 +234,7 @@ export const WithReactNodeMessage: Story = {
       </Stack>
     ),
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -248,7 +248,7 @@ export const HighPrecisionDecimals: Story = {
   args: {
     balanceDecimals: 8,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
@@ -262,7 +262,7 @@ export const LowPrecisionDecimals: Story = {
   args: {
     balanceDecimals: 2,
   },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  render: args => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {

@@ -3,14 +3,14 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 export function filterRewardsApy<T extends { apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {
-    return rewards.filter((r) => Number(r.apy) !== 0)
+    return rewards.filter(r => Number(r.apy) !== 0)
   }
   return []
 }
 
 export function separateCrvReward<T extends { symbol: string; apy: number | string }>(rewards: T[]) {
   if (Array.isArray(rewards)) {
-    const crvIdx = rewards.findIndex((r) => r.symbol === 'CRV')
+    const crvIdx = rewards.findIndex(r => r.symbol === 'CRV')
 
     if (crvIdx !== -1) {
       const crvReward = rewards.splice(crvIdx, 1)
@@ -43,13 +43,13 @@ export function rewardsApyCrvText([base, boosted]: number[]) {
 // profits
 export function filterCrvProfit<T extends { day: string; week: string; month: string; year: string }>(crvProfit: T) {
   // @ts-ignore
-  const haveCrvProfit = ['day', 'week', 'month', 'year'].some((t) => Number(crvProfit[t]) > 0)
+  const haveCrvProfit = ['day', 'week', 'month', 'year'].some(t => Number(crvProfit[t]) > 0)
   return haveCrvProfit ? crvProfit : null
 }
 
 export function separateCrvProfit<T extends { symbol: string }>(tokensProfit: T[]) {
   if (Array.isArray(tokensProfit)) {
-    const crvIdx = tokensProfit.findIndex((r) => r.symbol === 'CRV')
+    const crvIdx = tokensProfit.findIndex(r => r.symbol === 'CRV')
 
     if (crvIdx !== -1) {
       const crvProfit = tokensProfit.splice(crvIdx, 1)

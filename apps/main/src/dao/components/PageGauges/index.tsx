@@ -11,7 +11,7 @@ import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 
 const Gauges = () => {
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
   const { address: userAddress } = useAccount()
 
   const [navSelection, setNavSelection] = useState('gaugeList')

@@ -50,18 +50,18 @@ const FormWithdraw = ({
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formEstGas = useStore((state) => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const slippage = useStore((state) => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
-  const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const activeKey = useStore(state => state.poolWithdraw.activeKey)
+  const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolWithdraw.formStatus)
+  const formValues = useStore(state => state.poolWithdraw.formValues)
+  const slippage = useStore(state => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
+  const fetchStepApprove = useStore(state => state.poolWithdraw.fetchStepApprove)
+  const fetchStepWithdraw = useStore(state => state.poolWithdraw.fetchStepWithdraw)
+  const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -133,7 +133,7 @@ const FormWithdraw = ({
       let isValid = haveSigner && !isSeed && isValidLpToken && !!formValues.selected && !formStatus.error
 
       if (isValid && (formValues.selected === 'token' || formValues.selected === 'imbalance')) {
-        isValid = formValues.amounts.some((a) => +a.value > 0)
+        isValid = formValues.amounts.some(a => +a.value > 0)
       }
 
       const isApproved = formStatus.isApproved || formStatus.formTypeCompleted === 'APPROVE'
@@ -184,12 +184,12 @@ const FormWithdraw = ({
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['WITHDRAW'] : ['APPROVAL', 'WITHDRAW']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleWithdrawClick, haveSigner, userPoolBalances],
   )
@@ -259,7 +259,7 @@ const FormWithdraw = ({
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
-      const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
+      const foundCoinWithAmount = formValues.amounts.find(a => Number(a.value) > 0)
 
       if (foundCoinWithAmount && !isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
@@ -269,10 +269,10 @@ const FormWithdraw = ({
         }
       }
     } else if (formValues.selected === 'lpToken' || formValues.selected === 'imbalance') {
-      const amounts = formValues.amounts.filter((a) => Number(a.value) > 0)
+      const amounts = formValues.amounts.filter(a => Number(a.value) > 0)
       let usdAmountTotal = 0
 
-      amounts.forEach((a) => {
+      amounts.forEach(a => {
         const usdRate = usdRatesMapper[a.tokenAddress]
         if (usdRate && !isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
@@ -297,7 +297,7 @@ const FormWithdraw = ({
         balanceLoading={haveSigner ? typeof userPoolBalances === 'undefined' : false}
         hasError={haveSigner && +formValues.lpToken > +balLpToken}
         haveSigner={haveSigner}
-        handleAmountChange={(val) => {
+        handleAmountChange={val => {
           updateFormValues(
             {
               amounts: resetFormAmounts(formValues),
@@ -327,7 +327,7 @@ const FormWithdraw = ({
             aria-label="Customized amounts received"
             isDisabled={isDisabled}
             value={formValues.selected}
-            onChange={(selected) => {
+            onChange={selected => {
               if (selected === 'token') {
                 updateFormValues(
                   {
@@ -421,7 +421,7 @@ const FormWithdraw = ({
                         blockchainId={blockchainId}
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
-                        handleAmountChange={(val) => {
+                        handleAmountChange={val => {
                           const clonedAmounts = cloneDeep(formValues.amounts)
                           clonedAmounts[idx].value = val
                           updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
@@ -440,7 +440,7 @@ const FormWithdraw = ({
           <Checkbox
             isDisabled={!poolData || isDisabled || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
             isSelected={formValues.isWrapped}
-            onChange={(isWrapped) => {
+            onChange={isWrapped => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
                 const cFormValues = cloneDeep(formValues)

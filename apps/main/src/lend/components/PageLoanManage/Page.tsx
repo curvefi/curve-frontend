@@ -44,17 +44,17 @@ const Page = (params: MarketUrlParams) => {
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const marketDetailsView = useStore(state => state.markets.marketDetailsView)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchUserLoanExists = useStore(state => state.user.fetchUserLoanExists)
+  const fetchAllUserMarketDetails = useStore(state => state.user.fetchAll)
+  const setMarketsStateKey = useStore(state => state.markets.setStateByKey)
+  const { chartExpanded, setChartExpanded } = useStore(state => state.ohlcCharts)
   const { provider, connect } = useWallet()
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 

@@ -34,14 +34,14 @@ export const ChainSwitcher = ({ networks, chainId }: ChainSwitcherProps) => {
   const options = useMemo(
     () =>
       sortBy(
-        Object.values(networks).filter((networkConfig) => networkConfig.showInSelectNetwork),
-        (n) => n.name,
+        Object.values(networks).filter(networkConfig => networkConfig.showInSelectNetwork),
+        n => n.name,
       ),
     [networks],
   )
 
   const onClick = options.length > 1 ? toggle : openSnackbar
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
   return (
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">

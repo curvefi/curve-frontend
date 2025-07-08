@@ -50,7 +50,7 @@ export const DataRow = <T extends TableItem>({
 
   return (
     <>
-      <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
+      <InvertOnHover hoverColor={t => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
         <TableRow
           sx={{
             marginBlock: 0,
@@ -63,16 +63,16 @@ export const DataRow = <T extends TableItem>({
             '&:hover': {
               [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
               '& td, & th': {
-                backgroundColor: (t) => t.design.Table.Row.Hover,
+                backgroundColor: t => t.design.Table.Row.Hover,
               },
             },
             [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
             ...(isLast && {
               // to avoid the sticky header showing without any rows, show the last row on top of it
               position: 'sticky',
-              zIndex: (t) => t.zIndex.tableStickyLastRow,
+              zIndex: t => t.zIndex.tableStickyLastRow,
               top: 0,
-              backgroundColor: (t) => t.design.Table.Row.Default,
+              backgroundColor: t => t.design.Table.Row.Default,
             }),
           }}
           ref={setElement}

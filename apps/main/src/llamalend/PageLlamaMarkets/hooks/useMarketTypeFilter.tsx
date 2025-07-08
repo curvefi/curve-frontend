@@ -16,7 +16,7 @@ export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: Filt
     (type: LlamaMarketType) => {
       setColumnFilter(
         LlamaMarketColumnId.Type,
-        filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type],
+        filter?.includes(type) ? filter.filter(f => f !== type) : [...(filter || []), type],
       )
     },
     [filter, setColumnFilter],

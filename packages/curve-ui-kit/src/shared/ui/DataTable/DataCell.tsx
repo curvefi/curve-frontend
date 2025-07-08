@@ -42,14 +42,14 @@ export const DataCell = <T extends TableItem>({
       sx={{
         ...(!showCollapseIcon && wrapperSx),
         ...getExtraColumnPadding(column),
-        ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
+        ...((borderRight || isSticky) && { borderRight: t => `1px solid ${t.design.Layer[1].Outline}` }),
         ...(isSticky && {
           position: 'sticky',
           left: 0,
-          zIndex: (t) => t.zIndex.tableStickyColumn,
-          backgroundColor: (t) => t.design.Table.Row.Default,
+          zIndex: t => t.zIndex.tableStickyColumn,
+          backgroundColor: t => t.design.Table.Row.Default,
         }),
-        borderBlockEnd: (t) => `1px solid ${t.design.Layer[1].Outline}`,
+        borderBlockEnd: t => `1px solid ${t.design.Layer[1].Outline}`,
       }}
       data-testid={`data-table-cell-${column.id}`}
     >

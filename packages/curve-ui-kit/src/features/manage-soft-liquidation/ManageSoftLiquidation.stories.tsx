@@ -110,7 +110,7 @@ const meta: Meta<typeof ManageSoftLiquidation> = {
 type Story = StoryObj<typeof ManageSoftLiquidation>
 
 export const Default: Story = {
-  render: (args) => <ManageSoftLiquidationWithState {...args} />,
+  render: args => <ManageSoftLiquidationWithState {...args} />,
   parameters: {
     docs: {
       description: {
@@ -165,7 +165,7 @@ const actionInfosIdle = {
 }
 
 export const IdleActionInfos: Story = {
-  render: (args) => <ManageSoftLiquidationWithState {...args} />,
+  render: args => <ManageSoftLiquidationWithState {...args} />,
   parameters: {
     docs: {
       description: {

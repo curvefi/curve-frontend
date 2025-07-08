@@ -23,8 +23,8 @@ const TableHead = ({
   showSupplySignerCell: boolean
   tableLabels: TableLabel[]
 }) => {
-  const formStatus = useStore((state) => state.marketList.formStatus)
-  const tableSetting = useStore((state) => state.marketList.tableRowsSettings[address])
+  const formStatus = useStore(state => state.marketList.formStatus)
+  const tableSetting = useStore(state => state.marketList.tableRowsSettings[address])
 
   const rowSearchParams = address === 'all' ? searchParams : { ...(tableSetting ?? {}), ...searchParams }
 

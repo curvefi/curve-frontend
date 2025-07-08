@@ -28,11 +28,11 @@ const MySharesStats = ({
 >) => {
   const { rChainId, rPoolId } = routerParams
   const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
-  const userCrvApy = useStore((state) => state.user.userCrvApy[userPoolActiveKey])
-  const userLiquidityUsd = useStore((state) => state.user.userLiquidityUsd[userPoolActiveKey])
-  const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
-  const userWithdrawAmounts = useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey] ?? [])
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[rPoolId])
+  const userCrvApy = useStore(state => state.user.userCrvApy[userPoolActiveKey])
+  const userLiquidityUsd = useStore(state => state.user.userLiquidityUsd[userPoolActiveKey])
+  const userShare = useStore(state => state.user.userShare[userPoolActiveKey])
+  const userWithdrawAmounts = useStore(state => state.user.userWithdrawAmounts[userPoolActiveKey] ?? [])
 
   const haveBoosting = rChainId === 1
   const haveCrvRewards = rewardsApy?.crv?.[0] !== 0

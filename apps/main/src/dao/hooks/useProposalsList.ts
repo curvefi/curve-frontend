@@ -12,9 +12,9 @@ const { WEEK } = TIME_FRAMES
 const filterProposals = (proposals: ProposalData[], activeFilter: ProposalListFilter) => {
   if (activeFilter === 'all') return proposals
   if (activeFilter === 'executable') {
-    return proposals.filter((proposal) => proposal.status === 'Passed' && !proposal.executed)
+    return proposals.filter(proposal => proposal.status === 'Passed' && !proposal.executed)
   }
-  return proposals.filter((proposal) => proposal.status.toLowerCase() === activeFilter)
+  return proposals.filter(proposal => proposal.status.toLowerCase() === activeFilter)
 }
 
 const sortProposals = (
@@ -24,9 +24,9 @@ const sortProposals = (
 ) => {
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
-    const activeProposals = proposals.filter((proposal) => proposal.status === 'Active')
+    const activeProposals = proposals.filter(proposal => proposal.status === 'Active')
     const inactiveProposals = orderBy(
-      proposals.filter((proposal) => proposal.status !== 'Active'),
+      proposals.filter(proposal => proposal.status !== 'Active'),
       ['timestamp'],
       ['desc'],
     )
@@ -34,7 +34,7 @@ const sortProposals = (
     return [
       ...orderBy(
         activeProposals,
-        [(proposal) => proposal.timestamp + WEEK - currentTimestamp],
+        [proposal => proposal.timestamp + WEEK - currentTimestamp],
         // order needs to be reversed for active proposals on 'ending soon' to behave as expected
         [activeSortDirection === 'asc' ? 'desc' : 'asc'],
       ),
@@ -57,16 +57,16 @@ const createFuseInstance = (proposals: ProposalData[]) =>
       'type',
       {
         name: 'metaData',
-        getFn: (proposal) => (proposal.metadata || '').toLowerCase(),
+        getFn: proposal => (proposal.metadata || '').toLowerCase(),
       },
     ],
   })
 
 export const useProposalsList = () => {
-  const activeSortBy = useStore((state) => state.proposals.activeSortBy)
-  const activeSortDirection = useStore((state) => state.proposals.activeSortDirection)
-  const activeFilter = useStore((state) => state.proposals.activeFilter)
-  const searchValue = useStore((state) => state.proposals.searchValue)
+  const activeSortBy = useStore(state => state.proposals.activeSortBy)
+  const activeSortDirection = useStore(state => state.proposals.activeSortDirection)
+  const activeFilter = useStore(state => state.proposals.activeFilter)
+  const searchValue = useStore(state => state.proposals.searchValue)
 
   const { data: proposalsMapper, isLoading, isError, isSuccess } = useProposalsMapperQuery({})
 
@@ -77,7 +77,7 @@ export const useProposalsList = () => {
 
     if (searchValue !== '') {
       const fuse = createFuseInstance(filteredProposals)
-      const searchResults = fuse.search(searchValue).map((r) => r.item)
+      const searchResults = fuse.search(searchValue).map(r => r.item)
       return { data: sortProposals(searchResults, activeSortBy, activeSortDirection) }
     }
 

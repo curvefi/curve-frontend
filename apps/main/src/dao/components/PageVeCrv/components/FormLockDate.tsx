@@ -26,15 +26,15 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.lockedCrv.activeKey)
+  const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.lockedCrv.formStatus)
-  const formValues = useStore((state) => state.lockedCrv.formValues)
-  const fetchStepIncreaseTime = useStore((state) => state.lockedCrv.fetchStepIncreaseTime)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.lockedCrv.formStatus)
+  const formValues = useStore(state => state.lockedCrv.formValues)
+  const fetchStepIncreaseTime = useStore(state => state.lockedCrv.fetchStepIncreaseTime)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -151,7 +151,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       }
 
       const stepsKey: StepKey[] = ['INCREASE_TIME']
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleBtnClickIncrease],
   )
@@ -186,7 +186,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
     <>
       <StyledForm
         autoComplete="off"
-        onSubmit={(evt) => {
+        onSubmit={evt => {
           evt.preventDefault()
         }}
       >

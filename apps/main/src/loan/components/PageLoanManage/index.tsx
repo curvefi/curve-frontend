@@ -27,8 +27,8 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const { push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
+  const loanExists = useStore(state => state.loans.existsMapper[llammaId]?.loanExists)
+  const resetUserDetailsState = useStore(state => state.loans.resetUserDetailsState)
 
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
@@ -38,7 +38,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     { label: t`Collateral`, key: 'collateral' },
     { label: t`Deleverage`, key: 'deleverage' },
     // { label: t`Swap`, key: MANAGE_LOAN_FORM_TYPE.swap }, // hide swap (aka liquidation) from UI for now
-  ].filter((f) => {
+  ].filter(f => {
     if (f.key === 'deleverage') {
       return hasDeleverage(llamma)
     } else {
@@ -76,7 +76,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx == 0 ? 0 : domRect.left - tabsDOMRect.left

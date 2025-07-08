@@ -24,7 +24,7 @@ export const DistributorInput = ({ disabled }: { disabled: boolean }) => {
           labelProps={false}
           id="inpDistributor"
           type="text"
-          onChange={(value) => setValue('distributorId', value as Address, { shouldValidate: true })}
+          onChange={value => setValue('distributorId', value as Address, { shouldValidate: true })}
           onBlur={() => trigger('distributorId')}
           disabled={disabled}
         />

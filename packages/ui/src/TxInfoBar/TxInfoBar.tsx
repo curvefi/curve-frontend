@@ -17,7 +17,7 @@ const TxInfoBar = ({ description, txHash, onClose }: Props) => (
     <InfoTitle>
       {description}{' '}
       {Array.isArray(txHash) ? (
-        txHash.map((tx) => (
+        txHash.map(tx => (
           <StyledExternalLink href={tx} key={tx}>
             <RCExternal />
           </StyledExternalLink>

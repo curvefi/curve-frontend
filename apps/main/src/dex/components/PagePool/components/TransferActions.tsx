@@ -25,8 +25,8 @@ const TransferActions = ({
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const { connectState } = useConnection()
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
-  const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
+  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+  const walletBalancesLoading = useStore(state => state.user.walletBalancesLoading)
 
   const isLoading =
     loading ||

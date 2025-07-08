@@ -189,7 +189,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

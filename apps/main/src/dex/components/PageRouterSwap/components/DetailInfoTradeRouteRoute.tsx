@@ -25,8 +25,8 @@ const DetailInfoTradeRouteRoute = ({
 }) => {
   const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
   const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
-  const networks = useStore((state) => state.networks.networks)
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
+  const networks = useStore(state => state.networks.networks)
+  const networksIdMapper = useStore(state => state.networks.networksIdMapper)
   const networkId = params?.network ? networksIdMapper[params.network.toLowerCase() as NetworkEnum] : null
   const network = networkId ? networks[networkId as ChainId] : null
   const { swapCustomRouteRedirect } = network || {}

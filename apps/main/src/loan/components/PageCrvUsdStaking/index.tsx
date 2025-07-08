@@ -20,11 +20,11 @@ const { MaxWidth } = SizesAndSpaces
 
 const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const [isChartExpanded = false, , minimizeChart, toggleChartExpanded] = useSwitch(false)
-  const checkApproval = useStore((state) => state.scrvusd.checkApproval)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const fetchExchangeRate = useStore((state) => state.scrvusd.fetchExchangeRate)
-  const fetchCrvUsdSupplies = useStore((state) => state.scrvusd.fetchCrvUsdSupplies)
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
+  const checkApproval = useStore(state => state.scrvusd.checkApproval)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const fetchExchangeRate = useStore(state => state.scrvusd.fetchExchangeRate)
+  const fetchCrvUsdSupplies = useStore(state => state.scrvusd.fetchCrvUsdSupplies)
+  const stakingModule = useStore(state => state.scrvusd.stakingModule)
   const { llamaApi: lendApi = null } = useConnection()
   const chainId = lendApi?.chainId
   const { address, isConnecting } = useAccount()

@@ -15,21 +15,21 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pricesApiPoolData: PricesApiPool }) => {
-  const theme = useUserProfileStore((state) => state.theme)
-  const chartOhlcData = useStore((state) => state.pools.pricesApiState.chartOhlcData)
-  const chartStatus = useStore((state) => state.pools.pricesApiState.chartStatus)
-  const timeOption = useStore((state) => state.pools.pricesApiState.timeOption)
-  const chartExpanded = useStore((state) => state.pools.pricesApiState.chartExpanded)
-  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
-  const tradesTokens = useStore((state) => state.pools.pricesApiState.tradesTokens)
-  const refetchingCapped = useStore((state) => state.pools.pricesApiState.refetchingCapped)
-  const lastFetchEndTime = useStore((state) => state.pools.pricesApiState.lastFetchEndTime)
-  const setChartTimeOption = useStore((state) => state.pools.setChartTimeOption)
-  const setChartExpanded = useStore((state) => state.pools.setChartExpanded)
-  const fetchPricesApiCharts = useStore((state) => state.pools.fetchPricesApiCharts)
-  const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
-  const fetchMorePricesApiCharts = useStore((state) => state.pools.fetchMorePricesApiCharts)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const theme = useUserProfileStore(state => state.theme)
+  const chartOhlcData = useStore(state => state.pools.pricesApiState.chartOhlcData)
+  const chartStatus = useStore(state => state.pools.pricesApiState.chartStatus)
+  const timeOption = useStore(state => state.pools.pricesApiState.timeOption)
+  const chartExpanded = useStore(state => state.pools.pricesApiState.chartExpanded)
+  const activityHidden = useStore(state => state.pools.pricesApiState.activityHidden)
+  const tradesTokens = useStore(state => state.pools.pricesApiState.tradesTokens)
+  const refetchingCapped = useStore(state => state.pools.pricesApiState.refetchingCapped)
+  const lastFetchEndTime = useStore(state => state.pools.pricesApiState.lastFetchEndTime)
+  const setChartTimeOption = useStore(state => state.pools.setChartTimeOption)
+  const setChartExpanded = useStore(state => state.pools.setChartExpanded)
+  const fetchPricesApiCharts = useStore(state => state.pools.fetchPricesApiCharts)
+  const fetchPricesApiActivity = useStore(state => state.pools.fetchPricesApiActivity)
+  const fetchMorePricesApiCharts = useStore(state => state.pools.fetchMorePricesApiCharts)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
 
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
   const [selectChartList, setSelectChartList] = useState<LabelList[]>([])
@@ -46,7 +46,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
 
     const combinationsArray = combinations(coins, 2)
     // adds combinations in case of basepool
-    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map((item) => [item, coins[0]])
+    const extraCombinations = pricesApiPoolData.coins.slice(pricesApiPoolData.n_coins).map(item => [item, coins[0]])
 
     const combinedArray = [...combinationsArray]
     combinedArray.splice(0, 0, ...extraCombinations)
@@ -288,7 +288,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
 
 const ExpandedWrapper = styled.div<{ activityHidden: boolean }>`
   display: grid;
-  ${(props) =>
+  ${props =>
     !props.activityHidden
       ? 'grid-template-columns: 2fr 26.4375rem'
       : 'grid-template-columns: auto calc(var(--spacing-3) + var(--spacing-3))'}
@@ -302,7 +302,7 @@ const LpEventsWrapperExpanded = styled(Box)`
 const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
-  padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
+  padding: ${props => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
 `
 
 const SelectorRow = styled.div`

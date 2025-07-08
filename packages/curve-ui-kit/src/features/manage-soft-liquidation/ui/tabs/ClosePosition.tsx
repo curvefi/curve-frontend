@@ -51,8 +51,8 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
         value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
         valueOptions={{ decimals: 2, unit: 'dollar' }}
         notional={(collateralToRecover ?? [])
-          .filter((x) => x.amount ?? 0 > 0)
-          .map((x) => ({
+          .filter(x => x.amount ?? 0 > 0)
+          .map(x => ({
             value: x.amount!,
             unit: { symbol: ` ${x.symbol}`, position: 'suffix' },
             abbreviate: true,

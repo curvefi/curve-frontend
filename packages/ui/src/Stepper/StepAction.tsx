@@ -119,7 +119,7 @@ const ActionBox = styled(StepBox)`
 const TaskStep = styled(StepBox)<{ status: StepStatus }>`
   ${stepStyle}
 
-  ${(props) => taskStepStatusStyles(props.status)}
+  ${props => taskStepStatusStyles(props.status)}
   transition: all 0.5s ease;
 `
 

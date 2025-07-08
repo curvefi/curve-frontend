@@ -22,10 +22,10 @@ const WithdrawModule = () => {
   const { data: userScrvUsdBalance, isLoading: userScrvUsdBalanceLoading } = useScrvUsdUserBalances({
     userAddress: address,
   })
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const preview = useStore((state) => state.scrvusd.preview)
-  const setInputAmount = useStore((state) => state.scrvusd.setInputAmount)
-  const setMax = useStore((state) => state.scrvusd.setMax)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const preview = useStore(state => state.scrvusd.preview)
+  const setInputAmount = useStore(state => state.scrvusd.setInputAmount)
+  const setMax = useStore(state => state.scrvusd.setMax)
 
   const isLoadingPreview = isLoading(preview.fetchStatus)
 

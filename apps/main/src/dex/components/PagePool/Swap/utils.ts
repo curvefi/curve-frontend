@@ -57,7 +57,7 @@ export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: Po
   }
 
   return {
-    selectList: sortBy(swapTokensMapper, (t) => t.symbol),
+    selectList: sortBy(swapTokensMapper, t => t.symbol),
     swapTokensMapper,
   }
 }

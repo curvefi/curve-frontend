@@ -13,14 +13,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { GAUGE_VOTES_TABLE_LABELS, GAUGE_VOTES_SORTING_METHODS } from '../constants'
 
 const GaugesList = () => {
-  const getGauges = useStore((state) => state.gauges.getGauges)
-  const setGauges = useStore((state) => state.gauges.setGauges)
-  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
-  const gaugeListSortBy = useStore((state) => state.gauges.gaugeListSortBy)
-  const setGaugeListSortBy = useStore((state) => state.gauges.setGaugeListSortBy)
-  const setSearchValue = useStore((state) => state.gauges.setSearchValue)
-  const searchValue = useStore((state) => state.gauges.searchValue)
-  const filteredGauges = useStore((state) => state.gauges.filteredGauges)
+  const getGauges = useStore(state => state.gauges.getGauges)
+  const setGauges = useStore(state => state.gauges.setGauges)
+  const gaugesLoading = useStore(state => state.gauges.gaugesLoading)
+  const gaugeListSortBy = useStore(state => state.gauges.gaugeListSortBy)
+  const setGaugeListSortBy = useStore(state => state.gauges.setGaugeListSortBy)
+  const setSearchValue = useStore(state => state.gauges.setSearchValue)
+  const searchValue = useStore(state => state.gauges.searchValue)
+  const filteredGauges = useStore(state => state.gauges.filteredGauges)
   const tableMinWidth = 0
   const gridTemplateColumns = '17.5rem 1fr 1fr 1fr 0.2fr'
   const smallScreenBreakpoint = 42.3125
@@ -52,7 +52,7 @@ const GaugesList = () => {
             id="inpSearchProposals"
             placeholder={t`Search`}
             variant="small"
-            handleInputChange={(val) => setSearchValue(val)}
+            handleInputChange={val => setSearchValue(val)}
             handleSearchClose={() => setSearchValue('')}
             value={searchValue}
           />

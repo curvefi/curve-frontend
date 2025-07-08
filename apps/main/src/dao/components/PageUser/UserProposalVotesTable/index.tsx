@@ -37,8 +37,8 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   } = useUserProposalVotesQuery({
     userAddress,
   })
-  const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
-  const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
+  const userProposalVotesSortBy = useStore(state => state.user.userProposalVotesSortBy)
+  const setUserProposalVotesSortBy = useStore(state => state.user.setUserProposalVotesSortBy)
   const { push } = useRouter()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
@@ -55,14 +55,14 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       columns={VOTES_LABELS}
       sortBy={userProposalVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
+      setSortBy={key => setUserProposalVotesSortBy(key as UserProposalVotesSortBy)}
       getData={() => invalidateUserProposalVotesQuery({ userAddress })}
       gridTemplateColumns={gridTemplateColumns}
       noDataMessage={t`No proposal votes found for this user.`}
       renderRow={(proposalVote, index) => (
         <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableDataLink
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault()
               push(
                 getEthPath(

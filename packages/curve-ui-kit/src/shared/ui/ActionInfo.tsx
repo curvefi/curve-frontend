@@ -116,7 +116,7 @@ const ActionInfo = ({
             sx={{
               width: IconSize.sm,
               height: IconSize.sm,
-              color: (t) => t.palette.text.tertiary,
+              color: t => t.palette.text.tertiary,
             }}
           />
         )}

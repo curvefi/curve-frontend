@@ -14,7 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {
   const params = useParams() as UrlParams
 
-  const userMarketBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const userMarketBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   return typeof userMarketBalances === 'undefined' || !rOwmId ? (
     <SpinnerWrapper>

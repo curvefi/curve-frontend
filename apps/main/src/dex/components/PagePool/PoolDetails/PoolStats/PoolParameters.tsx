@@ -24,10 +24,10 @@ const PoolParameters = ({
   parameters: PoolParameters
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
   const { rChainId, rPoolId } = routerParams
-  const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
-  const isLite = useStore((state) => state.networks.networks[rChainId]?.isLite)
-  const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
-  const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
+  const { pricesApi } = useStore(state => state.networks.networks[rChainId])
+  const isLite = useStore(state => state.networks.networks[rChainId]?.isLite)
+  const tvl = useStore(state => state.pools.tvlMapper[rChainId]?.[rPoolId])
+  const volume = useStore(state => state.pools.volumeMapper[rChainId]?.[rPoolId])
 
   const haveWrappedCoins = useMemo(() => {
     if (!!poolData?.pool?.wrappedCoins) {

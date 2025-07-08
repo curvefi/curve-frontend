@@ -13,10 +13,10 @@ const CrvStats = () => {
   const { data: veCrvData, isLoading: statsLoading, isSuccess: statsSuccess } = useStatsVecrvQuery({})
   const { provider } = useWallet()
   const { curveApi: { chainId } = {} } = useConnection()
-  const veCrvFees = useStore((state) => state.analytics.veCrvFees)
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const veCrvFees = useStore(state => state.analytics.veCrvFees)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
+  const usdRatesLoading = useStore(state => state.usdRates.loading)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
   const crv = usdRatesMapper.crv
 
   // protect against trying to load data on non-mainnet networks

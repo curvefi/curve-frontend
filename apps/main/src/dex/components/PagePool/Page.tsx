@@ -15,12 +15,12 @@ export const PagePool = (props: PoolUrlParams) => {
   const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
   const rChainId = useChainId(networkId)
 
-  const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
-  const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
-  const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
-  const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
-  const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const hasDepositAndStake = useStore(state => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
+  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
+  const fetchNewPool = useStore(state => state.pools.fetchNewPool)
+  const poolDataCache = useStore(state => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
+  const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[rPoolId])
+  const network = useStore(state => state.networks.networks[rChainId])
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 

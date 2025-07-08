@@ -55,7 +55,7 @@ const CellRewardsTooltip = ({
       <TooltipItem>
         <span>{t`Incentives APR`}</span>{' '}
         <span>
-          {tooltipValues.incentives.map((incentive) => (
+          {tooltipValues.incentives.map(incentive => (
             <Fragment key={incentive}>
               {incentive}
               <br />

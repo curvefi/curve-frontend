@@ -25,12 +25,12 @@ const PoolActivity = ({
   tradesTokens: LpTradeToken[]
   chartCombinations: PricesApiCoin[][]
 }) => {
-  const activityHidden = useStore((state) => state.pools.pricesApiState.activityHidden)
-  const activityStatus = useStore((state) => state.pools.pricesApiState.activityStatus)
-  const tradeEventsData = useStore((state) => state.pools.pricesApiState.tradeEventsData)
-  const liquidityEventsData = useStore((state) => state.pools.pricesApiState.liquidityEventsData)
-  const setActivityHidden = useStore((state) => state.pools.setActivityHidden)
-  const fetchPricesApiActivity = useStore((state) => state.pools.fetchPricesApiActivity)
+  const activityHidden = useStore(state => state.pools.pricesApiState.activityHidden)
+  const activityStatus = useStore(state => state.pools.pricesApiState.activityStatus)
+  const tradeEventsData = useStore(state => state.pools.pricesApiState.tradeEventsData)
+  const liquidityEventsData = useStore(state => state.pools.pricesApiState.liquidityEventsData)
+  const setActivityHidden = useStore(state => state.pools.setActivityHidden)
+  const fetchPricesApiActivity = useStore(state => state.pools.fetchPricesApiActivity)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
@@ -110,7 +110,7 @@ const PoolActivity = ({
 const Wrapper = styled.div<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
-  max-height: ${(props) => (props.chartExpanded ? '548px' : '350px')};
+  max-height: ${props => (props.chartExpanded ? '548px' : '350px')};
   margin: 1px; // align hide activity button
 `
 
@@ -165,7 +165,7 @@ const ElementsContainer = styled.div<{ minHeight: number }>`
   overflow-y: auto;
   border-bottom: 0.5px solid var(--border-600);
   padding: var(--spacing-1);
-  min-height: ${(props) => props.minHeight}px;
+  min-height: ${props => props.minHeight}px;
 `
 
 const TitlesRow = styled.div`

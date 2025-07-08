@@ -20,7 +20,7 @@ const DEFAULT_BAND_CHART_DATA = {
 }
 
 const DetailsBandsChart = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,

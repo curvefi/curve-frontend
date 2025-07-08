@@ -23,7 +23,7 @@ export function parseSearchTermMapper(
   const parsed = { ...searchTermMapper }
   const { tokenAddressesAll, tokensAll } = poolDataCachedOrApi
 
-  Object.keys(searchedByAddresses).forEach((key) => {
+  Object.keys(searchedByAddresses).forEach(key => {
     const k = key as SearchTermKey
     if (!(k in searchTermMapper)) return
 

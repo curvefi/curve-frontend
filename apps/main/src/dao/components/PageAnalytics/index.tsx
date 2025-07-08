@@ -14,8 +14,8 @@ import VeCrvFees from './VeCrvFeesTable'
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
 const Analytics = () => {
-  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
+  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 
   const navItems: SubNavItem[] = [

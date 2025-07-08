@@ -26,11 +26,11 @@ type DepositTrackingProps = {
 }
 
 const DepositTracking = ({ className }: DepositTrackingProps) => {
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const depositApproval = useStore((state) => state.scrvusd.depositApproval)
-  const approveDepositTransaction = useStore((state) => state.scrvusd.approveDepositTransaction)
-  const depositTransaction = useStore((state) => state.scrvusd.depositTransaction)
-  const setTransactionsReset = useStore((state) => state.scrvusd.setTransactionsReset)
+  const stakingModule = useStore(state => state.scrvusd.stakingModule)
+  const depositApproval = useStore(state => state.scrvusd.depositApproval)
+  const approveDepositTransaction = useStore(state => state.scrvusd.approveDepositTransaction)
+  const depositTransaction = useStore(state => state.scrvusd.depositTransaction)
+  const setTransactionsReset = useStore(state => state.scrvusd.setTransactionsReset)
 
   const inputApprovedAmount = depositApproval.approval
 

@@ -19,7 +19,7 @@ interface GaugeMetricsProps {
 
 const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
-  const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
+  const gaugeCurveApiData = useStore(state => state.gauges.gaugeCurveApiData.data[gaugeAddress])
   const chainId = getChainIdFromGaugeData(gaugeData)
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]

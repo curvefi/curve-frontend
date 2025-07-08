@@ -23,7 +23,7 @@ function SelectModalFull<T extends object>({
     <DelayRender>
       <ModalDialog title={title} state={state}>
         <RadioGroup aria-label={title} onChange={handleRadioGroupChange} value={state.selectedKey?.toString()}>
-          {[...state.collection].map((item) => {
+          {[...state.collection].map(item => {
             const value = item.key.toString()
             return (
               <StyledRadio key={item.key} value={value} aria-label={value}>

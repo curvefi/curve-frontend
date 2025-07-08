@@ -21,16 +21,16 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.lockedCrv.activeKey)
+  const activeKey = useStore(state => state.lockedCrv.activeKey)
   const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const formEstGas = useStore((state) => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.lockedCrv.formStatus)
-  const formValues = useStore((state) => state.lockedCrv.formValues)
-  const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
-  const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const formEstGas = useStore(state => state.lockedCrv.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.lockedCrv.formStatus)
+  const formValues = useStore(state => state.lockedCrv.formValues)
+  const fetchStepApprove = useStore(state => state.lockedCrv.fetchStepApprove)
+  const fetchStepIncreaseCrv = useStore(state => state.lockedCrv.fetchStepIncreaseCrv)
+  const setFormValues = useStore(state => state.lockedCrv.setFormValues)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -107,12 +107,12 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['INCREASE_CRV'] : ['APPROVAL', 'INCREASE_CRV']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleBtnClickApproval, handleBtnClickIncrease],
   )
@@ -147,7 +147,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
     <>
       <StyledForm
         autoComplete="off"
-        onSubmit={(evt) => {
+        onSubmit={evt => {
           evt.preventDefault()
         }}
       >
@@ -156,7 +156,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={(lockedAmt) => updateFormValues({ lockedAmt })}
+          handleInpLockedAmt={lockedAmt => updateFormValues({ lockedAmt })}
           {...formValues}
         />
       </StyledForm>

@@ -39,9 +39,9 @@ const TableSettings = ({
   tableLabels,
   updatePath,
 }: Props) => {
-  const formStatus = useStore((state) => state.poolList.formStatus[activeKey])
-  const isLgUp = useLayoutStore((state) => state.isLgUp)
-  const { poolFilters } = useStore((state) => state.networks.networks[rChainId])
+  const formStatus = useStore(state => state.poolList.formStatus[activeKey])
+  const isLgUp = useLayoutStore(state => state.isLgUp)
+  const { poolFilters } = useStore(state => state.networks.networks[rChainId])
 
   const FILTERS: PoolListFilter[] = useMemo(
     () => [
@@ -61,10 +61,10 @@ const TableSettings = ({
   )
 
   const parsedFilters = useMemo(() => {
-    let filters = FILTERS.filter((f) => poolFilters.indexOf(f.key) !== -1)
+    let filters = FILTERS.filter(f => poolFilters.indexOf(f.key) !== -1)
 
     if (!signerAddress) {
-      filters = filters.filter((f) => f.key !== 'user')
+      filters = filters.filter(f => f.key !== 'user')
     }
 
     if (Array.isArray(filters)) {
@@ -83,7 +83,7 @@ const TableSettings = ({
         <SearchListInput
           placeholder={t`Search by tokens or address`}
           searchText={searchParams.searchText}
-          handleInputChange={(val) => updatePath({ searchText: val })}
+          handleInputChange={val => updatePath({ searchText: val })}
           handleClose={() => updatePath({ searchText: '' })}
           testId="search-pools"
         />
@@ -98,7 +98,7 @@ const TableSettings = ({
               filterKey={searchParams.filterKey}
               isLoading={!isReady || formStatus?.isLoading}
               resultsLength={result?.length}
-              updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
+              updateRouteFilterKey={filterKey => updatePath({ filterKey: filterKey as FilterKey })}
             />
             <Box flex gridGap={2}>
               <TableSortSelect searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
@@ -110,7 +110,7 @@ const TableSettings = ({
             <TableButtonFiltersMobile
               filters={parsedFilters}
               filterKey={searchParams.filterKey}
-              updateRouteFilterKey={(filterKey) => updatePath({ filterKey: filterKey as FilterKey })}
+              updateRouteFilterKey={filterKey => updatePath({ filterKey: filterKey as FilterKey })}
             />
             <TableSortSelectMobile searchParams={searchParams} labelsMapper={tableLabels} updatePath={updatePath} />
             <TableCheckboxHideSmallPools poolDatasCachedOrApi={poolDatasCachedOrApi} />

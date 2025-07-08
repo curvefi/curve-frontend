@@ -46,27 +46,27 @@ const LoanCreate = ({
   const { push } = useRouter()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const activeKeyMax = useStore((state) => state.loanCreate.activeKeyMax)
-  const detailInfoLeverage = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const maxLeverage = useStore((state) => state.markets.maxLeverageMapper[rChainId]?.[rOwmId]?.maxLeverage)
-  const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanCreate.formStatus)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
+  const activeKey = useStore(state => state.loanCreate.activeKey)
+  const activeKeyMax = useStore(state => state.loanCreate.activeKeyMax)
+  const detailInfoLeverage = useStore(state => state.loanCreate.detailInfoLeverage[activeKey])
+  const maxLeverage = useStore(state => state.markets.maxLeverageMapper[rChainId]?.[rOwmId]?.maxLeverage)
+  const formEstGas = useStore(state => state.loanCreate.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanCreate.formStatus)
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanExistsResp = useStore(state => state.user.loansExistsMapper[userActiveKey])
+  const maxRecv = useStore(state => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
-  const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
-  const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
-  const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
-  const setFormValues = useStore((state) => state.loanCreate.setFormValues)
-  const resetState = useStore((state) => state.loanCreate.resetState)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const refetchMaxRecv = useStore(state => state.loanCreate.refetchMaxRecv)
+  const fetchStepApprove = useStore(state => state.loanCreate.fetchStepApprove)
+  const fetchStepCreate = useStore(state => state.loanCreate.fetchStepCreate)
+  const setStateByKeyMarkets = useStore(state => state.markets.setStateByKey)
+  const setFormValues = useStore(state => state.loanCreate.setFormValues)
+  const resetState = useStore(state => state.loanCreate.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -198,7 +198,7 @@ const LoanCreate = ({
                           : null
                       }
                       confirmed={confirmedWarning}
-                      setConfirmed={(val) =>
+                      setConfirmed={val =>
                         setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
                       }
                     />
@@ -228,12 +228,12 @@ const LoanCreate = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved && !isApprovedCompleted ? ['CREATE'] : ['APPROVAL', 'CREATE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [expectedCollateral?.totalCollateral, fetchStepApprove, handleClickCreate, userBalances, userState],
   )
@@ -333,7 +333,7 @@ const LoanCreate = ({
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+          handleInpChange={userCollateral => updateFormValues({ userCollateral })}
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
@@ -348,7 +348,7 @@ const LoanCreate = ({
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
-            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
+            handleInpChange={userBorrowed => updateFormValues({ userBorrowed })}
             handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
@@ -363,7 +363,7 @@ const LoanCreate = ({
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={debt => updateFormValues({ debt })}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })

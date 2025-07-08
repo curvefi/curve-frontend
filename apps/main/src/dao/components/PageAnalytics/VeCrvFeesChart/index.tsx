@@ -8,8 +8,8 @@ import Spinner from '../../Spinner'
 import FeesBarChart from './FeesBarChart'
 
 const VeCrvFeesChart = () => {
-  const veCrvFees = useStore((state) => state.analytics.veCrvFees)
-  const getVeCrvFees = useStore((state) => state.analytics.getVeCrvFees)
+  const veCrvFees = useStore(state => state.analytics.veCrvFees)
+  const getVeCrvFees = useStore(state => state.analytics.getVeCrvFees)
 
   const feesLoading = veCrvFees.fetchStatus === 'LOADING'
   const feesError = veCrvFees.fetchStatus === 'ERROR'

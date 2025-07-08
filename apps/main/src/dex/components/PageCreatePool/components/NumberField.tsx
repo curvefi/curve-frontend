@@ -40,7 +40,7 @@ const NumberField = (props: Props) => {
 const InputWrapper = styled.div<{ isRow: boolean }>`
   display: flex;
   flex-direction: column;
-  width: ${(props) => (props.isRow ? 'calc(50% - var(--spacing-2))' : '100%')};
+  width: ${props => (props.isRow ? 'calc(50% - var(--spacing-2))' : '100%')};
   label {
     margin: var(--spacing-narrow) var(--spacing-1) var(--spacing-2) var(--spacing-2);
     font-size: var(--font-size-2);

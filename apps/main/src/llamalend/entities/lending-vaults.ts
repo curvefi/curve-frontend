@@ -30,7 +30,7 @@ export const {
   queryKey: () => ['lending-vaults', 'v1'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
-      markets.map((market) => ({ ...market, chain: chain as ChainName })),
+      markets.map(market => ({ ...market, chain: chain as ChainName })),
     ),
   validationSuite: EmptyValidationSuite,
 })
@@ -45,7 +45,7 @@ const {
     Object.fromEntries(
       Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
         chain,
-        userMarkets.map((market) => market.controller),
+        userMarkets.map(market => market.controller),
       ]),
     ) as Record<ChainName, Address[]>,
   validationSuite: userAddressValidationSuite,
@@ -70,7 +70,7 @@ const { useQuery: useUserLendingVaultEarningsQuery, invalidate: invalidateUserLe
 export function invalidateAllUserLendingVaults(userAddress: Address | undefined) {
   recordEntries(getCurrentUserLendingVaults({ userAddress }) ?? {}).forEach(([blockchainId, contracts]) => {
     invalidateUserLendingVaults({ userAddress })
-    contracts.forEach((contractAddress) =>
+    contracts.forEach(contractAddress =>
       invalidateUserLendingVaultStats({
         userAddress,
         blockchainId,
@@ -95,7 +95,7 @@ const {
     return fromEntries(
       recordEntries(positions).map(([chain, positions]) => [
         chain,
-        positions.filter((p) => p.currentShares || p.currentSharesInGauge).map((position) => position.vaultAddress),
+        positions.filter(p => p.currentShares || p.currentSharesInGauge).map(position => position.vaultAddress),
       ]),
     )
   },
@@ -105,7 +105,7 @@ const {
 export function invalidateAllUserLendingSupplies(userAddress: Address | undefined) {
   invalidateUserLendingSupplies({ userAddress })
   recordEntries(getCurrentUserLendingSupplies({ userAddress }) ?? {}).forEach(([blockchainId, positions]) =>
-    positions.forEach((contractAddress) =>
+    positions.forEach(contractAddress =>
       invalidateUserLendingVaultEarnings({
         userAddress,
         blockchainId,

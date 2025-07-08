@@ -18,7 +18,7 @@ const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps
   return (
     <StyledInternalLink
       size={smallSize ? 'small' : undefined}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault()
         push(getPath(params, to))
       }}

@@ -12,7 +12,7 @@ const { MinHeight, MaxWidth } = SizesAndSpaces
 const [imageWidth, imageHeight] = [1280, 720]
 
 export const PageNotFound = () => {
-  const navHeight = useLayoutStore((state) => state.navHeight)
+  const navHeight = useLayoutStore(state => state.navHeight)
   return (
     <Stack
       sx={{
@@ -21,7 +21,7 @@ export const PageNotFound = () => {
           objectFit: 'cover',
           opacity: 0.8,
           position: 'absolute',
-          top: (t) => `calc(${t.spacing(4)} + ${navHeight}px)`,
+          top: t => `calc(${t.spacing(4)} + ${navHeight}px)`,
           width: '100%',
           maxWidth: MaxWidth.banner,
           zIndex: -1,

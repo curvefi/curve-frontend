@@ -23,7 +23,7 @@ const CellRewards = ({
   rOwmId: string
 }) => {
   const { isReady, isError, invalidGaugeAddress, totalApr, tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
 
   const [showDetails, setShowDetails] = useState(false)
 

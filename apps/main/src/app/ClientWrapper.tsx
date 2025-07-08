@@ -21,11 +21,11 @@ import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
-  const theme = useUserProfileStore((state) => state.theme)
-  const pageWidth = useLayoutStore((state) => state.pageWidth)
-  const setLayoutWidth = useLayoutStore((state) => state.setLayoutWidth)
-  const setPageVisible = useLayoutStore((state) => state.setPageVisible)
-  const updateShowScrollButton = useLayoutStore((state) => state.updateShowScrollButton)
+  const theme = useUserProfileStore(state => state.theme)
+  const pageWidth = useLayoutStore(state => state.pageWidth)
+  const setLayoutWidth = useLayoutStore(state => state.setLayoutWidth)
+  const setPageVisible = useLayoutStore(state => state.setPageVisible)
+  const updateShowScrollButton = useLayoutStore(state => state.updateShowScrollButton)
 
   const handleResizeListener = useCallback(() => {
     if (window?.innerWidth) setLayoutWidth(getPageWidthClassName(window.innerWidth))
@@ -63,7 +63,7 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
   const { replace } = useRouter()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
-  const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
+  const network = useMemo(() => recordValues(networks).find(n => n.id == networkId), [networkId, networks])
   useEffect(() => {
     if (network || !pathname) {
       return
@@ -81,7 +81,7 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
  */
 function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
   const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
-  const storeTheme = useUserProfileStore((state) => state.theme)
+  const storeTheme = useUserProfileStore(state => state.theme)
   useEffect(() => {
     setTheme(storeTheme)
   }, [setTheme, storeTheme])

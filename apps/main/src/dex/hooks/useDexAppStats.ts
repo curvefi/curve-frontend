@@ -33,8 +33,8 @@ export const useDexAppStats = (network: NetworkDef | undefined) => {
 const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
 
 export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
-  const routerCached = useStore((state) => state.storeCache.routerFormValues[chainId])
-  const network = useStore((state) => state.networks.networks[chainId])
+  const routerCached = useStore(state => state.storeCache.routerFormValues[chainId])
+  const network = useStore(state => state.networks.networks[chainId])
   return useMemo(
     () => [
       ...(showRouterSwap
@@ -48,7 +48,7 @@ export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
             ]
           : [swapRoute]
         : []),
-      ...dexRoutes.filter((page) => page.route !== ROUTE.PAGE_SWAP),
+      ...dexRoutes.filter(page => page.route !== ROUTE.PAGE_SWAP),
     ],
     [showRouterSwap, network, routerCached],
   )

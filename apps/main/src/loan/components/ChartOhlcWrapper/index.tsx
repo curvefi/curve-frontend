@@ -19,44 +19,44 @@ import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
 const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps) => {
   const address = llamma?.address ?? ''
   const controller = llamma?.controller ?? ''
-  const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)
-  const decreaseActiveKey = useStore((state) => state.loanDecrease.activeKey)
-  const deleverageActiveKey = useStore((state) => state.loanDeleverage.activeKey)
-  const collateralIncreaseActiveKey = useStore((state) => state.loanCollateralIncrease.activeKey)
-  const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
+  const increaseActiveKey = useStore(state => state.loanIncrease.activeKey)
+  const decreaseActiveKey = useStore(state => state.loanDecrease.activeKey)
+  const deleverageActiveKey = useStore(state => state.loanDeleverage.activeKey)
+  const collateralIncreaseActiveKey = useStore(state => state.loanCollateralIncrease.activeKey)
+  const collateralDecreaseActiveKey = useStore(state => state.loanCollateralDecrease.activeKey)
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const activeKeyLiqRange = useStore(state => state.loanCreate.activeKeyLiqRange)
   const userPrices = useUserLoanDetails(llammaId)?.userPrices ?? null
-  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
-  const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
-  const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
-  const deleveragePrices = useStore((state) => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
+  const liqRangesMapper = useStore(state => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
+  const increaseLoanPrices = useStore(state => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
+  const decreaseLoanPrices = useStore(state => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
+  const deleveragePrices = useStore(state => state.loanDeleverage.detailInfo[deleverageActiveKey]?.prices ?? null)
   const increaseCollateralPrices = useStore(
-    (state) => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
+    state => state.loanCollateralIncrease.detailInfo[collateralIncreaseActiveKey]?.prices ?? null,
   )
   const decreaseCollateralPrices = useStore(
-    (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
+    state => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
-  const theme = useUserProfileStore((state) => state.theme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
-  const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
-  const timeOption = useStore((state) => state.ohlcCharts.timeOption)
-  const setChartTimeOption = useStore((state) => state.ohlcCharts.setChartTimeOption)
-  const fetchLlammaOhlcData = useStore((state) => state.ohlcCharts.fetchLlammaOhlcData)
-  const fetchOracleOhlcData = useStore((state) => state.ohlcCharts.fetchOracleOhlcData)
-  const fetchMoreData = useStore((state) => state.ohlcCharts.fetchMoreData)
-  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
-  const toggleLiqRangeCurrentVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeCurrentVisible)
-  const toggleLiqRangeNewVisible = useStore((state) => state.ohlcCharts.toggleLiqRangeNewVisible)
-  const toggleOraclePriceVisible = useStore((state) => state.ohlcCharts.toggleOraclePriceVisible)
-  const liqRangeCurrentVisible = useStore((state) => state.ohlcCharts.liqRangeCurrentVisible)
-  const liqRangeNewVisible = useStore((state) => state.ohlcCharts.liqRangeNewVisible)
-  const oraclePriceVisible = useStore((state) => state.ohlcCharts.oraclePriceVisible)
-  const priceInfo = useStore((state) => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
+  const theme = useUserProfileStore(state => state.theme)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const chartLlammaOhlc = useStore(state => state.ohlcCharts.chartLlammaOhlc)
+  const chartOraclePoolOhlc = useStore(state => state.ohlcCharts.chartOraclePoolOhlc)
+  const timeOption = useStore(state => state.ohlcCharts.timeOption)
+  const setChartTimeOption = useStore(state => state.ohlcCharts.setChartTimeOption)
+  const fetchLlammaOhlcData = useStore(state => state.ohlcCharts.fetchLlammaOhlcData)
+  const fetchOracleOhlcData = useStore(state => state.ohlcCharts.fetchOracleOhlcData)
+  const fetchMoreData = useStore(state => state.ohlcCharts.fetchMoreData)
+  const activityHidden = useStore(state => state.ohlcCharts.activityHidden)
+  const chartExpanded = useStore(state => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore(state => state.ohlcCharts.setChartExpanded)
+  const toggleLiqRangeCurrentVisible = useStore(state => state.ohlcCharts.toggleLiqRangeCurrentVisible)
+  const toggleLiqRangeNewVisible = useStore(state => state.ohlcCharts.toggleLiqRangeNewVisible)
+  const toggleOraclePriceVisible = useStore(state => state.ohlcCharts.toggleOraclePriceVisible)
+  const liqRangeCurrentVisible = useStore(state => state.ohlcCharts.liqRangeCurrentVisible)
+  const liqRangeNewVisible = useStore(state => state.ohlcCharts.liqRangeNewVisible)
+  const oraclePriceVisible = useStore(state => state.ohlcCharts.oraclePriceVisible)
+  const priceInfo = useStore(state => state.loans.detailsMapper[llammaId]?.priceInfo ?? null)
 
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')
@@ -361,7 +361,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId }: ChartOhlcWrapperProps)
 
 const ExpandedWrapper = styled.div<{ activityHidden: boolean }>`
   display: grid;
-  ${(props) =>
+  ${props =>
     !props.activityHidden
       ? 'grid-template-columns: 2fr 26.4375rem'
       : 'grid-template-columns: auto calc(var(--spacing-3) + var(--spacing-3))'}
@@ -375,7 +375,7 @@ const LpEventsWrapperExpanded = styled(Box)`
 const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
-  padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
+  padding: ${props => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
   &.normal-mode {
     padding: var(--spacing-3);
     @media screen and (min-width: 53.125rem) {

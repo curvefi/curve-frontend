@@ -32,9 +32,9 @@ export const PagePoolList = (params: PageProps) => {
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const rChainId = useChainId(params.network)
 
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const poolDataMapper = useStore(state => state.pools.poolsMapper[rChainId])
+  const poolDataMapperCached = useStore(state => state.storeCache.poolsMapper[rChainId])
+  const network = useStore(state => state.networks.networks[rChainId])
   const { isLite, poolFilters } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'
@@ -85,7 +85,7 @@ export const PagePoolList = (params: PageProps) => {
       const searchText = decodeURIComponent(searchParams?.get(SEARCH.search) || '')
 
       // validate filter key
-      const foundFilterKey = poolFilters.find((f) => f === paramFilterKey)
+      const foundFilterKey = poolFilters.find(f => f === paramFilterKey)
       if ((paramFilterKey === 'user' && !!curveApi && !curveApi?.signerAddress) || !foundFilterKey) {
         updatePath({
           filterKey: 'all',
@@ -97,8 +97,8 @@ export const PagePoolList = (params: PageProps) => {
         setParsedSearchParams({
           filterKey: paramFilterKey as FilterKey,
           searchText,
-          sortBy: (Object.keys(TABLE_LABEL).find((k) => k.toLowerCase() === paramSortBy) ?? defaultSortBy) as SortKey,
-          sortByOrder: (['desc', 'asc'].find((k) => k.toLowerCase() === paramOrder) ?? 'desc') as Order,
+          sortBy: (Object.keys(TABLE_LABEL).find(k => k.toLowerCase() === paramSortBy) ?? defaultSortBy) as SortKey,
+          sortByOrder: (['desc', 'asc'].find(k => k.toLowerCase() === paramOrder) ?? 'desc') as Order,
         })
       }
     }

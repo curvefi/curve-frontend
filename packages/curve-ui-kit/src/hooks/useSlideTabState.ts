@@ -22,7 +22,7 @@ export default function useSlideTabState(tabsRef: RefObject<HTMLDivElement | nul
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx == 0 ? 0 : domRect.left - tabsDOMRect.left

@@ -17,13 +17,13 @@ interface Props {
 }
 
 const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
-  const activityFetchStatus = useStore((state) => state.ohlcCharts.activityFetchStatus)
-  const llammaTradesData = useStore((state) => state.ohlcCharts.llammaTradesData)
-  const llammaControllerData = useStore((state) => state.ohlcCharts.llammaControllerData)
-  const setActivityHidden = useStore((state) => state.ohlcCharts.setActivityHidden)
-  const fetchPoolActivity = useStore((state) => state.ohlcCharts.fetchPoolActivity)
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-  const activityHidden = useStore((state) => state.ohlcCharts.activityHidden)
+  const activityFetchStatus = useStore(state => state.ohlcCharts.activityFetchStatus)
+  const llammaTradesData = useStore(state => state.ohlcCharts.llammaTradesData)
+  const llammaControllerData = useStore(state => state.ohlcCharts.llammaControllerData)
+  const setActivityHidden = useStore(state => state.ohlcCharts.setActivityHidden)
+  const fetchPoolActivity = useStore(state => state.ohlcCharts.fetchPoolActivity)
+  const chartExpanded = useStore(state => state.ohlcCharts.chartExpanded)
+  const activityHidden = useStore(state => state.ohlcCharts.activityHidden)
 
   const [eventOption, setEventOption] = useState<'TRADE' | 'LP'>('TRADE')
 
@@ -105,7 +105,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: Props) => {
 const Wrapper = styled.div<{ maxHeight: string }>`
   display: flex;
   flex-direction: column;
-  max-height: ${(props) => props.maxHeight};
+  max-height: ${props => props.maxHeight};
   margin: 1px; // align hide activity button
 `
 
@@ -160,7 +160,7 @@ const ElementsContainer = styled.div<{ minHeight: number }>`
   overflow-y: auto;
   border-bottom: 0.5px solid var(--border-600);
   padding: var(--spacing-1);
-  min-height: ${(props) => props.minHeight}px;
+  min-height: ${props => props.minHeight}px;
 `
 
 const TitlesRow = styled.div`

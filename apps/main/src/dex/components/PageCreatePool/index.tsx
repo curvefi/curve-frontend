@@ -32,31 +32,31 @@ type Props = {
 }
 
 const CreatePool = ({ curve }: Props) => {
-  const navHeight = useLayoutStore((state) => state.navHeight)
-  const networks = useStore((state) => state.networks.networks)
+  const navHeight = useLayoutStore(state => state.navHeight)
+  const networks = useStore(state => state.networks.networks)
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
-  const poolSymbol = useStore((state) => state.createPool.poolSymbol)
-  const swapType = useStore((state) => state.createPool.swapType)
-  const poolPresetIndex = useStore((state) => state.createPool.poolPresetIndex)
-  const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
-  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
-  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
-  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
-  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
-  const parameters = useStore((state) => state.createPool.parameters)
-  const poolName = useStore((state) => state.createPool.poolName)
-  const initialPrice = useStore((state) => state.createPool.initialPrice)
-  const navigationIndex = useStore((state) => state.createPool.navigationIndex)
-  const setNavigationIndex = useStore((state) => state.createPool.setNavigationIndex)
-  const validation = useStore((state) => state.createPool.validation)
-  const updatePoolTypeValidation = useStore((state) => state.createPool.updatePoolTypeValidation)
-  const updateTokensInPoolValidation = useStore((state) => state.createPool.updateTokensInPoolValidation)
-  const updateParametersValidation = useStore((state) => state.createPool.updateParametersValidation)
-  const updatePoolInfoValidation = useStore((state) => state.createPool.updatePoolInfoValidation)
+  const poolSymbol = useStore(state => state.createPool.poolSymbol)
+  const swapType = useStore(state => state.createPool.swapType)
+  const poolPresetIndex = useStore(state => state.createPool.poolPresetIndex)
+  const tokenAmount = useStore(state => state.createPool.tokensInPool.tokenAmount)
+  const tokenA = useStore(state => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore(state => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore(state => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore(state => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore(state => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore(state => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore(state => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore(state => state.createPool.tokensInPool.tokenH)
+  const parameters = useStore(state => state.createPool.parameters)
+  const poolName = useStore(state => state.createPool.poolName)
+  const initialPrice = useStore(state => state.createPool.initialPrice)
+  const navigationIndex = useStore(state => state.createPool.navigationIndex)
+  const setNavigationIndex = useStore(state => state.createPool.setNavigationIndex)
+  const validation = useStore(state => state.createPool.validation)
+  const updatePoolTypeValidation = useStore(state => state.createPool.updatePoolTypeValidation)
+  const updateTokensInPoolValidation = useStore(state => state.createPool.updateTokensInPoolValidation)
+  const updateParametersValidation = useStore(state => state.createPool.updateParametersValidation)
+  const updatePoolInfoValidation = useStore(state => state.createPool.updatePoolInfoValidation)
 
   const isNavEnabled = useCallback(() => {
     if (navigationIndex === 0) {
@@ -405,7 +405,7 @@ const NavButtonsBoxFixed = styled.div<{ $navHeight: number }>`
   z-index: var(--z-index-page-nav);
   display: flex;
   justify-content: space-between;
-  margin-top: calc(100vh - var(--footer-create-pool-height) - ${(props) => props.$navHeight}px);
+  margin-top: calc(100vh - var(--footer-create-pool-height) - ${props => props.$navHeight}px);
   width: 100%;
   padding: var(--spacing-narrow) var(--spacing-normal);
   background: var(--box_header--primary--background-color);

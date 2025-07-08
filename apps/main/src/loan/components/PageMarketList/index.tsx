@@ -25,19 +25,19 @@ const CollateralList = (pageProps: PageCollateralList) => {
 
   const activeKey = getActiveKey(rChainId, searchParams)
   const { llamaApi: curve = null } = useConnection()
-  const prevActiveKey = useStore((state) => state.collateralList.activeKey)
-  const formStatus = useStore((state) => state.collateralList.formStatus)
-  const initialLoaded = useStore((state) => state.collateralList.initialLoaded)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const collateralDatas = useStore((state) => state.collaterals.collateralDatas[rChainId])
-  const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
-  const results = useStore((state) => state.collateralList.result)
-  const resultCached = useStore((state) => state.storeCache.collateralList[activeKey])
-  const loanExistsMapper = useStore((state) => state.loans.existsMapper)
-  const fetchLoansDetails = useStore((state) => state.loans.fetchLoansDetails)
-  const fetchUserLoanPartialDetails = useStore((state) => state.loans.fetchUserLoanPartialDetails)
-  const setFormValues = useStore((state) => state.collateralList.setFormValues)
+  const prevActiveKey = useStore(state => state.collateralList.activeKey)
+  const formStatus = useStore(state => state.collateralList.formStatus)
+  const initialLoaded = useStore(state => state.collateralList.initialLoaded)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const collateralDatas = useStore(state => state.collaterals.collateralDatas[rChainId])
+  const collateralDatasMapper = useStore(state => state.collaterals.collateralDatasMapper[rChainId])
+  const results = useStore(state => state.collateralList.result)
+  const resultCached = useStore(state => state.storeCache.collateralList[activeKey])
+  const loanExistsMapper = useStore(state => state.loans.existsMapper)
+  const fetchLoansDetails = useStore(state => state.loans.fetchLoansDetails)
+  const fetchUserLoanPartialDetails = useStore(state => state.loans.fetchUserLoanPartialDetails)
+  const setFormValues = useStore(state => state.collateralList.setFormValues)
 
   const [showDetail, setShowDetail] = useState<string>('')
 
@@ -60,8 +60,8 @@ const CollateralList = (pageProps: PageCollateralList) => {
       loanExistsMapper &&
       collateralDatasMapper &&
       parsedResult
-        .filter((collateralId) => collateralId in collateralDatasMapper && loanExistsMapper[collateralId]?.loanExists)
-        .map((collateralId) => void fetchUserLoanPartialDetails(curve, collateralDatasMapper[collateralId].llamma))
+        .filter(collateralId => collateralId in collateralDatasMapper && loanExistsMapper[collateralId]?.loanExists)
+        .map(collateralId => void fetchUserLoanPartialDetails(curve, collateralDatasMapper[collateralId].llamma))
         .length,
     [
       collateralDatasMapper,

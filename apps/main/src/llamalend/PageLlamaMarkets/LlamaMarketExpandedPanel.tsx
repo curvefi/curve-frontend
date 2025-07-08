@@ -32,7 +32,7 @@ const TooltipComponents = {
 } as const
 
 function useMobileGraphSize() {
-  const pageWidth = useLayoutStore((state) => state.windowWidth)
+  const pageWidth = useLayoutStore(state => state.windowWidth)
   const isTiny = useIsTiny()
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
@@ -132,7 +132,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         </Grid>
       )}
       <Button
-        sx={{ flexGrow: 1, borderBlock: (t) => `1px solid ${t.design.Layer[1].Outline}` }}
+        sx={{ flexGrow: 1, borderBlock: t => `1px solid ${t.design.Layer[1].Outline}` }}
         component={Link}
         href={url}
         color="ghost"

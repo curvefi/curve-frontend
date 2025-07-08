@@ -33,9 +33,9 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
   const [voteId, voteType] = rProposalId.split('-') as [string, ProposalType]
   const proposalType = voteType.toLowerCase() as ProposalType
   const { provider } = useWallet()
-  const setSnapshotVeCrv = useStore((state) => state.user.setSnapshotVeCrv)
-  const userAddress = useStore((state) => state.user.userAddress)
-  const snapshotVeCrv = useStore((state) => state.user.snapshotVeCrvMapper[rProposalId])
+  const setSnapshotVeCrv = useStore(state => state.user.setSnapshotVeCrv)
+  const userAddress = useStore(state => state.user.userAddress)
+  const snapshotVeCrv = useStore(state => state.user.snapshotVeCrvMapper[rProposalId])
 
   const {
     data: proposalsMapper,

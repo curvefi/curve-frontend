@@ -13,7 +13,7 @@ type Props = {
 }
 
 const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   return (
     <StyledDetailInfo label={noLabel ? undefined : t`Slippage tolerance:`}>

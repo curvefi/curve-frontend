@@ -17,10 +17,10 @@ const TradesData = ({
   chainId: ChainId
   tradesTokens: LpTradeToken[]
 }) => {
-  const network = useStore((state) => state.networks.networks[chainId])
+  const network = useStore(state => state.networks.networks[chainId])
   return lpTradesData.map((transaction, index) => {
-    const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
-    const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
+    const boughtToken = tradesTokens.find(token => token.event_index === transaction.bought_id)
+    const soldToken = tradesTokens.find(token => token.event_index === transaction.sold_id)
 
     return (
       <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>

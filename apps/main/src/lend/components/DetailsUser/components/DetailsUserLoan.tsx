@@ -29,10 +29,10 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
 
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const loanExistsResp = useStore(state => state.user.loansExistsMapper[userActiveKey])
+  const chartExpanded = useStore(state => state.ohlcCharts.chartExpanded)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
   const isSoftLiquidation = useUserLoanStatus(userActiveKey) === 'soft_liquidation'
 
   const { signerAddress } = api ?? {}

@@ -31,8 +31,8 @@ const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const searchedWalletAddresses = useStore(state => state.dashboard.searchedWalletAddresses)
 
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
   const [selectedTabSlideIdx, setSelectedTabSlideIdx] = useState(0)
@@ -50,7 +50,7 @@ const Summary = () => {
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx == -0 ? 0 : domRect.left - tabsDOMRect.left
@@ -85,11 +85,11 @@ const Summary = () => {
             defaultInputValue={formValues.walletAddress}
             inputValue={formValues.walletAddress}
             placeholder="0x..."
-            onInputChange={(walletAddress) => updateFormValues({ walletAddress })}
-            onSelectionChange={(val) => updateFormValues({ walletAddress: val as string })}
+            onInputChange={walletAddress => updateFormValues({ walletAddress })}
+            onSelectionChange={val => updateFormValues({ walletAddress: val as string })}
           >
             <Section title={t`Recently viewed addresses`}>
-              {searchedWalletAddresses.map((address) => (
+              {searchedWalletAddresses.map(address => (
                 <Item key={address} textValue={address}>
                   {shortenAccount(address)}
                 </Item>

@@ -19,10 +19,10 @@ interface Props {
 }
 
 const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
-  const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
-  const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
+  const network = useStore(state => state.networks.networks[rChainId])
+  const poolDataMapperCached = useStore(state => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
+  const poolData = useStore(state => state.pools.poolsMapper[rChainId]?.[rPoolId])
+  const currencyReserves = useStore(state => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
 
   const poolDataCachedOrApi = poolData ?? poolDataMapperCached
   const poolTokensLinks = usePoolTokensLinksMapper(rChainId, poolDataCachedOrApi)
@@ -35,7 +35,7 @@ const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
         return (
           <CurrencyReservesContent
             key={`${token}-${idx}`}
-            cr={currencyReserves?.tokens.find((t) => t.tokenAddress === tokenAddress)}
+            cr={currencyReserves?.tokens.find(t => t.tokenAddress === tokenAddress)}
             haveSameTokenName={poolDataCachedOrApi.tokensCountBy[token] > 1}
             network={network}
             rChainId={rChainId}

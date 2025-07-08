@@ -7,7 +7,7 @@ type Props = {
 }
 
 const TableCellUtilization = ({ collateralId, type }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[collateralId])
 
   const { capAndAvailable, totalDebt } = loanDetails ?? {}
   const { cap = '', available = '' } = capAndAvailable ?? {}

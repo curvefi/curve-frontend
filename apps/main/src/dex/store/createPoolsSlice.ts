@@ -183,7 +183,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
-        .process(async (poolData) => {
+        .process(async poolData => {
           const item = await curvejsApi.pool.getTvl(poolData.pool, networks[chainId])
           return [item.poolId, item]
         })
@@ -273,7 +273,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         // update cache
         void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
 
-        const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
+        const partialPoolDatas = poolIds.map(poolId => poolsMapper[poolId])
 
         if (!partialPoolDatas.length) return { poolsMapper, poolDatas: partialPoolDatas }
 
@@ -353,7 +353,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       ])
 
       const { balances } = balancesResp
-      const isEmpty = !balances?.length || balances.every((b) => +b === 0)
+      const isEmpty = !balances?.length || balances.every(b => +b === 0)
       const crTokens: CurrencyReservesToken[] = []
       let total = 0
       let totalUsd = 0
@@ -412,10 +412,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       // retrieve data in chunks so that the data can already be displayed in the UI
       for (const part of chunk(poolIds, 200)) {
-        const { results } = await PromisePool.for(part).process((poolData) => poolAllRewardsApy(network, poolData.pool))
+        const { results } = await PromisePool.for(part).process(poolData => poolAllRewardsApy(network, poolData.pool))
         rewardsApyMapper = {
           ...rewardsApyMapper,
-          ...Object.fromEntries(results.map((rewardsApy) => [rewardsApy.poolId, rewardsApy])),
+          ...Object.fromEntries(results.map(rewardsApy => [rewardsApy.poolId, rewardsApy])),
         }
       }
 
@@ -494,7 +494,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
@@ -503,7 +503,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     },
     updatePool: (chainId, poolId, updatedPoolData) => {
       set(
-        produce((state) => {
+        produce(state => {
           state.pools.poolsMapper[chainId][poolId] = updatedPoolData
         }),
       )
@@ -520,7 +520,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const data: PricesApiPoolResponse = await response.json()
 
           const pricesApiPoolsMapper: { [poolAddress: string]: PricesApiPool } = {}
-          data.data.forEach((pool) => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
+          data.data.forEach(pool => (pricesApiPoolsMapper[pool.address.toLowerCase()] = pool))
 
           set(
             produce((state: State) => {
@@ -597,7 +597,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const filteredLpPriceData = {
             ...lpPriceDataResponse,
             data: lpPriceDataResponse.data
-              .filter((item) => {
+              .filter(item => {
                 if (item.open === null || item.close === null || item.high === null || item.low === null) {
                   return
                 }
@@ -640,7 +640,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const filteredLpPriceData = {
             ...lpPriceDataResponse,
             data: lpPriceDataResponse.data
-              .filter((item) => {
+              .filter(item => {
                 if (item.open === null || item.close === null || item.high === null || item.low === null) {
                   return
                 }
@@ -700,7 +700,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const filteredLpPriceData = {
             ...lpPriceDataResponse,
             data: lpPriceDataResponse.data
-              .filter((item) => {
+              .filter(item => {
                 if (item.open === null || item.close === null || item.high === null || item.low === null) {
                   return
                 }
@@ -735,7 +735,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           const filteredLpPriceData = {
             ...lpPriceDataResponse,
             data: lpPriceDataResponse.data
-              .filter((item) => {
+              .filter(item => {
                 if (item.open === null || item.close === null || item.high === null || item.low === null) {
                   return
                 }
@@ -783,7 +783,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
           ),
         )
         const lpTradesRes = await Promise.all(promises)
-        const lpTradesData: LpTradesApiResponse[] = await Promise.all(lpTradesRes.map((res) => res.json()))
+        const lpTradesData: LpTradesApiResponse[] = await Promise.all(lpTradesRes.map(res => res.json()))
         const flattenData: LpTradesData[] = lpTradesData.reduce(
           (acc: LpTradesData[], item: LpTradesApiResponse) => acc.concat(item.data),
           [],
@@ -797,7 +797,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const tradesTokens: LpTradeToken[] = []
         const seenIndexes = new Set<number>()
 
-        lpTradesData.forEach((item) => {
+        lpTradesData.forEach(item => {
           if (!seenIndexes.has(item.main_token.event_index)) {
             seenIndexes.add(item.main_token.event_index)
             tradesTokens.push(item.main_token)
@@ -900,10 +900,10 @@ export default createPoolsSlice
 
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const grouped = groupBy(tokensMapper, (v) => v!.symbol)
+  const grouped = groupBy(tokensMapper, v => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
-    .map((v) => v[0])
+    .map(v => v[0])
 
   if (duplicatedTokenNames.length === 0) return tokensMapper
 

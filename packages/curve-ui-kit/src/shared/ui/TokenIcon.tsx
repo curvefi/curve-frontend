@@ -52,7 +52,7 @@ export const TokenIcon = ({
       }}
       src={address ? `${getImageBaseUrl(blockchainId ?? '')}${address.toLowerCase()}.png` : DEFAULT_IMAGE}
       loading="lazy"
-      sx={(theme) => ({
+      sx={theme => ({
         borderRadius: '50%',
         // The original 'sm' size with a 400 breakpoint is a remainder from legacy code.
         // I didn't want to break the existing interface as it's used everywhere.

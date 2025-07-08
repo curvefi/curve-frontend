@@ -36,7 +36,7 @@ const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={(value) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
+        tickFormatter={value => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
         tickCount={10}
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />

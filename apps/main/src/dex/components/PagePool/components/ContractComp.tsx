@@ -23,7 +23,7 @@ const ContractComp = ({
   showBottomBorder: boolean
   action?: ReactNode
 }) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const network = useStore(state => state.networks.networks[rChainId])
 
   return (
     <Wrapper haveAction={!!action}>

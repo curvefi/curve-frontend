@@ -18,7 +18,7 @@ const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
     <FormControl>
       <RadioGroup
         value={value}
-        onChange={(event) => {
+        onChange={event => {
           const newValue = event.target.value
           setValue(newValue)
           const isChecked = newValue === 'option1'

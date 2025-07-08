@@ -19,24 +19,24 @@ const MarketList = (pageProps: PageMarketList) => {
 
   const activeKey = _getActiveKey(rChainId, searchParams)
   const { data: marketMapping } = useOneWayMarketMapping({ chainId: rChainId })
-  const prevActiveKey = useStore((state) => state.marketList.activeKey)
-  const initialLoaded = useStore((state) => state.marketList.initialLoaded)
-  const formStatus = useStore((state) => state.marketList.formStatus)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)
-  const userMarketsBalances = useStore((state) => state.user.marketsBalancesMapper)
-  const results = useStore((state) => state.marketList.result)
-  const setFormValues = useStore((state) => state.marketList.setFormValues)
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const prevActiveKey = useStore(state => state.marketList.activeKey)
+  const initialLoaded = useStore(state => state.marketList.initialLoaded)
+  const formStatus = useStore(state => state.marketList.formStatus)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loansExistsMapper = useStore(state => state.user.loansExistsMapper)
+  const userMarketsBalances = useStore(state => state.user.marketsBalancesMapper)
+  const results = useStore(state => state.marketList.result)
+  const setFormValues = useStore(state => state.marketList.setFormValues)
+  const { initCampaignRewards, initiated } = useStore(state => state.campaigns)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
 
   const showSignerCell = !!signerAddress
-  const showBorrowSignerCell = showSignerCell && Object.values(loansExistsMapper)?.some((l) => l.loanExists)
+  const showBorrowSignerCell = showSignerCell && Object.values(loansExistsMapper)?.some(l => l.loanExists)
   const showSupplySignerCell =
-    showSignerCell && Object.values(userMarketsBalances)?.some((b) => +b.vaultShares > 0 || +b.gauge > 0)
+    showSignerCell && Object.values(userMarketsBalances)?.some(b => +b.vaultShares > 0 || +b.gauge > 0)
 
   // prettier-ignore
   const TABLE_LABELS: { borrow: TableLabel[]; supply: TableLabel[] } = {

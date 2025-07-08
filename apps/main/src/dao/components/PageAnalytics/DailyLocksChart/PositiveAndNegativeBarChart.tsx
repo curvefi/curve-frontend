@@ -13,7 +13,7 @@ const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegative
     <BarChart
       width={500}
       height={300}
-      data={data.map((x) => ({ ...x, amount: x.amount.fromWei() }))}
+      data={data.map(x => ({ ...x, amount: x.amount.fromWei() }))}
       margin={{
         top: 16,
         right: 20,

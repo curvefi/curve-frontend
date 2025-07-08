@@ -3,7 +3,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import { formatNumber } from '@ui/utils'
 
 const CellSupplyTotalLiquidity = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
-  const resp = useStore((state) => state.markets.totalLiquidityMapper[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.totalLiquidityMapper[rChainId]?.[rOwmId])
 
   const { totalLiquidity, error } = resp ?? {}
 

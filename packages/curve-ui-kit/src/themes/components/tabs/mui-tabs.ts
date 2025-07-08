@@ -110,7 +110,7 @@ const tabSizesNonContained = {
 const inactiveTabSelector = ({ hideInactiveBorders }: { hideInactiveBorders: boolean }, ...variants: string[]) =>
   variants
     .map(
-      (variant) =>
+      variant =>
         `&.${variant}${hideInactiveBorders ? `.${HIDE_INACTIVE_BORDERS_CLASS}` : ''} .MuiTab-root:not(.Mui-selected):not(:hover)::after`,
     )
     .join(', ')

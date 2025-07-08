@@ -21,14 +21,14 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolWithdraw.activeKey)
-  const formEstGas = useStore((state) => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolWithdraw.formStatus)
-  const formValues = useStore((state) => state.poolWithdraw.formValues)
-  const fetchStepUnstake = useStore((state) => state.poolWithdraw.fetchStepUnstake)
-  const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
-  const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const activeKey = useStore(state => state.poolWithdraw.activeKey)
+  const formEstGas = useStore(state => state.poolWithdraw.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolWithdraw.formStatus)
+  const formValues = useStore(state => state.poolWithdraw.formValues)
+  const fetchStepUnstake = useStore(state => state.poolWithdraw.fetchStepUnstake)
+  const setFormValues = useStore(state => state.poolWithdraw.setFormValues)
+  const resetState = useStore(state => state.poolWithdraw.resetState)
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -91,7 +91,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         },
       }
 
-      return ['UNSTAKE'].map((key) => stepsObj[key])
+      return ['UNSTAKE'].map(key => stepsObj[key])
     },
     [handleUnstakeClick],
   )
@@ -141,7 +141,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         balance={haveSigner ? formatNumber(balGauge) : ''}
         hasError={+formValues.stakedLpToken > +balGauge}
         haveSigner={haveSigner}
-        handleAmountChange={(stakedLpToken) => {
+        handleAmountChange={stakedLpToken => {
           updateFormValues({ stakedLpToken })
         }}
         disabledMaxButton={isDisabled}

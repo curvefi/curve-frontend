@@ -70,29 +70,29 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { tokensMapper } = useTokensMapper(rChainId)
   const userPoolActiveKey = curve && rPoolId ? getUserPoolActiveKey(curve, rPoolId) : ''
   const chainIdPoolId = getChainPoolIdActiveKey(rChainId, rPoolId)
-  const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
-  const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
-  const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const chartExpanded = useStore((state) => state.pools.pricesApiState.chartExpanded)
-  const setChartExpanded = useStore((state) => state.pools.setChartExpanded)
-  const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
-  const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
-  const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const userPoolBalances = useStore(state => state.user.walletBalances[userPoolActiveKey])
+  const userPoolBalancesLoading = useStore(state => state.user.walletBalancesLoading)
+  const currencyReserves = useStore(state => state.pools.currencyReserves[chainIdPoolId])
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const fetchUserPoolInfo = useStore(state => state.user.fetchUserPoolInfo)
+  const fetchPoolStats = useStore(state => state.pools.fetchPoolStats)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const chartExpanded = useStore(state => state.pools.pricesApiState.chartExpanded)
+  const setChartExpanded = useStore(state => state.pools.setChartExpanded)
+  const pricesApiPoolsMapper = useStore(state => state.pools.pricesApiPoolsMapper)
+  const fetchPricesPoolSnapshots = useStore(state => state.pools.fetchPricesPoolSnapshots)
+  const snapshotsMapper = useStore(state => state.pools.snapshotsMapper)
+  const { initCampaignRewards, initiated } = useStore(state => state.campaigns)
 
-  const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
+  const storeMaxSlippage = useUserProfileStore(state => state.maxSlippage[chainIdPoolId])
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const { networkId, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
+  const { networkId, isLite, pricesApi, scanAddressPath } = useStore(state => state.networks.networks[rChainId])
   const poolAddress = poolData?.pool.address
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]

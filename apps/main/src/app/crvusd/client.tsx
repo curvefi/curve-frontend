@@ -29,10 +29,10 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const hydrate = useStore((s) => s.hydrate)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchAllStoredUsdRates = useStore(state => state.usdRates.fetchAllStoredUsdRates)
+  const fetchGasInfo = useStore(state => state.gas.fetchGasInfo)
+  const hydrate = useStore(s => s.hydrate)
 
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
 

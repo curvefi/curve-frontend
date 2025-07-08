@@ -5,10 +5,10 @@ import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolInfo = () => {
-  const poolName = useStore((state) => state.createPool.poolName)
-  const poolSymbol = useStore((state) => state.createPool.poolSymbol)
-  const updatePoolName = useStore((state) => state.createPool.updatePoolName)
-  const updatePoolSymbol = useStore((state) => state.createPool.updatePoolSymbol)
+  const poolName = useStore(state => state.createPool.poolName)
+  const poolSymbol = useStore(state => state.createPool.poolSymbol)
+  const updatePoolName = useStore(state => state.createPool.updatePoolName)
+  const updatePoolSymbol = useStore(state => state.createPool.updatePoolSymbol)
 
   return (
     <>

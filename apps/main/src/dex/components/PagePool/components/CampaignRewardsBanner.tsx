@@ -12,7 +12,7 @@ const CampaignRewardsBanner = ({ address }: CampaignRewardsBannerProps) => {
 
   if (!campaignRewardsPool) return null
 
-  const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
+  const isPoints = campaignRewardsPool && campaignRewardsPool.some(rewardItem => rewardItem.tags.includes('points'))
 
   const bannerMessage = () => {
     if (isPoints) return t`Liquidity providers in this pool also earn points!`

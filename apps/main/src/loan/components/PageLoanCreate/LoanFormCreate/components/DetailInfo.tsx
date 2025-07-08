@@ -11,10 +11,10 @@ import { t } from '@ui-kit/lib/i18n'
 const DetailInfoComp = (props: FormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props
 
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
-  const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
-  const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
-  const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
+  const collateralUsdRate = useStore(state => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const isEditLiqRange = useStore(state => state.loanCreate.isEditLiqRange)
+  const liqRangesMapper = useStore(state => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
+  const setStateByKey = useStore(state => state.loanCreate.setStateByKey)
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
 

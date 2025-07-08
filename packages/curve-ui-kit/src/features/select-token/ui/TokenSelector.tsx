@@ -55,14 +55,14 @@ export const TokenSelector = ({
         customOptions={customOptions}
         compact={compact}
         onClose={closeModal}
-        onToken={(token) => {
+        onToken={token => {
           toggleModal()
 
           if (!tokenOptionEquals(token, selectedToken)) {
             onToken?.(token)
           }
         }}
-        onSearch={(search) => onSearch?.(search)}
+        onSearch={search => onSearch?.(search)}
       />
     </>
   )

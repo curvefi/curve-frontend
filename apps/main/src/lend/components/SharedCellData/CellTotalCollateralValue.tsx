@@ -9,10 +9,10 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const CellTotalCollateralValue = ({ rChainId, rOwmId }: { rChainId: ChainId; rOwmId: string }) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const totalCollateralValue = useStore((state) => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
-  const fetchTotalCollateralValue = useStore((state) => state.markets.fetchTotalCollateralValue)
+  const totalCollateralValue = useStore(state => state.markets.totalCollateralValuesMapper[rChainId]?.[rOwmId])
+  const fetchTotalCollateralValue = useStore(state => state.markets.fetchTotalCollateralValue)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { total = null, tooltipContent = [], error } = totalCollateralValue ?? {}
 

@@ -13,8 +13,8 @@ type Props = {
 }
 
 const ParametersSummary = ({ chainId }: Props) => {
-  const swapType = useStore((state) => state.createPool.swapType)
-  const validation = useStore((state) => state.createPool.validation)
+  const swapType = useStore(state => state.createPool.swapType)
+  const validation = useStore(state => state.createPool.validation)
 
   return (
     <CategoryColumn>

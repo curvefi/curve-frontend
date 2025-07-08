@@ -243,10 +243,10 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
               hasPositions: userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
-                ...(lendingVaults.data ?? []).map((vault) =>
+                ...(lendingVaults.data ?? []).map(vault =>
                   convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userBorrows, userSupplied),
                 ),
-                ...(mintMarkets.data ?? []).map((market) =>
+                ...(mintMarkets.data ?? []).map(market =>
                   convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
                 ),
               ],

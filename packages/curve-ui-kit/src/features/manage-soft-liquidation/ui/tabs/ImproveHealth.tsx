@@ -82,7 +82,7 @@ export const ImproveHealth = ({
         }
         maxBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
-        onBalance={(balance) => {
+        onBalance={balance => {
           balance ??= 0
 
           if (debtBalance !== balance) {
@@ -103,7 +103,7 @@ export const ImproveHealth = ({
           executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
           disabled={!debtToken || debtBalance === 0 || debtBalance > (userBalance ?? 0)}
           onPrimary={() => onRepay(debtToken!, debtBalance)}
-          onOption={(id) => {
+          onOption={id => {
             close()
             BUTTON_OPTION_CALLBACKS[id]()
           }}

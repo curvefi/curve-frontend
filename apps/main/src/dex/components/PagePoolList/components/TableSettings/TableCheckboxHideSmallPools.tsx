@@ -6,14 +6,14 @@ import { t } from '@ui-kit/lib/i18n'
 const TableCheckboxHideSmallPools = ({ poolDatasCachedOrApi }: { poolDatasCachedOrApi: PoolData[] }) => {
   const isDisabled = poolDatasCachedOrApi.length < 10
 
-  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
-  const setHideSmallPools = useUserProfileStore((state) => state.setHideSmallPools)
+  const hideSmallPools = useUserProfileStore(state => state.hideSmallPools)
+  const setHideSmallPools = useUserProfileStore(state => state.setHideSmallPools)
 
   return (
     <Checkbox
       isDisabled={isDisabled}
       isSelected={isDisabled ? false : hideSmallPools}
-      onChange={(val) => setHideSmallPools(val)}
+      onChange={val => setHideSmallPools(val)}
     >
       {t`Hide very small pools`}
     </Checkbox>

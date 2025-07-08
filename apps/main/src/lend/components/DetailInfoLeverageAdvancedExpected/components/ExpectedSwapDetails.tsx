@@ -39,7 +39,7 @@ const ExpectedSwapDetails = ({
   const networkId = networks[rChainId].id
 
   useEffect(() => {
-    setData((prev) => ({ ...stateDefault, height: prev.height }))
+    setData(prev => ({ ...stateDefault, height: prev.height }))
     const state = { height: '', data: [] as Hop[] }
 
     if (routesRef.current) {

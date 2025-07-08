@@ -17,11 +17,11 @@ type Props = {
 }
 
 const Summary = ({ blockchainId, chainId, curve }: Props) => {
-  const advanced = useStore((state) => state.createPool.advanced)
-  const validationPoolType = useStore((state) => state.createPool.validation.poolType)
-  const validationTokensInPool = useStore((state) => state.createPool.validation.tokensInPool)
-  const validationParameters = useStore((state) => state.createPool.validation.parameters)
-  const validationPoolInfo = useStore((state) => state.createPool.validation.poolInfo)
+  const advanced = useStore(state => state.createPool.advanced)
+  const validationPoolType = useStore(state => state.createPool.validation.poolType)
+  const validationTokensInPool = useStore(state => state.createPool.validation.tokensInPool)
+  const validationParameters = useStore(state => state.createPool.validation.parameters)
+  const validationPoolInfo = useStore(state => state.createPool.validation.poolInfo)
 
   return (
     <Wrapper flex flexColumn>

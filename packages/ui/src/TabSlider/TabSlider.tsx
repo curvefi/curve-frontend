@@ -31,7 +31,7 @@ const TabSlider = <T,>({ tabs, activeTab, onTabChange, isTabVisible = () => true
     const tabsNode = tabsRef.current
     const tabsDOMRect = tabsNode.getBoundingClientRect()
     const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
+      .filter(n => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
         const left = idx === 0 ? 0 : domRect.left - tabsDOMRect.left
@@ -51,7 +51,7 @@ const TabSlider = <T,>({ tabs, activeTab, onTabChange, isTabVisible = () => true
   )
 
   useEffect(() => {
-    const newIdx = tabs.findIndex((tab) => tab.value === activeTab)
+    const newIdx = tabs.findIndex(tab => tab.value === activeTab)
     if (newIdx !== -1) {
       setSelectedTabIdx(newIdx)
     }

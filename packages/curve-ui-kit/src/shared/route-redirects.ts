@@ -41,7 +41,7 @@ const OldRoutes: Record<AppName, string[]> = {
  */
 export function getHashRedirectUrl({ pathname, search, hash, host }: Location) {
   const hashPath = hash.replace(/^#\/?/, '')
-  const oldApp = oldOrigins.find((app) => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
+  const oldApp = oldOrigins.find(app => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')
   if ([app, network].includes('integrations')) {
     // old routes directly to integrations
@@ -49,7 +49,7 @@ export function getHashRedirectUrl({ pathname, search, hash, host }: Location) {
   }
   const appName = AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
   const routes = OldRoutes[appName]
-  if (network && routes?.find((r) => r.startsWith(`/${network}`))) {
+  if (network && routes?.find(r => r.startsWith(`/${network}`))) {
     // handle old routes without network (this code should only be called when network is not found)
     return `/${appName}/ethereum/${network}/${rest.join('/')}${search}`
   }

@@ -2,8 +2,8 @@ import useStore from '@/lend/store/useStore'
 import { formatNumber } from '@ui/utils'
 
 const CellLoanUserHealth = ({ userActiveKey }: { userActiveKey: string }) => {
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
-  const userLoanHealthResp = useStore((state) => state.user.loansHealthsMapper[userActiveKey])
+  const loanExistsResp = useStore(state => state.user.loansExistsMapper[userActiveKey])
+  const userLoanHealthResp = useStore(state => state.user.loansHealthsMapper[userActiveKey])
 
   const { loanExists, error: loanExistsError } = loanExistsResp ?? {}
   const { healthFull, healthNotFull, error: userLoanDetailsError } = userLoanHealthResp ?? {}

@@ -80,7 +80,7 @@ export const Accordion = ({
 
           '&:hover, &.Mui-focusVisible': {
             '&::after': {
-              borderColor: (t) => t.design.Button.Focus_Outline,
+              borderColor: t => t.design.Button.Focus_Outline,
               borderWidth: '2px',
             },
             ...(!ghost && { backgroundColor: layer1Fill }),
@@ -129,7 +129,7 @@ export const Accordion = ({
               height: IconSize.md,
               transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
               // Create a transition that mimics the collapse transition
-              transition: (t) =>
+              transition: t =>
                 t.transitions.create('transform', {
                   duration: t.transitions.duration.standard,
                   easing: t.transitions.easing.easeInOut,

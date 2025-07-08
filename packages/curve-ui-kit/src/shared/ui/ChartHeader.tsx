@@ -58,7 +58,7 @@ const ChartHeader = <T extends string>({
   and separate the expand Chart button to the right
   */
   const smallBreakPoint = '35.9375rem' // 575px
-  const foundChartOption = chartOptions.find((option) => option.key === activeChartOption)
+  const foundChartOption = chartOptions.find(option => option.key === activeChartOption)
 
   return (
     <Stack
@@ -91,7 +91,7 @@ const ChartHeader = <T extends string>({
           onChange={handleChartOption}
           sx={{ [`@media (max-width: ${smallBreakPoint})`]: { width: '100%', display: 'flex', flexGrow: 1 } }}
         >
-          {chartOptions.map((option) => (
+          {chartOptions.map(option => (
             <ToggleButton value={option.key} key={option.key} size="small">
               {option.label}
             </ToggleButton>
@@ -113,7 +113,7 @@ const ChartHeader = <T extends string>({
             size="small"
             sx={{ width: '100px', textTransform: 'uppercase' }}
           >
-            {timeOptions.map((option) => (
+            {timeOptions.map(option => (
               <MenuItem value={option} key={option} sx={{ textTransform: 'uppercase' }}>
                 {option}
               </MenuItem>

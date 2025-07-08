@@ -33,12 +33,12 @@ const IntegrationsComp = ({
   const { push } = useRouter()
   const { isFocusVisible, focusProps } = useFocusRing()
 
-  const formStatus = useStore((state) => state.integrations.formStatus)
-  const formValues = useStore((state) => state.integrations.formValues)
-  const integrationsList = useStore((state) => state.integrations.integrationsList)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
-  const results = useStore((state) => state.integrations.results)
-  const setFormValues = useStore((state) => state.integrations.setFormValues)
+  const formStatus = useStore(state => state.integrations.formStatus)
+  const formValues = useStore(state => state.integrations.formValues)
+  const integrationsList = useStore(state => state.integrations.integrationsList)
+  const isXSmDown = useLayoutStore(state => state.isXSmDown)
+  const results = useStore(state => state.integrations.results)
+  const setFormValues = useStore(state => state.integrations.setFormValues)
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
@@ -84,7 +84,7 @@ const IntegrationsComp = ({
           className={isFocusVisible ? 'focus-visible' : ''}
           {...focusProps}
           value={formValues.searchText}
-          handleInputChange={(val) => updateFormValues({ searchText: val })}
+          handleInputChange={val => updateFormValues({ searchText: val })}
           handleSearchClose={() => updateFormValues({ searchText: '' })}
         />
         {!isXSmDown ? (
@@ -126,7 +126,7 @@ const IntegrationsComp = ({
               integrationsAppNetworks={
                 !rChainId && (
                   <Box margin="0.25rem 0 0 0">
-                    {Object.keys(app.networks).map((networkId) => {
+                    {Object.keys(app.networks).map(networkId => {
                       if (networkId in networksIdMapper) {
                         const chainId = networksIdMapper[networkId as NetworkEnum]
                         const { name, logoSrc } = networks[chainId]

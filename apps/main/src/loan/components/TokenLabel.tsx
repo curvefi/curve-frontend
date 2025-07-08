@@ -29,7 +29,7 @@ const TokenLabel = ({
   onClick,
 }: Props) => {
   const collateralAlert = useCollateralAlert(collateralDataCachedOrApi?.llamma?.address)
-  const campaignRewardsMapper = useStore((state) => state.campaigns.campaignRewardsMapper)
+  const campaignRewardsMapper = useStore(state => state.campaigns.campaignRewardsMapper)
   const campaignRewards = campaignRewardsMapper[collateralDataCachedOrApi?.llamma?.controller ?? '']
 
   const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}

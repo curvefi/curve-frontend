@@ -7,7 +7,7 @@ export function useTraceProps<T extends Record<string, unknown>>(name: string, p
     const { current: previousProps } = propsRef
     const changedProps: Record<string, [unknown, unknown]> = Object.fromEntries(
       Object.keys(props)
-        .map((key) => [key, [previousProps[key], props[key]]])
+        .map(key => [key, [previousProps[key], props[key]]])
         .filter(([, [prev, curr]]) => prev !== curr),
     )
     if (Object.keys(changedProps).length) {

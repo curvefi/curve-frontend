@@ -44,8 +44,8 @@ export function ChainList({
   const groupedOptions = useMemo(
     () =>
       groupBy(
-        options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
-        (o) => (o.isTestnet ? ChainType.test : ChainType.main),
+        options.filter(o => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
+        o => (o.isTestnet ? ChainType.test : ChainType.main),
       ),
     [options, searchValue],
   )
@@ -72,7 +72,7 @@ export function ChainList({
               <Fragment key={key}>
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
-                  {networks.map((network) => (
+                  {networks.map(network => (
                     <MenuItem<number, typeof Link>
                       data-testid={`menu-item-chain-${network.chainId}`}
                       key={network.chainId}

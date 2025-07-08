@@ -30,7 +30,7 @@ export const parseSupply = (x: Responses.GetSupplyResponse['supply'][number]): M
   crvEscrowed: BigInt(x.escrowed_crv),
   crvSupply: BigInt(x.crv_supply),
   circulatingSupply: BigInt(x.circulating_supply),
-  lockedSupplyDetails: x.locked_supply_details.map((y) => ({
+  lockedSupplyDetails: x.locked_supply_details.map(y => ({
     address: y.address,
     label: y.label,
     locked: BigInt(y.locked),

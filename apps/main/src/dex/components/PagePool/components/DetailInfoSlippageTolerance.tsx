@@ -14,7 +14,7 @@ type Props = {
 }
 
 const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Props) => {
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
 
   return (
     <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
@@ -26,7 +26,7 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Pro
             <Icon name="Settings" size={16} />
           </IconButton>
         )}
-        onSave={(slippage) => setMaxSlippage(slippage, stateKey)}
+        onSave={slippage => setMaxSlippage(slippage, stateKey)}
       />
     </StyledDetailInfo>
   )

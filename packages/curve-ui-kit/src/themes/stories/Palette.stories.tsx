@@ -14,7 +14,7 @@ const PaletteStory = () => {
       {Object.entries({ palette, Color, Text }).map(([palette, p]) => (
         <Box key={palette}>
           {Object.entries(p)
-            .filter(([, options]) => Object.values(options).some((o) => `${o}`.startsWith('#')))
+            .filter(([, options]) => Object.values(options).some(o => `${o}`.startsWith('#')))
             .map(([type, options]) => (
               <Box key={type} sx={{ marginY: 7 }}>
                 <Typography variant="headingMLight">

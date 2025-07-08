@@ -21,12 +21,12 @@ const MarketParameters = ({
   type: 'borrow' | 'supply'
 }) => {
   const owm = useOneWayMarket(rChainId, rOwmId).data
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
-  const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
-  const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
-  const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
+  const loanPricesResp = useStore(state => state.markets.pricesMapper[rChainId]?.[rOwmId])
+  const parametersResp = useStore(state => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
+  const vaultPricePerShareResp = useStore(state => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const fetchVaultPricePerShare = useStore(state => state.markets.fetchVaultPricePerShare)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}

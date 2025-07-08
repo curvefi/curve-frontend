@@ -44,13 +44,13 @@ const Page = (params: MarketUrlParams) => {
   const [isLoaded, setLoaded] = useState(false)
   const { push } = useRouter()
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const fetchAllMarketDetails = useStore(state => state.markets.fetchAll)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  const fetchUserLoanExists = useStore(state => state.user.fetchUserLoanExists)
+  const { chartExpanded, setChartExpanded } = useStore(state => state.ohlcCharts)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const rOwmId = market?.id ?? ''

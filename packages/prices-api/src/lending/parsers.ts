@@ -3,16 +3,16 @@ import type * as Models from './models'
 import type * as Responses from './responses'
 
 export const parseLoanDistribution = (x: Responses.GetLoanDistributionResponse): Models.LoanDistribution => ({
-  stablecoin: x.stablecoin.map((x) => ({ value: x.value, label: x.label })),
-  debt: x.debt.map((x) => ({ value: x.value, label: x.label })),
-  collateral: x.collateral.map((x) => ({ value: x.value, label: x.label })),
+  stablecoin: x.stablecoin.map(x => ({ value: x.value, label: x.label })),
+  debt: x.debt.map(x => ({ value: x.value, label: x.label })),
+  collateral: x.collateral.map(x => ({ value: x.value, label: x.label })),
 })
 
 export const parseOracle = (x: Responses.GetOracleResponse): Models.Oracle => ({
   chain: x.chain,
   controller: x.controller,
   oracle: x.oracle,
-  pools: x.price_source_pools.map((pool) => ({
+  pools: x.price_source_pools.map(pool => ({
     address: pool.address,
     borrowedIndex: pool.borrowed_ix,
     borrowedSymbol: pool.borrowed_symbol,
@@ -21,7 +21,7 @@ export const parseOracle = (x: Responses.GetOracleResponse): Models.Oracle => ({
     collateralSymbol: pool.collateral_symbol,
     collateralAddress: pool.collateral_address,
   })),
-  ohlc: x.data.map((ohlc) => ({
+  ohlc: x.data.map(ohlc => ({
     time: toDate(ohlc.time),
     open: ohlc.open,
     close: ohlc.close,
@@ -45,7 +45,7 @@ export const parseUserCollateralEvents = (
   totalDepositFromUserPrecise: x.total_deposit_from_user_precise,
   totalDepositUsdValue: x.total_deposit_usd_value,
   totalBorrowedUsdValue: x.total_deposit_from_user_usd_value,
-  events: x.data.map((y) => ({
+  events: x.data.map(y => ({
     timestamp: toDate(y.dt),
     txHash: y.transaction_hash,
     type: y.type,

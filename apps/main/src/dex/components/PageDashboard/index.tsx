@@ -39,23 +39,23 @@ const Dashboard = ({
   const isSubscribed = useRef(false)
   const { push } = useRouter()
 
-  const activeKey = useStore((state) => state.dashboard.activeKey)
-  const formValues = useStore((state) => state.dashboard.formValues)
-  const error = useStore((state) => state.dashboard.error)
-  const dashboardDataPoolIds = useStore((state) => state.dashboard.dashboardDataPoolIds[activeKey])
+  const activeKey = useStore(state => state.dashboard.activeKey)
+  const formValues = useStore(state => state.dashboard.formValues)
+  const error = useStore(state => state.dashboard.error)
+  const dashboardDataPoolIds = useStore(state => state.dashboard.dashboardDataPoolIds[activeKey])
   const dashboardDataActiveKey = getDashboardDataActiveKey(rChainId, formValues.walletAddress)
-  const dashboardDataMapper = useStore((state) => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
-  const noResult = useStore((state) => state.dashboard.noResult)
-  const haveAllPools = useStore((state) => state.pools.haveAllPools[rChainId])
-  const isLoading = useStore((state) => state.dashboard.loading)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
-  const poolsMapper = useStore((state) => state.pools.poolsMapper[rChainId])
-  const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[rChainId])
-  const setFormValues = useStore((state) => state.dashboard.setFormValues)
+  const dashboardDataMapper = useStore(state => state.dashboard.dashboardDatasMapper[dashboardDataActiveKey])
+  const noResult = useStore(state => state.dashboard.noResult)
+  const haveAllPools = useStore(state => state.pools.haveAllPools[rChainId])
+  const isLoading = useStore(state => state.dashboard.loading)
+  const isXSmDown = useLayoutStore(state => state.isXSmDown)
+  const poolsMapper = useStore(state => state.pools.poolsMapper[rChainId])
+  const rewardsApyMapper = useStore(state => state.pools.rewardsApyMapper[rChainId])
+  const setFormValues = useStore(state => state.dashboard.setFormValues)
 
   const { chainId, signerAddress } = curve ?? {}
   const { walletAddress } = formValues
-  const { isLite, networkId } = useStore((state) => state.networks.networks[rChainId])
+  const { isLite, networkId } = useStore(state => state.networks.networks[rChainId])
   const { userPoolBoost } = curvejsApi.wallet
 
   const isValidAddress = useMemo(() => isAddress(walletAddress as Address), [walletAddress])
@@ -139,7 +139,7 @@ const Dashboard = ({
               <TableRowNoResult colSpan={colSpan} noResult={noResult} error={error} />
             ) : dashboardDataPoolIds?.length > 0 ? (
               <>
-                {dashboardDataPoolIds.map((poolId) => {
+                {dashboardDataPoolIds.map(poolId => {
                   const poolData = poolsMapper?.[poolId]
                   const dashboardData = dashboardDataMapper?.[poolId]
 

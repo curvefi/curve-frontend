@@ -17,14 +17,14 @@ export const useIsSignerConnected = () => {
 export const useTokensBalances = (
   tokens: (Address | undefined)[],
 ): { data: (string | undefined)[]; isLoading: boolean } => {
-  const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const userBalancesLoading = useStore((state) => state.userBalances.loading)
+  const userBalancesMapper = useStore(state => state.userBalances.userBalancesMapper)
+  const userBalancesLoading = useStore(state => state.userBalances.loading)
 
   const tokensKey = JSON.stringify(tokens)
 
   const balances = useMemo(() => {
     if (userBalancesLoading) return tokens.map(() => undefined)
-    return tokens.map((token) => (token ? userBalancesMapper[token] : undefined))
+    return tokens.map(token => (token ? userBalancesMapper[token] : undefined))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensKey, userBalancesMapper, userBalancesLoading])
 

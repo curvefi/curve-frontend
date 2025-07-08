@@ -11,7 +11,7 @@ const CellUserBalances = ({
   userActiveKey: string
   type: 'borrow' | 'supply'
 }) => {
-  const resp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const resp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { collateral, borrowed, error } = resp ?? {}
   const balance = type === 'borrow' ? collateral : borrowed

@@ -136,7 +136,7 @@ function notionalsToString(notionals: Props['notional']) {
         : (notionals ?? [])
 
   return ns
-    .map((notional) => {
+    .map(notional => {
       const { value } = notional
       const { abbreviate, formatter } = getFormattingDefaults(notional)
       const { symbol, position } = getUnit(notional.unit) ?? {}

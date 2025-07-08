@@ -10,12 +10,12 @@ export const HelperFields = () => {
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')
 
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
   const tokens = [rewardTokenId]
   const tokensKey = JSON.stringify(tokens)
 
   const [tokenUsdRate] = useMemo(
-    () => tokens.map((token) => (token ? usdRatesMapper[token] : undefined)),
+    () => tokens.map(token => (token ? usdRatesMapper[token] : undefined)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [tokensKey, usdRatesMapper],
   )

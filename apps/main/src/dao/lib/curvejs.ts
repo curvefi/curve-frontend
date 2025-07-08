@@ -20,7 +20,7 @@ export const helpers = {
         console.error(`Unable to get usd rate for ${tokenAddress}`, error)
         results[tokenAddress] = NaN
       })
-      .process(async (tokenAddress) => {
+      .process(async tokenAddress => {
         results[tokenAddress] = await curve.getUsdRate(tokenAddress)
       })
     return results

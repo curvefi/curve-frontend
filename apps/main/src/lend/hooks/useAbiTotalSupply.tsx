@@ -12,7 +12,7 @@ const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefine
   const contract = useContract(rChainId, false, 'totalSupply', contractAddress)
   const isValidAddress = contractAddress !== zeroAddress
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
 
   const [totalSupply, settotalSupply] = useState<number | null>(null)
 

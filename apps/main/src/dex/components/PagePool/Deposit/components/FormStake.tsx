@@ -26,17 +26,17 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolDeposit.activeKey)
-  const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
-  const formEstGas = useStore((state) => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
-  const formStatus = useStore((state) => state.poolDeposit.formStatus)
-  const formValues = useStore((state) => state.poolDeposit.formValues)
-  const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
-  const fetchStepApprove = useStore((state) => state.poolDeposit.fetchStepStakeApprove)
-  const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
-  const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
-  const resetState = useStore((state) => state.poolDeposit.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const activeKey = useStore(state => state.poolDeposit.activeKey)
+  const balancesLoading = useStore(state => state.user.walletBalancesLoading)
+  const formEstGas = useStore(state => state.poolDeposit.formEstGas[activeKey] ?? DEFAULT_ESTIMATED_GAS)
+  const formStatus = useStore(state => state.poolDeposit.formStatus)
+  const formValues = useStore(state => state.poolDeposit.formValues)
+  const rewardsApy = useStore(state => state.pools.rewardsApyMapper[rChainId]?.[poolDataCacheOrApi.pool.id])
+  const fetchStepApprove = useStore(state => state.poolDeposit.fetchStepStakeApprove)
+  const fetchStepStake = useStore(state => state.poolDeposit.fetchStepStake)
+  const setFormValues = useStore(state => state.poolDeposit.setFormValues)
+  const resetState = useStore(state => state.poolDeposit.resetState)
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -110,12 +110,12 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['STAKE'] : ['APPROVAL', 'STAKE']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [handleApproveClick, handleStakeClick],
   )
@@ -167,7 +167,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           balanceLoading={balancesLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
           haveSigner={haveSigner}
-          handleAmountChange={(lpToken) => updateFormValues({ lpToken })}
+          handleAmountChange={lpToken => updateFormValues({ lpToken })}
           disabledMaxButton={disableForm || !haveSigner}
           disableInput={disableForm}
           handleMaxClick={() => {

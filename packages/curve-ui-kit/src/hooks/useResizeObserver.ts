@@ -47,7 +47,7 @@ export default function useResizeObserver(
 
     const updateEntry = ([updatedEntry]: ResizeObserverEntry[]): void => {
       const { width, height } = updatedEntry?.contentRect
-      const dimensions = [width, height].map((d) => Math.round(d || 0)) as [number, number]
+      const dimensions = [width, height].map(d => Math.round(d || 0)) as [number, number]
       // Allow initial height to be set if prev is null
       setDimensions((prev): [number, number] =>
         prev == null

@@ -50,7 +50,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
             <SubTitle>{t`Power`}</SubTitle>
           </Box>
           <VotesContainer>
-            {pricesProposal.votes.map((vote) => (
+            {pricesProposal.votes.map(vote => (
               <DataRow key={`${vote.txHash}-${vote.supports}`}>
                 <Box flex>
                   {vote.supports ? (
@@ -59,7 +59,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
                     <AgainstIcon name="Misuse" size={16} />
                   )}
                   <StyledInternalLink
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault()
                       push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`))
                     }}

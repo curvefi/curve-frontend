@@ -16,7 +16,7 @@ const { fetchQuery: fetchCoinPrice } = queryFactory({
 export const getCoinPrices = async (stablecoinAddresses: Address[], chain: Chain): Promise<Record<string, number>> =>
   Object.fromEntries(
     await Promise.all(
-      stablecoinAddresses.map(async (contractAddress) => [
+      stablecoinAddresses.map(async contractAddress => [
         contractAddress,
         await fetchCoinPrice({ blockchainId: chain, contractAddress }),
       ]),

@@ -11,9 +11,9 @@ const hasKeys = <K extends keyof any, V>(obj: Record<K, V> | undefined | null): 
   !!obj && Object.keys(obj).length > 0
 
 function useTvl(chainId: ChainId | undefined) {
-  const collateralDatasMapper = useStore((state) => chainId && state.collaterals.collateralDatasMapper[chainId])
-  const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
+  const collateralDatasMapper = useStore(state => chainId && state.collaterals.collateralDatasMapper[chainId])
+  const loansDetailsMapper = useStore(state => state.loans.detailsMapper)
+  const usdRatesMapper = useStore(state => state.usdRates.tokens)
   return useMemo(() => {
     if (!hasKeys(collateralDatasMapper) || !hasKeys(loansDetailsMapper) || !hasKeys(usdRatesMapper)) {
       return '-'
@@ -39,7 +39,7 @@ function useTvl(chainId: ChainId | undefined) {
 }
 
 export function useLoanAppStats(chainId: ChainId | undefined) {
-  const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
+  const crvusdPrice = useStore(state => state.usdRates.tokens[CRVUSD_ADDRESS])
   const { data: dailyVolume } = useAppStatsDailyVolume({})
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
   return [

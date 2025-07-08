@@ -25,15 +25,15 @@ const DetailInfoNonLeverage = ({
   setHealthMode,
   handleLiqRangesEdit,
 }: PageContentProps & DetailInfoCompProps & DetailInfoCompAdditionalProps) => {
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const detailInfo = useStore((state) => state.loanCreate.detailInfo[activeKey])
-  const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
-  const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
+  const activeKey = useStore(state => state.loanCreate.activeKey)
+  const activeKeyLiqRange = useStore(state => state.loanCreate.activeKeyLiqRange)
+  const detailInfo = useStore(state => state.loanCreate.detailInfo[activeKey])
+  const formEstGas = useStore(state => state.loanCreate.formEstGas[activeKey])
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const isEditLiqRange = useStore(state => state.loanCreate.isEditLiqRange)
+  const liqRanges = useStore(state => state.loanCreate.liqRanges[activeKeyLiqRange])
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const { signerAddress } = api ?? {}
   const { borrowed_token, collateral_token } = market ?? {}

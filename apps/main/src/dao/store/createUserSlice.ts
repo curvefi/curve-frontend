@@ -134,7 +134,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const ensName = await provider.lookupAddress(userAddress)
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userMapper[userAddress] = {
               ens: ensName || null,
             }
@@ -143,7 +143,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       } catch (error) {
         console.error('Error fetching ENS name:', error)
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userMapper[userAddress] = {
               ens: null,
             }
@@ -159,13 +159,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userLocksSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userLocksSortBy.key = sortBy
             state[sliceKey].userLocksSortBy.order = 'desc'
           }),
@@ -183,7 +183,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       }
 
       set(
-        produce((state) => {
+        produce(state => {
           state[sliceKey].userProposalVotesSortBy.key = sortBy
           state[sliceKey].userProposalVotesSortBy.order = order
         }),
@@ -197,13 +197,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVotesSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVotesSortBy.key = sortBy
             state[sliceKey].userGaugeVotesSortBy.order = 'desc'
           }),
@@ -218,13 +218,13 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         order = order === 'asc' ? 'desc' : 'asc'
 
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVoteWeightsSortBy.order = order
           }),
         )
       } else {
         set(
-          produce((state) => {
+          produce(state => {
             state[sliceKey].userGaugeVoteWeightsSortBy.key = sortBy
             state[sliceKey].userGaugeVoteWeightsSortBy.order = 'desc'
           }),
@@ -233,7 +233,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     },
     setSnapshotVeCrv: async (signer: any, userAddress: string, snapshot: number, proposalId: string) => {
       set(
-        produce((state) => {
+        produce(state => {
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: true,
             value: null,
@@ -246,7 +246,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       const snapshotValue = await contract.balanceOfAt(userAddress, snapshot)
 
       set(
-        produce((state) => {
+        produce(state => {
           state[sliceKey].snapshotVeCrvMapper[proposalId] = {
             loading: false,
             value: Number(snapshotValue) / 1e18,
@@ -262,7 +262,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

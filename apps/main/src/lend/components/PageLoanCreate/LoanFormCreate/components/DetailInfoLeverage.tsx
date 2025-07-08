@@ -33,17 +33,17 @@ const DetailInfoLeverage = ({
   setHealthMode,
   handleLiqRangesEdit,
 }: PageContentProps & DetailInfoCompProps & DetailInfoCompAdditionalProps) => {
-  const activeKey = useStore((state) => state.loanCreate.activeKey)
-  const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-  const detailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
-  const formValues = useStore((state) => state.loanCreate.formValues)
-  const maxLeverage = useStore((state) => state.loanCreate.maxLeverage[formValues.n || ''])
-  const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
-  const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
+  const activeKey = useStore(state => state.loanCreate.activeKey)
+  const activeKeyLiqRange = useStore(state => state.loanCreate.activeKeyLiqRange)
+  const detailInfo = useStore(state => state.loanCreate.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanCreate.formEstGas[activeKey])
+  const formValues = useStore(state => state.loanCreate.formValues)
+  const maxLeverage = useStore(state => state.loanCreate.maxLeverage[formValues.n || ''])
+  const isEditLiqRange = useStore(state => state.loanCreate.isEditLiqRange)
+  const liqRanges = useStore(state => state.loanCreate.liqRanges[activeKeyLiqRange])
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const { signerAddress } = api ?? {}
   const { minBands, maxBands, borrowed_token, collateral_token } = market ?? {}

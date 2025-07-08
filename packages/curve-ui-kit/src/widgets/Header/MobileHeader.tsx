@@ -39,9 +39,9 @@ export const MobileHeader = ({
 }: HeaderImplementationProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
-  const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
+  const toggleSidebar = useCallback(() => setSidebarOpen(isOpen => !isOpen), [])
   const pathname = usePathname()
-  const top = useLayoutStore((state) => state.navHeight)
+  const top = useLayoutStore(state => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
 
@@ -52,7 +52,7 @@ export const MobileHeader = ({
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes.map((p) => routeToPage(p, { networkId, pathname })),
+          pages: routes.map(p => routeToPage(p, { networkId, pathname })),
         })),
     [currentMenu, networkId, pathname],
   )
@@ -60,11 +60,11 @@ export const MobileHeader = ({
     <AppBar
       color="transparent"
       ref={useMainNavRef()}
-      sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, position: 'sticky', top: 0 }}
+      sx={{ backgroundColor: t => t.design.Layer[1].Fill, position: 'sticky', top: 0 }}
       data-testid="mobile-main-bar"
     >
       <GlobalBanner networkId={networkId} chainId={chainId} />
-      <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
+      <Toolbar sx={t => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar
           isLite={isLite}
           ChainProps={{ chainId, networks: supportedNetworks }}

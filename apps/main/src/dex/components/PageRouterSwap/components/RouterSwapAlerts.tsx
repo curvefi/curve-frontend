@@ -34,7 +34,7 @@ const RouterSwapAlerts = ({
     isFullReset?: boolean,
   ) => void
 }) => {
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
 
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams

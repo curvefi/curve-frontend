@@ -13,7 +13,7 @@ interface SubNavProps {
 
 const SubNav = ({ activeKey, navItems, setNavChange, nested, className }: SubNavProps) => (
   <NavWrapper nested={nested} className={className}>
-    {navItems.map((item) => (
+    {navItems.map(item => (
       <ButtonWrapper key={item.key}>
         <NavButton
           onClick={() => setNavChange(item.key)}

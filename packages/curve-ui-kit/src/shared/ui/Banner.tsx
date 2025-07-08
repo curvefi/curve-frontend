@@ -16,15 +16,15 @@ type BannerSeverity = 'default' | 'highlight' | 'warning' | 'alert'
 
 const WrapperSx: Record<BannerSeverity, SxProps<Theme>> = {
   default: {
-    border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
-    backgroundColor: (t) => t.design.Layer[1].Fill,
+    border: t => `1px solid ${t.design.Layer.Highlight.Outline}`,
+    backgroundColor: t => t.design.Layer[1].Fill,
   },
   highlight: {
-    border: (t) => `1px solid ${t.design.Layer.Highlight.Outline}`,
-    backgroundColor: (t) => t.design.Color.Primary[800],
+    border: t => `1px solid ${t.design.Layer.Highlight.Outline}`,
+    backgroundColor: t => t.design.Color.Primary[800],
   },
-  alert: { backgroundColor: (t) => t.design.Layer.Feedback.Error },
-  warning: { backgroundColor: (t) => t.design.Layer.Feedback.Warning },
+  alert: { backgroundColor: t => t.design.Layer.Feedback.Error },
+  warning: { backgroundColor: t => t.design.Layer.Feedback.Warning },
 }
 
 const TitleColor: Record<BannerSeverity, TypographyProps['color']> = {

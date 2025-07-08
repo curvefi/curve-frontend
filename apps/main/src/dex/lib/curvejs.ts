@@ -92,7 +92,7 @@ const helpers = {
 
     await PromisePool.for(tokenAddresses)
       .withConcurrency(5)
-      .process(async (tokenAddress) => {
+      .process(async tokenAddress => {
         try {
           results[tokenAddress] = await curve.getUsdRate(tokenAddress)
         } catch (error) {
@@ -262,7 +262,7 @@ const pool = {
         ]
 
         // others rewards
-        resp.other = others.filter((other) => +other.apy > 0)
+        resp.other = others.filter(other => +other.apy > 0)
         resp.crv = +baseApy > 0 || +boostedApy > 0 ? [baseApy, boostedApy] : [0, 0]
       }
       return resp
@@ -1178,7 +1178,7 @@ const poolWithdraw = {
     const claimableRewards = await p.claimableRewards()
 
     // ClaimableReward[] = [{token: '0x5a98fcbea516cf06857215779fd812ca3bef1b32', symbol: 'LDO', amount: '15.589367306902830498'}]
-    return claimableRewards.filter((r) => {
+    return claimableRewards.filter(r => {
       if (chainId !== 1) {
         return r.symbol !== 'CRV' && +r.amount > 0
       }
@@ -1267,9 +1267,9 @@ const wallet = {
     log('getUserClaimable', poolIds, walletAddress)
     const fetchedUserClaimable = await curve.getUserClaimable(poolIds, walletAddress)
     if (curve.chainId === 8453) {
-      return fetchedUserClaimable.map((poolClaimables) => {
+      return fetchedUserClaimable.map(poolClaimables => {
         if (Array.isArray(poolClaimables)) {
-          const crvClaimables = poolClaimables.filter((c) => c.symbol === 'CRV')
+          const crvClaimables = poolClaimables.filter(c => c.symbol === 'CRV')
           // Base chain show too many CRV
           if (crvClaimables.length === 2) {
             return [crvClaimables[0]]
@@ -1408,7 +1408,7 @@ const wallet = {
           profit.crvProfit = filteredCrvProfiles
         }
         if (chainId === 8453) {
-          const foundCRVRewards = rewards[1].find((r) => r.symbol === 'CRV')
+          const foundCRVRewards = rewards[1].find(r => r.symbol === 'CRV')
           if (!foundCRVRewards) {
             profit.tokensProfit = rewards[1]
           }
@@ -1436,7 +1436,7 @@ const wallet = {
       .handleError((_, chunk) => {
         errors.push(chunk)
       })
-      .process(async (addresses) => {
+      .process(async addresses => {
         const balances = (await curve.getBalances(addresses)) as string[]
         for (const idx in balances) {
           const balance = balances[idx]
@@ -1453,7 +1453,7 @@ const wallet = {
           console.error(`Unable to get user balance for ${tokenAddress}`, error)
           results[tokenAddress] = 'NaN'
         })
-        .process(async (tokenAddress) => {
+        .process(async tokenAddress => {
           const [balance] = (await curve.getBalances([tokenAddress])) as string[]
           results[tokenAddress] = balance
         })

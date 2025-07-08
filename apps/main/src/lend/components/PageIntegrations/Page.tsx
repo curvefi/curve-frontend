@@ -15,8 +15,8 @@ const Page = (params: NetworkUrlParams) => {
   const searchParams = useSearchParams()
   const rChainId = networksIdMapper[params.network]
 
-  const init = useStore((state) => state.integrations.init)
-  const integrationsTags = useStore((state) => state.integrations.integrationsTags)
+  const init = useStore(state => state.integrations.init)
+  const integrationsTags = useStore(state => state.integrations.integrationsTags)
 
   useEffect(() => {
     void init(rChainId)

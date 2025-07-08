@@ -39,7 +39,7 @@ const SelectTokenButton = ({
   tokens = [],
   onSelectionChange,
 }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const networks = useStore(state => state.networks.networks)
   const visibleTokens = useRef<{ [k: string]: boolean }>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
@@ -47,13 +47,13 @@ const SelectTokenButton = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
   const isMobile = useIsMobile()
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
+  const nativeToken = useStore(state => state.networks.nativeToken[chainId])
 
-  const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
-  const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
+  const userAddedTokens = useStore(state => state.createPool.userAddedTokens)
+  const updateUserAddedTokens = useStore(state => state.createPool.updateUserAddedTokens)
 
-  const { basePools, basePoolsLoading } = useStore((state) => state.pools)
-  const { swapType } = useStore((state) => state.createPool)
+  const { basePools, basePoolsLoading } = useStore(state => state.pools)
+  const { swapType } = useStore(state => state.createPool)
 
   const [error, setError] = useState<string>()
   const [filterValue, setFilterValue] = useState('')
@@ -78,14 +78,14 @@ const SelectTokenButton = ({
   // handles search/filtering
   const options = useMemo(() => {
     const allTokens = filterBasepools
-      ? tokens.filter((item) =>
-          basePools[chainId]?.some((basepool) => basepool.token.toLowerCase() === item.address.toLowerCase()),
+      ? tokens.filter(item =>
+          basePools[chainId]?.some(basepool => basepool.token.toLowerCase() === item.address.toLowerCase()),
         )
       : tokens
 
     const filteredResults = filterTokens(filterValue, allTokens, endsWith)
 
-    return filteredResults.map((token) => ({
+    return filteredResults.map(token => ({
       chain: blockchainId,
       address: token.address as Address,
       symbol: token.symbol,
@@ -102,12 +102,12 @@ const SelectTokenButton = ({
       if (
         filterValueLowerCase.length === 42 &&
         options.length === 0 &&
-        !(userAddedTokens ?? []).some((x) => x.address.toLocaleLowerCase() === filterValueLowerCase)
+        !(userAddedTokens ?? []).some(x => x.address.toLocaleLowerCase() === filterValueLowerCase)
       ) {
         try {
           const token = await curve.getCoinsData([filterValueLowerCase])
           const isBasePool = !!basePools[chainId]?.some(
-            (basepool) => basepool.token.toLowerCase() === filterValueLowerCase,
+            basepool => basepool.token.toLowerCase() === filterValueLowerCase,
           )
 
           updateUserAddedTokens(filterValueLowerCase, token[0].symbol, false, isBasePool)
@@ -121,7 +121,7 @@ const SelectTokenButton = ({
   }, [basePools, chainId, curve, filterValue, options, updateUserAddedTokens, userAddedTokens])
 
   const selectedToken = useMemo(
-    () => (selectedAddress ? tokens.find((userToken) => userToken.address === selectedAddress) : null),
+    () => (selectedAddress ? tokens.find(userToken => userToken.address === selectedAddress) : null),
     [selectedAddress, tokens],
   )
 
@@ -188,7 +188,7 @@ const SelectTokenButton = ({
             setFilterBasepools(false)
             handleClose()
           }}
-          onSearch={(val) => {
+          onSearch={val => {
             setFilterValue(val)
             setError(undefined)
           }}

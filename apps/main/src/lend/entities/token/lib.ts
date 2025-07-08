@@ -5,7 +5,7 @@ import { getTokenUsdRateQueryOptions } from './token-query'
 export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
   return useQueryMapping(
-    uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    uniqueAddresses.map(tokenAddress => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
     uniqueAddresses,
   )
 }

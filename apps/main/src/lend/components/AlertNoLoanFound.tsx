@@ -12,7 +12,7 @@ const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: 
   const params = useParams() as UrlParams
   const { push } = useRouter()
 
-  const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
+  const setStateByKeyMarkets = useStore(state => state.markets.setStateByKey)
 
   const hasAlertType = typeof alertType !== 'undefined'
 

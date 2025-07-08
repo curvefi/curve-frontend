@@ -14,7 +14,7 @@ const CellBorrowRate = ({
 }) => {
   // uses onchain data if available
   const { data: onchainData } = useMarketOnChainRates({ chainId: rChainId, marketId: rOwmId })
-  const resp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.ratesMapper[rChainId]?.[rOwmId])
 
   const { rates, error } = resp ?? {}
 

@@ -26,8 +26,8 @@ type Props = {
 const TableRowNoResult = ({ colSpan, searchParams, signerAddress, updatePath }: Props) => {
   const { filterKey, searchText } = searchParams
 
-  const userPoolListLoaded = useStore((state) => state.user.poolListLoaded)
-  const userPoolListError = useStore((state) => state.user.poolListError)
+  const userPoolListLoaded = useStore(state => state.user.poolListLoaded)
+  const userPoolListError = useStore(state => state.user.poolListError)
 
   const errorKey = useMemo(() => {
     if (searchText) return ERROR.search

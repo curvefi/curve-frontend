@@ -18,7 +18,7 @@ const TableRowMobile = (props: TableRowProps) => {
   const { rChainId, api, filterTypeKey, owmId, market, userActiveKey } = props
   const ref = useRef<HTMLTableRowElement>(null)
   const entry = useIntersectionObserver(ref)
-  const userVaultShares = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
+  const userVaultShares = useStore(state => state.user.marketsBalancesMapper[userActiveKey]?.vaultShares)
   const { signerAddress } = api ?? {}
 
   const [showDetail, setShowDetail] = useState<string>('')

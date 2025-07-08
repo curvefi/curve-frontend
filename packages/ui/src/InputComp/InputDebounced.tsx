@@ -30,7 +30,7 @@ const InputDebounced = ({
       {labelProps && <InputLabel {...labelProps} testId={testId} />}
       <Input
         value={debouncedValue}
-        onChange={(e) => handleInputChange(e.target.value)}
+        onChange={e => handleInputChange(e.target.value)}
         disabled={contextDisabled || disabled}
         testId={testId}
         {...inputProps}

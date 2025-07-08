@@ -46,15 +46,15 @@ const GaugeListItem = ({
     gaugeAddress: userGaugeWeightVoteData?.gaugeAddress,
     userAddress,
   })
-  const gaugeWeightHistoryMapper = useStore((state) => state.gauges.gaugeWeightHistoryMapper)
-  const getHistoricGaugeWeights = useStore((state) => state.gauges.getHistoricGaugeWeights)
+  const gaugeWeightHistoryMapper = useStore(state => state.gauges.gaugeWeightHistoryMapper)
+  const getHistoricGaugeWeights = useStore(state => state.gauges.getHistoricGaugeWeights)
   const gaugeCurveApiData = useStore(
-    (state) =>
+    state =>
       state.gauges.gaugeCurveApiData.data[
         gaugeData.effective_address?.toLowerCase() ?? gaugeData.address.toLowerCase()
       ],
   )
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const userVeCrv = useStore(state => state.user.userVeCrv)
   const [open, setOpen] = useState(false)
   const canVote = userGaugeVoteNextTime ? Date.now() > userGaugeVoteNextTime : true
 
@@ -108,7 +108,7 @@ const GaugeListItem = ({
               </VoteGaugeFieldWrapper>
             )}
             {gaugeWeightHistoryMapper[gaugeData.address]?.loadingState === 'ERROR' && (
-              <ErrorWrapper onClick={(e) => e.stopPropagation()}>
+              <ErrorWrapper onClick={e => e.stopPropagation()}>
                 <ErrorMessage
                   message={t`Error fetching historical gauge weights data`}
                   onClick={(e?: MouseEvent) => {

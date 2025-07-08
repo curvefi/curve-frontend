@@ -31,12 +31,12 @@ const TableRowResult = ({
   const { searchTermMapper } = props
   const { push } = useRouter()
 
-  const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
-  const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
-  const loanExists = useStore((state) => state.loans.existsMapper[collateralId]?.loanExists)
-  const searchedByAddresses = useStore((state) => state.collateralList.searchedByAddresses[collateralId])
+  const collateralDataCached = useStore(state => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
+  const collateralData = useStore(state => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])
+  const isMdUp = useLayoutStore(state => state.isMdUp)
+  const loanDetails = useStore(state => state.loans.detailsMapper[collateralId])
+  const loanExists = useStore(state => state.loans.existsMapper[collateralId]?.loanExists)
+  const searchedByAddresses = useStore(state => state.collateralList.searchedByAddresses[collateralId])
 
   const collateralDataCachedOrApi = collateralData ?? collateralDataCached
 

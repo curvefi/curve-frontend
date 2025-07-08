@@ -47,17 +47,17 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     sx={{
       minHeight: ButtonSize.sm,
       minWidth: MinWidth.select,
-      backgroundColor: (t) => t.design.Layer[1].Fill,
+      backgroundColor: t => t.design.Layer[1].Fill,
       border: 'none',
-      borderBottom: (t) => `2px solid ${t.design.Layer[1].Outline}`,
+      borderBottom: t => `2px solid ${t.design.Layer[1].Outline}`,
       ...(!disabled && {
         '&:hover': {
           border: 'none',
-          borderBottom: (t) => `2px solid ${t.design.Layer[2].Outline}`,
+          borderBottom: t => `2px solid ${t.design.Layer[2].Outline}`,
         },
         '&:active': {
           border: 'none',
-          borderBottom: (t) => `2px solid ${t.design.Layer[3].Outline}`,
+          borderBottom: t => `2px solid ${t.design.Layer[3].Outline}`,
         },
       }),
       '& .MuiOutlinedInput-notchedOutline': {

@@ -12,7 +12,7 @@ interface Props extends ChipProps {
 }
 
 const TableCellRate = ({ collateralId, ...props }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[collateralId])
   const { rate, future_rate } = loanDetails?.parameters ?? {}
 
   if (isUndefined(rate) || isUndefined(future_rate)) {

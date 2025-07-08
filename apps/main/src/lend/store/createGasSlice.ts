@@ -45,7 +45,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchGasInfo: async (curve) => {
+    fetchGasInfo: async curve => {
       if (!curve) return
 
       const { chainId } = curve
@@ -131,7 +131,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
@@ -180,7 +180,7 @@ function parsePolygonGasInfo(gasInfo: {
         base,
         max,
         priority,
-        basePlusPriority: priority.map((p) => base + p),
+        basePlusPriority: priority.map(p => base + p),
       },
       label: ['fast', 'medium', 'slow'],
     }

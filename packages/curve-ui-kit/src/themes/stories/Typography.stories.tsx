@@ -82,8 +82,8 @@ const createStory = (category: string): Story => ({
     (Story, { args }) => (
       <Stack spacing={5}>
         {Object.keys(TYPOGRAPHY_VARIANTS)
-          .filter((t) => t.includes(category))
-          .map((variant) => (
+          .filter(t => t.includes(category))
+          .map(variant => (
             <TypographyDisplay {...args} key={variant} variant={variant as TypographyVariantKey} />
           ))}
       </Stack>

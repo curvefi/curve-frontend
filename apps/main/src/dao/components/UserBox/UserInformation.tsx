@@ -20,9 +20,9 @@ type Props = {
 }
 
 const UserInformation = ({ noLink, snapshotVotingPower, activeProposal, votingPower }: Props) => {
-  const userAddress = useStore((state) => state.user.userAddress)
-  const userEns = useStore((state) => state.user.userEns)
-  const userVeCrv = useStore((state) => state.user.userVeCrv)
+  const userAddress = useStore(state => state.user.userAddress)
+  const userEns = useStore(state => state.user.userEns)
+  const userVeCrv = useStore(state => state.user.userVeCrv)
 
   const decayedVeCrv = useMemo(() => {
     if (activeProposal?.active && votingPower) {

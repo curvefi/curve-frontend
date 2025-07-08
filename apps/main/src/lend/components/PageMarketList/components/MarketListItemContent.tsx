@@ -20,7 +20,7 @@ const MarketListItemContent = ({
   const { rChainId } = props.pageProps
   const { address } = marketListItem
 
-  const tableSettings = useStore((state) => state.marketList.tableRowsSettings[address])
+  const tableSettings = useStore(state => state.marketList.tableRowsSettings[address])
 
   if (address === 'all') {
     return <MarketListTable {...props} {...marketListItem} tableSettings={tableSettings} />

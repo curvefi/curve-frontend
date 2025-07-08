@@ -12,12 +12,12 @@ type DeployButtonProps = { className?: string }
 const DeployButton = ({ className }: DeployButtonProps) => {
   const { address } = useAccount()
   const { data: userScrvUsdBalance } = useScrvUsdUserBalances({ userAddress: address })
-  const depositApproved = useStore((state) => state.scrvusd.depositApproval.approval)
-  const depositFetchStatus = useStore((state) => state.scrvusd.depositApproval.fetchStatus)
-  const { depositApprove, deposit, redeem } = useStore((state) => state.scrvusd.deploy)
-  const inputAmount = useStore((state) => state.scrvusd.inputAmount)
-  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
-  const getInputAmountApproved = useStore((state) => state.scrvusd.getInputAmountApproved)
+  const depositApproved = useStore(state => state.scrvusd.depositApproval.approval)
+  const depositFetchStatus = useStore(state => state.scrvusd.depositApproval.fetchStatus)
+  const { depositApprove, deposit, redeem } = useStore(state => state.scrvusd.deploy)
+  const inputAmount = useStore(state => state.scrvusd.inputAmount)
+  const stakingModule = useStore(state => state.scrvusd.stakingModule)
+  const getInputAmountApproved = useStore(state => state.scrvusd.getInputAmountApproved)
 
   const userBalance = useMemo(() => userScrvUsdBalance ?? { crvUSD: '0', scrvUSD: '0' }, [userScrvUsdBalance])
 

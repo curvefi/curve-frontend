@@ -72,7 +72,7 @@ const TableRowMobileContent = ({
       <WrapperContent>
         {!isHideDetail && (
           <>
-            <Content onClick={(evt) => handleCellClick(evt.target)}>
+            <Content onClick={evt => handleCellClick(evt.target)}>
               {content[filterTypeKey].map((details, idx) => {
                 const key = `details-${idx}`
                 const isVisible = details.some(({ show }) => _showContent(show))

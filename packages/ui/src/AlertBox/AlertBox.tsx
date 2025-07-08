@@ -92,13 +92,13 @@ const Header = styled.header`
 const Content = styled(Box)<{ showFullHeight: boolean; limitHeight?: boolean }>`
   height: 100%;
   align-items: center;
-  ${(props) => props.showFullHeight && props.limitHeight && 'padding-bottom: var(--spacing-4);'}
+  ${props => props.showFullHeight && props.limitHeight && 'padding-bottom: var(--spacing-4);'}
 `
 
 const Wrapper = styled(Box)<Pick<AlertBoxProps, 'alertType'> & { enabledHeightToggle: boolean }>`
   position: relative;
   padding: var(--spacing-2);
-  ${(props) => props.enabledHeightToggle && 'display: flex;'}
+  ${props => props.enabledHeightToggle && 'display: flex;'}
 
   color: var(--white);
   word-break: break-word;

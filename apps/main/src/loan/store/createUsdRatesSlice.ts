@@ -55,7 +55,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
       const chainId = curve.chainId as ChainId
       const { results } = await PromisePool.for(tokenAddresses)
         .withConcurrency(5)
-        .process(async (tokenAddress) => {
+        .process(async tokenAddress => {
           const resp = await networks[chainId].api.helpers.getUsdRate(curve, tokenAddress)
           return { tokenAddress, usdRate: resp.usdRate }
         })

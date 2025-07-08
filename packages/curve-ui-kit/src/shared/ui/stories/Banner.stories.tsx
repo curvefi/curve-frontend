@@ -7,7 +7,7 @@ import { Banner } from '../Banner'
 
 const meta: Meta<typeof Banner> = {
   title: 'UI Kit/Primitives/Banner',
-  component: (props) => (
+  component: props => (
     <Box sx={{ minWidth: 600 }}>
       <Banner {...props} />
     </Box>

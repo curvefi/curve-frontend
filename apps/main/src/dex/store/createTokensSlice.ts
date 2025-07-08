@@ -117,7 +117,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       return Object.keys(parsedPartialTokensMapper)
     },
-    setEmptyPoolListDefault: async (chainId) => {
+    setEmptyPoolListDefault: async chainId => {
       const { networks, [sliceKey]: sliceState } = get()
       const nativeToken = networks.nativeToken[chainId]
 
@@ -153,7 +153,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

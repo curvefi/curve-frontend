@@ -10,7 +10,7 @@ export async function getLendMarketSymbols(
   const id = market.toLowerCase().replace('one-way-market', 'oneway') // API ids are different from those generated in curve-lending-js
   const resp = await getServerData<LendServerData>('lend', headers)
   const marketData = resp.lendingVaultData?.find(
-    (m) =>
+    m =>
       m.blockchainId == network &&
       (m.id === id || m.controllerAddress.toLowerCase() === id || m.address.toLowerCase() == id),
   )

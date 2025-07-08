@@ -267,7 +267,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
         }
 
-        if (cFormValues.amounts.some((a) => +a.value > 0)) {
+        if (cFormValues.amounts.some(a => +a.value > 0)) {
           // fetch expected LP Tokens
           get()[sliceKey].setStateByActiveKey('formLpTokenExpected', activeKey, {
             ...(get()[sliceKey].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
@@ -574,7 +574,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: ({ tokens, tokenAddresses, isWrapped }, formType) => {
@@ -599,7 +599,7 @@ export function getActiveKey(
 ) {
   let activeKey = `${formType}-${poolId}-`
   if (formType === 'DEPOSIT' || formType === 'DEPOSIT_STAKE') {
-    const amountsStr = amounts.map((a) => a.value).join('-')
+    const amountsStr = amounts.map(a => a.value).join('-')
     activeKey += `${amountsStr}-${isBalancedAmounts}-${isWrapped}-${maxSlippage}-${lpToken}`
   } else {
     activeKey += `${lpToken}`
@@ -612,7 +612,7 @@ function resetFormValues(formValues: FormValues): FormValues {
     ...cloneDeep(formValues),
     isBalancedAmounts: false as const,
     lpToken: '',
-    amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
+    amounts: formValues.amounts.map(a => ({ ...a, value: '' })),
   }
 }
 

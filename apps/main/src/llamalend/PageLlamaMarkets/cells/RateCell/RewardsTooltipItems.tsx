@@ -19,7 +19,7 @@ export const RewardsTooltipItems = ({
   poolRewards: PoolRewards[]
   extraIncentives: { title: string; percentage: number; image: StaticImageData }[]
 }) => {
-  const percentage = extraIncentives.length > 0 && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
+  const percentage = extraIncentives.length > 0 && formatPercent(sum(extraIncentives.map(i => i.percentage)))
   return (
     <>
       {percentage && <TooltipItem title={title}>{percentage}</TooltipItem>}
@@ -39,7 +39,7 @@ export const RewardsTooltipItems = ({
             target="_blank"
             sx={{
               textDecoration: 'none',
-              color: (t) => t.design.Text.TextColors.Secondary,
+              color: t => t.design.Text.TextColors.Secondary,
               svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
               '&:hover svg': { fontSize: 20 },
             }}

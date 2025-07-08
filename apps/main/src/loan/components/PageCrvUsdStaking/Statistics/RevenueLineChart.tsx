@@ -35,11 +35,11 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
               axisLine={false}
               minTickGap={20}
               tickMargin={4}
-              tickFormatter={(time) => formatDate(time)}
+              tickFormatter={time => formatDate(time)}
             />
             <YAxis
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
-              tickFormatter={(value) => `${value.toFixed(0)}%`}
+              tickFormatter={value => `${value.toFixed(0)}%`}
               tickLine={false}
               axisLine={false}
               dataKey={'apyProjected'}

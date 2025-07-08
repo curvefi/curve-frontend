@@ -11,7 +11,7 @@ import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 export default function LendLayout({ children }: { children: ReactNode }) {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
-  const hydrate = useStore((s) => s.hydrate)
+  const hydrate = useStore(s => s.hydrate)
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
   useRedirectToEth(networks[chainId], networkId, isHydrated)
   return isHydrated && children

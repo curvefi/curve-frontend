@@ -29,7 +29,7 @@ const SelectGaugeListChunk = ({
       ref={ref}
       count={gauges.length}
       className={isVisible ? 'visible' : ''}
-      onKeyDown={(evt) => {
+      onKeyDown={evt => {
         // scroll up/down list
         const activeElement = document.activeElement
 
@@ -51,7 +51,7 @@ const SelectGaugeListChunk = ({
       }}
     >
       {isVisible &&
-        gauges.map((item) => (
+        gauges.map(item => (
           <SelectGaugeListItem
             key={item.address}
             testId={testId}

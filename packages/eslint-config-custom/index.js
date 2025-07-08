@@ -4,6 +4,7 @@ module.exports = {
   plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
+    'arrow-parens': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
     '@next/next/no-img-element': 'off',
     '@next/next/no-html-link-for-pages': 'off',

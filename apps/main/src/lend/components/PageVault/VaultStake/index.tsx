@@ -24,15 +24,15 @@ import { t } from '@ui-kit/lib/i18n'
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.vaultStake.activeKey)
-  const formEstGas = useStore((state) => state.vaultStake.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.vaultStake.formStatus)
-  const formValues = useStore((state) => state.vaultStake.formValues)
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepApprove = useStore((state) => state.vaultStake.fetchStepApprove)
-  const fetchStepStake = useStore((state) => state.vaultStake.fetchStepStake)
-  const setFormValues = useStore((state) => state.vaultStake.setFormValues)
-  const resetState = useStore((state) => state.vaultStake.resetState)
+  const activeKey = useStore(state => state.vaultStake.activeKey)
+  const formEstGas = useStore(state => state.vaultStake.formEstGas[activeKey])
+  const formStatus = useStore(state => state.vaultStake.formStatus)
+  const formValues = useStore(state => state.vaultStake.formValues)
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepApprove = useStore(state => state.vaultStake.fetchStepApprove)
+  const fetchStepStake = useStore(state => state.vaultStake.fetchStepStake)
+  const setFormValues = useStore(state => state.vaultStake.setFormValues)
+  const resetState = useStore(state => state.vaultStake.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -128,12 +128,12 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['STAKE'] : ['APPROVAL', 'STAKE']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickStake],
   )

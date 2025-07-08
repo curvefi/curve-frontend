@@ -23,7 +23,7 @@ export const FavoriteTokens = ({ tokens, onToken }: Props) => (
     <Typography variant="headingXsBold">{t`Favorite tokens`}</Typography>
 
     <Stack direction="row" gap={Spacing.xs} flexWrap="wrap">
-      {tokens.map((token) => (
+      {tokens.map(token => (
         <Chip
           key={token.address}
           size="small"

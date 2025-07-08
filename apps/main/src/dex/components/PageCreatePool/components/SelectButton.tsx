@@ -42,7 +42,7 @@ const SelectButton = ({
       <ButtonDescription>{description}</ButtonDescription>
     </Row>
     {subData &&
-      subData.map((item) => (
+      subData.map(item => (
         <Row key={`${name}-${item.name}`}>
           <ButtonSubName>{item.name}</ButtonSubName>
           <ButtonSubData>{item.description}</ButtonSubData>
@@ -94,7 +94,7 @@ const StyledButton = styled(Button)<{ paddingSize: 'small' | undefined }>`
     font-size: var(--font-size-2);
     font-weight: var(--normal);
   }
-  ${(props) =>
+  ${props =>
     props.paddingSize === 'small' &&
     `
     padding: var(--spacing-3) var(--spacing-3);

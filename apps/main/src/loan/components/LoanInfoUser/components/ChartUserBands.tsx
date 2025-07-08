@@ -21,7 +21,7 @@ const DEFAULT_BAND_CHART_DATA = {
 }
 
 const ChartUserBands = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(llammaId) ?? {}
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({

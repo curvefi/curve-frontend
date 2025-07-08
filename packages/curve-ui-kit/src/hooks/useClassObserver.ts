@@ -32,8 +32,8 @@ export function useClassObserver(element: HTMLLIElement | HTMLTableRowElement | 
     setHasClass(element.classList.contains(className))
 
     // Set up mutation observer to watch for class changes
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
         if (mutation.attributeName === 'class') {
           setHasClass(element.classList.contains(className))
         }

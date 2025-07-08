@@ -13,7 +13,7 @@ export const TableSearchField = ({ onSearch }: { onSearch: (value: string) => vo
       data-testid="table-text-search"
       onFocus={onFocus}
       onBlur={onBlur}
-      sx={(t) => ({
+      sx={t => ({
         transition: t.design.Button.Transition,
         ...(!isFocused && {
           '& .MuiOutlinedInput-notchedOutline': {

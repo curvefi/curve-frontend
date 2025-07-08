@@ -66,7 +66,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchVecrvInfo: async (curve) => {
+    fetchVecrvInfo: async curve => {
       let resp = cloneDeep(DEFAULT_USER_LOCKED_CRV_INFO)
       const activeKey = getActiveKeyVecrvInfo(curve, curve.signerAddress)
 
@@ -321,7 +321,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
     setStateByKey: (key, value) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: (sliceState) => {
+    setStateByKeys: sliceState => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

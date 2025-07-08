@@ -23,11 +23,11 @@ import { t } from '@ui-kit/lib/i18n'
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const formStatus = useStore((state) => state.vaultClaim.formStatus)
-  const claimable = useStore((state) => state.vaultClaim.claimable[userActiveKey])
-  const fetchStepClaim = useStore((state) => state.vaultClaim.fetchStepClaim)
-  const setFormValues = useStore((state) => state.vaultClaim.setFormValues)
-  const resetState = useStore((state) => state.vaultClaim.resetState)
+  const formStatus = useStore(state => state.vaultClaim.formStatus)
+  const claimable = useStore(state => state.vaultClaim.claimable[userActiveKey])
+  const fetchStepClaim = useStore(state => state.vaultClaim.fetchStepClaim)
+  const setFormValues = useStore(state => state.vaultClaim.setFormValues)
+  const resetState = useStore(state => state.vaultClaim.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -36,7 +36,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const { crv = '0', rewards = [] } = claimable?.claimable ?? {}
 
   const haveClaimableCrv = +crv > 0
-  const haveClaimableRewards = rewards.some((r) => +r.amount > 0)
+  const haveClaimableRewards = rewards.some(r => +r.amount > 0)
 
   const updateFormValues = useCallback(() => {
     void setFormValues(userActiveKey, isLoaded ? api : null, market)
@@ -118,7 +118,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       const stepsKey = isCrv ? ['CLAIM_CRV'] : ['CLAIM_REWARDS']
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickClaim],
   )

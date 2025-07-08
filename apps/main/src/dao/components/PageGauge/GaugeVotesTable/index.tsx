@@ -21,10 +21,10 @@ interface GaugeVotesTableProps {
 const weightBpsToPercentage = (weight: number) => weight / 100
 
 const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) => {
-  const getGaugeVotes = useStore((state) => state.gauges.getGaugeVotes)
-  const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
-  const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
-  const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
+  const getGaugeVotes = useStore(state => state.gauges.getGaugeVotes)
+  const gaugeVotesMapper = useStore(state => state.gauges.gaugeVotesMapper)
+  const gaugeVotesSortBy = useStore(state => state.gauges.gaugeVotesSortBy)
+  const setGaugeVotesSortBy = useStore(state => state.gauges.setGaugeVotesSortBy)
   const { push } = useRouter()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '7rem 1fr 1fr'
@@ -57,7 +57,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
       columns={GAUGE_VOTES_TABLE_LABELS}
       sortBy={gaugeVotesSortBy}
       errorMessage={t`An error occurred while fetching proposal votes.`}
-      setSortBy={(key) => {
+      setSortBy={key => {
         setGaugeVotesSortBy(gaugeAddress, key as GaugeVotesSortBy)
       }}
       getData={() => getGaugeVotes(gaugeAddress)}
@@ -77,7 +77,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
             {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
           <TableDataLink
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault()
               push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`))
             }}

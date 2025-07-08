@@ -43,7 +43,7 @@ export const BetaDialog = ({
           t`These are work-in-progress tools meant for testing, feedback, and iteration. You might experience minor bugs or visual inconsistencies — but your funds remain safe, and core functionality is unaffected.`,
           t`By enabling beta mode, you help shape the future of the Curve interface.`,
           t`You can turn this off at any time.`,
-        ].map((p) => (
+        ].map(p => (
           <Typography color="textSecondary" key={p}>
             {p}
           </Typography>

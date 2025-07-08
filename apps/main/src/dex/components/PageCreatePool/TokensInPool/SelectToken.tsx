@@ -53,11 +53,11 @@ const SelectToken = ({
   handleInpChange,
   removeToken,
 }: Props) => {
-  const updateNgAssetType = useStore((state) => state.createPool.updateNgAssetType)
-  const swapType = useStore((state) => state.createPool.swapType)
-  const clearToken = useStore((state) => state.createPool.clearToken)
-  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const updateNgAssetType = useStore(state => state.createPool.updateNgAssetType)
+  const swapType = useStore(state => state.createPool.swapType)
+  const clearToken = useStore(state => state.createPool.clearToken)
+  const tokensInPool = useStore(state => state.createPool.tokensInPool)
+  const network = useStore(state => state.networks.networks[chainId])
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`

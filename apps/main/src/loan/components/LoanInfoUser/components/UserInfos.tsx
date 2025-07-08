@@ -28,7 +28,7 @@ const UserInfos = ({
 }) => {
   const { userBandsPct, userStatus } = useUserLoanDetails(llammaId) ?? {}
   const colorKey = useUserLoanStatus(llammaId)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const {
     coins: [stablecoin],

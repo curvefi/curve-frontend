@@ -22,7 +22,7 @@ const SelectNetworkItem = ({ label, src, fallbackSrc }: Props) => {
     <IconWrapper>
       <Image
         alt={label}
-        onError={(evt) => handleOnError(evt, fallbackSrc)}
+        onError={evt => handleOnError(evt, fallbackSrc)}
         src={src}
         loading="lazy"
         width="18"

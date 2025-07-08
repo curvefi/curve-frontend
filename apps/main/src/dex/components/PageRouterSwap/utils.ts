@@ -30,7 +30,7 @@ export function parseRouterRoutes(
   let parsedRoutes: Route[] = []
 
   if (Array.isArray(routes) && routes.length > 0) {
-    parsedRoutes = routes.map((route) => {
+    parsedRoutes = routes.map(route => {
       let pool = poolsMapper[route.poolId]?.pool
 
       if (isUndefined(pool)) {

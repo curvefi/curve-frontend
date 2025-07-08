@@ -21,7 +21,7 @@ const MarketListTable = ({
   const { searchParams, titleMapper } = pageProps
   const { filterTypeKey, sortBy } = searchParams
 
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const isMdUp = useLayoutStore(state => state.isMdUp)
 
   return (
     <StyledTable className={className} $haveSortBy={!!sortBy}>

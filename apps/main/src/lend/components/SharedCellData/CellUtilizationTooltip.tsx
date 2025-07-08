@@ -14,8 +14,8 @@ type Props = {
 }
 
 const CellUtilizationTooltip = ({ className = '', isMobile, rChainId, rOwmId, market }: Props) => {
-  const resp = useStore((state) => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
-  const totalResp = useStore((state) => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.statsCapAndAvailableMapper[rChainId]?.[rOwmId])
+  const totalResp = useStore(state => state.markets.statsTotalsMapper[rChainId]?.[rOwmId])
 
   const { borrowed_token } = market ?? {}
   const { cap, available } = resp ?? {}

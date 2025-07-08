@@ -69,7 +69,7 @@ export const ButtonMenu = <T extends string>({
   return (
     <Stack ref={anchorEl} direction="row" gap={'1px'}>
       <Button color="primary" disabled={isDisabled} sx={{ flexGrow: 1 }} onClick={onPrimary}>
-        {executing == false || executing == 'primary' ? primary : options.find((x) => x.id === executing)?.label || '?'}
+        {executing == false || executing == 'primary' ? primary : options.find(x => x.id === executing)?.label || '?'}
       </Button>
 
       {options.length > 0 && (
@@ -126,7 +126,7 @@ export const ButtonMenu = <T extends string>({
             },
           }}
         >
-          {options.map((option) => (
+          {options.map(option => (
             <MenuItem key={option.id} onClick={() => onOption?.(option.id)}>
               <Button
                 color="secondary"

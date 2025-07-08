@@ -34,7 +34,7 @@ export const SlippageSettings = ({ disabled = false, button, buttonIcon, maxSlip
       <SlippageSettingsModal
         isOpen={!!isOpen}
         maxSlippage={maxSlippage}
-        onSave={(slippage) => {
+        onSave={slippage => {
           toggleModal()
           onSave(slippage)
         }}

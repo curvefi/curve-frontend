@@ -20,7 +20,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const DetailsLoan = ({ type, ...pageProps }: PageContentProps & { type: MarketListType }) => {
   const { rChainId, rOwmId, market, titleMapper, userActiveKey } = pageProps
-  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const chartExpanded = useStore(state => state.ohlcCharts.chartExpanded)
 
   const cellProps = {
     rChainId,

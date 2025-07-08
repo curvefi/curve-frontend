@@ -9,7 +9,7 @@ type Details = UserLoanDetails['details'] & { error: string }
  * @returns User loan details object with error property merged for easier destructuring
  */
 export function useUserLoanDetails(userActiveKey: string): Partial<Details> {
-  const loanDetails = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
+  const loanDetails = useStore(state => state.user.loansDetailsMapper[userActiveKey])
 
   return !loanDetails || loanDetails.details == null ? {} : { ...loanDetails.details, error: loanDetails.error }
 }

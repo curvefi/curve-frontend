@@ -11,7 +11,7 @@ const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> &
     powerUsed: Number(powerUsed),
     veCrvUsed: Number(veCrvUsed),
     gauges: gauges
-      .map((gauge) => ({
+      .map(gauge => ({
         userPower: Number(gauge.userPower),
         userVeCrv: Number(gauge.userVeCrv),
         userFutureVeCrv: Number(gauge.userFutureVeCrv),

@@ -26,16 +26,16 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
 
-  const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
-  const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
-  const network = useStore((state) => state.networks.networks[rChainId])
-  const theme = useUserProfileStore((state) => state.theme)
-  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const getNetworkConfigFromApi = useStore(state => state.getNetworkConfigFromApi)
+  const routerCached = useStore(state => state.storeCache.routerFormValues[rChainId])
+  const activeKey = useStore(state => state.quickSwap.activeKey)
+  const routesAndOutput = useStore(state => state.quickSwap.routesAndOutput[activeKey])
+  const nativeToken = useStore(state => state.networks.nativeToken[rChainId])
+  const network = useStore(state => state.networks.networks[rChainId])
+  const theme = useUserProfileStore(state => state.theme)
+  const cryptoMaxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
+  const stableMaxSlippage = useUserProfileStore(state => state.maxSlippage.stable)
+  const setMaxSlippage = useUserProfileStore(state => state.setMaxSlippage)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
   const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
@@ -131,7 +131,7 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
         {t`Swap`}
         <SlippageSettings
           maxSlippage={storeMaxSlippage}
-          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
+          onSave={slippage => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
           buttonIcon={
             // This component is a MUI component on a non MUI page.
             // That means the icon button color doesn't mesh well with the header box color in chad theme.

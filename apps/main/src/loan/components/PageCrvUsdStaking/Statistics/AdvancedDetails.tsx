@@ -10,7 +10,7 @@ import { shortenAddress } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 const AdvancedDetails = () => (
-  <Card sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, boxShadow: 'none' }}>
+  <Card sx={{ backgroundColor: t => t.design.Layer[1].Fill, boxShadow: 'none' }}>
     <CardHeader
       size="small"
       title={t`Advanced Details`}

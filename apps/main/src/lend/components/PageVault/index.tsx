@@ -19,7 +19,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { push } = useRouter()
   const tabsRef = useRef<HTMLDivElement>(null)
 
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
+  const { initCampaignRewards, initiated } = useStore(state => state.campaigns)
 
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
@@ -53,7 +53,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
       <AppFormHeader
         formTypes={FORM_TYPES}
         activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
-        handleClick={(key) => push(getVaultPathname(params, rOwmId, key))}
+        handleClick={key => push(getVaultPathname(params, rOwmId, key))}
       />
 
       <AppFormContentWrapper>

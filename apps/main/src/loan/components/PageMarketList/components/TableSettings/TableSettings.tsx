@@ -19,7 +19,7 @@ const TableSettings = ({
     <SearchListInput
       placeholder={t`Search by tokens or address`}
       searchText={searchParams.searchText}
-      handleInputChange={(val) => onSearch({ searchText: val })}
+      handleInputChange={val => onSearch({ searchText: val })}
       handleClose={() => onSearch({ searchText: '' })}
     />
     <SelectFilterType

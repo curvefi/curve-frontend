@@ -75,7 +75,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
         searchedByAddresses: parseSearchTermResults(addressesResult),
       })
 
-      return uniqBy([...tokensResult, ...addressesResult], (o) => o.item.llamma.id).map((r) => r.item)
+      return uniqBy([...tokensResult, ...addressesResult], o => o.item.llamma.id).map(r => r.item)
     },
     sortFn: (rChainId, sortKey, order, collateralDatas) => {
       const { loans } = get()
@@ -146,7 +146,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
       }
 
       // get collateral ids
-      const newResult = cCollateralDatas.map((d) => d.llamma.id)
+      const newResult = cCollateralDatas.map(d => d.llamma.id)
 
       // set result
       sliceState.setStateByActiveKey('result', activeKey, newResult)
@@ -184,7 +184,7 @@ export function getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
     parsedSearchText = chunk(searchText, 5)
-      .map((group) => group[0])
+      .map(group => group[0])
       .join('')
   }
   return `${chainId}-${sortBy}-${sortByOrder}-${parsedSearchText}`

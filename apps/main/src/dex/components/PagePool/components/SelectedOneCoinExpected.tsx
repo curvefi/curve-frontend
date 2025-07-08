@@ -35,7 +35,7 @@ const SelectedOneCoinExpected = ({
   handleChanged: ({ token, tokenAddress }: { token: string; tokenAddress: string }) => void
 }) => {
   const handleRadioChange = (selectedTokenAddress: string) => {
-    const idx = tokenAddresses.findIndex((tokenAddress) => tokenAddress === selectedTokenAddress)
+    const idx = tokenAddresses.findIndex(tokenAddress => tokenAddress === selectedTokenAddress)
     handleChanged({ token: tokens[idx], tokenAddress: selectedTokenAddress })
   }
 

@@ -11,7 +11,7 @@ export const BetaSnackbar = ({ isBeta, open, onClose }: { open: boolean; onClose
     onClose={onClose}
     autoHideDuration={Duration.Snackbar}
     anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
-    sx={{ top: useLayoutStore((state) => state.navHeight), left: 'unset' }} // unset the left otherwise it will take the whole width
+    sx={{ top: useLayoutStore(state => state.navHeight), left: 'unset' }} // unset the left otherwise it will take the whole width
   >
     <Alert variant="outlined" severity="success">
       <AlertTitle>{isBeta ? t`Beta Features On` : t`Beta Features Off`}</AlertTitle>

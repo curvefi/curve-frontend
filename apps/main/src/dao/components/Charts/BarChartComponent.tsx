@@ -60,12 +60,12 @@ const BarChartComponent = <T extends Record<string, any>>({ data, dataKey, Custo
             type="number"
             orientation="right"
             tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
-            tickFormatter={(value) => `${value}%`}
+            tickFormatter={value => `${value}%`}
             tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
             axisLine={false}
             dx={4}
           />
-          <Tooltip content={(props) => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
+          <Tooltip content={props => <CustomTooltip {...props} />} cursor={{ opacity: 0.3 }} />
           <Bar dataKey={dataKey as string} label={false}>
             {data.map((_, index) => (
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />

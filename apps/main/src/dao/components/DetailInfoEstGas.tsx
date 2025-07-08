@@ -34,9 +34,9 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
-  const gasInfo = useStore((state) => state.gas.gasInfo)
-  const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
+  const chainTokenUsdRate = useStore(state => state.usdRates.usdRatesMapper[ethAddress])
+  const gasInfo = useStore(state => state.gas.gasInfo)
+  const basePlusPriority = useStore(state => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }

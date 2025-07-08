@@ -35,7 +35,7 @@ const cleanValue = <T>(term: T): T =>
 
 // should only return results if pool/market have all searched tokens
 function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
-  const hasTether = searchTerms.some((term) => term.includes('₮')) // allow searching for Tether-only with '₮'
+  const hasTether = searchTerms.some(term => term.includes('₮')) // allow searching for Tether-only with '₮'
   const fuse = new Fuse<T>(datas, {
     ignoreLocation: true,
     ignoreDiacritics: true,
@@ -51,7 +51,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
   searchTerms.forEach((term, idx) => {
     if (idx === 0) return
     const termResults = fuse.search(term)
-    results = results.filter((r) => termResults.some((termResult) => termResult.item === r.item))
+    results = results.filter(r => termResults.some(termResult => termResult.item === r.item))
   })
 
   return uniqueResult(results)
@@ -71,7 +71,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
     })
 
     let results: FuseResult<T>[] = []
-    searchTerms.forEach((term) => {
+    searchTerms.forEach(term => {
       results = [...results, ...fuse.search(term)]
     })
 
@@ -88,7 +88,7 @@ function searchByAddresses<T>(searchTerms: string[], datas: T[], keys: { tokens:
     })
 
     let results: FuseResult<T>[] = []
-    searchTerms.forEach((term) => {
+    searchTerms.forEach(term => {
       results = [...results, ...fuse.search(term)]
     })
 
@@ -122,9 +122,9 @@ export function filterTokens<T extends { address: string }>(
   endsWith: (string: string, substring: string) => boolean,
 ): T[] {
   const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
-  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
+  const result = uniqBy([...tokensResult, ...addressesResult], r => r.item.address)
   if (result.length > 0) {
-    return result.map((r) => r.item)
+    return result.map(r => r.item)
   }
-  return tokens.filter((item) => endsWith(item.address, filterValue))
+  return tokens.filter(item => endsWith(item.address, filterValue))
 }

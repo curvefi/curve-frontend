@@ -56,7 +56,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   useInjectServerData(props)
   const { address } = useAccount()
   const { data, isError, isLoading } = useLlamaMarkets(address)
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
+  const minLiquidity = useUserProfileStore(s => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (

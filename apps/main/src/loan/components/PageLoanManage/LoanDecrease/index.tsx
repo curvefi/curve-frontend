@@ -39,25 +39,25 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const isSubscribed = useRef(false)
   const { push } = useRouter()
 
-  const activeKey = useStore((state) => state.loanDecrease.activeKey)
-  const detailInfo = useStore((state) => state.loanDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
-  const formEstGas = useStore((state) => state.loanDecrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
-  const formStatus = useStore((state) => state.loanDecrease.formStatus)
-  const formValues = useStore((state) => state.loanDecrease.formValues)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const activeKey = useStore(state => state.loanDecrease.activeKey)
+  const detailInfo = useStore(state => state.loanDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)
+  const formEstGas = useStore(state => state.loanDecrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
+  const formStatus = useStore(state => state.loanDecrease.formStatus)
+  const formValues = useStore(state => state.loanDecrease.formValues)
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore(
-    (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
+    state => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
-  const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
+  const userWalletBalancesLoading = useStore(state => state.loans.userWalletBalancesLoading)
 
-  const fetchStepApprove = useStore((state) => state.loanDecrease.fetchStepApprove)
-  const fetchStepDecrease = useStore((state) => state.loanDecrease.fetchStepDecrease)
-  const setFormValues = useStore((state) => state.loanDecrease.setFormValues)
-  const setStateByKey = useStore((state) => state.loanDecrease.setStateByKey)
-  const resetState = useStore((state) => state.loanDecrease.resetState)
+  const fetchStepApprove = useStore(state => state.loanDecrease.fetchStepApprove)
+  const fetchStepDecrease = useStore(state => state.loanDecrease.fetchStepDecrease)
+  const setFormValues = useStore(state => state.loanDecrease.setFormValues)
+  const setStateByKey = useStore(state => state.loanDecrease.setStateByKey)
+  const resetState = useStore(state => state.loanDecrease.resetState)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const isAdvancedMode = useUserProfileStore(state => state.isAdvancedMode)
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const [steps, setSteps] = useState<Step[]>([])
@@ -178,12 +178,12 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved ? ['PAY'] : ['APPROVAL', 'PAY']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [fetchStepApprove, handleBtnClickPay],
   )
@@ -269,7 +269,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           +userWalletBalances?.stablecoin < +userState?.debt
         }
         isSelected={formValues.isFullRepay}
-        onChange={(isFullRepay) => handleInpChangeFullRepay(isFullRepay)}
+        onChange={isFullRepay => handleInpChangeFullRepay(isFullRepay)}
       >
         {t`Repay in full and close loan`}
       </Checkbox>

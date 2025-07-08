@@ -37,7 +37,7 @@ const TableButton = forwardRef<
       size="small"
       onClick={onClick}
       data-testid={testId}
-      sx={(t) => ({
+      sx={t => ({
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
         transition: t.design.Button.Transition,
@@ -95,7 +95,7 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
           <TableButton
-            onClick={() => setFilterExpanded((prev) => !prev)}
+            onClick={() => setFilterExpanded(prev => !prev)}
             active={filterExpanded}
             icon={FilterIcon}
             testId="btn-expand-filters"
@@ -146,8 +146,8 @@ export function useColumnFilters(defaultFilters: ColumnFiltersState = []) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultFilters)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
-      setColumnFilters((filters) => [
-        ...filters.filter((f) => f.id !== id),
+      setColumnFilters(filters => [
+        ...filters.filter(f => f.id !== id),
         ...(value == null
           ? []
           : [

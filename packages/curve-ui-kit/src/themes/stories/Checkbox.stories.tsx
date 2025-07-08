@@ -14,7 +14,7 @@ const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
 
   // Update internal state when the checked prop changes
   useEffect(() => {
-    setState((prev) => ({ ...prev, option1: checked ?? false }))
+    setState(prev => ({ ...prev, option1: checked ?? false }))
   }, [checked])
 
   const handleChange = (option: string) => (event: React.ChangeEvent<HTMLInputElement>) => {

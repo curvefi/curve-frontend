@@ -14,7 +14,7 @@ const CellVaultPricePerShare = ({
   rOwmId: string
   type: 'borrow' | 'supply'
 }) => {
-  const resp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const resp = useStore(state => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
 
   const { pricePerShare, error } = resp ?? {}
 

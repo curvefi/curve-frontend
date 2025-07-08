@@ -66,23 +66,23 @@ const Swap = ({
 
   const { chainId, signerAddress } = curve || {}
   const { rChainId } = routerParams
-  const activeKey = useStore((state) => state.poolSwap.activeKey)
-  const exchangeOutput = useStore((state) => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
-  const formEstGas = useStore((state) => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
-  const formStatus = useStore((state) => state.poolSwap.formStatus)
-  const formValues = useStore((state) => state.poolSwap.formValues)
-  const hasRouter = useStore((state) => state.hasRouter)
-  const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
-  const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
-  const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
-  const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
-  const resetState = useStore((state) => state.poolSwap.resetState)
-  const setFormValues = useStore((state) => state.poolSwap.setFormValues)
-  const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const activeKey = useStore(state => state.poolSwap.activeKey)
+  const exchangeOutput = useStore(state => state.poolSwap.exchangeOutput[activeKey] ?? DEFAULT_EXCHANGE_OUTPUT)
+  const formEstGas = useStore(state => state.poolSwap.formEstGas[activeKey] ?? DEFAULT_EST_GAS)
+  const formStatus = useStore(state => state.poolSwap.formStatus)
+  const formValues = useStore(state => state.poolSwap.formValues)
+  const hasRouter = useStore(state => state.hasRouter)
+  const isMaxLoading = useStore(state => state.poolSwap.isMaxLoading)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const usdRatesMapper = useStore(state => state.usdRates.usdRatesMapper)
+  const fetchUserPoolInfo = useStore(state => state.user.fetchUserPoolInfo)
+  const fetchUsdRateByTokens = useStore(state => state.usdRates.fetchUsdRateByTokens)
+  const fetchStepApprove = useStore(state => state.poolSwap.fetchStepApprove)
+  const fetchStepSwap = useStore(state => state.poolSwap.fetchStepSwap)
+  const resetState = useStore(state => state.poolSwap.resetState)
+  const setFormValues = useStore(state => state.poolSwap.setFormValues)
+  const setPoolIsWrapped = useStore(state => state.pools.setPoolIsWrapped)
+  const network = useStore(state => (chainId ? state.networks.networks[chainId] : null))
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -108,8 +108,8 @@ const Swap = ({
     }
   }, [poolDataCacheOrApi, tokensMapper, network?.networkId])
 
-  const fromToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.fromAddress)
-  const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
+  const fromToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.fromAddress)
+  const toToken = selectList.find(x => x.address.toLocaleLowerCase() == formValues.toAddress)
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
@@ -232,12 +232,12 @@ const Swap = ({
       let stepsKey: StepKey[]
 
       if (formStatus.formProcessing || formStatus.formTypeCompleted) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = formStatus.isApproved ? ['SWAP'] : ['APPROVAL', 'SWAP']
       }
 
-      return stepsKey.map((key) => stepsObj[key])
+      return stepsKey.map(key => stepsObj[key])
     },
     [fetchStepApprove, handleSwapClick],
   )
@@ -366,7 +366,7 @@ const Swap = ({
                   }
                 }
                 value={formValues.fromAmount}
-                onChange={(fromAmount) => {
+                onChange={fromAmount => {
                   updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
                 }}
               />
@@ -386,7 +386,7 @@ const Swap = ({
                 showSearch={false}
                 showManageList={false}
                 compact={true}
-                onToken={(token) => {
+                onToken={token => {
                   const val = token.address
                   const cFormValues = cloneDeep(formValues)
                   if (val === formValues.toAddress) {
@@ -457,7 +457,7 @@ const Swap = ({
                 }
               }
               value={formValues.toAmount}
-              onChange={(toAmount) => {
+              onChange={toAmount => {
                 updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
               }}
             />
@@ -469,7 +469,7 @@ const Swap = ({
               showSearch={false}
               showManageList={false}
               compact={true}
-              onToken={(token) => {
+              onToken={token => {
                 const val = token.address
                 const cFormValues = cloneDeep(formValues)
                 if (val === formValues.fromAddress) {
@@ -497,10 +497,10 @@ const Swap = ({
             <Checkbox
               isDisabled={isDisabled || !poolData || network?.poolIsWrappedOnly[poolDataCacheOrApi.pool.id]}
               isSelected={formValues.isWrapped}
-              onChange={(isWrapped) => {
+              onChange={isWrapped => {
                 if (poolData) {
-                  const fromIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.fromAddress)
-                  const toIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.toAddress)
+                  const fromIdx = poolData.tokenAddresses.findIndex(a => a === formValues.fromAddress)
+                  const toIdx = poolData.tokenAddresses.findIndex(a => a === formValues.toAddress)
                   const wrapped = setPoolIsWrapped(poolData, isWrapped)
                   const cFormValues = cloneDeep(formValues)
                   cFormValues.isWrapped = isWrapped

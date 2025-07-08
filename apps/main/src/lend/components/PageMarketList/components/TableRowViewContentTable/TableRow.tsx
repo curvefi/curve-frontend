@@ -36,7 +36,7 @@ const TableRowContent = ({
   showSupplySignerCell,
   userActiveKey,
 }: TableRowProps) => {
-  const marketsBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const marketsBalancesResp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { signerAddress } = api ?? {}
   const { gauge, vaultShares } = marketsBalancesResp ?? {}
@@ -101,7 +101,7 @@ const TableRowContent = ({
 }
 
 const TableRow = (props: TableRowProps) => (
-  <Tr onClick={(evt) => props.handleCellClick(evt.target)}>
+  <Tr onClick={evt => props.handleCellClick(evt.target)}>
     <TableRowContent {...props} />
   </Tr>
 )

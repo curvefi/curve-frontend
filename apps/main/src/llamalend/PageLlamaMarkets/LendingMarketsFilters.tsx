@@ -20,7 +20,7 @@ const { Spacing } = SizesAndSpaces
  */
 const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
   const { chain, address } = useMemo(
-    () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
+    () => data.find(d => d.assets[field].symbol === symbol)!.assets[field],
     [data, field, symbol],
   )
 
@@ -47,7 +47,7 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.Chain}
         field={LlamaMarketColumnId.Chain}
-        renderItem={(chain) => (
+        renderItem={chain => (
           <>
             <ChainIcon blockchainId={chain} size="md" />
             <Typography component="span" variant="bodyMBold">
@@ -64,7 +64,7 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.CollateralSymbol}
         field="assets.collateral.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
+        renderItem={symbol => <Token symbol={symbol} data={props.data} field="collateral" />}
         defaultText={t`All Collateral Tokens`}
         {...props}
       />
@@ -74,7 +74,7 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.BorrowedSymbol}
         field="assets.borrowed.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
+        renderItem={symbol => <Token symbol={symbol} data={props.data} field="borrowed" />}
         defaultText={t`All Debt Tokens`}
         {...props}
       />

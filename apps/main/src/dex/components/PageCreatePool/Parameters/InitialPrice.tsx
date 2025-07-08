@@ -13,12 +13,12 @@ type Props = {
 }
 
 const InitialPrice = ({ curve }: Props) => {
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenAmount = useStore((state) => state.createPool.tokensInPool.tokenAmount)
-  const initialPrice = useStore((state) => state.createPool.initialPrice)
-  const updateTokenPrice = useStore((state) => state.createPool.updateTokenPrice)
+  const tokenA = useStore(state => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore(state => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore(state => state.createPool.tokensInPool.tokenC)
+  const tokenAmount = useStore(state => state.createPool.tokensInPool.tokenAmount)
+  const initialPrice = useStore(state => state.createPool.initialPrice)
+  const updateTokenPrice = useStore(state => state.createPool.updateTokenPrice)
 
   return (
     <Box flex flexColumn>
@@ -31,7 +31,7 @@ const InitialPrice = ({ curve }: Props) => {
               <InitialPriceInput
                 label={t`${tokenA.symbol} price in USD`}
                 value={initialPrice[TOKEN_A]}
-                onChange={(value) => updateTokenPrice(TOKEN_A, value)}
+                onChange={value => updateTokenPrice(TOKEN_A, value)}
                 formatOptions={{
                   maximumSignificantDigits: 21,
                   maximumFractionDigits: 21,
@@ -42,7 +42,7 @@ const InitialPrice = ({ curve }: Props) => {
               <InitialPriceInput
                 label={t`${tokenB.symbol} price in USD`}
                 value={initialPrice[TOKEN_B]}
-                onChange={(value) => updateTokenPrice(TOKEN_B, value)}
+                onChange={value => updateTokenPrice(TOKEN_B, value)}
                 formatOptions={{
                   maximumSignificantDigits: 21,
                   maximumFractionDigits: 21,
@@ -54,7 +54,7 @@ const InitialPrice = ({ curve }: Props) => {
                   <InitialPriceInput
                     label={t`${tokenC.symbol} price in USD`}
                     value={initialPrice[TOKEN_C]}
-                    onChange={(value) => updateTokenPrice(TOKEN_C, value)}
+                    onChange={value => updateTokenPrice(TOKEN_C, value)}
                     formatOptions={{
                       maximumSignificantDigits: 21,
                       maximumFractionDigits: 21,

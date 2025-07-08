@@ -23,9 +23,9 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const usdRateLoading = useStore((state) => state.usdRates.loading)
-  const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
-  const scrvUsdRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate.value)
+  const usdRateLoading = useStore(state => state.usdRates.loading)
+  const scrvUsdExchangeRateFetchStatus = useStore(state => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
+  const scrvUsdRate = useStore(state => state.scrvusd.scrvUsdExchangeRate.value)
 
   const userScrvUsdBalance = Number(userBalance?.scrvUSD)
   const userScrvUsdBalanceInCrvUsd = userScrvUsdBalance / Number(scrvUsdRate)
@@ -43,7 +43,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
       sx={{
         width: '100%',
         maxWidth: chartExpanded ? '100%' : MaxWidth.section,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+        backgroundColor: t => t.design.Layer[1].Fill,
         boxShadow: 'none',
       }}
     >

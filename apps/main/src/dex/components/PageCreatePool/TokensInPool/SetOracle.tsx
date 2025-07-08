@@ -26,14 +26,14 @@ type OracleInputProps = {
 }
 
 const SetOracle = () => {
-  const tokenA = useStore((state) => state.createPool.tokensInPool.tokenA)
-  const tokenB = useStore((state) => state.createPool.tokensInPool.tokenB)
-  const tokenC = useStore((state) => state.createPool.tokensInPool.tokenC)
-  const tokenD = useStore((state) => state.createPool.tokensInPool.tokenD)
-  const tokenE = useStore((state) => state.createPool.tokensInPool.tokenE)
-  const tokenF = useStore((state) => state.createPool.tokensInPool.tokenF)
-  const tokenG = useStore((state) => state.createPool.tokensInPool.tokenG)
-  const tokenH = useStore((state) => state.createPool.tokensInPool.tokenH)
+  const tokenA = useStore(state => state.createPool.tokensInPool.tokenA)
+  const tokenB = useStore(state => state.createPool.tokensInPool.tokenB)
+  const tokenC = useStore(state => state.createPool.tokensInPool.tokenC)
+  const tokenD = useStore(state => state.createPool.tokensInPool.tokenD)
+  const tokenE = useStore(state => state.createPool.tokensInPool.tokenE)
+  const tokenF = useStore(state => state.createPool.tokensInPool.tokenF)
+  const tokenG = useStore(state => state.createPool.tokensInPool.tokenG)
+  const tokenH = useStore(state => state.createPool.tokensInPool.tokenH)
 
   return (
     <OracleWrapper>
@@ -66,8 +66,8 @@ const SetOracle = () => {
 }
 
 const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
-  const updateOracleAddress = useStore((state) => state.createPool.updateOracleAddress)
-  const updateOracleFunction = useStore((state) => state.createPool.updateOracleFunction)
+  const updateOracleAddress = useStore(state => state.createPool.updateOracleAddress)
+  const updateOracleFunction = useStore(state => state.createPool.updateOracleFunction)
 
   return (
     <InputContainer>
@@ -75,7 +75,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={token.oracleAddress}
-        onChange={debounce((value) => updateOracleAddress(tokenId, value), 300)}
+        onChange={debounce(value => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
@@ -91,7 +91,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={token.oracleFunction}
-        onChange={debounce((value) => updateOracleFunction(tokenId, value), 300)}
+        onChange={debounce(value => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />

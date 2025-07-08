@@ -7,10 +7,10 @@ import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@ui/uti
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const pricePerShareResp = useStore(state => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })
-  const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
+  const fetchVaultPricePerShare = useStore(state => state.markets.fetchVaultPricePerShare)
 
   const { borrowedAmount, borrowedAmountUsd } = useMemo<{ borrowedAmount: string; borrowedAmountUsd: string }>(() => {
     const { pricePerShare, error } = pricePerShareResp ?? {}

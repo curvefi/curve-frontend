@@ -82,14 +82,14 @@ export const checkOracle = isAddress
 export const validateOracleFunction = (functionName: string) => functionName.endsWith('()')
 
 export const oraclesReady = (tokens: TokenState[]) => {
-  const oracleTokens = tokens.filter((token) => token.ngAssetType === 1)
-  const allValid = oracleTokens.every((token) => checkOracle(token.oracleAddress))
-  const functionsValid = oracleTokens.every((token) => validateOracleFunction(token.oracleFunction))
+  const oracleTokens = tokens.filter(token => token.ngAssetType === 1)
+  const allValid = oracleTokens.every(token => checkOracle(token.oracleAddress))
+  const functionsValid = oracleTokens.every(token => validateOracleFunction(token.oracleFunction))
   return allValid && functionsValid
 }
 
 export const containsOracle = (tokens: TokenState[]) =>
-  tokens.some((token) => token.ngAssetType === 1 && token.address !== '')
+  tokens.some(token => token.ngAssetType === 1 && token.address !== '')
 
 export const checkFormReady = (
   poolTypeValid: boolean,
@@ -107,17 +107,17 @@ export const isTricrypto = (
 ) => tricryptoEnabled && tokenAmount === 3 && tokenA.address !== '' && tokenB.address !== '' && tokenC.address !== ''
 
 export const checkMetaPool = (address: string, basePools: BasePool[]) =>
-  address === '' ? false : basePools.some((item) => item.token === address)
+  address === '' ? false : basePools.some(item => item.token === address)
 
 export const getBasepoolCoins = (value: string, basePools: BasePool[], tokenA: TokenState, tokenB: TokenState) => {
   let basePoolCoins: string[] = []
   if (checkMetaPool(value, basePools) || tokenA.basePool || tokenB.basePool) {
     if (checkMetaPool(value, basePools)) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === value.toLowerCase())?.coins || []
     } else if (tokenA.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenA.address.toLowerCase())?.coins || []
     } else if (tokenB.basePool) {
-      basePoolCoins = basePools.find((pool) => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
+      basePoolCoins = basePools.find(pool => pool.token.toLowerCase() === tokenB.address.toLowerCase())?.coins || []
     }
   }
   return basePoolCoins

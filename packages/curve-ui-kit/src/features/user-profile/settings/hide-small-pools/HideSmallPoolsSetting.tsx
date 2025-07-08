@@ -4,8 +4,8 @@ import useUserProfileStore from '../../store'
 import { SettingLabel, Setting } from '../Setting'
 
 export const HideSmallPoolsSetting = () => {
-  const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
-  const setHideSmallPools = useUserProfileStore((state) => state.setHideSmallPools)
+  const hideSmallPools = useUserProfileStore(state => state.hideSmallPools)
+  const setHideSmallPools = useUserProfileStore(state => state.setHideSmallPools)
 
   return (
     <Setting>

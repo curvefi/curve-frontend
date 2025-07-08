@@ -18,8 +18,8 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const pages = useMemo(
     () =>
       routes[currentMenu]
-        .filter((props) => !props.betaFeature || isBeta)
-        .map((props) => routeToPage(props, { networkId, pathname })),
+        .filter(props => !props.betaFeature || isBeta)
+        .map(props => routeToPage(props, { networkId, pathname })),
     [currentMenu, isBeta, networkId, pathname, routes],
   )
   const sections = useMemo(() => getSections(currentApp, props.networkId), [currentApp, props.networkId])

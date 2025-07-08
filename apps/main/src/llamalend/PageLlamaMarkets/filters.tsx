@@ -15,8 +15,8 @@ export const filterByText: FilterFn<LlamaMarket> = (row, columnId, filterValue: 
   const filters = filterValue.toLowerCase().split(/\s+/)
   const { controllerAddress, address } = row.original
   return filters.every(
-    (filter) =>
-      [address, controllerAddress].some((value) => matches(value, filter)) ||
-      [borrowed, collateral].some((a) => [a.symbol, a.address].some((value) => matches(value, filter))),
+    filter =>
+      [address, controllerAddress].some(value => matches(value, filter)) ||
+      [borrowed, collateral].some(a => [a.symbol, a.address].some(value => matches(value, filter))),
   )
 }

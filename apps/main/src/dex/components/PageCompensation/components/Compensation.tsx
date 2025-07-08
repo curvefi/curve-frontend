@@ -40,8 +40,8 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const networks = useStore((state) => state.networks.networks)
+  const fetchGasInfo = useStore(state => state.gas.fetchGasInfo)
+  const networks = useStore(state => state.networks.networks)
 
   const [error, setError] = useState('')
   const [step, setStep] = useState('')

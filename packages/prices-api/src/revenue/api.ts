@@ -47,7 +47,7 @@ export async function getDistributions(options?: Options) {
   const host = getHost(options)
   const fs = (page: number) =>
     fetch<Responses.GetDistributionsResponse>(`${host}/v1/dao/fees/distributions?page=${page}&per_page=100`).then(
-      (resp) => resp.distributions.map(Parsers.parseDistribution),
+      resp => resp.distributions.map(Parsers.parseDistribution),
     )
 
   return await paginate(fs, 1, 100)

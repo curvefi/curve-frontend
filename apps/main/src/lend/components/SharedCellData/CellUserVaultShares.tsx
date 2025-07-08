@@ -11,7 +11,7 @@ const CellUserVaultShares = ({
   rOwmId: string
   userActiveKey: string
 }) => {
-  const marketsBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const marketsBalancesResp = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
 
   const { error, vaultShares = '0', gauge = '0' } = marketsBalancesResp ?? {}
 

@@ -17,10 +17,10 @@ type HelperMessageProps = {
 const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   <Box
     sx={{
-      backgroundColor: (t) => t.design.Layer[3].Fill,
+      backgroundColor: t => t.design.Layer[3].Fill,
       paddingBlock: Spacing.sm,
       paddingInlineStart: Spacing.sm,
-      ...(isError && { outline: (t) => `1px solid ${t.design.Layer.Feedback.Error}` }),
+      ...(isError && { outline: t => `1px solid ${t.design.Layer.Feedback.Error}` }),
     }}
   >
     {typeof message === 'string' ? (
@@ -50,11 +50,11 @@ const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps)
       input: {
         disableUnderline: true,
         sx: {
-          backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-          fontFamily: (t) => t.typography.highlightXl.fontFamily,
+          backgroundColor: t => t.design.Inputs.Large.Default.Fill,
+          fontFamily: t => t.typography.highlightXl.fontFamily,
           fontSize: FontSize.xl,
           fontWeight: FontWeight.Bold,
-          color: (t) => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
+          color: t => (isError ? t.design.Layer.Feedback.Error : t.design.Text.TextColors.Primary),
         },
       },
     }}
@@ -225,9 +225,9 @@ export const LargeTokenInput = ({
     <Stack
       gap={Spacing.xs}
       sx={{
-        backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
+        backgroundColor: t => t.design.Inputs.Large.Default.Fill,
         padding: Spacing.md,
-        outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+        outline: isError ? t => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
       }}
     >
       <Stack gap={Spacing.xs}>

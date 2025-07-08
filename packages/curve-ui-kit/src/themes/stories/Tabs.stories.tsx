@@ -40,7 +40,7 @@ const meta: Meta<typeof TabsSwitcher> = {
 type Story = StoryObj<typeof TabsSwitcher>
 
 export const Default: Story = {
-  render: (args) => <TabsSwitcherComponent {...args} />,
+  render: args => <TabsSwitcherComponent {...args} />,
 }
 
 export const NoInactiveBorders: Story = {
@@ -48,7 +48,7 @@ export const NoInactiveBorders: Story = {
     variant: 'underlined',
     hideInactiveBorders: true,
   },
-  render: (args) => <TabsSwitcherComponent {...args} />,
+  render: args => <TabsSwitcherComponent {...args} />,
 }
 
 export default meta

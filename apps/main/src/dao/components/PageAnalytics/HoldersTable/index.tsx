@@ -13,10 +13,10 @@ import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
 
 const TopHoldersTable = () => {
-  const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const allHoldersSortBy = useStore((state) => state.analytics.allHoldersSortBy)
-  const setAllHoldersSortBy = useStore((state) => state.analytics.setAllHoldersSortBy)
-  const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
+  const veCrvHolders = useStore(state => state.analytics.veCrvHolders)
+  const allHoldersSortBy = useStore(state => state.analytics.allHoldersSortBy)
+  const setAllHoldersSortBy = useStore(state => state.analytics.setAllHoldersSortBy)
+  const getVeCrvHolders = useStore(state => state.analytics.getVeCrvHolders)
 
   const tableMinWidth = 41.875
 
@@ -41,7 +41,7 @@ const TopHoldersTable = () => {
         columns={HOLDERS_LABELS}
         sortBy={allHoldersSortBy}
         errorMessage={t`An error occurred while veCRV holders data.`}
-        setSortBy={(key) => setAllHoldersSortBy(key as AllHoldersSortBy)}
+        setSortBy={key => setAllHoldersSortBy(key as AllHoldersSortBy)}
         getData={() => getVeCrvHolders()}
         noDataMessage={t`No veCRV holders found.`}
         renderRow={(holder, index) => (

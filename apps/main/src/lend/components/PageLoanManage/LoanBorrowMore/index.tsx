@@ -45,24 +45,24 @@ const LoanBorrowMore = ({
 }: PageContentProps & { isLeverage?: boolean }) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.loanBorrowMore.activeKey)
-  const activeKeyMax = useStore((state) => state.loanBorrowMore.activeKeyMax)
-  const detailInfoLeverage = useStore((state) => state.loanBorrowMore.detailInfoLeverage[activeKey])
-  const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
-  const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
-  const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
+  const activeKey = useStore(state => state.loanBorrowMore.activeKey)
+  const activeKeyMax = useStore(state => state.loanBorrowMore.activeKeyMax)
+  const detailInfoLeverage = useStore(state => state.loanBorrowMore.detailInfoLeverage[activeKey])
+  const formEstGas = useStore(state => state.loanBorrowMore.formEstGas[activeKey])
+  const formStatus = useStore(state => state.loanBorrowMore.formStatus)
+  const formValues = useStore(state => state.loanBorrowMore.formValues)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const loanExists = useStore(state => state.user.loansExistsMapper[userActiveKey]?.loanExists)
+  const maxRecv = useStore(state => state.loanBorrowMore.maxRecv[activeKeyMax])
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
-  const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
-  const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
-  const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
-  const resetState = useStore((state) => state.loanBorrowMore.resetState)
+  const fetchStepApprove = useStore(state => state.loanBorrowMore.fetchStepApprove)
+  const fetchStepIncrease = useStore(state => state.loanBorrowMore.fetchStepIncrease)
+  const refetchMaxRecv = useStore(state => state.loanBorrowMore.refetchMaxRecv)
+  const setFormValues = useStore(state => state.loanBorrowMore.setFormValues)
+  const resetState = useStore(state => state.loanBorrowMore.resetState)
 
-  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const maxSlippage = useUserProfileStore(state => state.maxSlippage.crypto)
 
   const [{ isConfirming, confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -214,7 +214,7 @@ const LoanBorrowMore = ({
                           : null
                       }
                       confirmed={confirmedWarning}
-                      setConfirmed={(val) =>
+                      setConfirmed={val =>
                         setConfirmWarning({ isConfirming: false, confirmedWarning: val as boolean })
                       }
                     />
@@ -241,11 +241,11 @@ const LoanBorrowMore = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = isApproved && !isApprovedCompleted ? ['BORROW_MORE'] : ['APPROVAL', 'BORROW_MORE']
       }
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [expectedCollateral?.totalCollateral, userState, userBalances, fetchStepApprove, handleBtnClickBorrow],
   )
@@ -362,7 +362,7 @@ const LoanBorrowMore = ({
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+          handleInpChange={userCollateral => updateFormValues({ userCollateral })}
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
@@ -377,7 +377,7 @@ const LoanBorrowMore = ({
             tokenAddress={market?.borrowed_token?.address}
             tokenSymbol={market?.borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
-            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
+            handleInpChange={userBorrowed => updateFormValues({ userBorrowed })}
             handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
@@ -392,7 +392,7 @@ const LoanBorrowMore = ({
         tokenAddress={market?.borrowed_token?.address}
         tokenSymbol={market?.borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={debt => updateFormValues({ debt })}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })

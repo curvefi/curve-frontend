@@ -38,7 +38,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   getContract: async (jsonModuleName, contractAddress, provider) => {
     try {
-      const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then((module) => module.default)
+      const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then(module => module.default)
 
       if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
 
@@ -51,7 +51,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[key] = value
       }),
     )
@@ -90,7 +90,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
   setAppStateByActiveKey: <T>(sliceKey: SliceKey, key: StateKey, activeKey: string, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValues = state[sliceKey][key]
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
@@ -115,7 +115,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   },
   setAppStateByKey: <T>(sliceKey: SliceKey, key: StateKey, value: T, showLog?: boolean) => {
     set(
-      produce((state) => {
+      produce(state => {
         const storedValue = state[sliceKey][key]
         if (!isEqual(storedValue, value)) {
           if (showLog) {
@@ -130,7 +130,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     for (const key in sliceState) {
       const value = sliceState[key]
       set(
-        produce((state) => {
+        produce(state => {
           const storedValue = state[sliceKey][key]
           if (!isEqual(storedValue, value)) {
             if (showLog) {
@@ -144,7 +144,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   },
   resetAppState: <T>(sliceKey: SliceKey, defaultState: T) => {
     set(
-      produce((state) => {
+      produce(state => {
         state[sliceKey] = {
           ...state[sliceKey],
           ...defaultState,

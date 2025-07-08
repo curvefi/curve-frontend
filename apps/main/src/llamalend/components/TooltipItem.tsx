@@ -40,7 +40,7 @@ export const TooltipItem = ({
 )
 
 export const TooltipItems = ({ children, secondary }: { children: ReactNode; secondary?: boolean }) => (
-  <Stack padding={Spacing.sm} {...(secondary && { bgcolor: (t) => t.design.Layer[2].Fill })}>
+  <Stack padding={Spacing.sm} {...(secondary && { bgcolor: t => t.design.Layer[2].Fill })}>
     {children}
   </Stack>
 )

@@ -6,10 +6,10 @@ import { HealthMode } from '@/loan/types/loan.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const ChartUserLiquidationRange = ({ healthMode, llammaId }: { healthMode: HealthMode; llammaId: string }) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
+  const loanDetails = useStore(state => state.loans.detailsMapper[llammaId])
   const { userPrices: currPrices } = useUserLoanDetails(llammaId) ?? {}
 
-  const theme = useUserProfileStore((state) => state.theme)
+  const theme = useUserProfileStore(state => state.theme)
 
   // default to empty data to show chart
   const liqRangeData = useMemo(

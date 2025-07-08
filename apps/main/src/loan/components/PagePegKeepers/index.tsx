@@ -10,9 +10,9 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchDetails = useStore((state) => state.pegKeepers.fetchDetails)
-  const resetState = useStore((state) => state.pegKeepers.resetState)
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchDetails = useStore(state => state.pegKeepers.fetchDetails)
+  const resetState = useStore(state => state.pegKeepers.resetState)
 
   const [loaded, setLoaded] = useState(false)
 

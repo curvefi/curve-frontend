@@ -35,18 +35,18 @@ const VaultWithdrawRedeem = ({
 }: PageContentProps) => {
   const isSubscribed = useRef(false)
 
-  const activeKey = useStore((state) => state.vaultWithdrawRedeem.activeKey)
-  const formEstGas = useStore((state) => state.vaultWithdrawRedeem.formEstGas[activeKey])
-  const formStatus = useStore((state) => state.vaultWithdrawRedeem.formStatus)
-  const formValues = useStore((state) => state.vaultWithdrawRedeem.formValues)
-  const detailInfo = useStore((state) => state.vaultWithdrawRedeem.detailInfo[activeKey])
+  const activeKey = useStore(state => state.vaultWithdrawRedeem.activeKey)
+  const formEstGas = useStore(state => state.vaultWithdrawRedeem.formEstGas[activeKey])
+  const formStatus = useStore(state => state.vaultWithdrawRedeem.formStatus)
+  const formValues = useStore(state => state.vaultWithdrawRedeem.formValues)
+  const detailInfo = useStore(state => state.vaultWithdrawRedeem.detailInfo[activeKey])
   const maxActiveKey = _getMaxActiveKey(rChainId, rFormType, market)
-  const maxResp = useStore((state) => state.vaultWithdrawRedeem.max[maxActiveKey])
-  const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const fetchStepWithdrawRedeem = useStore((state) => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
-  const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
-  const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
+  const maxResp = useStore(state => state.vaultWithdrawRedeem.max[maxActiveKey])
+  const userBalances = useStore(state => state.user.marketsBalancesMapper[userActiveKey])
+  const fetchStepWithdrawRedeem = useStore(state => state.vaultWithdrawRedeem.fetchStepWithdrawRedeem)
+  const fetchUserMarketBalances = useStore(state => state.user.fetchUserMarketBalances)
+  const setFormValues = useStore(state => state.vaultWithdrawRedeem.setFormValues)
+  const resetState = useStore(state => state.vaultWithdrawRedeem.resetState)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -149,12 +149,12 @@ const VaultWithdrawRedeem = ({
       let stepsKey: StepKey[]
 
       if (isInProgress || isComplete) {
-        stepsKey = steps.map((s) => s.key as StepKey)
+        stepsKey = steps.map(s => s.key as StepKey)
       } else {
         stepsKey = ['WITHDRAW_REDEEM']
       }
 
-      return stepsKey.map((k) => stepsObj[k])
+      return stepsKey.map(k => stepsObj[k])
     },
     [handleBtnClickWithdrawRedeem],
   )
@@ -208,7 +208,7 @@ const VaultWithdrawRedeem = ({
                 description: formatNumber(userBalances?.vaultSharesConverted, { defaultValue: '-' }),
               }}
               value={formValues.amount}
-              onChange={(amount) => {
+              onChange={amount => {
                 handleFormChange({ amount, isFullWithdraw: false })
               }}
             />
@@ -245,7 +245,7 @@ const VaultWithdrawRedeem = ({
       <Checkbox
         isDisabled={disableWithdrawInFull}
         isSelected={formValues.isFullWithdraw}
-        onChange={(isFullWithdraw) => handleFormChange({ isFullWithdraw, amount: '' })}
+        onChange={isFullWithdraw => handleFormChange({ isFullWithdraw, amount: '' })}
       >
         {t`Withdraw in full`}
       </Checkbox>

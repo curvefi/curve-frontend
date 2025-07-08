@@ -19,16 +19,16 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchPools = useStore((state) => state.pools.fetchPools)
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[networkDef.chainId])
-  const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
-  const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
-  const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
-  const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
-  const network = useStore((state) => state.networks.networks[networkDef.chainId])
+  const isPageVisible = useLayoutStore(state => state.isPageVisible)
+  const fetchPools = useStore(state => state.pools.fetchPools)
+  const poolDataMapper = useStore(state => state.pools.poolsMapper[networkDef.chainId])
+  const fetchPoolsVolume = useStore(state => state.pools.fetchPoolsVolume)
+  const fetchPoolsTvl = useStore(state => state.pools.fetchPoolsTvl)
+  const setTokensMapper = useStore(state => state.tokens.setTokensMapper)
+  const fetchGasInfo = useStore(state => state.gas.fetchGasInfo)
+  const fetchAllStoredUsdRates = useStore(state => state.usdRates.fetchAllStoredUsdRates)
+  const fetchAllStoredBalances = useStore(state => state.userBalances.fetchAllStoredBalances)
+  const network = useStore(state => state.networks.networks[networkDef.chainId])
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
@@ -69,10 +69,10 @@ export default function DexLayout({ children }: { children: ReactNode }) {
   const networks = use(getNetworkDefs())
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const [appLoaded, setAppLoaded] = useState(false)
-  const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
-  const hydrate = useStore((s) => s.hydrate)
+  const fetchNetworks = useStore(state => state.networks.fetchNetworks)
+  const hydrate = useStore(s => s.hydrate)
 
-  const network = recordValues(networks).find((n) => n.id === networkId)!
+  const network = recordValues(networks).find(n => n.id === networkId)!
   const isHydrated = useHydration('curveApi', hydrate, network.chainId)
   useRedirectToEth(network, networkId, isHydrated)
 

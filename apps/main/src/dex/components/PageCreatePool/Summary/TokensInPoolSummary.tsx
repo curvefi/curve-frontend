@@ -46,9 +46,9 @@ type TokenSummary = {
 }
 
 const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
-  const tokensInPool = useStore((state) => state.createPool.tokensInPool)
-  const swapType = useStore((state) => state.createPool.swapType)
-  const validation = useStore((state) => state.createPool.validation)
+  const tokensInPool = useStore(state => state.createPool.tokensInPool)
+  const swapType = useStore(state => state.createPool.swapType)
+  const validation = useStore(state => state.createPool.validation)
 
   return (
     <CategoryColumn>
@@ -195,7 +195,7 @@ const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
 }
 
 const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) => {
-  const { scanAddressPath, stableswapFactory } = useStore((state) => state.networks.networks[chainId])
+  const { scanAddressPath, stableswapFactory } = useStore(state => state.networks.networks[chainId])
   return (
     <TokenRow>
       <ButtonTokenIcon blockchainId={blockchainId} tooltip={token.symbol} address={token.address} />

@@ -19,8 +19,8 @@ const FormClaimFees = () => {
     formValues: { walletAddress },
   } = useDashboardContext()
 
-  const claimFeesAmounts = useStore((state) => state.dashboard.claimableFees[activeKey])
-  const formStatus = useStore((state) => state.dashboard.formStatus)
+  const claimFeesAmounts = useStore(state => state.dashboard.claimableFees[activeKey])
+  const formStatus = useStore(state => state.dashboard.formStatus)
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
