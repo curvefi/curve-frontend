@@ -1,5 +1,6 @@
 /// <reference path="./mui-button.d.ts" />
 import { Breakpoint } from '@mui/material'
+import type { ButtonProps } from '@mui/material/Button'
 import type { Components } from '@mui/material/styles'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'
 import { DesignSystem } from '../../design'
@@ -65,38 +66,38 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
   }
   const fontFamily = Fonts[Text.FontFamily.Button]
   return {
+    variants: [
+      ...Object.entries(colors).map(([color, style]) => ({ props: { color: color as ButtonProps['color'] }, style })),
+      {
+        props: { variant: 'link' as ButtonProps['variant'] },
+        style: {
+          '&.MuiButton-link': {
+            textTransform: 'none',
+            padding: 0,
+            height: Sizing[400],
+          },
+        },
+      },
+      {
+        props: { variant: 'inline' as ButtonProps['variant'] },
+        style: {
+          '&.MuiButton-inline': {
+            display: 'inline',
+            verticalAlign: 'baseline',
+            textTransform: 'none',
+            padding: 0,
+            border: 0,
+            lineHeight: 1,
+            height: `auto`,
+            minWidth: 'unset',
+            textAlign: 'start',
+            justifyContent: 'start',
+          },
+        },
+      },
+    ],
     styleOverrides: {
       root: {
-        variants: [
-          ...Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
-          {
-            props: { variant: 'link' },
-            style: {
-              '&.MuiButton-link': {
-                textTransform: 'none',
-                padding: 0,
-                height: Sizing[400],
-              },
-            },
-          },
-          {
-            props: { variant: 'inline' },
-            style: {
-              '&.MuiButton-inline': {
-                display: 'inline',
-                verticalAlign: 'baseline',
-                textTransform: 'none',
-                padding: 0,
-                border: 0,
-                lineHeight: 1,
-                height: `auto`,
-                minWidth: 'unset',
-                textAlign: 'start',
-                justifyContent: 'start',
-              },
-            },
-          },
-        ],
         borderRadius: 0,
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
