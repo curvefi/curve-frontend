@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { RadioContext } from 'ui/src/Radio'
 import { mediaQueries } from 'ui/src/utils/responsive'
 import { useRadioGroup } from '@react-aria/radio'

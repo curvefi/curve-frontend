@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { breakpoints } from 'ui/src/utils/responsive'
 import type { BoxProps } from './types'
 

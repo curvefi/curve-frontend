@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'

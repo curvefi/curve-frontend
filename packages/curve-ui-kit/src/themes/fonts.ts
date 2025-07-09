@@ -1,28 +1,9 @@
-import localFont from 'next/font/local'
 import { CSSProperties } from 'react'
 
 // Fonts might not load when running Storybook locally.
-const isStorybook = process.env.STORYBOOK === 'true'
-
-// localFont calls have to be standalone, so the actual storybook check happens below.
-const monaSansFont = localFont({ src: '../../public/fonts/Mona-Sans.woff2' })
-const hubotSansFont = localFont({ src: '../../public/fonts/Hubot-Sans.woff2' })
-const minecraftFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Minecraft-Regular.otf',
-      weight: 'normal',
-    },
-    {
-      path: '../../public/fonts/Minecraft-Bold.otf',
-      weight: 'bold',
-    },
-  ],
-})
-
-export const monaSans = isStorybook ? { style: { fontFamily: 'MonaSans' } } : monaSansFont
-export const hubotSans = isStorybook ? { style: { fontFamily: 'Hubot Sans' } } : hubotSansFont
-export const minecraft = isStorybook ? { style: { fontFamily: 'Minecraft' } } : minecraftFont
+export const monaSans = { style: { fontFamily: 'MonaSans' } }
+export const hubotSans = { style: { fontFamily: 'Hubot Sans' } }
+export const minecraft = { style: { fontFamily: 'Minecraft' } }
 
 const MonaSans = [monaSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
 const HubotSans = [hubotSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')

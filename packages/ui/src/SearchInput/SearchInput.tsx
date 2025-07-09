@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import IconButton from 'ui/src/IconButton'
 import { RCEditClear } from 'ui/src/images'

@@ -1,7 +1,7 @@
 import isUndefined from 'lodash/isUndefined'
 import Link from 'next/link'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'

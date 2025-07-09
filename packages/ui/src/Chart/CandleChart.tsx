@@ -11,7 +11,7 @@ import {
 } from 'lightweight-charts'
 import { debounce } from 'lodash'
 import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type {
   LpPriceOhlcDataFormatted,
   ChartHeight,

@@ -1,5 +1,5 @@
 import { useParams } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps, type UrlParams } from '@/lend/types/lend.types'

@@ -1,6 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
 import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import networks from '@/dao/networks'
 import { getEthPath } from '@/dao/utils'

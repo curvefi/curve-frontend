@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/dex/constants'
 import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/main.types'

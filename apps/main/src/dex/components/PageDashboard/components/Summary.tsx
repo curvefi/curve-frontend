@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Item, Section } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ComboBoxAddress from '@/dex/components/PageDashboard/components/ComboBoxAddress'
 import FormClaimFees from '@/dex/components/PageDashboard/components/FormClaimFees'
 import FormVecrv from '@/dex/components/PageDashboard/components/FormVecrv'

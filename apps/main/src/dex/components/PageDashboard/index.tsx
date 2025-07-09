@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import ClassicPoolsOnlyDescription from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'

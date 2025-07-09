@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'

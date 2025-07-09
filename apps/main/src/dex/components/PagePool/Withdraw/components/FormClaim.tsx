@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'

@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import {
   STABLESWAP,
   STABLESWAPOLD,

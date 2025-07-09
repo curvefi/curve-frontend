@@ -1,7 +1,7 @@
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'

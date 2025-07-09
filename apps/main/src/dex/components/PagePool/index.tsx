@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
@@ -100,7 +100,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
     const tabs: PoolInfoTab[] = [{ label: t`Pool Details`, key: 'pool' }]
 
-    if (!!signerAddress) {
+    if (signerAddress) {
       tabs.push({ label: t`Your Details`, key: 'user' })
     }
     if (pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]) {

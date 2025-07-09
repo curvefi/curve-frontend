@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Box from '@ui/Box'
 import { formatNumber } from '@ui/utils'

@@ -1,6 +1,6 @@
 import { zip } from 'lodash'
 import { ReactNode, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChipPool from '@/dex/components/ChipPool'
 import ChipToken from '@/dex/components/ChipToken'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'

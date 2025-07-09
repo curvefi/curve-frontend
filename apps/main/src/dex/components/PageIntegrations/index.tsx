@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Key, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import { ROUTE } from '@/dex/constants'
@@ -130,10 +130,9 @@ const IntegrationsComp = ({
       {formStatus.noResult ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
           <Trans>
-            No integration apps found with for{' '}
-            {!!formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
+            No integration apps found with for {formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
             {!!formValues.searchText && !!filterKeyLabel ? <>and </> : ''}
-            {!!filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
+            {filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
           </Trans>
         </NoResultWrapper>
       ) : (

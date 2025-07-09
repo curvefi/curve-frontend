@@ -1,5 +1,5 @@
 import { useParams, useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'

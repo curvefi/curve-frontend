@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DialogSelect from '@/dex/components/PageDeployGauge/components/DialogSelect'
 import TextInput from '@/dex/components/PageDeployGauge/components/TextInput'
 import {

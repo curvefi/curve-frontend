@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation'
 import { Key, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
 import { SortByFilterProposals } from '@/dao/types/dao.types'

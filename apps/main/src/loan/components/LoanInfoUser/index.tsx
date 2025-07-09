@@ -1,6 +1,6 @@
 import isUndefined from 'lodash/isUndefined'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
 import { getHealthMode } from '@/loan/components/DetailInfoHealth'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'

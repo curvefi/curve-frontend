@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableHead from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableHead'
 import TableRowContainer from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowContainer'
 import type { TableProps } from '@/lend/components/PageMarketList/types'
@@ -35,7 +35,7 @@ const MarketListTable = ({
           tableLabels={tableLabels}
           titleMapper={titleMapper}
         />
-      ) : !!sortBy ? (
+      ) : sortBy ? (
         <thead>
           <tr>
             <Th className="left">{t`Markets`}</Th>

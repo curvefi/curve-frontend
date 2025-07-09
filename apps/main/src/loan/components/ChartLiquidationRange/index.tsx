@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
 import { HealthColorKey, Theme } from '@/loan/types/loan.types'
 import { formatNumber } from '@ui/utils'

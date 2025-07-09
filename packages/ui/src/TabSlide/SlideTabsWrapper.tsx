@@ -1,5 +1,5 @@
 import { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 export type Position = { width: number; top: number }
 

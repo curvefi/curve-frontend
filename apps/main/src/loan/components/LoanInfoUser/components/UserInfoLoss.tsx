@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InpChipUsdRate from '@/loan/components/InpChipUsdRate'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { Llamma } from '@/loan/types/loan.types'

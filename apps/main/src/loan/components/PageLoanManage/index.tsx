@@ -1,7 +1,7 @@
 import isUndefined from 'lodash/isUndefined'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'

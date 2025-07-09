@@ -1,7 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanInfoUser from '@/loan/components/LoanInfoUser'

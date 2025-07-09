@@ -1,5 +1,5 @@
 import { debounce } from 'lodash'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { isAddress } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'

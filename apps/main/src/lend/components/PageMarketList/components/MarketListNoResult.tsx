@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import type { PageMarketList } from '@/lend/components/PageMarketList/types'
 import { Filter } from '@/lend/components/PageMarketList/utils'

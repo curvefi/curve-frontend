@@ -1,6 +1,6 @@
 import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
 import Spinner from 'ui/src/Spinner/Spinner'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'

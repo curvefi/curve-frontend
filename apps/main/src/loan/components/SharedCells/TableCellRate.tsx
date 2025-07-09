@@ -1,5 +1,5 @@
 import isUndefined from 'lodash/isUndefined'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'

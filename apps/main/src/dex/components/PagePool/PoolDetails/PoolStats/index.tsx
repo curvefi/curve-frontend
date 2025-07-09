@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParameters'
 import RewardsComp from '@/dex/components/PagePool/PoolDetails/PoolStats/Rewards'

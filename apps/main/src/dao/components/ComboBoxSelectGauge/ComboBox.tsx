@@ -1,6 +1,6 @@
 import chunk from 'lodash/chunk'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ComboBoxListChunk from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import useStore from '@/dao/store/useStore'
@@ -116,7 +116,7 @@ const ComboBox = ({
                   handleOnSelectChange={handleOnSelectChange}
                 />
               ))
-            ) : !!filterValue ? (
+            ) : filterValue ? (
               <ComboBoxListNoResult>{t`No gauge found for "${filterValue}"`}</ComboBoxListNoResult>
             ) : (
               <SpinnerWrapper vSpacing={5}>

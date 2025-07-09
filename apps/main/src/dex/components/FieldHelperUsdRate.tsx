@@ -1,7 +1,7 @@
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Chip from '@ui/Typography/Chip'
 import { BN, formatNumber, formatNumberUsdRate } from '@ui/utils'
 

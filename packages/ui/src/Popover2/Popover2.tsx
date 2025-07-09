@@ -2,7 +2,7 @@ import { cloneElement, ReactElement, useRef } from 'react'
 import type { AriaPopoverProps } from 'react-aria'
 import { DismissButton, Overlay, usePopover } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 export interface PopoverProps extends Omit<AriaPopoverProps, 'popoverRef'> {
   children: ReactElement<OverlayTriggerState>

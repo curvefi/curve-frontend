@@ -1,6 +1,6 @@
 import { useParams } from 'next/navigation'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
 import { CRYPTOSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'

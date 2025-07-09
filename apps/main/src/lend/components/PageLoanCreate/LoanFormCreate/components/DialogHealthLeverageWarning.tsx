@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { HealthMode } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -21,7 +21,7 @@ function DialogHealthLeverageWarning({
   return (
     <Box grid gridRowGap={3}>
       <AlertBox alertType="error">
-        {!!warning ? (
+        {warning ? (
           <div>
             <strong>Please review the following warnings:</strong>
             <br />

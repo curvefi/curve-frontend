@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
@@ -40,7 +40,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolData.parameters ?? {}
 
   const haveWrappedCoins = useMemo(() => {
-    if (!!poolData?.pool?.wrappedCoins) {
+    if (poolData?.pool?.wrappedCoins) {
       return Array.isArray(poolData.pool.wrappedCoins)
     }
     return false

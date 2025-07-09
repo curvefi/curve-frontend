@@ -2,7 +2,7 @@ import cloneDeep from 'lodash/cloneDeep'
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
@@ -202,7 +202,7 @@ const Swap = ({
           status: getStepStatus(isComplete, step === 'SWAP', formStatus.isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Swap Complete` : t`Swap`,
-          ...(!!exchangeOutput.modal
+          ...(exchangeOutput.modal
             ? {
                 modal: {
                   title: t`Warning!`,

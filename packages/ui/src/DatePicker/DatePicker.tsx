@@ -12,7 +12,7 @@ import {
   useLocale,
 } from 'react-aria'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import ModalDialog from 'ui/src/Dialog'
 import Icon from 'ui/src/Icon'

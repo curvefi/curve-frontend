@@ -1,7 +1,7 @@
 import isNaN from 'lodash/isNaN'
 import isUndefined from 'lodash/isUndefined'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import useStore from '@/dex/store/useStore'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'

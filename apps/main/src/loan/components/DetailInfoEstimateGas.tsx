@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'

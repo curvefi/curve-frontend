@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import Button from '@ui/Button'

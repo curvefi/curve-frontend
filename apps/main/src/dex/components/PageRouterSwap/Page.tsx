@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useChainId } from '@/dex/hooks/useChainId'

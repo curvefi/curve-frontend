@@ -1,5 +1,5 @@
 import { MouseEvent } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 

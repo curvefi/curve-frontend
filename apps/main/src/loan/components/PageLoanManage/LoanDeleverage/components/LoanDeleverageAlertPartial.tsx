@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import { Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'

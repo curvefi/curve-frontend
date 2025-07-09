@@ -1,7 +1,7 @@
 'use client'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'

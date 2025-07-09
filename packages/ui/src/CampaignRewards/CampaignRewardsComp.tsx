@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 import Icon from 'ui/src/Icon'

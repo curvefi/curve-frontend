@@ -1,6 +1,6 @@
 import { uniqBy } from 'lodash'
 import { useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {

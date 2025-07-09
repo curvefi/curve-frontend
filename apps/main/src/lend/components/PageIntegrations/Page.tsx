@@ -1,7 +1,7 @@
 'use client'
 import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
