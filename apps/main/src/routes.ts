@@ -61,11 +61,11 @@ export default [
     'app/lend/[network]/markets/[market]/vault/[[...formType]]/page.tsx',
   ),
 
-  // LlamaLend routes (legacy)
+  // LlamaLend routes
   route('/llamalend/:network/disclaimer', 'app/llamalend/[network]/disclaimer/page.tsx'),
   route('/llamalend/:network/integrations', 'app/llamalend/[network]/integrations/page.tsx'),
   route('/llamalend/:network/markets', 'app/llamalend/[network]/markets/page.tsx'),
 
   // Catch-all route (must be last)
-  route('*', 'hello-world.tsx'),
+  route('*', 'app/not-found.tsx'),
 ] satisfies RouteConfig

@@ -1,6 +1,5 @@
-'use client'
 import delay from 'lodash/delay'
-import { usePathname, useRouter } from 'next/navigation'
+import { useLocation, useNavigate } from 'react-router'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
@@ -60,8 +59,9 @@ const useLayoutStoreResponsive = () => {
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
-  const { replace } = useRouter()
-  const pathname = usePathname()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const pathname = location.pathname
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
@@ -70,8 +70,8 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
     }
     const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
     console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
-    replace(redirectUrl)
-  }, [network, networkId, pathname, replace])
+    navigate(redirectUrl, { replace: true })
+  }, [network, networkId, pathname, navigate])
   return network
 }
 
@@ -102,19 +102,20 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
 }) => {
   const theme = useThemeAfterSsr(preferredScheme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
-  const pathname = usePathname()
-  const { push } = useRouter()
+  const location = useLocation()
+  const pathname = location.pathname
+  const navigate = useNavigate()
   useLayoutStoreResponsive()
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
       const network = networks[walletChainId]?.id
       if (pathname && network) {
-        console.warn(`Network switched to ${network}, redirecting...`, location.href)
-        push(replaceNetworkInPath(pathname, network))
+        console.warn(`Network switched to ${network}, redirecting...`, pathname)
+        navigate(replaceNetworkInPath(pathname, network))
       }
     },
-    [networks, pathname, push],
+    [networks, pathname, navigate],
   )
   const network = useNetworkFromUrl(networks)
 

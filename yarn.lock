@@ -1580,17 +1580,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:^2.67.6":
-  version: 2.67.7
-  resolution: "@curvefi/api@npm:2.67.7"
+"@curvefi/api@portal:/home/schiavini/curve/curve-js::locator=curve-frontend%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/api@portal:/home/schiavini/curve/curve-js::locator=curve-frontend%40workspace%3A."
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.15"
     bignumber.js: "npm:^9.3.0"
     ethers: "npm:^6.14.1"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/f8f7eaec0d9bfb82df91982056b126a96ec85e25c41feff6d742c366eef6b2ea50f52e0c5a9ca54fecede990178fcb64560b40cea5fada5a6298415c80028aa2
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@curvefi/ethcall@npm:6.0.15, @curvefi/ethcall@npm:^6.0.15":
   version: 6.0.15
@@ -1604,17 +1603,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:1.0.22-beta.1":
-  version: 1.0.22-beta.1
-  resolution: "@curvefi/llamalend-api@npm:1.0.22-beta.1"
+"@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A."
   dependencies:
     "@curvefi/ethcall": "npm:6.0.15"
     bignumber.js: "npm:^9.3.0"
     ethers: "npm:^6.14.3"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/0cdf1c454bd14ef3f08af5d1c6aa4c3ca4ea33dd0134b4913e375e6888c4e72a65f33de6358e9f8cbe853464cb4f8b00f328596d5200f8580655acd2dc44172d
   languageName: node
-  linkType: hard
+  linkType: soft
 
 "@curvefi/prices-api@workspace:packages/prices-api":
   version: 0.0.0-use.local
