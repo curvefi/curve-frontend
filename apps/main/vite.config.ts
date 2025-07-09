@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
+import svgr from 'vite-plugin-svgr'
 
 // https://vite.dev/config/
 export default defineConfig(({ command, mode }) => ({
@@ -8,7 +9,7 @@ export default defineConfig(({ command, mode }) => ({
     port: 3000,
     hmr: true,
   },
-  plugins: [react()],
+  plugins: [react(), svgr()],
   optimizeDeps: {
     include: ['styled-components', '@mui/material', '@mui/icons-material'],
   },

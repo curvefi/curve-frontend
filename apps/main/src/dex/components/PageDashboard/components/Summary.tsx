@@ -53,7 +53,7 @@ const Summary = () => {
       .filter((n) => n.classList.contains('tab'))
       .map((n, idx) => {
         const domRect = n.getBoundingClientRect()
-        const left = idx == -0 ? 0 : domRect.left - tabsDOMRect.left
+        const left = idx ? domRect.left - tabsDOMRect.left : 0
         const top = domRect.bottom - tabsDOMRect.top
         return { left, width: domRect.width, top }
       })

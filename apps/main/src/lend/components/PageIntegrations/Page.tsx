@@ -1,5 +1,5 @@
 'use client'
-import { useSearchParams } from '@ui-kit/hooks'
+import { useSearchParams } from '@ui-kit/hooks/router'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'

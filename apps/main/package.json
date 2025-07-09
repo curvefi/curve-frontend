@@ -22,9 +22,9 @@
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
-    "@react-router/node": "^7.6.3",
     "@supercharge/promise-pool": "^3.2.0",
     "@tanstack/react-router": "^1.125.6",
+    "@tanstack/react-router-devtools": "^1.125.6",
     "@types/memoizee": "^0.4.12",
     "bignumber.js": "^9.3.0",
     "curve-ui-kit": "*",
@@ -47,6 +47,7 @@
     "ui": "*",
     "validator": "^13.15.0",
     "vest": "^5.4.6",
+    "vite-plugin-svgr": "^4.3.0",
     "zustand": "^4.5.7"
   },
   "devDependencies": {

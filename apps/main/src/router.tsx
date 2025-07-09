@@ -1,7 +1,8 @@
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
 import { lazy } from 'react'
-import Layout from './app/layout'
 import { getNetworkDefs } from '@/dex/lib/networks'
+import { ClientWrapper } from '@/app/ClientWrapper.tsx'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 // Create root route
 const rootRoute = createRootRoute({
@@ -12,8 +13,14 @@ const rootRoute = createRootRoute({
   },
   component: () => {
     const { networks, preferredScheme } = rootRoute.useLoaderData()
-    return <Layout networks={networks} preferredScheme={preferredScheme} />
+    return (
+      <ClientWrapper networks={networks} preferredScheme={preferredScheme}>
+        <Outlet />
+        <TanStackRouterDevtools />
+      </ClientWrapper>
+    )
   },
+  notFoundComponent: lazy(() => import('./app/not-found')),
 })
 
 // Home page
@@ -292,13 +299,6 @@ const llamalendNetworkMarketsRoute = createRoute({
   component: lazy(() => import('./app/llamalend/[network]/markets/page')),
 })
 
-// Catch-all route
-const notFoundRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '*',
-  component: lazy(() => import('./app/not-found')),
-})
-
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -351,8 +351,6 @@ const routeTree = rootRoute.addChildren([
   llamalendNetworkDisclaimerRoute,
   llamalendNetworkIntegrationsRoute,
   llamalendNetworkMarketsRoute,
-  // Catch-all
-  notFoundRoute,
 ])
 
 // Create the router

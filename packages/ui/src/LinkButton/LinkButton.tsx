@@ -1,4 +1,4 @@
-import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router'
+import { Link as RouterLink, LinkProps as RouterLinkProps } from '@tanstack/react-router'
 import { styled } from 'styled-components'
 import { buttonBaseStyles } from 'ui/src/Button/styles'
 import type { ButtonProps } from 'ui/src/Button/types'

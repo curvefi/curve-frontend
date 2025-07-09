@@ -1,6 +1,8 @@
+/// <reference types="vite-plugin-svgr/client" />
+
 // LOGO
 export { default as LogoImg } from './curve-logo.png'
-export { default as RCLogoSM } from './curve-logo-sm.svg'
+export { default as RCLogoSM } from './curve-logo-sm.svg?react'
 export { default as RCLogoText } from './curve-logo-text.svg'
 export { default as RCCrossCurve } from './logo/crosscurve.svg'
 export { default as RCScrvUSDLogoSM } from './scrvusd-logo/webp/scrvUSD-sm.webp'

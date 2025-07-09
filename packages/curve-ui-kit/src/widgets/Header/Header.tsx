@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useLocation } from 'react-router'
+import { useLocation } from '@ui-kit/hooks/router'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
