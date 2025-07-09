@@ -4,7 +4,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { curveApiValidationSuite } from '@ui-kit/lib/model/query/chain-validation'
+import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
   const { isLite } = useStore.getState().networks.networks[chainId]

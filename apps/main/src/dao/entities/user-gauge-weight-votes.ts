@@ -2,7 +2,7 @@ import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { curveApiValidationSuite } from '@ui-kit/lib/model/query/chain-validation'
+import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 const _fetchUserGaugeWeightVotes = async ({ userAddress }: ChainQuery<ChainId> & { userAddress: string }) => {
   const curve = requireLib('curveApi')

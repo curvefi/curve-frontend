@@ -3,7 +3,7 @@ import { requireLib } from '@ui-kit/features/connect-wallet'
 import { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/chain-validation'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
