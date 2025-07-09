@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { useLocation } from '@ui-kit/hooks/router'
+import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { replaceNetworkInPath } from '@ui-kit/shared/routes'
 
 export function useRedirectToEth(

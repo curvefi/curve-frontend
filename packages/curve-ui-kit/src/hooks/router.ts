@@ -10,7 +10,7 @@ import { useCallback, useMemo } from 'react'
 
 /**
  * Custom useNavigate hook that wraps TanStack Router's navigation API
- * to match React Router's API for easier migration
+ * to match NextJS API for easier migration
  */
 export function useNavigate() {
   const navigate = useTanstackNavigate()

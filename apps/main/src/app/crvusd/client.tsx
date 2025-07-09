@@ -16,16 +16,7 @@ import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { logSuccess } from '@ui-kit/lib'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-export function useInjectServerData(serverData: CrvUsdServerData) {
-  useEffect(() => {
-    const { mintMarkets, dailyVolume } = serverData
-    dailyVolume && setAppStatsDailyVolume({}, dailyVolume)
-    logSuccess('useInjectServerData', { mintMarkets: recordValues(mintMarkets ?? {}).flat().length })
-  }, [serverData])
-}
-
-export function CrvUsdClientLayout({ children, serverData }: { children: ReactNode; serverData: CrvUsdServerData }) {
-  useInjectServerData(serverData)
+export function CrvUsdClientLayout({ children }: { children: ReactNode }) {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()

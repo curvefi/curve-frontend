@@ -1,8 +1,12 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import { getNetworkDefs } from '@/dex/lib/networks'
 import { ClientWrapper } from '@/app/ClientWrapper.tsx'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import CrvUsdLayout from '@/app/crvusd/layout'
+import DaoLayout from '@/app/dao/layout'
+import DexLayout from '@/app/dex/layout'
+import LendLayout from '@/app/lend/layout'
 
 // Create root route
 const rootRoute = createRootRoute({
@@ -30,253 +34,297 @@ const indexRoute = createRoute({
   component: lazy(() => import('./app/page')),
 })
 
+// crvUSD layout route
+const crvusdLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'crvusd',
+  component: () => (
+    <CrvUsdLayout>
+      <Outlet />
+    </CrvUsdLayout>
+  ),
+})
+
 // crvUSD routes
 const crvusdRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '/',
   component: lazy(() => import('./app/crvusd/page')),
 })
 
 const crvusdNetworkDisclaimerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/disclaimer',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/disclaimer',
   component: lazy(() => import('./app/crvusd/[network]/disclaimer/page')),
 })
 
 const crvusdNetworkIntegrationsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/integrations',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/integrations',
   component: lazy(() => import('./app/crvusd/[network]/integrations/page')),
 })
 
 const crvusdNetworkMarketsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/markets',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/markets',
   component: lazy(() => import('./app/crvusd/[network]/markets/page')),
 })
 
 const crvusdNetworkMarketCreateRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/markets/$collateralId/create/$formType',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/markets/$collateralId/create/$formType',
   component: lazy(() => import('./app/crvusd/[network]/markets/[collateralId]/create/[[...formType]]/page')),
 })
 
 const crvusdNetworkMarketCreateNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/markets/$collateralId/create',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/markets/$collateralId/create',
   component: lazy(() => import('./app/crvusd/[network]/markets/[collateralId]/create/[[...formType]]/page')),
 })
 
 const crvusdNetworkMarketManageRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/markets/$collateralId/manage/$formType',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/markets/$collateralId/manage/$formType',
   component: lazy(() => import('./app/crvusd/[network]/markets/[collateralId]/manage/[[...formType]]/page')),
 })
 
 const crvusdNetworkMarketManageNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/markets/$collateralId/manage',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/markets/$collateralId/manage',
   component: lazy(() => import('./app/crvusd/[network]/markets/[collateralId]/manage/[[...formType]]/page')),
 })
 
 const crvusdNetworkPegkeepersRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/pegkeepers',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/pegkeepers',
   component: lazy(() => import('./app/crvusd/[network]/pegkeepers/page')),
 })
 
 const crvusdNetworkScrvUSDRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/crvusd/$network/scrvUSD',
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/scrvUSD',
   component: lazy(() => import('./app/crvusd/[network]/scrvUSD/page')),
+})
+
+// DAO layout route
+const daoLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'dao',
+  component: () => (
+    <DaoLayout>
+      <Outlet />
+    </DaoLayout>
+  ),
 })
 
 // DAO routes
 const daoRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao',
+  getParentRoute: () => daoLayoutRoute,
+  path: '/',
   component: lazy(() => import('./app/dao/page')),
 })
 
 const daoNetworkAnalyticsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/analytics',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/analytics',
   component: lazy(() => import('./app/dao/[network]/analytics/page')),
 })
 
 const daoNetworkDisclaimerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/disclaimer',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/disclaimer',
   component: lazy(() => import('./app/dao/[network]/disclaimer/page')),
 })
 
 const daoNetworkGaugesRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/gauges',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/gauges',
   component: lazy(() => import('./app/dao/[network]/gauges/page')),
 })
 
 const daoNetworkGaugeDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/gauges/$gaugeAddress',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/gauges/$gaugeAddress',
   component: lazy(() => import('./app/dao/[network]/gauges/[gaugeAddress]/page')),
 })
 
 const daoNetworkProposalsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/proposals',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/proposals',
   component: lazy(() => import('./app/dao/[network]/proposals/page')),
 })
 
 const daoNetworkProposalDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/proposals/$proposalId',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/proposals/$proposalId',
   component: lazy(() => import('./app/dao/[network]/proposals/[proposalId]/page')),
 })
 
 const daoNetworkUserRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/user/$userAddress',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/user/$userAddress',
   component: lazy(() => import('./app/dao/[network]/user/[userAddress]/page')),
 })
 
 const daoNetworkVecrvRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/vecrv/$formType',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/vecrv/$formType',
   component: lazy(() => import('./app/dao/[network]/vecrv/[[...formType]]/page')),
 })
 
 const daoNetworkVecrvNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dao/$network/vecrv',
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/vecrv',
   component: lazy(() => import('./app/dao/[network]/vecrv/[[...formType]]/page')),
+})
+
+// DEX layout route
+const dexLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'dex',
+  component: () => (
+    <DexLayout>
+      <Outlet />
+    </DexLayout>
+  ),
 })
 
 // DEX routes
 const dexRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex',
+  getParentRoute: () => dexLayoutRoute,
+  path: '/',
   component: lazy(() => import('./app/dex/page')),
 })
 
 const dexNetworkCompensationRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/compensation',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/compensation',
   component: lazy(() => import('./app/dex/[network]/compensation/page')),
 })
 
 const dexNetworkCreatePoolRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/create-pool',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/create-pool',
   component: lazy(() => import('./app/dex/[network]/create-pool/page')),
 })
 
 const dexNetworkDashboardRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/dashboard',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/dashboard',
   component: lazy(() => import('./app/dex/[network]/dashboard/page')),
 })
 
 const dexNetworkDeployGaugeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/deploy-gauge',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/deploy-gauge',
   component: lazy(() => import('./app/dex/[network]/deploy-gauge/page')),
 })
 
 const dexNetworkDisclaimerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/disclaimer',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/disclaimer',
   component: lazy(() => import('./app/dex/[network]/disclaimer/page')),
 })
 
 const dexNetworkIntegrationsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/integrations',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/integrations',
   component: lazy(() => import('./app/dex/[network]/integrations/page')),
 })
 
 const dexNetworkPoolsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/pools',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/pools',
   component: lazy(() => import('./app/dex/[network]/pools/page')),
 })
 
 const dexNetworkPoolDetailRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/pools/$pool/$formType',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/pools/$pool/$formType',
   component: lazy(() => import('./app/dex/[network]/pools/[pool]/[[...formType]]/page')),
 })
 
 const dexNetworkPoolDetailNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/pools/$pool',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/pools/$pool',
   component: lazy(() => import('./app/dex/[network]/pools/[pool]/[[...formType]]/page')),
 })
 
 const dexNetworkSwapRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/dex/$network/swap',
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/swap',
   component: lazy(() => import('./app/dex/[network]/swap/page')),
+})
+
+// Lend layout route
+const lendLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'lend',
+  component: () => (
+    <LendLayout>
+      <Outlet />
+    </LendLayout>
+  ),
 })
 
 // Lend routes
 const lendRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend',
+  getParentRoute: () => lendLayoutRoute,
+  path: '/',
   component: lazy(() => import('./app/lend/page')),
 })
 
 const lendNetworkDisclaimerRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/disclaimer',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/disclaimer',
   component: lazy(() => import('./app/lend/[network]/disclaimer/page')),
 })
 
 const lendNetworkIntegrationsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/integrations',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/integrations',
   component: lazy(() => import('./app/lend/[network]/integrations/page')),
 })
 
 const lendNetworkMarketsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets',
   component: lazy(() => import('./app/lend/[network]/markets/page')),
 })
 
 const lendNetworkMarketCreateRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/create/$formType',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/create/$formType',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/create/[[...formType]]/page')),
 })
 
 const lendNetworkMarketCreateNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/create',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/create',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/create/[[...formType]]/page')),
 })
 
 const lendNetworkMarketManageRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/manage/$formType',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/manage/$formType',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/manage/[[...formType]]/page')),
 })
 
 const lendNetworkMarketManageNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/manage',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/manage',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/manage/[[...formType]]/page')),
 })
 
 const lendNetworkMarketVaultRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/vault/$formType',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/vault/$formType',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/vault/[[...formType]]/page')),
 })
 
 const lendNetworkMarketVaultNoFormTypeRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/lend/$network/markets/$market/vault',
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network/markets/$market/vault',
   component: lazy(() => import('./app/lend/[network]/markets/[market]/vault/[[...formType]]/page')),
 })
 
@@ -299,10 +347,8 @@ const llamalendNetworkMarketsRoute = createRoute({
   component: lazy(() => import('./app/llamalend/[network]/markets/page')),
 })
 
-// Create the route tree
-const routeTree = rootRoute.addChildren([
-  indexRoute,
-  // crvUSD routes
+// Add children to layout routes
+crvusdLayoutRoute.addChildren([
   crvusdRoute,
   crvusdNetworkDisclaimerRoute,
   crvusdNetworkIntegrationsRoute,
@@ -313,7 +359,9 @@ const routeTree = rootRoute.addChildren([
   crvusdNetworkMarketManageNoFormTypeRoute,
   crvusdNetworkPegkeepersRoute,
   crvusdNetworkScrvUSDRoute,
-  // DAO routes
+])
+
+daoLayoutRoute.addChildren([
   daoRoute,
   daoNetworkAnalyticsRoute,
   daoNetworkDisclaimerRoute,
@@ -324,7 +372,9 @@ const routeTree = rootRoute.addChildren([
   daoNetworkUserRoute,
   daoNetworkVecrvRoute,
   daoNetworkVecrvNoFormTypeRoute,
-  // DEX routes
+])
+
+dexLayoutRoute.addChildren([
   dexRoute,
   dexNetworkCompensationRoute,
   dexNetworkCreatePoolRoute,
@@ -336,7 +386,9 @@ const routeTree = rootRoute.addChildren([
   dexNetworkPoolDetailRoute,
   dexNetworkPoolDetailNoFormTypeRoute,
   dexNetworkSwapRoute,
-  // Lend routes
+])
+
+lendLayoutRoute.addChildren([
   lendRoute,
   lendNetworkDisclaimerRoute,
   lendNetworkIntegrationsRoute,
@@ -347,7 +399,16 @@ const routeTree = rootRoute.addChildren([
   lendNetworkMarketManageNoFormTypeRoute,
   lendNetworkMarketVaultRoute,
   lendNetworkMarketVaultNoFormTypeRoute,
-  // LlamaLend routes
+])
+
+// Create the route tree
+const routeTree = rootRoute.addChildren([
+  indexRoute,
+  crvusdLayoutRoute,
+  daoLayoutRoute,
+  dexLayoutRoute,
+  lendLayoutRoute,
+  // LlamaLend routes (no layout yet)
   llamalendNetworkDisclaimerRoute,
   llamalendNetworkIntegrationsRoute,
   llamalendNetworkMarketsRoute,
