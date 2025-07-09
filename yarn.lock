@@ -3809,7 +3809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/icons-material@npm:^7.0.0":
+"@mui/icons-material@npm:^7.2.0":
   version: 7.2.0
   resolution: "@mui/icons-material@npm:7.2.0"
   dependencies:
@@ -3825,7 +3825,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/material@npm:^7.0.0":
+"@mui/material@npm:^7.2.0":
   version: 7.2.0
   resolution: "@mui/material@npm:7.2.0"
   dependencies:
@@ -3943,7 +3943,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@mui/utils@npm:^7.0.0, @mui/utils@npm:^7.2.0":
+"@mui/utils@npm:^7.2.0":
   version: 7.2.0
   resolution: "@mui/utils@npm:7.2.0"
   dependencies:
@@ -11038,9 +11038,9 @@ __metadata:
     "@chromatic-com/storybook": "npm:^3.2.6"
     "@emotion/react": "npm:^11.14.0"
     "@emotion/styled": "npm:^11.14.0"
-    "@mui/icons-material": "npm:^7.0.0"
-    "@mui/material": "npm:^7.0.0"
-    "@mui/utils": "npm:^7.0.0"
+    "@mui/icons-material": "npm:^7.2.0"
+    "@mui/material": "npm:^7.2.0"
+    "@mui/utils": "npm:^7.2.0"
     "@storybook/addon-a11y": "npm:8.6.14"
     "@storybook/addon-docs": "npm:8.6.14"
     "@storybook/addon-essentials": "npm:8.6.14"

@@ -1,6 +1,6 @@
 /// <reference path="./mui-button.d.ts" />
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
-import type { ButtonProps } from '@mui/material/Button'
 import type { Components } from '@mui/material/styles'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'
 import { DesignSystem } from '../../design'
@@ -67,9 +67,9 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
   const fontFamily = Fonts[Text.FontFamily.Button]
   return {
     variants: [
-      ...Object.entries(colors).map(([color, style]) => ({ props: { color: color as ButtonProps['color'] }, style })),
+      ...recordEntries(colors).map(([color, style]) => ({ props: { color }, style })),
       {
-        props: { variant: 'link' as ButtonProps['variant'] },
+        props: { variant: 'link' },
         style: {
           '&.MuiButton-link': {
             textTransform: 'none',
@@ -79,7 +79,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         },
       },
       {
-        props: { variant: 'inline' as ButtonProps['variant'] },
+        props: { variant: 'inline' },
         style: {
           '&.MuiButton-inline': {
             display: 'inline',
