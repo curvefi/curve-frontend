@@ -1,4 +1,4 @@
-import inRange from 'lodash/inRange'
+import _ from 'lodash'
 import {
   Bar,
   ComposedChart,
@@ -30,7 +30,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
   const oraclePrice = data[0]?.oraclePrice
   const haveCurrData = data[0]?.curr[0] > 0
   const haveNewData = data[0]?.new[0] > 0
-  const isInLiquidationRange = haveCurrData ? inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
+  const isInLiquidationRange = haveCurrData ? _.inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
   const showFireStyle = isInLiquidationRange && theme === 'chad'
   const chartHeight = height || 85
   const chartAxisColor = isDetailView ? 'var(--chart_axis--color)' : 'var(--chart_axis_darkBg--color)'

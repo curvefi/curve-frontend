@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import pick from 'lodash/pick'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
@@ -84,7 +83,7 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })
@@ -95,7 +94,7 @@ function getCollateralData(llamma: Llamma) {
     displayName: llamma.id === 'sfrxeth2' ? 'sfrxETH v2' : '',
   }
 
-  const collateralDataCache = pick(collateralData, [
+  const collateralDataCache = _.pick(collateralData, [
     'llamma.id',
     'llamma.address',
     'llamma.controller',

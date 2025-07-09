@@ -1,4 +1,4 @@
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
@@ -106,7 +106,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               {tabs.map(({ label, formType }, idx) => (
                 <SlideTab
                   key={label}
-                  disabled={isUndefined(loanExists)}
+                  disabled={_.isUndefined(loanExists)}
                   tabLeft={tabPositions[idx]?.left}
                   tabWidth={tabPositions[idx]?.width}
                   tabTop={tabPositions[idx]?.top}

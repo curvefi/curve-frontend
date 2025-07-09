@@ -1,4 +1,4 @@
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
@@ -10,7 +10,7 @@ const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type
     const [price1, price2] = details?.prices ?? []
     const [band1, band2] = details?.bands ?? []
 
-    if (!isUndefined(price1) && !isUndefined(price2) && !isUndefined(band1) && !isUndefined(band2)) {
+    if (!_.isUndefined(price1) && !_.isUndefined(price2) && !_.isUndefined(band1) && !_.isUndefined(band2)) {
       const parsedPrice1 = `${formatNumber(price1, { maximumFractionDigits: 2 })}`
       const parsedPrice2 = `${formatNumber(price2, { maximumFractionDigits: 2 })}`
       return { price1: parsedPrice1, price2: parsedPrice2, band1, band2 }

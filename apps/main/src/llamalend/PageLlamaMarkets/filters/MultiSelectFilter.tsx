@@ -1,4 +1,4 @@
-import { get, sortBy, sortedUniq } from 'lodash'
+import _ from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Box from '@mui/material/Box'
@@ -21,8 +21,8 @@ const { Spacing } = SizesAndSpaces
  * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
  */
 const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
-  const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
+  const values = data.map((d) => _.get(d, field) as string)
+  return _.sortedUniq(_.sortBy(values, (val) => val.toLowerCase()))
 }
 
 /**

@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash'
+import _ from 'lodash'
 import { useRouter } from 'next/navigation'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
@@ -25,7 +25,7 @@ const sortUserProposalVotes = (
   sortBy: { key: UserProposalVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
-  return orderBy(userProposalVotes, [key], [order])
+  return _.orderBy(userProposalVotes, [key], [order])
 }
 
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {

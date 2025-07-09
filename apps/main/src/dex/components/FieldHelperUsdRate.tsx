@@ -1,5 +1,4 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import Chip from '@ui/Typography/Chip'
@@ -9,7 +8,7 @@ const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: numb
   const usdRateTotal = useMemo(() => {
     let total = ''
 
-    if (!isUndefined(usdRate) && !isNaN(usdRate) && +usdRate > 0 && +amount > 0) {
+    if (!_.isUndefined(usdRate) && !_.isNaN(usdRate) && +usdRate > 0 && +amount > 0) {
       total = BN(usdRate).multipliedBy(amount).toString()
     }
     return total

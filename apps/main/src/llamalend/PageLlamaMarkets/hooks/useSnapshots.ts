@@ -1,4 +1,4 @@
-import { meanBy } from 'lodash'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/llamalend/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@/llamalend/entities/lending-snapshots'
@@ -45,7 +45,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
       }
 
   const averageRate = useMemo(
-    () => snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
+    () => snapshots && _.meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
     [snapshots, snapshotKey],
   )
 
@@ -54,7 +54,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
       snapshots &&
       isLend &&
       type === 'lend' &&
-      meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
+      _.meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
     [snapshots, isLend, type],
   )
 

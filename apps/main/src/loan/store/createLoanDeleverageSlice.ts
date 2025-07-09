@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
@@ -67,19 +67,19 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const storedUserDetails = get().loans.userDetailsMapper[llammaId]
 
       // set formValues, reset status
-      const cFormValues: FormValues = cloneDeep({
+      const cFormValues: FormValues = _.cloneDeep({
         ...storedFormValues,
         ...updatedFormValues,
         collateralError: '',
       })
       const activeKey = getActiveKey(llammaId, cFormValues, maxSlippage)
-      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = _.cloneDeep(DEFAULT_FORM_STATUS)
       get()[sliceKey].setStateByKeys({
         activeKey,
-        formValues: cloneDeep(cFormValues),
-        formStatus: cloneDeep(cFormStatus),
+        formValues: _.cloneDeep(cFormValues),
+        formStatus: _.cloneDeep(cFormStatus),
         ...(+cFormValues.collateral > 0 && !isFullReset
-          ? { detailInfo: { [activeKey]: cloneDeep({ ...storedDetailInfo, loading: true }) } }
+          ? { detailInfo: { [activeKey]: _.cloneDeep({ ...storedDetailInfo, loading: true }) } }
           : {}),
       })
 
@@ -101,7 +101,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
 
       if (fDetailInfo.error) {
         cFormStatus.error = fDetailInfo.error
-        get()[sliceKey].setStateByKey('formStatus', { [activeKey]: cloneDeep(cFormStatus) })
+        get()[sliceKey].setStateByKey('formStatus', { [activeKey]: _.cloneDeep(cFormStatus) })
       } else if (+cFormValues.collateral > 0) {
         cFormValues.isFullRepay = fDetailInfo.isFullRepayment
 
@@ -116,12 +116,12 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         if (+cFormValues.collateral > +userState.collateral) {
           cFormValues.collateralError = 'too-much'
         }
-        get()[sliceKey].setStateByKeys({ formStatus: cloneDeep(cFormStatus), formValues: cloneDeep(cFormValues) })
+        get()[sliceKey].setStateByKeys({ formStatus: _.cloneDeep(cFormStatus), formValues: _.cloneDeep(cFormValues) })
 
         //   fetch est gas
         if (!cFormValues.collateralError && cFormStatus.error !== 'error-full-repayment-required') {
           // fetch est gas
-          const clonedStoredFormEstGas = cloneDeep(storedFormEstGas)
+          const clonedStoredFormEstGas = _.cloneDeep(storedFormEstGas)
           clonedStoredFormEstGas.loading = true
           get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: clonedStoredFormEstGas })
           void get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage)
@@ -137,7 +137,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByActiveKey('formEstGas', resp.activeKey, { estimatedGas: resp.estimatedGas })
 
       // update formStatus
-      const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const clonedFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
       clonedFormStatus.error = resp.error || clonedFormStatus.error || ''
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
     },
@@ -156,11 +156,11 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
-        const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+        const cFormStatus = _.cloneDeep(DEFAULT_FORM_STATUS)
         cFormStatus.isApproved = get()[sliceKey].formStatus.isApproved
 
         if (resp.error) {
-          get()[sliceKey].setStateByKey('formStatus', cloneDeep({ ...cFormStatus, error: resp.error }))
+          get()[sliceKey].setStateByKey('formStatus', _.cloneDeep({ ...cFormStatus, error: resp.error }))
         } else {
           // re-fetch loan info
           const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
@@ -172,7 +172,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
 
           get()[sliceKey].setStateByKeys({
             formValues: DEFAULT_FORM_VALUES,
-            formStatus: cloneDeep({ ...cFormStatus, isComplete: true }),
+            formStatus: _.cloneDeep({ ...cFormStatus, isComplete: true }),
             detailInfo: {},
             formEstGas: {},
           })
@@ -193,7 +193,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

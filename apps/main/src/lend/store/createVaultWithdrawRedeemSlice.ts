@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
@@ -70,7 +69,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByActiveKey('max', activeKey, resp)
 
       // validation
-      const cFormValues = cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = _.cloneDeep(get()[sliceKey].formValues)
       cFormValues.amountError = helpers.isTooMuch(cFormValues.amount, resp.max)
         ? 'too-much-max'
         : cFormValues.amountError
@@ -95,7 +94,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
       // update formStatus
-      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
       cFormStatus.error = cFormStatus.error || resp.error || ''
       get()[sliceKey].setStateByKey('formStatus', cFormStatus)
     },
@@ -113,10 +112,10 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       const storedFormValues = get()[sliceKey].formValues
 
       // update activeKey and formValues
-      const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
-      const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS })
+      const cFormValues: FormValues = _.cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
+      const cFormStatus: FormStatus = _.cloneDeep({ ...DEFAULT_FORM_STATUS })
       const activeKey = _getActiveKey(rChainId, formType, market, cFormValues)
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
+      get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues), formStatus: cFormStatus })
 
       if (!api || !market) return
 
@@ -133,7 +132,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'WITHDRAW_REDEEM' }
-      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
       await get().gas.fetchGasInfo(api)
@@ -154,7 +153,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
         // update state
         const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }
-        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
+        get()[sliceKey].setStateByKeys(_.merge(_.cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
 
         return resp
       }
@@ -175,7 +174,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

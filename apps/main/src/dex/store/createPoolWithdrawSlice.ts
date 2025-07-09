@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -86,7 +86,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      const cFormValues = cloneDeep(formValues)
+      const cFormValues = _.cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -94,7 +94,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       if (+cFormValues.lpToken > 0) {
         // set loading state
         cFormValues.amounts = cFormValues.amounts.map((a) => ({ ...a, value: '' }))
-        get()[sliceKey].setStateByKeys({ formValues: cloneDeep(cFormValues) })
+        get()[sliceKey].setStateByKeys({ formValues: _.cloneDeep(cFormValues) })
         get()[sliceKey].setStateByKey('slippage', {
           [activeKey]: {
             ...(get()[sliceKey].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
@@ -125,7 +125,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
               value: a.tokenAddress === cFormValues.selectedTokenAddress ? resp.expected : '',
             }))
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-            get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+            get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
             get()[sliceKey].setStateByKey('slippage', {
               [activeKey]: {
                 ...DEFAULT_SLIPPAGE,
@@ -146,7 +146,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawLpToken: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      const cFormValues = cloneDeep(formValues)
+      const cFormValues = _.cloneDeep(formValues)
       const { signerAddress } = curve
       const { pool } = poolData
 
@@ -181,8 +181,8 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
           get()[sliceKey].setStateByKeys({
             activeKey,
-            formValues: cloneDeep(cFormValues),
-            slippage: { [activeKey]: { ...cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 } },
+            formValues: _.cloneDeep(cFormValues),
+            slippage: { [activeKey]: { ..._.cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 } },
           })
         }
 
@@ -195,7 +195,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
     fetchWithdrawCustom: async (props) => {
       const { storedActiveKey, curve, formType, poolData, formValues, maxSlippage } = props
       let activeKey = props.activeKey
-      const cFormValues = cloneDeep(formValues)
+      const cFormValues = _.cloneDeep(formValues)
       const { pool } = poolData
       const { signerAddress } = curve
 
@@ -229,7 +229,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           } else {
             cFormValues.lpToken = resp.expected
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-            get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+            get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
             get()[sliceKey].setStateByKey('slippage', {
               [activeKey]: {
                 ...DEFAULT_SLIPPAGE,
@@ -269,9 +269,9 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           } else {
             cFormValues.amounts = cFormValues.amounts.map((a, idx) => ({ ...a, value: resp.expected[idx] }))
             activeKey = getActiveKey(pool.id, formType, cFormValues, maxSlippage)
-            get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+            get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
             get()[sliceKey].setStateByKey('slippage', {
-              [activeKey]: { ...cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 },
+              [activeKey]: { ..._.cloneDeep(DEFAULT_SLIPPAGE), slippage: 0 },
             })
           }
         }
@@ -308,7 +308,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const storedFormStatus = get()[sliceKey].formStatus
 
       // update form values
-      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = _.cloneDeep({ ...storedFormValues, ...updatedFormValues })
       let activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
       get()[sliceKey].setStateByKeys({
         activeKey,
@@ -318,7 +318,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           isClaimCrv: storedFormStatus.isClaimCrv,
           isClaimRewards: storedFormStatus.isClaimRewards,
         },
-        formValues: cloneDeep(cFormValues),
+        formValues: _.cloneDeep(cFormValues),
       })
 
       if (!curve || !poolData || isSeed || cFormValues.isWrapped === null) return
@@ -333,7 +333,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
           cFormValues.selectedToken = poolData.tokens[0]
           cFormValues.selectedTokenAddress = poolData.tokenAddresses[0]
           activeKey = getActiveKey(poolId, formType, cFormValues, maxSlippage)
-          get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+          get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
         }
 
         const props: FetchWithdrawProps = {
@@ -439,7 +439,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         resp = await fn(activeKey, provider, pool, parseAmountsForAPI(amounts))
       }
       if (resp && resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.step = ''
         cFormStatus.error = ''
 
@@ -490,7 +490,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         resp = await fn(activeKey, provider, pool, formValues.isWrapped, amounts, maxSlippage)
       }
       if (resp && resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -525,7 +525,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       const { pool } = poolData
       const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -563,7 +563,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         ? await curvejsApi.poolWithdraw.claimCrv(activeKey, provider, pool)
         : await curvejsApi.poolWithdraw.claimRewards(activeKey, provider, pool)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.isClaimCrv = false
@@ -658,7 +658,7 @@ export function getActiveKey(
 
 function resetFormValues(formValues: FormValues) {
   return {
-    ...cloneDeep(formValues),
+    ..._.cloneDeep(formValues),
     amounts: formValues.amounts.map((a) => ({ ...a, value: '' })),
     claimableRewards: [],
     claimableCrv: '',

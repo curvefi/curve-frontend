@@ -1,4 +1,4 @@
-import delay from 'lodash/delay'
+import _ from 'lodash'
 import { useLocation, useNavigate } from 'react-router'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
@@ -46,7 +46,7 @@ const useLayoutStoreResponsive = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
+    window.addEventListener('scroll', () => _.delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)

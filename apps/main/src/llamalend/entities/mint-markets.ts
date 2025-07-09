@@ -1,4 +1,4 @@
-import uniq from 'lodash/uniq'
+import _ from 'lodash'
 import { getCoinPrices } from '@/llamalend/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
@@ -25,7 +25,7 @@ export type MintMarket = MintMarketFromApi & {
  * I requested benber86 to add stablecoin prices to the API, but it may take some time.
  */
 async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMarketFromApi[] }) {
-  const stablecoinAddresses = uniq(data.map((market) => market.stablecoinToken.address))
+  const stablecoinAddresses = _.uniq(data.map((market) => market.stablecoinToken.address))
   const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
   return data.map((market) => ({
     ...market,

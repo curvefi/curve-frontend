@@ -1,4 +1,4 @@
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
@@ -39,7 +39,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
     ]
   }, [llamma, totalCollateralUsd, totalStablecoin])
 
-  if (isUndefined(totalCollateral) || isUndefined(totalStablecoin) || isUndefined(collateralUsdRate)) {
+  if (_.isUndefined(totalCollateral) || _.isUndefined(totalStablecoin) || _.isUndefined(collateralUsdRate)) {
     return <></>
   }
 

@@ -1,4 +1,4 @@
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import Link from 'next/link'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
@@ -49,7 +49,7 @@ const DetailInfoTradeRouteRoute = ({
       </RouteTokenNames>
     ) : null
 
-  return isUndefined(path) ? (
+  return _.isUndefined(path) ? (
     <>
       <strong>{route.name}</strong>
       {InputAndOutputTokenLabel}

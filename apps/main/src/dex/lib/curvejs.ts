@@ -1,6 +1,4 @@
-import chunk from 'lodash/chunk'
-import flatten from 'lodash/flatten'
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import memoizee from 'memoizee'
 import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
@@ -1319,10 +1317,10 @@ const wallet = {
     const resp = { lpToken: '0', gauge: '0' }
     try {
       const fetchedLpTokenBalances = await p.wallet.lpTokenBalances(signerAddress)
-      if (!isUndefined(fetchedLpTokenBalances.lpToken)) {
+      if (!_.isUndefined(fetchedLpTokenBalances.lpToken)) {
         resp.lpToken = fetchedLpTokenBalances.lpToken as string
       }
-      if (!isUndefined(fetchedLpTokenBalances.gauge)) {
+      if (!_.isUndefined(fetchedLpTokenBalances.gauge)) {
         resp.gauge = fetchedLpTokenBalances.gauge as string
       }
       return resp
@@ -1430,7 +1428,7 @@ const wallet = {
 
     const results: UserBalancesMapper = {}
     const errors: string[][] = []
-    const chunks = chunk(tokenAddresses, 20)
+    const chunks = _.chunk(tokenAddresses, 20)
     await PromisePool.for(chunks)
       .withConcurrency(10)
       .handleError((_, chunk) => {
@@ -1445,7 +1443,7 @@ const wallet = {
         }
       })
 
-    const fattenErrors = flatten(errors)
+    const fattenErrors = _.flatten(errors)
 
     if (fattenErrors.length) {
       await PromisePool.for(fattenErrors)

@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import _ from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Select from '@mui/material/Select'
@@ -14,7 +14,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
  * TODO: validate T[K] is number with typescript. DeepKeys makes it hard to do this.
  */
 const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
-  data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
+  data.reduce((acc, item) => Math.max(acc, _.get(item, field) as number), 0)
 
 type NumberRange = [number, number]
 

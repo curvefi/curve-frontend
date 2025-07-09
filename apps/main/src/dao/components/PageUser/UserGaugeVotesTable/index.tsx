@@ -1,4 +1,4 @@
-import orderBy from 'lodash/orderBy'
+import _ from 'lodash'
 import { useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
@@ -27,7 +27,7 @@ const sortUserGaugeVotes = (
   sortBy: { key: UserGaugeVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
-  return orderBy(userGaugeVotes, [key], [order])
+  return _.orderBy(userGaugeVotes, [key], [order])
 }
 
 const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {

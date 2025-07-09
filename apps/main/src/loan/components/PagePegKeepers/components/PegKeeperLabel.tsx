@@ -1,4 +1,4 @@
-import { zip } from 'lodash'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import networks from '@/loan/networks'
@@ -17,7 +17,7 @@ type Props = {
 const PegKeeperLabel = ({ className = '', poolName, rChainId, underlyingCoins, underlyingCoinAddresses }: Props) => {
   const tokens = useMemo(
     () =>
-      zip(underlyingCoins, underlyingCoinAddresses).map(([symbol, address]) => ({
+      _.zip(underlyingCoins, underlyingCoinAddresses).map(([symbol, address]) => ({
         symbol: symbol!,
         address: address!,
       })),

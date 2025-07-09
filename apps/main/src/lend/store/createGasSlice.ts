@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import lendingApi from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -135,7 +135,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

@@ -1,4 +1,4 @@
-import groupBy from 'lodash/groupBy'
+import _ from 'lodash'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Fragment, useMemo, useState } from 'react'
@@ -43,7 +43,7 @@ export function ChainList({
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
-      groupBy(
+      _.groupBy(
         options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         (o) => (o.isTestnet ? ChainType.test : ChainType.main),
       ),

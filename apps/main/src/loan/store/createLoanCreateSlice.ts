@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FormDetailInfoLeverage,
@@ -141,7 +141,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         get()[sliceKey].setStateByActiveKey('formEstGas', resp.activeKey, { estimatedGas: resp.estimatedGas })
 
         // update formStatus
-        const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
+        const clonedFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
         clonedFormStatus.isApproved = resp.isApproved
 
         if (!clonedFormStatus.error) {
@@ -223,7 +223,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       const storedDetailInfo = get()[sliceKey].detailInfo
       const storedDetailInfoLeverage = get()[sliceKey].detailInfoLeverage
 
-      const clonedFormValues = cloneDeep(formValues)
+      const clonedFormValues = _.cloneDeep(formValues)
 
       // check if loan exists
       const loanExists = get().loans.existsMapper[llamma.id]?.loanExists
@@ -257,12 +257,12 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
           storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
         const loadingDetailInfo = isLeverage
-          ? cloneDeep(
+          ? _.cloneDeep(
               storedDetailInfoLeverage[activeKey] ??
                 storedDetailInfoLeverage[prevActiveKey] ??
                 DEFAULT_DETAIL_INFO_LEVERAGE,
             )
-          : cloneDeep(storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO)
+          : _.cloneDeep(storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO)
         const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)
         if (parsedPrices) loadingDetailInfo.prices = parsedPrices
         loadingDetailInfo.loading = true
@@ -469,7 +469,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })
