@@ -1,5 +1,6 @@
 import { enforce, group, test } from 'vest'
 import { getLib } from '@ui-kit/features/connect-wallet'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 import { ChainParams } from './root-keys'
 
 export const chainValidationGroup = ({ chainId }: ChainParams) =>
@@ -18,6 +19,13 @@ export const curveApiValidationGroup = <TChainId extends number, TLib extends { 
     })
   })
 
+export const curveApiValidationSuite = createValidationSuite(
+  <TChainId extends number>(params: ChainParams<TChainId>) => {
+    chainValidationGroup(params)
+    curveApiValidationGroup(params)
+  },
+)
+
 export const llamaApiValidationGroup = <TChainId extends number, TLib extends { chainId: TChainId }>({
   chainId,
 }: ChainParams<TChainId>) =>
@@ -26,3 +34,10 @@ export const llamaApiValidationGroup = <TChainId extends number, TLib extends { 
       enforce(getLib('llamaApi')?.chainId).message('Chain ID should be loaded').equals(chainId)
     })
   })
+
+export const llamaApiValidationSuite = createValidationSuite(
+  <TChainId extends number>(params: ChainParams<TChainId>) => {
+    chainValidationGroup(params)
+    llamaApiValidationGroup(params)
+  },
+)
