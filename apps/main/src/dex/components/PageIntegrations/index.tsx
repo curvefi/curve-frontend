@@ -1,5 +1,4 @@
-import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useNavigate, useSearchParams } from 'react-router'
 import { Key, useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
@@ -28,8 +27,8 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
+  const push = useNavigate()
+  const [searchParams] = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)
@@ -150,7 +149,7 @@ const IntegrationsComp = ({
                       if (networkId in networksIdMapper) {
                         const chainId = networksIdMapper[networkId as NetworkEnum]
                         const { name, logoSrc } = networks[chainId]
-                        return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
+                        return <img key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
                       }
                       return null
                     })}

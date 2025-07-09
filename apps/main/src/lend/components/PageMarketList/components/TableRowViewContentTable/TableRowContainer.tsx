@@ -1,4 +1,4 @@
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useNavigate } from 'react-router'
 import { useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'
@@ -18,7 +18,7 @@ const TableRowContainer = (
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
   const params = useParams() as NetworkUrlParams
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)

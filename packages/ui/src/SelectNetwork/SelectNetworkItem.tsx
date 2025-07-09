@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { SyntheticEvent, useState } from 'react'
 import { styled } from 'styled-components'
 
@@ -20,7 +19,7 @@ const SelectNetworkItem = ({ label, src, fallbackSrc }: Props) => {
 
   return (
     <IconWrapper>
-      <Image
+      <img
         alt={label}
         onError={(evt) => handleOnError(evt, fallbackSrc)}
         src={src}

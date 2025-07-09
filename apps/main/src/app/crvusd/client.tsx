@@ -1,6 +1,6 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from 'next/navigation'
+import { useParams } from 'react-router'
 import { type ReactNode, useEffect } from 'react'
 import type { CrvUsdServerData } from '@/app/api/crvusd/types'
 import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'

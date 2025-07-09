@@ -1,5 +1,3 @@
-import { headers } from 'next/headers'
-
 const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
 
 // for curve-dapp-git-chore-curve-js-curvefi.vercel.app, other domains can be added the dashboard
@@ -21,7 +19,7 @@ const getDomainVerificationToken = (host: string) =>
   ].join('=')
 
 export const GET = async () => {
-  const head = await headers()
+  const head = new Headers()
   const host = head.get('host')
   return new Response(getDomainVerificationToken(host ?? ''))
 }

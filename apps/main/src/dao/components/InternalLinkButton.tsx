@@ -1,4 +1,4 @@
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useNavigate } from 'react-router'
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'
@@ -13,7 +13,7 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const params = useParams() as UrlParams
   return (
     <StyledInternalLink

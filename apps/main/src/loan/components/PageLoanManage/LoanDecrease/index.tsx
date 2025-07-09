@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
@@ -37,7 +37,7 @@ interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId
 // Loan repay
 const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const activeKey = useStore((state) => state.loanDecrease.activeKey)
   const detailInfo = useStore((state) => state.loanDecrease.detailInfo[activeKey] ?? DEFAULT_DETAIL_INFO)

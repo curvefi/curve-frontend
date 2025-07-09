@@ -1,4 +1,4 @@
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useNavigate } from 'react-router'
 import { useCallback, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
@@ -55,7 +55,7 @@ const ConfirmModal = ({
   const validation = useStore((state) => state.createPool.validation)
   const resetState = useStore((state) => state.createPool.resetState)
 
-  const { push } = useRouter()
+  const push = useNavigate()
   const params = useParams() as UrlParams
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)

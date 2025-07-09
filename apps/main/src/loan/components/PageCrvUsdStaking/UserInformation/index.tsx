@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { RCCrvUSDLogoSM, RCScrvUSDLogoSM } from 'ui/src/images'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Button from '@mui/material/Button'
@@ -37,7 +36,7 @@ const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) 
         }}
       >
         <Stack direction="column" gap={Spacing.sm}>
-          <Image src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
+          <img src={RCCrvUSDLogoSM} alt="crvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Get crvUSD`}</Typography>
           <Typography variant="bodyMRegular">
             {t`To access the yield of Savings crvUSD (scrvUSD), you need crvUSD.`}{' '}
@@ -51,7 +50,7 @@ const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) 
           </Typography>
         </Stack>
         <Stack direction="column" gap={Spacing.sm}>
-          <Image src={RCScrvUSDLogoSM} alt="scrvUSD logo" width={48} height={48} />
+          <img src={RCScrvUSDLogoSM} alt="scrvUSD logo" width={48} height={48} />
           <Typography variant="headingXsBold">{t`Deposit crvUSD and get scrvUSD`}</Typography>
           <Typography variant="bodyMRegular">
             {t`By depositing crvUSD in the Curve Savings Vault, you get`}{' '}

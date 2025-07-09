@@ -1,11 +1,10 @@
-import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 import type { LendServerData } from '@/app/api/lend/types'
 import { getServerData } from '@/background'
 import type { MarketUrlParams } from '@/lend/types/lend.types'
 
 export async function getLendMarketSymbols(
   { market, network }: MarketUrlParams,
-  headers: ReadonlyHeaders,
+  headers: Headers,
 ): Promise<[string, string]> {
   const id = market.toLowerCase().replace('one-way-market', 'oneway') // API ids are different from those generated in curve-lending-js
   const resp = await getServerData<LendServerData>('lend', headers)
@@ -28,7 +27,7 @@ export async function getLendMarketSymbols(
   return [marketData.assets.collateral.symbol, marketData.assets.borrowed.symbol]
 }
 
-export async function getBorrowedSymbol(params: MarketUrlParams, headers: ReadonlyHeaders): Promise<string> {
+export async function getBorrowedSymbol(params: MarketUrlParams, headers: Headers): Promise<string> {
   const [collateral, borrowed] = await getLendMarketSymbols(params, headers)
   return borrowed ?? collateral
 }

@@ -1,5 +1,5 @@
-import { usePathname } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router'
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
@@ -40,7 +40,7 @@ export const MobileHeader = ({
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
-  const pathname = usePathname()
+  const { pathname } = useLocation()
   const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link

@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
@@ -42,7 +42,7 @@ const Page = (params: MarketUrlParams) => {
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
   const [isLoaded, setLoaded] = useState(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)

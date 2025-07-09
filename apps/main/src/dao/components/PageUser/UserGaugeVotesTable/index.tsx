@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useMemo } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
@@ -34,7 +34,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
   const { data: userGaugeVotes, isLoading, isError, isSuccess } = useUserGaugeVoteQuery({ userAddress })
   const userGaugeVotesSortBy = useStore((state) => state.user.userGaugeVotesSortBy)
   const setUserGaugeVotesSortBy = useStore((state) => state.user.setUserGaugeVotesSortBy)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const gridTemplateColumns = '2fr 1fr 1fr 1fr'
 

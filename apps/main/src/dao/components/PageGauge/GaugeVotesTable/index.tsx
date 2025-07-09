@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useEffect } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
@@ -25,7 +25,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
   const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
   const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
-  const { push } = useRouter()
+  const push = useNavigate()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '7rem 1fr 1fr'
 

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'
@@ -22,7 +22,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
   const networks = useStore((state) => state.networks.networks)
 
-  const { push } = useRouter()
+  const push = useNavigate()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (

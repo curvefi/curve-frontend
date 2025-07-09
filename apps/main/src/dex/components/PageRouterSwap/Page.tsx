@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
@@ -20,8 +20,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 export const PageRouterSwap = (props: NetworkUrlParams) => {
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
+  const push = useNavigate()
+  const [searchParams] = useSearchParams()
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)

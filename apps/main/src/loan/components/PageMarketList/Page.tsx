@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'
@@ -23,8 +23,8 @@ enum SEARCH {
 }
 
 const Page = (params: CollateralUrlParams) => {
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
+  const push = useNavigate()
+  const [searchParams] = useSearchParams()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()

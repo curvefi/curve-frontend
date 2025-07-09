@@ -1,5 +1,3 @@
-import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
-
 const RefreshTimeoutMs = 1000 * 60 // 1 minute
 
 /**
@@ -29,7 +27,7 @@ export async function refreshDataInBackground(name: string, callback: () => Prom
  * Fetches data from the Next.js server API route. We use API routes to fetch cached data because Next is unable to
  * properly handle fetch failures and background fetching.
  */
-export async function getServerData<T>(path: string, headers: ReadonlyHeaders) {
+export async function getServerData<T>(path: string, headers: Headers) {
   if (process.env.NODE_ENV === 'development') {
     // disable background fetching in development because it gets called multiple times when changing the API routes
     return {} as Partial<T>

@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
@@ -25,8 +25,8 @@ enum SEARCH {
 type PageProps = NetworkUrlParams
 
 export const PagePoolList = (params: PageProps) => {
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
+  const push = useNavigate()
+  const [searchParams] = useSearchParams()
   const { curveApi = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)

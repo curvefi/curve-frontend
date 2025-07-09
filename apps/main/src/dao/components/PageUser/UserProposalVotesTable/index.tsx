@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import {
@@ -39,7 +39,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   })
   const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
   const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
 

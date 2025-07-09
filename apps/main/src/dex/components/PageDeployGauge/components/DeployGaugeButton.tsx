@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import {
@@ -30,7 +30,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const { push } = useRouter()
+  const push = useNavigate()
   const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
   const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
   const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)

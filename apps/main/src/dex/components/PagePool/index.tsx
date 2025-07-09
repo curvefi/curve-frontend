@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
@@ -64,7 +64,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const { push } = useRouter()
+  const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
 
   const { tokensMapper } = useTokensMapper(rChainId)

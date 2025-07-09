@@ -1,4 +1,4 @@
-import { useParams } from 'next/navigation'
+import { useParams } from 'react-router'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'

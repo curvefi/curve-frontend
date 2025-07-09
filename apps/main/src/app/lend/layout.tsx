@@ -1,6 +1,6 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from 'next/navigation'
+import { useParams } from 'react-router'
 import { type ReactNode } from 'react'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'

@@ -1,5 +1,4 @@
 'use client'
-import Image from 'next/image'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
 import Settings from '@/loan/layout/Settings'
@@ -33,7 +32,7 @@ const Page = (params: NetworkUrlParams) => (
         paddingInline={Spacing.sm}
         paddingBlock={Spacing.md}
       >
-        <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
+        <img height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
         <Box flex flexColumn>
           <Typography variant="headingMBold">{t`Savings crvUSD`}</Typography>
           <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>

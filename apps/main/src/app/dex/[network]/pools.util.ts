@@ -1,5 +1,4 @@
 import memoizee from 'memoizee'
-import type { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers'
 import type { DexServerSideNetworkCache } from '@/app/api/dex/types'
 import { getServerData } from '@/background'
 import { getNetworks } from '@/dex/lib/networks'
@@ -9,10 +8,7 @@ const options = { maxAge: 5 * 1000 * 60, promise: true, preFetch: true } as cons
 
 export const getAllNetworks = memoizee(getNetworks, options)
 
-export const getPoolName = async (
-  { network: networkId, pool: poolFromUrl }: PoolUrlParams,
-  httpHeaders: ReadonlyHeaders,
-) => {
+export const getPoolName = async ({ network: networkId, pool: poolFromUrl }: PoolUrlParams, httpHeaders: Headers) => {
   try {
     const { pools } = (await getServerData<DexServerSideNetworkCache>(`dex/${networkId}`, httpHeaders)) ?? {}
     if (pools) {

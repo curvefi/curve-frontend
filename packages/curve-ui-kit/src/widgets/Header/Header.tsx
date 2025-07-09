@@ -1,5 +1,5 @@
-import { usePathname } from 'next/navigation'
 import { useMemo } from 'react'
+import { useLocation } from 'react-router'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
@@ -13,7 +13,7 @@ import { HeaderProps, NavigationSection } from './types'
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
   const [isBeta] = useBetaFlag()
-  const pathname = usePathname()
+  const { pathname } = useLocation()
   const { networkId, currentMenu } = props
   const pages = useMemo(
     () =>

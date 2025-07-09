@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useRef, useEffect } from 'react'
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'
@@ -16,7 +16,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
-  const { push } = useRouter()
+  const push = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)

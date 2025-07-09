@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
@@ -41,7 +41,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
-  const { push } = useRouter()
+  const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()

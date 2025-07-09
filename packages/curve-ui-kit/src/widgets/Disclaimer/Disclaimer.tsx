@@ -1,6 +1,6 @@
 'use client'
-import { usePathname, useSearchParams } from 'next/navigation'
 import { MouseEvent, useMemo } from 'react'
+import { useLocation, useSearchParams } from 'react-router'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
@@ -42,8 +42,8 @@ export type DisclaimerProps = {
 }
 
 export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
-  const pathname = usePathname()
-  const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
+  const { pathname } = useLocation()
+  const [tab] = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
   const tabs = useMemo(
     () => [
       ...TABS.map(({ value, ...props }) => ({

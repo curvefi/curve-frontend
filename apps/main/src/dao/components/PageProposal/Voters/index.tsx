@@ -1,5 +1,5 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import networks from '@/dao/networks'
@@ -25,7 +25,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
     proposalId: +voteId,
     proposalType: proposalType,
   })
-  const { push } = useRouter()
+  const push = useNavigate()
 
   return (
     <Wrapper className={className}>

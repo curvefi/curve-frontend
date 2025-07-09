@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import Image from 'next/image'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { useAccount } from 'wagmi'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
@@ -40,7 +39,7 @@ const DepositModule = () => {
         <InputWrapper>
           <Box flex>
             <SelectorBox>
-              <Image height={28} src={RCCrvUSDLogoXS} alt="Token Logo" />
+              <img height={28} src={RCCrvUSDLogoXS} alt="Token Logo" />
               <InputSelectorText>crvUSD</InputSelectorText>
             </SelectorBox>
           </Box>
@@ -64,7 +63,7 @@ const DepositModule = () => {
         <InputWrapper>
           <Box flex>
             <SelectorBox>
-              <Image height={28} src={RCScrvUSDLogoXS} alt="scrvUSD logo" />
+              <img height={28} src={RCScrvUSDLogoXS} alt="scrvUSD logo" />
               <InputSelectorText>scrvUSD</InputSelectorText>
             </SelectorBox>
           </Box>

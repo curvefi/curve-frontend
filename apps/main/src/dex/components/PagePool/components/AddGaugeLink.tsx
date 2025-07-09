@@ -1,5 +1,5 @@
-import { useParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
+import { useParams } from 'react-router'
+import { useParams } from 'react-router'
 import { styled } from 'styled-components'
 import {
   STABLESWAP,

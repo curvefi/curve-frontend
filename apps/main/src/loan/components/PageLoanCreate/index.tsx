@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback } from 'react'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
@@ -17,7 +17,7 @@ const LoanCreate = ({
   fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => void
 }) => {
   const { curve, llamma, loanExists, params, rCollateralId, rFormType } = props
-  const { push } = useRouter()
+  const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
 
   const FORM_TYPES: { key: string; label: string }[] = [

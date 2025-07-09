@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import Link from 'next/link'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'

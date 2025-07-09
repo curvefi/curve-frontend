@@ -1,4 +1,4 @@
-import { usePathname } from 'next/navigation'
+import { useLocation } from 'react-router'
 import { CallMade } from '@mui/icons-material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
@@ -14,7 +14,7 @@ const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
  * Opens in a new tab and dynamically determines the network based on the current pathname.
  */
 export const ButtonGetCrvUsd = () => {
-  const pathname = usePathname()
+  const { pathname } = useLocation()
   const networkId = getCurrentNetwork(pathname)
   const href = `${getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`
 

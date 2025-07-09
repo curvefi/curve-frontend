@@ -1,5 +1,5 @@
 'use client'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useEffect, useMemo } from 'react'
 import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
@@ -10,7 +10,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 
 export const PagePool = (props: PoolUrlParams) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const { curveApi = null, connectState } = useConnection()
   const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
   const rChainId = useChainId(networkId)

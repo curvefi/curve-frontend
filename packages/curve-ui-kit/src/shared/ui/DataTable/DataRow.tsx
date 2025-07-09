@@ -1,5 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
+import { useNavigate } from 'react-router'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -40,7 +40,7 @@ export const DataRow = <T extends TableItem>({
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
-  const { push } = useRouter()
+  const push = useNavigate()
   const url = row.original.url
   const onClickDesktop = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),

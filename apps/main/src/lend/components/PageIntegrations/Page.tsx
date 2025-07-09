@@ -1,5 +1,5 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'react-router'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
@@ -12,7 +12,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
-  const searchParams = useSearchParams()
+  const [searchParams] = useSearchParams()
   const rChainId = networksIdMapper[params.network]
 
   const init = useStore((state) => state.integrations.init)

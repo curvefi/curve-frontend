@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
@@ -43,7 +43,7 @@ const LoanCreate = ({
 }: PageContentProps & { isLeverage?: boolean; params: MarketUrlParams }) => {
   const { rChainId, rOwmId, isLoaded, api, market, userActiveKey, params } = pageProps
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
   const marketAlert = useMarketAlert(rChainId, rOwmId)
 
   const activeKey = useStore((state) => state.loanCreate.activeKey)

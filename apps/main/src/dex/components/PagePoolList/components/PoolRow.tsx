@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
@@ -54,7 +54,7 @@ export const PoolRow = ({
   setShowDetail,
   curve,
 }: PoolRowProps) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)

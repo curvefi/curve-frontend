@@ -1,4 +1,3 @@
-import NextImage from 'next/image'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
@@ -64,7 +63,7 @@ export const ConnectWalletPrompt = ({
   </Stack>
 )
 
-const CurveLogo = styled(NextImage)({
+const CurveLogo = styled('img')({
   width: '3rem',
   height: '3rem',
   margin: '0 auto',

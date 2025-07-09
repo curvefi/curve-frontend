@@ -1,13 +1,17 @@
-import RouterLink from 'next/link'
+import { Link as RouterLink, LinkProps as RouterLinkProps } from 'react-router'
 import { styled } from 'styled-components'
 import { buttonBaseStyles } from 'ui/src/Button/styles'
 import type { ButtonProps } from 'ui/src/Button/types'
 
-type RouterLinkProps = Parameters<typeof RouterLink>[0]
+interface Props extends ButtonProps, Omit<RouterLinkProps, 'to'> {
+  href?: string
+}
 
-interface Props extends ButtonProps, RouterLinkProps {}
-
-const LinkButton = ({ children, ...rest }: Props) => <StyledLink {...rest}>{children}</StyledLink>
+const LinkButton = ({ children, href, ...rest }: Props) => (
+  <StyledLink to={href || '/'} {...rest}>
+    {children}
+  </StyledLink>
+)
 
 const StyledLink = styled(RouterLink)<ButtonProps>`
   ${buttonBaseStyles};

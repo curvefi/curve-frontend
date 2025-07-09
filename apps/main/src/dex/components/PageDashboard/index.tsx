@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
@@ -37,7 +37,7 @@ const Dashboard = ({
   pageLoaded: boolean
 }) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)

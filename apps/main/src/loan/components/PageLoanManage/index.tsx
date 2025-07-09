@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
@@ -24,7 +24,7 @@ import { t } from '@ui-kit/lib/i18n'
 interface Props extends PageLoanManageProps {}
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)

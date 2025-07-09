@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
@@ -21,7 +21,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
-  const { push } = useRouter()
+  const push = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { useMemo } from 'react'
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
@@ -29,7 +29,7 @@ const TableRowResult = ({
   ...props
 }: Props) => {
   const { searchTermMapper } = props
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])

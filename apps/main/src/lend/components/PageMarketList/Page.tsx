@@ -1,5 +1,5 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useNavigate, useSearchParams } from 'react-router'
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
@@ -30,8 +30,8 @@ const Page = (params: NetworkUrlParams) => {
   const { provider, connect } = useWallet()
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
-  const { push } = useRouter()
-  const searchParams = useSearchParams()
+  const push = useNavigate()
+  const [searchParams] = useSearchParams()
   const { llamaApi: api = null, connectState } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()

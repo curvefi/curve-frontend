@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { styled } from 'styled-components'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
@@ -36,7 +35,7 @@ const Container = styled.div<{ highContrast?: boolean }>`
   border: ${({ highContrast }) => (highContrast ? '1px solid var(--white)' : '1px solid var(--gray-500a25)')};
 `
 
-const TokenIcon = styled(Image)`
+const TokenIcon = styled.img`
   border: 1px solid transparent;
   border-radius: 50%;
 `

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { Key, useCallback } from 'react'
 import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
@@ -27,7 +27,7 @@ const Proposals = () => {
   const setSearchValue = useStore((state) => state.proposals.setSearchValue)
   const searchValue = useStore((state) => state.proposals.searchValue)
   const activeFilter = useStore((state) => state.proposals.activeFilter)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
 

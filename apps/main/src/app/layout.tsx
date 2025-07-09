@@ -1,5 +1,4 @@
-import Head from 'next/head'
-import { headers } from 'next/headers'
+// Head component is not needed in React Router - use react-helmet-async or similar for meta tags
 import { type ReactNode } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
@@ -27,57 +26,62 @@ const injectHeader = `
 `
 
 async function getScheme() {
-  return (await headers()).get('Sec-CH-Prefers-Color-Scheme') as 'dark' | 'light' | null
+  return new Headers().get('Sec-CH-Prefers-Color-Scheme') as 'dark' | 'light' | null
 }
 
-const Layout = async ({ children }: { children: ReactNode }) => (
-  <html style={RootCssProperties}>
-    <Head>
-      <title>Curve.finance</title>
-      <meta
-        name="description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
+const Layout = async ({ children }: { children: ReactNode }) => {
+  // Note: In React Router app, meta tags should be managed with react-helmet-async or similar
+  // The following meta tags were moved from Next.js Head component
 
-      {/* Open Graph */}
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://curve.finance" />
-      <meta property="og:title" content="Curve.finance" />
-      <meta
-        property="og:description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
-      <meta property="og:image" content={CURVE_LOGO_URL} />
+  return (
+    <html style={RootCssProperties}>
+      <head>
+        <title>Curve.finance</title>
+        <meta
+          name="description"
+          content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+        />
 
-      {/* Twitter */}
-      <meta property="twitter:card" content="summary" />
-      <meta property="twitter:url" content="https://curve.finance" />
-      <meta property="twitter:title" content="Curve.finance" />
-      <meta
-        property="twitter:description"
-        content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
-      />
-      <meta property="twitter:image" content={CURVE_LOGO_URL} />
+        {/* Open Graph */}
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://curve.finance" />
+        <meta property="og:title" content="Curve.finance" />
+        <meta
+          property="og:description"
+          content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+        />
+        <meta property="og:image" content={CURVE_LOGO_URL} />
 
-      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-      <link rel="manifest" href="/manifest.json" />
-      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
-      <meta name="msapplication-TileColor" content="#ffffff" />
-      <meta name="theme-color" content="#ffffff" />
-      <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
-      <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
-      <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
-    </Head>
-    <body>
-      <StyledComponentsRegistry>
-        <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>
-          {children}
-        </ClientWrapper>
-      </StyledComponentsRegistry>
-    </body>
-  </html>
-)
+        {/* Twitter */}
+        <meta property="twitter:card" content="summary" />
+        <meta property="twitter:url" content="https://curve.finance" />
+        <meta property="twitter:title" content="Curve.finance" />
+        <meta
+          property="twitter:description"
+          content="Curve-frontend is a user interface application designed to connect to Curve's deployment of smart contracts."
+        />
+        <meta property="twitter:image" content={CURVE_LOGO_URL} />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#787878" />
+        <meta name="msapplication-TileColor" content="#ffffff" />
+        <meta name="theme-color" content="#ffffff" />
+        <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
+        <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
+        <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
+      </head>
+      <body>
+        <StyledComponentsRegistry>
+          <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>
+            {children}
+          </ClientWrapper>
+        </StyledComponentsRegistry>
+      </body>
+    </html>
+  )
+}
 
 export default Layout

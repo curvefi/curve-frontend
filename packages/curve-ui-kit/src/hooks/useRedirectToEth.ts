@@ -1,5 +1,5 @@
-import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { useLocation, useNavigate } from 'react-router'
 import { replaceNetworkInPath } from '@ui-kit/shared/routes'
 
 export function useRedirectToEth(
@@ -7,8 +7,8 @@ export function useRedirectToEth(
   networkId: string,
   hydrated: boolean,
 ) {
-  const { push } = useRouter()
-  const pathname = usePathname()
+  const push = useNavigate()
+  const { pathname } = useLocation()
   useEffect(() => {
     if (!network?.showInSelectNetwork && pathname && hydrated) {
       console.warn(`Network not supported ${networkId}, redirecting...`)

@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { useEffect, useMemo } from 'react'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import type { FormType } from '@/lend/components/PageLoanCreate/types'
@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const resetState = useStore((state) => state.loanCreate.resetState)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)

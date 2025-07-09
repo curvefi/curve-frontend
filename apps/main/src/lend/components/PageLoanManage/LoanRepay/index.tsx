@@ -1,4 +1,4 @@
-import { useRouter } from 'next/navigation'
+import { useNavigate } from 'react-router'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AlertFormError, { FormError } from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
@@ -47,7 +47,7 @@ const LoanRepay = ({
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])

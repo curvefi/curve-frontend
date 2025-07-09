@@ -1,4 +1,4 @@
-import { useParams } from 'next/navigation'
+import { useParams } from 'react-router'
 import { styled } from 'styled-components'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import useStore from '@/lend/store/useStore'

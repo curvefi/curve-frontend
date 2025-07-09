@@ -1,4 +1,4 @@
-import { useParams } from 'next/navigation'
+import { useParams } from 'react-router'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'

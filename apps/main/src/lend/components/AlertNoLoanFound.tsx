@@ -1,4 +1,4 @@
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useNavigate } from 'react-router'
 import { styled } from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
   const params = useParams() as UrlParams
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
 
