@@ -1,7 +1,7 @@
 import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
 import SvgIcon from '@mui/material/SvgIcon'

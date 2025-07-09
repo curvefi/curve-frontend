@@ -1,4 +1,4 @@
-import createSvgIcon from '@mui/material/utils/createSvgIcon'
+import { createSvgIcon } from '@mui/material/utils'
 import type { ConnectorType } from '@ui-kit/features/connect-wallet/lib/wagmi/connectors'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'

@@ -1,4 +1,5 @@
 /// <reference path="./mui-button.d.ts" />
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import type { Components } from '@mui/material/styles'
 import { basicMuiTheme, type Responsive } from '../../basic-theme'
@@ -65,38 +66,38 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
   }
   const fontFamily = Fonts[Text.FontFamily.Button]
   return {
+    variants: [
+      ...recordEntries(colors).map(([color, style]) => ({ props: { color }, style })),
+      {
+        props: { variant: 'link' },
+        style: {
+          '&.MuiButton-link': {
+            textTransform: 'none',
+            padding: 0,
+            height: Sizing[400],
+          },
+        },
+      },
+      {
+        props: { variant: 'inline' },
+        style: {
+          '&.MuiButton-inline': {
+            display: 'inline',
+            verticalAlign: 'baseline',
+            textTransform: 'none',
+            padding: 0,
+            border: 0,
+            lineHeight: 1,
+            height: `auto`,
+            minWidth: 'unset',
+            textAlign: 'start',
+            justifyContent: 'start',
+          },
+        },
+      },
+    ],
     styleOverrides: {
       root: {
-        variants: [
-          ...Object.entries(colors).map(([color, style]) => ({ props: { color }, style })),
-          {
-            props: { variant: 'link' },
-            style: {
-              '&.MuiButton-link': {
-                textTransform: 'none',
-                padding: 0,
-                height: Sizing[400],
-              },
-            },
-          },
-          {
-            props: { variant: 'inline' },
-            style: {
-              '&.MuiButton-inline': {
-                display: 'inline',
-                verticalAlign: 'baseline',
-                textTransform: 'none',
-                padding: 0,
-                border: 0,
-                lineHeight: 1,
-                height: `auto`,
-                minWidth: 'unset',
-                textAlign: 'start',
-                justifyContent: 'start',
-              },
-            },
-          },
-        ],
         borderRadius: 0,
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',

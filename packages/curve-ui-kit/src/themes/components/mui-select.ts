@@ -1,6 +1,5 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import type { Components } from '@mui/material/styles'
-import type { TypographyOptions } from '@mui/material/styles/createTypography'
+import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { handleBreakpoints } from '../basic-theme'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
@@ -9,7 +8,10 @@ const { Spacing, Sizing, IconSize } = SizesAndSpaces
 
 const ICON_SIZE = IconSize.lg
 
-export const defineMuiSelect = (design: DesignSystem, typography: TypographyOptions): Components['MuiSelect'] => ({
+export const defineMuiSelect = (
+  design: DesignSystem,
+  typography: TypographyVariantsOptions,
+): Components['MuiSelect'] => ({
   defaultProps: {
     IconComponent: KeyboardArrowDownIcon,
   },
