@@ -1,22 +1,4 @@
 {
-  "extends": "tsconfig/ui.json",
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"],
-      "@ui": ["../../packages/ui/src/index.ts"],
-      "@ui/*": ["../../packages/ui/src/*"],
-      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
-      "@external-rewards": ["../../packages/external-rewards/src/index.ts"],
-      "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
-    }
-  },
-  "exclude": ["node_modules", "cypress", "dist", "build", ".react-router"],
-  "include": [
-    "src/**/*.ts",
-    "src/**/*.tsx",
-    "src/vite-env.d.ts",
-    "../../packages/curve-ui-kit/src/**/*.d.ts",
-    "../../packages/ui/src/**/*.d.ts"
-  ]
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
