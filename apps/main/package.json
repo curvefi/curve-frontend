@@ -17,8 +17,8 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/api": "^2.67.6",
-    "@curvefi/llamalend-api": "1.0.22-beta.1",
+    "@curvefi/api": "^2.67.8",
+    "@curvefi/llamalend-api": "1.0.23",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",

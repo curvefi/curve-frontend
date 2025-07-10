@@ -18,12 +18,12 @@ module.exports = {
     'import/no-restricted-paths': [
       'error',
       {
-        basePath: '../..',
+        basePath: __dirname + '/../..',
         // this syntax is confusing: 'target' is importing, 'from' is imported
         zones: [
           { target: 'packages', from: 'apps' },
           ...['dex', 'dao', 'lend', 'loan', 'llamalend']
-            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`, `apps/main/src/app/api/${app}`])
+            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`])
             .map((from, index, paths) => ({
               target: paths.filter((_, i) => i !== index).flat(), // target ==> all apps except the one importing from
               from, // from ==> the app importing
@@ -76,6 +76,12 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
+        project: [
+          './tsconfig.json',
+          './apps/*/tsconfig.json',
+          './apps/*/tsconfig.app.json',
+          './packages/*/tsconfig.json',
+        ],
       },
     },
     'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',

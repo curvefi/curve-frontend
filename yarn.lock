@@ -1531,16 +1531,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@portal:/home/schiavini/curve/curve-js::locator=curve-frontend%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@curvefi/api@portal:/home/schiavini/curve/curve-js::locator=curve-frontend%40workspace%3A."
+"@curvefi/api@npm:^2.67.8":
+  version: 2.67.8
+  resolution: "@curvefi/api@npm:2.67.8"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.15"
     bignumber.js: "npm:^9.3.0"
     ethers: "npm:^6.14.1"
     memoizee: "npm:^0.4.17"
+  checksum: 10c0/7dccc3224af195f5cdb83e1c3e2e81fb8cb726486644ac60b8a2827159d6e24c08c5d4e7118116a436f15c7f79fb8de79b2bafa41b90f64dca5f9d4597e092db
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@curvefi/ethcall@npm:6.0.15, @curvefi/ethcall@npm:^6.0.15":
   version: 6.0.15
@@ -1554,16 +1555,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@curvefi/llamalend-api@portal:/home/schiavini/curve/curve-llamalend.js::locator=curve-frontend%40workspace%3A."
+"@curvefi/llamalend-api@npm:1.0.23":
+  version: 1.0.23
+  resolution: "@curvefi/llamalend-api@npm:1.0.23"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.15"
     bignumber.js: "npm:^9.3.0"
     ethers: "npm:^6.14.3"
     memoizee: "npm:^0.4.17"
+  checksum: 10c0/2b659989fe4a0b5b5d542b2177d3d0d7dbe68ce3b51d04bf327f651f409c346151cfd57ba77343a13325a7b2caa1d4c945af8b0d14baffbdd95f95822f3c63f9
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@curvefi/prices-api@workspace:packages/prices-api":
   version: 0.0.0-use.local
@@ -13586,8 +13588,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:^2.67.6"
-    "@curvefi/llamalend-api": "npm:1.0.22-beta.1"
+    "@curvefi/api": "npm:^2.67.8"
+    "@curvefi/llamalend-api": "npm:1.0.23"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
