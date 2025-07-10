@@ -9,9 +9,10 @@ import type { TextFieldProps } from '@mui/material/TextField'
  *
  * @param value - The new input value to validate
  * @param current - The current input value to fall back to if validation fails
+ * @param allowNegative - Whether to allow negative numbers
  * @returns The validated and normalized input value, or the current value if invalid
  */
-const sanitize = (value: string, current: string): string => {
+const sanitize = (value: string, current: string, allowNegative: boolean): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
@@ -25,19 +26,25 @@ const sanitize = (value: string, current: string): string => {
     return current
   }
 
-  // Check if it contains only valid characters (numbers, optional minus at start, and one optional decimal)
-  return /^-?[0-9]*\.?[0-9]*$/.test(normalizedValue) ? normalizedValue : current
+  // If negative numbers are not allowed and value starts with minus, ignore the change
+  if (!allowNegative && minusIndex === 0) {
+    return current
+  }
+
+  // Check if it contains only valid characters (numbers, optional minus at start if allowed, and one optional decimal)
+  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*$/ : /^[0-9]*\.?[0-9]*$/
+  return pattern.test(normalizedValue) ? normalizedValue : current
 }
 
 /**
  * Clamps a numeric value to ensure it's within the specified range.
  *
  * @param value - The value to clamp (number or string representation)
- * @param min - The minimum allowed value (default: 0)
+ * @param min - The minimum allowed value (default: -Infinity)
  * @param max - The maximum allowed value (default: Infinity)
  * @returns A number within the specified range, or min if the input is invalid/NaN
  */
-const clamp = (value?: number | string, min = 0, max = Infinity) => {
+const clamp = (value?: number | string, min = -Infinity, max = Infinity) => {
   const num = Number(value)
   return isNaN(num) ? min : Math.max(min, Math.min(max, num))
 }
@@ -67,7 +74,15 @@ type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' 
   onBlur?: (value: number | undefined) => void
 }
 
-export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, ...props }: NumericTextFieldProps) => {
+export const NumericTextField = ({
+  value,
+  min = 0,
+  max,
+  onChange,
+  onBlur,
+  onFocus,
+  ...props
+}: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
   const [inputValue, setInputValue] = useState(getDisplayValue(value))
 
@@ -110,7 +125,7 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         onFocus?.(e)
       }}
       onChange={(e) => {
-        const sanitizedValue = sanitize(e.target.value, inputValue)
+        const sanitizedValue = sanitize(e.target.value, inputValue, min < 0)
         setInputValue(sanitizedValue)
 
         const changedValue = parseAndClamp(sanitizedValue, false)
