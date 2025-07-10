@@ -58,7 +58,7 @@ const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps)
         },
       },
     }}
-    onBlur={onCommit}
+    onChange={onCommit}
   />
 )
 
