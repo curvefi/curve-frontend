@@ -1,5 +1,5 @@
 import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
-import { lazy, Suspense } from 'react'
+import { lazy } from 'react'
 import { getNetworkDefs } from '@/dex/lib/networks'
 import { ClientWrapper } from '@/app/ClientWrapper.tsx'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'

@@ -49,17 +49,18 @@
     "@storybook/addon-interactions": "8.6.14",
     "@storybook/addon-themes": "8.6.14",
     "@storybook/blocks": "8.6.14",
-    "@storybook/nextjs": "8.6.14",
     "@storybook/react": "8.6.14",
+    "@storybook/react-vite": "8.6.14",
     "@storybook/test": "8.6.14",
     "@types/react": "*",
     "@types/react-dom": "*",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "*",
     "eslint-config-custom": "*",
     "storybook": "8.6.14",
     "tsconfig": "*",
     "type-fest": "4.41.0",
     "typescript": "*",
-    "webpack": "*"
+    "vite": "^6.0.7"
   }
 }

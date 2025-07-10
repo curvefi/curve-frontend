@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint ../frontend",
+    "lint": "eslint",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "commit": "commit",
