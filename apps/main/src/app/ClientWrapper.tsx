@@ -16,7 +16,6 @@ import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry.tsx'
 
 const useLayoutStoreResponsive = () => {
@@ -123,23 +122,21 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const currentApp = getCurrentApp(pathname)
   return (
     <StyledComponentsRegistry>
+      <GlobalStyle />
       {network && (
-        <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-          <GlobalStyle />
-          <ThemeProvider theme={theme}>
-            <OverlayProvider>
-              <QueryProvider persister={persister} queryClient={queryClient}>
-                <WagmiProvider config={config}>
-                  <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
-                    <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
-                      {children}
-                    </GlobalLayout>
-                  </ConnectionProvider>
-                </WagmiProvider>
-              </QueryProvider>
-            </OverlayProvider>
-          </ThemeProvider>
-        </div>
+        <ThemeProvider theme={theme}>
+          <OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <WagmiProvider config={config}>
+                <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
+                  <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+                    {children}
+                  </GlobalLayout>
+                </ConnectionProvider>
+              </WagmiProvider>
+            </QueryProvider>
+          </OverlayProvider>
+        </ThemeProvider>
       )}
     </StyledComponentsRegistry>
   )

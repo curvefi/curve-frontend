@@ -1,8 +1,13 @@
 @import '@ui/styles/base.css';
 
-html {
-  --font: "Mona Sans, \"Helvetica Neue\", Helvetica, sans-serif";
-  --font-mono: "Minecraft, \"SF Mono Regular 11\", \"Ubuntu Mono\", monospace";
+body {
+  --font: "Mona Sans", "Helvetica Neue", Helvetica, sans-serif;
+  --font-mono: Minecraft, "SF Mono Regular 11", "Ubuntu Mono", monospace;
+}
+
+body.theme-chad {
+  --font: "Hubot Sans","Helvetica Neue","Helvetica","sans-serif";
+  --button--font: "Minecraft","SF Mono Regular 11","Ubuntu Mono",monospace;
 }
 
 html,
