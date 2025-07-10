@@ -14,6 +14,7 @@ import { Ltv, type Props as LtvProps } from './action-infos/Ltv'
 const { Spacing } = SizesAndSpaces
 
 export type Props = {
+  loading?: boolean
   health: HealthProps
   loan: {
     borrowRate?: BorrowRateProps
@@ -33,30 +34,31 @@ export type Props = {
 
 /** Component that displays action information in an accordion format, with the health as title */
 export const ActionInfos = ({
+  loading = false,
   health,
   loan: { borrowRate, debt, ltv, collateral },
   collateral: { borrowed, leverage, assetsToWithdraw },
   transaction: { estimatedTxCost },
 }: Props) => (
-  <Accordion ghost size="small" title={<Health {...health} />}>
+  <Accordion ghost size="small" title={<Health loading={loading} {...health} />}>
     <Stack gap={Spacing.md}>
       {/** Loan */}
       <Stack>
-        {borrowRate && <BorrowRate {...borrowRate} />}
-        {debt && <Debt {...debt} />}
-        {ltv && <Ltv {...ltv} />}
-        {collateral && <Collateral collateral={collateral} />}
+        {borrowRate && <BorrowRate loading={loading} {...borrowRate} />}
+        {debt && <Debt loading={loading} {...debt} />}
+        {ltv && <Ltv loading={loading} {...ltv} />}
+        {collateral && <Collateral loading={loading} collateral={collateral} />}
       </Stack>
 
       {/** Collateral */}
       <Stack>
-        {leverage && <Leverage {...leverage} />}
-        {borrowed && <Borrowed {...borrowed} />}
-        {assetsToWithdraw && <AssetsToWithdraw assetsToWithdraw={assetsToWithdraw} />}
+        {leverage && <Leverage loading={loading} {...leverage} />}
+        {borrowed && <Borrowed loading={loading} {...borrowed} />}
+        {assetsToWithdraw && <AssetsToWithdraw loading={loading} assetsToWithdraw={assetsToWithdraw} />}
       </Stack>
 
       {/** Transaction */}
-      {estimatedTxCost && <EstimatedTxCost {...estimatedTxCost} />}
+      {estimatedTxCost && <EstimatedTxCost loading={loading} {...estimatedTxCost} />}
     </Stack>
   </Accordion>
 )

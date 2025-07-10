@@ -40,6 +40,9 @@ const ManageSoftLiquidationWithState = (props: Props) => {
   const [improveHealthStatus, setImproveHealthStatus] = useState<ImproveHealthStatus>('idle')
   const [withdrawStatus, setWithdrawStatus] = useState<ClosePositionStatus>('idle')
 
+  const [updatingActionInfos, setUpdatingActionInfos] = useState(false)
+  let actionInfosTimeout: ReturnType<typeof setTimeout> | undefined = undefined
+
   const mockExecution = (status: ImproveHealthStatus | ClosePositionStatus, type: 'improve-health' | 'close') => {
     const setState = type === 'improve-health' ? setImproveHealthStatus : setWithdrawStatus
 
@@ -47,12 +50,23 @@ const ManageSoftLiquidationWithState = (props: Props) => {
     setTimeout(() => setState('idle'), 3000)
   }
 
+  const mockActionInfoUpdating = () => {
+    setUpdatingActionInfos(true)
+    clearTimeout(actionInfosTimeout)
+    actionInfosTimeout = setTimeout(() => setUpdatingActionInfos(false), 3000)
+  }
+
   return (
     <ManageSoftLiquidation
       {...props}
+      actionInfos={{ ...props.actionInfos, loading: updatingActionInfos }}
       improveHealth={{
         ...props.improveHealth,
         status: improveHealthStatus,
+        onDebtBalance: (balance) => {
+          props.improveHealth.onDebtBalance(balance)
+          mockActionInfoUpdating()
+        },
         onRepay: (...args) => {
           props.improveHealth.onRepay(...args)
           mockExecution('repay', 'improve-health')
@@ -79,6 +93,7 @@ const ManageSoftLiquidationWithState = (props: Props) => {
 }
 
 const actionInfos = {
+  loading: false,
   health: { current: 42.123, next: 69 },
   loan: {
     borrowRate: { current: 0.02, next: 0.02 },
