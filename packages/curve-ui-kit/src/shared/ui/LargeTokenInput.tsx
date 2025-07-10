@@ -184,6 +184,8 @@ export const LargeTokenInput = ({
 
   const handleBalanceChange = useCallback(
     (newBalance: number | undefined) => {
+      if (newBalance == null) return
+
       setBalance(newBalance)
       onBalance(newBalance)
 
