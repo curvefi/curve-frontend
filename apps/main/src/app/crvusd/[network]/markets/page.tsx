@@ -1,11 +1,7 @@
 import MarketList from '@/loan/components/PageMarketList/Page'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import type { Route } from './+types/page'
+import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { useParams } from '@ui-kit/hooks/router.ts'
 
-export default function Component({ params }: Route.ComponentProps) {
-  const networkParams: NetworkUrlParams = {
-    network: params.network,
-  }
-
-  return <MarketList {...networkParams} />
+export default function Component() {
+  return <MarketList {...useParams<CollateralUrlParams>()} />
 }

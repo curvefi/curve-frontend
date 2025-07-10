@@ -49,7 +49,6 @@ src/sdk/types/ethers-contracts
 # crash report
 report.*.json
 
-.react-router/
 node_modules
 dist
 dist-ssr

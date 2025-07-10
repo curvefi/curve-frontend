@@ -1,13 +1,12 @@
 import { CSSProperties } from 'react'
+import '../../public/fonts/Hubot-Sans.woff2'
+import '../../public/fonts/Minecraft-Bold.otf'
+import '../../public/fonts/Minecraft-Regular.otf'
+import '../../public/fonts/Mona-Sans.woff2'
 
-// Fonts might not load when running Storybook locally.
-export const monaSans = { style: { fontFamily: 'MonaSans' } }
-export const hubotSans = { style: { fontFamily: 'Hubot Sans' } }
-export const minecraft = { style: { fontFamily: 'Minecraft' } }
-
-const MonaSans = [monaSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
-const HubotSans = [hubotSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
-const Minecraft = [minecraft.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(',')
+const MonaSans = ['MonaSans', '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
+const HubotSans = ['Hubot Sans', '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
+const Minecraft = ['Minecraft', '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(',')
 
 export const Fonts = {
   'Mona Sans': MonaSans,
@@ -15,5 +14,4 @@ export const Fonts = {
   Minecraft,
 }
 
-export const RootCssProperties = { '--font': MonaSans, '--font-mono': Minecraft } as CSSProperties
 export const ChadCssProperties = { '--font': HubotSans, '--button--font': Minecraft } as CSSProperties

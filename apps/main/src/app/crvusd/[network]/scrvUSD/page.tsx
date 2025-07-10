@@ -1,11 +1,7 @@
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import type { Route } from './+types/page'
+import { useParams } from '@ui-kit/hooks/router.ts'
 
-export default function Component({ params }: Route.ComponentProps) {
-  const networkParams: NetworkUrlParams = {
-    network: params.network,
-  }
-
-  return <CrvStaking {...networkParams} />
+export default function Component() {
+  return <CrvStaking {...useParams<NetworkUrlParams>()} />
 }
