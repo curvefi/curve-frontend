@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatTokens } from '../action-infos/util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -25,9 +26,7 @@ export const AlertAdditionalCrvUsd = ({ missing, debtTokenSymbol }: Props) => (
 
       <Typography variant="bodySRegular" color="textSecondary">
         {t`A minimum balance of `}
-        <strong>
-          {Math.ceil(missing * 100) / 100} {debtTokenSymbol}
-        </strong>
+        <strong>{formatTokens({ symbol: debtTokenSymbol, amount: missing })}</strong>
         {t` is required in your wallet to close the position.`}
       </Typography>
     </Stack>
