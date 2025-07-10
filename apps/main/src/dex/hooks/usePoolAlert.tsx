@@ -258,6 +258,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0xa3a63276b8668583e1b47b979d1093d9aaf431ee': crossCurveAlert([CrossCurveLabel.mint('0xa3a63276b8668583e1b47b979d1093d9aaf431ee'), CrossCurveLabel.redeem('0xa3a63276b8668583e1b47b979d1093d9aaf431ee'), CrossCurveLabel.swap(CrossCurveChain.Celo, '0x48065fbbe25f71c9282ddf5e1cd6d6a887483d5e', CrossCurveChain.Polygon, '0xc2132d05d31c914a87c6611c10748aeb04b58e8f')]), // CrossCurve xStable2
       '0x15ee0d5f92fd869c2fbf26ea785e9d150353568d': crossCurveAlert([CrossCurveLabel.mint('0x15ee0d5f92fd869c2fbf26ea785e9d150353568d'), CrossCurveLabel.redeem('0x15ee0d5f92fd869c2fbf26ea785e9d150353568d'), CrossCurveLabel.swap(CrossCurveChain.Sonic, '0x29219dd400f2bf60e5a23d13be72b486d4038894', CrossCurveChain.Mode, '0xd988097fb8612cc24eec14542bc03424c656005f')]), // CrossCurve xStable3
       '0xabba40f628f055149f1c7415c4388363392279c3': crossCurveAlert([CrossCurveLabel.mint('0xabba40f628f055149f1c7415c4388363392279c3'), CrossCurveLabel.redeem('0xabba40f628f055149f1c7415c4388363392279c3'), CrossCurveLabel.swap(CrossCurveChain.Mode, '0x4200000000000000000000000000000000000006', CrossCurveChain.Metis, '0x420000000000000000000000000000000000000a')]), // CrossCurve xWETH2
+      '0x06a2e1521afde7f7dc30d351dcf04408042f536e': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fantom, token1, CrossCurveChain.Fantom, token2)]),
+
       // ethereum
       '0xfc89b519658967fcbe1f525f1b8f4bf62d9b9018': zunamiAlert(),
       '0xfc636d819d1a98433402ec9dec633d864014f28c': zunamiAlert(),
@@ -294,8 +296,18 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto
+      '0xe957ce03ccdd88f02ed8b05c9a3a28abef38514a': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Arbitrum, token1, CrossCurveChain.Arbitrum, token2)]),
+      '0x845c8bc94610807fcbab5dd2bc7ac9dabaff3c55': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Arbitrum, token1, CrossCurveChain.Arbitrum, token2)]),
+      '0x93a416206b4ae3204cfe539edfee6bc05a62963e': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Arbitrum, token1, CrossCurveChain.Arbitrum, token2)]),
+      '0x4bd135524897333bec344e50ddd85126554e58b4': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Arbitrum, token1, CrossCurveChain.Arbitrum, token2)]),
+      '0x3adf984c937fa6846e5a24e0a68521bdaf767ce1': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Arbitrum, token1, CrossCurveChain.Arbitrum, token2)]),
+      
       // avalanche
       '0xb755b949c126c04e0348dd881a5cf55d424742b2': atricryptoAlert(),
+      '0xaea2e71b631fa93683bcf256a8689dfa0e094fcd': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Avalanche, token1, CrossCurveChain.Avalanche, token2)]),
+      '0x3a43a5851a3e3e0e25a3c1089670269786be1577': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Avalanche, token1, CrossCurveChain.Avalanche, token2)]),
+      '0x1da20ac34187b2d9c74f729b85acb225d3341b25': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Avalanche, token1, CrossCurveChain.Avalanche, token2)]),
+      
       // sonic
       "0x38dd6b3c096c8cbe649fa0039cc144f333be8e61": crossCurveAlert([CrossCurveLabel.mint('0x38dd6b3c096c8cbe649fa0039cc144f333be8e61'), CrossCurveLabel.redeem('0x38dd6b3c096c8cbe649fa0039cc144f333be8e61'), CrossCurveLabel.swap(CrossCurveChain.Arbitrum, '0x11cdb42b0eb46d95f990bedd4695a6e3fa034978', CrossCurveChain.Ethereum, '0xd533a949740bb3306d119cc777fa900ba034cd52')]), // CrossCurve xCRV
       "0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384": crossCurveAlert([CrossCurveLabel.mint('0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384'), CrossCurveLabel.redeem('0x4fe12cf68147e902f4ccd8a3d4c13e89fba92384'), CrossCurveLabel.swap(CrossCurveChain.Ethereum, '0xdac17f958d2ee523a2206206994597c13d831ec7', CrossCurveChain.Sonic, '0xf1232a1ab5661abdd6e02c6d8ac9940a23bb0b84')]), // CrossCurve xsEthereum
@@ -339,6 +351,46 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       "0x1894a7203faa464f7afa3b8c319a3cac8beb6cda": crossCurveAlert([CrossCurveLabel.mint('0x1894a7203faa464f7afa3b8c319a3cac8beb6cda'), CrossCurveLabel.redeem('0x1894a7203faa464f7afa3b8c319a3cac8beb6cda'), CrossCurveLabel.swap(CrossCurveChain.Base, '0xcbb7c0000ab88b473b1f5afd9ef808440eed33bf', CrossCurveChain.Ethereum, '0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd')]), // CrossCurve xbBase
       "0xee05755051e8b1ccf85747a83d0ef8b00f161180": crossCurveAlert([CrossCurveLabel.mint('0xee05755051e8b1ccf85747a83d0ef8b00f161180'), CrossCurveLabel.redeem('0xee05755051e8b1ccf85747a83d0ef8b00f161180'), CrossCurveLabel.swap(CrossCurveChain.Linea, '0x3aab2285ddcddad8edf438c1bab47e1a9d05a9b4', CrossCurveChain.Ethereum, '0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd')]), // CrossCurve xbLinea
       "0x9b78e02ddddda4117ddf6be8a0fbd15c45907895": crossCurveAlert([CrossCurveLabel.mint('0x9b78e02ddddda4117ddf6be8a0fbd15c45907895'), CrossCurveLabel.redeem('0x9b78e02ddddda4117ddf6be8a0fbd15c45907895'), CrossCurveLabel.swap(CrossCurveChain.Gnosis, '0x8e5bbbb09ed1ebde8674cda39a0c169401db4252', CrossCurveChain.Ethereum, '0xbb30e76d9bb2cc9631f7fc5eb8e87b5aff32bfbd')]), // CrossCurve xbGnosis
+      '0xff11f56281247ead18db76fd23b252156738fa94': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Sonic, token1, CrossCurveChain.Sonic, token2)]),
+      '0xd3dc6b2c947f1bca4d4a85114b34a71985606cd2': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Sonic, token1, CrossCurveChain.Sonic, token2)]),
+      '0x2fd7ccda50ed88fe17e15f3d5d8d51da4ccb43f3': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Sonic, token1, CrossCurveChain.Sonic, token2)]),
+      '0xd0edf0b0d4c56fc9f229a359979d283350ba944e': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Sonic, token1, CrossCurveChain.Sonic, token2)]),
+      
+      // base
+      '0x302a94e3c28c290eaf2a4605fc52e11eb915f378': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Base, token1, CrossCurveChain.Base, token2)]),
+      '0x5ab01ee6208596f2204b85bdfa39d34c2add98f6': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Base, token1, CrossCurveChain.Base, token2)]),
+    
+      // bsc
+      '0x7be2dbf222eec2c2f06e05eab88c168b37144933': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Bsc, token1, CrossCurveChain.Bsc, token2)]),
+      '0x80eb9a1b48df52534430a7dc11e63c73669d5a06': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Bsc, token1, CrossCurveChain.Bsc, token2)]),
+    
+      // fraxtal
+      '0xa0d3911349e701a1f49c1ba2dda34b4ce9636569': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x6e9b6660b94fa74a8087d7ee14dc28698249d242': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0xf2f426fe123de7b769b2d4f8c911512f065225d3': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x3a38e9b0b5cb034de01d5298fc2ed2d793c0c36f': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x63eb7846642630456707c3efbb50a03c79b89d81': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x385540fda649a114ffeb943fd73ae82ce7908da3': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0xa8eb7b41fe8df7ea3de982397ad183721784d987': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x9ca648d2f51098941688db9a0beb1dadc2d1b357': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x1e199dbe1f7aa237282fe941d5bcc3b167c8ce48': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+      '0x8b4e5263e8d6cc0bbf31edf14491fc6077b88229': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Fraxtal, token1, CrossCurveChain.Fraxtal, token2)]),
+    
+      // optimism
+      '0xd8dd9a8b2aca88e68c46af9008259d0ec04b7751': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Optimism, token1, CrossCurveChain.Optimism, token2)]),
+      '0xb52c9213d318956bfa26df2656b161e3cacbb64d': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Optimism, token1, CrossCurveChain.Optimism, token2)]),
+      '0x05fa06d4fb883f67f1cfea0889edbff9e8358101': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Optimism, token1, CrossCurveChain.Optimism, token2)]),
+      '0x03771e24b7c9172d163bf447490b142a15be3485': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Optimism, token1, CrossCurveChain.Optimism, token2)]),
+      '0xd1b30ba128573fcd7d141c8a987961b40e047bb6': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Optimism, token1, CrossCurveChain.Optimism, token2)]),
+    
+      // polygon
+      '0x864490cf55dc2dee3f0ca4d06f5f80b2bb154a03': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Polygon, token1, CrossCurveChain.Polygon, token2)]),
+      '0xd8001ce95a13168aa4f7d70b5298962b7cadf6dd': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Polygon, token1, CrossCurveChain.Polygon, token2)]),
+      '0x5225010a0ae133b357861782b0b865a48471b2c5': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Polygon, token1, CrossCurveChain.Polygon, token2)]),
+      
+      // taiko
+      '0x761bee8c6ec207cff409456cdf6856818cd0b83c': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Taiko, token1, CrossCurveChain.Taiko, token2)]),
+      '0x3da34fbc8ff2bf12a4dfd499a2361823e348d8d7': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Taiko, token1, CrossCurveChain.Taiko, token2)]),
     }
 
     if (poolAddress) {
