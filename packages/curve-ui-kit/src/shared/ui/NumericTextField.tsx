@@ -32,7 +32,7 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
   }
 
   // Check if it contains only valid characters (numbers, optional minus at start if allowed, and one optional decimal)
-  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*$/ : /^[0-9]*\.?[0-9]*$/
+  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/ : /^[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
   return pattern.test(normalizedValue) ? normalizedValue : current
 }
 
