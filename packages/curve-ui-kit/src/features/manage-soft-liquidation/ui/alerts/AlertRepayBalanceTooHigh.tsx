@@ -15,8 +15,8 @@ type Props = {
 }
 
 export const AlertRepayBalanceTooHigh = ({ symbol, input, userBalance, debt }: Props) => {
-  const showBalanceMessage = userBalance && input > userBalance
-  const showDebtMessage = debt && input > debt
+  const showBalanceMessage = userBalance != null && input > userBalance
+  const showDebtMessage = debt != null && input > debt
   const showAnyMessage = showBalanceMessage || showDebtMessage
 
   if (!showAnyMessage) return null
