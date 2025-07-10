@@ -521,11 +521,10 @@ const CandleChart = ({
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
       if (isUnmounting) return
 
-      let { width, height } = entries[0].contentRect
-      width -= 1
-      if (width <= 0) return
+      const { width, height } = entries[0].contentRect
+      if (width <= -1) return
 
-      chartRef.current?.applyOptions({ width, height })
+      chartRef.current?.applyOptions({ width: width - 1, height })
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 

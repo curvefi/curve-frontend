@@ -1,6 +1,6 @@
 import type { NetworkUrlParams } from '@/dao/types/dao.types'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 import { useParams } from '@ui-kit/hooks/router'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 
 export default function Component() {
   const params = useParams() as NetworkUrlParams

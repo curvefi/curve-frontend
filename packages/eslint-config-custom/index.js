@@ -1,12 +1,17 @@
 module.exports = {
-  // "plugin:turbo/recommended" should be renamed to "turbo" after eslint-plugin-turbo v2.4.5 is published. See https://github.com/vercel/turborepo/pull/10105
-  extends: ['next', 'plugin:turbo/recommended', 'prettier'],
-  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'prettier',
+  ],
+  plugins: ['no-only-tests', 'unused-imports', 'import', '@typescript-eslint', 'react', 'react-hooks', 'react-refresh'],
   rules: {
     'arrow-body-style': ['error', 'as-needed'],
     'no-only-tests/no-only-tests': 'error',
-    '@next/next/no-img-element': 'off',
-    '@next/next/no-html-link-for-pages': 'off',
+    'react/react-in-jsx-scope': 'off', // Not needed in React 17+
+    'react/prop-types': 'off', // We use TypeScript
     'unused-imports/no-unused-imports': 'warn',
 
     // rule to enforce that imports are only allowed from certain paths
@@ -27,6 +32,19 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
+    '@typescript-eslint/no-unused-vars': 'off',
+
+    // todo: remove the following rules
+    'no-empty-pattern': 'off',
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-empty-object-type': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/prefer-as-const': 'off',
+    '@typescript-eslint/no-wrapper-object-types': 'off',
+    '@typescript-eslint/no-unused-expressions': 'off',
+    '@typescript-eslint/triple-slash-reference': 'off',
+    'react-refresh/only-export-components': ['off', { allowConstantExport: true }],
+
     'no-console': [
       'error', // use console.log only for debugging
       {
@@ -52,6 +70,9 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   settings: {
+    react: {
+      version: 'detect',
+    },
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
@@ -62,11 +83,18 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
     sourceType: 'module',
-    project: ['./**/tsconfig.json'],
-    tsconfigRootDir: process.cwd(),
-    babelOptions: {
-      presets: [require.resolve('next/babel')],
+    ecmaFeatures: {
+      jsx: true,
     },
   },
-  ignorePatterns: ['**/curve-ui-kit/.storybook/**/*', '**/*/*.js', '**/dist/**/*.*'],
+  ignorePatterns: [
+    '**/dist/**',
+    '**/build/**',
+    '**/*.config.js',
+    '**/*.config.ts',
+    '**/*.config.mjs',
+    '**/storybook-static/**',
+    'node_modules/**',
+    '**/*.js',
+  ],
 }

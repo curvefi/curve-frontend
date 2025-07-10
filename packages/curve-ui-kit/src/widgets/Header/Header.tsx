@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { useLocation } from '@ui-kit/hooks/router'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
+import { useLocation } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'

@@ -1,4 +1,3 @@
-import { useParams } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import useStore from '@/lend/store/useStore'
@@ -9,6 +8,7 @@ import InternalLink from '@ui/Link/InternalLink'
 import Spinner from '@ui/Spinner'
 import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import TextCaption from '@ui/TextCaption'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const AlertNoVaultSharesFound = ({ rOwmId, hideLink, userActiveKey }: PageContentProps & { hideLink?: boolean }) => {

@@ -1,10 +1,10 @@
-import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { InternalLink } from '@ui/Link'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 
 type InternalLinkButtonProps = {
   to: string

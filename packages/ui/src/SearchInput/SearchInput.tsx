@@ -41,7 +41,7 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
       onChange={handleInputChange}
     />
     <ClearButton
-      className={!!value ? 'show' : ''}
+      className={value ? 'show' : ''}
       size={variant === 'small' ? 'x-small' : variant}
       onClick={handleSearchClose}
       padding={variant === 'small' ? 1 : 2}

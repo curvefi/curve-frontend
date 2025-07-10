@@ -1,8 +1,8 @@
 import _ from 'lodash'
-import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
+import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry.tsx'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -11,12 +11,12 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry.tsx'
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window

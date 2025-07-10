@@ -1,4 +1,3 @@
-import { useParams } from '@ui-kit/hooks/router'
 import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
@@ -13,6 +12,7 @@ import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { ExternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 

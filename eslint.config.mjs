@@ -14,9 +14,16 @@ const compat = new FlatCompat({
 const config = [
   ...compat.extends('custom'),
   {
-    settings: {
-      next: {
-        rootDir: ['apps/*/', 'packages/ui/*/'],
+    languageOptions: {
+      parserOptions: {
+        project: [
+          './apps/*/tsconfig.json',
+          './apps/*/tsconfig.app.json',
+          './apps/*/tsconfig.node.json',
+          './packages/*/tsconfig.json',
+          './tests/*/tsconfig.json',
+        ],
+        tsconfigRootDir: __dirname,
       },
     },
   },

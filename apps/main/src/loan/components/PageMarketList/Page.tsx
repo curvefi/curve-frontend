@@ -1,5 +1,4 @@
 'use client'
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'
@@ -15,6 +14,7 @@ import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 enum SEARCH {
   sortBy = 'sortBy',

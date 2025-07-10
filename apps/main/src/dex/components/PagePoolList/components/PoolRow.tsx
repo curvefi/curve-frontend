@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow, { TableRowProps } from '@/dex/components/PagePoolList/components/TableRow'
@@ -18,6 +17,7 @@ import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 
 interface PoolRowProps {
   poolId: string

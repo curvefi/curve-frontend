@@ -13,7 +13,8 @@
     "cy:open:e2e": "cypress open --e2e",
     "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --e2e",
     "cy:open:component": "cypress open --component",
-    "cy:run:component": "cypress run --component"
+    "cy:run:component": "cypress run --component",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@cypress/react": "^9.0.1",

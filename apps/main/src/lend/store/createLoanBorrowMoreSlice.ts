@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FormDetailInfoLeverage,

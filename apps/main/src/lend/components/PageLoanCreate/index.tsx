@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useEffect, useMemo } from 'react'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import type { FormType } from '@/lend/components/PageLoanCreate/types'
@@ -6,6 +5,7 @@ import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {

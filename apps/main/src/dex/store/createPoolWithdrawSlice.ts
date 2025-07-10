@@ -139,7 +139,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
 
       // get gas
-      if (!!signerAddress) {
+      if (signerAddress) {
         void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
@@ -187,7 +187,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         }
 
         // get gas
-        if (!!signerAddress) {
+        if (signerAddress) {
           void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
         }
       }
@@ -278,7 +278,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
 
       // get gas
-      if (!!signerAddress) {
+      if (signerAddress) {
         void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
@@ -591,7 +591,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      const foundKey = get()[sliceKey][key] as Object
+      const foundKey = get()[sliceKey][key] as object
       if (Object.keys(foundKey).length > 30) {
         get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
       } else {

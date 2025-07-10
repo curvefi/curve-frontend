@@ -1,5 +1,5 @@
-import { useLocation } from '@ui-kit/hooks/router'
 import { type UrlParams } from '@/dex/types/main.types'
+import { useLocation } from '@ui-kit/hooks/router'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 
 /** Get the path for the given route in this app */

@@ -35,7 +35,7 @@ export interface GasSlice {
 const DEFAULT_STATE: SliceState = {
   gasInfo: null,
   label: [],
-  gasValue: { type: 'fast' as 'fast' },
+  gasValue: { type: 'fast' as const },
 }
 
 const createGasSlice = (set: SetState<State>, get: GetState<State>) => ({

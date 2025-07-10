@@ -11,17 +11,17 @@
     "tests"
   ],
   "scripts": {
-    "build": "turbo build",
-    "start": "turbo start",
-    "dev": "turbo dev --parallel",
-    "lint": "turbo lint",
-    "lint:fix": "turbo lint -- --fix",
-    "typecheck": "turbo typecheck --parallel",
+    "build": "yarn workspaces foreach --parallel --all run build",
+    "start": "yarn workspace main preview",
+    "dev": "yarn workspace main dev",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "typecheck": "yarn workspaces foreach --parallel --all run typecheck",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
-    "storybook": "turbo run storybook --filter=curve-ui-kit",
-    "storybook:build": "turbo run storybook:build --filter=curve-ui-kit"
+    "storybook": "yarn workspace curve-ui-kit run storybook",
+    "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
@@ -33,14 +33,12 @@
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "eslint-config-turbo": "2.5.4",
     "ethers": "*",
     "husky": "^9.1.7",
     "lint-staged": "16.1.2",
     "prettier": "^3.6.2",
     "react": "*",
     "react-dom": "*",
-    "turbo": "^2.5.4",
     "typescript": "*"
   },
   "packageManager": "yarn@4.6.0",

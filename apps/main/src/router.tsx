@@ -1,12 +1,12 @@
-import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
 import { lazy } from 'react'
-import { getNetworkDefs } from '@/dex/lib/networks'
 import { ClientWrapper } from '@/app/ClientWrapper.tsx'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import CrvUsdLayout from '@/app/crvusd/layout'
 import DaoLayout from '@/app/dao/layout'
 import DexLayout from '@/app/dex/layout'
 import LendLayout from '@/app/lend/layout'
+import { getNetworkDefs } from '@/dex/lib/networks'
+import { createRootRoute, createRoute, createRouter, Outlet } from '@tanstack/react-router'
+import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 // Create root route
 const rootRoute = createRootRoute({

@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'
@@ -8,6 +7,7 @@ import Icon from '@ui/Icon'
 import InternalLinkButton from '@ui/InternalLinkButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenString } from '@ui-kit/utils'
 

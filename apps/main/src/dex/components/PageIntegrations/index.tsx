@@ -1,4 +1,3 @@
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Key, useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
@@ -15,6 +14,7 @@ import type { IntegrationsTags } from '@ui/Integration/types'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations

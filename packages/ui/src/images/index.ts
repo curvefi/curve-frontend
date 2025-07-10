@@ -1,8 +1,6 @@
 /// <reference types="vite-plugin-svgr/client" />
 
 // LOGO
-import LogoImg from './curve-logo.png'
-console.log(LogoImg)
 export { default as LogoImg } from './curve-logo.png'
 export { default as RCLogoSM } from './curve-logo-sm.svg?react'
 export { default as RCLogoText } from './curve-logo-text.svg?react'

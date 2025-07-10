@@ -13,7 +13,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
  * Get the maximum value from a field in an array of objects.
  * TODO: validate T[K] is number with typescript. DeepKeys makes it hard to do this.
  */
-const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
+const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, _.get(item, field) as number), 0)
 
 type NumberRange = [number, number]
@@ -23,7 +23,7 @@ type OnSliderChange = NonNullable<SliderProps['onChange']>
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <T extends unknown>({
+export const RangeSliderFilter = <T,>({
   columnFilters,
   setColumnFilter,
   data,

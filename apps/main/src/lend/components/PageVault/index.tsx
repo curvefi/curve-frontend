@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useRef, useEffect } from 'react'
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'
@@ -11,6 +10,7 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import { useNavigate } from '@ui-kit/hooks/router'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 

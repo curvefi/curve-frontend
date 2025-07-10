@@ -284,7 +284,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             void get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
           }
 
-          if (!!signerAddress) {
+          if (signerAddress) {
             // validate input amounts with wallet
             const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
             const amountsError = getAmountsError(cFormValues.amounts, balances)
@@ -564,7 +564,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      const foundKey = get()[sliceKey][key] as Object
+      const foundKey = get()[sliceKey][key] as object
       if (Object.keys(foundKey).length > 30) {
         get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
       } else {

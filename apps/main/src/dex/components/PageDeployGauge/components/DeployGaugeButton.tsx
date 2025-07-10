@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import {
@@ -16,6 +15,7 @@ import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 

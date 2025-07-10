@@ -1,5 +1,4 @@
 'use client'
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
@@ -13,6 +12,7 @@ import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {

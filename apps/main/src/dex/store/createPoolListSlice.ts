@@ -341,7 +341,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       campaignRewardsMapper,
     ) => {
       const state = get()
-      let { formValues, result: storedResults, ...sliceState } = state[sliceKey]
+      const { formValues, result: storedResults, ...sliceState } = state[sliceKey]
 
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
 
@@ -356,14 +356,13 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         searchText === '' && filterKey === 'all' && sortBy === (isLite ? 'tvl' : 'volume') && sortByOrder === 'desc'
 
       // update form values
-      formValues = {
-        ...formValues,
-        searchTextByTokensAndAddresses: {},
-        searchTextByOther: {},
-      }
       sliceState.setStateByKeys({
         activeKey,
-        formValues,
+        formValues: {
+          ...formValues,
+          searchTextByTokensAndAddresses: {},
+          searchTextByOther: {},
+        },
         searchedByAddresses: {},
         searchedTerms: [],
         searchedByTokens: {},

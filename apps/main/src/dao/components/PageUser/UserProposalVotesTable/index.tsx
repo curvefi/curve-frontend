@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { useNavigate } from '@ui-kit/hooks/router'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import {
@@ -11,6 +10,7 @@ import useStore from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'

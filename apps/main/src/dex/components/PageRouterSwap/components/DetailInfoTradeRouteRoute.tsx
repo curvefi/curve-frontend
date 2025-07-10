@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
@@ -10,6 +9,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import TextEllipsis from '@ui/TextEllipsis'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { shortenAddress } from '@ui-kit/utils'
 
 const DetailInfoTradeRouteRoute = ({

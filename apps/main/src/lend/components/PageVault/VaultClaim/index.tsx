@@ -144,7 +144,8 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
       const updatedSteps = getSteps(userActiveKey, api, market, claimable, formStatus)
       setSteps(updatedSteps)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line
   }, [isLoaded, formStatus, haveClaimableCrv, haveClaimableRewards])
 
   return (

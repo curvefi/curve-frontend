@@ -1,4 +1,3 @@
-import { useParams } from '@ui-kit/hooks/router'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
@@ -9,6 +8,7 @@ import Box from '@ui/Box'
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 import { shortenAddress } from '@ui-kit/utils'
 
 /**

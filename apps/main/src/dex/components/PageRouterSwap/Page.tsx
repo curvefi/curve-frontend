@@ -1,5 +1,4 @@
 'use client'
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
@@ -16,6 +15,7 @@ import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 

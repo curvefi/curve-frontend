@@ -32,7 +32,7 @@ export type GasSlice = {
 const DEFAULT_STATE: SliceState = {
   gasInfo: null,
   label: [],
-  gasValue: { type: 'fast' as 'fast' },
+  gasValue: { type: 'fast' as const },
 }
 
 // units of gas used * (base fee + priority fee)

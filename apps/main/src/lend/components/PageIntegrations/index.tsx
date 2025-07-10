@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
@@ -16,6 +15,7 @@ import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations

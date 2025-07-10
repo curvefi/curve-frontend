@@ -1,3 +1,4 @@
+import { useCallback, useMemo } from 'react'
 import {
   useLoaderData as useTanstackLoaderData,
   useLocation as useTanstackLocation,
@@ -6,7 +7,6 @@ import {
   useRouteContext as useTanstackRouteContext,
   useSearch as useTanstackSearch,
 } from '@tanstack/react-router'
-import { useCallback, useMemo } from 'react'
 
 /**
  * Custom useNavigate hook that wraps TanStack Router's navigation API
@@ -24,7 +24,7 @@ export function useNavigate() {
       }
 
       // Handle string navigation
-      navigate({
+      void navigate({
         to,
         replace: options?.replace,
         state: options?.state,
@@ -45,14 +45,12 @@ export function useSearchParams(): [
   const search = useTanstackSearch({ strict: false })
   const location = useTanstackLocation()
 
-  const searchParams = useMemo(() => {
-    return new URLSearchParams(location.search)
-  }, [location.search])
+  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search])
 
   const setSearchParams = useCallback(
     (params: URLSearchParams | ((prev: URLSearchParams) => URLSearchParams)) => {
       const newParams = typeof params === 'function' ? params(searchParams) : params
-      navigate({
+      void navigate({
         to: location.pathname,
         search: Object.fromEntries(newParams.entries()),
         replace: true,

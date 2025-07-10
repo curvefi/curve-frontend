@@ -1,8 +1,8 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
+import { useNavigate } from '@ui-kit/hooks/router'
 
 type BackButtonProps = {
   path: string

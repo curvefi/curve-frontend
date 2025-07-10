@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
@@ -9,6 +8,7 @@ import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate } from '@ui-kit/hooks/router'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {

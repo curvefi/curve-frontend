@@ -1,5 +1,4 @@
 'use client'
-import { useSearchParams } from '@ui-kit/hooks/router'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
@@ -9,6 +8,7 @@ import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
+import { useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {

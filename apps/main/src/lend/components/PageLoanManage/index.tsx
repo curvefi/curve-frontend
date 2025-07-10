@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo, useRef, useEffect } from 'react'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
@@ -16,6 +15,7 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import { useNavigate } from '@ui-kit/hooks/router'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 

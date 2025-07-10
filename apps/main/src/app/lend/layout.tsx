@@ -1,10 +1,10 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from '@ui-kit/hooks/router'
 import { type ReactNode } from 'react'
 import networks, { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import type { UrlParams } from '@/lend/types/lend.types'
+import { useParams } from '@ui-kit/hooks/router'
 import { useHydration } from '@ui-kit/hooks/useHydration'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 

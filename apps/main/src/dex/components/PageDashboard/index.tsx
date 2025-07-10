@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
@@ -23,6 +22,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const Dashboard = ({

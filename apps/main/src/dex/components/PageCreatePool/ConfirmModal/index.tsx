@@ -1,4 +1,3 @@
-import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useMemo, useRef } from 'react'
 import { styled } from 'styled-components'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
@@ -22,6 +21,7 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import InternalLinkButton from '@ui/InternalLinkButton'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {

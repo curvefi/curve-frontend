@@ -1,4 +1,3 @@
-import { useParams } from '@ui-kit/hooks/router'
 import { styled } from 'styled-components'
 import {
   STABLESWAP,
@@ -12,6 +11,7 @@ import useStore from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import InteralLinkButton from '@ui/InternalLinkButton'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const AddGaugeLink = ({

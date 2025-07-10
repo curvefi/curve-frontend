@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
@@ -19,6 +18,7 @@ import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends PageLoanManageProps {}

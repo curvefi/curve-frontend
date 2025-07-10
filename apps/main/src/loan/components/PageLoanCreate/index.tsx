@@ -1,4 +1,3 @@
-import { useNavigate } from '@ui-kit/hooks/router'
 import { useCallback } from 'react'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
@@ -7,6 +6,7 @@ import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const LoanCreate = ({

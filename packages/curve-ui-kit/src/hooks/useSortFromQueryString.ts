@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
-import { useSearchParams } from '@ui-kit/hooks/router'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
+import { useSearchParams } from '@ui-kit/hooks/router'
 
 export function useSortFromQueryString(defaultSort: SortingState) {
   const [search] = useSearchParams()

@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'

@@ -1,4 +1,3 @@
-import { useParams } from '@ui-kit/hooks/router'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import CurrencyReserves from '@/dex/components/PagePool/PoolDetails/CurrencyReserves'
@@ -14,6 +13,7 @@ import Box from '@ui/Box'
 import { InternalLink } from '@ui/Link'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 type PoolStatsProps = {
