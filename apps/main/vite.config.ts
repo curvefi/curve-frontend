@@ -4,11 +4,12 @@ import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => ({
+export default defineConfig(({ command }) => ({
   server: {
     port: 3000,
     hmr: true,
   },
+  preview: { port: 3000 },
   plugins: [react(), svgr()],
   optimizeDeps: {
     include: ['styled-components', '@mui/material', '@mui/icons-material'],
@@ -23,6 +24,6 @@ export default defineConfig(({ command, mode }) => ({
     ],
   },
   define: {
-    'process.env.NODE_ENV': command === 'serve' ? 'development' : 'production',
+    'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"',
   },
 }))
