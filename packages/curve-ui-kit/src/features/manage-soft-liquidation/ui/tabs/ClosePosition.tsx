@@ -56,6 +56,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
             value: x.amount!,
             unit: { symbol: ` ${x.symbol}`, position: 'suffix' },
             abbreviate: true,
+            decimals: 2,
           }))}
         alignment="center"
         size="large"
