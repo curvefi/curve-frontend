@@ -1,6 +1,6 @@
 import { enforce, group, test } from 'vest'
-import { chainValidationGroup } from '@/lend/entities/chain'
 import type { TokenParams } from '@/lend/entities/token/types'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
 export const tokenValidationGroup = ({ chainId, tokenAddress }: TokenParams) =>

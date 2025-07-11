@@ -1,9 +1,9 @@
-import { lendingJsValidationSuite } from '@/lend/entities/validation/lending-js-validation'
 import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { FieldsOf } from '@ui-kit/lib'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
@@ -22,5 +22,5 @@ export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnCh
     ['marketOnchainData', { chainId: params.chainId }, { marketId: params.marketId }] as const,
   queryFn: _fetchOnChainMarketRate,
   refetchInterval: '1m',
-  validationSuite: lendingJsValidationSuite,
+  validationSuite: llamaApiValidationSuite,
 })

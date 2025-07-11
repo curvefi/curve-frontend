@@ -2,8 +2,8 @@ import { headers } from 'next/headers'
 
 const WALLET_CONNECT_ACCOUNT = `c3fe8dd8-93df-44af-803f-83798aa1d440`
 
-// for curve-dapp-git-chore-curve-js-curvefi.vercel.app, other domains can be added the dashboard
-const VERCEL_DOMAIN_VERIFICATION = 'bfc9255d32decb58f8e2c39e798017ff0d28a7200471a67ff1000d08e1d8a045'
+// for curve-dapp-git-chore-mui7-curvefi.vercel.app, other domains can be added on the dashboard
+const VERCEL_DOMAIN_VERIFICATION = 'd54301a89a60afe38bfcd36228e40163abc19fa6df370677fe389f91aa95b269'
 // for curve.fi and staging.curve.fi
 const CURVE_FI_DOMAIN_VERIFICATION = '3d76b3cd8cd754f34ac1c18ff25dc23ee9b80fc7f75800041335263b11f20b19'
 // for curve.finance and staging.curve.finance

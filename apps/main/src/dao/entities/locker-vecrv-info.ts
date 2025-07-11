@@ -3,9 +3,9 @@ import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { curvejsValidationGroup } from './validation/curvejs-validation'
 
 async function _fetchLockerVecrvInfo({ userAddress }: ChainQuery<ChainId> & UserQuery) {
   const curve = requireLib('curveApi')
@@ -19,7 +19,7 @@ export const { useQuery: useLockerVecrvInfo, invalidate: invalidateLockerVecrvIn
   queryFn: _fetchLockerVecrvInfo,
   staleTime: '1m',
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & UserParams) => {
-    curvejsValidationGroup({ chainId: params.chainId })
+    curveApiValidationGroup({ chainId: params.chainId })
     userAddressValidationGroup({ userAddress: params.userAddress })
   }),
 })
