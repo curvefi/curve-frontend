@@ -6,6 +6,7 @@ import { type State } from '@/loan/store/useStore'
 import { type ChainId, type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 import { Interface } from '@ethersproject/abi'
+import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -60,7 +61,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (curveApi, prevCurveApi, wallet) => {
     if (!curveApi) return
 
-    const { loans, usdRates, campaigns, collaterals } = get()
+    const { loans, campaigns, collaterals } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -82,7 +83,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     if (!prevCurveApi || isNetworkSwitched) {
       campaigns.initCampaignRewards(curveApi.chainId as ChainId)
-      void usdRates.fetchAllStoredUsdRates(curveApi)
+      void invalidateAllTokenPrices()
     }
 
     log('Hydrate crvUSD - Complete')

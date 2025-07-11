@@ -1,5 +1,6 @@
 import { getLib, requireLib } from '@ui-kit/features/connect-wallet'
 import { useQueryMapping } from '@ui-kit/lib'
+import { queryClient } from '@ui-kit/lib/api'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from '@ui-kit/lib/model/query/token-validation'
 
@@ -9,6 +10,7 @@ const root = ({ chainId, tokenAddress }: TokenParams) =>
 export const {
   getQueryData: getTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
+  fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
@@ -26,3 +28,9 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
     uniqueAddresses,
   )
 }
+
+export const invalidateAllTokenPrices = () =>
+  queryClient.invalidateQueries({
+    // Check if it's a token price query by looking for 'usdRate' as the last element
+    predicate: ({ queryKey }) => queryKey?.at(-1) === 'usdRate',
+  })

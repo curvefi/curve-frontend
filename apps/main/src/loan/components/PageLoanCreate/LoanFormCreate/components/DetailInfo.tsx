@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useChainId } from 'wagmi'
 import DetailInfoLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoLeverage'
 import DetailInfoNonLeverage from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoNonLeverage'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
@@ -7,11 +8,14 @@ import DetailInfo from '@ui/DetailInfo'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const DetailInfoComp = (props: FormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props
 
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+  const chainId = useChainId()
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: llamma?.collateral ?? '' })
+
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const setStateByKey = useStore((state) => state.loanCreate.setStateByKey)
