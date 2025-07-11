@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 import { PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Box from '@ui/Box'

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Seed } from '@/dex/components/PagePool/types'
 import { PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'

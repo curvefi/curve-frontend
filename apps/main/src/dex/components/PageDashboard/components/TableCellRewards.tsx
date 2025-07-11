@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableCellRewardsTooltip from '@/dex/components/PageDashboard/components/TableCellRewardsTooltip'
 import { DetailText } from '@/dex/components/PageDashboard/components/TableRow'
 import type { SortId } from '@/dex/components/PageDashboard/types'
@@ -61,9 +61,7 @@ const TableCellRewards = ({
             size="md"
           >
             {sortBy === SORT_ID.userCrvApy ? <strong>{parsedUserCrvApy}</strong> : parsedUserCrvApy}{' '}
-            {!!boostedCrvApy ? (
-              <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText>
-            ) : null}
+            {boostedCrvApy ? <DetailText> of {formatNumber(boostedCrvApy, FORMAT_OPTIONS.PERCENT)}</DetailText> : null}
           </Chip>
         ) : null}
         <TableCellRewardsOthers isHighlight={sortBy === SORT_ID.rewardOthers} rewardsApy={rewardsApy} />

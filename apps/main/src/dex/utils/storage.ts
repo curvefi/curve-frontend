@@ -1,4 +1,4 @@
-import merge from 'lodash/merge'
+import _ from 'lodash'
 
 export const APP_STORAGE = {
   APP_DASHBOARD: 'curve-app-dashboard',
@@ -29,6 +29,6 @@ export function getStorageValue(key: Key) {
 
 export function setStorageValue<T>(key: Key, updatedValue: T) {
   const storedValue = getStorageValue(key)
-  const mergedStoredValue = merge(storedValue, updatedValue)
+  const mergedStoredValue = _.merge(storedValue, updatedValue)
   window.localStorage.setItem(APP_STORAGE[key], JSON.stringify(mergedStoredValue))
 }

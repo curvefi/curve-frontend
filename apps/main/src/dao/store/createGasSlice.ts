@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/dao/networks'
 import type { State } from '@/dao/store/useStore'
@@ -31,7 +31,7 @@ export type GasSlice = {
 const DEFAULT_STATE: SliceState = {
   gasInfo: null,
   label: [],
-  gasValue: { type: 'fast' as 'fast' },
+  gasValue: { type: 'fast' as const },
 }
 
 // units of gas used * (base fee + priority fee)
@@ -88,7 +88,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

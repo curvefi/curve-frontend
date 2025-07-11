@@ -1,4 +1,4 @@
-import uniq from 'lodash/uniq'
+import _ from 'lodash'
 import memoize from 'memoizee'
 import type { Chain } from 'viem'
 import { defineChain } from 'viem/utils'
@@ -37,7 +37,7 @@ export const createWagmiConfig = memoize(
      * First the hardcoded RPC URLs, then the CurveJS URL and then all default wagmi URLs
      */
     const getRpcUrls = (id: ChainId) =>
-      uniq([...(RPC[id] ?? []), networks[id].rpcUrl, ...(wagmi[id]?.rpcUrls.default.http ?? [])])
+      _.uniq([...(RPC[id] ?? []), networks[id].rpcUrl, ...(wagmi[id]?.rpcUrls.default.http ?? [])])
 
     return createConfig({
       chains: networkEntries.map(

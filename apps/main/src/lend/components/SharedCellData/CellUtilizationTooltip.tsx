@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { formatNumber } from '@ui/utils'

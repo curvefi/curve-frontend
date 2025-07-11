@@ -1,4 +1,4 @@
-import inRange from 'lodash/inRange'
+import _ from 'lodash'
 import {
   Bar,
   ComposedChart,
@@ -10,7 +10,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/loan/components/ChartTooltip'
 import { HealthColorKey, Theme } from '@/loan/types/loan.types'
 import { formatNumber } from '@ui/utils'
@@ -28,7 +28,7 @@ const ChartLiquidationRange = ({ data, healthColorKey, isManage, isDetailView, t
   const oraclePrice = data[0]?.oraclePrice
   const haveCurrData = data[0]?.curr[0] > 0
   const haveNewData = data[0]?.new[0] > 0
-  const isInLiquidationRange = haveCurrData ? inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
+  const isInLiquidationRange = haveCurrData ? _.inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
   const showFireStyle = isInLiquidationRange && theme === 'chad'
   const chartHeight = 85
   const chartAxisColor = isDetailView ? 'var(--chart_axis--color)' : 'var(--chart_axis_darkBg--color)'

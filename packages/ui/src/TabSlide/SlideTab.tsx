@@ -1,5 +1,5 @@
 import { useContext, useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { breakpoints } from 'ui/src/utils/responsive'
 import { Context, Slider } from './SlideTabsWrapper'
 

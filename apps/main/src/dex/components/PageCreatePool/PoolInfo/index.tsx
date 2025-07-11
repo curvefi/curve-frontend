@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'

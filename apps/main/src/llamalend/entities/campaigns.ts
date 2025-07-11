@@ -1,4 +1,4 @@
-import inRange from 'lodash/inRange'
+import _ from 'lodash'
 import { CampaignRewardsItem, type CampaignRewardsPool, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -55,7 +55,7 @@ export const { getQueryOptions: getCampaignsOptions } = queryFactory({
         rewards.filter(({ period }) => {
           if (!period) return true
           const [start, end] = period
-          return inRange(now, start.getTime(), end.getTime())
+          return _.inRange(now, start.getTime(), end.getTime())
         }),
       ]),
     )

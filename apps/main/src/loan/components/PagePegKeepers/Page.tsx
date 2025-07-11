@@ -1,5 +1,5 @@
 'use client'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PagePegKeepers from '@/loan/components/PagePegKeepers'
 import Settings from '@/loan/layout/Settings'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'

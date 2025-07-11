@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertBox from '@ui/AlertBox'
 import Checkbox from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'

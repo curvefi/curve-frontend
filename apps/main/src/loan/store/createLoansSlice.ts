@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
@@ -76,8 +76,8 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
         )
 
       // mapper
-      const loansDetailsMapper = cloneDeep(get()[sliceKey].detailsMapper ?? {})
-      const loansExistsMapper = cloneDeep(get()[sliceKey].existsMapper ?? {})
+      const loansDetailsMapper = _.cloneDeep(get()[sliceKey].detailsMapper ?? {})
+      const loansExistsMapper = _.cloneDeep(get()[sliceKey].existsMapper ?? {})
 
       for (const idx in results) {
         const [{ collateralId, ...rest }, loanExists] = results[idx]
@@ -137,7 +137,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       return resp
     },
     resetUserDetailsState: (llamma: Llamma) => {
-      const clonedUserDetailsMapper = cloneDeep(get()[sliceKey].userDetailsMapper)
+      const clonedUserDetailsMapper = _.cloneDeep(get()[sliceKey].userDetailsMapper)
       delete clonedUserDetailsMapper[llamma.id]
       get()[sliceKey].setStateByKey('userDetailsMapper', clonedUserDetailsMapper)
     },
@@ -153,7 +153,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

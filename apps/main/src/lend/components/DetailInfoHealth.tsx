@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ExternalLink from 'ui/src/Link/ExternalLink'
 import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { useOneWayMarket } from '@/lend/entities/chain'

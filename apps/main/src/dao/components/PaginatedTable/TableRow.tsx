@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { InternalLink } from '@ui/Link'
 import type { InternalLinkProps } from '@ui/Link/InternalLink'
 import { formatNumber } from '@ui/utils'

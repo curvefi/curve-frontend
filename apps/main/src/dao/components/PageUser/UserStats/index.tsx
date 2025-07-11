@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'

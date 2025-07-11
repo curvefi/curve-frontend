@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertBox from 'ui/src/AlertBox'
 import Box from 'ui/src/Box'
 import DetailInfo from 'ui/src/DetailInfo'

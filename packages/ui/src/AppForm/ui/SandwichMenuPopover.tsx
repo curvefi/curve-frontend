@@ -1,7 +1,7 @@
 import { Key, RefObject, useRef } from 'react'
 import { useOverlayTrigger, useSelect } from 'react-aria'
 import { Item, useSelectState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectModal from 'ui/src/Select/SelectModal'
 
 type SandwichMenuItem = {

@@ -1,7 +1,5 @@
-import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
 import { ROUTE } from '@/loan/constants'
 import networks, { networksIdMapper } from '@/loan/networks'
@@ -17,6 +15,7 @@ import TableButtonFilters from '@ui/TableButtonFilters'
 import TableButtonFiltersMobile from '@ui/TableButtonFiltersMobile'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
@@ -29,8 +28,8 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const searchParams = useSearchParams()
-  const { push } = useRouter()
+  const [searchParams] = useSearchParams()
+  const push = useNavigate()
   const { isFocusVisible, focusProps } = useFocusRing()
 
   const formStatus = useStore((state) => state.integrations.formStatus)
@@ -109,10 +108,9 @@ const IntegrationsComp = ({
       {formStatus.noResult ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
           <Trans>
-            No integration apps found with for{' '}
-            {!!formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
+            No integration apps found with for {formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
             {!!formValues.searchText && !!filterKeyLabel ? <>and </> : ''}
-            {!!filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
+            {filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
           </Trans>
         </NoResultWrapper>
       ) : (
@@ -130,7 +128,7 @@ const IntegrationsComp = ({
                       if (networkId in networksIdMapper) {
                         const chainId = networksIdMapper[networkId as NetworkEnum]
                         const { name, logoSrc } = networks[chainId]
-                        return <Image key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
+                        return <img key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
                       }
                       return null
                     })}

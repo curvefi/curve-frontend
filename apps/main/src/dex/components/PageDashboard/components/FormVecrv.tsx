@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { SummaryInnerContent } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { Title } from '@/dex/components/PageDashboard/styles'
@@ -92,7 +92,7 @@ const FormVecrv = () => {
             !formStatus.error && +lockedAmount > 0,
           ),
           type: 'action',
-          content: !!formStatus.formTypeCompleted ? t`Withdraw CRV Complete` : t`Withdraw CRV`,
+          content: formStatus.formTypeCompleted ? t`Withdraw CRV Complete` : t`Withdraw CRV`,
           onClick: () => {
             if (curve) void handleBtnClickWithdraw(activeKey, curve, lockedAmount)
           },

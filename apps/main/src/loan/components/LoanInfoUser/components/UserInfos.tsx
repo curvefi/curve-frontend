@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertSoftLiquidation from '@/loan/components/LoanInfoUser/components/AlertSoftLiquidation'
 import UserInfoDebt from '@/loan/components/LoanInfoUser/components/UserInfoDebt'
 import UserInfoLiquidationRange from '@/loan/components/LoanInfoUser/components/UserInfoLiquidationRange'

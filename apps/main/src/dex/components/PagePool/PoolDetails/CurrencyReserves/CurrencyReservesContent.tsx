@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { CurrencyReservesProps } from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/types'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Box from '@ui/Box'

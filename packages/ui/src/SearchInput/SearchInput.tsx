@@ -1,5 +1,5 @@
 import { InputHTMLAttributes } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import IconButton from 'ui/src/IconButton'
 import { RCEditClear } from 'ui/src/images'
@@ -41,7 +41,7 @@ const SearchInput = ({ className, id, value, variant, handleInputChange, handleS
       onChange={handleInputChange}
     />
     <ClearButton
-      className={!!value ? 'show' : ''}
+      className={value ? 'show' : ''}
       size={variant === 'small' ? 'x-small' : variant}
       onClick={handleSearchClose}
       padding={variant === 'small' ? 1 : 2}

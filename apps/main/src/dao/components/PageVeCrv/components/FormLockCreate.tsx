@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/dao/components/AlertFormError'
 import DetailInfoEstGas from '@/dao/components/DetailInfoEstGas'
 import FieldDatePicker from '@/dao/components/PageVeCrv/components/FieldDatePicker'

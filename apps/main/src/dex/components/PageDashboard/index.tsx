@@ -1,6 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import ClassicPoolsOnlyDescription from '@/dex/components/PageDashboard/components/ClassicPoolsOnlyDescription'
@@ -23,6 +22,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table from '@ui/Table'
 import { breakpoints } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const Dashboard = ({
@@ -37,7 +37,7 @@ const Dashboard = ({
   pageLoaded: boolean
 }) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const activeKey = useStore((state) => state.dashboard.activeKey)
   const formValues = useStore((state) => state.dashboard.formValues)

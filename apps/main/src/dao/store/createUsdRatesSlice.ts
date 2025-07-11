@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dao/lib/curvejs'
@@ -84,7 +84,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>): UsdRat
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

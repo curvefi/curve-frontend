@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'

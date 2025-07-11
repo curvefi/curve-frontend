@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { CollateralAlert } from '@/loan/types/loan.types'
 import { breakpoints } from '@ui/utils'
 

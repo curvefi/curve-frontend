@@ -22,7 +22,7 @@ import {
 } from 'react-aria'
 import type { ComboBoxStateOptions, ListState } from 'react-stately'
 import { useComboBoxState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Node } from '@react-types/shared'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'

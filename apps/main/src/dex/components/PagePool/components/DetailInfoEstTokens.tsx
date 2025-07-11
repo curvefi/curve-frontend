@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DetailInfo from '@ui/DetailInfo'
 import { Trans } from '@ui-kit/lib/i18n'
 

@@ -1,5 +1,5 @@
 import { Fragment, ReactElement } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Chip from '@ui/Typography/Chip'

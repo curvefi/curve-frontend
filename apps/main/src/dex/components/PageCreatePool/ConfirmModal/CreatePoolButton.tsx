@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'

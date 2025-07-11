@@ -1,4 +1,4 @@
-import countBy from 'lodash/countBy'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
@@ -65,7 +65,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
         const tvl = +(tvlMapper[pool.id]?.value ?? '0')
         const volume = +(volumeMapper[pool.id]?.value ?? '0')
-        const counted = countBy(tokensAll)
+        const counted = _.countBy(tokensAll)
 
         for (const idx in tokenAddressesAll) {
           const address = tokenAddressesAll[idx]

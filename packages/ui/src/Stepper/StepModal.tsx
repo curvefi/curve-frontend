@@ -1,10 +1,10 @@
 import { type MouseEvent, useEffect, useRef } from 'react'
 import { useButton } from 'react-aria'
+import type { OverlayTriggerState } from '@react-stately/overlays'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
 import type { StepActionModal } from 'ui/src/Stepper/types'
-import type { OverlayTriggerState } from '@react-stately/overlays'
 
 interface StepModalProps extends Pick<StepActionModal, 'modal'> {
   overlayTriggerState: OverlayTriggerState

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertNoVaultSharesFound from '@/lend/components/AlertNoVaultSharesFound'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'
 import DetailsConnectWallet from '@/lend/components/DetailsUser/components/DetailsConnectWallet'

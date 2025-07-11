@@ -1,6 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -42,6 +41,7 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -55,7 +55,7 @@ const LoanDeleverage = ({
   rChainId,
 }: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const activeKey = useStore((state) => state.loanDeleverage.activeKey)
   const detailInfo = useStore((state) => state.loanDeleverage.detailInfo[activeKey]) ?? DEFAULT_DETAIL_INFO

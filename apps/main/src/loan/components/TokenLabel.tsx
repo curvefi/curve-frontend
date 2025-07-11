@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignRewardsRow from '@/loan/components/CampaignRewardsRow'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import useStore from '@/loan/store/useStore'

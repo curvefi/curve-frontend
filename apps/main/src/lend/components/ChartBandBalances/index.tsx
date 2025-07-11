@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartBandBalancesSettings from '@/lend/components/ChartBandBalances/ChartBandBalancesSettings'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'

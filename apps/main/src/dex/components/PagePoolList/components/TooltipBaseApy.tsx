@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { RewardBase, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import Box from '@mui/material/Box'
 import { Chip } from '@ui/Typography'

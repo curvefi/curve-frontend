@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolActivity from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/PoolActivity'
 import { combinations } from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/utils'
 import useStore from '@/dex/store/useStore'

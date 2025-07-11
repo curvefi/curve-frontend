@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ButtonComp from '@ui/Button'
 import type { ButtonProps } from '@ui/Button/types'
 

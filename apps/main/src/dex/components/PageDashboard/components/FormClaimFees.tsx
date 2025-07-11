@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import FormClaimFeesButtons from '@/dex/components/PageDashboard/components/FormClaimFeesButtons'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'

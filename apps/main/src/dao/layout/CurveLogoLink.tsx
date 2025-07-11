@@ -1,8 +1,7 @@
-import Image from 'next/image'
-import Link from 'next/link'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { LogoImg, RCLogoText } from '@ui/images'
 import { breakpoints } from '@ui/utils/responsive'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 
 export const CurveLogoLink = ({ className, hideLabel }: { className?: string; hideLabel?: boolean }) => (
   <StyledInternalLink href="/">
@@ -22,7 +21,7 @@ const StyledCurveLogoText = styled(RCLogoText)`
   }
 `
 
-const CurveLogoImg = styled(Image)`
+const CurveLogoImg = styled.img`
   width: 25px;
   height: 25px;
   margin-right: var(--spacing-2);

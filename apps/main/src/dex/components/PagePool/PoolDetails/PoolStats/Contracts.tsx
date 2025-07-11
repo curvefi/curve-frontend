@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChipInactive from '@/dex/components/ChipInactive'
 import AddGaugeLink from '@/dex/components/PagePool/components/AddGaugeLink'
 import ContractComp from '@/dex/components/PagePool/components/ContractComp'

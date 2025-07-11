@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'

@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 import { TITLE } from '@/loan/constants'
 import { TitleMapper } from '@/loan/types/loan.types'

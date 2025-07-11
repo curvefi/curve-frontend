@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 const TextCaption = styled.span<{ isBold?: boolean; isBlock?: boolean; isCaps?: boolean }>`
   font-size: var(--font-size-1);

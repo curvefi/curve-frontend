@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MarketListItemHeader from '@/lend/components/PageMarketList/components/MarketListItemHeader'
 import MarketListTable from '@/lend/components/PageMarketList/components/TableRowViewContentTable'
 import type { MarketListItemResult, PageMarketList, TableLabel } from '@/lend/components/PageMarketList/types'

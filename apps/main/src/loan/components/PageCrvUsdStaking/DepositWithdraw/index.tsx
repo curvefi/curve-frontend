@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'

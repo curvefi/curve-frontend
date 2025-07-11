@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChipInactive from '@/dex/components/ChipInactive'
 import { RewardsApy, PoolData, PoolDataCache } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
@@ -61,7 +61,7 @@ const PoolRewardsCrv = ({
     if (!base && !boosted) return null
     const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
 
-    if (!!boosted) {
+    if (boosted) {
       return (
         <>
           {formattedBase} →{' '}

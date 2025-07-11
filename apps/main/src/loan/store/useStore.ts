@@ -1,4 +1,4 @@
-import merge from 'lodash/merge'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
@@ -81,7 +81,7 @@ const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'crvusd-app-store-cache',
   partialize: ({ storeCache }: State) => ({ storeCache }),
   // @ts-ignore
-  merge: (persistedState, currentState) => merge(persistedState, currentState),
+  merge: (persistedState, currentState) => _.merge(persistedState, currentState),
   version: 2, // update version number to prevent UI from using cache
 }
 

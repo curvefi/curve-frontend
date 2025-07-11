@@ -1,5 +1,5 @@
 import { Fragment, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableHeadRewards from '@/dex/components/PagePoolList/components/TableHeadRewards'
 import type { ColumnKeys, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'

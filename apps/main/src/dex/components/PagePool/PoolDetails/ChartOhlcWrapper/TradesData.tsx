@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'

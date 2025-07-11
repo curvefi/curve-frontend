@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SmallLabel from '@/dao/components/SmallLabel'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import Box from '@ui/Box'

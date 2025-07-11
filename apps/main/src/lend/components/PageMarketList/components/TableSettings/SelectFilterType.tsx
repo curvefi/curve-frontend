@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import type { SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'

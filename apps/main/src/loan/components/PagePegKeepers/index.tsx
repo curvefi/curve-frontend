@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PegKeeperContent from '@/loan/components/PagePegKeepers/components/PegKeeperContent'
 import { PEG_KEEPERS } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'

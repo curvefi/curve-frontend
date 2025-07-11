@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
@@ -60,7 +60,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
           return { tokenAddress, usdRate: resp.usdRate }
         })
 
-      const usdRatesTokens: UsdRate = cloneDeep(get()[sliceKey].tokens)
+      const usdRatesTokens: UsdRate = _.cloneDeep(get()[sliceKey].tokens)
       for (const idx in results) {
         const { tokenAddress, usdRate } = results[idx]
         usdRatesTokens[tokenAddress] = usdRate
@@ -84,7 +84,7 @@ const createUsdRatesSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

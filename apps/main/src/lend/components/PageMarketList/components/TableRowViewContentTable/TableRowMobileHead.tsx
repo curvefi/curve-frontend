@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 import CellMaxLeverage from '@/lend/components/SharedCellData/CellMaxLeverage'
 import CellToken from '@/lend/components/SharedCellData/CellToken'

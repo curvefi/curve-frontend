@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import useStore from '@/dex/store/useStore'

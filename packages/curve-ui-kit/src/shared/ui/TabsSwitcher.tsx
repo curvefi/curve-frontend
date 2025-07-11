@@ -1,8 +1,8 @@
 import type { UrlObject } from 'url'
-import Link from 'next/link'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
   TABS_HEIGHT_CLASSES,

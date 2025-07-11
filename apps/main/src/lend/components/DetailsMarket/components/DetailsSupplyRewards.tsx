@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import ChipInactive from '@/lend/components/ChipInactive'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 import networks from '@/lend/networks'

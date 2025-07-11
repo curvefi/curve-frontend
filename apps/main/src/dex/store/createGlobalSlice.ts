@@ -1,5 +1,5 @@
 import produce from 'immer'
-import isEqual from 'lodash/isEqual'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -151,7 +151,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
         const storedActiveKeyValues = storedValues[activeKey] // todo: this means the following branch is unreachable?
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
             }
@@ -159,7 +159,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', parsedValue)
             }
@@ -173,7 +173,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
-        if (!isEqual(storedValue, value)) {
+        if (!_.isEqual(storedValue, value)) {
           if (showLog) {
             log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
           }
@@ -188,7 +188,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       set(
         produce((state) => {
           const storedValue = state[sliceKey][key]
-          if (!isEqual(storedValue, value)) {
+          if (!_.isEqual(storedValue, value)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #bada55', value)
             }

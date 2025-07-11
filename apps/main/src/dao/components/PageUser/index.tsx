@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SubNav from '@/dao/components/SubNav'
 import useStore from '@/dao/store/useStore'
 import type { UserUrlParams } from '@/dao/types/dao.types'

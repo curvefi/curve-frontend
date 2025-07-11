@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { useCallback, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'

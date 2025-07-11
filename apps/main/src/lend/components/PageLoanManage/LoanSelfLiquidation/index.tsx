@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertFormWarning from '@/lend/components/AlertFormWarning'
 import AlertSummary from '@/lend/components/AlertLoanSummary'

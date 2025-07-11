@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CopyIconButton from '@/dao/components/CopyIconButton'
 import ExternalLinkIconButton from '@/dao/components/ExternalLinkIconButton'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'

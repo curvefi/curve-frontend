@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { RCCircle } from '@ui/images'
 
 const RouteLine = () => (

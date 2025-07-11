@@ -1,7 +1,6 @@
 import Fuse from 'fuse.js'
 import produce from 'immer'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { httpFetcher } from '@/dex/lib/utils'
 import type { State } from '@/dex/store/useStore'
@@ -125,7 +124,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       const integrationsList = get()[sliceKey].integrationsList
 
       if (integrationsList) {
-        let results = cloneDeep(integrationsList)
+        let results = _.cloneDeep(integrationsList)
 
         if (filterNetworkId) {
           results = get()[sliceKey].filterByNetwork(filterNetworkId, results)
@@ -141,7 +140,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
 
         get()[sliceKey].setStateByKeys({
           formStatus: { ...DEFAULT_FORM_STATUS, noResult: results.length === 0 },
-          results: sortBy(results, (r) => r.name),
+          results: _.sortBy(results, (r) => r.name),
         })
       }
     },
@@ -215,7 +214,7 @@ function parseIntegrationsList(
     }
   }
 
-  return sortBy(parsedIntegrationsList, (a) => a.name)
+  return _.sortBy(parsedIntegrationsList, (a) => a.name)
 }
 
 export default createIntegrationsSlice

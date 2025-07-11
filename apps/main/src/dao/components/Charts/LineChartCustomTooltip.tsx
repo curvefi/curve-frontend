@@ -1,6 +1,6 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import { formatDateFromTimestamp, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'

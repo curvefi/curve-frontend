@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PegKeeperForm from '@/loan/components/PagePegKeepers/components/PegKeeperForm'
 import PegKeeperLabel from '@/loan/components/PagePegKeepers/components/PegKeeperLabel'
 import useStore from '@/loan/store/useStore'

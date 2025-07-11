@@ -1,5 +1,5 @@
 import { ChangeEventHandler } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
 import { InputLabel, InputMessage } from 'ui/src/InputComp'
 import Input from 'ui/src/InputComp/Input'

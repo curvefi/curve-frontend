@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import orderBy from 'lodash/orderBy'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import useStore from '@/dao/store/useStore'
@@ -25,14 +25,14 @@ const sortProposals = (
   if (activeSortBy === 'endingSoon') {
     const currentTimestamp = Math.floor(Date.now() / 1000)
     const activeProposals = proposals.filter((proposal) => proposal.status === 'Active')
-    const inactiveProposals = orderBy(
+    const inactiveProposals = _.orderBy(
       proposals.filter((proposal) => proposal.status !== 'Active'),
       ['timestamp'],
       ['desc'],
     )
 
     return [
-      ...orderBy(
+      ..._.orderBy(
         activeProposals,
         [(proposal) => proposal.timestamp + WEEK - currentTimestamp],
         // order needs to be reversed for active proposals on 'ending soon' to behave as expected
@@ -43,7 +43,7 @@ const sortProposals = (
   }
 
   // sort by time created
-  return orderBy(proposals, ['timestamp'], [activeSortDirection])
+  return _.orderBy(proposals, ['timestamp'], [activeSortDirection])
 }
 
 const createFuseInstance = (proposals: ProposalData[]) =>

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'

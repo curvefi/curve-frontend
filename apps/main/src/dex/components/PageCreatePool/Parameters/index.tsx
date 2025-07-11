@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import { useState, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import Switch from '@/dex/components/PageCreatePool/components/Switch'
 import TokenWarningBox from '@/dex/components/PageCreatePool/components/WarningBox'

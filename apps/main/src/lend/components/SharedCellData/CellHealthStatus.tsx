@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { HealthColorKey } from '@/lend/types/lend.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'

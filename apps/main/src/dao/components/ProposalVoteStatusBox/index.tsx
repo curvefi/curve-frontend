@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ProgressBar from '@/dao/components/ProposalVoteStatusBox/ProgressBar'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import Box from '@ui/Box'

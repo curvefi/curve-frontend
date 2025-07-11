@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertBox from '@ui/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'

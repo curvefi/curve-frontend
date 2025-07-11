@@ -153,7 +153,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress, formValues, formStatus])
 
-  const activeStep = !!signerAddress ? getActiveStep(steps) : null
+  const activeStep = signerAddress ? getActiveStep(steps) : null
   const disableForm = seed.isSeed === null || formStatus.formProcessing
   const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
 

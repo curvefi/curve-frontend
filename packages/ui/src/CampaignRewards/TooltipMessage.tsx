@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 import { ExternalLink } from 'ui/src/Link'

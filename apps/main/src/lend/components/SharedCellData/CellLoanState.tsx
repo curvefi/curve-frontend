@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Chip from 'ui/src/Typography/Chip'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'

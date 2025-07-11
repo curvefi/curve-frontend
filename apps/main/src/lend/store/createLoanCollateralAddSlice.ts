@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
@@ -203,7 +202,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import type {
@@ -124,7 +124,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { chainId, signerAddress } = curve
       const { fromAddress, toAddress } = searchedParams
 
-      const cFormValues = cloneDeep(sliceState.formValues)
+      const cFormValues = _.cloneDeep(sliceState.formValues)
 
       if (signerAddress) {
         const userBalance = state.userBalances.userBalancesMapper[fromAddress] ?? '0'
@@ -168,8 +168,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const activeKey = sliceState.activeKey
       const { chainId, signerAddress } = curve
 
-      const cFormValues = cloneDeep(sliceState.formValues)
-      const cFormStatus = cloneDeep(sliceState.formStatus)
+      const cFormValues = _.cloneDeep(sliceState.formValues)
+      const cFormStatus = _.cloneDeep(sliceState.formStatus)
       const tokensNameMapper = state.tokens.tokensNameMapper[chainId]
 
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
@@ -181,7 +181,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       } else {
         cFormValues.fromAmount = ''
       }
-      sliceState.setStateByKey('formValues', cloneDeep(cFormValues))
+      sliceState.setStateByKey('formValues', _.cloneDeep(cFormValues))
 
       const poolsMapper = state.pools.poolsMapper[chainId]
       // allow UI to paint first
@@ -211,7 +211,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
           sliceState.setStateByKeys({
             activeKey: cActiveKey,
-            formValues: cloneDeep(cFormValues),
+            formValues: _.cloneDeep(cFormValues),
             formStatus: cFormStatus,
             routesAndOutput: {
               [cActiveKey]: {
@@ -298,7 +298,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const storedUserBalancesMapper = state.userBalances.userBalancesMapper
 
       // update formStatus, form values, reset errors
-      const cFormValues = cloneDeep(
+      const cFormValues = _.cloneDeep(
         isRefetch
           ? storedFormValues
           : isFullReset
@@ -311,12 +311,12 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       )
 
       const activeKey = getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage)
-      const cFormStatus = cloneDeep(isRefetch ? { ...storedFormStatus, swapError: '' } : DEFAULT_FORM_STATUS)
+      const cFormStatus = _.cloneDeep(isRefetch ? { ...storedFormStatus, swapError: '' } : DEFAULT_FORM_STATUS)
 
       get()[sliceKey].setStateByKeys({
         activeKey,
-        formValues: cloneDeep(cFormValues),
-        formStatus: cloneDeep(cFormStatus),
+        formValues: _.cloneDeep(cFormValues),
+        formStatus: _.cloneDeep(cFormStatus),
       })
 
       if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
@@ -345,7 +345,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
     // select token list
     setPoolListFormValues: (hideSmallPools) => {
-      const storedPoolListFormValues = cloneDeep(get().poolList.formValues)
+      const storedPoolListFormValues = _.cloneDeep(get().poolList.formValues)
       storedPoolListFormValues.hideSmallPools = hideSmallPools
       get().poolList.setStateByKey('formValues', storedPoolListFormValues)
     },
@@ -396,7 +396,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const resp = await curvejsApi.router.swapApprove(activeKey, curve, provider, fromAddress, fromAmount)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(sliceState.formStatus)
+        const cFormStatus = _.cloneDeep(sliceState.formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.swapError = ''
@@ -447,7 +447,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = cloneDeep(sliceState.formStatus)
+        const cFormStatus = _.cloneDeep(sliceState.formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.swapError = ''
@@ -458,14 +458,14 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         } else {
           cFormStatus.formTypeCompleted = 'SWAP'
 
-          const cFormValues = cloneDeep(formValues)
+          const cFormValues = _.cloneDeep(formValues)
           cFormValues.fromAmount = ''
           cFormValues.toAmount = ''
 
           get()[sliceKey].setStateByKeys({
             activeKey: getRouterActiveKey(curve, cFormValues, searchedParams, maxSlippage),
             formEstGas: {},
-            formValues: cloneDeep(cFormValues),
+            formValues: _.cloneDeep(cFormValues),
             formStatus: cFormStatus,
             routesAndOutput: {},
           })

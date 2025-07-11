@@ -1,6 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { Key, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
 import { SortByFilterProposals } from '@/dao/types/dao.types'
@@ -10,6 +9,7 @@ import Icon from '@ui/Icon'
 import SearchInput from '@ui/SearchInput'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { invalidateProposals } from '../../entities/proposals-mapper'
@@ -27,7 +27,7 @@ const Proposals = () => {
   const setSearchValue = useStore((state) => state.proposals.setSearchValue)
   const searchValue = useStore((state) => state.proposals.searchValue)
   const activeFilter = useStore((state) => state.proposals.activeFilter)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
 

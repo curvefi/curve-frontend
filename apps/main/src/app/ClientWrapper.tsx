@@ -1,9 +1,8 @@
-'use client'
-import delay from 'lodash/delay'
-import { usePathname, useRouter } from 'next/navigation'
+import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
+import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry.tsx'
 import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
@@ -12,12 +11,12 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useLocation, useNavigate } from '@ui-kit/hooks/router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
@@ -47,7 +46,7 @@ const useLayoutStoreResponsive = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
+    window.addEventListener('scroll', () => _.delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -60,8 +59,9 @@ const useLayoutStoreResponsive = () => {
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
-  const { replace } = useRouter()
-  const pathname = usePathname()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const pathname = location.pathname
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
@@ -70,8 +70,8 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
     }
     const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
     console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
-    replace(redirectUrl)
-  }, [network, networkId, pathname, replace])
+    navigate(redirectUrl, { replace: true })
+  }, [network, networkId, pathname, navigate])
   return network
 }
 
@@ -102,27 +102,28 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
 }) => {
   const theme = useThemeAfterSsr(preferredScheme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
-  const pathname = usePathname()
-  const { push } = useRouter()
+  const location = useLocation()
+  const pathname = location.pathname
+  const navigate = useNavigate()
   useLayoutStoreResponsive()
 
   const onChainUnavailable = useCallback(
     ([walletChainId]: [ChainId, ChainId]) => {
       const network = networks[walletChainId]?.id
       if (pathname && network) {
-        console.warn(`Network switched to ${network}, redirecting...`, location.href)
-        push(replaceNetworkInPath(pathname, network))
+        console.warn(`Network switched to ${network}, redirecting...`, pathname)
+        navigate(replaceNetworkInPath(pathname, network))
       }
     },
-    [networks, pathname, push],
+    [networks, pathname, navigate],
   )
   const network = useNetworkFromUrl(networks)
 
   const currentApp = getCurrentApp(pathname)
   return (
-    network && (
-      <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-        <GlobalStyle />
+    <StyledComponentsRegistry>
+      <GlobalStyle />
+      {network && (
         <ThemeProvider theme={theme}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
@@ -136,7 +137,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
             </QueryProvider>
           </OverlayProvider>
         </ThemeProvider>
-      </div>
-    )
+      )}
+    </StyledComponentsRegistry>
   )
 }

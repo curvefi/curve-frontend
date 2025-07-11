@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TextCaption from 'ui/src/TextCaption'
 import Chip from 'ui/src/Typography/Chip'
 import type { ChipProps } from 'ui/src/Typography/types'

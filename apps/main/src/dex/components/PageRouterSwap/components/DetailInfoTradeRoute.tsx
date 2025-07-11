@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DetailInfoTradeRouteRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { type NetworkUrlParams, TokensNameMapper } from '@/dex/types/main.types'
@@ -14,7 +14,7 @@ const DetailInfoTradeRoute = ({
   tokensNameMapper,
 }: {
   params: NetworkUrlParams
-  loading: Boolean
+  loading: boolean
   routes: Route[]
   tokensNameMapper: TokensNameMapper
 }) => {

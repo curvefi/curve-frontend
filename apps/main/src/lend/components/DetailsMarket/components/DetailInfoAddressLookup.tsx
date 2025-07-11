@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'

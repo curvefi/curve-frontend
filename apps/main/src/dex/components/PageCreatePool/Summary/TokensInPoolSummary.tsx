@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import {
   TOKEN_A,

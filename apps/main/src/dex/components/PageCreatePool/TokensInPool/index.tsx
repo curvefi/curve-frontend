@@ -1,6 +1,6 @@
-import { uniqBy } from 'lodash'
+import _ from 'lodash'
 import { useMemo, useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
 import {
@@ -71,13 +71,13 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
         .sort((a, b) => Number(b.volume) - Number(a.volume))
 
       // adds userAddedTokens at the top of the list
-      return uniqBy([...userAddedTokens, ...volumeSortedTokensArray], (o) => o.address)
+      return _.uniqBy([...userAddedTokens, ...volumeSortedTokensArray], (o) => o.address)
     }
     const balanceSortedTokensArray = tokensArray
       .filter((token) => token.symbol !== '' && token.address !== '')
       .sort((a, b) => Number(b.volume) - Number(a.volume))
 
-    return uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
+    return _.uniqBy([...userAddedTokens, ...balanceSortedTokensArray], (o) => o.address)
   }, [tokensMapper, haveSigner, userBalances, userAddedTokens, basePools])
 
   const findSymbol = useCallback(

@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import Button from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'

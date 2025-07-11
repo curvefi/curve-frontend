@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import useStore from '@/loan/store/useStore'
@@ -69,7 +68,7 @@ const DepositTracking = ({ className }: DepositTrackingProps) => {
   return (
     <Wrapper className={className}>
       <ApprovalStep>
-        <Image height={20} src={stakingModule === 'deposit' ? RCCrvUSDLogoXS : RCScrvUSDLogoXS} alt="Token Logo" />
+        <img height={20} src={stakingModule === 'deposit' ? RCCrvUSDLogoXS : RCScrvUSDLogoXS} alt="Token Logo" />
         <Box flex flexColumn>
           <StepTitle>{approvalTitle}</StepTitle>
           {approvalConfirmed && (

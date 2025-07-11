@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import type { NetworkEnum } from '@/dex/types/main.types'

@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
@@ -202,7 +200,7 @@ const Swap = ({
           status: getStepStatus(isComplete, step === 'SWAP', formStatus.isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Swap Complete` : t`Swap`,
-          ...(!!exchangeOutput.modal
+          ...(exchangeOutput.modal
             ? {
                 modal: {
                   title: t`Warning!`,
@@ -266,7 +264,7 @@ const Swap = ({
 
   // get user balances
   useEffect(() => {
-    if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
+    if (curve && poolId && haveSigner && (_.isUndefined(userFromBalance) || _.isUndefined(userToBalance))) {
       void fetchUserPoolInfo(curve, poolId, true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -275,10 +273,10 @@ const Swap = ({
   // get usdRates
   useEffect(() => {
     if (formValues.fromAddress || formValues.toAddress) {
-      if (formValues.fromAddress && isUndefined(fromUsdRate)) {
+      if (formValues.fromAddress && _.isUndefined(fromUsdRate)) {
         void fetchUsdRateByTokens(curve, [formValues.fromAddress])
       }
-      if (formValues.toAddress && isUndefined(toUsdRate)) {
+      if (formValues.toAddress && _.isUndefined(toUsdRate)) {
         void fetchUsdRateByTokens(curve, [formValues.toAddress])
       }
     }
@@ -388,7 +386,7 @@ const Swap = ({
                 compact={true}
                 onToken={(token) => {
                   const val = token.address
-                  const cFormValues = cloneDeep(formValues)
+                  const cFormValues = _.cloneDeep(formValues)
                   if (val === formValues.toAddress) {
                     cFormValues.toAddress = formValues.fromAddress
                     cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
@@ -419,7 +417,7 @@ const Swap = ({
             <IconButton
               disabled={isDisabled}
               onClick={() => {
-                const cFormValues = cloneDeep(formValues)
+                const cFormValues = _.cloneDeep(formValues)
                 cFormValues.isFrom = true
                 cFormValues.fromAmount = formValues.toAmount
                 cFormValues.fromToken = formValues.toToken
@@ -442,7 +440,7 @@ const Swap = ({
           <StyledInputProvider
             id="toAmount"
             inputVariant={formValues.toError ? 'error' : undefined}
-            disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+            disabled={_.isUndefined(hasRouter) || (!_.isUndefined(hasRouter) && !hasRouter) || isDisabled}
             grid
             gridTemplateColumns="1fr 38%"
           >
@@ -471,7 +469,7 @@ const Swap = ({
               compact={true}
               onToken={(token) => {
                 const val = token.address
-                const cFormValues = cloneDeep(formValues)
+                const cFormValues = _.cloneDeep(formValues)
                 if (val === formValues.fromAddress) {
                   cFormValues.fromAddress = formValues.toAddress
                   cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
@@ -502,7 +500,7 @@ const Swap = ({
                   const fromIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.fromAddress)
                   const toIdx = poolData.tokenAddresses.findIndex((a) => a === formValues.toAddress)
                   const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                  const cFormValues = cloneDeep(formValues)
+                  const cFormValues = _.cloneDeep(formValues)
                   cFormValues.isWrapped = isWrapped
                   cFormValues.fromToken = wrapped.tokens[fromIdx]
                   cFormValues.fromAddress = wrapped.tokenAddresses[fromIdx]
@@ -552,7 +550,7 @@ const Swap = ({
       <AlertSlippage
         maxSlippage={maxSlippage}
         usdAmount={
-          !isUndefined(toUsdRate) && !isNaN(toUsdRate)
+          !_.isUndefined(toUsdRate) && !_.isNaN(toUsdRate)
             ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
             : ''
         }

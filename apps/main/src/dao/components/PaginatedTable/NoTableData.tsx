@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import Box from '@ui/Box'
 

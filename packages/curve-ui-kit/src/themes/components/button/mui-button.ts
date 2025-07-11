@@ -64,7 +64,6 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
     ghost: buttonColor(Ghost),
     navigation: buttonColor(Navigation),
   }
-  const fontFamily = Fonts[Text.FontFamily.Button]
   return {
     variants: [
       ...recordEntries(colors).map(([color, style]) => ({ props: { color }, style })),
@@ -102,7 +101,7 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         border: `${OutlineWidth} solid transparent`,
         boxSizing: 'border-box',
         '&:focus-visible': { borderColor: Focus_Outline },
-        fontFamily,
+        fontFamily: Fonts[Text.FontFamily.Button],
         textTransform: 'uppercase',
         transition: Transition,
       },

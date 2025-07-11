@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InputComp from '@/loan/components/PageCrvUsdStaking/components/InputComp'
 import Icon from '@ui/Icon'
 

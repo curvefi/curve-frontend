@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import networks from '@/loan/networks'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip'

@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import { statusColorMap } from './helpers'
 import type { StepStatus } from './types'
 

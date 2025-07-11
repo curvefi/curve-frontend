@@ -31,7 +31,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     disabled={disabled}
     displayEmpty
     renderValue={() =>
-      !!token ? (
+      token ? (
         <TokenLabel
           blockchainId={token.chain}
           address={token.address}

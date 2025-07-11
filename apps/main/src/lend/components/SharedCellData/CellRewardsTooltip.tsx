@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TextCaption from '@ui/TextCaption'
 import { t } from '@ui-kit/lib/i18n'
 

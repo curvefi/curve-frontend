@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'

@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Countdown from '@/dao/components/Countdown'
 import ProposalVoteStatusBox from '@/dao/components/ProposalVoteStatusBox'
 import SmallLabel from '@/dao/components/SmallLabel'

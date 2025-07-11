@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 interface CountdownProps {
   /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */

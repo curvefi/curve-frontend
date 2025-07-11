@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { Radio } from 'ui/src/Radio'
 import TableButtonFiltersMobileItemIcon from './TableButtonFiltersMobileItemIcon'
 

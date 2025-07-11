@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableHead from '@/loan/components/PageMarketList/components/TableHead/TableHead'
 import TableHeadMobile from '@/loan/components/PageMarketList/components/TableHead/TableHeadMobile'
 import TableRowNoResult from '@/loan/components/PageMarketList/components/TableRow/TableRowNoResult'

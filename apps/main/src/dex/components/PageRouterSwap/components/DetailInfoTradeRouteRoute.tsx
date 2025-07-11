@@ -1,7 +1,6 @@
-import isUndefined from 'lodash/isUndefined'
-import Link from 'next/link'
+import _ from 'lodash'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
@@ -10,6 +9,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import TextEllipsis from '@ui/TextEllipsis'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { shortenAddress } from '@ui-kit/utils'
 
 const DetailInfoTradeRouteRoute = ({
@@ -49,7 +49,7 @@ const DetailInfoTradeRouteRoute = ({
       </RouteTokenNames>
     ) : null
 
-  return isUndefined(path) ? (
+  return _.isUndefined(path) ? (
     <>
       <strong>{route.name}</strong>
       {InputAndOutputTokenLabel}

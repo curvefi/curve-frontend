@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PaginatedTable, { Column } from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
 import { TOP_HOLDERS } from '@/dao/constants'

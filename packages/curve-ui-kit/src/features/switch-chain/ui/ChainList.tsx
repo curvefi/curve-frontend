@@ -1,16 +1,16 @@
-import groupBy from 'lodash/groupBy'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import _ from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
+import { useLocation } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { AppNames } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 
@@ -39,11 +39,11 @@ export function ChainList({
   showTestnets: boolean
   selectedNetwork: NetworkDef
 }) {
-  const pathname = usePathname() || ''
+  const { pathname } = useLocation()
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
-      groupBy(
+      _.groupBy(
         options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         (o) => (o.isTestnet ? ChainType.test : ChainType.main),
       ),

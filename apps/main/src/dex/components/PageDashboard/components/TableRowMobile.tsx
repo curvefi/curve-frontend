@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableCellBalances from '@/dex/components/PageDashboard/components/TableCellBalances'
 import TableCellClaimables from '@/dex/components/PageDashboard/components/TableCellClaimables'
 import TableCellProfit from '@/dex/components/PageDashboard/components/TableCellProfit'

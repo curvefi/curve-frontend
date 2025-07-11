@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ProposalListFilter, ProposalListFilterItem } from '@/dao/types/dao.types'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'

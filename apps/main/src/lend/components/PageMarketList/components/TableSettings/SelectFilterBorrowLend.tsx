@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { FilterTypeKey, FilterTypeMapper, SearchParams, TableLabel } from '@/lend/components/PageMarketList/types'
 import TableButtonFilters from '@ui/TableButtonFilters'
 

@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'

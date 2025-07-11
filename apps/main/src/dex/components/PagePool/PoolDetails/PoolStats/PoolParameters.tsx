@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Contracts from '@/dex/components/PagePool/PoolDetails/PoolStats/Contracts'
 import PoolParametersA from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParametersA'
 import PoolParametersDaoFees from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolParametersDaoFees'
@@ -30,7 +30,7 @@ const PoolParameters = ({
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
 
   const haveWrappedCoins = useMemo(() => {
-    if (!!poolData?.pool?.wrappedCoins) {
+    if (poolData?.pool?.wrappedCoins) {
       return Array.isArray(poolData.pool.wrappedCoins)
     }
     return false

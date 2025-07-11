@@ -1,6 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { zip } from 'lodash'
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -37,7 +36,7 @@ function calculateBalancedValues(
     tokens.map((t) => [t.tokenAddress, { usdPrice: t.usdRate, reserveRatio: t.balanceUsd / Number(totalUsd) }]),
   )
   const { reserveRatio: changedRatio, usdPrice: changedUsdPrice } = reserves[tokenAddresses[changedIndex]] ?? {}
-  return zip(oldAmounts, tokenAddresses).map((tuple, index) => {
+  return _.zip(oldAmounts, tokenAddresses).map((tuple, index) => {
     const [amount, tokenAddress] = tuple as [Amount, string]
     if (changedIndex === index) {
       return { ...amount, value }
@@ -174,7 +173,7 @@ const FieldsDeposit = ({
             onChange={(isWrapped) => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                const cFormValues = cloneDeep(formValues)
+                const cFormValues = _.cloneDeep(formValues)
 
                 cFormValues.isWrapped = isWrapped
                 cFormValues.amounts = wrapped.tokens.map((token, idx) => ({

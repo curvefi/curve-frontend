@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { default as ExternalIcon } from '@ui/images/external.svg'
 import ExternalLink from '@ui/Link/ExternalLink'
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'

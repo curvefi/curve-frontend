@@ -45,7 +45,7 @@ export function createRandomWallet(
   })
 }
 
-export function allocateEth(wallet: ethers.HDNodeWallet, eth: BigInt | string): Cypress.Chainable<ethers.HDNodeWallet> {
+export function allocateEth(wallet: ethers.HDNodeWallet, eth: bigint | string): Cypress.Chainable<ethers.HDNodeWallet> {
   eth = typeof eth === 'string' ? ethers.parseEther(eth) : eth
 
   return cy.then(async () => {
@@ -54,6 +54,6 @@ export function allocateEth(wallet: ethers.HDNodeWallet, eth: BigInt | string): 
   })
 }
 
-export function tokenBalance(wallet: ethers.HDNodeWallet, token: string): Cypress.Chainable<BigInt> {
+export function tokenBalance(wallet: ethers.HDNodeWallet, token: string): Cypress.Chainable<bigint> {
   return cy.then(async () => await getTokenBalance(token, wallet.address, wallet.provider as ethers.JsonRpcProvider))
 }

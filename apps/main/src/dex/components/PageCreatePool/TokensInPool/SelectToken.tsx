@@ -1,5 +1,5 @@
 import { Key } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import {
   STABLESWAP,
   CRYPTOSWAP,

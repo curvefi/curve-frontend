@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'

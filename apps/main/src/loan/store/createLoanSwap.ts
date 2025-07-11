@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
@@ -129,7 +129,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByActiveKey('formEstGas', resp.activeKey, formEstGas)
 
       // update formStatus
-      const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
+      const clonedFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
       clonedFormStatus.isApproved = resp.isApproved
 
       if (!clonedFormStatus.error) {
@@ -190,7 +190,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const storedFormEstGas = get()[sliceKey].formEstGas
       const storedDetailInfo = get()[sliceKey].detailInfo
 
-      const cFormValues = cloneDeep(formValues)
+      const cFormValues = _.cloneDeep(formValues)
       const activeKey = getSwapActiveKey(llamma, formValues)
       const { item1, item2 } = formValues
       const haveItem1 = +item1 > 0
@@ -199,14 +199,14 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const loadingFormEstGas = storedFormEstGas[activeKey] ??
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-      const loadingDetailInfo = cloneDeep(
+      const loadingDetailInfo = _.cloneDeep(
         storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       loadingDetailInfo.loading = true
 
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, loadingFormEstGas)
       get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, loadingDetailInfo)
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
+      get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
 
       // validate item1
       const maxSwappableActiveKey = getMaxSwappableActiveKey(llamma, cFormValues)
@@ -214,7 +214,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const maxSwappable = storedMaxSwappable ?? (await get()[sliceKey].fetchMaxSwappable(chainId, llamma, cFormValues))
       const haveMaxSwappable = typeof maxSwappable !== 'undefined'
       cFormValues.item1Error = haveItem1 && haveMaxSwappable && +item1 > +maxSwappable ? 'too-much' : ''
-      get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
+      get()[sliceKey].setStateByKey('formValues', _.cloneDeep(cFormValues))
 
       // fetch approval, estimated gas and detail info
       if (haveItem1 || haveItem2) {
@@ -326,7 +326,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

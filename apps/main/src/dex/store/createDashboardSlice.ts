@@ -1,4 +1,4 @@
-import orderBy from 'lodash/orderBy'
+import _ from 'lodash'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
@@ -209,24 +209,24 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     },
     sortFn: (chainId, sortBy, order, poolDatas) => {
       if (sortBy === SORT_ID.poolName) {
-        return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
+        return _.orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
       } else if (sortBy === SORT_ID.liquidityUsd) {
-        return orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
+        return _.orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
       } else if (sortBy === SORT_ID.profits) {
-        return orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
+        return _.orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
       } else if (sortBy === SORT_ID.claimables) {
-        return orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
+        return _.orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
       } else if (sortBy === SORT_ID.userCrvApy) {
-        return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
+        return _.orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
         const rewardsApy = get().pools.rewardsApyMapper[chainId]
 
         if (sortBy === SORT_ID.rewardBase) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
+          return _.orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
         }
 
         if (sortBy === SORT_ID.rewardOthers) {
-          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
+          return _.orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
         }
       }
       return []

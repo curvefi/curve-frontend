@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { ChadImg, RCMoon, RCSun } from 'ui'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
@@ -18,7 +17,7 @@ export const themes = [
   },
   {
     type: 'chad',
-    Component: ({ size = DEFAULT_SIZE }: { size?: number }) => <Image width={size} src={ChadImg} alt="Fun theme" />,
+    Component: ({ size = DEFAULT_SIZE }: { size?: number }) => <img width={size} src={ChadImg} alt="Fun theme" />,
   },
 ] as const
 

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon'
 import type { TooltipProps } from 'ui/src/Tooltip/types'
 import Chip from 'ui/src/Typography/Chip'

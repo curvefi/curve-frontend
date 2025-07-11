@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { HealthMode, HealthColorKey, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { getIsUserCloseToLiquidation } from '@/loan/utils/utilsCurvejs'

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { ContentWrapper } from '@/lend/components/DetailsMarket/styles'

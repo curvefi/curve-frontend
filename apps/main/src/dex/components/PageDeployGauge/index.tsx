@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DeployGaugeButton from '@/dex/components/PageDeployGauge/components/DeployGaugeButton'
 import DeployMainnet from '@/dex/components/PageDeployGauge/DeployMainnet'
 import DeploySidechain from '@/dex/components/PageDeployGauge/DeploySidechain'

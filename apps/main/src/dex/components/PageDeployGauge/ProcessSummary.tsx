@@ -1,5 +1,4 @@
-import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
@@ -8,6 +7,7 @@ import Icon from '@ui/Icon'
 import InternalLinkButton from '@ui/InternalLinkButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenString } from '@ui-kit/utils'
 
@@ -22,7 +22,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
   const networks = useStore((state) => state.networks.networks)
 
-  const { push } = useRouter()
+  const push = useNavigate()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
 
   return (

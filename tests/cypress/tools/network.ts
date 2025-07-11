@@ -1,6 +1,6 @@
 import { ethers } from 'ethers'
 
-export async function setEthBalance(account: string, amount: BigInt | string, provider: ethers.JsonRpcProvider) {
+export async function setEthBalance(account: string, amount: bigint | string, provider: ethers.JsonRpcProvider) {
   amount = typeof amount === 'string' ? ethers.parseEther(amount) : amount
   const amountHex = `0x${amount.toString(16)}`
   await provider.send('hardhat_setBalance', [account, amountHex])
@@ -12,7 +12,7 @@ export async function setEthBalance(account: string, amount: BigInt | string, pr
 export async function allocateToken(
   account: string,
   token: string,
-  amount: BigInt,
+  amount: bigint,
   whales: string[],
   provider: ethers.JsonRpcProvider,
 ) {
@@ -41,13 +41,13 @@ export async function allocateToken(
   expect(balance, 'wallet token balance').to.equal(amount)
 }
 
-export const getTokenBalance = async (token: string, account: string, provider: ethers.Provider): Promise<BigInt> => {
+export const getTokenBalance = async (token: string, account: string, provider: ethers.Provider): Promise<bigint> => {
   const iERC20 = ['function balanceOf(address account) external view returns (uint256)']
   const erc20 = new ethers.Contract(token, iERC20, provider)
   return erc20.balanceOf(account)
 }
 
-export async function transferToken(token: string, account: string, amount: BigInt, provider: ethers.ContractRunner) {
+export async function transferToken(token: string, account: string, amount: bigint, provider: ethers.ContractRunner) {
   const iERC20 = ['function transfer(address to, uint amount) returns (bool)']
   const erc20 = new ethers.Contract(token, iERC20, provider)
   const tx: ethers.ContractTransactionResponse = await erc20.transfer(account, amount)

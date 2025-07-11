@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { SubNavItem } from './types'

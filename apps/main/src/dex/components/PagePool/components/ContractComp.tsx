@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'

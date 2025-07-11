@@ -26,13 +26,13 @@ const useAppStats = (currentApp: string, network: NetworkDef) =>
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
   })[currentApp]
 
-export const useAppRoutes = (network: NetworkDef) => ({
+const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
 })
 
-export const useAppMenu = (app: AppName): AppMenuOption =>
+const useAppMenu = (app: AppName): AppMenuOption =>
   ({
     dao: 'dao' as const,
     crvusd: 'llamalend' as const,
@@ -41,7 +41,7 @@ export const useAppMenu = (app: AppName): AppMenuOption =>
     dex: 'dex' as const,
   })[app]
 
-export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
+const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
     dao: daoNetworks,
     crvusd: crvusdNetworks,

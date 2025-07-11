@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'

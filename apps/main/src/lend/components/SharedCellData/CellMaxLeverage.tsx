@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import TextCaption from '@ui/TextCaption'

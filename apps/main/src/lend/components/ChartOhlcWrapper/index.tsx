@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'

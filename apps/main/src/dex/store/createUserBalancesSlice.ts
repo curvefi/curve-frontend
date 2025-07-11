@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -73,7 +73,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
       }
 
       get().userBalances.setStateByKeys({
-        userBalancesMapper: cloneDeep(mapUserBalances(results, get().userBalances.userBalancesMapper)),
+        userBalancesMapper: _.cloneDeep(mapUserBalances(results, get().userBalances.userBalancesMapper)),
         loading: false,
       })
     },
@@ -95,7 +95,7 @@ const createUserBalancesSlice = (set: SetState<State>, get: GetState<State>): Us
 })
 
 function mapUserBalances(updatedUserBalancesMapper: UserBalancesMapper, storedUserBalancesMapper: UserBalancesMapper) {
-  const cUserBalancesMapper = cloneDeep(storedUserBalancesMapper)
+  const cUserBalancesMapper = _.cloneDeep(storedUserBalancesMapper)
   for (const tokenAddress in updatedUserBalancesMapper) {
     cUserBalancesMapper[tokenAddress] = updatedUserBalancesMapper[tokenAddress]
   }

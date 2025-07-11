@@ -1,6 +1,6 @@
 import { ReactNode, RefObject, useRef } from 'react'
 import type { AriaOverlayProps } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { FocusScope } from '@react-aria/focus'
 import { useOverlay, DismissButton } from '@react-aria/overlays'
 

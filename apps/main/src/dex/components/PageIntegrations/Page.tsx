@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import IntegrationsComp from '@/dex/components/PageIntegrations/index'
 import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'

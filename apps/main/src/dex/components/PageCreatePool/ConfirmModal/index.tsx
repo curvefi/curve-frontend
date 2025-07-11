@@ -1,6 +1,5 @@
-import { useParams, useRouter } from 'next/navigation'
 import { useCallback, useMemo, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ModalPendingTx from 'ui/src/ModalPendingTx'
 import Spinner from 'ui/src/Spinner/Spinner'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
@@ -22,6 +21,7 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import InternalLinkButton from '@ui/InternalLinkButton'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 type Props = {
@@ -55,7 +55,7 @@ const ConfirmModal = ({
   const validation = useStore((state) => state.createPool.validation)
   const resetState = useStore((state) => state.createPool.resetState)
 
-  const { push } = useRouter()
+  const push = useNavigate()
   const params = useParams() as UrlParams
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)

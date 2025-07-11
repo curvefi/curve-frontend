@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { WrongNetwork } from '@/dao/components/PageVeCrv/WrongNetwork'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import CurrentVotes from './CurrentVotes'

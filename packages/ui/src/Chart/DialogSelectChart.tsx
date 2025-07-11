@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DialogSelectContent from 'ui/src/Chart/DialogSelectChartContent'
 import Popover, { Popover2Dialog } from 'ui/src/Popover2'
 import type { LabelList } from './types'

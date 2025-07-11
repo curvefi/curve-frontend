@@ -1,5 +1,5 @@
 import { JsonRpcProvider } from 'ethers'
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
 import type { GasInfo } from '@/loan/store/types'
@@ -35,7 +35,7 @@ export interface GasSlice {
 const DEFAULT_STATE: SliceState = {
   gasInfo: null,
   label: [],
-  gasValue: { type: 'fast' as 'fast' },
+  gasValue: { type: 'fast' as const },
 }
 
 const createGasSlice = (set: SetState<State>, get: GetState<State>) => ({
@@ -83,7 +83,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
     },
   },
 })

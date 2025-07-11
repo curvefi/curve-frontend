@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'

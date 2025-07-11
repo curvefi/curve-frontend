@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 import { VisuallyHidden } from 'react-aria'
 import { useToggleState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useCheckbox } from '@react-aria/checkbox'
 import { useFocusRing } from '@react-aria/focus'
 import type { ToggleProps } from '@react-types/checkbox'

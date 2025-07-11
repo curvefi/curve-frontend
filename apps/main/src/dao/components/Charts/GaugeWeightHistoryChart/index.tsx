@@ -1,5 +1,5 @@
 import { MouseEvent, useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import LineChartComponent from '@/dao/components/Charts/LineChartComponent'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'

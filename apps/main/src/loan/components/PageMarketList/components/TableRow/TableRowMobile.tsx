@@ -1,5 +1,5 @@
 import { Dispatch, Fragment, ReactNode, SetStateAction, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { TableRowProps } from '@/loan/components/PageMarketList/types'
 import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'

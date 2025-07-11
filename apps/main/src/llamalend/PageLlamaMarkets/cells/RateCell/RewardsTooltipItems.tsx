@@ -1,5 +1,4 @@
-import { sum } from 'lodash'
-import type { StaticImageData } from 'next/image'
+import _ from 'lodash'
 import { TooltipItem } from '@/llamalend/components/TooltipItem'
 import type { PoolRewards } from '@/llamalend/entities/campaigns'
 import { formatPercent } from '@/llamalend/PageLlamaMarkets/cells/cell.format'
@@ -17,9 +16,9 @@ export const RewardsTooltipItems = ({
 }: {
   title: string
   poolRewards: PoolRewards[]
-  extraIncentives: { title: string; percentage: number; image: StaticImageData }[]
+  extraIncentives: { title: string; percentage: number; image: string }[]
 }) => {
-  const percentage = extraIncentives.length > 0 && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
+  const percentage = extraIncentives.length > 0 && formatPercent(_.sum(extraIncentives.map((i) => i.percentage)))
   return (
     <>
       {percentage && <TooltipItem title={title}>{percentage}</TooltipItem>}

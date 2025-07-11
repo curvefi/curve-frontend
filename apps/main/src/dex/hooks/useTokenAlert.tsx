@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { PoolAlert } from '@/dex/types/main.types'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { t, Trans } from '@ui-kit/lib/i18n'

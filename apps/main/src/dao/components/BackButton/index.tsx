@@ -1,8 +1,8 @@
-import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
+import { useNavigate } from '@ui-kit/hooks/router'
 
 type BackButtonProps = {
   path: string
@@ -10,7 +10,7 @@ type BackButtonProps = {
 }
 
 const BackButton = ({ path, label }: BackButtonProps) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   return (
     <BackButtonWrapper variant="secondary">
       <StyledButton variant="text" onClick={() => push(path)}>

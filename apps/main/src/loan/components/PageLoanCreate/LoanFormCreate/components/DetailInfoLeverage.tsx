@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
