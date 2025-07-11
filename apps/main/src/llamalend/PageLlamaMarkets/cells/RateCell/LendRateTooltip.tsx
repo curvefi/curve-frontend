@@ -16,11 +16,11 @@ const { Spacing } = SizesAndSpaces
 const rateType = 'lend' as const
 
 const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
-  const { rate, averageRate, period, maxBoostedAprAverage } = useSnapshots(market, rateType)
+  const { averageRate, period, maxBoostedAprAverage } = useSnapshots(market, rateType)
   const {
     rates,
-    rates: { lend, lendCrvAprBoosted },
-    assets: { collateral },
+    rates: { lend, lendApr, lendCrvAprBoosted },
+    assets: { borrowed },
     rewards,
     type: marketType,
   } = market
@@ -33,18 +33,18 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           {t`The supply yield is the estimated earnings related to your share of the pool. `}
           {t`It varies according to the market and the monetary policy.`}
         </Typography>
-        {!!collateral.rebasingYield && (
+        {!!borrowed.rebasingYield && (
           <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offer extra yield.`}</Typography>
         )}
       </Stack>
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem loading={rate == null} title={t`Lending fees`}>
-            {formatPercent(rate)}
+          <TooltipItem title={t`Lending fees`}>
+            {formatPercent(lendApr)}
           </TooltipItem>
-          {!!collateral.rebasingYield && (
-            <TooltipItem subitem title={collateral.symbol}>
-              {formatPercent(collateral.rebasingYield)}
+          {!!borrowed.rebasingYield && (
+            <TooltipItem subitem title={borrowed.symbol}>
+              {formatPercent(borrowed.rebasingYield)}
             </TooltipItem>
           )}
           <RewardsTooltipItems title={t`Staking incentives`} {...{ poolRewards, extraIncentives }} />
@@ -66,8 +66,8 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         )}
         {lendCrvAprBoosted ? (
           <TooltipItems>
-            <TooltipItem primary loading={rate == null} title={`${t`Total max veCRV APR`}`}>
-              {formatPercent((rate ?? 0) + lendCrvAprBoosted)}
+            <TooltipItem primary title={`${t`Total max veCRV APR`}`}>
+              {formatPercent((lendApr ?? 0) + lendCrvAprBoosted)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
               {formatPercent(maxBoostedAprAverage)}

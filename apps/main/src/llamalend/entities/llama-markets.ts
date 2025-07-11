@@ -43,10 +43,10 @@ export type LlamaMarket = {
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lend: number | null // lendApr + CRV unboosted + yield from collateral
-    lendApr: number | null
+    lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
-    borrow: number // apy %
+    borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
   }
   type: LlamaMarketType
@@ -90,7 +90,7 @@ const convertLendingVault = (
   const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
-  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (collateralToken?.rebasingYield ?? 0)
+  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0)
   return {
     chain,
     address: vault,

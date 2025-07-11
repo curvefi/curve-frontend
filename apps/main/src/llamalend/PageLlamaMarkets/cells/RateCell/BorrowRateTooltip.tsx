@@ -25,7 +25,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     rewards,
     type: marketType,
     rates,
-    rates: { borrow: borrowRate },
+    rates: { borrow: borrowRate, borrowTotalApy },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
@@ -34,16 +34,14 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
   const extraIncentives = useMarketExtraIncentives(rateType, rates)
 
-  // IMPORTANT: different from lend, this total is not the value displayed on the table!
-  const totalBorrowRate = borrowRate + (rebasingYield ?? 0)
   return (
     <Stack gap={Spacing.sm}>
       <Typography color="textSecondary">{messages[marketType]}</Typography>
       <Stack>
         {(poolRewards.length > 0 || extraIncentives.length > 0 || !!rebasingYield) && (
           <TooltipItems secondary>
-            <TooltipItem loading={rate == null} title={t`Borrow Rate`}>
-              {formatPercent(rate)}
+            <TooltipItem title={t`Borrow Rate`}>
+              {formatPercent(borrowRate)}
             </TooltipItem>
             <RewardsTooltipItems title={t`Borrowing incentives`} {...{ poolRewards, extraIncentives }} />
             {!!rebasingYield && (
@@ -55,7 +53,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         )}
         <TooltipItems>
           <TooltipItem primary title={t`Total Borrow Rate`}>
-            {formatPercent(totalBorrowRate)}
+            {formatPercent(borrowTotalApy)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
             {formatPercent(averageRate)}
