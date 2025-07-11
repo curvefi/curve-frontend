@@ -4,6 +4,8 @@ import { queryClient } from '@ui-kit/lib/api'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from '@ui-kit/lib/model/query/token-validation'
 
+const QUERY_KEY_IDENTIFIER = 'usdRate' as const
+
 const root = ({ chainId, tokenAddress }: TokenParams) =>
   [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const
 
@@ -13,7 +15,7 @@ export const {
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [...root(params), 'usdRate'] as const,
+  queryKey: (params: TokenParams) => [...root(params), QUERY_KEY_IDENTIFIER] as const,
   queryFn: ({ tokenAddress }: TokenQuery): Promise<number> =>
     getLib('curveApi')?.getUsdRate(tokenAddress) ?? requireLib('llamaApi').getUsdRate(tokenAddress),
   staleTime: '5m',
@@ -31,8 +33,8 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
 
 export const invalidateAllTokenPrices = () =>
   queryClient.invalidateQueries({
-    // Check if it's a token price query by looking for 'usdRate' as the last element
-    predicate: ({ queryKey }) => queryKey?.at(-1) === 'usdRate',
+    // Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element
+    predicate: ({ queryKey }) => queryKey?.at(-1) === QUERY_KEY_IDENTIFIER,
   })
 
 export const getAllTokenUsdRatesAsRecord = (): Record<string, number> => {
@@ -40,7 +42,7 @@ export const getAllTokenUsdRatesAsRecord = (): Record<string, number> => {
   const result: Record<string, number> = {}
 
   cache.getAll().forEach(({ queryKey, state }) => {
-    if (queryKey?.at(-1) === 'usdRate' && state.data !== undefined) {
+    if (queryKey?.at(-1) === QUERY_KEY_IDENTIFIER && state.data !== undefined) {
       // Extract tokenAddress from queryKey structure
       const tokenAddress = (
         queryKey.find((item) => typeof item === 'object' && item !== null && 'tokenAddress' in item) as {
