@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { getLib, requireLib } from '@ui-kit/features/connect-wallet'
 import { useQueryMapping } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
@@ -31,13 +32,22 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
   )
 }
 
-// Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element
+/** Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element */
 const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
   queryKey?.at(-1) === QUERY_KEY_IDENTIFIER
 
 export const invalidateAllTokenPrices = () => queryClient.invalidateQueries({ predicate: isTokenUsdRateQuery })
 
-export const getAllTokenUsdRatesAsRecord = (): Record<string, number> =>
+/**
+ * Retrieves all cached token USD rates from the query cache and returns them as a record.
+ *
+ * Iterates through all queries matching the token USD rate predicate, extracts the token
+ * address from the query key structure, and maps it to the cached rate data.
+ *
+ * @returns Record<string, number> - Map of token addresses to their USD rates,
+ *                                   filtered to only include valid entries with numeric data
+ */
+const getAllTokenUsdRatesAsRecord = (): Record<string, number> =>
   Object.fromEntries(
     queryClient
       .getQueryCache()
@@ -54,3 +64,33 @@ export const getAllTokenUsdRatesAsRecord = (): Record<string, number> =>
       })
       .filter(([tokenAddress, data]) => tokenAddress && typeof data === 'number'),
   )
+
+/**
+ * Hook that provides real-time access to all cached token USD rates.
+ *
+ * Subscribes to query cache changes and automatically updates when token price
+ * data is modified. Returns a record mapping token addresses to their USD rates.
+ *
+ * @remarks Considered using useSyncExternalStore, but that requires a stable object reference.
+ *          It's either useRef + useSyncExternalStore or useState + useEffect.
+ *          Docs also say that "When possible, we recommend using built-in React state with
+ *          useState and useReducer instead. The useSyncExternalStore API is mostly useful
+ *          if you need to integrate with existing non-React code."
+ * @returns Record<string, number> - Map of token addresses to their current USD rates
+ */
+export const useAllTokenUsdRates = () => {
+  const [rates, setRates] = useState<Record<string, number>>({})
+
+  useEffect(() => {
+    const updateRates = () => setRates(getAllTokenUsdRatesAsRecord())
+    updateRates()
+
+    return queryClient.getQueryCache().subscribe(({ query }) => {
+      if (isTokenUsdRateQuery(query)) {
+        updateRates()
+      }
+    })
+  }, [])
+
+  return rates
+}
