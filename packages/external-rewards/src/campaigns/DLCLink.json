@@ -3,7 +3,7 @@
   "platform": "DLC.Link",
   "description": "Points for staking LP tokens.",
   "platformImageId": "dlc_link.png",
-  "dashboardLink": "https://www.dlc.link/earn-with-dlcbtc",
+  "dashboardLink": "https://app.dlc.link/",
   "pools": [
     {
       "id": "null",
