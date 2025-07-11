@@ -7,7 +7,7 @@ function TestComponent({ initialValue = 5, max }: { initialValue?: number; max?:
 
   return (
     <>
-      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} max={max} />
+      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} min={-Infinity} max={max} />
       <div>
         Comitted value: <span data-testid="state-value">{value}</span>
       </div>
