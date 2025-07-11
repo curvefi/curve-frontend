@@ -37,21 +37,20 @@ const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
 
 export const invalidateAllTokenPrices = () => queryClient.invalidateQueries({ predicate: isTokenUsdRateQuery })
 
-export const getAllTokenUsdRatesAsRecord = (): Record<string, number> => {
-  const cache = queryClient.getQueryCache()
-  const result: Record<string, number> = {}
+export const getAllTokenUsdRatesAsRecord = (): Record<string, number> =>
+  Object.fromEntries(
+    queryClient
+      .getQueryCache()
+      .findAll({ predicate: isTokenUsdRateQuery })
+      .map(({ queryKey, state }) => {
+        // Extract tokenAddress from queryKey structure
+        const { tokenAddress } =
+          queryKey.find(
+            (item): item is { tokenAddress: string } =>
+              typeof item === 'object' && item !== null && 'tokenAddress' in item,
+          ) ?? {}
 
-  cache.findAll({ predicate: isTokenUsdRateQuery }).forEach(({ queryKey, state }) => {
-    // Extract tokenAddress from queryKey structure
-    const { tokenAddress } =
-      queryKey.find(
-        (item): item is { tokenAddress: string } => typeof item === 'object' && item !== null && 'tokenAddress' in item,
-      ) ?? {}
-
-    if (tokenAddress && typeof state.data === 'number') {
-      result[tokenAddress] = state.data
-    }
-  })
-
-  return result
-}
+        return [tokenAddress, state.data] as const
+      })
+      .filter(([tokenAddress, data]) => tokenAddress && typeof data === 'number'),
+  )
