@@ -17,6 +17,7 @@ import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -39,7 +40,6 @@ export type QuickSwapSlice = {
       fromAddress: string,
       toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
-    fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
     fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
@@ -107,13 +107,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       return {
         fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
         toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
-      }
-    },
-    fetchUsdRates: async (curve, { fromAddress, toAddress }) => {
-      const usdRateMapper = get().usdRates.usdRatesMapper
-
-      if (typeof usdRateMapper[toAddress] === 'undefined' || typeof usdRateMapper[fromAddress] === 'undefined') {
-        await get().usdRates.fetchUsdRateByTokens(curve, [fromAddress, toAddress])
       }
     },
     fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
@@ -321,7 +314,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
 
-      const { signerAddress } = curve
+      const { signerAddress, chainId } = curve
 
       // set loading
       const storedRoutesAndOutput = sliceState.routesAndOutput[activeKey]
@@ -336,7 +329,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
 
       // get usdRates
-      await sliceState.fetchUsdRates(curve, searchedParams)
+      await fetchTokenUsdRate({ chainId, tokenAddress: searchedParams.fromAddress })
+      await fetchTokenUsdRate({ chainId, tokenAddress: searchedParams.toAddress })
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
@@ -371,7 +365,9 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       )
 
       // Get prices of user balance tokens
-      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, ethAddress])
+      await Promise.all(
+        [...filteredUserBalancesList, ethAddress].map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress })),
+      )
     },
 
     // steps

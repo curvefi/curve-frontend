@@ -34,3 +34,25 @@ export const invalidateAllTokenPrices = () =>
     // Check if it's a token price query by looking for 'usdRate' as the last element
     predicate: ({ queryKey }) => queryKey?.at(-1) === 'usdRate',
   })
+
+export const getAllTokenUsdRatesAsRecord = (): Record<string, number> => {
+  const cache = queryClient.getQueryCache()
+  const result: Record<string, number> = {}
+
+  cache.getAll().forEach(({ queryKey, state }) => {
+    if (queryKey?.at(-1) === 'usdRate' && state.data !== undefined) {
+      // Extract tokenAddress from queryKey structure
+      const tokenAddress = (
+        queryKey.find((item) => typeof item === 'object' && item !== null && 'tokenAddress' in item) as {
+          tokenAddress: string
+        }
+      )?.tokenAddress
+
+      if (tokenAddress && typeof state.data === 'number') {
+        result[tokenAddress] = state.data
+      }
+    }
+  })
+
+  return result
+}

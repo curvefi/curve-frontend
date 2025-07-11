@@ -19,7 +19,6 @@ import {
   RewardCrv,
   RewardOther,
   RewardsApy,
-  UsdRatesMapper,
   UserBalancesMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
@@ -85,24 +84,6 @@ const helpers = {
       resp.error = getErrorMessage(error, 'error-get-gas')
       return resp
     }
-  },
-  fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
-    const results: UsdRatesMapper = {}
-
-    await PromisePool.for(tokenAddresses)
-      .withConcurrency(5)
-      .process(async (tokenAddress) => {
-        try {
-          results[tokenAddress] = await curve.getUsdRate(tokenAddress)
-        } catch (error) {
-          if (!curve.getIsLiteChain()) {
-            console.error(`Unable to get usd rate for ${tokenAddress}`, error)
-          }
-          results[tokenAddress] = NaN
-        }
-      })
-    return results
   },
   waitForTransaction,
   waitForTransactions,
