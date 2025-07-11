@@ -31,28 +31,25 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
   )
 }
 
-export const invalidateAllTokenPrices = () =>
-  queryClient.invalidateQueries({
-    // Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element
-    predicate: ({ queryKey }) => queryKey?.at(-1) === QUERY_KEY_IDENTIFIER,
-  })
+// Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element
+const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
+  queryKey?.at(-1) === QUERY_KEY_IDENTIFIER
+
+export const invalidateAllTokenPrices = () => queryClient.invalidateQueries({ predicate: isTokenUsdRateQuery })
 
 export const getAllTokenUsdRatesAsRecord = (): Record<string, number> => {
   const cache = queryClient.getQueryCache()
   const result: Record<string, number> = {}
 
-  cache.getAll().forEach(({ queryKey, state }) => {
-    if (queryKey?.at(-1) === QUERY_KEY_IDENTIFIER && state.data !== undefined) {
-      // Extract tokenAddress from queryKey structure
-      const tokenAddress = (
-        queryKey.find((item) => typeof item === 'object' && item !== null && 'tokenAddress' in item) as {
-          tokenAddress: string
-        }
-      )?.tokenAddress
+  cache.findAll({ predicate: isTokenUsdRateQuery }).forEach(({ queryKey, state }) => {
+    // Extract tokenAddress from queryKey structure
+    const { tokenAddress } =
+      queryKey.find(
+        (item): item is { tokenAddress: string } => typeof item === 'object' && item !== null && 'tokenAddress' in item,
+      ) ?? {}
 
-      if (tokenAddress && typeof state.data === 'number') {
-        result[tokenAddress] = state.data
-      }
+    if (tokenAddress && typeof state.data === 'number') {
+      result[tokenAddress] = state.data
     }
   })
 
