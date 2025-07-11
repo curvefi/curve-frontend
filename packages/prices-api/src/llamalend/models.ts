@@ -41,10 +41,12 @@ export type Market = {
   collateralToken: {
     symbol: string
     address: Address
+    rebasingYield: number | null
   }
   borrowedToken: {
     symbol: string
     address: Address
+    rebasingYield: number | null
   }
   leverage: number
 }

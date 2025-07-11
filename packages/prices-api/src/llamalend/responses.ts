@@ -43,10 +43,12 @@ export type GetMarketsResponse = {
     collateral_token: {
       symbol: string
       address: Address
+      rebasing_yield: number | null
     }
     borrowed_token: {
       symbol: string
       address: Address
+      rebasing_yield: number | null
     }
     leverage: number
   }[]
