@@ -1,7 +1,7 @@
-import { TokenParams, TokenQuery } from '@/lend/entities/token/index'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys } from '@ui-kit/lib/model/query'
-import { tokenValidationSuite } from './validation'
+import { useQueryMapping } from '@ui-kit/lib'
+import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
+import { tokenValidationSuite } from '@ui-kit/lib/model/query/token-validation'
 
 const root = ({ chainId, tokenAddress }: TokenParams) =>
   [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const
@@ -17,3 +17,11 @@ export const {
   refetchInterval: '1m',
   validationSuite: tokenValidationSuite,
 })
+
+export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
+  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+  return useQueryMapping(
+    uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    uniqueAddresses,
+  )
+}
