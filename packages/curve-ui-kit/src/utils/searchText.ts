@@ -4,7 +4,7 @@ import _ from 'lodash'
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
 function uniqueResult<T>(results: SearchTermsFuseResult<T>): SearchTermsFuseResult<T> {
-  return _.uniqWith(results, isEqualWith)
+  return _.uniqWith(results, _.isEqualWith)
 }
 
 export function groupSearchTerms(searchText: string) {

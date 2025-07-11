@@ -14,6 +14,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
+      - run: yarn typecheck
   cypress:
     strategy:
       fail-fast: false

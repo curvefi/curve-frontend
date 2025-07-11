@@ -1,7 +1,7 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import {
   CompactUsdCell,

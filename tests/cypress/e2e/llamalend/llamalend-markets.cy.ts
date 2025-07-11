@@ -170,7 +170,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     const type = oneTokenType()
-    const tokenField = (type + '_token') as `${typeof type}_token`
+    const tokenField = type === 'borrowed' ? 'borrowed_token' : 'collateral_token'
 
     cy.get(`[data-testid="btn-expand-filters"]`).click()
     const coins = vaultData.ethereum.data
@@ -258,7 +258,8 @@ describe(`LlamaLend Markets`, () => {
   it('should hide columns', () => {
     if (breakpoint == 'mobile') {
       // mobile viewports do not have this feature
-      cy.viewport(...oneDesktopViewport())
+      const [width, height] = oneDesktopViewport()
+      cy.viewport(width, height)
     }
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },

@@ -7,7 +7,7 @@ import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/l
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'

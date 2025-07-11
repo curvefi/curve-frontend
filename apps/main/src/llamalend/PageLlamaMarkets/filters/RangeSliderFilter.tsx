@@ -3,10 +3,10 @@ import { useCallback, useMemo } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
-import type { SliderProps } from '@mui/material/Slider/Slider'
+import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 
 /**

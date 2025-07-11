@@ -3,6 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./src"
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "**/*.d.ts", "../curve-ui-kit/**/*.d.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "src/**/*.d.ts", "../curve-ui-kit/**/*.d.ts"],
   "exclude": ["dist", "build", "node_modules"]
 }
