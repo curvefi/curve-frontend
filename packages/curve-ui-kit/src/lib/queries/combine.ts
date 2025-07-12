@@ -14,6 +14,7 @@ export const combineQueriesToObject = <TData, K extends string[]>(
   results: QueryResultsArray<UseQueryOptions<TData, any, any, any>[]>,
   keys: K,
 ) => ({
+  // Using flatMap instead of map + filter(Boolean), because it's not correctly erasing | undefined from the Record value type
   data: Object.fromEntries(results.flatMap(({ data }, index) => (data !== undefined ? [[keys[index], data]] : []))),
   ...combineQueriesMeta(results),
 })
