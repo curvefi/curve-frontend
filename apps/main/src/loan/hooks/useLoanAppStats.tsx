@@ -23,8 +23,7 @@ function useTvl(chainId: ChainId | undefined) {
     [collateralDatasMapper],
   )
 
-  const { data: usdRatesRaw } = useTokenUsdRates({ chainId, tokenAddresses: collateralTokenAddresses })
-  const usdRates = useMemo(() => usdRatesRaw ?? ({} as Record<string, number>), [usdRatesRaw])
+  const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses: collateralTokenAddresses })
 
   return useMemo(() => {
     if (!hasKeys(collateralDatasMapper) || !hasKeys(loansDetailsMapper) || Object.keys(usdRates).length === 0) {

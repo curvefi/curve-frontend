@@ -257,8 +257,7 @@ const FormWithdraw = ({
   ])
 
   const tokenAddresses = useMemo(() => formValues.amounts.map((a) => a.tokenAddress), [formValues.amounts])
-  const { data: usdRatesRaw } = useTokenUsdRates({ chainId, tokenAddresses })
-  const usdRates = useMemo(() => usdRatesRaw ?? ({} as Record<string, number>), [usdRatesRaw])
+  const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
 
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
