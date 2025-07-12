@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
@@ -8,10 +9,7 @@ import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number | null | undefined) => {
   const chainId = useChainId()
-  const { data: chainTokenUsdRate } = useTokenUsdRate({
-    chainId,
-    tokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  })
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
 
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority

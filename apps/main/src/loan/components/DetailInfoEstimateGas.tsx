@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import styled from 'styled-components'
+import { ethAddress } from 'viem'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
@@ -25,10 +26,7 @@ interface Props {
 }
 
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
-  const { data: chainTokenUsdRate } = useTokenUsdRate({
-    chainId,
-    tokenAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  })
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
   const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)
