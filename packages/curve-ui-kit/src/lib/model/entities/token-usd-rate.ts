@@ -7,16 +7,13 @@ import { tokenValidationSuite } from '@ui-kit/lib/model/query/token-validation'
 
 const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
-const root = ({ chainId, tokenAddress }: TokenParams) =>
-  [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const
-
 export const {
   getQueryData: getTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
   fetchQuery: fetchTokenUsdRate,
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
-  queryKey: (params: TokenParams) => [...root(params), QUERY_KEY_IDENTIFIER] as const,
+  queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
   queryFn: ({ tokenAddress }: TokenQuery): Promise<number> =>
     getLib('curveApi')?.getUsdRate(tokenAddress) ?? requireLib('llamaApi').getUsdRate(tokenAddress),
   staleTime: '5m',
