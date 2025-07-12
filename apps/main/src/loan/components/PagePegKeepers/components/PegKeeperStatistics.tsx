@@ -1,7 +1,7 @@
+import { useChainId } from 'wagmi'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import type { ChainId } from '@/loan/types/loan.types'
 import { CardHeader, Box } from '@mui/material'
-import { useConnection } from '@ui-kit/features/connect-wallet'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -9,7 +9,7 @@ const { Spacing } = SizesAndSpaces
 const CRVUSD_OPTION = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
 export const PegKeeperStatistics = () => {
-  const chainId = useConnection().llamaApi?.chainId as ChainId | undefined
+  const chainId = useChainId() as ChainId
   const { data: crvusdTotalSupply, isLoading } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt } = crvusdTotalSupply ?? {}

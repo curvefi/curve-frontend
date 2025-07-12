@@ -1,24 +1,17 @@
-import { useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
+import { useChainId } from 'wagmi'
 import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import { type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
-import useStore from '@/dex/store/useStore'
 import { FlexContainer } from '@ui/styled-containers'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const HelperFields = () => {
   const { watch } = useFormContext<DepositRewardFormValues>()
   const rewardTokenId = watch('rewardTokenId')
   const amount = watch('amount')
 
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const tokens = [rewardTokenId]
-  const tokensKey = JSON.stringify(tokens)
-
-  const [tokenUsdRate] = useMemo(
-    () => tokens.map((token) => (token ? usdRatesMapper[token] : undefined)),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [tokensKey, usdRatesMapper],
-  )
+  const chainId = useChainId()
+  const { data: tokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: rewardTokenId }, !!rewardTokenId)
 
   return (
     <FlexContainer>

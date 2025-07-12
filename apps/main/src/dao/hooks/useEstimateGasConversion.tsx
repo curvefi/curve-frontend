@@ -1,22 +1,22 @@
 import { useMemo } from 'react'
+import { ethAddress } from 'viem'
+import { useChainId } from 'wagmi'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { BN, formatNumber } from '@ui/utils'
-import { requireLib } from '@ui-kit/features/connect-wallet'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 const useEstimateGasConversion = (gas: number | null | undefined) => {
-  const curve = requireLib('curveApi')
-  const chainId = curve?.chainId
-  const chainTokenUsdRate = useStore().usdRates.usdRatesMapper['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee']
+  const chainId = useChainId()
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
+
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority
 
   return useMemo(() => {
     const basePlusPriority =
       basePlusPriorities && typeof gasPricesDefault !== 'undefined' && basePlusPriorities[gasPricesDefault]
-
-    if (!curve || !chainId) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
 
     if (!basePlusPriority || !gas) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
 
@@ -30,7 +30,7 @@ const useEstimateGasConversion = (gas: number | null | undefined) => {
       const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
       return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }
     }
-  }, [gas, curve, chainId, chainTokenUsdRate, gasPricesDefault, basePlusPriorities])
+  }, [gas, chainId, chainTokenUsdRate, gasPricesDefault, basePlusPriorities])
 }
 
 export default useEstimateGasConversion

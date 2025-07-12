@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ethAddress } from 'viem'
 import type { Meta, StoryObj } from '@storybook/react'
 import { fn } from '@storybook/test'
 import type { Address } from '@ui-kit/utils'
@@ -16,7 +17,7 @@ const debtToken: Token = {
 const collateralToRecover = [
   {
     symbol: 'ETH',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address,
+    address: ethAddress,
     amount: 26539422,
     usd: 638000,
   },

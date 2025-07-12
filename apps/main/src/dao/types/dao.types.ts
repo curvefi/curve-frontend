@@ -34,7 +34,6 @@ export type GasInfo = {
   l1GasPriceWei?: number
   l2GasPriceWei?: number
 }
-export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
 export type PricesGaugeOverviewData = {

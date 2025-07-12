@@ -6,6 +6,7 @@ import useStore from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const hasKeys = <K extends keyof any, V>(obj: Record<K, V> | undefined | null): obj is Record<K, V> =>
   !!obj && Object.keys(obj).length > 0
@@ -13,9 +14,20 @@ const hasKeys = <K extends keyof any, V>(obj: Record<K, V> | undefined | null): 
 function useTvl(chainId: ChainId | undefined) {
   const collateralDatasMapper = useStore((state) => chainId && state.collaterals.collateralDatasMapper[chainId])
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
-  const usdRatesMapper = useStore((state) => state.usdRates.tokens)
+
+  const collateralTokenAddresses = useMemo(
+    () =>
+      Object.values(collateralDatasMapper || {})
+        .map((data) => data?.llamma?.collateral)
+        .filter(Boolean) as string[],
+    [collateralDatasMapper],
+  )
+
+  const { data: usdRatesRaw } = useTokenUsdRates({ chainId, tokenAddresses: collateralTokenAddresses })
+  const usdRates = useMemo(() => usdRatesRaw ?? ({} as Record<string, number>), [usdRatesRaw])
+
   return useMemo(() => {
-    if (!hasKeys(collateralDatasMapper) || !hasKeys(loansDetailsMapper) || !hasKeys(usdRatesMapper)) {
+    if (!hasKeys(collateralDatasMapper) || !hasKeys(loansDetailsMapper) || Object.keys(usdRates).length === 0) {
       return '-'
     }
     let sum = 0
@@ -27,19 +39,15 @@ function useTvl(chainId: ChainId | undefined) {
       }
 
       const { totalCollateral, totalStablecoin } = loanDetails
-      const usdRate = usdRatesMapper[collateralData.llamma.collateral]
-      if (usdRate === 'NaN') {
-        return '?'
-      }
-      const totalCollateralUsd = +(totalCollateral ?? '0') * +(usdRate ?? '0')
+      const totalCollateralUsd = +(totalCollateral ?? '0') * usdRates[collateralData.llamma.collateral]
       sum += totalCollateralUsd + +(totalStablecoin ?? '0')
     }
     return sum > 0 ? formatNumber(sum, { currency: 'USD', notation: 'compact' }) : '-'
-  }, [collateralDatasMapper, loansDetailsMapper, usdRatesMapper])
+  }, [collateralDatasMapper, loansDetailsMapper, usdRates])
 }
 
 export function useLoanAppStats(chainId: ChainId | undefined) {
-  const crvusdPrice = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
+  const { data: crvusdPrice } = useTokenUsdRate({ chainId, tokenAddress: CRVUSD_ADDRESS })
   const { data: dailyVolume } = useAppStatsDailyVolume({})
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
   return [

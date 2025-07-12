@@ -15,6 +15,7 @@ import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
@@ -26,7 +27,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const network = useStore((state) => state.networks.networks[networkDef.chainId])
 
@@ -50,7 +50,7 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
     () => {
       if (curveApi) {
         void fetchGasInfo(curveApi)
-        void fetchAllStoredUsdRates(curveApi)
+        void invalidateAllTokenPrices()
         void fetchPoolsVolumeTvl(curveApi)
 
         if (curveApi.signerAddress) {

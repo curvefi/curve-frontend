@@ -45,6 +45,7 @@ import type {
 import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
+import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -342,14 +343,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPoolCurrenciesReserves: async (curve, poolData) => {
-      const { usdRates } = get()
       const { ...sliceState } = get()[sliceKey]
       const { chainId } = curve
       const { pool, isWrapped, tokens, tokenAddresses } = poolData
 
-      const [balancesResp, usdRatesMapper] = await Promise.all([
+      const [balancesResp] = await Promise.all([
         curvejsApi.pool.poolBalances(pool, isWrapped),
-        usdRates.fetchUsdRateByTokens(curve, tokenAddresses, true),
+        ...tokenAddresses.map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress })),
       ])
 
       const { balances } = balancesResp
@@ -360,7 +360,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
 
       for (const idx in tokenAddresses) {
         const tokenAddress = tokenAddresses[idx]
-        const usdRate = usdRatesMapper[tokenAddress] ?? 0
+        const usdRate = getTokenUsdRateQueryData({ chainId, tokenAddress }) ?? 0
         const usdRateError = isNaN(usdRate)
         const balance = Number(balances?.[idx])
         const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0

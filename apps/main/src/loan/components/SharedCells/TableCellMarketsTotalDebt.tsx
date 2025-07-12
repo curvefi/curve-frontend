@@ -1,12 +1,12 @@
 import styled from 'styled-components'
+import { useChainId } from 'wagmi'
 import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import type { ChainId } from '@/loan/types/loan.types'
 import TextCaption from '@ui/TextCaption'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
 
 const TableCellMarketsTotalDebt = () => {
-  const chainId = useConnection().llamaApi?.chainId as ChainId
+  const chainId = useChainId() as ChainId
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
 
   const { total, minted, pegKeepersDebt, error } = crvusdTotalSupply ?? {}

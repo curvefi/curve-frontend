@@ -1,4 +1,5 @@
 import memoize from 'memoizee'
+import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum, NetworkUrlParams } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
@@ -30,7 +31,7 @@ export const defaultNetworks = Object.entries({
     ],
     swap: {
       fromAddress: '0xdac17f958d2ee523a2206206994597c13d831ec7',
-      toAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      toAddress: ethAddress,
     },
     excludePoolsMapper: {
       'weth-llamma': true,
@@ -248,7 +249,7 @@ export const defaultNetworks = Object.entries({
     },
     hideSmallPoolsTvl: 5000,
     swap: {
-      fromAddress: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+      fromAddress: ethAddress,
       toAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
     },
     createQuickList: [

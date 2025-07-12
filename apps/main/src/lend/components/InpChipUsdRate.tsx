@@ -1,7 +1,7 @@
 import { useChainId } from '@/lend/entities/chain'
-import { useTokenUsdRate } from '@/lend/entities/token'
 import InpChipUsdRateComp from '@ui/InpChipUsdRate'
 import type { InpChipUsdRateProps } from '@ui/InpChipUsdRate/InpChipUsdRate'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const InpChipUsdRate = ({
   address: tokenAddress,

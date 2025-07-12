@@ -33,6 +33,7 @@ import { formatNumber } from '@ui/utils'
 import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -55,7 +56,6 @@ const FormWithdraw = ({
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const slippage = useStore((state) => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
@@ -256,14 +256,18 @@ const FormWithdraw = ({
     seed.isSeed,
   ])
 
+  const tokenAddresses = useMemo(() => formValues.amounts.map((a) => a.tokenAddress), [formValues.amounts])
+  const { data: usdRatesRaw } = useTokenUsdRates({ chainId, tokenAddresses })
+  const usdRates = useMemo(() => usdRatesRaw ?? ({} as Record<string, number>), [usdRatesRaw])
+
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
 
-      if (foundCoinWithAmount && !isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
+      if (foundCoinWithAmount && !isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
-        const usdRate = usdRatesMapper[tokenAddress]
+        const usdRate = usdRates[tokenAddress]
         if (usdRate && !isNaN(usdRate)) {
           return (Number(usdRate) * Number(value)).toString()
         }
@@ -273,7 +277,7 @@ const FormWithdraw = ({
       let usdAmountTotal = 0
 
       amounts.forEach((a) => {
-        const usdRate = usdRatesMapper[a.tokenAddress]
+        const usdRate = usdRates[a.tokenAddress]
         if (usdRate && !isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
         }
@@ -282,7 +286,7 @@ const FormWithdraw = ({
     }
 
     return ''
-  }, [formValues, usdRatesMapper])
+  }, [formValues, usdRates])
 
   const haveSlippage = formValues.selected !== 'lpToken'
   const activeStep = haveSigner ? getActiveStep(steps) : null

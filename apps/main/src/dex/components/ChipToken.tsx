@@ -1,12 +1,12 @@
-import { useMemo, useRef } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import styled from 'styled-components'
-import useStore from '@/dex/store/useStore'
+import { useChainId } from 'wagmi'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { formatNumberUsdRate } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { copyToClipboard } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
@@ -46,14 +46,13 @@ interface ChipTokenProps extends AriaButtonProps {
 }
 
 const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }: ChipTokenProps) => {
-  const { curveApi } = useConnection()
-  const usdRate = useStore((state) => state.usdRates.usdRatesMapper[tokenAddress])
-  const fetchUsdRateByToken = useStore((state) => state.usdRates.fetchUsdRateByToken)
+  const chainId = useChainId()
+  const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
   const parsedUsdRate = formatNumberUsdRate(usdRate)
 
   const handleMouseEnter = (foundUsdRate?: string) => {
-    if (!foundUsdRate && curveApi) {
-      void fetchUsdRateByToken(curveApi, tokenAddress)
+    if (!foundUsdRate) {
+      void fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate)
     }
   }
 

@@ -9,6 +9,7 @@ import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, CollateralData, TitleKey } from '@/loan/types/loan.types'
 import { sleep } from '@/loan/utils/helpers'
+import { getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -103,7 +104,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
           collateralDatas,
           ({ llamma }) => {
             const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
-            const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
+            const collateralUsdRate = getTokenUsdRateQueryData({ chainId: rChainId, tokenAddress: llamma.collateral })
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
             return totalCollateralUsd + Number(totalStablecoin ?? 0)
           },

@@ -20,7 +20,6 @@ import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSl
 import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/dex/store/createUsdRatesSlice'
 import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
 import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 
@@ -38,7 +37,6 @@ export type State = GlobalSlice &
   UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
-  UsdRatesSlice &
   LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
@@ -60,7 +58,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createQuickSwapSlice(set, get),
   ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
-  ...createUsdRatesSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),
