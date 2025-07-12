@@ -4,7 +4,6 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
 import { log } from '@ui-kit/lib'
-import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -51,7 +50,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     await Promise.all([
       api && isNetworkSwitched && gas.fetchGasInfo(api),
       api && wallet?.provider && user.updateUserData(api, wallet),
-      invalidateAllTokenPrices(),
       gauges.getGauges(),
       gauges.getGaugesData(),
     ])
