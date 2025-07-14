@@ -10,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    min-width: 20rem;
+    min-width: calc(20rem - 15px); // 320px - 15px for scrollbar
     
     font-size: 16px;
 
