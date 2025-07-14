@@ -1,7 +1,7 @@
 import {
+  API_LOAD_TIMEOUT,
   AppPath,
   checkIsDarkMode,
-  hideDomainBanner,
   LOAD_TIMEOUT,
   oneAppPath,
   oneDesktopViewport,
@@ -31,10 +31,7 @@ describe('Header', () => {
       cy.viewport(...viewport)
       appPath = oneAppPath()
       cy.visit(`/${appPath}`, {
-        onBeforeLoad: (win) => {
-          isDarkMode = checkIsDarkMode(win)
-          hideDomainBanner(win)
-        },
+        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded(appPath)
     })
@@ -98,9 +95,7 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       appPath = oneAppPath()
-      cy.visit(`/${appPath}`, {
-        onBeforeLoad: hideDomainBanner,
-      })
+      cy.visit(`/${appPath}`)
       waitIsLoaded(appPath)
     })
 
@@ -176,7 +171,7 @@ describe('Header', () => {
       llamalend: 'data-table-head',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
-    cy.get(`[data-testid='${testId}']`, LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid='${testId}']`, API_LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {
