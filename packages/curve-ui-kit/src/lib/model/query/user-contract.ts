@@ -4,7 +4,6 @@ import { contractValidationGroup } from '@ui-kit/lib/model/query/contract-valida
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 
 export type UserContractParams = UserParams & ContractParams
-
 export type UserContractQuery = UserQuery & ContractQuery
 
 export const userContractValidationSuite = createValidationSuite((params) => {

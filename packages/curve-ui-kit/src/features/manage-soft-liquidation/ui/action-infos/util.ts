@@ -24,6 +24,7 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  * Uses abbreviateNumber and scaleSuffix for compact number formatting.
  *
  * @param tokens - Single collateral object or array of collateral objects
+ * @param decimals - Number of decimal places for formatting (default: 2)
  * @returns Formatted string combining all collateral values and symbols
  *
  * @example
@@ -38,8 +39,19 @@ export const formatValue = (x?: number, decimals: number = 2) =>
  *   { symbol: 'BTC', amount: 2500000 }
  * ])
  * // Returns: "10.5 ETH + 2.5m BTC"
+ *
+ * formatTokens({ symbol: 'ETH', amount: 10.555 }, 3)
+ * // Returns: "10.555 ETH"
  */
-export const formatTokens = (tokens: TokenAmount | TokenAmount[]) =>
+export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals: number = 2) =>
   (Array.isArray(tokens) ? tokens : [tokens])
-    .map((x) => `${abbreviateNumber(x.amount)}${scaleSuffix(x.amount)} ${x.symbol}`)
+    .map((x) => {
+      const amountAbbreviated = abbreviateNumber(x.amount)
+      const amountRounded = amountAbbreviated.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: decimals,
+      })
+
+      return `${amountRounded}${scaleSuffix(x.amount)} ${x.symbol}`
+    })
     .join(' + ')

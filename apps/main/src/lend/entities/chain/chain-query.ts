@@ -1,9 +1,7 @@
 import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { ChainParams, ChainQuery, queryFactory } from '@ui-kit/lib/model/query'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
-import { chainValidationGroup } from './validation'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
 export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } = queryFactory({
   queryKey: ({ chainId }: ChainParams) => ['chain', { chainId }, 'markets'] as const,
@@ -15,8 +13,5 @@ export const { useQuery: useOneWayMarketNames, prefetchQuery: prefetchMarkets } 
   },
   staleTime: '5m',
   refetchInterval: '1m',
-  validationSuite: createValidationSuite((params: ChainParams<ChainId>) => {
-    chainValidationGroup(params)
-    llamaApiValidationGroup(params)
-  }),
+  validationSuite: llamaApiValidationSuite,
 })

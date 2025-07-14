@@ -24,7 +24,7 @@ const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
 type ComponentSize = 'small' | 'medium' | 'large'
 
-type ActionInfoProps = {
+export type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
   /** Custom color for the label text */

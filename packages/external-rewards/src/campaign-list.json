@@ -39,12 +39,6 @@
     "campaign": "Hinkal.json"
   },
   {
-    "campaign": "Inception.json"
-  },
-  {
-    "campaign": "TurtleTotems.json"
-  },
-  {
     "campaign": "LevelMoney.json"
   },
   {
@@ -81,16 +75,7 @@
     "campaign": "Taiko.json"
   },
   {
-    "campaign": "Ditto.json"
-  },
-  {
-    "campaign": "Mevcommit.json"
-  },
-  {
     "campaign": "Sonic.json"
-  },
-  {
-    "campaign": "HumanNetwork.json"
   },
   {
     "campaign": "Rings.json"
@@ -109,12 +94,6 @@
   },
   {
     "campaign": "GoNuts.json"
-  },
-  {
-    "campaign": "Kalypso.json"
-  },
-  {
-    "campaign": "Radius.json"
   },
   {
     "campaign": "YieldNest.json"
