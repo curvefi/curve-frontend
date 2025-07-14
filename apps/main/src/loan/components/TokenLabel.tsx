@@ -46,7 +46,7 @@ const TokenLabel = ({
     >
       {showAlert && collateralAlert?.isDeprecated && (
         <TooltipIconWrapper>
-          <AlertTooltipIcon minWidth="300px" placement="start" {...collateralAlert}>
+          <AlertTooltipIcon minWidth="300px" placement="right-start" {...collateralAlert}>
             {collateralAlert.message}
           </AlertTooltipIcon>
         </TooltipIconWrapper>

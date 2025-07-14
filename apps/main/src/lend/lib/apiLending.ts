@@ -2009,7 +2009,7 @@ function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: 
   }
 
   if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidation'
+    userStatus.label = 'Hard liquidatable'
     userStatus.colorKey = 'hard_liquidation'
     userStatus.tooltip =
       'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'

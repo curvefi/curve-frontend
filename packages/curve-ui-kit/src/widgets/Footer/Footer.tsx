@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
@@ -21,11 +21,10 @@ const Llama = styled('img')({
 
 type FooterProps = {
   networkId: string
-  headerHeight: string
   appName: AppName
 }
 
-export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
+export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
   const [isBeta, setIsBeta] = useBetaFlag()
@@ -94,12 +93,7 @@ export const Footer = ({ appName, networkId, headerHeight }: FooterProps) => {
         )}
 
         {isBetaSnackbarVisible != null && (
-          <BetaSnackbar
-            open={isBetaSnackbarVisible}
-            onClose={closeBetaSnackbar}
-            headerHeight={headerHeight}
-            isBeta={isBeta}
-          />
+          <BetaSnackbar open={isBetaSnackbarVisible} onClose={closeBetaSnackbar} isBeta={isBeta} />
         )}
       </Grid>
     </Box>

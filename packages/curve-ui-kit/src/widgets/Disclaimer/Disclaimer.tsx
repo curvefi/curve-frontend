@@ -26,6 +26,16 @@ const TABS = [
   { value: 'scrvusd', label: t`Savings crvUSD` },
 ] as const
 
+type DisclaimerTab = (typeof TABS)[number]['value']
+
+const defaultTab: Record<AppName, DisclaimerTab> = {
+  dao: 'dex',
+  crvusd: 'crvusd',
+  lend: 'lend',
+  llamalend: 'lend',
+  dex: 'dex',
+}
+
 export type DisclaimerProps = {
   network: CurveNetworkId | LlamaNetworkId
   currentApp: AppName
@@ -33,7 +43,7 @@ export type DisclaimerProps = {
 
 export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
   const pathname = usePathname()
-  const tab = useSearchParams()?.get('tab') ?? (currentApp === 'dao' ? 'dex' : currentApp)
+  const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
   const tabs = useMemo(
     () => [
       ...TABS.map(({ value, ...props }) => ({

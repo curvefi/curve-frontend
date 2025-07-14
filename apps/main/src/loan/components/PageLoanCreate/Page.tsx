@@ -58,7 +58,6 @@ const Page = (params: CollateralUrlParams) => {
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const navHeight = useLayoutStore((state) => state.navHeight)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -195,7 +194,7 @@ const Page = (params: CollateralUrlParams) => {
         </PriceAndTradesExpandedContainer>
       )}
       <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight}>
+        <AppPageFormsWrapper>
           {!isMdUp && !chartExpanded && <TitleComp />}
           {rChainId && rCollateralId && (
             <LoanCreate

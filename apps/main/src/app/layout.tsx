@@ -1,9 +1,10 @@
+import Head from 'next/head'
 import { headers } from 'next/headers'
 import { type ReactNode } from 'react'
 import { ClientWrapper } from '@/app/ClientWrapper'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 import { getNetworkDefs } from '@/dex/lib/networks'
-import baseCss from '@ui/styles/base.css'
+import '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
 
@@ -31,7 +32,7 @@ async function getScheme() {
 
 const Layout = async ({ children }: { children: ReactNode }) => (
   <html style={RootCssProperties}>
-    <head>
+    <Head>
       <title>Curve.finance</title>
       <meta
         name="description"
@@ -68,8 +69,7 @@ const Layout = async ({ children }: { children: ReactNode }) => (
       <meta name="viewport" content="initial-scale=1, minimum-scale=1, width=device-width" />
       <script suppressHydrationWarning dangerouslySetInnerHTML={{ __html: injectIpfsPrefix }} />
       <script dangerouslySetInnerHTML={{ __html: injectHeader }} />
-      <style dangerouslySetInnerHTML={{ __html: baseCss }} />
-    </head>
+    </Head>
     <body>
       <StyledComponentsRegistry>
         <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>

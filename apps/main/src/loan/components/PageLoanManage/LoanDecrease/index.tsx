@@ -64,7 +64,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
-  const { userState } = userLoanDetails || {}
+  const { userState } = userLoanDetails ?? {}
 
   const updateFormValues = (updatedFormValues: FormValues) => {
     if (chainId && llamma) {
@@ -236,7 +236,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           <InputMaxBtn
             onClick={() => {
               // if wallet balance < debt, use wallet balance, else use full repay.
-              if (+userWalletBalances?.stablecoin < +userState?.debt) {
+              if (+userWalletBalances?.stablecoin < +(userState?.debt ?? 0)) {
                 handleInpChangeDebt(userWalletBalances.stablecoin)
               } else {
                 handleInpChangeFullRepay(true)
@@ -247,7 +247,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         {formValues.debtError ? (
           formValues.debtError === 'too-much' ? (
             <StyledInpChip size="xs" isDarkBg isError>
-              The specified amount exceeds your total debt. Your debt balance is {formatNumber(userState.debt)}.
+              The specified amount exceeds your total debt. Your debt balance is {formatNumber(userState?.debt ?? 0)}.
             </StyledInpChip>
           ) : formValues.debtError === 'not-enough' ? (
             <StyledInpChip size="xs" isDarkBg isError>

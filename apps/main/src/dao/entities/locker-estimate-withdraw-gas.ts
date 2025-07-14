@@ -4,9 +4,9 @@ import type { Address } from '@curvefi/prices-api'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainParams, ChainQuery, UserParams, UserQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
+import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { curvejsValidationGroup } from './validation/curvejs-validation'
 
 async function _fetchLockEstimateWithdrawGas({ chainId, userAddress }: ChainQuery<ChainId> & UserQuery) {
   const curve = requireLib('curveApi')
@@ -25,7 +25,7 @@ export const { useQuery: useLockEstimateWithdrawGas, invalidate: invalidateLockE
     ['lock-estimate-withdraw-gas', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
   queryFn: _fetchLockEstimateWithdrawGas,
   validationSuite: createValidationSuite((params: ChainParams<ChainId> & { userAddress: Address }) => {
-    curvejsValidationGroup({ chainId: params.chainId })
+    curveApiValidationGroup({ chainId: params.chainId })
     userAddressValidationGroup({ userAddress: params.userAddress })
   }),
 })

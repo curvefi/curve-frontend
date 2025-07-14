@@ -45,13 +45,17 @@ const CurrencyReservesContent = ({
 
         <Box flex flexAlignItems="center" gridGap={2}>
           <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
-          <TooltipButton onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
+          <TooltipButton clickable onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
             <Icon name="Copy" size={16} />
           </TooltipButton>
 
           {tokenLink && (
             <RouterLink href={tokenLink}>
-              <IconTooltip noWrap customIcon={<Icon name="StoragePool" size={16} />}>{t`Visit pool`}</IconTooltip>
+              <IconTooltip
+                clickable
+                noWrap
+                customIcon={<Icon name="StoragePool" size={16} />}
+              >{t`Visit pool`}</IconTooltip>
             </RouterLink>
           )}
         </Box>

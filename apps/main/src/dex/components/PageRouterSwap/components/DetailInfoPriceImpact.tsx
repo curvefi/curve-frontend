@@ -19,7 +19,7 @@ const DetailInfoPriceImpact = ({
     loadingSkeleton={[80, 23]}
     label={isHighImpact ? t`High price impact:` : t`Price impact:`}
     tooltip={
-      <IconTooltip placement="top end" minWidth="250px">
+      <IconTooltip placement="top-end" minWidth="250px">
         {t`Price change in the market that happens when a trader buys or sells an asset.`}
       </IconTooltip>
     }

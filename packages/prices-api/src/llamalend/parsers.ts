@@ -77,12 +77,27 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   discountLoan: x.loan_discount,
 })
 
-export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarkets =>
+export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
   x.markets.map((market) => ({
     name: market.market_name,
     controller: market.controller,
     snapshotFirst: toDate(market.first_snapshot),
     snapshotLast: toDate(market.last_snapshot),
+  }))
+
+export const parseAllUserLendingPositions = (x: Responses.GetAllUserLendingPositionsResponse) =>
+  fromEntries(recordEntries(x.chains).map(([chain, markets]) => [chain, parseUserLendingPositions(markets)]))
+
+export const parseUserLendingPositions = (
+  x: Pick<Responses.GetUserLendingPositionsResponse, 'markets'>,
+): Models.UserLendingPosition[] =>
+  x.markets.map((market) => ({
+    marketName: market.market_name,
+    vaultAddress: market.vault_address,
+    firstDeposit: toDate(market.first_deposit),
+    lastActivity: toDate(market.last_activity),
+    currentShares: parseFloat(market.current_shares),
+    currentSharesInGauge: parseFloat(market.current_shares_in_gauge),
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
@@ -116,6 +131,22 @@ export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsRespon
   transfersOutAssets: parseFloat(x.transfers_out_assets),
   transfersInAssets: parseFloat(x.transfers_in_assets),
   transfersOutShares: parseFloat(x.transfers_out_shares),
+  transfersSharesToGauge: parseFloat(x.transfers_shares_to_gauge),
+  transfersSharesFromGauge: parseFloat(x.transfers_shares_from_gauge),
+  transfersAssetsToGauge: parseFloat(x.transfers_assets_to_gauge),
+  transfersAssetsFromGauge: parseFloat(x.transfers_assets_from_gauge),
+  transfersSharesToConvex: parseFloat(x.transfers_shares_to_convex),
+  transfersSharesFromConvex: parseFloat(x.transfers_shares_from_convex),
+  transfersAssetsToConvex: parseFloat(x.transfers_assets_to_convex),
+  transfersAssetsFromConvex: parseFloat(x.transfers_assets_from_convex),
+  currentShares: parseFloat(x.current_shares),
+  currentSharesInGauge: parseFloat(x.current_shares_in_gauge),
+  currentSharesInConvex: parseFloat(x.current_shares_in_convex),
+  currentAssets: parseFloat(x.current_assets),
+  currentAssetsInGauge: parseFloat(x.current_assets_in_gauge),
+  currentAssetsInConvex: parseFloat(x.current_assets_in_convex),
+  totalCurrentShares: parseFloat(x.total_current_shares),
+  totalCurrentAssets: parseFloat(x.total_current_assets),
 })
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>

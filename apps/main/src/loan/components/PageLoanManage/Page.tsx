@@ -53,7 +53,6 @@ const Page = (params: CollateralUrlParams) => {
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const navHeight = useLayoutStore((state) => state.navHeight)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
@@ -169,7 +168,7 @@ const Page = (params: CollateralUrlParams) => {
         </PriceAndTradesExpandedContainer>
       )}
       <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper navHeight={navHeight}>
+        <AppPageFormsWrapper>
           {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
           {isValidRouterParams && (
             <LoanMange

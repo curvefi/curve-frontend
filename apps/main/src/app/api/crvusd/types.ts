@@ -1,8 +1,7 @@
-import type { LendingVault } from '@/loan/entities/lending-vaults'
-import type { MintMarket } from '@/loan/entities/mint-markets'
+import type { NetworkEnum } from '@/loan/types/loan.types'
+import { Market } from '@curvefi/prices-api/crvusd'
 
 export type CrvUsdServerData = {
-  lendingVaults?: LendingVault[]
-  mintMarkets?: MintMarket[]
+  mintMarkets?: Record<NetworkEnum, Market[]>
   dailyVolume?: number
 }

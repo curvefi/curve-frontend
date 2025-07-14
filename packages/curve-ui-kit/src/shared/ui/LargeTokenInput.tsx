@@ -58,7 +58,7 @@ const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps)
         },
       },
     }}
-    onBlur={onCommit}
+    onChange={onCommit}
   />
 )
 
@@ -184,6 +184,8 @@ export const LargeTokenInput = ({
 
   const handleBalanceChange = useCallback(
     (newBalance: number | undefined) => {
+      if (newBalance == null) return
+
       setBalance(newBalance)
       onBalance(newBalance)
 
@@ -239,7 +241,7 @@ export const LargeTokenInput = ({
         )}
 
         {/** Second row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="end" gap={Spacing.md}>
+        <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
             maxBalance={maxBalance?.balance}

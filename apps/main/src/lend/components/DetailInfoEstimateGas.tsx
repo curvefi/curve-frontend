@@ -67,7 +67,7 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
       }
       tooltip={
         tooltip ? (
-          <IconTooltip placement="top end" noWrap>
+          <IconTooltip placement="top-end" noWrap>
             {tooltip}
           </IconTooltip>
         ) : null

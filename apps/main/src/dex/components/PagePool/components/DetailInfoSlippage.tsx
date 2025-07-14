@@ -60,7 +60,7 @@ const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Prop
       loadingSkeleton={[50, 23]}
       variant={variant}
       label={label}
-      tooltip={tip ? <IconTooltip placement="top end">{tip}</IconTooltip> : null}
+      tooltip={tip ? <IconTooltip placement="top-end">{tip}</IconTooltip> : null}
     >
       {formatNumber(slippage, {
         style: 'percent',

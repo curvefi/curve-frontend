@@ -35,7 +35,7 @@ export const TokenPair = ({ chain, assets: { borrowed, collateral } }: Props) =>
       sx={{ position: 'absolute', bottom: '30%', right: '30%' }}
     />
 
-    <Tooltip title={chain} placement="top">
+    <Tooltip title={chain} placement="top" slotProps={{ popper: { sx: { textTransform: 'capitalize' } } }}>
       <Box sx={{ position: 'absolute', top: '0%', left: '0%' }}>
         <ChainIcon size="xs" blockchainId={chain} />
       </Box>

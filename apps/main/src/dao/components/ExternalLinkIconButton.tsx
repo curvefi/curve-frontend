@@ -12,6 +12,7 @@ type ExternalLinkIconButtonProps = {
 
 const ExternalLinkIconButton = ({ href, tooltip, children }: ExternalLinkIconButtonProps) => (
   <TooltipButton
+    clickable
     noWrap
     tooltip={tooltip}
     customIcon={

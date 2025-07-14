@@ -1,8 +1,6 @@
 import { Chain } from 'curve-ui-kit/src/utils'
-import sortBy from 'lodash/sortBy'
 import { ChainId, NetworkConfig, NetworkEnum } from '@/lend/types/lend.types'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils'
-import { ChainOption } from '@ui-kit/features/switch-chain'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const DEFAULT_NETWORK_CONFIG = {
@@ -59,7 +57,7 @@ const networksConfig = {
   [Chain.Mantle]: {},
 }
 
-export const { networks, networksIdMapper, selectNetworkList } = Object.entries(networksConfig).reduce(
+export const { networks, networksIdMapper } = Object.entries(networksConfig).reduce(
   (mapper, [key, config]) => {
     const chainId = Number(key) as ChainId
 
@@ -72,26 +70,12 @@ export const { networks, networksIdMapper, selectNetworkList } = Object.entries(
 
     mapper.networks[chainId] = networkConfig
     mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
-
-    if (networkConfig.showInSelectNetwork) {
-      mapper.selectNetworkList.push({
-        label: networkConfig.name,
-        chainId,
-        networkId: networkConfig.networkId,
-        src: networkConfig.logoSrc,
-        srcDark: networkConfig.logoSrcDark,
-        isTestnet: networkConfig.isTestnet,
-      })
-    }
     return mapper
   },
   {
     networks: {} as Record<ChainId, NetworkConfig>,
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
-    selectNetworkList: [] as ChainOption<ChainId>[],
   },
 )
-
-export const visibleNetworksList: ChainOption<ChainId>[] = sortBy(selectNetworkList, (n) => n.label)
 
 export default networks

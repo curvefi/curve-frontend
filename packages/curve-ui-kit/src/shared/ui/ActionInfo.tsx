@@ -2,13 +2,13 @@ import type { ReactNode } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
-import { Stack, Tooltip } from '@mui/material'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
-import Typography from '@mui/material/Typography'
+import Stack from '@mui/material/Stack'
+import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
@@ -16,6 +16,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard, type SxProps } from '@ui-kit/utils'
+import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -23,15 +24,15 @@ const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
 type ComponentSize = 'small' | 'medium' | 'large'
 
-type ActionInfoProps = {
+export type ActionInfoProps = {
   /** Label displayed on the left side */
   label: string
   /** Custom color for the label text */
-  labelColor?: React.ComponentProps<typeof Typography>['color']
+  labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
   value: string
   /** Custom color for the value text */
-  valueColor?: React.ComponentProps<typeof Typography>['color']
+  valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
   valueLeft?: ReactNode
   /** Optional content to display to the right of the value */
@@ -41,7 +42,7 @@ type ActionInfoProps = {
   /** Previous value (if needed for comparison) */
   prevValue?: string
   /** Custom color for the previous value text */
-  prevValueColor?: React.ComponentProps<typeof Typography>['color']
+  prevValueColor?: TypographyProps['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
   /** Whether or not the value can be copied */
@@ -120,31 +121,20 @@ const ActionInfo = ({
           />
         )}
 
-        {/** Additional stack to add some space between left (icon), value and right (icon) */}
-        <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
-          {valueLeft}
+        <Tooltip title={valueTooltip} placement="top">
+          {/** Additional stack to add some space between left (icon), value and right (icon) */}
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+            {valueLeft}
 
-          <WithSkeleton loading={!!loading}>
-            <Tooltip
-              title={valueTooltip}
-              placement="top"
-              slotProps={{
-                popper: {
-                  sx: {
-                    userSelect: 'none',
-                    pointerEvents: 'none',
-                  },
-                },
-              }}
-            >
+            <WithSkeleton loading={!!loading}>
               <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
                 {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
               </Typography>
-            </Tooltip>
-          </WithSkeleton>
+            </WithSkeleton>
 
-          {valueRight}
-        </Stack>
+            {valueRight}
+          </Stack>
+        </Tooltip>
 
         {copy && (
           <IconButton size="small" onClick={copyValue} color="primary">

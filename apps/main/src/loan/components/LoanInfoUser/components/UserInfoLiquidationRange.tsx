@@ -10,7 +10,7 @@ const UserInfoLiquidationRange = ({
   llammaId: string
   type: 'liquidationRange' | 'liquidationBandRange'
 }) => {
-  const { userPrices, userBands } = useUserLoanDetails(llammaId)
+  const { userPrices, userBands } = useUserLoanDetails(llammaId) ?? {}
 
   const liqPriceRange = useMemo(() => {
     const [price1, price2] = userPrices ?? []

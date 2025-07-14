@@ -1,7 +1,7 @@
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
+import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { Chain } from '@ui-kit/utils'
 

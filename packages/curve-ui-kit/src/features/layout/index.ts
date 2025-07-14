@@ -1,4 +1,3 @@
 export { useLayoutStore } from './store'
-export type { LayoutHeight, PageWidthClassName } from './types'
+export type { PageWidthClassName } from './types'
 export { getPageWidthClassName } from './utils'
-export { layoutHeightKeys } from './types'

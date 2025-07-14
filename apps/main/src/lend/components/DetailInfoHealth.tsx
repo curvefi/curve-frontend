@@ -131,11 +131,11 @@ const DetailInfoHealth = ({
       loadingSkeleton={[85, 20]}
       label={t`Health:`}
       tooltip={
-        <IconTooltip placement="top end" textAlign="left" minWidth="250px">
+        <IconTooltip clickable placement="top-end" textAlign="left" minWidth="250px">
           <Box grid gridGap={2}>
             <p>{t`The loan metric indicates the current health of your position.`}</p>
             <p>
-              {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+              {t`Hard liquidation may be triggered when health is 0 or below.`}{' '}
               <ExternalLink href="https://resources.curve.finance/lending/overview/#health-hard-liquidation" $noStyles>
                 Click here to learn more.
               </ExternalLink>

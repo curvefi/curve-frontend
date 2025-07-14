@@ -8,7 +8,7 @@ type Props = {
 }
 
 const Settings = ({ showScrollButton }: Props) => {
-  const scrollY = useLayoutStore((state) => state.scrollY)
+  const isShowScrollButton = useLayoutStore((state) => state.showScrollButton)
 
   const handleScrollTopClick = () => {
     window.scroll({
@@ -21,8 +21,8 @@ const Settings = ({ showScrollButton }: Props) => {
   return (
     <Wrapper>
       <StyledScrollUpButton
-        className={showScrollButton && scrollY > 30 ? 'pop-in' : ''}
-        $show={showScrollButton ? scrollY > 30 : false}
+        className={showScrollButton && isShowScrollButton ? 'pop-in' : ''}
+        $show={showScrollButton ? isShowScrollButton : false}
         variant="icon-filled"
         onClick={handleScrollTopClick}
       >

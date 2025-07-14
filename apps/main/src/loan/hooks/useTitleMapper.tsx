@@ -25,14 +25,14 @@ const useTitleMapper = (): TitleMapper => ({
       <Box grid gridGap={2}>
         <p>{t`The loan metric indicates the current health of your position.`}</p>
         <p>
-          {t`Hard liquidation is triggered when health is 0 or below.`}{' '}
+          {t`Hard liquidation may be triggered when health is 0 or below.`}{' '}
           <ExternalLink href="https://resources.curve.finance/crvusd/loan-concepts/#hard-liquidations" $noStyles>
             Click here to learn more.
           </ExternalLink>
         </p>
       </Box>
     ),
-    tooltipProps: { minWidth: '250px' },
+    tooltipProps: { minWidth: '250px', clickable: true },
   },
   healthPercent: { title: t`Health %` },
   liquidationRange: { title: t`Liquidation range` },
