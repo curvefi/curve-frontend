@@ -30,7 +30,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
   } = market
-  const { rate, averageRate, period } = useSnapshots(market, rateType)
+  const { averageRate, period } = useSnapshots(market, rateType)
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
   const extraIncentives = useMarketExtraIncentives(rateType, rates)
 
