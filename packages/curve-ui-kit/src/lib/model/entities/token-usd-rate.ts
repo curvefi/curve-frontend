@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useQueries } from '@tanstack/react-query'
 import { getLib, requireLib } from '@ui-kit/features/connect-wallet'
-import { useQueryMapping } from '@ui-kit/lib'
+import { combineQueriesToObject } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api'
 import {
   extractTokenAddress,
@@ -30,10 +31,11 @@ export const {
 
 export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
-  return useQueryMapping(
-    uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    uniqueAddresses,
-  )
+
+  return useQueries({
+    queries: uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    combine: (results) => combineQueriesToObject(results, uniqueAddresses),
+  })
 }
 
 /** Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element */
