@@ -27,7 +27,7 @@ describe('Disclaimers', () => {
       cy.get(`[data-testid='disclaimer']`, LOAD_TIMEOUT).should('be.visible')
 
       const tabSelector = "[data-testid='disclaimer'] [role='tablist'] [role='tab']"
-      cy.get(tabSelector).should('have.length.at.least', 4)
+      cy.get(tabSelector).should('have.length', 4)
 
       // scrvusd tab should not be open. Find it, click it, and its contents should have a link to the scrvusd docs.
       cy.get('div[role="tabpanel"] a')

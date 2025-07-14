@@ -16,7 +16,7 @@ const expectedMobileNavHeight = 56
 const expectedConnectHeight = 40
 
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
-const expectedFooterMinWidth = 288
+const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
 describe('Header', () => {
