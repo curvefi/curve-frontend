@@ -12,7 +12,6 @@ import {
   CollateralDataCache,
   CollateralDataCacheMapper,
 } from '@/loan/types/loan.types'
-import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -64,11 +63,6 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       const collateralDatas = Object.entries(collateralDatasMapper).map(([_, v]) => v)
       get()[sliceKey].setStateByActiveKey('collateralDatas', chainId.toString(), collateralDatas)
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
-
-      // fetch collaterals USD rates. TODO: better combination of multiple queries?
-      for (const collateralAddress of collateralAddresses) {
-        void fetchTokenUsdRate({ chainId, tokenAddress: collateralAddress })
-      }
 
       // add to cache
       void get().storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)
