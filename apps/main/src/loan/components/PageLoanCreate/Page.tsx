@@ -41,15 +41,14 @@ const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const { push } = useRouter()
   const { connectState, llamaApi: curve = null } = useConnection()
-  const pageLoaded = !isLoading(connectState)
   const rChainId = useChainId(params)
   const titleMapper = useTitleMapper()
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
-  const { llamma, displayName } =
-    useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
-  const llammaId = llamma?.id ?? ''
+  const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
+  const pageLoaded = !isLoading(connectState)
+  const { llamma, llamma: { id: llammaId = '' } = {}, displayName } = collateralDatasMapper?.[rCollateralId] ?? {}
 
   const formValues = useStore((state) => state.loanCreate.formValues)
   const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
@@ -65,7 +64,7 @@ const Page = (params: CollateralUrlParams) => {
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
-  const isReady = !!llamma
+  const isReady = !!collateralDatasMapper
   const isValidRouterParams = !!rChainId && !!rCollateralId
   const isLeverage = rFormType === 'leverage'
 
@@ -100,13 +99,14 @@ const Page = (params: CollateralUrlParams) => {
           fetchInitial(curve, isLeverage, llamma)
           void fetchLoanDetails(curve, llamma)
           setLoaded(true)
-        } else {
-          console.warn(`Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`)
+        } else if (collateralDatasMapper) {
+          console.warn(
+            `Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`,
+            collateralDatasMapper,
+          )
           push(getCollateralListPathname(params))
         }
       }
-    } else {
-      setLoaded(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageLoaded && curve && llamma])

@@ -1,6 +1,6 @@
 import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
 import { oneToken } from '@/support/helpers/tokens'
-import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
+import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
 import { fromEntries } from '../../../../packages/prices-api/src/objects.util'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
@@ -54,8 +54,8 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
     borrowed_balance: borrowedBalance,
     collateral_balance_usd: collateralBalance * collateralPrice,
     borrowed_balance_usd: borrowedBalance * borrowedPrice,
-    collateral_token: { symbol: collateral.symbol, address: collateral.address },
-    borrowed_token: { symbol: borrowed.symbol, address: borrowed.address },
+    collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
+    borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
   }
 }
 
@@ -97,9 +97,9 @@ export const createLendingVaultChainsResponse = (): Record<Chain, GetMarketsResp
   fromEntries(LendingChains.map((chain) => [chain, oneLendingVaultResponse(chain)]))
 
 export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets?fetch_on_chain=false', { body: { chains } })
+  cy.intercept('https://prices.curve.finance/v1/lending/markets?fetch_on_chain=true', { body: { chains } })
 
 export const mockLendingSnapshots = () =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=false', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=true', {
     fixture: 'lending-snapshots.json',
   })

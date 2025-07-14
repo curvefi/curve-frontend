@@ -1,4 +1,4 @@
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import ActionInfo, { type ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
 import type { Delta, TextColor } from './types'
 import { formatValue } from './util'
 
@@ -17,7 +17,7 @@ const newHealthColor = ({ current, next }: Props): TextColor =>
 /** Health color when not changing it */
 const healthColor = (current: number): TextColor => (current <= 5 ? 'error' : current <= 15 ? 'warning' : 'success')
 
-export type Props = Delta
+export type Props = Delta & Partial<ActionInfoProps>
 
 /**
  * Health display logic for the accordion title.
@@ -30,7 +30,7 @@ export type Props = Delta
  * A decrease from 150% to 140% shows as red (worse) even though 140% is still healthy.
  * This is subject to change if it turns out to be bad UX.
  */
-export const Health = ({ current, next }: Props) => (
+export const Health = ({ current, next, ...actionInfoProps }: Props) => (
   <ActionInfo
     label="Health"
     value={`${formatValue(next ?? current)}%`}
@@ -40,5 +40,6 @@ export const Health = ({ current, next }: Props) => (
       prevValueColor: 'textTertiary',
     })}
     sx={{ flexGrow: 1 }}
+    {...actionInfoProps}
   />
 )
