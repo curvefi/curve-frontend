@@ -1,11 +1,11 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
-import { useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
+import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
 
 type UseLoanPositionDetailsProps = {

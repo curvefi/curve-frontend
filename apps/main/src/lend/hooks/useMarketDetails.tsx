@@ -1,41 +1,15 @@
-import meanBy from 'lodash/meanBy'
-import { useMemo } from 'react'
-import { CRVUSD_ADDRESS } from '@/loan/constants'
-import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
-import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { Address } from '@curvefi/prices-api'
-import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { useStore } from '@/lend/store/useStore'
+import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { MarketDetailsProps } from '@ui-kit/shared/ui/MarketDetails'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
-  llamma: Llamma | null | undefined
+  llamma: OneWayMarketTemplate | null | undefined
   llammaId: string
 }
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
-  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
-  const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
-    blockchainId: networks[chainId as keyof typeof networks]?.id,
-    contractAddress: llamma?.controller as Address,
-  })
-
-  const thirtyDayAvgBorrowAPR = useMemo(() => {
-    if (!crvUsdSnapshots) return null
-
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
-
-    if (recentSnapshots.length === 0) return null
-
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
-  }, [crvUsdSnapshots])
 
   return {
     collateral: {

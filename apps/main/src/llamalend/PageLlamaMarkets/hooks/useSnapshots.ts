@@ -1,8 +1,8 @@
 import { meanBy } from 'lodash'
 import { useMemo } from 'react'
-import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@/llamalend/entities/crvusd-snapshots'
-import { LendingSnapshot, useLendingSnapshots } from '@/llamalend/entities/lending-snapshots'
 import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
+import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 
 export type RateType = 'borrow' | 'lend'
 
