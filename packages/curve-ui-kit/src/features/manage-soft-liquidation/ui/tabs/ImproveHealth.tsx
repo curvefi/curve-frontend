@@ -7,6 +7,7 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Token } from '../../types'
+import { AlertRepayBalanceTooHigh } from '../alerts/AlertRepayBalanceTooHigh'
 import { AlertRepayDebtToIncreaseHealth } from '../alerts/AlertRepayDebtToIncreaseHealth'
 import { ButtonGetCrvUsd } from '../ButtonGetCrvUsd'
 
@@ -68,6 +69,9 @@ export const ImproveHealth = ({
     [debtToken, userBalance],
   )
 
+  const repayBalanceTooHigh = debtToken && debtBalance > (maxBalance.balance ?? 0)
+  const cantRepay = !debtToken || debtBalance === 0 || debtBalance > (userBalance ?? 0) || repayBalanceTooHigh
+
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
@@ -95,13 +99,22 @@ export const ImproveHealth = ({
 
       <AlertRepayDebtToIncreaseHealth />
 
+      {repayBalanceTooHigh && (
+        <AlertRepayBalanceTooHigh
+          symbol={debtToken.symbol}
+          input={debtBalance}
+          userBalance={userBalance}
+          debt={debtToken?.amount}
+        />
+      )}
+
       <Stack gap={Spacing.xs}>
         <ButtonMenu
           primary={status === 'idle' ? t`Repay debt & increase health` : t`Repaying debt`}
           options={BUTTON_OPTIONS}
           open={isOpen}
           executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
-          disabled={!debtToken || debtBalance === 0 || debtBalance > (userBalance ?? 0)}
+          disabled={cantRepay}
           onPrimary={() => onRepay(debtToken!, debtBalance)}
           onOption={(id) => {
             close()
