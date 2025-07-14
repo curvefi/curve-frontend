@@ -52,13 +52,13 @@ export const TabsSwitcher = <T extends string | number>({
     className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
     {...props}
   >
-    {options.map(({ value, label, sx, ...props }) => (
+    {options.map(({ value, label, sx, href, ...props }) => (
       <Tab
         key={value}
         value={value}
-        component={Link}
         label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
         sx={{ ...sx, whiteSpace: 'nowrap' }}
+        {...(href && { href, component: Link })}
         {...props}
       />
     ))}

@@ -1,5 +1,3 @@
-/// <reference types="vite-plugin-svgr/client" />
-
 // LOGO
 export { default as LogoImg } from './curve-logo.png'
 export { default as RCLogoSM } from './curve-logo-sm.svg?react'

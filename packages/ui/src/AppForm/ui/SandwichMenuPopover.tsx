@@ -22,8 +22,8 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
 
   const state = useSelectState<SandwichMenuItem>({
     isOpen: true,
-    onSelectionChange: (key: Key) => {
-      onItemClick(key.toString())
+    onSelectionChange: (key: Key | null) => {
+      onItemClick(key!.toString())
     },
     items: menuItems,
     children: (item) => <StyledItem key={item.id}>{item.name}</StyledItem>,
@@ -35,8 +35,8 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
       label: 'Pool Management',
       items: menuItems,
       children: ({ id, name }: SandwichMenuItem) => <StyledItem key={id}>{name}</StyledItem>,
-      onSelectionChange: (key: Key) => {
-        onItemClick(key.toString())
+      onSelectionChange: (key: Key | null) => {
+        onItemClick(key!.toString())
         onClose()
       },
     },
