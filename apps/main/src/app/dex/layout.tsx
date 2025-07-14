@@ -15,7 +15,6 @@ import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
@@ -50,7 +49,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
     () => {
       if (curveApi) {
         void fetchGasInfo(curveApi)
-        void invalidateAllTokenPrices()
         void fetchPoolsVolumeTvl(curveApi)
 
         if (curveApi.signerAddress) {

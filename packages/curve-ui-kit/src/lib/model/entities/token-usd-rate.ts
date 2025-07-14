@@ -42,8 +42,6 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
 const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
   queryKey?.at(-1) === QUERY_KEY_IDENTIFIER
 
-export const invalidateAllTokenPrices = () => queryClient.invalidateQueries({ predicate: isTokenUsdRateQuery })
-
 /** Retrieves all cached values and returns them as a record */
 const getAllTokenUsdRates = (): Record<string, number> =>
   Object.fromEntries(

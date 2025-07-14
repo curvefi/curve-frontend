@@ -15,7 +15,6 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { logSuccess } from '@ui-kit/lib'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export function useInjectServerData(serverData: CrvUsdServerData) {
   useEffect(() => {
@@ -39,7 +38,6 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        void invalidateAllTokenPrices()
         void fetchGasInfo(curve)
       }
     },

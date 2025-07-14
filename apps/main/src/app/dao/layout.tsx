@@ -10,14 +10,13 @@ import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { invalidateAllTokenPrices } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const useAutoRefresh = (isHydrated: boolean) => {
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
   usePageVisibleInterval(
-    () => Promise.all([invalidateAllTokenPrices(), getGauges(), getGaugesData()]),
+    () => Promise.all([getGauges(), getGaugesData()]),
     REFRESH_INTERVAL['5m'],
     isPageVisible && isHydrated,
   )
