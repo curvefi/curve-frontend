@@ -39,9 +39,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       </Stack>
       <Stack>
         <TooltipItems secondary>
-          <TooltipItem title={t`Lending fees`}>
-            {formatPercent(lendApr)}
-          </TooltipItem>
+          <TooltipItem title={t`Lending fees`}>{formatPercent(lendApr)}</TooltipItem>
           {!!borrowed.rebasingYield && (
             <TooltipItem subitem title={borrowed.symbol}>
               {formatPercent(borrowed.rebasingYield)}
@@ -50,7 +48,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
           <RewardsTooltipItems title={t`Staking incentives`} {...{ poolRewards, extraIncentives }} />
         </TooltipItems>
         <TooltipItems>
-          <TooltipItem primary title={`${t`Total base APR`}`}>
+          <TooltipItem primary title={`${t`Total APR`}`}>
             {formatPercent(lend)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
@@ -66,7 +64,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         )}
         {lendCrvAprBoosted ? (
           <TooltipItems>
-            <TooltipItem primary title={`${t`Total max veCRV APR`}`}>
+            <TooltipItem primary title={`${t`Total max boosted APR`}`}>
               {formatPercent((lendApr ?? 0) + lendCrvAprBoosted)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>

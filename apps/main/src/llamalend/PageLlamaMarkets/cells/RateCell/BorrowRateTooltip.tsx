@@ -40,9 +40,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       <Stack>
         {(poolRewards.length > 0 || extraIncentives.length > 0 || !!rebasingYield) && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Borrow Rate`}>
-              {formatPercent(borrowRate)}
-            </TooltipItem>
+            <TooltipItem title={t`Borrow Rate`}>{formatPercent(borrowRate)}</TooltipItem>
             <RewardsTooltipItems title={t`Borrowing incentives`} {...{ poolRewards, extraIncentives }} />
             {!!rebasingYield && (
               <TooltipItem subitem title={collateralSymbol}>
