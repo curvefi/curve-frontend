@@ -71,8 +71,6 @@ export const MarketDetails = ({
       ? `${formatLiquidity(availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
       : undefined
 
-  console.info('utilizationBreakdown', utilizationBreakdown)
-
   return (
     <Box>
       <CardHeader title={t`Market Details`} />

@@ -1,7 +1,7 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
+import { useCrvUsdSnapshots } from '@/llamalend/entities/crvusd-snapshots'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
-import { useCrvUsdSnapshots } from '@/loan/entities/crvusd-snapshots'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
