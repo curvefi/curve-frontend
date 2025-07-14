@@ -13,7 +13,6 @@ import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
-  hideDomainBanner,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
@@ -39,10 +38,7 @@ describe(`LlamaLend Markets`, () => {
     cy.viewport(width, height)
     cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
     cy.visit('/llamalend/ethereum/markets/', {
-      onBeforeLoad: (window) => {
-        window.localStorage.clear()
-        hideDomainBanner(window)
-      },
+      onBeforeLoad: (window) => window.localStorage.clear(),
       ...LOAD_TIMEOUT,
     })
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')

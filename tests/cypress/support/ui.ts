@@ -37,16 +37,10 @@ export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd'
 export type AppPath = ReturnType<typeof oneAppPath>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }
+export const API_LOAD_TIMEOUT = { timeout: 60000 }
 
 // scrollbar in px for the test browser. Firefox behaves when headless.
 export const SCROLL_WIDTH = Cypress.browser.name === 'firefox' ? (Cypress.browser.isHeadless ? 12 : 0) : 15
 
 // tests that are flaky in CI, hard to reproduce. Please try to avoid using this.
 export const RETRY_IN_CI = { retries: { openMode: 0, runMode: 5 } }
-
-export function hideDomainBanner(win: Cypress.AUTWindow) {
-  // avoid the domain banner, this may be deleted after the date below
-  if (new Date() < new Date('2025-06-01')) {
-    win.localStorage.setItem('isNewDomainNotificationSeen', 'true')
-  }
-}
