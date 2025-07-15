@@ -18,7 +18,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
+import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
@@ -65,24 +65,25 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
+    const index = 1 // there is one mint market with always 100%, we test the generated lend market with 99.99%
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="data-table-cell-liquidityUsd"]`).first().contains('$')
       cy.get('[data-testid="select-filter-sort"]').click()
       cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
       cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get(`[data-testid^="data-table-row"]`)
-        .first()
+        .eq(index)
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="metric-utilizationPercent"]').eq(index).contains('99.99%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').eq(index).contains('99.99%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').eq(index).contains('0.00%', LOAD_TIMEOUT)
     }
   })
 
