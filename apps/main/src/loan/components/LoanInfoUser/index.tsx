@@ -18,7 +18,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { PositionDetails } from '@ui-kit/shared/ui/PositionDetails'
+import { BorrowPositionDetails } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId
@@ -37,7 +37,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
   const positionDetailsProps = useLoanPositionDetails({
-    rChainId,
+    chainId: rChainId,
     llamma,
     llammaId,
     health: healthMode.percent,
@@ -64,7 +64,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   return (
     <Wrapper>
-      {isBeta && <PositionDetails {...positionDetailsProps} />}
+      {isBeta && <BorrowPositionDetails {...positionDetailsProps} />}
       {!isBeta && (
         <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
           <UserInfos

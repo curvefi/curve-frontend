@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import { BandRange, LiquidationRange } from '@ui-kit/shared/ui/PositionDetails'
+import { BandRange, LiquidationRange } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -13,7 +13,7 @@ type LiquidityThresholdTooltipProps = {
 
 export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: LiquidityThresholdTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
-    <Typography variant="bodySRegular">{t`The price at which your position enters liquidation protechtion and your collateral starts to be eroded.`}</Typography>
+    <Typography variant="bodySRegular">{t`The price at which your position enters liquidation protection and your collateral starts to be eroded.`}</Typography>
 
     <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
       <Typography variant="bodySBold">{t`Breakdown`}</Typography>

@@ -10,7 +10,7 @@ import type {
   TotalDebt,
   LiquidationRange,
   BandRange,
-} from '@ui-kit/shared/ui/PositionDetails'
+} from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
 import { LiquidityThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiquidityThresholdMetricTooltip'
 import { PnlMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/PnlMetricTooltip'

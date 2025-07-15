@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import type { Health } from '@ui-kit/shared/ui/PositionDetails'
+import type { Health } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 import { HealthBar } from '@ui-kit/shared/ui/PositionDetails/HealthBar'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

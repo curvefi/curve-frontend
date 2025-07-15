@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import { Pnl } from '@ui-kit/shared/ui/PositionDetails'
+import { Pnl } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

@@ -44,7 +44,7 @@ export type CollateralValue = {
 export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
-export type PositionDetailsProps = {
+export type BorrowPositionDetailsProps = {
   isSoftLiquidation: boolean
   health: Health
   borrowAPR: BorrowAPR
@@ -57,7 +57,7 @@ export type PositionDetailsProps = {
   totalDebt: TotalDebt
 }
 
-export const PositionDetails = ({
+export const BorrowPositionDetails = ({
   isSoftLiquidation,
   health,
   borrowAPR,
@@ -68,7 +68,7 @@ export const PositionDetails = ({
   collateralValue,
   ltv,
   totalDebt,
-}: PositionDetailsProps) => (
+}: BorrowPositionDetailsProps) => (
   <Box>
     <CardHeader title={t`Your Position Details`} />
     {isSoftLiquidation && (

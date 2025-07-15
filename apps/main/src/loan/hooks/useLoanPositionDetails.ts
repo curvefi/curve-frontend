@@ -6,21 +6,21 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
+import { BorrowPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 type UseLoanPositionDetailsProps = {
-  rChainId: ChainId
+  chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
   health: string | undefined
 }
 
 export const useLoanPositionDetails = ({
-  rChainId,
+  chainId,
   llamma,
   llammaId,
   health,
-}: UseLoanPositionDetailsProps): PositionDetailsProps => {
+}: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const usdRatesLoading = useStore((state) => state.usdRates.loading)
@@ -28,7 +28,7 @@ export const useLoanPositionDetails = ({
   const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
 
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
-    blockchainId: networks[rChainId as keyof typeof networks].id,
+    blockchainId: networks[chainId as keyof typeof networks].id,
     contractAddress: llamma?.controller as Address,
   })
 

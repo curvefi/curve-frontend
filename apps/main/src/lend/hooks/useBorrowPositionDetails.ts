@@ -7,40 +7,40 @@ import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { PositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails'
+import { BorrowPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
-type UsePositionDetailsProps = {
-  rChainId: ChainId
+type UseBorrowPositionDetailsProps = {
+  chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
   marketId: string
   userActiveKey: string
 }
 
-export const usePositionDetails = ({
-  rChainId,
+export const useBorrowPositionDetails = ({
+  chainId,
   market,
   marketId,
   userActiveKey,
-}: UsePositionDetailsProps): PositionDetailsProps => {
+}: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
   const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
   const isFetchingAll = useStore((state) => state.markets.isFetchingAll)
-  const marketRate = useStore((state) => state.markets.ratesMapper[rChainId]?.[marketId])
-  const prices = useStore((state) => state.markets.pricesMapper[rChainId]?.[marketId])
+  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
+  const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
-  const { data: onchainData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({ chainId: rChainId, marketId })
+  const { data: onchainData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({ chainId: chainId, marketId })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: rChainId,
+    chainId: chainId,
     tokenAddress: market?.addresses?.collateral_token,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: rChainId,
+    chainId: chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
 
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
 
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
-    blockchainId: networks[rChainId].id as Chain,
+    blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
   })
 

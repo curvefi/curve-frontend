@@ -16,6 +16,7 @@ import CellLoanState from '@/lend/components/SharedCellData/CellLoanState'
 import CellLoss from '@/lend/components/SharedCellData/CellLoss'
 import CellUserMain from '@/lend/components/SharedCellData/CellUserMain'
 import { TITLE } from '@/lend/constants'
+import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useUserLoanStatus } from '@/lend/hooks/useUserLoanDetails'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -26,13 +27,19 @@ import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { breakpoints } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
-import { PositionDetailsWrapper } from './PositionDetailsWrapper'
+import { BorrowPositionDetails } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 const DetailsUserLoan = (pageProps: PageContentProps) => {
   const { rChainId, rOwmId, api, market, titleMapper, userActiveKey } = pageProps
 
   const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const borrowPositionDetailsProps = useBorrowPositionDetails({
+    chainId: rChainId,
+    market,
+    marketId: rOwmId,
+    userActiveKey,
+  })
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isSoftLiquidation = useUserLoanStatus(userActiveKey) === 'soft_liquidation'
@@ -92,14 +99,7 @@ const DetailsUserLoan = (pageProps: PageContentProps) => {
             </AlertContent>
           )}
 
-          {isBeta && (
-            <PositionDetailsWrapper
-              rChainId={rChainId}
-              market={market}
-              marketId={rOwmId}
-              userActiveKey={userActiveKey}
-            />
-          )}
+          {isBeta && <BorrowPositionDetails {...borrowPositionDetailsProps} />}
 
           {!isBeta && (
             <ContentWrapper paddingTop isBorderBottom>
