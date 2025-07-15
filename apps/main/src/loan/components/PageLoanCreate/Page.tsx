@@ -74,7 +74,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const [isBeta] = useBetaFlag()
   const marketDetailsProps = useMarketDetails({
-    rChainId,
+    chainId: rChainId,
     llamma,
     llammaId,
   })

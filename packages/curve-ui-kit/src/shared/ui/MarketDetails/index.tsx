@@ -17,9 +17,11 @@ type Collateral = {
   loading: boolean
 }
 type BorrowToken = {
+  total?: number | undefined | null
+  totalUsdValue?: number | undefined | null
   symbol: string | undefined | null
-  usdRate: number | undefined | null
   tokenAddress: string | undefined | null
+  usdRate: number | undefined | null
   loading: boolean
 }
 type BorrowAPR = {
@@ -70,8 +72,6 @@ export const MarketDetails = ({
     availableLiquidity?.value && availableLiquidity.max
       ? `${formatLiquidity(availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
       : undefined
-
-  console.info('utilizationBreakdown', utilizationBreakdown)
 
   return (
     <Box>

@@ -6,13 +6,11 @@ import DetailsInfo from '@/loan/components/LoanInfoLlamma/components/DetailsInfo
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useStore from '@/loan/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { MarketDetails } from '@ui-kit/shared/ui/MarketDetails'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId' | 'titleMapper'> {
   className?: string
@@ -23,11 +21,6 @@ const LoanInfoLlamma = (props: Props) => {
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const [isBeta] = useBetaFlag()
-  const marketDetailsProps = useMarketDetails({
-    rChainId,
-    llamma,
-    llammaId,
-  })
 
   return (
     <Wrapper>
@@ -36,7 +29,6 @@ const LoanInfoLlamma = (props: Props) => {
           <DetailsInfo {...props} collateralId={llammaId} />
         </div>
       )}
-      {isBeta && <MarketDetails {...marketDetailsProps} />}
 
       {!chartExpanded && (
         <div className={isAdvancedMode ? 'wrapper' : ''}>
