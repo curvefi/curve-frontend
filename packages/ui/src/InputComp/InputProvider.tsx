@@ -1,6 +1,6 @@
 import type { Dispatch, ReactNode, SetStateAction } from 'react'
 import { createContext, useContext, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
 import type { BoxProps } from 'ui/src/Box/types'
 import { focusVisible } from 'ui/src/utils/sharedStyles'

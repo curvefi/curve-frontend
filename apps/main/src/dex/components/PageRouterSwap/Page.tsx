@@ -1,7 +1,6 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
 import { useChainId } from '@/dex/hooks/useChainId'
@@ -16,11 +15,12 @@ import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 export const PageRouterSwap = (props: NetworkUrlParams) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const searchParams = useSearchParams()
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()

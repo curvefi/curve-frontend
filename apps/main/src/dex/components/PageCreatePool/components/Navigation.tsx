@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'
 import { checkFormReady } from '@/dex/components/PageCreatePool/utils'
 import useStore from '@/dex/store/useStore'

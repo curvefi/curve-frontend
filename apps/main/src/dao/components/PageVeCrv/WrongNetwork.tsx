@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'

@@ -1,5 +1,5 @@
 'use client'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Gauges from '@/dao/components/PageGauges/index'
 import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'

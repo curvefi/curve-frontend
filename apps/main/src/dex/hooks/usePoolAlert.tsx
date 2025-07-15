@@ -1,6 +1,5 @@
-import { useParams } from 'next/navigation'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolAlertCustomMessage from '@/dex/components/PoolAlertCustomMessage'
 import { ROUTE } from '@/dex/constants'
 import { PoolAlert, PoolData, PoolDataCache, type UrlParams } from '@/dex/types/main.types'
@@ -9,6 +8,7 @@ import Box from '@ui/Box'
 import { RCCrossCurve } from '@ui/images'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { breakpoints } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 import { shortenAddress } from '@ui-kit/utils'
 
 /**

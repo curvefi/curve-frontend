@@ -1,6 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignRewardsBanner from '@/dex/components/PagePool/components/CampaignRewardsBanner'
 import Deposit from '@/dex/components/PagePool/Deposit'
 import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper'
@@ -44,6 +43,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -64,7 +64,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
   const { rChainId, rFormType, rPoolId } = routerParams
   const { signerAddress } = curve ?? {}
-  const { push } = useRouter()
+  const push = useNavigate()
   const poolAlert = usePoolAlert(poolData)
 
   const { tokensMapper } = useTokensMapper(rChainId)
@@ -100,7 +100,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const poolInfoTabs = useMemo<PoolInfoTab[]>(() => {
     const tabs: PoolInfoTab[] = [{ label: t`Pool Details`, key: 'pool' }]
 
-    if (!!signerAddress) {
+    if (signerAddress) {
       tabs.push({ label: t`Your Details`, key: 'user' })
     }
     if (pricesApi && pricesApiPoolData && snapshotsMapper[poolData?.pool.address]) {

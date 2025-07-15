@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
@@ -14,6 +14,7 @@ import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.ty
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string

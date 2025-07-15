@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { LlamaImg } from '@ui/images'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { shortenAddress, type Address } from '@ui-kit/utils'
+import { type Address, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   walletAddress?: Address

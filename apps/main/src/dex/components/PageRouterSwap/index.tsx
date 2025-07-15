@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty'
+import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethAddress } from 'viem'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
@@ -105,7 +105,7 @@ const QuickSwap = ({
   const toUsdRate = usdRatesMapper[toAddress]
 
   const tokens = useMemo(() => {
-    if (isEmpty(tokenList) || isEmpty(tokensMapper)) return []
+    if (_.isEmpty(tokenList) || _.isEmpty(tokensMapper)) return []
 
     return tokenList!
       .map((address) => tokensMapper[address])

@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 import { Dispatch, SetStateAction, useMemo } from 'react'
 import TableRow from '@/loan/components/PageMarketList/components/TableRow/TableRow'
 import TableRowMobile from '@/loan/components/PageMarketList/components/TableRow/TableRowMobile'
@@ -9,6 +8,7 @@ import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import TrSearchedTextResult from '@ui/Table/TrSearchedTextResult'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useNavigate } from '@ui-kit/hooks/router'
 
 type Props = Pick<PageCollateralList, 'rChainId' | 'params' | 'searchTermMapper' | 'searchParams' | 'titleMapper'> &
   Pick<TableRowProps, 'collateralId'> & {
@@ -29,7 +29,7 @@ const TableRowResult = ({
   ...props
 }: Props) => {
   const { searchTermMapper } = props
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const collateralDataCached = useStore((state) => state.storeCache.collateralDatasMapper[rChainId]?.[collateralId])
   const collateralData = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId])

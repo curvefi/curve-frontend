@@ -1,6 +1,4 @@
-import chunk from 'lodash/chunk'
-import flatten from 'lodash/flatten'
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import memoizee from 'memoizee'
 import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
@@ -44,6 +42,8 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+
+const { chunk, flatten, isUndefined } = _
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {

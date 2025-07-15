@@ -1,6 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import type { TransferProps } from '@/dex/components/PagePool/types'
@@ -163,7 +163,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     setSlippageConfirmed(false)
 
     if (curve && poolData) {
-      const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = _.cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.isApproved = formStatus.isApproved
       cFormStatus.isClaimCrv = isClaimCrv
       cFormStatus.isClaimRewards = isClaimRewards

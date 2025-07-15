@@ -1,4 +1,3 @@
-import NextImage from 'next/image'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
@@ -6,6 +5,7 @@ import Typography from '@mui/material/Typography'
 import { LogoImg } from '@ui/images'
 import { getBackgroundUrl } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import NextImage from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 type ConnectWalletPromptProps = {

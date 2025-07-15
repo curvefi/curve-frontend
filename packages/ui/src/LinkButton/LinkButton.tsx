@@ -1,5 +1,5 @@
 import RouterLink from 'next/link'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { buttonBaseStyles } from 'ui/src/Button/styles'
 import type { ButtonProps } from 'ui/src/Button/types'
 

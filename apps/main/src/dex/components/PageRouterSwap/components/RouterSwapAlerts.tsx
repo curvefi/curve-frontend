@@ -1,5 +1,4 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import _ from 'lodash'
 import { useMemo } from 'react'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
@@ -43,7 +42,9 @@ const RouterSwapAlerts = ({
 
   const usdToAmount = useMemo(
     () =>
-      !isUndefined(toUsdRate) && !isNaN(toUsdRate) ? (Number(formValues.toAmount) * Number(toUsdRate)).toString() : '',
+      !_.isUndefined(toUsdRate) && !_.isNaN(toUsdRate)
+        ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
+        : '',
     [formValues.toAmount, toUsdRate],
   )
 

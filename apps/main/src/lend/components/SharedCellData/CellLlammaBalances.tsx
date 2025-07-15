@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'

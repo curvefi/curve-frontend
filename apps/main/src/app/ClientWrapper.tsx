@@ -1,6 +1,5 @@
 'use client'
-import delay from 'lodash/delay'
-import { usePathname, useRouter } from 'next/navigation'
+import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
@@ -12,12 +11,15 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
+
+const { delay } = _
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
@@ -60,7 +62,7 @@ const useLayoutStoreResponsive = () => {
 function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
   networks: Record<ChainId, NetworkConfig>,
 ) {
-  const { replace } = useRouter()
+  const navigate = useNavigate()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
@@ -70,8 +72,8 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
     }
     const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
     console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
-    replace(redirectUrl)
-  }, [network, networkId, pathname, replace])
+    void navigate(redirectUrl, { replace: true })
+  }, [network, networkId, pathname, navigate])
   return network
 }
 
@@ -103,7 +105,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const theme = useThemeAfterSsr(preferredScheme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
   const pathname = usePathname()
-  const { push } = useRouter()
+  const push = useNavigate()
   useLayoutStoreResponsive()
 
   const onChainUnavailable = useCallback(

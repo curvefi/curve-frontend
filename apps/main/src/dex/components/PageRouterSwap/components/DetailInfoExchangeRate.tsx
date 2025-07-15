@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { ExchangeRate } from '@/dex/components/PageRouterSwap/types'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'

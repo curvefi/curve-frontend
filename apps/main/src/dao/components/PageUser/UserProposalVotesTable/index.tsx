@@ -1,5 +1,4 @@
-import { orderBy } from 'lodash'
-import { useRouter } from 'next/navigation'
+import _ from 'lodash'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableData, TableDataLink, TableRowWrapper } from '@/dao/components/PaginatedTable/TableRow'
 import {
@@ -11,6 +10,7 @@ import useStore from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'
@@ -25,7 +25,7 @@ const sortUserProposalVotes = (
   sortBy: { key: UserProposalVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
-  return orderBy(userProposalVotes, [key], [order])
+  return _.orderBy(userProposalVotes, [key], [order])
 }
 
 const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVotesTableProps) => {
@@ -39,7 +39,7 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   })
   const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
   const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
 

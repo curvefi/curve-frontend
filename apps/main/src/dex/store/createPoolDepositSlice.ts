@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import _ from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
@@ -36,6 +36,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string
@@ -284,7 +285,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
             void get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
           }
 
-          if (!!signerAddress) {
+          if (signerAddress) {
             // validate input amounts with wallet
             const balances = await get()[sliceKey].fetchUserPoolWalletBalances(curve, pool.id)
             const amountsError = getAmountsError(cFormValues.amounts, balances)
@@ -564,7 +565,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      const foundKey = get()[sliceKey][key] as Object
+      const foundKey = get()[sliceKey][key] as object
       if (Object.keys(foundKey).length > 30) {
         get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
       } else {

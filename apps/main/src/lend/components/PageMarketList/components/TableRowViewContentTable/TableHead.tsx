@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { TableLabel, PageMarketList, FilterTypeKey } from '@/lend/components/PageMarketList/types'
 import useStore from '@/lend/store/useStore'
 import { Order, TitleKey } from '@/lend/types/lend.types'

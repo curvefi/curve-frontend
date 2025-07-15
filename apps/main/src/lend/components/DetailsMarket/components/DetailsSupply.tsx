@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import DetailsSupplyRewards from '@/lend/components/DetailsMarket/components/DetailsSupplyRewards'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'

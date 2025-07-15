@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import Box from 'ui/src/Box'
 import IntegrationAppTag from 'ui/src/Integration/IntegrationAppTag'
 import type { IntegrationApp, IntegrationsTags } from 'ui/src/Integration/types'

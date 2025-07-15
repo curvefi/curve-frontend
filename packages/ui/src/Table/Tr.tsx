@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 const Tr = styled.tr`
   cursor: pointer;

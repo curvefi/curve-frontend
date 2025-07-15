@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -12,6 +11,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
+const { cloneDeep, merge } = _
 
 const sliceKey = 'vaultDepositMint'
 

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
 import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'

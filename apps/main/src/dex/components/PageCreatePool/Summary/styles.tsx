@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'

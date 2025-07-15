@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import useStore from '@/dex/store/useStore'
 import { ExternalLink } from '@ui/Link'

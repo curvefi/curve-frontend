@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import merge from 'lodash/merge'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'
@@ -10,6 +9,7 @@ import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.ty
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep, merge } = _
 
 const sliceKey = 'vaultClaim'
 

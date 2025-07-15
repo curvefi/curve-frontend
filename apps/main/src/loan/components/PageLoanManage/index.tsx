@@ -1,7 +1,6 @@
-import isUndefined from 'lodash/isUndefined'
-import { useRouter } from 'next/navigation'
+import _ from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -19,12 +18,13 @@ import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends PageLoanManageProps {}
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)
@@ -106,7 +106,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               {tabs.map(({ label, formType }, idx) => (
                 <SlideTab
                   key={label}
-                  disabled={isUndefined(loanExists)}
+                  disabled={_.isUndefined(loanExists)}
                   tabLeft={tabPositions[idx]?.left}
                   tabWidth={tabPositions[idx]?.width}
                   tabTop={tabPositions[idx]?.top}

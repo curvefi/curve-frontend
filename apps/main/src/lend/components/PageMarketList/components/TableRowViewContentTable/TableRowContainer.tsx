@@ -1,4 +1,3 @@
-import { useParams, useRouter } from 'next/navigation'
 import { useMemo } from 'react'
 import { TrSearchedTextResult } from 'ui/src/Table'
 import TableRow from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRow'
@@ -12,13 +11,14 @@ import useStore from '@/lend/store/useStore'
 import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname, getVaultPathname } from '@/lend/utils/utilsRouter'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 
 const TableRowContainer = (
   props: Omit<TableRowProps, 'market' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>,
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
   const params = useParams() as NetworkUrlParams
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const loansExistsMapper = useStore((state) => state.user.loansExistsMapper)

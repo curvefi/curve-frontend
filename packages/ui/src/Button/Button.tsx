@@ -1,5 +1,5 @@
 import { forwardRef, ButtonHTMLAttributes, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
 import type { ButtonProps } from 'ui/src/Button/types'
 import Spinner from 'ui/src/Spinner/Spinner'

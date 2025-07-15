@@ -1,7 +1,6 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
 import type { FilterListProps, SearchParams } from '@/lend/components/PageMarketList/types'
 import { ROUTE } from '@/lend/constants'
@@ -15,6 +14,7 @@ import { getPath } from '@/lend/utils/utilsRouter'
 import { AppPageContainer } from '@ui/AppPage'
 import Box from '@ui/Box'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
@@ -30,7 +30,7 @@ const Page = (params: NetworkUrlParams) => {
   const { provider, connect } = useWallet()
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
-  const { push } = useRouter()
+  const push = useNavigate()
   const searchParams = useSearchParams()
   const { llamaApi: api = null, connectState } = useConnection()
   const searchTermMapper = useSearchTermMapper()

@@ -1,5 +1,5 @@
 import localFont from 'next/font/local'
-import { CSSProperties } from 'react'
+import { type CSSProperties } from 'react'
 
 // Fonts might not load when running Storybook locally.
 const isStorybook = process.env.STORYBOOK === 'true'

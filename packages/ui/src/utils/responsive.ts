@@ -10,7 +10,7 @@ export const breakpoints = {
 }
 
 export const mediaQueries =
-  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | String | Interpolation<any>) =>
+  (key: keyof typeof breakpoints) => (style: TemplateStringsArray | string | Interpolation<any>) =>
     `@media (min-width: ${breakpoints[key]}rem) { ${style} }`
 
 export function getPageWidthClassName(innerWidth: number) {

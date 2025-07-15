@@ -1,6 +1,5 @@
 import Fuse from 'fuse.js'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FilterKey, FormStatus, FormValues } from '@/lend/components/PageIntegrations/types'
 import networks from '@/lend/networks'
@@ -10,6 +9,7 @@ import { fulfilledValue, httpFetcher } from '@/lend/utils/helpers'
 import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep, sortBy } = _
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   filterKey: 'all',

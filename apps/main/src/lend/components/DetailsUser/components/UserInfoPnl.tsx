@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Chip from 'ui/src/Typography/Chip'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import Box from '@ui/Box'

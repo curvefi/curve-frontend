@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Order, SearchParams, TableLabel } from '@/loan/components/PageMarketList/types'
 import { TITLE } from '@/loan/constants'
 import { TitleKey, TitleMapper } from '@/loan/types/loan.types'

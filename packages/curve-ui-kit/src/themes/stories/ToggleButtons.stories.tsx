@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/rules-of-hooks */
+import type { MouseEvent } from 'react'
 import { useState } from 'storybook/internal/preview-api' // Intentionally, can't use React's useState: https://github.com/storybookjs/storybook/issues/29189
 import CheckIcon from '@mui/icons-material/Check'
 import FormatAlignCenterIcon from '@mui/icons-material/FormatAlignCenter'

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import Box from '@ui/Box'

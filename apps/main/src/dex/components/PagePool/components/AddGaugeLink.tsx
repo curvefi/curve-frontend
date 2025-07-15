@@ -1,6 +1,4 @@
-import { useParams } from 'next/navigation'
-import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import {
   STABLESWAP,
   STABLESWAPOLD,
@@ -13,6 +11,7 @@ import useStore from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import InteralLinkButton from '@ui/InternalLinkButton'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const AddGaugeLink = ({
@@ -26,7 +25,7 @@ const AddGaugeLink = ({
   )
 
   const params = useParams() as PoolUrlParams
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const handleClick = () => {
     if (chainId === 1) {
