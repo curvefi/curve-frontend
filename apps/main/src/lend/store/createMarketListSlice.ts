@@ -33,6 +33,7 @@ import { logQuery, logSuccess } from '@ui-kit/lib'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { chunk, orderBy, sortBy: sortByFn, uniqBy } = _
 
 // isTableRowOpen
 type SliceState = {

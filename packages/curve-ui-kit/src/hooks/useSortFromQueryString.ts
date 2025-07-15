@@ -3,15 +3,15 @@ import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
 export function useSortFromQueryString(defaultSort: SortingState) {
-  const [search] = useSearchParams()
-  const sort = useMemo(() => parseSort(search, defaultSort), [defaultSort, search])
+  const searchParams = useSearchParams()
+  const sort = useMemo(() => parseSort(searchParams, defaultSort), [defaultSort, searchParams])
   const onChange: OnChangeFn<SortingState> = useCallback(
     (newSort) => {
       // avoid using next `push` because it will cause navigation and SSR refetch
-      const pathname = updateSort(search, typeof newSort == 'function' ? newSort(sort) : newSort)
+      const pathname = updateSort(searchParams, typeof newSort == 'function' ? newSort(sort) : newSort)
       window.history.pushState(null, '', pathname)
     },
-    [search, sort],
+    [searchParams, sort],
   )
   return [sort, onChange] as const
 }

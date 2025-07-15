@@ -9,6 +9,7 @@ import { log } from '@ui-kit/lib/logging'
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
+const { isEqual } = _
 
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }

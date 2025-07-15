@@ -21,6 +21,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string

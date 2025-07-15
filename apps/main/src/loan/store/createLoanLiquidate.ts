@@ -9,6 +9,7 @@ import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   formEstGas: FormEstGas

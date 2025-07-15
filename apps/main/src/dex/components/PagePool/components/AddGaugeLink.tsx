@@ -25,7 +25,7 @@ const AddGaugeLink = ({
   )
 
   const params = useParams() as PoolUrlParams
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const handleClick = () => {
     if (chainId === 1) {

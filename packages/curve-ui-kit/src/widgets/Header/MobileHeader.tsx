@@ -5,7 +5,7 @@ import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { useLocation } from '@ui-kit/hooks/router'
+import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -40,7 +40,7 @@ export const MobileHeader = ({
   const [isSidebarOpen, setSidebarOpen] = useState(false)
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
-  const { pathname } = useLocation()
+  const pathname = usePathname()
   const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link

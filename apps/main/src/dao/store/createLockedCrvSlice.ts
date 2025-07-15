@@ -22,6 +22,7 @@ import { notify, requireLib, setMissingProvider, useWallet } from '@ui-kit/featu
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string

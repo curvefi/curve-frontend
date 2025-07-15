@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
-import { useLocation } from '@ui-kit/hooks/router'
+import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'
@@ -13,7 +13,7 @@ import { HeaderProps, NavigationSection } from './types'
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
   const [isBeta] = useBetaFlag()
-  const { pathname } = useLocation()
+  const pathname = usePathname()
   const { networkId, currentMenu } = props
   const pages = useMemo(
     () =>

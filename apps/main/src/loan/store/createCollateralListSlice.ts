@@ -10,6 +10,7 @@ import { sleep } from '@/loan/utils/helpers'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { orderBy, uniqBy, chunk } = _
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',

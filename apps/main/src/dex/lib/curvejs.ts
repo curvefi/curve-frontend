@@ -43,6 +43,8 @@ import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
 
+const { chunk, flatten, isUndefined } = _
+
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
     const resp: { customFeeData: Record<string, number | null> | null; error: string } = {

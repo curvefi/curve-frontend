@@ -14,6 +14,7 @@ import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.ty
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string

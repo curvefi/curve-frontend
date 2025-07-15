@@ -18,6 +18,7 @@ import {
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   loansExistsMapper: UsersLoansExistsMapper

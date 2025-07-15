@@ -1,3 +1,4 @@
+'use client'
 import _ from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
@@ -11,7 +12,7 @@ import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLocation, useNavigate } from '@ui-kit/hooks/router'
+import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
@@ -60,8 +61,7 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
   networks: Record<ChainId, NetworkConfig>,
 ) {
   const navigate = useNavigate()
-  const location = useLocation()
-  const pathname = location.pathname
+  const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
   const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
@@ -102,9 +102,8 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
 }) => {
   const theme = useThemeAfterSsr(preferredScheme)
   const config = useMemo(() => createWagmiConfig(networks), [networks])
-  const location = useLocation()
-  const pathname = location.pathname
-  const navigate = useNavigate()
+  const pathname = usePathname()
+  const push = useNavigate()
   useLayoutStoreResponsive()
 
   const onChainUnavailable = useCallback(
@@ -112,10 +111,10 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
       const network = networks[walletChainId]?.id
       if (pathname && network) {
         console.warn(`Network switched to ${network}, redirecting...`, pathname)
-        navigate(replaceNetworkInPath(pathname, network))
+        push(replaceNetworkInPath(pathname, network))
       }
     },
-    [networks, pathname, navigate],
+    [networks, pathname, push],
   )
   const network = useNetworkFromUrl(networks)
 

@@ -6,6 +6,7 @@ import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData }
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { countBy } = _
 
 type SliceState = {
   tokensNameMapper: { [chainId: string]: TokensNameMapper }

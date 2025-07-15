@@ -15,6 +15,7 @@ import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
+const { get, sortBy, sortedUniq } = _
 
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.

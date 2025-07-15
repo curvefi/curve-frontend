@@ -28,7 +28,7 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
 
-  const risksPathname = getPath(useParams() as UrlParams, `/disclaimer`)
+  const risksPathname = getPath(useParams<UrlParams>(), `/disclaimer`)
 
   useEffect(() => {
     if (curve && poolData && !poolData?.parameters.virtualPrice) {

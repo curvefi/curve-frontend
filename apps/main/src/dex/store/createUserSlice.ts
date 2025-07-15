@@ -8,6 +8,7 @@ import { shortenAccount } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   poolList: { [userActiveKey: string]: UserPoolListMapper }

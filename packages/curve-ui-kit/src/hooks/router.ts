@@ -4,8 +4,7 @@ import {
   useLocation as useTanstackLocation,
   useNavigate as useTanstackNavigate,
   useParams as useTanstackParams,
-  useRouteContext as useTanstackRouteContext,
-  useSearch as useTanstackSearch,
+  useRouteContext as useTanstackRouteContext
 } from '@tanstack/react-router'
 
 /**
@@ -37,36 +36,10 @@ export function useNavigate() {
 /**
  * Custom useSearchParams hook that matches React Router's API
  */
-export function useSearchParams(): [
-  URLSearchParams,
-  (params: URLSearchParams | ((prev: URLSearchParams) => URLSearchParams)) => void,
-] {
-  const navigate = useTanstackNavigate()
-  const search = useTanstackSearch({ strict: false })
-  const location = useTanstackLocation()
-
-  const searchParams = useMemo(() => new URLSearchParams(location.search), [location.search])
-
-  const setSearchParams = useCallback(
-    (params: URLSearchParams | ((prev: URLSearchParams) => URLSearchParams)) => {
-      const newParams = typeof params === 'function' ? params(searchParams) : params
-      void navigate({
-        to: location.pathname,
-        search: Object.fromEntries(newParams.entries()),
-        replace: true,
-      })
-    },
-    [navigate, location.pathname, searchParams],
-  )
-
-  return [searchParams, setSearchParams]
+export function useSearchParams(): URLSearchParams {
+  const { search } = useTanstackLocation()
+  return useMemo(() => new URLSearchParams(search), [search])
 }
-
-/**
- * Re-export useLocation from TanStack Router
- * The API is already compatible
- */
-export { useTanstackLocation as useLocation }
 
 /**
  * Re-export useParams from TanStack Router
@@ -83,3 +56,5 @@ export { useTanstackLoaderData as useLoaderData }
  * Re-export useRouteContext from TanStack Router
  */
 export { useTanstackRouteContext as useRouteContext }
+
+export const usePathname = () => useTanstackLocation().pathname

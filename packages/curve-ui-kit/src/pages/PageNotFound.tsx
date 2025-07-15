@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useLayoutStore } from 'curve-ui-kit/src/features/layout'
+import { useLayoutStore } from '@ui-kit/features/layout'
 
 const { MinHeight, MaxWidth } = SizesAndSpaces
 

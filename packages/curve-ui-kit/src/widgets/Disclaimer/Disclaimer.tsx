@@ -3,7 +3,7 @@ import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import { useLocation, useSearchParams } from '@ui-kit/hooks/router'
+import { usePathname, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -48,9 +48,8 @@ function useAfterHydration(result: string) {
 }
 
 export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
-  const { pathname } = useLocation()
-  const [params] = useSearchParams()
-  const [tab] = params?.get('tab') ?? defaultTab[currentApp]
+  const pathname = usePathname()
+  const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
   const tabs = useMemo(
     () => [
       ...TABS.map(({ value, ...props }) => ({

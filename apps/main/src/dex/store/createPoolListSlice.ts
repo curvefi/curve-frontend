@@ -27,6 +27,7 @@ import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { orderBy, uniqBy, chunk } = _
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   searchTextByTokensAndAddresses: {},

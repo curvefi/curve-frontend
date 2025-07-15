@@ -45,6 +45,7 @@ import { log } from '@ui-kit/lib/logging'
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { chunk, countBy, groupBy, isNaN } = _
 
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }

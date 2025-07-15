@@ -11,6 +11,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
+const { merge, cloneDeep } = _
 
 const sliceKey = 'vaultStake'
 

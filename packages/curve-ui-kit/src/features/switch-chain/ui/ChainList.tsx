@@ -5,7 +5,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
-import { useLocation } from '@ui-kit/hooks/router'
+import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { AppNames } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
@@ -39,7 +39,7 @@ export function ChainList({
   showTestnets: boolean
   selectedNetwork: NetworkDef
 }) {
-  const { pathname } = useLocation()
+  const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>

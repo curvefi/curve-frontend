@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FormDetailInfoLeverage,
@@ -18,6 +19,7 @@ import { _parseActiveKey } from '@/lend/utils/helpers'
 import { getLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   activeKey: string

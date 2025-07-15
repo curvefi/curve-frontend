@@ -23,6 +23,7 @@ import { shortenAccount } from '@ui/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { orderBy } = _
 
 type SliceState = {
   activeKey: string

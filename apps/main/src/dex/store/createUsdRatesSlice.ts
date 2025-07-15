@@ -5,6 +5,7 @@ import type { State } from '@/dex/store/useStore'
 import { CurveApi, UsdRatesMapper } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = _
 
 type SliceState = {
   usdRatesMapper: UsdRatesMapper
