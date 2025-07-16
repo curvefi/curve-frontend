@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'

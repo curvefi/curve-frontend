@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'

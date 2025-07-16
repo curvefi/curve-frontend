@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'

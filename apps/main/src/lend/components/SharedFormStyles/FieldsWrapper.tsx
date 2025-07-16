@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TextCaption from '@ui/TextCaption'
 
 export const FieldsWrapper = styled.div<{ $showBorder?: boolean }>`

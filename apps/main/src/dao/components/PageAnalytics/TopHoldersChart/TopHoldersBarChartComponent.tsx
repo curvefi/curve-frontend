@@ -1,5 +1,5 @@
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { TOP_HOLDERS } from '@/dao/constants'
 import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'

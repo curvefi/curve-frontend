@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertFormWarning from '@/dex/components/AlertFormWarning'
@@ -41,6 +39,8 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { cloneDeep, isNaN, isUndefined } = lodash
 
 const Swap = ({
   chainIdPoolId,
@@ -205,7 +205,7 @@ const Swap = ({
           status: getStepStatus(isComplete, step === 'SWAP', formStatus.isApproved && isValid),
           type: 'action',
           content: isComplete ? t`Swap Complete` : t`Swap`,
-          ...(!!exchangeOutput.modal
+          ...(exchangeOutput.modal
             ? {
                 modal: {
                   title: t`Warning!`,

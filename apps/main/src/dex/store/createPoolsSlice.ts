@@ -1,9 +1,6 @@
 import produce from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
-import chunk from 'lodash/chunk'
-import countBy from 'lodash/countBy'
-import groupBy from 'lodash/groupBy'
-import isNaN from 'lodash/isNaN'
+import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
@@ -49,6 +46,7 @@ import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/e
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { chunk, countBy, groupBy, isNaN } = lodash
 
 type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataMapper }

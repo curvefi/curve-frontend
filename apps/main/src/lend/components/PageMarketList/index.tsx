@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MarketListItemContent from '@/lend/components/PageMarketList/components/MarketListItemContent'
 import MarketListNoResult from '@/lend/components/PageMarketList/components/MarketListNoResult'
 import TableSettings from '@/lend/components/PageMarketList/components/TableSettings/TableSettings'

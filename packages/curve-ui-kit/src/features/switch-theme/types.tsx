@@ -1,5 +1,5 @@
-import Image from 'next/image'
 import { ChadImg, RCMoon, RCSun } from 'ui'
+import Image from '@ui-kit/shared/image'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 const DEFAULT_SIZE = 24

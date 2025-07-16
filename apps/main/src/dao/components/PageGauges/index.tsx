@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import SubNav from '@/dao/components/SubNav'
 import { SubNavItem } from '@/dao/components/SubNav/types'

@@ -1,5 +1,4 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useChainId } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
@@ -8,6 +7,8 @@ import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/Pa
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { isUndefined, isNaN } = lodash
 
 const RouterSwapAlerts = ({
   formStatus,

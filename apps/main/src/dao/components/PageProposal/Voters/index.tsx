@@ -1,6 +1,5 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import networks from '@/dao/networks'
 import { getEthPath } from '@/dao/utils'
@@ -9,6 +8,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { formatNumber } from '@ui/utils'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -25,7 +25,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
     proposalId: +voteId,
     proposalType: proposalType,
   })
-  const { push } = useRouter()
+  const push = useNavigate()
 
   return (
     <Wrapper className={className}>

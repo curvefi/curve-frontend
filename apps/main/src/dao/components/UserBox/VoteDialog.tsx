@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PendingTx from '@/dao/components/UserBox/PendingTx'
 import { useProposalPricesApiQuery } from '@/dao/entities/proposal-prices-api'
 import { useProposalsMapperQuery, createProposalKey } from '@/dao/entities/proposals-mapper'

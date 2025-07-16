@@ -1,6 +1,6 @@
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useChainId } from 'wagmi'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
@@ -12,6 +12,8 @@ import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { isUndefined } = lodash
 
 type Props = {
   rChainId: ChainId

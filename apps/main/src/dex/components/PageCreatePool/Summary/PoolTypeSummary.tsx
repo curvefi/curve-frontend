@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryColumn,

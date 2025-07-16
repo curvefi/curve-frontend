@@ -1,7 +1,6 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import useStore from '@/dex/store/useStore'
 import { ChainId, EstimatedGas } from '@/dex/types/main.types'
@@ -67,7 +66,7 @@ const DetailInfoEstGas = ({
       const tooltipBasePlusPriority = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
 
       resp.estGasCost = gasCostInWei
-      resp.estGasCostUsd = isUndefined(chainTokenUsdRate) ? 0 : +gasCostInEther * chainTokenUsdRate
+      resp.estGasCostUsd = lodash.isUndefined(chainTokenUsdRate) ? 0 : +gasCostInEther * chainTokenUsdRate
       resp.tooltip = `${tooltipGasCostInEther} ${symbol} at ${tooltipBasePlusPriority} ${gasPricesUnit}`
     }
     return resp
@@ -98,7 +97,7 @@ const DetailInfoEstGas = ({
     </IconTooltip>
   )
 
-  const haveUsdRate = !isUndefined(chainTokenUsdRate) && !isNaN(chainTokenUsdRate)
+  const haveUsdRate = !lodash.isUndefined(chainTokenUsdRate) && !lodash.isNaN(chainTokenUsdRate)
 
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>

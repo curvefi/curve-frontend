@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import AlertFormError, { FormError } from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
@@ -32,6 +31,7 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -47,7 +47,7 @@ const LoanRepay = ({
   params,
 }: PageContentProps & { params: MarketUrlParams }) => {
   const isSubscribed = useRef(false)
-  const { push } = useRouter()
+  const push = useNavigate()
   const activeKey = useStore((state) => state.loanRepay.activeKey)
   const detailInfoLeverage = useStore((state) => state.loanRepay.detailInfoLeverage[activeKey])
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])

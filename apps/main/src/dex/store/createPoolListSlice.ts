@@ -1,6 +1,4 @@
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FilterKey,
@@ -29,6 +27,7 @@ import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import { groupSearchTerms, searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { orderBy, uniqBy, chunk } = lodash
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   searchTextByTokensAndAddresses: {},
@@ -343,7 +342,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       campaignRewardsMapper,
     ) => {
       const state = get()
-      let { formValues, result: storedResults, ...sliceState } = state[sliceKey]
+      const { formValues, result: storedResults, ...sliceState } = state[sliceKey]
 
       const activeKey = getPoolListActiveKey(rChainId, searchParams)
 
@@ -358,14 +357,13 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         searchText === '' && filterKey === 'all' && sortBy === (isLite ? 'tvl' : 'volume') && sortByOrder === 'desc'
 
       // update form values
-      formValues = {
-        ...formValues,
-        searchTextByTokensAndAddresses: {},
-        searchTextByOther: {},
-      }
       sliceState.setStateByKeys({
         activeKey,
-        formValues,
+        formValues: {
+          ...formValues,
+          searchTextByTokensAndAddresses: {},
+          searchTextByOther: {},
+        },
         searchedByAddresses: {},
         searchedTerms: [],
         searchedByTokens: {},

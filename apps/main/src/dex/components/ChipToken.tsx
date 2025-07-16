@@ -1,7 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useChainId } from 'wagmi'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'

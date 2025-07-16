@@ -1,7 +1,6 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
@@ -13,6 +12,7 @@ import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
@@ -25,7 +25,7 @@ enum SEARCH {
 type PageProps = NetworkUrlParams
 
 export const PagePoolList = (params: PageProps) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const searchParams = useSearchParams()
   const { curveApi = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()

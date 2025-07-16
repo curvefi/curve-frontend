@@ -17,7 +17,7 @@ export function parseSearchTermMapper(
   if (!searchedByAddresses || !searchTermMapper || !collateralDataCachedOrApi) return undefined
 
   const parsed = { ...searchTermMapper }
-  const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma
+  const { coins, coinAddresses } = collateralDataCachedOrApi?.llamma ?? {}
 
   Object.keys(searchedByAddresses).forEach((key) => {
     const k = key as SearchTermKey

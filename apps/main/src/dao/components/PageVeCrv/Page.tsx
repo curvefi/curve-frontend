@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'

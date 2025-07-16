@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
 import { RCCross, RCCheck } from 'ui/src/images'
 import { statusColorMap } from 'ui/src/Stepper/helpers'

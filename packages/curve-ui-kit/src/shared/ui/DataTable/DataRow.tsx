@@ -1,17 +1,14 @@
-import { useRouter } from 'next/navigation'
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
-
-const { Sizing } = SizesAndSpaces
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
@@ -40,7 +37,7 @@ export const DataRow = <T extends TableItem>({
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
-  const { push } = useRouter()
+  const push = useNavigate()
   const url = row.original.url
   const onClickDesktop = useCallback(
     (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),

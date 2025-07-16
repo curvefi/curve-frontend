@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import LiquidityData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/LiquidityData'
 import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/TradesData'
 import useStore from '@/dex/store/useStore'

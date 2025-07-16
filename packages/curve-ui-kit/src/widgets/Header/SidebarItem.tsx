@@ -1,7 +1,7 @@
-import RouterLink from 'next/link'
 import { ListItem } from '@mui/material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import type { AppPage } from '@ui-kit/widgets/Header/types'
 
 type SidebarItemProps = {

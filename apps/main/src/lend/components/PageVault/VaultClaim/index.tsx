@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import AlertFormError from '@/lend/components/AlertFormError'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, RewardType } from '@/lend/components/PageVault/VaultClaim/types'

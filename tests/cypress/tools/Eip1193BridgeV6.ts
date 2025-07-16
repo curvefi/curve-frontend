@@ -1,5 +1,5 @@
-import { ethers } from 'ethers'
 import EventEmitter from 'events'
+import { ethers } from 'ethers'
 
 /**
  * @description The `Eip1193BridgeV6` class extends `EventEmitter` to expose a standard EIP-1193 provider interface

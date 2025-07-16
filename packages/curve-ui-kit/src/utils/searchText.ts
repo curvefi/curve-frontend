@@ -1,6 +1,7 @@
 import Fuse, { FuseResult } from 'fuse.js'
-import { get, isEqualWith, uniqWith } from 'lodash'
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
+
+const { uniqWith, isEqualWith, get, uniqBy } = lodash
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 

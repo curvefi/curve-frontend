@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
 import type { IconButtonProps } from './types'
 

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SummaryChange from '@/lend/components/AlertLoanSummary/components/SummaryChange'
 import SummaryCreate from '@/lend/components/AlertLoanSummary/components/SummaryCreate'
 import SummaryFull from '@/lend/components/AlertLoanSummary/components/SummaryFull'

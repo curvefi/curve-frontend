@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 const Items = styled.ul<{ listItemMargin?: string }>`
   list-style: none;

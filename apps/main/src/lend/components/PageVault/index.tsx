@@ -1,4 +1,3 @@
-import { useRouter } from 'next/navigation'
 import { useRef, useEffect } from 'react'
 import type { FormType, VaultDepositFormType, VaultWithdrawFormType } from '@/lend/components/PageVault/types'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'
@@ -11,12 +10,13 @@ import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import { useNavigate } from '@ui-kit/hooks/router'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
-  const { push } = useRouter()
+  const push = useNavigate()
   const tabsRef = useRef<HTMLDivElement>(null)
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)

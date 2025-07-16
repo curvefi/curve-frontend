@@ -1,7 +1,7 @@
 'use client'
 import { Contract, Interface } from 'ethers'
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import FormCompensation from '@/dex/components/PageCompensation/index'
 import type { EtherContract } from '@/dex/components/PageCompensation/types'
 import { useChainId } from '@/dex/hooks/useChainId'

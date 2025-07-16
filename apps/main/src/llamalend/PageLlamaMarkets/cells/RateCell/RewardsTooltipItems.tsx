@@ -1,5 +1,4 @@
-import { sum } from 'lodash'
-import type { StaticImageData } from 'next/image'
+import lodash from 'lodash'
 import { TooltipItem } from '@/llamalend/components/TooltipItem'
 import type { PoolRewards } from '@/llamalend/entities/campaigns'
 import { formatPercent } from '@/llamalend/PageLlamaMarkets/cells/cell.format'
@@ -7,6 +6,7 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
+import type { ImageData } from '@ui-kit/shared/image'
 import { RewardIcon, RewardsImg } from '@ui-kit/shared/ui/RewardIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
@@ -17,9 +17,9 @@ export const RewardsTooltipItems = ({
 }: {
   title: string
   poolRewards: PoolRewards[]
-  extraIncentives: { title: string; percentage: number; image: StaticImageData }[]
+  extraIncentives: { title: string; percentage: number; image: ImageData }[]
 }) => {
-  const percentage = extraIncentives.length > 0 && formatPercent(sum(extraIncentives.map((i) => i.percentage)))
+  const percentage = extraIncentives.length > 0 && formatPercent(lodash.sum(extraIncentives.map((i) => i.percentage)))
   return (
     <>
       {percentage && <TooltipItem title={title}>{percentage}</TooltipItem>}

@@ -1,7 +1,4 @@
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import sortByFn from 'lodash/sortBy'
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FilterTypeKey,
@@ -36,6 +33,7 @@ import { getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-r
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { chunk, orderBy, sortBy: sortByFn, uniqBy } = lodash
 
 // isTableRowOpen
 type SliceState = {

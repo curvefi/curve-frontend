@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import {
   TOKEN_A,
   TOKEN_B,

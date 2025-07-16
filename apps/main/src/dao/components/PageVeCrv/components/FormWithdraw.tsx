@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
 import Countdown from '@/dao/components/Countdown'

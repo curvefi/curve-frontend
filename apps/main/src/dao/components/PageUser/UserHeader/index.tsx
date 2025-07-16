@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { TOP_HOLDERS } from '@/dao/constants'
 import networks from '@/dao/networks'

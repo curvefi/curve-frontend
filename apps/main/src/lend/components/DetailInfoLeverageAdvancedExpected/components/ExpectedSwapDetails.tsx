@@ -1,5 +1,5 @@
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
 import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
 import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'

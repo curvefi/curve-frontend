@@ -1,8 +1,6 @@
-import debounce from 'lodash/debounce'
-import merge from 'lodash/merge'
+import lodash from 'lodash'
 import { create, type GetState, type SetState } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { type PersistOptions } from 'zustand/middleware/persist'
+import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/createCampaignRewardsSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
@@ -22,6 +20,8 @@ import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwa
 import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
 import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
 import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
+
+const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
   NetworksSlice &
@@ -72,7 +72,7 @@ const MAX_SIZE = 2.5 * 1024 * 1024 // 2.5MB limit
 const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
   name: 'curve-app-store-cache',
   partialize: ({ storeCache }: State) => ({ storeCache }),
-  merge,
+  merge: merge,
   storage: {
     getItem: (name) => JSON.parse(localStorage.getItem(name)!),
     // debounce storage to avoid performance issues serializing too often. The item can be large.

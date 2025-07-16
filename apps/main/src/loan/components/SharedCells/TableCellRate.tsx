@@ -1,5 +1,5 @@
-import isUndefined from 'lodash/isUndefined'
-import styled from 'styled-components'
+import lodash from 'lodash'
+import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
@@ -15,7 +15,7 @@ const TableCellRate = ({ collateralId, ...props }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
   const { rate, future_rate } = loanDetails?.parameters ?? {}
 
-  if (isUndefined(rate) || isUndefined(future_rate)) {
+  if (lodash.isUndefined(rate) || lodash.isUndefined(future_rate)) {
     return <></>
   }
 

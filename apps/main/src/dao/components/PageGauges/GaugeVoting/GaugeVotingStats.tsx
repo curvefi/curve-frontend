@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ComboBoxSelectGauge from '@/dao/components/ComboBoxSelectGauge'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'

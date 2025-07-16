@@ -1,5 +1,5 @@
 import { RefObject, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectGaugeListItem from '@/dao/components/ComboBoxSelectGauge/ComboBoxListItem'
 import type { ComboBoxSelectGaugeProps } from '@/dao/components/ComboBoxSelectGauge/types'
 import { GaugeFormattedData } from '@/dao/types/dao.types'

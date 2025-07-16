@@ -1,5 +1,5 @@
 import { Fragment, useCallback, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Content } from '@/lend/components/PageMarketList/components/TableRowViewContentTable/TableRowMobile'
 import type { TableCellProps, TableRowProps } from '@/lend/components/PageMarketList/types'
 import { FilterType } from '@/lend/components/PageMarketList/utils'

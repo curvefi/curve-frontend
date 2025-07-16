@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -264,10 +262,10 @@ const FormWithdraw = ({
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
 
-      if (foundCoinWithAmount && !isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
+      if (foundCoinWithAmount && !lodash.isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
         const usdRate = usdRates[tokenAddress]
-        if (usdRate && !isNaN(usdRate)) {
+        if (usdRate && !lodash.isNaN(usdRate)) {
           return (Number(usdRate) * Number(value)).toString()
         }
       }
@@ -277,7 +275,7 @@ const FormWithdraw = ({
 
       amounts.forEach((a) => {
         const usdRate = usdRates[a.tokenAddress]
-        if (usdRate && !isNaN(usdRate)) {
+        if (usdRate && !lodash.isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
         }
       })
@@ -425,7 +423,7 @@ const FormWithdraw = ({
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={(val) => {
-                          const clonedAmounts = cloneDeep(formValues.amounts)
+                          const clonedAmounts = lodash.cloneDeep(formValues.amounts)
                           clonedAmounts[idx].value = val
                           updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
                         }}
@@ -446,7 +444,7 @@ const FormWithdraw = ({
             onChange={(isWrapped) => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                const cFormValues = cloneDeep(formValues)
+                const cFormValues = lodash.cloneDeep(formValues)
 
                 cFormValues.isWrapped = isWrapped
                 cFormValues.amounts = wrapped.tokens.map((token, idx) => ({

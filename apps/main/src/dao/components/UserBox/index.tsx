@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useAccount, useChainId } from 'wagmi'
 import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'

@@ -1,5 +1,4 @@
-import orderBy from 'lodash/orderBy'
-import { useRouter } from 'next/navigation'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
@@ -12,6 +11,7 @@ import useStore from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -27,14 +27,14 @@ const sortUserGaugeVotes = (
   sortBy: { key: UserGaugeVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
-  return orderBy(userGaugeVotes, [key], [order])
+  return lodash.orderBy(userGaugeVotes, [key], [order])
 }
 
 const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {
   const { data: userGaugeVotes, isLoading, isError, isSuccess } = useUserGaugeVoteQuery({ userAddress })
   const userGaugeVotesSortBy = useStore((state) => state.user.userGaugeVotesSortBy)
   const setUserGaugeVotesSortBy = useStore((state) => state.user.setUserGaugeVotesSortBy)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const gridTemplateColumns = '2fr 1fr 1fr 1fr'
 

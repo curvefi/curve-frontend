@@ -1,7 +1,7 @@
 import { enforce } from 'vest'
 
 // TODO: move to Token validation lib
-export const tokenIdValidationFn = <T extends unknown>(value: T) => {
+export const tokenIdValidationFn = <T>(value: T) => {
   enforce(value)
     .message('Token address is required')
     .isNotEmpty()
@@ -11,7 +11,7 @@ export const tokenIdValidationFn = <T extends unknown>(value: T) => {
     .isNotZeroAddress()
 }
 
-export const amountValidationFn = <T extends unknown>(value: T) => {
+export const amountValidationFn = <T>(value: T) => {
   enforce(value)
     .message('Amount is required')
     .isNotEmpty()
@@ -19,7 +19,7 @@ export const amountValidationFn = <T extends unknown>(value: T) => {
     .isDecimal({ decimal_digits: '0,18' })
 }
 
-export const addressValidationFn = <T extends unknown>(value: T) => {
+export const addressValidationFn = <T>(value: T) => {
   enforce(value)
     .message('Address is required')
     .isNotEmpty()
@@ -29,6 +29,6 @@ export const addressValidationFn = <T extends unknown>(value: T) => {
     .isNotZeroAddress()
 }
 
-export const numberValidationFn = <T extends unknown>(value: T) => {
+export const numberValidationFn = <T>(value: T) => {
   enforce(value).message('Number is required').isNotEmpty().message('Invalid number').isNumber()
 }

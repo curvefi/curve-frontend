@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ShadowedBox from '@ui/ShadowedBox'
 import TabSlide from '@ui/TabSlide'
 

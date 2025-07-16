@@ -1,4 +1,4 @@
-import { orderBy } from 'lodash'
+import lodash from 'lodash'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData } from '@/dao/components/PaginatedTable/TableRow'
 import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '@/dao/entities/user-locks'
@@ -15,7 +15,7 @@ interface UserLocksTableProps {
 
 const sortUserLocks = (locks: UserLockFormatted[], sortBy: { key: UserLocksSortBy; order: SortDirection }) => {
   const { key, order } = sortBy
-  return orderBy(locks, [key], [order])
+  return lodash.orderBy(locks, [key], [order])
 }
 
 const lockTypeLabel = (lockType: LockType) => {

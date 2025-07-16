@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { t } from '@ui-kit/lib/i18n'

@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import GaugeWeightHistoryChart from '@/dao/components/Charts/GaugeWeightHistoryChart'
 import useStore from '@/dao/store/useStore'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
