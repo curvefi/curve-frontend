@@ -103,5 +103,8 @@
   },
   {
     "campaign": "Hyperwave.json"
+  },
+  {
+    "campaign": "TacTokens.json"
   }
 ]
