@@ -29,14 +29,11 @@ export const {
   validationSuite: tokenValidationSuite,
 })
 
-export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
-  const uniqueAddresses = Array.from(new Set(tokenAddresses))
-
-  return useQueries({
-    queries: uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    combine: (results) => combineQueriesToObject(results, uniqueAddresses),
+export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) =>
+  useQueries({
+    queries: tokenAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    combine: (results) => combineQueriesToObject(results, tokenAddresses),
   })
-}
 
 /** Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element */
 const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
