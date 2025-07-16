@@ -179,7 +179,7 @@ describe('Header', () => {
     cy.get(`[data-testid='chain-icon-${eth}']`, LOAD_TIMEOUT).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
     cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
-    cy.get(`[data-testid^='menu-item-chain-']`, LOAD_TIMEOUT).should('not.exist')
+    cy.get(`[data-testid^='menu-item-chain-']`, API_LOAD_TIMEOUT).should('not.exist')
     cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
   }
 })
