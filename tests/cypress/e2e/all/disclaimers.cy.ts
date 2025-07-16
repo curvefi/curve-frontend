@@ -5,7 +5,7 @@ import {
   oneAppPath,
   oneDesktopViewport,
   oneTabletViewport,
-  oneViewport
+  oneViewport,
 } from '@/support/ui'
 
 describe('Disclaimers', () => {

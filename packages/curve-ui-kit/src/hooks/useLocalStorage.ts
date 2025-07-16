@@ -40,10 +40,7 @@ export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
 export const useTableFilters = (tableTitle: string, defaultFilters: ColumnFiltersState) =>
-  useLocalStorage<ColumnFiltersState>(
-    `table-filters-${kebabCase(tableTitle)}`,
-    defaultFilters,
-  )
+  useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters)
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
 export const useFavoriteMarkets = () => {
