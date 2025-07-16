@@ -7,6 +7,8 @@ import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 
+const { isUndefined, isNaN } = lodash
+
 const RouterSwapAlerts = ({
   formStatus,
   formValues,
@@ -42,9 +44,7 @@ const RouterSwapAlerts = ({
 
   const usdToAmount = useMemo(
     () =>
-      !lodash.isUndefined(toUsdRate) && !lodash.isNaN(toUsdRate)
-        ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
-        : '',
+      !isUndefined(toUsdRate) && !isNaN(toUsdRate) ? (Number(formValues.toAmount) * Number(toUsdRate)).toString() : '',
     [formValues.toAmount, toUsdRate],
   )
 

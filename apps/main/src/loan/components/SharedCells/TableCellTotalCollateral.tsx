@@ -11,6 +11,8 @@ import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
+const { isUndefined } = lodash
+
 type Props = {
   rChainId: ChainId
   collateralId: string
@@ -39,7 +41,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
     ]
   }, [llamma, totalCollateralUsd, totalStablecoin])
 
-  if (lodash.isUndefined(totalCollateral) || lodash.isUndefined(totalStablecoin) || lodash.isUndefined(collateralUsdRate)) {
+  if (isUndefined(totalCollateral) || isUndefined(totalStablecoin) || isUndefined(collateralUsdRate)) {
     return <></>
   }
 

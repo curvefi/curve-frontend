@@ -178,7 +178,6 @@ class BigDecimal {
       throw new Error('Exponent must be an integer')
     }
     let result = this.create(1)
-
     let base = this
     let exp = Math.abs(n)
     while (exp > 0) {

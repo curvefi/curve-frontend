@@ -17,6 +17,8 @@ import SpinnerWrapper from '@ui/Spinner/SpinnerWrapper'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
 
+const { chunk } = lodash
+
 const ComboBox = ({
   testId,
   dialogClose,
@@ -105,7 +107,7 @@ const ComboBox = ({
           {/* LIST */}
           <ComboBoxListWrapper ref={listRef} boxHeight={listBoxHeight ?? '50vh'} topContentHeight={topContentHeight}>
             {Array.isArray(result) && result.length > 0 ? (
-              lodash.chunk(result, 30).map((gauges, idx) => (
+              chunk(result, 30).map((gauges, idx) => (
                 <ComboBoxListChunk
                   key={`gauges-${idx}`}
                   testId={testId}

@@ -166,7 +166,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     const type = oneTokenType()
-    const tokenField = type === 'borrowed' ? 'borrowed_token' : 'collateral_token'
+    const tokenField = (type + '_token') as `${typeof type}_token`
 
     cy.get(`[data-testid="btn-expand-filters"]`).click()
     const coins = vaultData.ethereum.data

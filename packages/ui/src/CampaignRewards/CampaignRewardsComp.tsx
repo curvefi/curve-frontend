@@ -3,6 +3,7 @@ import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip'
+import Image from '@ui-kit/shared/image'
 
 const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool
@@ -35,7 +36,7 @@ const Container = styled.div<{ highContrast?: boolean }>`
   border: ${({ highContrast }) => (highContrast ? '1px solid var(--white)' : '1px solid var(--gray-500a25)')};
 `
 
-const TokenIcon = styled.img`
+const TokenIcon = styled(Image)`
   border: 1px solid transparent;
   border-radius: 50%;
 `

@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { formatNumber } from '@ui/utils'
 
+const { isUndefined } = lodash
+
 const UserInfoLiquidationRange = ({
   llammaId,
   type,
@@ -16,7 +18,7 @@ const UserInfoLiquidationRange = ({
     const [price1, price2] = userPrices ?? []
     const [band1, band2] = userBands ?? []
 
-    if (!lodash.isUndefined(price1) && !lodash.isUndefined(price2) && !lodash.isUndefined(band1) && !lodash.isUndefined(band2)) {
+    if (!isUndefined(price1) && !isUndefined(price2) && !isUndefined(band1) && !isUndefined(band2)) {
       const parsedPrice1 = `${formatNumber(price1, { maximumFractionDigits: 2 })}`
       const parsedPrice2 = `${formatNumber(price2, { maximumFractionDigits: 2 })}`
       return { price1: parsedPrice1, price2: parsedPrice2, band1, band2 }
