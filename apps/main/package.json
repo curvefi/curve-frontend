@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint",
-    "preview": "vite preview",
+    "start": "vite preview",
     "typecheck": "tsc --noEmit",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",

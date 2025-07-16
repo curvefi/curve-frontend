@@ -12,7 +12,7 @@
   ],
   "scripts": {
     "build": "yarn workspaces foreach --parallel --all run build",
-    "start": "yarn workspace main preview",
+    "start": "yarn workspace main start",
     "dev": "yarn workspace main dev",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
