@@ -1,16 +1,7 @@
-import { useEffect, useState } from 'react'
 import { useQueries } from '@tanstack/react-query'
 import { getLib, requireLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject } from '@ui-kit/lib'
-import { queryClient } from '@ui-kit/lib/api'
-import {
-  extractTokenAddress,
-  queryFactory,
-  rootKeys,
-  type ChainParams,
-  type TokenParams,
-  type TokenQuery,
-} from '@ui-kit/lib/model/query'
+import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationSuite } from '@ui-kit/lib/model/query/token-validation'
 
 const QUERY_KEY_IDENTIFIER = 'usdRate' as const
@@ -34,35 +25,3 @@ export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams &
     queries: tokenAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
     combine: (results) => combineQueriesToObject(results, tokenAddresses),
   })
-
-/** Check if it's a token price query by looking for QUERY_KEY_IDENTIFIER as the last element */
-const isTokenUsdRateQuery = ({ queryKey }: { queryKey: readonly unknown[] }) =>
-  queryKey?.at(-1) === QUERY_KEY_IDENTIFIER
-
-/** Retrieves all cached values and returns them as a record */
-const getAllTokenUsdRates = (): Record<string, number> =>
-  Object.fromEntries(
-    queryClient
-      .getQueryCache()
-      .findAll({ predicate: isTokenUsdRateQuery })
-      .map(({ queryKey, state }) => [extractTokenAddress(queryKey), state.data] as const)
-      .filter(([tokenAddress, data]) => tokenAddress && typeof data === 'number'),
-  )
-
-/** Hook that provides real-time access to all cached values as a record. */
-export const useAllTokenUsdRates = () => {
-  const [rates, setRates] = useState<Record<string, number>>({})
-
-  useEffect(() => {
-    const updateRates = () => setRates(getAllTokenUsdRates())
-    updateRates()
-
-    return queryClient.getQueryCache().subscribe(({ query }) => {
-      if (isTokenUsdRateQuery(query)) {
-        updateRates()
-      }
-    })
-  }, [])
-
-  return rates
-}

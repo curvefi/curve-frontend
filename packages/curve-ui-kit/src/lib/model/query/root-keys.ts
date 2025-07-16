@@ -30,9 +30,3 @@ export const rootKeys = {
   token: ({ chainId, tokenAddress }: TokenParams) =>
     [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const,
 } as const
-
-export const isTokenQuery = (query: unknown): query is TokenQuery =>
-  typeof query === 'object' && query !== null && 'tokenAddress' in query && typeof query.tokenAddress === 'string'
-
-export const extractTokenAddress = (queryKey: readonly unknown[]): string | undefined =>
-  queryKey.find(isTokenQuery)?.tokenAddress

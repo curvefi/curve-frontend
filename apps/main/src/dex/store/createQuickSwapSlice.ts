@@ -17,7 +17,6 @@ import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -328,10 +327,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       // get max if MAX button is clicked
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
 
-      // get usdRates
-      await fetchTokenUsdRate({ chainId, tokenAddress: searchedParams.fromAddress })
-      await fetchTokenUsdRate({ chainId, tokenAddress: searchedParams.toAddress })
-
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
       void sliceState.fetchEstGasApproval(curve, searchedParams)
@@ -359,15 +354,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // Get user balances
       await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
-      const userBalancesMapper = get().userBalances.userBalancesMapper
-      const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
-        (k) => +(userBalancesMapper[k] ?? '0') > 0,
-      )
-
-      // Get prices of user balance tokens
-      await Promise.all(
-        [...filteredUserBalancesList, ethAddress].map((tokenAddress) => fetchTokenUsdRate({ chainId, tokenAddress })),
-      )
     },
 
     // steps

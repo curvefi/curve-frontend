@@ -40,7 +40,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { useAllTokenUsdRates, useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const QuickSwap = ({
   pageLoaded,
@@ -103,7 +103,11 @@ const QuickSwap = ({
 
   const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
   const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
-  const usdRatesMapper = useAllTokenUsdRates()
+
+  const userTokens = Object.entries(userBalancesMapper)
+    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
+    .map(([address]) => address)
+  const { data: usdRatesMapper } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
   const tokens = useMemo(() => {
     if (isEmpty(tokenList) || isEmpty(tokensMapper)) return []
