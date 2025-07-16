@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
@@ -50,6 +50,15 @@ const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, null] }], [minLiquidity])
 
+const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: (id: string, value: unknown) => void) =>
+  [
+    (columnFiltersById[LlamaMarketColumnId.Assets] as string) ?? '',
+    useCallback(
+      (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
+      [setColumnFilter],
+    ),
+  ] as const
+
 export const LlamaMarketsTable = ({
   onReload,
   result,
@@ -67,6 +76,7 @@ export const LlamaMarketsTable = ({
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
+  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -81,20 +91,6 @@ export const LlamaMarketsTable = ({
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
-
-  const searchText = (columnFiltersById[LlamaMarketColumnId.Assets] as string) ?? ''
-  const onSearch = useCallback(
-    (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
-    [setColumnFilter],
-  )
-
-  useEffect(() => {
-    console.log({
-      columnFilters,
-      defaultFilters,
-      hasFilters: columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
-    })
-  }, [columnFilters, defaultFilters])
 
   return (
     <DataTable

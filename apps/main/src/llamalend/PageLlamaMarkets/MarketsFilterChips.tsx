@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react'
+import { type ReactNode } from 'react'
 import { useAccount } from 'wagmi'
 import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
@@ -74,14 +74,13 @@ export const MarketsFilterChips = ({
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
+
   const isConnected = hasPositions != null && !!address
   const tooltip =
     !hasFilters && hiddenMarketCount
       ? t`Some markets are hidden by default due to low liquidity. You may change that in the liquidity filter.`
       : null
-  useEffect(() => {
-    console.log({ hasFilters, hiddenMarketCount })
-  }, [hasFilters, hiddenMarketCount])
+
   return (
     <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
       {!useIsMobile() && <TableSearchField value={searchText} onChange={onSearch} />}

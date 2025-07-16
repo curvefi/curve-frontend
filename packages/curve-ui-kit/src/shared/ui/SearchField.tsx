@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 
 type SearchFieldProps = TextFieldProps & {
-  value: string
+  value?: string
   onSearch: (search: string) => void
   inputRef?: RefObject<HTMLInputElement | null>
 }
@@ -16,7 +16,7 @@ type SearchFieldProps = TextFieldProps & {
  * Search field with debounced search. It is cleared and focused when clicking the close button.
  */
 export const SearchField = ({
-  value,
+  value = '',
   onSearch,
   placeholder = t`Search name or paste address`,
   name = 'search',
