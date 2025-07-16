@@ -1,7 +1,7 @@
 import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
 import { oneToken } from '@/support/helpers/tokens'
-import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
-import { fromEntries } from '../../../../packages/prices-api/src/objects.util'
+import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+import { fromEntries } from '@curvefi/prices-api/objects.util'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
@@ -64,12 +64,12 @@ export const HighUtilizationAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(2, 20)
   const data = [
-    ...range(count).map((index) => oneLendingPool(chain, index / (count - 1))),
+    ...range(count).map((index) => oneLendingPool(chain, index / count)),
     ...(chain == 'ethereum'
       ? ([
           {
             // fixed vault address to test campaign rewards
-            ...oneLendingPool(chain, oneFloat()),
+            ...oneLendingPool(chain, oneFloat(0.98)),
             vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
           },
           {
