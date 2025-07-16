@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import PaginatedTable from '@/dao/components/PaginatedTable'
 import { TableRowWrapper, TableData, TableDataLink } from '@/dao/components/PaginatedTable/TableRow'
@@ -27,7 +27,7 @@ const sortUserGaugeVotes = (
   sortBy: { key: UserGaugeVotesSortBy; order: SortDirection },
 ) => {
   const { key, order } = sortBy
-  return _.orderBy(userGaugeVotes, [key], [order])
+  return lodash.orderBy(userGaugeVotes, [key], [order])
 }
 
 const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTableProps) => {

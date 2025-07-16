@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import api from '@/dex/lib/curvejs'
 import { httpFetcher } from '@/dex/lib/utils'
@@ -164,7 +164,7 @@ const createGasSlice = (set: SetState<State>, get: GetState<State>): GasSlice =>
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })

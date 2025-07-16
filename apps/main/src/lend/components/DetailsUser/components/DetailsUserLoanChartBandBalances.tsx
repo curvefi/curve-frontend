@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import ChartBandBalances from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
@@ -29,7 +29,7 @@ const DetailsUserLoanChartBandBalances = ({
   const { oraclePrice, oraclePriceBand } = loansPrices?.prices ?? {}
 
   const chartBandBalancesData = useMemo(() => {
-    const data = _.cloneDeep(bandsBalances ?? [])
+    const data = lodash.cloneDeep(bandsBalances ?? [])
     if (data.length > 0 && typeof oraclePriceBand === 'number') {
       const firstN = data[0].n
       const lastN = data[data.length - 1].n

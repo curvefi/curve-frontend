@@ -1,5 +1,5 @@
 import produce from 'immer'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
@@ -87,7 +87,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
-          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #ffff3f', parsedValue)
             }
@@ -95,7 +95,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
-          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #ffff3f', parsedValue)
             }
@@ -109,7 +109,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
-        if (!_.isEqual(storedValue, value)) {
+        if (!lodash.isEqual(storedValue, value)) {
           if (showLog) {
             log(`%c state: ${key}`, 'background: #222; color: #d4d700', value)
           }
@@ -124,7 +124,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       set(
         produce((state) => {
           const storedValue = state[sliceKey][key]
-          if (!_.isEqual(storedValue, value)) {
+          if (!lodash.isEqual(storedValue, value)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #55a630', value)
             }

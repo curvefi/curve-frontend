@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FilterTypeKey,
@@ -33,7 +33,7 @@ import { logQuery, logSuccess } from '@ui-kit/lib'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { chunk, orderBy, sortBy: sortByFn, uniqBy } = _
+const { chunk, orderBy, sortBy: sortByFn, uniqBy } = lodash
 
 // isTableRowOpen
 type SliceState = {

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useEffect, useMemo } from 'react'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
@@ -33,7 +33,7 @@ export const ChainSwitcher = ({ networks, chainId }: ChainSwitcherProps) => {
 
   const options = useMemo(
     () =>
-      _.sortBy(
+      lodash.sortBy(
         Object.values(networks).filter((networkConfig) => networkConfig.showInSelectNetwork),
         (n) => n.name,
       ),

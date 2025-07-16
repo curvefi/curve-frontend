@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
@@ -14,7 +14,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   estGas: { gas: number; fetchStatus: FetchStatus }
@@ -580,7 +580,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })

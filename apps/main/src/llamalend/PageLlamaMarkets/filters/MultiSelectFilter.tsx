@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Box from '@mui/material/Box'
@@ -15,7 +15,7 @@ import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
-const { get, sortBy, sortedUniq } = _
+const { get, sortBy, sortedUniq } = lodash
 
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.

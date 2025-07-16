@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
 import ChipPool from '@/dex/components/ChipPool'
@@ -34,7 +34,7 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
-      _.zip(poolData?.tokens, poolData?.tokenAddresses).map(([symbol, address]) => ({
+      lodash.zip(poolData?.tokens, poolData?.tokenAddresses).map(([symbol, address]) => ({
         symbol: symbol!,
         address: address!,
       })),

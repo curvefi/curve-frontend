@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { FormWarning } from '@/lend/components/AlertFormWarning'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
@@ -204,7 +204,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })

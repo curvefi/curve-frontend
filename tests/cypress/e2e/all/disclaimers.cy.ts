@@ -1,5 +1,12 @@
 import { oneOf } from '@/support/generators'
-import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneTabletViewport, oneViewport } from '@/support/ui'
+import {
+  API_LOAD_TIMEOUT,
+  LOAD_TIMEOUT,
+  oneAppPath,
+  oneDesktopViewport,
+  oneTabletViewport,
+  oneViewport,
+} from '@/support/ui'
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {
@@ -11,7 +18,7 @@ describe('Disclaimers', () => {
       // Navigate to risk disclaimer from footer.
       cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
       cy.get(`[data-testid='footer'] a`).contains('disclaimer', { matchCase: false }).click()
-      cy.url(LOAD_TIMEOUT).should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
+      cy.url(API_LOAD_TIMEOUT).should('match', /\/disclaimer\/?(\?tab=(lend|crvusd))?$/)
       cy.get(`[data-testid='disclaimer']`, LOAD_TIMEOUT).should('be.visible')
     })
   })

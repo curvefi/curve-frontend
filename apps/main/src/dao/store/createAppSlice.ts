@@ -1,5 +1,5 @@
 import produce from 'immer'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
@@ -65,12 +65,12 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
-          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             state[sliceKey][key] = parsedValue
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
-          if (!_.isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             state[sliceKey][key] = parsedValue
           }
         }
@@ -81,7 +81,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
-        if (!_.isEqual(storedValue, value)) {
+        if (!lodash.isEqual(storedValue, value)) {
           state[sliceKey][key] = value
         }
       }),
@@ -92,7 +92,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       const value = sliceState[key]
       set(
         produce((state) => {
-          if (!_.isEqual(state[sliceKey][key], value)) {
+          if (!lodash.isEqual(state[sliceKey][key], value)) {
             state[sliceKey][key] = value
           }
         }),

@@ -4,7 +4,7 @@ import {
   useLocation as useTanstackLocation,
   useNavigate as useTanstackNavigate,
   useParams as useTanstackParams,
-  useRouteContext as useTanstackRouteContext
+  useRouteContext as useTanstackRouteContext,
 } from '@tanstack/react-router'
 
 /**
@@ -15,20 +15,7 @@ export function useNavigate() {
   const navigate = useTanstackNavigate()
 
   return useCallback(
-    (to: string | number, options?: { replace?: boolean; state?: any }) => {
-      if (typeof to === 'number') {
-        // Handle relative navigation like navigate(-1)
-        window.history.go(to)
-        return
-      }
-
-      // Handle string navigation
-      void navigate({
-        to,
-        replace: options?.replace,
-        state: options?.state,
-      })
-    },
+    (to: string, options: { replace?: boolean; state?: any } = {}): void => void navigate({ to, ...options }),
     [navigate],
   )
 }

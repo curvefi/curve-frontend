@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
@@ -6,6 +6,8 @@ import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/Pa
 import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
+
+const { isUndefined, isNaN } = lodash
 
 const RouterSwapAlerts = ({
   formStatus,
@@ -42,9 +44,7 @@ const RouterSwapAlerts = ({
 
   const usdToAmount = useMemo(
     () =>
-      !_.isUndefined(toUsdRate) && !_.isNaN(toUsdRate)
-        ? (Number(formValues.toAmount) * Number(toUsdRate)).toString()
-        : '',
+      !isUndefined(toUsdRate) && !isNaN(toUsdRate) ? (Number(formValues.toAmount) * Number(toUsdRate)).toString() : '',
     [formValues.toAmount, toUsdRate],
   )
 

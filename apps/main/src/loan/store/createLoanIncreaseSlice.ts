@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
@@ -14,7 +14,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string

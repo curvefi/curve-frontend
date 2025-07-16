@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
@@ -163,7 +163,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
     setSlippageConfirmed(false)
 
     if (curve && poolData) {
-      const cFormStatus = _.cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus = lodash.cloneDeep(DEFAULT_FORM_STATUS)
       cFormStatus.isApproved = formStatus.isApproved
       cFormStatus.isClaimCrv = isClaimCrv
       cFormStatus.isClaimRewards = isClaimRewards

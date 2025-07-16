@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
@@ -23,7 +23,7 @@ import { shortenAccount } from '@ui/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { orderBy } = _
+const { orderBy } = lodash
 
 type SliceState = {
   activeKey: string

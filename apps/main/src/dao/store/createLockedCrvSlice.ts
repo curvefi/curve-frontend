@@ -1,5 +1,5 @@
 import produce from 'immer'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
@@ -22,7 +22,7 @@ import { notify, requireLib, setMissingProvider, useWallet } from '@ui-kit/featu
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string

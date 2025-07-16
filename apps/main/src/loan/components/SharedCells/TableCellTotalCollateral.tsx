@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
@@ -10,6 +10,8 @@ import { Chip } from '@ui/Typography'
 import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+
+const { isUndefined } = lodash
 
 type Props = {
   rChainId: ChainId
@@ -39,7 +41,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
     ]
   }, [llamma, totalCollateralUsd, totalStablecoin])
 
-  if (_.isUndefined(totalCollateral) || _.isUndefined(totalStablecoin) || _.isUndefined(collateralUsdRate)) {
+  if (isUndefined(totalCollateral) || isUndefined(totalStablecoin) || isUndefined(collateralUsdRate)) {
     return <></>
   }
 

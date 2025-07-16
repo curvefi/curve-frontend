@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useMarketExtraIncentives } from '@/llamalend/hooks/useMarketExtraIncentives'
@@ -38,7 +38,7 @@ export const RewardsIcons = ({
         {extraIncentives.map(({ title, image }) => (
           <RewardChip key={title} icon={<RewardsImg src={image} alt={title} />} />
         ))}
-        {_.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
+        {lodash.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
           <RewardChip key={img} icon={<RewardIcon size="sm" key={img} imageId={img} />} />
         ))}
       </Stack>
