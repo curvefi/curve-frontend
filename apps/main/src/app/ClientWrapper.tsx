@@ -1,9 +1,9 @@
 'use client'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
 import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry.tsx'
-import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
 import type { NetworkDef } from '@ui/utils'
@@ -46,7 +46,7 @@ const useLayoutStoreResponsive = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => _.delay(handleScrollListener, 200))
+    window.addEventListener('scroll', () => lodash.delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)
@@ -120,7 +120,6 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const currentApp = getCurrentApp(pathname)
   return (
     <StyledComponentsRegistry>
-      <GlobalStyle />
       {network && (
         <ThemeProvider theme={theme}>
           <OverlayProvider>
