@@ -72,7 +72,7 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
     }
     const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
     console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
-    void navigate(redirectUrl, { replace: true })
+    navigate(redirectUrl, { replace: true })
   }, [network, networkId, pathname, navigate])
   return network
 }
