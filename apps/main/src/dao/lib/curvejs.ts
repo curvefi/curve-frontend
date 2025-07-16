@@ -1,8 +1,7 @@
 import type { FormType as LockFormType } from '@/dao/components/PageVeCrv/types'
-import { CurveApi, Provider, EstimatedGas, UsdRatesMapper, ClaimButtonsKey } from '@/dao/types/dao.types'
+import { CurveApi, Provider, EstimatedGas, ClaimButtonsKey } from '@/dao/types/dao.types'
 import { getErrorMessage } from '@/dao/utils'
 import type { DateValue } from '@internationalized/date'
-import PromisePool from '@supercharge/promise-pool/dist'
 import { log } from '@ui-kit/lib'
 import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
@@ -10,21 +9,6 @@ import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 export const helpers = {
   waitForTransaction,
   waitForTransactions,
-  fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
-    const results: UsdRatesMapper = {}
-
-    await PromisePool.for(tokenAddresses)
-      .withConcurrency(5)
-      .handleError((error, tokenAddress) => {
-        console.error(`Unable to get usd rate for ${tokenAddress}`, error)
-        results[tokenAddress] = NaN
-      })
-      .process(async (tokenAddress) => {
-        results[tokenAddress] = await curve.getUsdRate(tokenAddress)
-      })
-    return results
-  },
 }
 
 const lockCrv = {

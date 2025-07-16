@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useChainId } from '@/lend/entities/chain'
-import { useTokenUsdRate, useTokenUsdRates } from '@/lend/entities/token'
 import DetailInfo from '@ui/DetailInfo'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type Amount = { amount: string; address: string }
 

@@ -39,7 +39,6 @@ export type QuickSwapSlice = {
       fromAddress: string,
       toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
-    fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
     fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
@@ -107,13 +106,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       return {
         fromAmount: get().userBalances.userBalancesMapper[fromAddress] ?? '0',
         toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
-      }
-    },
-    fetchUsdRates: async (curve, { fromAddress, toAddress }) => {
-      const usdRateMapper = get().usdRates.usdRatesMapper
-
-      if (typeof usdRateMapper[toAddress] === 'undefined' || typeof usdRateMapper[fromAddress] === 'undefined') {
-        await get().usdRates.fetchUsdRateByTokens(curve, [fromAddress, toAddress])
       }
     },
     fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
@@ -321,7 +313,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
 
-      const { signerAddress } = curve
+      const { signerAddress, chainId } = curve
 
       // set loading
       const storedRoutesAndOutput = sliceState.routesAndOutput[activeKey]
@@ -334,9 +326,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // get max if MAX button is clicked
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
-
-      // get usdRates
-      await sliceState.fetchUsdRates(curve, searchedParams)
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
@@ -365,13 +354,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // Get user balances
       await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
-      const userBalancesMapper = get().userBalances.userBalancesMapper
-      const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
-        (k) => +(userBalancesMapper[k] ?? '0') > 0,
-      )
-
-      // Get prices of user balance tokens
-      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, ethAddress])
     },
 
     // steps

@@ -13,7 +13,6 @@ import type {
 } from '@/lend/components/PageMarketList/types'
 import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
 import { TITLE } from '@/lend/constants'
-import { getTokenUsdRateQueryData } from '@/lend/entities/token'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -33,6 +32,7 @@ import { sleep } from '@/lend/utils/helpers'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
 import { logQuery, logSuccess } from '@ui-kit/lib'
+import { getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE

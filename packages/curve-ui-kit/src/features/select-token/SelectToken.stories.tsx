@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { ethAddress } from 'viem'
 import { Button, Stack, Typography } from '@mui/material'
 import { action } from '@storybook/addon-actions'
 import type { Meta, StoryObj } from '@storybook/react'
@@ -12,7 +13,7 @@ const { Spacing } = SizesAndSpaces
 const defaultTokens: TokenOption[] = [
   {
     chain: 'ethereum',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE',
+    address: ethAddress,
     symbol: 'ETH',
     label: 'Ethereum',
     volume: 17,

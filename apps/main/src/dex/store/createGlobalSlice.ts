@@ -81,7 +81,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.usdRates.resetState()
       state.userBalances.resetState()
       state.user.resetState()
       state.userBalances.resetState()
@@ -125,9 +124,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       void state.gas.fetchGasInfo(curveApi)
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
-
-      // pull all api calls before isLoadingApi if it is not needed for initial load
-      void state.usdRates.fetchAllStoredUsdRates(curveApi)
     }
 
     if (curveApi.signerAddress) {

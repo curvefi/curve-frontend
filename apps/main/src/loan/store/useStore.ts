@@ -27,12 +27,10 @@ import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import createPegKeepersSlice, { PegKeepersSlice } from '@/loan/store/createPegKeepersSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/loan/store/createUsdRatesSlice'
 
 export type State = CacheSlice &
   AppSlice &
   GasSlice &
-  UsdRatesSlice &
   ChartBandsSlice &
   CollateralsSlice &
   LoansSlice &
@@ -55,7 +53,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
   ...createGasSlice(set, get),
-  ...createUsdRatesSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createCollateralsSlice(set, get),
   ...createLoansSlice(set, get),
