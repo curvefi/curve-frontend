@@ -26,7 +26,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const network = useStore((state) => state.networks.networks[networkDef.chainId])
 
@@ -50,7 +49,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
     () => {
       if (curveApi) {
         void fetchGasInfo(curveApi)
-        void fetchAllStoredUsdRates(curveApi)
         void fetchPoolsVolumeTvl(curveApi)
 
         if (curveApi.signerAddress) {

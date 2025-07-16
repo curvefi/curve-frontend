@@ -38,6 +38,7 @@ import { TokenSelector } from '@ui-kit/features/select-token'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -74,9 +75,7 @@ const Swap = ({
   const hasRouter = useStore((state) => state.hasRouter)
   const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
-  const fetchUsdRateByTokens = useStore((state) => state.usdRates.fetchUsdRateByTokens)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
   const resetState = useStore((state) => state.poolSwap.resetState)
@@ -96,8 +95,12 @@ const Swap = ({
   const userFromBalance = userPoolBalances?.[formValues.fromAddress]
   const userToBalance = userPoolBalances?.[formValues.toAddress]
 
-  const fromUsdRate = usdRatesMapper[formValues.fromAddress]
-  const toUsdRate = usdRatesMapper[formValues.toAddress]
+  const { data: fromUsdRate } = useTokenUsdRate(
+    { chainId, tokenAddress: formValues.fromAddress },
+    !!formValues.fromAddress,
+  )
+
+  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: formValues.toAddress }, !!formValues.toAddress)
 
   const { selectList, swapTokensMapper } = useMemo(() => {
     const { selectList, swapTokensMapper } = getSwapTokens(tokensMapper, poolDataCacheOrApi)
@@ -271,19 +274,6 @@ const Swap = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
-
-  // get usdRates
-  useEffect(() => {
-    if (formValues.fromAddress || formValues.toAddress) {
-      if (formValues.fromAddress && isUndefined(fromUsdRate)) {
-        void fetchUsdRateByTokens(curve, [formValues.fromAddress])
-      }
-      if (formValues.toAddress && isUndefined(toUsdRate)) {
-        void fetchUsdRateByTokens(curve, [formValues.toAddress])
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve, formValues, fromUsdRate, toUsdRate])
 
   // curve state change
   useEffect(() => {
