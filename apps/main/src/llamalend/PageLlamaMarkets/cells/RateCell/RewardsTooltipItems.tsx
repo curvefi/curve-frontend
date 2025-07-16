@@ -6,7 +6,6 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import type { ImageData } from '@ui-kit/shared/image'
 import { RewardIcon, RewardsImg } from '@ui-kit/shared/ui/RewardIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 
@@ -17,7 +16,7 @@ export const RewardsTooltipItems = ({
 }: {
   title: string
   poolRewards: PoolRewards[]
-  extraIncentives: { title: string; percentage: number; image: ImageData }[]
+  extraIncentives: { title: string; percentage: number; image: string }[]
 }) => {
   const percentage = extraIncentives.length > 0 && formatPercent(lodash.sum(extraIncentives.map((i) => i.percentage)))
   return (

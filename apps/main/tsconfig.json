@@ -1,29 +1,4 @@
 {
-  "extends": "tsconfig/nextjs.json",
-  "compilerOptions": {
-    "baseUrl": "./src",
-    "paths": {
-      "@/*": ["*"],
-      "@ui": ["../../../packages/ui/src/index.ts"],
-      "@ui/*": ["../../../packages/ui/src/*"],
-      "@ui-kit/*": ["../../../packages/curve-ui-kit/src/*"],
-      "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
-      "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"]
-    },
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
-  },
-  "exclude": ["node_modules", "cypress"],
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "../../packages/curve-ui-kit/**/*.d.ts",
-    "../../packages/ui/**/*.d.ts",
-    "next-env.d.ts",
-    ".next/types/**/*.ts"
-  ]
+  "files": [],
+  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }

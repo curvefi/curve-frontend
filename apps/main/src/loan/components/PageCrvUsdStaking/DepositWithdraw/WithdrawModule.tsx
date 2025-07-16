@@ -6,7 +6,6 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import Image from '@ui-kit/shared/image'
 import {
   ErrorText,
   InputLabel,
@@ -40,7 +39,7 @@ const WithdrawModule = () => {
         <InputWrapper>
           <Box flex>
             <SelectorBox>
-              <Image height={28} src={RCScrvUSDLogoXS} alt="scrvUSD logo" />
+              <img height={28} src={RCScrvUSDLogoXS} alt="scrvUSD logo" />
               <InputSelectorText>scrvUSD</InputSelectorText>
             </SelectorBox>
           </Box>
@@ -64,7 +63,7 @@ const WithdrawModule = () => {
         <InputWrapper>
           <Box flex>
             <SelectorBox>
-              <Image height={28} src={RCCrvUSDLogoXS} alt="Token Logo" />
+              <img height={28} src={RCCrvUSDLogoXS} alt="Token Logo" />
               <InputSelectorText>crvUSD</InputSelectorText>
             </SelectorBox>
           </Box>

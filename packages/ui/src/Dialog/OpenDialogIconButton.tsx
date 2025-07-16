@@ -1,7 +1,7 @@
 import { ReactNode, useRef } from 'react'
-import IconButton from 'ui/src/IconButton'
 import { useButton } from '@react-aria/button'
 import type { OverlayTriggerState } from '@react-stately/overlays'
+import IconButton from 'ui/src/IconButton'
 
 const OpenDialogIconButton = ({
   className,

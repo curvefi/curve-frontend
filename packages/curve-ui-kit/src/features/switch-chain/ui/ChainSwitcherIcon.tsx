@@ -1,6 +1,5 @@
 import Box from '@mui/material/Box'
 import type { NetworkDef } from '@ui/utils'
-import Image from '@ui-kit/shared/image'
 
 type ChainIconProps = {
   network: NetworkDef
@@ -13,7 +12,7 @@ type ChainIconProps = {
  */
 export const ChainSwitcherIcon = ({ network: { chainId, name, logoSrc }, size = 28 }: ChainIconProps) => (
   <Box component="span" alignItems="center" display="flex" data-testid={`chain-icon-${chainId}`}>
-    <Image
+    <img
       alt={name}
       // onError={(evt) => (evt.target as HTMLImageElement).src = src}
       src={logoSrc}

@@ -13,7 +13,6 @@ import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
 
-const LlamaImageSrc = (LlamaImg as unknown as { src: string }).src
 const Llama = styled('img')({
   alt: 'Llama',
   position: 'absolute',
@@ -74,7 +73,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
         ))}
 
         <Llama
-          src={LlamaImageSrc}
+          src={LlamaImg}
           sx={{
             height: SizesAndSpaces.IconSize.xxl,
             right: SizesAndSpaces.Spacing.lg,

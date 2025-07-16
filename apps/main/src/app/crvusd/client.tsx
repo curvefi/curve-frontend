@@ -1,31 +1,18 @@
 'use client'
 import '@/global-extensions'
-import { useParams } from 'next/navigation'
-import { type ReactNode, useEffect } from 'react'
-import type { CrvUsdServerData } from '@/app/api/crvusd/types'
-import { setAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
+import { type ReactNode } from 'react'
 import { networks, networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { UrlParams } from '@/loan/types/loan.types'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { useParams } from '@ui-kit/hooks/router'
 import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
-import { logSuccess } from '@ui-kit/lib'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
-export function useInjectServerData(serverData: CrvUsdServerData) {
-  useEffect(() => {
-    const { mintMarkets, dailyVolume } = serverData
-    dailyVolume && setAppStatsDailyVolume({}, dailyVolume)
-    logSuccess('useInjectServerData', { mintMarkets: recordValues(mintMarkets ?? {}).flat().length })
-  }, [serverData])
-}
-
-export function CrvUsdClientLayout({ children, serverData }: { children: ReactNode; serverData: CrvUsdServerData }) {
-  useInjectServerData(serverData)
+export function CrvUsdClientLayout({ children }: { children: ReactNode }) {
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()

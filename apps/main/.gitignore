@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
- 
+
 # testing
 /coverage
 
@@ -48,3 +48,8 @@ src/sdk/types/ethers-contracts
 
 # crash report
 report.*.json
+
+node_modules
+dist
+dist-ssr
+*.local

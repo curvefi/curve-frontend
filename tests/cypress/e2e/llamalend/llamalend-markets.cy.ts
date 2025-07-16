@@ -18,7 +18,7 @@ import {
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
+import type { GetMarketsResponse } from '@curvefi/prices-api/src/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
@@ -254,7 +254,8 @@ describe(`LlamaLend Markets`, () => {
   it('should hide columns', () => {
     if (breakpoint == 'mobile') {
       // mobile viewports do not have this feature
-      cy.viewport(...oneDesktopViewport())
+      const [width, height] = oneDesktopViewport()
+      cy.viewport(width, height)
     }
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },

@@ -1,11 +1,11 @@
 import { CSSProperties, ReactNode, RefObject } from 'react'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
+import { AriaButtonOptions } from '@react-aria/button'
 import { buttonOutlinedStyles } from 'ui/src/Button/styles'
 import DividerHorizontal from 'ui/src/DividerHorizontal'
 import SelectIconBtnDelete, { SelectIconBtnDeleteProps } from 'ui/src/Select/SelectIconBtnDelete'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
-import { AriaButtonOptions } from '@react-aria/button'
 
 export type ButtonVariant = 'outlined'
 
