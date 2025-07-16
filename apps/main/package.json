@@ -18,8 +18,8 @@
     "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
-    "@curvefi/api": "2.68.0",
-    "@curvefi/llamalend-api": "1.0.22-beta.1",
+    "@curvefi/api": "2.68.1",
+    "@curvefi/llamalend-api": "1.0.24",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",

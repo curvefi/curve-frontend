@@ -111,7 +111,7 @@ const ChipPoolAddress = styled.span`
 const ChipPoolName = styled(TextEllipsis)`
   font-size: var(--font-size-4);
 
-  max-width: 13.125rem; // 200px
+  max-width: min(13.125rem, 100vw - 140px); // 210px, but smaller in very small viewports to avoid horizontal scroll
 
   @media (min-width: ${breakpoints.sm}rem) {
     font-size: 1.25rem; // 20px
