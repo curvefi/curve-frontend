@@ -210,24 +210,24 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     },
     sortFn: (chainId, sortBy, order, poolDatas) => {
       if (sortBy === SORT_ID.poolName) {
-        return _.orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
+        return orderBy(poolDatas, ({ poolName }) => poolName.toLowerCase(), [order])
       } else if (sortBy === SORT_ID.liquidityUsd) {
-        return _.orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
+        return orderBy(poolDatas, ({ liquidityUsd }) => Number(liquidityUsd || 0), [order])
       } else if (sortBy === SORT_ID.profits) {
-        return _.orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
+        return orderBy(poolDatas, ({ profitsTotalUsd }) => profitsTotalUsd, [order])
       } else if (sortBy === SORT_ID.claimables) {
-        return _.orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
+        return orderBy(poolDatas, ({ claimablesTotalUsd }) => claimablesTotalUsd, [order])
       } else if (sortBy === SORT_ID.userCrvApy) {
-        return _.orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
+        return orderBy(poolDatas, ({ userCrvApy }) => userCrvApy || 0, [order])
       } else if (sortBy.startsWith('reward')) {
         const rewardsApy = get().pools.rewardsApyMapper[chainId]
 
         if (sortBy === SORT_ID.rewardBase) {
-          return _.orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
+          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.base || '0'), [order])
         }
 
         if (sortBy === SORT_ID.rewardOthers) {
-          return _.orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
+          return orderBy(poolDatas, ({ poolId }) => Number(rewardsApy[poolId]?.other?.[0]?.apy || '0'), [order])
         }
       }
       return []

@@ -122,7 +122,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
         searchedByAddresses: parseSearchTermResults(addressesResult),
       })
 
-      return _.uniqBy([...tokensResult, ...addressesResult], (r) => r.item.id).map((r) => r.item)
+      return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.id).map((r) => r.item)
     },
     sortByUserData: (api, sortKey, market) => {
       const { user } = get()
@@ -152,31 +152,31 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
       const totalCollateralValuesMapper = marketSlice.totalCollateralValuesMapper[chainId] ?? {}
 
       if (sortKey === TITLE.tokenCollateral) {
-        return _.orderBy(markets, (market) => market.collateral_token.symbol.toLowerCase(), [order])
+        return orderBy(markets, (market) => market.collateral_token.symbol.toLowerCase(), [order])
       } else if (sortKey === TITLE.tokenBorrow || sortKey === TITLE.tokenSupply) {
-        return _.orderBy(markets, (market) => market.borrowed_token.symbol.toLowerCase(), [order])
+        return orderBy(markets, (market) => market.borrowed_token.symbol.toLowerCase(), [order])
       } else if (sortKey === 'rateBorrow') {
-        return _.orderBy(markets, (market) => +(ratesMapper?.[market.id]?.rates?.borrowApy ?? '0'), [order])
+        return orderBy(markets, (market) => +(ratesMapper?.[market.id]?.rates?.borrowApy ?? '0'), [order])
       } else if (sortKey === 'rateLend') {
-        return _.orderBy(markets, (market) => +(ratesMapper?.[market.id]?.rates?.lendApy ?? '0'), [order])
+        return orderBy(markets, (market) => +(ratesMapper?.[market.id]?.rates?.lendApy ?? '0'), [order])
       } else if (sortKey === 'available' || sortKey === 'cap') {
-        return _.orderBy(markets, (market) => +(statsCapAndAvailableMapper[market.id]?.[sortKey] ?? '0'), [order])
+        return orderBy(markets, (market) => +(statsCapAndAvailableMapper[market.id]?.[sortKey] ?? '0'), [order])
       } else if (sortKey === 'leverage') {
-        return _.orderBy(markets, (market) => +(leverageMapper[market.id]?.maxLeverage ?? '0'), [order])
+        return orderBy(markets, (market) => +(leverageMapper[market.id]?.maxLeverage ?? '0'), [order])
       } else if (sortKey === 'totalApr') {
-        return _.orderBy(markets, (market) => sortByRewards(market, rewardsMapper, ratesMapper), [order])
+        return orderBy(markets, (market) => sortByRewards(market, rewardsMapper, ratesMapper), [order])
       } else if (sortKey === 'totalLiquidity') {
-        return _.orderBy(markets, (market) => +(totalLiquidityMapper[market.id]?.totalLiquidity ?? '0'), [order])
+        return orderBy(markets, (market) => +(totalLiquidityMapper[market.id]?.totalLiquidity ?? '0'), [order])
       } else if (sortKey === 'totalDebt') {
-        return _.orderBy(markets, (market) => +(statsTotalMapper[market.id]?.totalDebt ?? '0'), [order])
+        return orderBy(markets, (market) => +(statsTotalMapper[market.id]?.totalDebt ?? '0'), [order])
       } else if (sortKey === 'utilization') {
-        return _.orderBy(markets, (market) => sortByUtilization(market, statsCapAndAvailableMapper, statsTotalMapper), [
+        return orderBy(markets, (market) => sortByUtilization(market, statsCapAndAvailableMapper, statsTotalMapper), [
           order,
         ])
       } else if (sortKey === 'totalCollateralValue') {
-        return _.orderBy(markets, (market) => +(totalCollateralValuesMapper[market.id]?.total ?? '0'), [order])
+        return orderBy(markets, (market) => +(totalCollateralValuesMapper[market.id]?.total ?? '0'), [order])
       } else if (sortKey.startsWith('my')) {
-        return _.orderBy(markets, (market) => sliceState.sortByUserData(api, sortKey, market), [order])
+        return orderBy(markets, (market) => sliceState.sortByUserData(api, sortKey, market), [order])
       }
 
       return markets
@@ -203,7 +203,7 @@ const createMarketListSlice = (set: SetState<State>, get: GetState<State>): Mark
 
       const { marketListMapper } = _getMarketList(markets)
 
-      const marketsResult = _.sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map(
+      const marketsResult = sortByFn(Object.values(marketListMapper), (m) => m.symbol.toLowerCase()).map(
         (market, idx) => {
           // set table settings for each market
           parsedTableRowsSettings[market.address] = getTableRowSettings(
@@ -430,7 +430,7 @@ export function _getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   const { filterKey, filterTypeKey, searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
-    parsedSearchText = _.chunk(searchText, 5)
+    parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }

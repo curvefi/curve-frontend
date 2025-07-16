@@ -131,21 +131,21 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         ignoreExchangeRateCheck,
       )
 
-      const cFormStatus = _.cloneDeep(sliceState.formStatus)
+      const cFormStatus = cloneDeep(sliceState.formStatus)
       cFormStatus.error = ''
       cFormStatus.warning = ''
 
       if (resp.error) {
         get()[sliceKey].setStateByKey('formStatus', { ...cFormStatus, error: resp.error })
       } else {
-        const cFormValues = _.cloneDeep(formValues)
+        const cFormValues = cloneDeep(formValues)
         cFormValues.toAmount = resp.toAmount
         cFormValues.fromAmount = resp.fromAmount
         const activeKey = getActiveKey(cFormValues, maxSlippage)
 
         sliceState.setStateByKeys({
           activeKey,
-          formValues: _.cloneDeep(cFormValues),
+          formValues: cloneDeep(cFormValues),
           formStatus: {
             ...cFormStatus,
             warning: resp.isExchangeRateLow ? 'warning-exchange-rate-low' : '',
@@ -166,7 +166,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           cFormValues.fromError = +userFromBalance >= +cFormValues.fromAmount ? '' : 'too-much'
 
           // update formValues
-          get()[sliceKey].setStateByKey('formValues', _.cloneDeep(cFormValues))
+          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
 
           // get est gas, approval
           if (!cFormValues.fromError) {
@@ -261,7 +261,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       const storedFormValues = get()[sliceKey].formValues
 
       // update form values
-      const cFormValues = _.cloneDeep({ ...storedFormValues, ...updatedFormValues })
+      const cFormValues = cloneDeep({ ...storedFormValues, ...updatedFormValues })
       cFormValues.toError = ''
       cFormValues.fromError = ''
 
@@ -269,7 +269,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       get()[sliceKey].setStateByKeys({
         activeKey,
         formStatus: { ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved },
-        formValues: _.cloneDeep(cFormValues),
+        formValues: cloneDeep(cFormValues),
       })
 
       if (
@@ -290,7 +290,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       if (isGetMaxFrom) {
         cFormValues.fromAmount = await get()[sliceKey].fetchMaxAmount(activeKey, curve, pool, cFormValues, maxSlippage)
         activeKey = getActiveKey(cFormValues, maxSlippage)
-        get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
+        get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
       }
 
       if (!(+cFormValues.toAmount > 0 || +cFormValues.fromAmount > 0)) return
@@ -302,7 +302,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
 
         if (Array.isArray(currencyReserve?.tokens)) {
           cFormValues.toError = getReservesBalanceError(currencyReserve, cFormValues.toAddress, cFormValues.toAmount)
-          get()[sliceKey].setStateByKey('formValues', _.cloneDeep(cFormValues))
+          get()[sliceKey].setStateByKey('formValues', cloneDeep(cFormValues))
         }
       }
 
@@ -312,7 +312,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       get()[sliceKey].setStateByActiveKey(
         'exchangeOutput',
         activeKey,
-        _.cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
+        cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
       void get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
     },
@@ -359,7 +359,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       const { fromAddress, fromAmount, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swapApprove(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -402,7 +402,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         maxSlippage,
       )
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+        const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
         cFormStatus.formProcessing = false
         cFormStatus.step = ''
         cFormStatus.error = ''
@@ -411,7 +411,7 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
           cFormStatus.error = resp.error
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
         } else {
-          const cFormValues = _.cloneDeep(formValues)
+          const cFormValues = cloneDeep(formValues)
           cFormValues.fromAmount = ''
           cFormValues.toAmount = ''
 

@@ -56,7 +56,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
     },
     setFormValues: async (userActiveKey, api, market) => {
       // update userActiveKey, formValues
-      const cFormStatus: FormStatus = _.cloneDeep(DEFAULT_FORM_STATUS)
+      const cFormStatus: FormStatus = cloneDeep(DEFAULT_FORM_STATUS)
       get()[sliceKey].setStateByKeys({ formStatus: cFormStatus })
 
       if (!userActiveKey || !api || !market) return
@@ -77,7 +77,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
       // update formStatus
       const step = type === 'crv' ? 'CLAIM_CRV' : 'CLAIM_REWARDS'
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step, isComplete: false }
-      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
       await get().gas.fetchGasInfo(api)
@@ -96,7 +96,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
           isApproved: true,
           isComplete: !resp.error,
         }
-        get()[sliceKey].setStateByKeys(_.merge(_.cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
+        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
 
         return { ...resp }
       }
@@ -117,7 +117,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

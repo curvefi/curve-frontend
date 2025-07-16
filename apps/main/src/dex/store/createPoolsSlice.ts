@@ -359,7 +359,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       for (const idx in tokenAddresses) {
         const tokenAddress = tokenAddresses[idx]
         const usdRate = usdRatesMapper[tokenAddress] ?? 0
-        const usdRateError = _.isNaN(usdRate)
+        const usdRateError = isNaN(usdRate)
         const balance = Number(balances?.[idx])
         const balanceUsd = !isEmpty && +usdRate > 0 && !usdRateError ? balance * usdRate : 0
 
@@ -380,7 +380,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       crTokens.map((cr: CurrencyReservesToken) => {
         if (isEmpty) {
           cr.percentShareInPool = '0'
-        } else if (poolData.pool.isCrypto && _.isNaN(cr.usdRate)) {
+        } else if (poolData.pool.isCrypto && isNaN(cr.usdRate)) {
           cr.percentShareInPool = 'NaN'
         } else if (poolData.pool.isCrypto) {
           cr.percentShareInPool = ((cr.balanceUsd / totalUsd) * 100).toFixed(2)
@@ -409,7 +409,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       let rewardsApyMapper: RewardsApyMapper = { ...allRewardsApyMapper[chainId] }
 
       // retrieve data in chunks so that the data can already be displayed in the UI
-      for (const part of _.chunk(poolIds, 200)) {
+      for (const part of chunk(poolIds, 200)) {
         const { results } = await PromisePool.for(part).process((poolData) => poolAllRewardsApy(network, poolData.pool))
         rewardsApyMapper = {
           ...rewardsApyMapper,
@@ -487,7 +487,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         ...poolData,
         isWrapped,
         tokens,
-        tokensCountBy: _.countBy(tokens),
+        tokensCountBy: countBy(tokens),
         tokenAddresses,
       }
 
@@ -898,7 +898,7 @@ export default createPoolsSlice
 
 // check for duplicate token name
 export function updateHaveSameTokenNames(tokensMapper: TokensMapper) {
-  const grouped = _.groupBy(tokensMapper, (v) => v!.symbol)
+  const grouped = groupBy(tokensMapper, (v) => v!.symbol)
   const duplicatedTokenNames = Object.entries(grouped)
     .filter(([_, v]) => v.length > 1)
     .map((v) => v[0])

@@ -22,8 +22,8 @@ const { get, sortBy, sortedUniq } = lodash
  * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
  */
 const getSortedStrings = <T, K extends DeepKeys<T>>(data: T[], field: K) => {
-  const values = data.map((d) => _.get(d, field) as string)
-  return _.sortedUniq(_.sortBy(values, (val) => val.toLowerCase()))
+  const values = data.map((d) => get(d, field) as string)
+  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
 }
 
 /**

@@ -31,7 +31,7 @@ const Page = (params: NetworkUrlParams) => {
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)
   const push = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const { llamaApi: api = null, connectState } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const titleMapper = useTitleMapper()

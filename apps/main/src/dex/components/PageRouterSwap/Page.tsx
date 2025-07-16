@@ -21,7 +21,7 @@ import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 export const PageRouterSwap = (props: NetworkUrlParams) => {
   const push = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)

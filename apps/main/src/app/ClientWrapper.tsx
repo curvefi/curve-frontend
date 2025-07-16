@@ -1,5 +1,4 @@
 'use client'
-import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'

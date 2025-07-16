@@ -66,7 +66,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       get()[sliceKey].setStateByActiveKey('max', activeKey, resp)
 
       //   validation
-      const cFormValues = _.cloneDeep(get()[sliceKey].formValues)
+      const cFormValues = cloneDeep(get()[sliceKey].formValues)
       cFormValues.amountError = helpers.isTooMuch(cFormValues.amount, resp.max)
         ? 'too-much-max'
         : cFormValues.amountError
@@ -85,7 +85,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
       // update formStatus
-      const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
       cFormStatus.isApproved = resp.isApproved
       cFormStatus.error = cFormStatus.error || resp.error
       get()[sliceKey].setStateByKey('formStatus', cFormStatus)
@@ -105,10 +105,10 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       const storedFormValues = get()[sliceKey].formValues
 
       // update activeKey, formValues
-      const cFormValues: FormValues = _.cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
-      const cFormStatus: FormStatus = _.cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
+      const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
+      const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
       const activeKey = _getActiveKey(rChainId, formType, market, cFormValues)
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues), formStatus: cFormStatus })
+      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
 
       if (!api || !market) return
 
@@ -139,7 +139,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
-      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       await get().gas.fetchGasInfo(api)
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.approve : apiLending.vaultMint.approve
@@ -153,7 +153,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
           isApproved: !resp.error,
           isInProgress: true,
         }
-        get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(FORM_STATUS), partialFormStatus))
+        get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
         if (!resp.error) void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
         return resp
       }
@@ -164,7 +164,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'DEPOSIT_MINT' }
-      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
       await get().gas.fetchGasInfo(api)
@@ -183,7 +183,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
           isApproved: true,
           isComplete: !resp.error,
         }
-        get()[sliceKey].setStateByKeys(_.merge(_.cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
+        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
 
         return { ...resp }
       }
@@ -204,7 +204,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

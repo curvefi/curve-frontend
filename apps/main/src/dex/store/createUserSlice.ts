@@ -170,7 +170,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

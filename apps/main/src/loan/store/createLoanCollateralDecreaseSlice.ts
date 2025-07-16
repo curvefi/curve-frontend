@@ -86,7 +86,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       get()[sliceKey].setStateByActiveKey('formEstGas', resp.activeKey, { estimatedGas: resp.estimatedGas })
 
       // update formStatus
-      const clonedFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+      const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
       if (!clonedFormStatus.error) {
         clonedFormStatus.error = resp.error
       }
@@ -115,7 +115,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       const storedFormEstGas = get()[sliceKey].formEstGas
       const storedDetailInfo = get()[sliceKey].detailInfo
 
-      const cFormValues = _.cloneDeep(formValues)
+      const cFormValues = cloneDeep(formValues)
       const { collateral } = formValues
       const activeKey = getCollateralDecreaseActiveKey(llamma, collateral)
       const haveCollateral = +collateral > 0
@@ -127,7 +127,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       const loadingFormEstGas = storedFormEstGas[activeKey] ??
         storedFormEstGas[prevActiveKey] ?? { ...DEFAULT_FORM_EST_GAS, loading: true }
 
-      const loadingDetailInfo = _.cloneDeep(
+      const loadingDetailInfo = cloneDeep(
         storedDetailInfo[activeKey] ?? storedDetailInfo[prevActiveKey] ?? DEFAULT_DETAIL_INFO,
       )
       const parsedPrices = loadingLRPrices(loadingDetailInfo.prices)
@@ -136,7 +136,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
 
       get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, loadingFormEstGas)
       get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, loadingDetailInfo)
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues) })
+      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
 
       // fetch detail, approval, est gas, set loading
       if (haveCollateral) {
@@ -196,7 +196,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

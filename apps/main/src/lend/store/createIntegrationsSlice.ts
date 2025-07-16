@@ -115,7 +115,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
       const integrationsList = get()[sliceKey].integrationsList
 
       if (integrationsList) {
-        let results = _.cloneDeep(integrationsList)
+        let results = cloneDeep(integrationsList)
 
         if (chainId) {
           results = get()[sliceKey].filterByNetwork(chainId, results)
@@ -131,7 +131,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
 
         get()[sliceKey].setStateByKeys({
           formStatus: { ...DEFAULT_FORM_STATUS, noResult: results.length === 0 },
-          results: _.sortBy(results, (r) => r.name),
+          results: sortBy(results, (r) => r.name),
         })
       }
     },
@@ -147,7 +147,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => 
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })
@@ -205,7 +205,7 @@ function parseIntegrationsList(
     }
   }
 
-  return _.sortBy(parsedIntegrationsList, (a) => a.name)
+  return sortBy(parsedIntegrationsList, (a) => a.name)
 }
 
 export default createIntegrationsSlice

@@ -89,7 +89,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       if (typeof fnMapper[k] !== 'function') log('missing function', k)
       const resp = await fnMapper[k](api, shouldRefetch ? markets : missing)
-      const cMapper = _.cloneDeep(storedMapper)
+      const cMapper = cloneDeep(storedMapper)
       Object.keys(resp).forEach((userActiveKey) => {
         cMapper[userActiveKey] = resp[userActiveKey]
       })
@@ -150,7 +150,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
 
       const parsedOwmDatas = shouldRefetch ? markets : missing
       const loansExists = await apiLending.user.fetchLoansExists(api, parsedOwmDatas)
-      const cLoanExistsMapper = _.cloneDeep(storedLoanExistsMapper)
+      const cLoanExistsMapper = cloneDeep(storedLoanExistsMapper)
       Object.keys(loansExists).forEach((owmId) => {
         cLoanExistsMapper[owmId] = loansExists[owmId]
       })
@@ -203,7 +203,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

@@ -26,7 +26,7 @@ type PageProps = NetworkUrlParams
 
 export const PagePoolList = (params: PageProps) => {
   const push = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const { curveApi = null } = useConnection()
   const searchTermMapper = useSearchTermMapper()
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)

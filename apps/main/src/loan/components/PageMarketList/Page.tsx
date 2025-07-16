@@ -24,7 +24,7 @@ enum SEARCH {
 
 const Page = (params: CollateralUrlParams) => {
   const push = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()

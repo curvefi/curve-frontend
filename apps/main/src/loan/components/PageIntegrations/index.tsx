@@ -28,7 +28,7 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const push = useNavigate()
   const { isFocusVisible, focusProps } = useFocusRing()
 

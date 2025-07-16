@@ -149,7 +149,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         searchedByAddresses: highlightResult ? parseSearchTermResults(addressesResult) : {},
       })
 
-      return _.uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
+      return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
     },
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
       const {
@@ -174,13 +174,13 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
-        return _.orderBy(poolDatas, ({ pool }) => pool.name.toLowerCase(), [order])
+        return orderBy(poolDatas, ({ pool }) => pool.name.toLowerCase(), [order])
       } else if (sortKey === 'factory') {
-        return _.orderBy(poolDatas, ({ pool }) => pool.isFactory, [order])
+        return orderBy(poolDatas, ({ pool }) => pool.isFactory, [order])
       } else if (sortKey === 'referenceAsset') {
-        return _.orderBy(poolDatas, ({ pool }) => pool.referenceAsset.toLowerCase(), [order])
+        return orderBy(poolDatas, ({ pool }) => pool.referenceAsset.toLowerCase(), [order])
       } else if (sortKey.startsWith('rewards')) {
-        return _.orderBy(
+        return orderBy(
           poolDatas,
           (poolData) => {
             const { pool, gauge } = poolData
@@ -198,11 +198,11 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           [order],
         )
       } else if (sortKey === 'tvl') {
-        return _.orderBy(poolDatas, ({ pool }) => Number(tvlMapper[pool.id]?.value ?? 0), [order])
+        return orderBy(poolDatas, ({ pool }) => Number(tvlMapper[pool.id]?.value ?? 0), [order])
       } else if (sortKey === 'volume') {
-        return _.orderBy(poolDatas, ({ pool }) => Number(volumeMapper[pool.id]?.value ?? 0), [order])
+        return orderBy(poolDatas, ({ pool }) => Number(volumeMapper[pool.id]?.value ?? 0), [order])
       } else if (sortKey === 'points') {
-        return _.orderBy(
+        return orderBy(
           poolDatas,
           ({ pool }) => {
             const campaignRewards = campaignRewardsMapper[pool.address.toLowerCase()]
@@ -310,9 +310,9 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         poolList = filterSmallTvl(poolDatasCached, tvlMapperCached, rChainId)
 
         if (haveTvlCachedMapper) {
-          poolList = _.orderBy(poolList, ({ pool }) => Number(tvlMapperCached[pool.id]?.value ?? 0), [sortByOrder])
+          poolList = orderBy(poolList, ({ pool }) => Number(tvlMapperCached[pool.id]?.value ?? 0), [sortByOrder])
         } else if (haveVolumeCachedMapper) {
-          poolList = _.orderBy(poolList, ({ pool }) => Number(volumeMapperCached[pool.id]?.value ?? 0), [sortByOrder])
+          poolList = orderBy(poolList, ({ pool }) => Number(volumeMapperCached[pool.id]?.value ?? 0), [sortByOrder])
         }
       }
 
@@ -436,7 +436,7 @@ export function getPoolListActiveKey(chainId: ChainId, searchParams: SearchParam
   const { filterKey, searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
-    parsedSearchText = _.chunk(searchText, 5)
+    parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }

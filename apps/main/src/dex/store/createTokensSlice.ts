@@ -66,7 +66,7 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
         const tvl = +(tvlMapper[pool.id]?.value ?? '0')
         const volume = +(volumeMapper[pool.id]?.value ?? '0')
-        const counted = _.countBy(tokensAll)
+        const counted = countBy(tokensAll)
 
         for (const idx in tokenAddressesAll) {
           const address = tokenAddressesAll[idx]

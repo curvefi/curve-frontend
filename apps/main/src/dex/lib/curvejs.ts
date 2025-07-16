@@ -1319,10 +1319,10 @@ const wallet = {
     const resp = { lpToken: '0', gauge: '0' }
     try {
       const fetchedLpTokenBalances = await p.wallet.lpTokenBalances(signerAddress)
-      if (!_.isUndefined(fetchedLpTokenBalances.lpToken)) {
+      if (!isUndefined(fetchedLpTokenBalances.lpToken)) {
         resp.lpToken = fetchedLpTokenBalances.lpToken as string
       }
-      if (!_.isUndefined(fetchedLpTokenBalances.gauge)) {
+      if (!isUndefined(fetchedLpTokenBalances.gauge)) {
         resp.gauge = fetchedLpTokenBalances.gauge as string
       }
       return resp
@@ -1430,7 +1430,7 @@ const wallet = {
 
     const results: UserBalancesMapper = {}
     const errors: string[][] = []
-    const chunks = _.chunk(tokenAddresses, 20)
+    const chunks = chunk(tokenAddresses, 20)
     await PromisePool.for(chunks)
       .withConcurrency(10)
       .handleError((_, chunk) => {
@@ -1445,7 +1445,7 @@ const wallet = {
         }
       })
 
-    const fattenErrors = _.flatten(errors)
+    const fattenErrors = flatten(errors)
 
     if (fattenErrors.length) {
       await PromisePool.for(fattenErrors)

@@ -12,7 +12,7 @@ import { useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const rChainId = networksIdMapper[params.network]
 
   const init = useStore((state) => state.integrations.init)

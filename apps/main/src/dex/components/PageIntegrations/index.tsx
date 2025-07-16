@@ -28,7 +28,7 @@ const IntegrationsComp = ({
   rChainId: ChainId | ''
 }) => {
   const push = useNavigate()
-  const [searchParams] = useSearchParams()
+  const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
   const formStatus = useStore((state) => state.integrations.formStatus)
   const formValues = useStore((state) => state.integrations.formValues)

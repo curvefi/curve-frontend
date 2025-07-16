@@ -63,7 +63,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
       // update formStatus
-      const cFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+      const cFormStatus = cloneDeep(get()[sliceKey].formStatus)
       cFormStatus.isApproved = resp.isApproved
       cFormStatus.error = cFormStatus.error || resp.error
       get()[sliceKey].setStateByKey('formStatus', cFormStatus)
@@ -73,10 +73,10 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       const storedFormValues = get()[sliceKey].formValues
 
       // update activeKey, formValues
-      const cFormValues: FormValues = _.cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
-      const cFormStatus: FormStatus = _.cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
+      const cFormValues: FormValues = cloneDeep({ ...storedFormValues, ...partialFormValues, amountError: '' })
+      const cFormStatus: FormStatus = cloneDeep({ ...DEFAULT_FORM_STATUS, isApproved: storedFormStatus.isApproved })
       const activeKey = _getActiveKey(rChainId, formType, market, cFormValues)
-      get()[sliceKey].setStateByKeys({ activeKey, formValues: _.cloneDeep(cFormValues), formStatus: cFormStatus })
+      get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues), formStatus: cFormStatus })
 
       if (!api || !market) return
 
@@ -104,7 +104,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
-      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       await get().gas.fetchGasInfo(api)
       const { amount } = formValues
@@ -117,7 +117,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
           isApproved: !resp.error,
           isInProgress: true,
         }
-        get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(FORM_STATUS), partialFormStatus))
+        get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
         if (!resp.error) void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
         return resp
       }
@@ -128,7 +128,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'STAKE' }
-      get()[sliceKey].setStateByKey('formStatus', _.merge(_.cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
+      get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
       await get().gas.fetchGasInfo(api)
@@ -146,7 +146,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
           isApproved: true,
           isComplete: !resp.error,
         }
-        get()[sliceKey].setStateByKeys(_.merge(_.cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
+        get()[sliceKey].setStateByKeys(merge(cloneDeep(DEFAULT_STATE), { formStatus: partialFormStatus }))
 
         return { ...resp }
       }
@@ -167,7 +167,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })

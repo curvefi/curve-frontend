@@ -74,7 +74,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
         searchedByAddresses: parseSearchTermResults(addressesResult),
       })
 
-      return _.uniqBy([...tokensResult, ...addressesResult], (o) => o.item.llamma.id).map((r) => r.item)
+      return uniqBy([...tokensResult, ...addressesResult], (o) => o.item.llamma.id).map((r) => r.item)
     },
     sortFn: (rChainId, sortKey, order, collateralDatas) => {
       const { loans } = get()
@@ -82,25 +82,23 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
       const userMapper = loans.userDetailsMapper
 
       if (sortKey === 'name') {
-        return _.orderBy(collateralDatas, ({ llamma }) => llamma.collateralSymbol.toLowerCase(), [order])
+        return orderBy(collateralDatas, ({ llamma }) => llamma.collateralSymbol.toLowerCase(), [order])
       } else if (sortKey === 'myHealth') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.healthNotFull ?? '0'), [order])
+        return orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.healthNotFull ?? '0'), [order])
       } else if (sortKey === 'myDebt') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.userState?.debt ?? '0'), [order])
+        return orderBy(collateralDatas, ({ llamma }) => +(userMapper[llamma.id]?.userState?.debt ?? '0'), [order])
       } else if (sortKey === 'rate') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.parameters?.rate ?? '0'), [order])
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.parameters?.rate ?? '0'), [order])
       } else if (sortKey === 'totalBorrowed') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.totalDebt ?? '0'), [order])
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.totalDebt ?? '0'), [order])
       } else if (sortKey === 'cap') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.cap ?? '0'), [
-          order,
-        ])
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.cap ?? '0'), [order])
       } else if (sortKey === 'available') {
-        return _.orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.available ?? '0'), [
+        return orderBy(collateralDatas, ({ llamma }) => +(loanMapper[llamma.id]?.capAndAvailable?.available ?? '0'), [
           order,
         ])
       } else if (sortKey === 'totalCollateral') {
-        return _.orderBy(
+        return orderBy(
           collateralDatas,
           ({ llamma }) => {
             const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
@@ -184,7 +182,7 @@ export function getActiveKey(chainId: ChainId, searchParams: SearchParams) {
   const { searchText, sortBy, sortByOrder } = searchParams
   let parsedSearchText = searchText
   if (searchText && searchText.length > 20) {
-    parsedSearchText = _.chunk(searchText, 5)
+    parsedSearchText = chunk(searchText, 5)
       .map((group) => group[0])
       .join('')
   }

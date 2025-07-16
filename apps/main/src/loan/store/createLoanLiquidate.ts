@@ -73,7 +73,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('formEstGas', { estimatedGas: resp.estimatedGas })
 
       // update formStatus
-      const clonedFormStatus = _.cloneDeep(formStatus)
+      const clonedFormStatus = cloneDeep(formStatus)
       clonedFormStatus.isApproved = resp.isApproved
       clonedFormStatus.error = formStatus.error || resp.error
       clonedFormStatus.warning = formStatus.warning || resp.warning
@@ -90,7 +90,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       get()[sliceKey].setStateByKey('liquidationAmt', resp.tokensToLiquidate)
 
       // update formStatus
-      const clonedFormStatus = _.cloneDeep(get()[sliceKey].formStatus)
+      const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
       clonedFormStatus.error = resp.error
       const canSelfLiquidate = haveEnoughCrvusdForLiquidation(userWalletBalances.stablecoin, resp.tokensToLiquidate)
       clonedFormStatus.warning = !canSelfLiquidate ? 'warning-not-enough-crvusd' : ''
@@ -167,7 +167,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
     },
   },
 })
