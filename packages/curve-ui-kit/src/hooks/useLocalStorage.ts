@@ -5,6 +5,8 @@ import type { ColumnFiltersState } from '@tanstack/table-core'
 import { isBetaDefault } from '@ui-kit/utils'
 import { useStoredState } from './useStoredState'
 
+const { kebabCase } = lodash
+
 export function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
     return null
@@ -37,7 +39,7 @@ const useLocalStorage = <T>(key: string, initialValue: T) => useStoredState<T>({
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
 export const useFilterExpanded = (tableTitle: string) =>
-  useLocalStorage<boolean>(`filter-expanded-${lodash.kebabCase(tableTitle)}`, false)
+  useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
 export const useTableFilters = (tableTitle: string, defaultFilters: ColumnFiltersState) =>
   useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters)
