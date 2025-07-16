@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect } from 'react'
 import { useAccount } from 'wagmi'
 import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
@@ -15,6 +15,7 @@ import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { type FilterProps, ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { SelectableChip, type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -27,6 +28,7 @@ type MarketsFilterChipsProps = ColumnFilterProps & {
   hasFilters: boolean
   hasPositions: boolean | undefined
   hasFavorites: boolean | undefined
+  searchText: string
   onSearch: (value: string) => void
 }
 
@@ -38,17 +40,7 @@ type MarketsFilterChipsProps = ColumnFilterProps & {
  * @param alignRight - Used to align the text to the right on the last item.
  * @param extraMargin - For large screens, used to separate the different types of chips
  */
-const GridItem = ({
-  children,
-  size = 6,
-  alignRight,
-  extraMargin,
-}: {
-  children: ReactNode
-  size?: number
-  alignRight?: boolean
-  extraMargin?: boolean
-}) => (
+const GridItem = ({ children, size = 6, alignRight }: { children: ReactNode; size?: number; alignRight?: boolean }) => (
   <Grid
     size={{ mobile: size, tablet: 'auto' }}
     sx={{
@@ -61,12 +53,8 @@ const GridItem = ({
 )
 
 /** A <GridItem> with a SelectableChip inside */
-const GridChip = ({
-  size,
-  extraMargin,
-  ...props
-}: Omit<SelectableChipProps, 'size'> & { size?: number; extraMargin?: boolean }) => (
-  <GridItem size={size} extraMargin={extraMargin}>
+const GridChip = ({ size, ...props }: Omit<SelectableChipProps, 'size'> & { size?: number }) => (
+  <GridItem size={size}>
     <SelectableChip {...props} sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
   </GridItem>
 )
@@ -77,6 +65,7 @@ export const MarketsFilterChips = ({
   hasFilters,
   hasPositions,
   hasFavorites,
+  searchText,
   onSearch,
   ...props
 }: MarketsFilterChipsProps) => {
@@ -86,9 +75,16 @@ export const MarketsFilterChips = ({
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const { address } = useAccount()
   const isConnected = hasPositions != null && !!address
+  const tooltip =
+    !hasFilters && hiddenMarketCount
+      ? t`Some markets are hidden by default due to low liquidity. You may change that in the liquidity filter.`
+      : null
+  useEffect(() => {
+    console.log({ hasFilters, hiddenMarketCount })
+  }, [hasFilters, hiddenMarketCount])
   return (
     <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
-      {!useIsMobile() && <TableSearchField onSearch={onSearch} />}
+      {!useIsMobile() && <TableSearchField value={searchText} onChange={onSearch} />}
       <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
         <GridChip
           label={t`Mint Markets`}
@@ -129,21 +125,22 @@ export const MarketsFilterChips = ({
           icon={<PointsIcon />}
           data-testid="chip-rewards"
           {...(isConnected && { size: 12 })}
-          extraMargin
         />
       </Grid>
 
-      <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-        <GridItem {...(!useIsMobile() && { alignRight: true })}>
-          <Stack direction="row" gap={1} alignItems="center">
-            <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
-            <Typography variant="highlightS">{hiddenMarketCount}</Typography>
-          </Stack>
-        </GridItem>
-        <GridItem alignRight>
-          <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-        </GridItem>
-      </Grid>
+      <Tooltip title={tooltip}>
+        <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+          <GridItem {...(!useIsMobile() && { alignRight: true })}>
+            <Stack direction="row" gap={1} alignItems="center">
+              <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
+              <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+            </Stack>
+          </GridItem>
+          <GridItem alignRight>
+            <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
+          </GridItem>
+        </Grid>
+      </Tooltip>
     </Grid>
   )
 }
