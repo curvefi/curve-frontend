@@ -1,11 +1,13 @@
 import { meanBy } from 'lodash'
 import { useMemo } from 'react'
 import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
+import { useMarketPricePerShare } from '@/lend/entities/market-price-per-share'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LendPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/LendPositionDetails'
 
 type UseLendPositionDetailsProps = {
@@ -25,6 +27,14 @@ export const useLendPositionDetails = ({
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
     chainId: chainId,
     marketId,
+  })
+  const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
+    chainId: chainId,
+    marketId,
+  })
+  const { data: lentAssetUsdRate, isLoading: lentAssetUsdRateLoading } = useTokenUsdRate({
+    chainId: chainId,
+    tokenAddress: market?.addresses?.borrowed_token,
   })
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
@@ -58,12 +68,19 @@ export const useLendPositionDetails = ({
       loading: false,
     },
     lentAsset: {
-      symbol: 'CRV',
-      address: '0x11cDb42B0EB46D95f990BeDD4695A6e3fA034978',
-      usdRate: 0,
-      depositedAmount: 0,
-      depositedUsdValue: 0,
-      loading: false,
+      symbol: market?.collateral_token.symbol,
+      address: market?.collateral_token.address,
+      usdRate: lentAssetUsdRate,
+      depositedAmount: marketPricePerShare
+        ? +marketPricePerShare * (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge))
+        : null,
+      depositedUsdValue:
+        lentAssetUsdRate && marketPricePerShare
+          ? +marketPricePerShare *
+            (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge)) *
+            lentAssetUsdRate
+          : null,
+      loading: isMarketPricePerShareLoading || lentAssetUsdRateLoading,
     },
   }
 }

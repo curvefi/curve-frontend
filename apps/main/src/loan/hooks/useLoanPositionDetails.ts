@@ -6,6 +6,7 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { BorrowPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 type UseLoanPositionDetailsProps = {
@@ -23,10 +24,15 @@ export const useLoanPositionDetails = ({
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
-  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
 
+  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
+    chainId: chainId,
+    tokenAddress: llamma?.collateral,
+  })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId: chainId,
+    tokenAddress: CRVUSD_ADDRESS,
+  })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[chainId as keyof typeof networks].id,
     contractAddress: llamma?.controller as Address,
@@ -88,7 +94,7 @@ export const useLoanPositionDetails = ({
         usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
-      loading: (userLoanDetails?.loading ?? true) || usdRatesLoading,
+      loading: (userLoanDetails?.loading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
       value: collateralTotalValue ? (Number(userLoanDetails?.userState?.debt) / collateralTotalValue) * 100 : null,

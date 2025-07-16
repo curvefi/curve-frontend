@@ -1,4 +1,4 @@
-import { CardHeader, Box, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { Alert } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { BorrowInformation } from '@ui-kit/shared/ui/PositionDetails/BorrowInformation'
@@ -70,7 +70,6 @@ export const BorrowPositionDetails = ({
   totalDebt,
 }: BorrowPositionDetailsProps) => (
   <Box>
-    <CardHeader title={t`Your Position Details`} />
     {isSoftLiquidation && (
       <Box
         sx={{
