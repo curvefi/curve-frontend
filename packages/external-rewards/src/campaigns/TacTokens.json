@@ -1,0 +1,21 @@
+{
+  "campaignName": "",
+  "platform": "TAC",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "tac.png",
+  "dashboardLink": "https://app.merkl.xyz/users/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xAaD47973427b39bE737C1154F50DD6595083FA88",
+      "network": "tac",
+      "multiplier": "tac",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
