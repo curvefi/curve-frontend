@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { SpinnerWrapper } from '@ui/Spinner'
 import { shortenAccount } from '@ui/utils'

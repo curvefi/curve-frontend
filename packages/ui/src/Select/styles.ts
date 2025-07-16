@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 export const StyledBtn = styled.button<{ $loading?: boolean }>`
   align-items: center;

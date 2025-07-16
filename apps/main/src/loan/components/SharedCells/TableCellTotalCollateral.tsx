@@ -1,6 +1,7 @@
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
+import { useChainId } from 'wagmi'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -10,6 +11,9 @@ import { Chip } from '@ui/Typography'
 import { formatNumber, type NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { isUndefined } = lodash
 
 type Props = {
   rChainId: ChainId
@@ -19,7 +23,9 @@ type Props = {
 const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[collateralId])
   const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[collateralId]?.llamma)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
+
+  const chainId = useChainId()
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress: llamma?.collateral ?? '' })
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -43,7 +49,7 @@ const TableCellTotalCollateral = ({ rChainId, collateralId }: Props) => {
     return <></>
   }
 
-  if (collateralUsdRate === 'NaN' || +collateralUsdRate === 0) {
+  if (collateralUsdRate == null || +collateralUsdRate === 0) {
     return (
       <Chip tooltip={t`Unable to get USD rate`} tooltipProps={{ placement: 'bottom-end' }}>
         ?

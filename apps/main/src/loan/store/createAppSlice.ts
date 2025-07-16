@@ -1,6 +1,6 @@
 import { Contract, ContractRunner, ethers } from 'ethers'
 import produce from 'immer'
-import isEqual from 'lodash/isEqual'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type ChainId, type LlamaApi, Wallet } from '@/loan/types/loan.types'
@@ -60,7 +60,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (curveApi, prevCurveApi, wallet) => {
     if (!curveApi) return
 
-    const { loans, usdRates, campaigns, collaterals } = get()
+    const { loans, campaigns, collaterals } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -82,7 +82,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     if (!prevCurveApi || isNetworkSwitched) {
       campaigns.initCampaignRewards(curveApi.chainId as ChainId)
-      void usdRates.fetchAllStoredUsdRates(curveApi)
     }
 
     log('Hydrate crvUSD - Complete')
@@ -95,7 +94,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #ffff3f', parsedValue)
             }
@@ -103,7 +102,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #ffff3f', parsedValue)
             }
@@ -117,7 +116,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
-        if (!isEqual(storedValue, value)) {
+        if (!lodash.isEqual(storedValue, value)) {
           if (showLog) {
             log(`%c state: ${key}`, 'background: #222; color: #d4d700', value)
           }
@@ -132,7 +131,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       set(
         produce((state) => {
           const storedValue = state[sliceKey][key]
-          if (!isEqual(storedValue, value)) {
+          if (!lodash.isEqual(storedValue, value)) {
             if (showLog) {
               log(`%c state: ${key}`, 'background: #222; color: #55a630', value)
             }

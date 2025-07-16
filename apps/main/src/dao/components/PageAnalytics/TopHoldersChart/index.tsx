@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'

@@ -1,5 +1,5 @@
-import { debounce } from 'lodash'
-import styled from 'styled-components'
+import lodash from 'lodash'
+import { styled } from 'styled-components'
 import { isAddress } from 'viem'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import WarningBox from '@/dex/components/PageCreatePool/components/WarningBox'
@@ -75,7 +75,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={token.oracleAddress}
-        onChange={debounce((value) => updateOracleAddress(tokenId, value), 300)}
+        onChange={lodash.debounce((value) => updateOracleAddress(tokenId, value), 300)}
         maxLength={42}
         label={t`Address (e.g 0x123...)`}
       />
@@ -91,7 +91,7 @@ const OracleInputs = ({ token, tokenId, title }: OracleInputProps) => {
       <TextInput
         row
         defaultValue={token.oracleFunction}
-        onChange={debounce((value) => updateOracleFunction(tokenId, value), 300)}
+        onChange={lodash.debounce((value) => updateOracleFunction(tokenId, value), 300)}
         maxLength={42}
         label={t`Function (e.g exchangeRate())`}
       />

@@ -1,4 +1,4 @@
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
 import { type ReactNode, useMemo, useState } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Alert from '@mui/material/Alert'
@@ -168,7 +168,7 @@ export const TokenList = ({
       other: [],
     })
 
-    return uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
+    return lodash.uniqBy([...tokensResult, ...addressesResult], (x) => x.item.address).map((x) => x.item)
   }, [tokens, search])
 
   /**

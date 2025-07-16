@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { t } from '@ui-kit/lib/i18n'

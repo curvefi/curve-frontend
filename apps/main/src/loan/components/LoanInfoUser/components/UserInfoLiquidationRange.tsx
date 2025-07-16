@@ -1,7 +1,9 @@
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import { formatNumber } from '@ui/utils'
+
+const { isUndefined } = lodash
 
 const UserInfoLiquidationRange = ({
   llammaId,

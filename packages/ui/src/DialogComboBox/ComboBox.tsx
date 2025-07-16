@@ -1,7 +1,7 @@
 import { ChangeEvent, ReactNode, useRef } from 'react'
 import { useButton, useComboBox, useFocusRing } from 'react-aria'
 import type { ComboBoxStateOptions } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
 import ListBox from 'ui/src/DialogComboBox/ListBox'
 import Icon from 'ui/src/Icon'
@@ -82,7 +82,7 @@ function ComboBox<T extends object>({
                 }}
               />
               <StyledIconButton
-                className={!!inputProps.value ? 'show' : ''}
+                className={inputProps.value ? 'show' : ''}
                 padding={2}
                 testId="search-clear"
                 onClick={() => updateFilterValue('')}

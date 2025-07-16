@@ -1,5 +1,5 @@
 import { ButtonHTMLAttributes } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { ButtonProps } from 'ui/src/Button/types'
 import SortIcon from 'ui/src/SortIcon/SortIcon'
 import Spinner from 'ui/src/Spinner/Spinner'

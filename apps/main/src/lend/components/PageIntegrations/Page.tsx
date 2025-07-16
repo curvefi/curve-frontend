@@ -1,7 +1,6 @@
 'use client'
-import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import IntegrationsComp from '@/lend/components/PageIntegrations/index'
 import { networksIdMapper } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -9,6 +8,7 @@ import type { NetworkUrlParams } from '@/lend/types/lend.types'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
+import { useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = (params: NetworkUrlParams) => {

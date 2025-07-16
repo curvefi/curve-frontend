@@ -1,4 +1,4 @@
-import isEmpty from 'lodash/isEmpty'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ethAddress } from 'viem'
 import ChipInpHelper from '@/dex/components/ChipInpHelper'
@@ -40,6 +40,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const QuickSwap = ({
   pageLoaded,
@@ -73,7 +74,6 @@ const QuickSwap = ({
   const isMaxLoading = useStore((state) => state.quickSwap.isMaxLoading)
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
   const userBalancesLoading = useStore((state) => state.userBalances.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.quickSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.quickSwap.fetchStepSwap)
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
@@ -101,11 +101,16 @@ const QuickSwap = ({
   const userFromBalance = userBalancesMapper[fromAddress]
   const userToBalance = userBalancesMapper[toAddress]
 
-  const fromUsdRate = usdRatesMapper[fromAddress]
-  const toUsdRate = usdRatesMapper[toAddress]
+  const { data: fromUsdRate } = useTokenUsdRate({ chainId, tokenAddress: fromAddress }, !!fromAddress)
+  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress }, !!toAddress)
+
+  const userTokens = Object.entries(userBalancesMapper)
+    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
+    .map(([address]) => address)
+  const { data: usdRatesMapper } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
   const tokens = useMemo(() => {
-    if (isEmpty(tokenList) || isEmpty(tokensMapper)) return []
+    if (lodash.isEmpty(tokenList) || lodash.isEmpty(tokensMapper)) return []
 
     return tokenList!
       .map((address) => tokensMapper[address])

@@ -1,7 +1,6 @@
 'use client'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'
 import type { SearchParams } from '@/loan/components/PageMarketList/types'
 import { DEFAULT_SEARCH_PARAMS } from '@/loan/components/PageMarketList/utils'
@@ -15,6 +14,7 @@ import { getPath, useChainId } from '@/loan/utils/utilsRouter'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 
 enum SEARCH {
   sortBy = 'sortBy',
@@ -23,7 +23,7 @@ enum SEARCH {
 }
 
 const Page = (params: CollateralUrlParams) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const searchParams = useSearchParams()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)

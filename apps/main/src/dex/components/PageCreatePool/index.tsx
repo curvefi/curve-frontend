@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageCreatePool/components/InfoBox'
 import Navigation from '@/dex/components/PageCreatePool/components/Navigation'
 import ConfirmModal from '@/dex/components/PageCreatePool/ConfirmModal'

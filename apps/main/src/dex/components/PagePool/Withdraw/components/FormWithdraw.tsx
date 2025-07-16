@@ -1,8 +1,6 @@
-import cloneDeep from 'lodash/cloneDeep'
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled, { css } from 'styled-components'
+import { styled, css } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
@@ -33,6 +31,7 @@ import { formatNumber } from '@ui/utils'
 import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -55,7 +54,6 @@ const FormWithdraw = ({
   const formStatus = useStore((state) => state.poolWithdraw.formStatus)
   const formValues = useStore((state) => state.poolWithdraw.formValues)
   const slippage = useStore((state) => state.poolWithdraw.slippage[activeKey] ?? DEFAULT_SLIPPAGE)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
   const fetchStepApprove = useStore((state) => state.poolWithdraw.fetchStepApprove)
   const fetchStepWithdraw = useStore((state) => state.poolWithdraw.fetchStepWithdraw)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
@@ -256,15 +254,18 @@ const FormWithdraw = ({
     seed.isSeed,
   ])
 
+  const tokenAddresses = useMemo(() => formValues.amounts.map((a) => a.tokenAddress), [formValues.amounts])
+  const { data: usdRates } = useTokenUsdRates({ chainId, tokenAddresses })
+
   // usd amount for slippage warning
   const estUsdAmountTotalReceive = useMemo(() => {
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
 
-      if (foundCoinWithAmount && !isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
+      if (foundCoinWithAmount && !lodash.isUndefined(usdRates[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
-        const usdRate = usdRatesMapper[tokenAddress]
-        if (usdRate && !isNaN(usdRate)) {
+        const usdRate = usdRates[tokenAddress]
+        if (usdRate && !lodash.isNaN(usdRate)) {
           return (Number(usdRate) * Number(value)).toString()
         }
       }
@@ -273,8 +274,8 @@ const FormWithdraw = ({
       let usdAmountTotal = 0
 
       amounts.forEach((a) => {
-        const usdRate = usdRatesMapper[a.tokenAddress]
-        if (usdRate && !isNaN(usdRate)) {
+        const usdRate = usdRates[a.tokenAddress]
+        if (usdRate && !lodash.isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
         }
       })
@@ -282,7 +283,7 @@ const FormWithdraw = ({
     }
 
     return ''
-  }, [formValues, usdRatesMapper])
+  }, [formValues, usdRates])
 
   const haveSlippage = formValues.selected !== 'lpToken'
   const activeStep = haveSigner ? getActiveStep(steps) : null
@@ -422,7 +423,7 @@ const FormWithdraw = ({
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={(val) => {
-                          const clonedAmounts = cloneDeep(formValues.amounts)
+                          const clonedAmounts = lodash.cloneDeep(formValues.amounts)
                           clonedAmounts[idx].value = val
                           updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
                         }}
@@ -443,7 +444,7 @@ const FormWithdraw = ({
             onChange={(isWrapped) => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                const cFormValues = cloneDeep(formValues)
+                const cFormValues = lodash.cloneDeep(formValues)
 
                 cFormValues.isWrapped = isWrapped
                 cFormValues.amounts = wrapped.tokens.map((token, idx) => ({

@@ -8,16 +8,8 @@ import createGaugesSlice, { GaugesSlice } from '@/dao/store/createGaugesSlice'
 import createProposalsSlice, { ProposalsSlice } from '@/dao/store/createProposalsSlice'
 import createUserSlice, { UserSlice } from '@/dao/store/createUserSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from './createUsdRatesSlice'
 
-export type State = AppSlice &
-  GasSlice &
-  ProposalsSlice &
-  UserSlice &
-  GaugesSlice &
-  AnalyticsSlice &
-  LockedCrvSlice &
-  UsdRatesSlice
+export type State = AppSlice & GasSlice & ProposalsSlice & UserSlice & GaugesSlice & AnalyticsSlice & LockedCrvSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createAppSlice(set, get),
@@ -27,7 +19,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createUserSlice(set, get),
   ...createAnalyticsSlice(set, get),
   ...createLockedCrvSlice(set, get),
-  ...createUsdRatesSlice(set, get),
 })
 
 const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

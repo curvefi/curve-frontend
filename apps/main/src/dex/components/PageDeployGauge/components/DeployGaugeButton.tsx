@@ -1,5 +1,4 @@
-import { useRouter } from 'next/navigation'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
 import {
   STABLESWAP,
@@ -16,6 +15,7 @@ import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -30,7 +30,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const networks = useStore((state) => state.networks.networks)
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
-  const { push } = useRouter()
+  const push = useNavigate()
   const lpTokenAddress = useStore((state) => state.deployGauge.lpTokenAddress)
   const currentPoolType = useStore((state) => state.deployGauge.currentPoolType)
   const sidechainGauge = useStore((state) => state.deployGauge.sidechainGauge)

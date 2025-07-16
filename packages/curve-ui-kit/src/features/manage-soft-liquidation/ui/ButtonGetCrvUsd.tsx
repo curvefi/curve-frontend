@@ -1,7 +1,7 @@
-import { usePathname } from 'next/navigation'
 import { CallMade } from '@mui/icons-material'
 import Button from '@mui/material/Button'
 import Link from '@mui/material/Link'
+import { usePathname } from '@ui-kit/hooks/router'
 import { DEX_ROUTES, getCurrentNetwork, getInternalUrl } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

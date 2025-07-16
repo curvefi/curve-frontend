@@ -1,5 +1,5 @@
 import produce from 'immer'
-import isEqual from 'lodash/isEqual'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -9,6 +9,7 @@ import { log } from '@ui-kit/lib/logging'
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
+const { isEqual } = lodash
 
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }
@@ -81,7 +82,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
-      state.usdRates.resetState()
       state.userBalances.resetState()
       state.user.resetState()
       state.userBalances.resetState()
@@ -125,9 +125,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       void state.gas.fetchGasInfo(curveApi)
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
-
-      // pull all api calls before isLoadingApi if it is not needed for initial load
-      void state.usdRates.fetchAllStoredUsdRates(curveApi)
     }
 
     if (curveApi.signerAddress) {

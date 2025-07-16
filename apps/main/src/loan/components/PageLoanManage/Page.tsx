@@ -1,7 +1,6 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanInfoUser from '@/loan/components/LoanInfoUser'
@@ -35,13 +34,14 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
-  const { push } = useRouter()
+  const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()

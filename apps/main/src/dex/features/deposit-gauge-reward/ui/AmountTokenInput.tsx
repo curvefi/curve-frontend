@@ -24,6 +24,7 @@ import { FlexContainer } from '@ui/styled-containers'
 import { formatNumber } from '@ui/utils'
 import { type TokenOption, TokenSelector } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId: string }) => {
   const { setValue, getValues, formState, watch } = useFormContext<DepositRewardFormValues>()
@@ -37,7 +38,10 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
   const { networkId } = useStore((state) => state.networks.networks[chainId])
 
   const userBalancesMapper = useStore((state) => state.userBalances.userBalancesMapper)
-  const tokenPrices = useStore((state) => state.usdRates.usdRatesMapper)
+  const userTokens = Object.entries(userBalancesMapper)
+    .filter(([, balance]) => parseFloat(balance ?? '0') > 0)
+    .map(([address]) => address)
+  const { data: tokenPrices } = useTokenUsdRates({ chainId, tokenAddresses: userTokens })
 
   const { tokensMapper } = useTokensMapper(chainId)
 

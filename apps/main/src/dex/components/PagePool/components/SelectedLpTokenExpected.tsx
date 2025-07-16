@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import { TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
 import Box from '@ui/Box'

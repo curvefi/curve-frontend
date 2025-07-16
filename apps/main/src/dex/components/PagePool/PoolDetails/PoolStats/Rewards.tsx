@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'

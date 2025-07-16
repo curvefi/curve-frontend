@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import type { BreakdownItem } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'

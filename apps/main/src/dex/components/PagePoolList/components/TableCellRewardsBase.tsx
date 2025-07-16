@@ -31,7 +31,7 @@ const TableCellRewardsBase = ({ base, isHighlight, poolData }: Props) => {
               <Chip
                 isBold={isHighlight}
                 size="md"
-                tooltip={!!base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
+                tooltip={base ? <TooltipBaseApy poolData={poolData} baseApy={base} /> : null}
                 tooltipProps={{
                   placement: 'bottom-end',
                   textAlign: 'left',

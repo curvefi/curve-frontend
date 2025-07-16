@@ -1,5 +1,4 @@
 'use client'
-import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
@@ -31,6 +30,7 @@ import {
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -42,7 +42,7 @@ const Page = (params: MarketUrlParams) => {
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
   const [isLoaded, setLoaded] = useState(false)
-  const { push } = useRouter()
+  const push = useNavigate()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)

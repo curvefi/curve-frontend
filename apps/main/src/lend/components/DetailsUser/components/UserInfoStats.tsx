@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { BoxProps } from '@ui/Box/types'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'

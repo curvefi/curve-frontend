@@ -1,10 +1,9 @@
-import { ReadonlyURLSearchParams } from 'next/dist/client/components/navigation.react-server'
 import type { FilterKey } from '@/dex/types/integrations.types'
 import { ChainId, NetworkConfig } from '@/dex/types/main.types'
 import type { IntegrationsTags } from '@ui/Integration/types'
 
 export function parseSearchParams(
-  searchParams: ReadonlyURLSearchParams | null,
+  searchParams: URLSearchParams | null,
   rChainId: ChainId | '',
   visibleNetworksList: NetworkConfig[],
   integrationsTags: IntegrationsTags | null,

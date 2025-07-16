@@ -1,5 +1,6 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
@@ -7,6 +8,7 @@ import Tooltip from '@ui/Tooltip'
 import { formatNumber } from '@ui/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Chain } from '@ui-kit/utils/network'
 
 const CrvStats = () => {
@@ -15,15 +17,13 @@ const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useConnection()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const crv = usdRatesMapper.crv
+  const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: CONTRACT_CRV })
 
   // protect against trying to load data on non-mainnet networks
   const notMainnet = chainId !== Chain.Ethereum
   const noProvider = !provider || notMainnet
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const aprLoading = statsLoading || veCrvFeesLoading || usdRatesLoading || !crv
+  const aprLoading = statsLoading || veCrvFeesLoading || isLoadingCrv || crv == null
 
   const veCrvApr =
     aprLoading || notMainnet || !statsSuccess

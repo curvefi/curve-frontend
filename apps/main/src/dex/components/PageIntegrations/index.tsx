@@ -1,7 +1,5 @@
-import Image from 'next/image'
-import { useRouter, useSearchParams } from 'next/navigation'
 import { Key, useCallback, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import { ROUTE } from '@/dex/constants'
@@ -16,7 +14,9 @@ import type { IntegrationsTags } from '@ui/Integration/types'
 import SearchInput from '@ui/SearchInput'
 import SelectNetwork from '@ui/SelectNetwork/SelectNetwork'
 import { breakpoints, CURVE_ASSETS_URL } from '@ui/utils'
+import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
+import Image from '@ui-kit/shared/image'
 
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
@@ -28,7 +28,7 @@ const IntegrationsComp = ({
   params: NetworkUrlParams
   rChainId: ChainId | ''
 }) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const searchParams = useSearchParams()
   const { isFocusVisible, focusProps } = useFocusRing()
   const formStatus = useStore((state) => state.integrations.formStatus)
@@ -130,10 +130,9 @@ const IntegrationsComp = ({
       {formStatus.noResult ? (
         <NoResultWrapper flex flexJustifyContent="center" padding="3rem 0">
           <Trans>
-            No integration apps found with for{' '}
-            {!!formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
+            No integration apps found with for {formValues.searchText ? <>&ldquo;{formValues.searchText}&rdquo;</> : ''}{' '}
             {!!formValues.searchText && !!filterKeyLabel ? <>and </> : ''}
-            {!!filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
+            {filterKeyLabel ? <>&ldquo;{filterKeyLabel}&rdquo;</> : ''}
           </Trans>
         </NoResultWrapper>
       ) : (

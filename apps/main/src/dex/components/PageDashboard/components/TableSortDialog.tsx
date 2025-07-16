@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import type { Order, SortId, TableLabel } from '@/dex/components/PageDashboard/types'
 import { useOverlayTriggerState } from '@react-stately/overlays'

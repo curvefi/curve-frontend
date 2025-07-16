@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectFilterType from '@/loan/components/PageMarketList/components/TableSettings/SelectFilterType'
 import type { PageCollateralList, TableLabel } from '@/loan/components/PageMarketList/types'
 import SearchListInput from '@ui/SearchInput/SearchListInput'

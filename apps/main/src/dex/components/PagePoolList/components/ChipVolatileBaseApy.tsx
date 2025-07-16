@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from '@ui/Icon'
 import Chip from '@ui/Typography/Chip'
 import { formatNumber } from '@ui/utils'

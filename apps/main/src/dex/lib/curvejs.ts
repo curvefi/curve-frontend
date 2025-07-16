@@ -1,6 +1,4 @@
-import chunk from 'lodash/chunk'
-import flatten from 'lodash/flatten'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import memoizee from 'memoizee'
 import type { FormType as LockFormType } from '@/dex/components/PageCrvLocker/types'
 import type { FormValues as PoolSwapFormValues } from '@/dex/components/PagePool/Swap/types'
@@ -19,7 +17,6 @@ import {
   RewardCrv,
   RewardOther,
   RewardsApy,
-  UsdRatesMapper,
   UserBalancesMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
@@ -44,6 +41,8 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+
+const { chunk, flatten, isUndefined } = lodash
 
 const helpers = {
   fetchCustomGasFees: async (curve: CurveApi) => {
@@ -85,24 +84,6 @@ const helpers = {
       resp.error = getErrorMessage(error, 'error-get-gas')
       return resp
     }
-  },
-  fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
-    const results: UsdRatesMapper = {}
-
-    await PromisePool.for(tokenAddresses)
-      .withConcurrency(5)
-      .process(async (tokenAddress) => {
-        try {
-          results[tokenAddress] = await curve.getUsdRate(tokenAddress)
-        } catch (error) {
-          if (!curve.getIsLiteChain()) {
-            console.error(`Unable to get usd rate for ${tokenAddress}`, error)
-          }
-          results[tokenAddress] = NaN
-        }
-      })
-    return results
   },
   waitForTransaction,
   waitForTransactions,

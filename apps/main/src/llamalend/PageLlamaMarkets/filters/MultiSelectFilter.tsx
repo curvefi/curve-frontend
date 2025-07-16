@@ -1,4 +1,4 @@
-import { get, sortBy, sortedUniq } from 'lodash'
+import lodash from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Box from '@mui/material/Box'
@@ -7,7 +7,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,12 +15,13 @@ import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
+const { get, sortBy, sortedUniq } = lodash
 
 /**
  * Get all unique string values from a field in an array of objects and sort them alphabetically.
  * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
  */
-const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) => {
+const getSortedStrings = <T, K extends DeepKeys<T>>(data: T[], field: K) => {
   const values = data.map((d) => get(d, field) as string)
   return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
 }
@@ -28,7 +29,7 @@ const getSortedStrings = <T extends any, K extends DeepKeys<T>>(data: T[], field
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <T extends unknown>({
+export const MultiSelectFilter = <T,>({
   columnFilters,
   setColumnFilter,
   data,

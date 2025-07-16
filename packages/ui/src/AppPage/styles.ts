@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import BoxHeader from 'ui/src/Box/BoxHeader'
 import { TabContentWrapper } from 'ui/src/Tab'

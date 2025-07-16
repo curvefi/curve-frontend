@@ -1,5 +1,5 @@
 import { forwardRef, ReactNode, useContext } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { Context, Slider } from './SlideTabsWrapper'
 
 const SlideTabs = forwardRef<HTMLDivElement, { children: ReactNode }>(({ children }, ref) => {

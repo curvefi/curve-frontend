@@ -1,5 +1,4 @@
 import BigNumber from 'bignumber.js'
-import Image from 'next/image'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { useAccount } from 'wagmi'
 import { isLoading } from '@/loan/components/PageCrvUsdStaking/utils'
@@ -7,6 +6,7 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusdUserBalances'
 import useStore from '@/loan/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import Image from '@ui-kit/shared/image'
 import {
   ErrorText,
   InputLabel,

@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -23,6 +23,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string
@@ -139,7 +140,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
 
       // get gas
-      if (!!signerAddress) {
+      if (signerAddress) {
         void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
@@ -187,7 +188,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         }
 
         // get gas
-        if (!!signerAddress) {
+        if (signerAddress) {
           void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
         }
       }
@@ -278,7 +279,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
       }
 
       // get gas
-      if (!!signerAddress) {
+      if (signerAddress) {
         void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       }
     },
@@ -591,7 +592,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
 
     // slice helpers
     setStateByActiveKey: (key, activeKey, value) => {
-      const foundKey = get()[sliceKey][key] as Object
+      const foundKey = get()[sliceKey][key] as object
       if (Object.keys(foundKey).length > 30) {
         get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
       } else {

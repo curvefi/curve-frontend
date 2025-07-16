@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'

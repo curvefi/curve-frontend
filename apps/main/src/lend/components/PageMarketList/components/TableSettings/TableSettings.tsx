@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import SelectFilter from '@/lend/components/PageMarketList/components/TableSettings/SelectFilter'
 import SelectFilterBorrowLend from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterBorrowLend'
 import SelectFilterType from '@/lend/components/PageMarketList/components/TableSettings/SelectFilterType'

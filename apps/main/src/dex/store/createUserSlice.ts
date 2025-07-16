@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -8,6 +8,7 @@ import { shortenAccount } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = lodash
 
 type SliceState = {
   poolList: { [userActiveKey: string]: UserPoolListMapper }

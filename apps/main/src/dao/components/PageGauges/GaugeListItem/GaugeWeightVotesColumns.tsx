@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import useStore from '@/dao/store/useStore'
 import { UserGaugeVoteWeight } from '@/dao/types/dao.types'
 import Box from '@ui/Box'

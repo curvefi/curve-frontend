@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 
 const ListInfoItems = styled.ul`
   > li:not(:last-of-type) {

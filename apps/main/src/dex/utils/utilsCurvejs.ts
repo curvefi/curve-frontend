@@ -33,7 +33,7 @@ export function rewardsApyCrvText([base, boosted]: number[]) {
   if (!base && !boosted) return ''
   const formattedBase = formatNumber(base, FORMAT_OPTIONS.PERCENT)
 
-  if (!!boosted) {
+  if (boosted) {
     return `${formattedBase} → ${formatNumber(boosted, FORMAT_OPTIONS.PERCENT)} CRV`
   } else {
     return `${formattedBase} CRV`

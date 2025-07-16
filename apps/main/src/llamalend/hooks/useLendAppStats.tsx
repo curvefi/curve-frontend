@@ -1,8 +1,10 @@
-import { sum } from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
+
+const { sum } = lodash
 
 export function useLlamalendAppStats(enabled: boolean) {
   const address = useConnection().wallet?.account.address

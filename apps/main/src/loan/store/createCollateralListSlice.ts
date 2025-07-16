@@ -1,6 +1,4 @@
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
 import { parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
@@ -9,9 +7,11 @@ import { SEARCH_TERM } from '@/loan/hooks/useSearchTermMapper'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, CollateralData, TitleKey } from '@/loan/types/loan.types'
 import { sleep } from '@/loan/utils/helpers'
+import { getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { orderBy, uniqBy, chunk } = lodash
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',
@@ -103,7 +103,7 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
           collateralDatas,
           ({ llamma }) => {
             const { totalCollateral, totalStablecoin } = loanMapper[llamma.id]
-            const collateralUsdRate = get().usdRates.tokens[llamma.collateral]
+            const collateralUsdRate = getTokenUsdRateQueryData({ chainId: rChainId, tokenAddress: llamma.collateral })
             const totalCollateralUsd = Number(totalCollateral) * Number(collateralUsdRate)
             return totalCollateralUsd + Number(totalStablecoin ?? 0)
           },

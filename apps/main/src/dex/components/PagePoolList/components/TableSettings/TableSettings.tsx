@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
