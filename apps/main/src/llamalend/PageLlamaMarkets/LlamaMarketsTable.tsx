@@ -19,6 +19,8 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
@@ -42,25 +44,29 @@ const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined)
 
 const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
+const useDefaultLlamaFilter = (minLiquidity: number) =>
+  useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] }], [minLiquidity])
+
 export const LlamaMarketsTable = ({
   onReload,
   result,
   isError,
-  minLiquidity,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
-  minLiquidity: number
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
+
+  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
     TITLE,
-    useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] }], [minLiquidity]),
+    useDefaultLlamaFilter(minLiquidity),
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, result?.hasPositions)
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
+
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
