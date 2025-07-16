@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { FormError } from '@/lend/components/AlertFormError'
 import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
@@ -163,8 +163,8 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       const activeKey = _getActiveKey(api, market, cFormValues, maxSlippage)
       sliceState.setStateByKeys({
         activeKey,
-        formValues: _.cloneDeep(cFormValues),
-        formStatus: _.cloneDeep(cFormStatus),
+        formValues: lodash.cloneDeep(cFormValues),
+        formStatus: lodash.cloneDeep(cFormStatus),
       })
 
       if (!api || !market) return
@@ -303,7 +303,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })

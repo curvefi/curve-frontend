@@ -1,5 +1,5 @@
 import type { Eip1193Provider } from 'ethers'
-import _ from 'lodash'
+import lodash from 'lodash'
 import networks from '@/loan/networks'
 import { BandBalance, ChainId, type LlamaApi, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
@@ -11,7 +11,7 @@ export async function initLlamaApi(
 ): Promise<LlamaApi | undefined> {
   if (!externalProvider) return
   const network = networks[chainId].networkId
-  const api = _.cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
+  const api = lodash.cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
   await api.init('Web3', { network, externalProvider }, { chainId })
   return api
 }
@@ -126,7 +126,7 @@ export function loadingLRPrices(prices: string[]) {
 }
 
 export function sortBands(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = _.sortBy(Object.keys(bandBalances), (k) => +k)
+  const sortedKeys = lodash.sortBy(Object.keys(bandBalances), (k) => +k)
   const bandBalancesArr = []
   for (const k of sortedKeys) {
     bandBalancesArr.push({ ...bandBalances[k], band: k })
@@ -136,7 +136,7 @@ export function sortBands(bandBalances: { [key: string]: { stablecoin: string; c
 
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
-  const resp = _.cloneDeep(userLoss)
+  const resp = lodash.cloneDeep(userLoss)
   resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
   resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 

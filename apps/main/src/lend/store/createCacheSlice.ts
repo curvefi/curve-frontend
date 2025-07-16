@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import { sleep } from '@/lend/utils/helpers'
@@ -45,7 +45,7 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>) => ({
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, _.cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })

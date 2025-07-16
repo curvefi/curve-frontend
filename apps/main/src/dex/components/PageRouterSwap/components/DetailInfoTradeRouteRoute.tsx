@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
@@ -49,7 +49,7 @@ const DetailInfoTradeRouteRoute = ({
       </RouteTokenNames>
     ) : null
 
-  return _.isUndefined(path) ? (
+  return lodash.isUndefined(path) ? (
     <>
       <strong>{route.name}</strong>
       {InputAndOutputTokenLabel}

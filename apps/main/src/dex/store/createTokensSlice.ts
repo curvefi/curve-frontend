@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
@@ -6,7 +6,7 @@ import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData }
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { countBy } = _
+const { countBy } = lodash
 
 type SliceState = {
   tokensNameMapper: { [chainId: string]: TokensNameMapper }

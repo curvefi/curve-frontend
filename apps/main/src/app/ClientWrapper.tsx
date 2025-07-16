@@ -1,5 +1,5 @@
 'use client'
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
@@ -19,7 +19,7 @@ import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
 import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
-const { delay } = _
+const { delay } = lodash
 
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window

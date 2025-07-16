@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dao/lib/curvejs'
@@ -6,7 +6,7 @@ import type { State } from '@/dao/store/useStore'
 import { CurveApi, UsdRatesMapper } from '@/dao/types/dao.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   usdRatesMapper: UsdRatesMapper

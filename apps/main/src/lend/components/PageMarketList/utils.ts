@@ -1,5 +1,5 @@
 import { FuseResult } from 'fuse.js'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { FormStatus, MarketListMapper, SearchTermResult } from '@/lend/components/PageMarketList/types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 
@@ -47,7 +47,7 @@ export function _getMarketList(markets: OneWayMarketTemplate[]) {
     delete marketListMapperCache[crvUsdAddress]
   }
 
-  const sortedMarketListMapperCache = _.sortBy(marketListMapperCache, (l) => l.symbol)
+  const sortedMarketListMapperCache = lodash.sortBy(marketListMapperCache, (l) => l.symbol)
   return { marketListMapper, sortedMarketListMapperCache }
 }
 

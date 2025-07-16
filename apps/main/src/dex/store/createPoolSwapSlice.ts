@@ -1,5 +1,5 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
@@ -29,7 +29,7 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string

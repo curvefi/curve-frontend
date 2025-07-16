@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import ComboBoxListChunk from '@/dao/components/ComboBoxSelectGauge/ComboBoxListChunk'
@@ -105,7 +105,7 @@ const ComboBox = ({
           {/* LIST */}
           <ComboBoxListWrapper ref={listRef} boxHeight={listBoxHeight ?? '50vh'} topContentHeight={topContentHeight}>
             {Array.isArray(result) && result.length > 0 ? (
-              _.chunk(result, 30).map((gauges, idx) => (
+              lodash.chunk(result, 30).map((gauges, idx) => (
                 <ComboBoxListChunk
                   key={`gauges-${idx}`}
                   testId={testId}

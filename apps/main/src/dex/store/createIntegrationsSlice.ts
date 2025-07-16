@@ -1,6 +1,6 @@
 import Fuse from 'fuse.js'
 import produce from 'immer'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { httpFetcher } from '@/dex/lib/utils'
 import type { State } from '@/dex/store/useStore'
@@ -9,7 +9,7 @@ import type { ChainId } from '@/dex/types/main.types'
 import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep, sortBy } = _
+const { cloneDeep, sortBy } = lodash
 
 export const DEFAULT_FORM_VALUES: FormValues = {
   filterKey: 'all',

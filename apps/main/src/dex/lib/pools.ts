@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import {
   CurveApi,
   NetworkConfig,
@@ -28,7 +28,7 @@ const getPoolData = (p: Pool, network: NetworkConfig, storedPoolData: PoolData |
     ? p.wrappedCoinAddresses
     : [...p.underlyingCoinAddresses, ...p.wrappedCoinAddresses]
   const tokenDecimalsAll = isWrappedOnly ? p.wrappedDecimals : [...p.underlyingDecimals, ...p.wrappedDecimals]
-  const tokensCountBy = _.countBy(tokens)
+  const tokensCountBy = lodash.countBy(tokens)
 
   const poolData: PoolData = {
     pool: p,
@@ -91,7 +91,7 @@ export async function getPools(
 
       prev.poolsMapper[poolId] = poolData
 
-      prev.poolsMapperCache[poolId] = _.pick(poolData, [
+      prev.poolsMapperCache[poolId] = lodash.pick(poolData, [
         'hasWrapped',
         'gauge',
         'tokens',

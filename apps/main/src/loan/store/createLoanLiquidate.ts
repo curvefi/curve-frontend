@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
@@ -9,7 +9,7 @@ import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   formEstGas: FormEstGas

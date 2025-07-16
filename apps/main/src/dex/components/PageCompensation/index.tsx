@@ -1,5 +1,5 @@
 import { Contract, ContractRunner, Interface } from 'ethers'
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import AlertFormError from '@/dex/components/AlertFormError'
 import Compensations from '@/dex/components/PageCompensation/components/Compensations'
@@ -25,14 +25,14 @@ const FormCompensation = ({
   const [balances, setBalances] = useState<Balances>({})
   const [vestedTotals, setVestedTotals] = useState<VestedTotals>({})
 
-  const groupedContracts = useMemo(() => _.groupBy(contracts, (c) => c.poolId), [contracts])
+  const groupedContracts = useMemo(() => lodash.groupBy(contracts, (c) => c.poolId), [contracts])
 
   const getBalances = useCallback(async (signerAddress: string, contracts: EtherContract[]) => {
     try {
       setError('')
       const balances = await Promise.all(contracts.map((c) => c.contract.balanceOf(signerAddress)))
       const mappedBalances = contracts.map(({ poolId }, idx) => ({ poolId, balance: Number(balances[idx]) / 1e18 }))
-      const groupedBalances = _.groupBy(mappedBalances, ({ poolId }) => poolId)
+      const groupedBalances = lodash.groupBy(mappedBalances, ({ poolId }) => poolId)
       setBalances(groupedBalances)
     } catch (error) {
       console.error(error)
@@ -83,7 +83,7 @@ const FormCompensation = ({
         const vestedTotals = await Promise.all(
           vestAddresses.map((vc, idx) => getVestedAmount(vc, iface, contracts[idx], idx, signerAddress, signer)),
         )
-        setVestedTotals(_.groupBy(vestedTotals, ({ poolId }) => poolId))
+        setVestedTotals(lodash.groupBy(vestedTotals, ({ poolId }) => poolId))
       } catch (error) {
         console.error(error)
       }

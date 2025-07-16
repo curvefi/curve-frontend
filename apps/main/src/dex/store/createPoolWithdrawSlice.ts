@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
@@ -23,7 +23,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string

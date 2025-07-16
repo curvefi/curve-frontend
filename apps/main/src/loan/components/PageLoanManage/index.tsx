@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
@@ -106,7 +106,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
               {tabs.map(({ label, formType }, idx) => (
                 <SlideTab
                   key={label}
-                  disabled={_.isUndefined(loanExists)}
+                  disabled={lodash.isUndefined(loanExists)}
                   tabLeft={tabPositions[idx]?.left}
                   tabWidth={tabPositions[idx]?.width}
                   tabTop={tabPositions[idx]?.top}

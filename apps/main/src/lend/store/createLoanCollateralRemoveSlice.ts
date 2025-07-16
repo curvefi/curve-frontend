@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralRemove/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
@@ -9,7 +9,7 @@ import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
-const { cloneDeep } = _
+const { cloneDeep } = lodash
 
 type StateKey = keyof typeof DEFAULT_STATE
 

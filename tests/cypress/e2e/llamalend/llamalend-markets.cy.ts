@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   Chain,
@@ -228,7 +228,7 @@ describe(`LlamaLend Markets`, () => {
     )
     withFilterChips(() => {
       cy.get(`[data-testid="chip-${type}"]`).click()
-      firstRow().contains(_.capitalize(type))
+      firstRow().contains(lodash.capitalize(type))
     })
     cy.get(`[data-testid^="market-link-"]`).first().click()
     if (breakpoint === 'mobile') {

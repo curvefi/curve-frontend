@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { styled, css } from 'styled-components'
 import AlertFormError from '@/dex/components/AlertFormError'
@@ -259,10 +259,10 @@ const FormWithdraw = ({
     if (formValues.selected === 'token') {
       const foundCoinWithAmount = formValues.amounts.find((a) => Number(a.value) > 0)
 
-      if (foundCoinWithAmount && !_.isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
+      if (foundCoinWithAmount && !lodash.isUndefined(usdRatesMapper[foundCoinWithAmount.tokenAddress])) {
         const { value, tokenAddress } = foundCoinWithAmount
         const usdRate = usdRatesMapper[tokenAddress]
-        if (usdRate && !_.isNaN(usdRate)) {
+        if (usdRate && !lodash.isNaN(usdRate)) {
           return (Number(usdRate) * Number(value)).toString()
         }
       }
@@ -272,7 +272,7 @@ const FormWithdraw = ({
 
       amounts.forEach((a) => {
         const usdRate = usdRatesMapper[a.tokenAddress]
-        if (usdRate && !_.isNaN(usdRate)) {
+        if (usdRate && !lodash.isNaN(usdRate)) {
           usdAmountTotal += Number(a.value) * Number(usdRate)
         }
       })
@@ -420,7 +420,7 @@ const FormWithdraw = ({
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
                         handleAmountChange={(val) => {
-                          const clonedAmounts = _.cloneDeep(formValues.amounts)
+                          const clonedAmounts = lodash.cloneDeep(formValues.amounts)
                           clonedAmounts[idx].value = val
                           updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
                         }}
@@ -441,7 +441,7 @@ const FormWithdraw = ({
             onChange={(isWrapped) => {
               if (poolData) {
                 const wrapped = setPoolIsWrapped(poolData, isWrapped)
-                const cFormValues = _.cloneDeep(formValues)
+                const cFormValues = lodash.cloneDeep(formValues)
 
                 cFormValues.isWrapped = isWrapped
                 cFormValues.amounts = wrapped.tokens.map((token, idx) => ({

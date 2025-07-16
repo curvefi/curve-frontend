@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormStatus, Order, SearchParams, SearchTermsResult } from '@/loan/components/PageMarketList/types'
 import { parseSearchTermResults } from '@/loan/components/PageMarketList/utils'
@@ -10,7 +10,7 @@ import { sleep } from '@/loan/utils/helpers'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { orderBy, uniqBy, chunk } = _
+const { orderBy, uniqBy, chunk } = lodash
 
 export const DEFAULT_FORM_STATUS: FormStatus = {
   error: '',

@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
@@ -51,7 +51,7 @@ export const LendingMarketsFilters = ({
           <>
             <ChainIcon blockchainId={chain} size="md" />
             <Typography component="span" variant="bodyMBold">
-              {_.capitalize(chain)}
+              {lodash.capitalize(chain)}
             </Typography>
           </>
         )}

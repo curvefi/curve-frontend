@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import { Fragment, useMemo, useState } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -43,7 +43,7 @@ export function ChainList({
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>
-      _.groupBy(
+      lodash.groupBy(
         options.filter((o) => o.name.toLocaleLowerCase().includes(searchValue.toLocaleLowerCase())),
         (o) => (o.isTestnet ? ChainType.test : ChainType.main),
       ),

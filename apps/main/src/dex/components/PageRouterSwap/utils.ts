@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { FormValues, Route } from '@/dex/components/PageRouterSwap/types'
 import type { FormStatus } from '@/dex/components/PageRouterSwap/types'
 import { Pool, PoolData } from '@/dex/types/main.types'
@@ -33,7 +33,7 @@ export function parseRouterRoutes(
     parsedRoutes = routes.map((route) => {
       let pool = poolsMapper[route.poolId]?.pool
 
-      if (_.isUndefined(pool)) {
+      if (lodash.isUndefined(pool)) {
         try {
           pool = getPool(route.poolId)
         } catch (error) {

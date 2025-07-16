@@ -1,5 +1,5 @@
 import produce from 'immer'
-import _ from 'lodash'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
@@ -9,7 +9,7 @@ import { log } from '@ui-kit/lib/logging'
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
 export type StateKey = string
-const { isEqual } = _
+const { isEqual } = lodash
 
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }

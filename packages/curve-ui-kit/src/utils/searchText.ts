@@ -1,10 +1,12 @@
 import Fuse, { FuseResult } from 'fuse.js'
-import _ from 'lodash'
+import lodash from 'lodash'
+
+const { uniqWith, isEqualWith, get, uniqBy } = lodash
 
 export type SearchTermsFuseResult<T> = FuseResult<T>[]
 
 function uniqueResult<T>(results: SearchTermsFuseResult<T>): SearchTermsFuseResult<T> {
-  return _.uniqWith(results, _.isEqualWith)
+  return uniqWith(results, isEqualWith)
 }
 
 export function groupSearchTerms(searchText: string) {
@@ -42,7 +44,7 @@ function searchByTokens<T>(searchTerms: string[], datas: T[], keys: string[]) {
     includeMatches: true,
     minMatchCharLength: 2,
     threshold: 0.01,
-    ...(!hasTether && { getFn: (obj: T, path: string | string[]) => cleanValue(_.get(obj, path)) }),
+    ...(!hasTether && { getFn: (obj: T, path: string | string[]) => cleanValue(get(obj, path)) }),
     keys,
   })
 
@@ -121,7 +123,7 @@ export function filterTokens<T extends { address: string }>(
   endsWith: (string: string, substring: string) => boolean,
 ): T[] {
   const { addressesResult, tokensResult } = searchByText(filterValue, tokens, ['symbol'], { tokens: ['address'] })
-  const result = _.uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
+  const result = uniqBy([...tokensResult, ...addressesResult], (r) => r.item.address)
   if (result.length > 0) {
     return result.map((r) => r.item)
   }

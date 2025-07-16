@@ -9,7 +9,7 @@ import {
   HistogramSeries,
   LineSeries,
 } from 'lightweight-charts'
-import _ from 'lodash'
+import lodash from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import type {
@@ -103,7 +103,7 @@ const CandleChart = ({
   }, [lastFetchEndTime])
 
   const debouncedFetchMoreChartData = useRef(
-    _.debounce(
+    lodash.debounce(
       () => {
         if (fetchingMore || refetchingCapped) {
           return

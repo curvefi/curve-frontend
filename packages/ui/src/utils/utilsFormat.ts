@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import _ from 'lodash'
+import lodash from 'lodash'
 import { detect, fromUrl, fromNavigator } from '@lingui/detect-locale'
 import { MAX_USD_VALUE } from './utilsConstants'
 
@@ -66,7 +66,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
   try {
     if (typeof val === 'undefined' || val === null || val === '') {
       return defaultValue || ''
-    } else if (_.isNaN(Number(val))) {
+    } else if (lodash.isNaN(Number(val))) {
       return '?'
     } else {
       const parsedOptions: NumberFormatOptions = { ...numberFormatOptions, useGrouping: true }
@@ -131,7 +131,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
     console.error(error, { params: { val, options } })
     if (typeof val === 'undefined' || val === null || val === '') {
       return defaultValue || ''
-    } else if (_.isNaN(Number(val))) {
+    } else if (lodash.isNaN(Number(val))) {
       return '?'
     } else {
       return val.toString()
@@ -152,9 +152,9 @@ function _formatNumber(val: string | number, options: NumberFormatOptions) {
 export function formatNumberUsdRate(usdRate: number | string | undefined, hideCurrencySymbol?: boolean) {
   let parsedUsdRate = ''
 
-  if (_.isUndefined(usdRate)) {
+  if (lodash.isUndefined(usdRate)) {
     return ''
-  } else if (_.isNaN(usdRate)) {
+  } else if (lodash.isNaN(usdRate)) {
     parsedUsdRate = '$N/A'
   } else if (usdRate) {
     if (Number(usdRate) < 0.0000001) {
