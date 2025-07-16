@@ -44,7 +44,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
+  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -65,25 +65,24 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
-    const index = 1 // there is one mint market with always 100%, we test the generated lend market with 99.99%
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="data-table-cell-liquidityUsd"]`).first().contains('$')
       cy.get('[data-testid="select-filter-sort"]').click()
       cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
       cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get(`[data-testid^="data-table-row"]`)
-        .eq(index)
+        .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
         .should('exist')
-      expandRowOnMobile(index)
+      expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
       cy.get('[data-testid="metric-utilizationPercent"]').contains('99.99%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').eq(index).contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').eq(index).contains('0.00%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
     }
   })
 
@@ -93,7 +92,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="chip-lend"]`).click()
       cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
     })
-    expandRowOnMobile()
+    expandFirstRowOnMobile()
     if (breakpoint != 'mobile') {
       enableGraphColumn()
     }
@@ -180,7 +179,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
-    expandRowOnMobile()
+    expandFirstRowOnMobile()
     if (breakpoint == 'desktop') {
       // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
       cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -210,7 +209,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should copy the market address`, RETRY_IN_CI, () => {
     if (breakpoint === 'mobile') {
-      expandRowOnMobile()
+      expandFirstRowOnMobile()
     }
     // unfortunately we need to click twice on Chromium, the first one doesn't work (maybe due to the tooltip)
     range(2).forEach(() =>
@@ -244,7 +243,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="chip-rewards"]`).click()
       cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     })
-    expandRowOnMobile()
+    expandFirstRowOnMobile()
     cy.get(`[data-testid="rewards-icons"]`).should('be.visible')
     withFilterChips(() => {
       cy.get(`[data-testid="chip-rewards"]`).click()
@@ -268,9 +267,9 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="${element}"]`).should('not.exist')
   })
 
-  function expandRowOnMobile(index = 0) {
+  function expandFirstRowOnMobile() {
     if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="expand-icon"]`).eq(index).click()
+      cy.get(`[data-testid="expand-icon"]`).first().click()
       cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
     }
   }

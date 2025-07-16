@@ -54,9 +54,10 @@ export const LlamaMarketsTable = ({
   minLiquidity: number
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, [
-    { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
-  ])
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
+    TITLE,
+    useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] }], [minLiquidity]),
+  )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, result?.hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
