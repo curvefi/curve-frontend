@@ -58,5 +58,6 @@ export const { useQuery: useMarketCollateralValue } = queryFactory({
   queryKey: (params: MarketParams) =>
     ['marketCollateralValue', { chainId: params.chainId }, { marketId: params.marketId }] as const,
   queryFn: _getMarketCollateralValue,
+  refetchInterval: '1m',
   validationSuite: llamaApiValidationSuite,
 })

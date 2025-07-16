@@ -27,7 +27,10 @@ export const useBorrowPositionDetails = ({
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
-  const { data: onchainData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({ chainId: chainId, marketId })
+  const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
+    chainId: chainId,
+    marketId,
+  })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,
     tokenAddress: market?.addresses?.collateral_token,
@@ -39,25 +42,25 @@ export const useBorrowPositionDetails = ({
 
   const { details: userLoanDetails } = userLoanDetailsResp ?? {}
 
-  const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
+  const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
   })
 
   const thirtyDayAvgRate = useMemo(() => {
-    if (!crvUsdSnapshots) return null
+    if (!lendSnapshots) return null
 
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
+    const recentSnapshots = lendSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
 
     if (recentSnapshots.length === 0) return null
 
     return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
-  }, [crvUsdSnapshots])
+  }, [lendSnapshots])
 
-  const borrowApy = onchainData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
+  const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
 
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !userLoanDetails?.state?.collateral) return null
@@ -75,7 +78,7 @@ export const useBorrowPositionDetails = ({
     borrowAPR: {
       value: borrowApy != null ? Number(borrowApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
-      loading: isOnchainRatesLoading || isSnapshotsLoading || !market?.addresses.controller,
+      loading: isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {
       value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
