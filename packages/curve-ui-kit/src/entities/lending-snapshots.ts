@@ -9,7 +9,7 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'lendingSnapshots', 'v1'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery): Promise<LendingSnapshot[]> => {
     // todo: pass {sort_by: 'DATE_ASC, start: now-week} and remove reverse (backend is timing out)
-    const response = await getSnapshots(blockchainId, contractAddress, { agg: 'none' })
+    const response = await getSnapshots(blockchainId, contractAddress, { agg: 'none', fetch_on_chain: true })
     return response.reverse()
   },
   staleTime: '1h',

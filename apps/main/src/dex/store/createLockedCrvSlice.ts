@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import {
@@ -21,6 +21,7 @@ import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { cloneDeep } = lodash
 
 type SliceState = {
   activeKey: string

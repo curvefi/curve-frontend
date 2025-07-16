@@ -12,7 +12,7 @@ import {
   useLocale,
 } from 'react-aria'
 import { useCalendarState, useDateFieldState, useDatePickerState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import ModalDialog from 'ui/src/Dialog'
 import Icon from 'ui/src/Icon'
@@ -169,7 +169,7 @@ function DatePicker<T extends DateValue>(
 
   // close modal after clicking on quick actions btn
   useEffect(() => {
-    if (typeof props.quickActionValue !== null) {
+    if (props.quickActionValue) {
       state.setOpen(false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

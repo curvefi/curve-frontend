@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { Chip } from '@ui/Typography'
 import { t } from '@ui-kit/lib/i18n'
 

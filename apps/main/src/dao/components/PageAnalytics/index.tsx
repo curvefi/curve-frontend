@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { SubNavItem } from '@/dao/components/SubNav/types'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'

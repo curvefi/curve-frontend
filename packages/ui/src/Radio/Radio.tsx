@@ -1,5 +1,5 @@
 import { useContext, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import { RadioContext } from 'ui/src/Radio'
 import { useFocusRing } from '@react-aria/focus'

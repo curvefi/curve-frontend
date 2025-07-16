@@ -1,7 +1,7 @@
 import { useMemo, useRef } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { getAddress } from 'viem'
 import { ROUTE } from '@/dex/constants'
 import type { NetworkEnum } from '@/dex/types/main.types'
@@ -111,7 +111,7 @@ const ChipPoolAddress = styled.span`
 const ChipPoolName = styled(TextEllipsis)`
   font-size: var(--font-size-4);
 
-  max-width: 13.125rem; // 200px
+  max-width: min(13.125rem, 100vw - 140px); // 210px, but smaller in very small viewports to avoid horizontal scroll
 
   @media (min-width: ${breakpoints.sm}rem) {
     font-size: 1.25rem; // 20px

@@ -1,5 +1,5 @@
 import produce from 'immer'
-import isEqual from 'lodash/isEqual'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
@@ -45,12 +45,11 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       isNetworkSwitched,
     })
 
-    const { usdRates, user, gas, gauges } = get()
+    const { user, gas, gauges } = get()
     if (isNetworkSwitched) gas.resetState()
     await Promise.all([
       api && isNetworkSwitched && gas.fetchGasInfo(api),
       api && wallet?.provider && user.updateUserData(api, wallet),
-      api && usdRates.fetchAllStoredUsdRates(api),
       gauges.getGauges(),
       gauges.getGaugesData(),
     ])
@@ -65,12 +64,12 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
         const storedActiveKeyValues = storedValues[activeKey]
         if (typeof storedValues === 'undefined') {
           const parsedValue = { [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             state[sliceKey][key] = parsedValue
           }
         } else if (typeof storedValues === 'object') {
           const parsedValue = { ...storedValues, [activeKey]: value }
-          if (!isEqual(storedActiveKeyValues, parsedValue)) {
+          if (!lodash.isEqual(storedActiveKeyValues, parsedValue)) {
             state[sliceKey][key] = parsedValue
           }
         }
@@ -81,7 +80,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     set(
       produce((state) => {
         const storedValue = state[sliceKey][key]
-        if (!isEqual(storedValue, value)) {
+        if (!lodash.isEqual(storedValue, value)) {
           state[sliceKey][key] = value
         }
       }),
@@ -92,7 +91,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       const value = sliceState[key]
       set(
         produce((state) => {
-          if (!isEqual(state[sliceKey][key], value)) {
+          if (!lodash.isEqual(state[sliceKey][key], value)) {
             state[sliceKey][key] = value
           }
         }),

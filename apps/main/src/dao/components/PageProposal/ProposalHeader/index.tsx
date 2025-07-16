@@ -1,5 +1,5 @@
 import { Chain } from 'curve-ui-kit/src/utils/network'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Countdown from '@/dao/components/Countdown'
 import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
 import SmallLabel from '@/dao/components/SmallLabel'

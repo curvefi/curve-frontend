@@ -1,6 +1,6 @@
-import Image from 'next/image'
 import Box from '@mui/material/Box'
 import type { NetworkDef } from '@ui/utils'
+import Image from '@ui-kit/shared/image'
 
 type ChainIconProps = {
   network: NetworkDef

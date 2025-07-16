@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useAbiTotalSupply from '@/lend/hooks/useAbiTotalSupply'

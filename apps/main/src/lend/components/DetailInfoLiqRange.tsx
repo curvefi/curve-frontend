@@ -1,5 +1,5 @@
 import { ReactNode, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import useStore from '@/lend/store/useStore'

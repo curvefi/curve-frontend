@@ -1,4 +1,4 @@
-import upperFirst from 'lodash/upperFirst'
+import lodash from 'lodash'
 import { AlertFormErrorKey, GaugeFormattedData, GaugeMapper } from '@/dao/types/dao.types'
 import { Chain } from '@ui-kit/utils'
 
@@ -36,7 +36,7 @@ export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'
-  return Chain[upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
+  return Chain[lodash.upperFirst(gaugeNetwork) as keyof typeof Chain] ?? 1
 }
 
 export const findRootGauge = (gaugeAddress: string, gaugeMapper: GaugeMapper) => {

@@ -1,7 +1,7 @@
 import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Button from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'
 import Icon from 'ui/src/Icon/Icon'

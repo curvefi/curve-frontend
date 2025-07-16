@@ -1,20 +1,20 @@
-import { get } from 'lodash'
+import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Select from '@mui/material/Select'
 import Slider from '@mui/material/Slider'
-import type { SliderProps } from '@mui/material/Slider/Slider'
+import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 
 /**
  * Get the maximum value from a field in an array of objects.
  * TODO: validate T[K] is number with typescript. DeepKeys makes it hard to do this.
  */
-const getMaxValueFromData = <T extends any, K extends DeepKeys<T>>(data: T[], field: K) =>
-  data.reduce((acc, item) => Math.max(acc, get(item, field) as number), 0)
+const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
+  data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)
 
 type NumberRange = [number, number]
 
@@ -23,7 +23,7 @@ type OnSliderChange = NonNullable<SliderProps['onChange']>
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <T extends unknown>({
+export const RangeSliderFilter = <T,>({
   columnFilters,
   setColumnFilter,
   data,
@@ -55,9 +55,11 @@ export const RangeSliderFilter = <T extends unknown>({
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultValue[i]) ? undefined : (newRange as NumberRange),
+          newRange.every((value, i) => value === defaultValue[i])
+            ? undefined // remove the filter if the range is the same as the default
+            : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
         ),
-      [defaultValue, id, setColumnFilter],
+      [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
     ),
   )
 

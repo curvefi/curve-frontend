@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ExpectedLabel from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedLabel'
 import ExpectedSummary from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSummary'
 import ExpectedSwapDetails from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSwapDetails'

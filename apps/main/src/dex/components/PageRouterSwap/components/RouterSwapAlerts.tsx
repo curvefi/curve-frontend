@@ -1,12 +1,14 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
+import { useChainId } from 'wagmi'
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/PageRouterSwap/types'
-import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { isUndefined, isNaN } = lodash
 
 const RouterSwapAlerts = ({
   formStatus,
@@ -34,12 +36,11 @@ const RouterSwapAlerts = ({
     isFullReset?: boolean,
   ) => void
 }) => {
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams
 
-  const toUsdRate = usdRatesMapper[toAddress]
+  const chainId = useChainId()
+  const { data: toUsdRate } = useTokenUsdRate({ chainId, tokenAddress: toAddress })
 
   const usdToAmount = useMemo(
     () =>

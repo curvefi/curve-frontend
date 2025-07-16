@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon'
 import { Radio, RadioGroup } from 'ui/src/Radio'
 import type { LabelsMapper } from 'ui/src/TableSort/types'

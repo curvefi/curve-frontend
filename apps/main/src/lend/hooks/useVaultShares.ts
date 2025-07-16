@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useTokenUsdRate } from '@/lend/entities/token'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@ui/utils'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data

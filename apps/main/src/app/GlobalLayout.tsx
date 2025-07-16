@@ -26,13 +26,13 @@ const useAppStats = (currentApp: string, network: NetworkDef) =>
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
   })[currentApp]
 
-export const useAppRoutes = (network: NetworkDef) => ({
+const useAppRoutes = (network: NetworkDef) => ({
   dao: APP_LINK.dao.routes,
   llamalend: APP_LINK.llamalend.routes,
   dex: useDexRoutes(network),
 })
 
-export const useAppMenu = (app: AppName): AppMenuOption =>
+const useAppMenu = (app: AppName): AppMenuOption =>
   ({
     dao: 'dao' as const,
     crvusd: 'llamalend' as const,
@@ -41,7 +41,7 @@ export const useAppMenu = (app: AppName): AppMenuOption =>
     dex: 'dex' as const,
   })[app]
 
-export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
+const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppName) =>
   ({
     dao: daoNetworks,
     crvusd: crvusdNetworks,
@@ -49,6 +49,9 @@ export const useAppSupportedNetworks = (allNetworks: NetworkMapping, app: AppNam
     llamalend: lendNetworks,
     dex: allNetworks,
   })[app]
+
+// when the mobile drawer is open, we want to ignore the scrollbar and expand the content to full page width
+const EXPAND_WHEN_HIDDEN = { '[aria-hidden="true"] &': { width: '100vw' } }
 
 export const GlobalLayout = <TId extends string, TChainId extends number>({
   children,
@@ -61,7 +64,7 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   network: NetworkDef<TId, TChainId>
   networks: NetworkMapping<TId, TChainId>
 }) => (
-  <Stack>
+  <Stack sx={EXPAND_WHEN_HIDDEN}>
     <Header
       currentApp={currentApp}
       chainId={network.chainId}

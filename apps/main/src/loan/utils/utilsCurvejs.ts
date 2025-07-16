@@ -1,6 +1,5 @@
 import type { Eip1193Provider } from 'ethers'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
+import lodash from 'lodash'
 import networks from '@/loan/networks'
 import { BandBalance, ChainId, type LlamaApi, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
@@ -12,7 +11,7 @@ export async function initLlamaApi(
 ): Promise<LlamaApi | undefined> {
   if (!externalProvider) return
   const network = networks[chainId].networkId
-  const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
+  const api = lodash.cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
   await api.init('Web3', { network, externalProvider }, { chainId })
   return api
 }
@@ -22,7 +21,7 @@ export function getIsUserCloseToLiquidation(
   userLiquidationBand: number | null,
   oraclePriceBand: number | null | undefined,
 ) {
-  if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
+  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
     return false
   } else if (typeof oraclePriceBand === 'number') {
     return userFirstBand <= oraclePriceBand + 2
@@ -127,7 +126,7 @@ export function loadingLRPrices(prices: string[]) {
 }
 
 export function sortBands(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = sortBy(Object.keys(bandBalances), (k) => +k)
+  const sortedKeys = lodash.sortBy(Object.keys(bandBalances), (k) => +k)
   const bandBalancesArr = []
   for (const k of sortedKeys) {
     bandBalancesArr.push({ ...bandBalances[k], band: k })
@@ -137,7 +136,7 @@ export function sortBands(bandBalances: { [key: string]: { stablecoin: string; c
 
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
-  const resp = cloneDeep(userLoss)
+  const resp = lodash.cloneDeep(userLoss)
   resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
   resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
 

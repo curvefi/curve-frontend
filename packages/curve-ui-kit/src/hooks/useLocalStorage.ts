@@ -1,8 +1,11 @@
-import { kebabCase } from 'lodash'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
+import type { ColumnFiltersState } from '@tanstack/table-core'
 import { isBetaDefault } from '@ui-kit/utils'
 import { useStoredState } from './useStoredState'
+
+const { kebabCase } = lodash
 
 export function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
@@ -37,6 +40,9 @@ export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', fa
 export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
+
+export const useTableFilters = (tableTitle: string, defaultFilters: ColumnFiltersState) =>
+  useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters)
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
 export const useFavoriteMarkets = () => {

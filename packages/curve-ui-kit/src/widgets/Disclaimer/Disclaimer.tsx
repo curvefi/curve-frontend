@@ -1,9 +1,9 @@
 'use client'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { MouseEvent, useMemo } from 'react'
+import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
+import { usePathname, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -41,6 +41,12 @@ export type DisclaimerProps = {
   currentApp: AppName
 }
 
+function useAfterHydration(result: string) {
+  const [value, setValue] = useState<string>()
+  useEffect(() => setValue(result), [result]) // only after hydration, otherwise test may click too fast
+  return value
+}
+
 export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
   const pathname = usePathname()
   const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
@@ -70,7 +76,7 @@ export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
           maxWidth: MaxWidth.disclaimer,
           paddingInline: Spacing.md,
         }}
-        data-testid="disclaimer"
+        data-testid={useAfterHydration('disclaimer')}
       >
         <Stack
           direction={{

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import { useButton } from '@react-aria/button'

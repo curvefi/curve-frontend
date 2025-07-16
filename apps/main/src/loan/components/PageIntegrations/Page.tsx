@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import IntegrationsComp from '@/loan/components/PageIntegrations/index'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'

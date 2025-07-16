@@ -1,5 +1,5 @@
 import { ReactNode, useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import Spinner from '@/dao/components/Spinner'
 import Box from '@ui/Box'

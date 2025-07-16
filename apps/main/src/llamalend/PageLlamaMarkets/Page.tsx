@@ -14,8 +14,6 @@ import { LendTableFooter } from '@/llamalend/PageLlamaMarkets/LendTableFooter'
 import { LlamaMarketsTable } from '@/llamalend/PageLlamaMarkets/LlamaMarketsTable'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { logSuccess } from '@ui-kit/lib'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
@@ -56,7 +54,6 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   useInjectServerData(props)
   const { address } = useAccount()
   const { data, isError, isLoading } = useLlamaMarkets(address)
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
 
   const showSkeleton = !data && (!isError || isLoading) // on initial render isLoading is still false
   return (
@@ -70,12 +67,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
             minHeight: MinHeight.pageContent,
           }}
         >
-          <LlamaMarketsTable
-            onReload={() => onReload(address)}
-            result={data}
-            isError={isError}
-            minLiquidity={minLiquidity}
-          />
+          <LlamaMarketsTable onReload={() => onReload(address)} result={data} isError={isError} />
         </Stack>
       </WithSkeleton>
 

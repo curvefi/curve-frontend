@@ -1,18 +1,8 @@
-import { useCallback } from 'react'
-import { useQueries } from '@tanstack/react-query'
-import { QueriesOptions, QueriesResults } from '@tanstack/react-query/build/legacy/useQueries'
-import {
-  CombinedQueriesResult,
-  CombinedQueryMappingResult,
-  ExtractDataType,
-  QueryOptionsArray,
-  QueryResultsArray,
-} from './types'
+import type { UseQueryOptions } from '@tanstack/react-query'
+import { QueryOptionsArray, QueryResultsArray } from './types'
 
 /** Combines the metadata of multiple queries into a single object. */
-export const combineQueriesMeta = <T extends QueryOptionsArray>(
-  results: QueryResultsArray<T>,
-): Omit<CombinedQueriesResult<T>, 'data'> => ({
+export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryResultsArray<T>) => ({
   isLoading: results.some((result) => result.isLoading),
   isPending: results.some((result) => result.isPending),
   isError: results.some((result) => result.isError),
@@ -20,29 +10,11 @@ export const combineQueriesMeta = <T extends QueryOptionsArray>(
 })
 
 /** Combines the data and metadata of multiple queries into a single object. */
-const combineQueriesToObject = <T extends QueryOptionsArray, K extends string[]>(
-  results: QueryResultsArray<T>,
+export const combineQueriesToObject = <TData, K extends string[]>(
+  results: QueryResultsArray<UseQueryOptions<TData, any, any, any>[]>,
   keys: K,
-): CombinedQueryMappingResult<T, K> => ({
-  data: Object.fromEntries((results || []).map(({ data }, index) => [keys[index], data])) as Record<
-    K[number],
-    ExtractDataType<T[number]>
-  >,
+) => ({
+  // Using flatMap instead of map + filter(Boolean), because it's not correctly erasing | undefined from the Record value type
+  data: Object.fromEntries(results.flatMap(({ data }, index) => (data !== undefined ? [[keys[index], data]] : []))),
   ...combineQueriesMeta(results),
 })
-
-/**
- * Combines multiple queries into a single object with keys for each query
- * @param queries The query options to combine
- * @param keys The keys to use for each query
- * @returns The combined queries in an object
- */
-export const useQueryMapping = <TOptions extends Array<any>, TKey extends string[]>(
-  queries: readonly [...QueriesOptions<TOptions>],
-  keys: [...TKey],
-) =>
-  useQueries({
-    // todo: figure out why the type has broken in react-query, related to https://github.com/TanStack/query/pull/8624
-    queries: queries as Parameters<typeof useQueries>[0]['queries'],
-    combine: useCallback((results: QueriesResults<TKey>) => combineQueriesToObject(results, keys), [keys]),
-  })

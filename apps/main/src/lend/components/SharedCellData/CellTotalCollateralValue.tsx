@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
+import { ethAddress } from 'viem'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
@@ -7,6 +8,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -24,7 +26,7 @@ interface Props {
 }
 
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
-  const chainTokenUsdRate = useStore((state) => state.usdRates.tokens['0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'])
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
   // TODO: allow gas prices priority adjustment
   const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)
@@ -36,14 +38,10 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
       const { symbol, gasPricesUnit } = networks[chainId]
 
       const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * estimatedGas))
-      if (chainTokenUsdRate === 'NaN') {
-        return { estGasCost: estGasCost.toString(), estGasCostUsd: 'NaN', tooltip: '' }
-      } else {
-        const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
-        const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
-        const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
-        return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }
-      }
+      const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
+      const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
+      const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
+      return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }
     }
     return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
   }, [chainTokenUsdRate, basePlusPriority, chainId, estimatedGas])

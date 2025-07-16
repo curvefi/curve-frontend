@@ -1,6 +1,5 @@
 import type { Eip1193Provider } from 'ethers'
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
+import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import networks from '@/lend/networks'
 import { USE_API } from '@/lend/shared/config'
@@ -54,7 +53,7 @@ export const helpers = {
       throw new Error(`ChainId ${chainId} not supported`)
     }
     const network = networks[chainId].networkId
-    const api = cloneDeep((await import('@curvefi/llamalend-api')).default) as Api
+    const api = lodash.cloneDeep((await import('@curvefi/llamalend-api')).default) as Api
     await api.init('Web3', { network, externalProvider: provider }, { chainId })
     return api
   },
@@ -63,7 +62,7 @@ export const helpers = {
     userLiquidationBand: number | null,
     oraclePriceBand: number | null | undefined,
   ) => {
-    if (typeof userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
+    if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
       return false
     } else if (typeof oraclePriceBand === 'number') {
       return userFirstBand <= oraclePriceBand + 2
@@ -2031,7 +2030,7 @@ function _reverseBands(bands: [number, number] | number[]) {
 }
 
 function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
+  const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
     // @ts-ignore

@@ -7,7 +7,7 @@ import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/l
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
-import { type DeepKeys } from '@tanstack/table-core/build/lib/utils'
+import { type DeepKeys } from '@tanstack/table-core'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -30,6 +30,7 @@ export type AssetDetails = {
   usdPrice: number | null
   balance: number | null
   balanceUsd: number | null
+  rebasingYield: number | null
 }
 
 export type LlamaMarket = {
@@ -41,11 +42,12 @@ export type LlamaMarket = {
   liquidityUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
-    lend: number | null // lendApr + incentives (for now only lendCrvAprUnboosted)
-    lendApr: number | null
+    lend: number | null // lendApr + CRV unboosted + yield from collateral
+    lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
-    borrow: number // apy %
+    borrow: number // base borrow APY %
+    borrowTotalApy: number // borrow - yield from collateral
   }
   type: LlamaMarketType
   url: string
@@ -88,7 +90,7 @@ const convertLendingVault = (
   const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
-  const lend = lendApr + (lendCrvAprUnboosted ?? 0)
+  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0)
   return {
     chain,
     address: vault,
@@ -112,7 +114,15 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, borrow: apyBorrow },
+    rates: {
+      lend, // this is the total yield, including CRV and collateral yield, and is displayed in the table
+      lendApr,
+      lendCrvAprUnboosted,
+      lendCrvAprBoosted,
+      borrow: apyBorrow,
+      // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
+      borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
+    },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
       'lend',
@@ -163,6 +173,7 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
+        rebasingYield: null,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -171,12 +182,20 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
+        rebasingYield: null,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     debtCeiling,
     liquidityUsd: borrowable,
-    rates: { borrow: rate * 100, lend: null, lendApr: null, lendCrvAprBoosted: null, lendCrvAprUnboosted: null },
+    rates: {
+      borrow: rate * 100,
+      lend: null,
+      lendApr: null,
+      lendCrvAprBoosted: null,
+      lendCrvAprUnboosted: null,
+      borrowTotalApy: rate * 100,
+    },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
     url: getInternalUrl(

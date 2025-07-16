@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import pick from 'lodash/pick'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
@@ -64,9 +63,6 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       get()[sliceKey].setStateByActiveKey('collateralDatas', chainId.toString(), collateralDatas)
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
 
-      // fetch collaterals USD rates
-      void get().usdRates.fetchUsdRateByTokens(curve, collateralAddresses)
-
       // add to cache
       void get().storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)
 
@@ -84,7 +80,7 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {
-      get().resetAppState(sliceKey, cloneDeep(DEFAULT_STATE))
+      get().resetAppState(sliceKey, lodash.cloneDeep(DEFAULT_STATE))
     },
   },
 })
@@ -95,7 +91,7 @@ function getCollateralData(llamma: Llamma) {
     displayName: llamma.id === 'sfrxeth2' ? 'sfrxETH v2' : '',
   }
 
-  const collateralDataCache = pick(collateralData, [
+  const collateralDataCache = lodash.pick(collateralData, [
     'llamma.id',
     'llamma.address',
     'llamma.controller',

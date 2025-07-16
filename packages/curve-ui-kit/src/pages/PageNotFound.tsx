@@ -1,10 +1,10 @@
 'use client'
 import { useLayoutStore } from 'curve-ui-kit/src/features/layout'
-import Image from 'next/image'
 import { NOT_FOUND_IMAGE_URL } from 'ui/src/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import Image from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MinHeight, MaxWidth } = SizesAndSpaces

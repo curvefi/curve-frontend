@@ -1,9 +1,9 @@
-import Image from 'next/image'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip'
+import Image from '@ui-kit/shared/image'
 
 const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
   const { platform, multiplier, platformImageSrc } = rewardsPool

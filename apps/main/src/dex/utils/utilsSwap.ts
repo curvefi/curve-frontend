@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import { ethAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
@@ -23,9 +24,9 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
 
   const exclusionPairs = {
     '0xae78736cd615f374d3085123a210448e74fc6393-0x7f39c581f595b53c5cb19bd0b3f8da6c935e2ca0': true, // rETH, wstETH
-    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-0x5979d7b546e38e414f7e9822514be443a4800529': true,
-    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee-0xe95a203b1a91a908f9b9ce46459d101078c2c3cb': true, // ETH, ankrETH
-    '0xe95a203b1a91a908f9b9ce46459d101078c2c3cb-0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee': true,
+    [`${ethAddress}-0x5979d7b546e38e414f7e9822514be443a4800529`]: true,
+    [`${ethAddress}-0xe95a203b1a91a908f9b9ce46459d101078c2c3cb`]: true, // ETH, ankrETH
+    [`0xe95a203b1a91a908f9b9ce46459d101078c2c3cb-${ethAddress}`]: true,
   }
   // @ts-ignore
   return exclusionPairs[pair1] || exclusionPairs[pair2]

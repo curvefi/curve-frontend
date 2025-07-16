@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import ChipInactive from '@/lend/components/ChipInactive'
 import CellRewardsTooltip from '@/lend/components/SharedCellData/CellRewardsTooltip'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'

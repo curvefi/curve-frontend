@@ -3,7 +3,14 @@
   "compilerOptions": {
     "types": ["hardhat"],
     "baseUrl": "./cypress",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@ui": ["../../packages/ui/src/index.ts"],
+      "@ui/*": ["../../packages/ui/src/*"],
+      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
+      "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
+    }
   },
   "include": [
     "./**/*.ts",

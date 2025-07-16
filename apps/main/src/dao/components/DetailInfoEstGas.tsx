@@ -1,7 +1,6 @@
-import isNaN from 'lodash/isNaN'
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
@@ -10,6 +9,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -34,7 +34,7 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const gasInfo = useStore((state) => state.gas.gasInfo)
   const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
 
@@ -60,7 +60,7 @@ const DetailInfoEstGas = ({
       const tooltipBasePlusPriority = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
 
       resp.estGasCost = gasCostInWei
-      resp.estGasCostUsd = isUndefined(chainTokenUsdRate) ? 0 : +gasCostInEther * chainTokenUsdRate
+      resp.estGasCostUsd = lodash.isUndefined(chainTokenUsdRate) ? 0 : +gasCostInEther * chainTokenUsdRate
       resp.tooltip = `${tooltipGasCostInEther} ${symbol} at ${tooltipBasePlusPriority} ${gasPricesUnit}`
     }
     return resp
@@ -90,7 +90,7 @@ const DetailInfoEstGas = ({
     </IconTooltip>
   )
 
-  const haveUsdRate = !isUndefined(chainTokenUsdRate) && !isNaN(chainTokenUsdRate)
+  const haveUsdRate = !lodash.isUndefined(chainTokenUsdRate) && !lodash.isNaN(chainTokenUsdRate)
 
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>

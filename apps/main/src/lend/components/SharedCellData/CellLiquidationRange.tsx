@@ -1,7 +1,9 @@
-import isUndefined from 'lodash/isUndefined'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+
+const { isUndefined } = lodash
 
 const CellHealthStatus = ({ userActiveKey, type }: { userActiveKey: string; type: 'range' | 'band' | 'bandPct' }) => {
   const { error, ...details } = useUserLoanDetails(userActiveKey)

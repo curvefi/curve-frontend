@@ -1,10 +1,10 @@
-import { useParams, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import type { UrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { InternalLink } from '@ui/Link'
+import { useParams, useNavigate } from '@ui-kit/hooks/router'
 
 type InternalLinkButtonProps = {
   to: string
@@ -13,7 +13,7 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const { push } = useRouter()
+  const push = useNavigate()
   const params = useParams() as UrlParams
   return (
     <StyledInternalLink

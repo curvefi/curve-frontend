@@ -1,7 +1,7 @@
 import { cloneElement, ReactElement, ReactNode, useRef } from 'react'
 import { useOverlayTrigger } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import { Popover2, Popover2Button } from 'ui/src/Popover2'
 import { OverlayTriggerProps } from '@react-types/overlays'

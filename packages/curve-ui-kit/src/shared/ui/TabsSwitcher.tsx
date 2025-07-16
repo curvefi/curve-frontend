@@ -1,8 +1,8 @@
 import type { UrlObject } from 'url'
-import Link from 'next/link'
 import Tab, { type TabProps } from '@mui/material/Tab'
 import Tabs, { type TabsProps } from '@mui/material/Tabs'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
+import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
   TABS_HEIGHT_CLASSES,
@@ -52,13 +52,13 @@ export const TabsSwitcher = <T extends string | number>({
     className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
     {...props}
   >
-    {options.map(({ value, label, sx, ...props }) => (
+    {options.map(({ value, label, sx, href, ...props }) => (
       <Tab
         key={value}
         value={value}
-        component={Link}
         label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
         sx={{ ...sx, whiteSpace: 'nowrap' }}
+        {...(href && { href, component: Link })}
         {...props}
       />
     ))}

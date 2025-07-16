@@ -1,5 +1,5 @@
-import { usePathname } from 'next/navigation'
 import { type UrlParams } from '@/dex/types/main.types'
+import { usePathname } from '@ui-kit/hooks/router'
 import { getInternalUrl } from '@ui-kit/shared/routes'
 
 /** Get the path for the given route in this app */

@@ -1,6 +1,6 @@
-import NextImage from 'next/image'
 import { styled } from '@mui/material/styles'
 import { CURVE_ASSETS_URL } from '@ui/utils'
+import NextImage from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces

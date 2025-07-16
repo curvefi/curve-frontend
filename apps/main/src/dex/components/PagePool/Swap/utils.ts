@@ -1,5 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep'
-import sortBy from 'lodash/sortBy'
+import lodash from 'lodash'
 import type { ExchangeOutput, FormStatus, FormValues } from '@/dex/components/PagePool/Swap/types'
 import type { EstimatedGas as FormEstGas } from '@/dex/components/PagePool/types'
 import { Token, TokensMapper, PoolDataCacheOrApi } from '@/dex/types/main.types'
@@ -46,7 +45,7 @@ export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: Po
 
   for (const idx in tokenAddresses) {
     const address = tokenAddresses[idx]
-    const token = cloneDeep(tokensMapper[address])
+    const token = lodash.cloneDeep(tokensMapper[address])
 
     if (token) {
       swapTokensMapper[address] = {
@@ -57,7 +56,7 @@ export function getSwapTokens(tokensMapper: TokensMapper, poolDataCacheOrApi: Po
   }
 
   return {
-    selectList: sortBy(swapTokensMapper, (t) => t.symbol),
+    selectList: lodash.sortBy(swapTokensMapper, (t) => t.symbol),
     swapTokensMapper,
   }
 }

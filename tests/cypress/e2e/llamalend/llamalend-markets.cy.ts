@@ -1,4 +1,4 @@
-import { capitalize } from 'lodash'
+import lodash from 'lodash'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
 import {
   Chain,
@@ -13,13 +13,12 @@ import {
   assertInViewport,
   assertNotInViewport,
   type Breakpoint,
-  hideDomainBanner,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
 } from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/dist/llamalend'
+import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
@@ -39,16 +38,13 @@ describe(`LlamaLend Markets`, () => {
     cy.viewport(width, height)
     cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
     cy.visit('/llamalend/ethereum/markets/', {
-      onBeforeLoad: (window) => {
-        window.localStorage.clear()
-        hideDomainBanner(window)
-      },
+      onBeforeLoad: (window) => window.localStorage.clear(),
       ...LOAD_TIMEOUT,
     })
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).eq(0)
+  const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
   it('should have sticky headers', () => {
     cy.get('[data-testid^="data-table-row"]').last().then(assertNotInViewport)
     cy.get('[data-testid^="data-table-row"]').eq(10).scrollIntoView()
@@ -80,7 +76,7 @@ describe(`LlamaLend Markets`, () => {
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="metric-utilizationPercent"]').contains('99.99%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
@@ -232,7 +228,7 @@ describe(`LlamaLend Markets`, () => {
     )
     withFilterChips(() => {
       cy.get(`[data-testid="chip-${type}"]`).click()
-      firstRow().contains(capitalize(type))
+      firstRow().contains(lodash.capitalize(type))
     })
     cy.get(`[data-testid^="market-link-"]`).first().click()
     if (breakpoint === 'mobile') {

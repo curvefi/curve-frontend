@@ -1,6 +1,6 @@
-import RouterLink from 'next/link'
 import { useMemo } from 'react'
 import MuiLink from '@mui/material/Link'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import type { AppPage } from './types'
 

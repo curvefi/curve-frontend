@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import { breakpoints } from 'ui/src/utils/responsive'
 

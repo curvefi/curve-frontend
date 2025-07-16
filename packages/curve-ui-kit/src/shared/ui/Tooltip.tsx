@@ -1,4 +1,4 @@
-import merge from 'lodash/merge'
+import lodash from 'lodash'
 import type { ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import MuiTooltip, { TooltipProps as MuiTooltipProps } from '@mui/material/Tooltip'
@@ -39,7 +39,7 @@ export const Tooltip = ({ title, body, clickable, children, slotProps, ...props 
   <MuiTooltip
     arrow
     title={title && <TooltipContent title={title}>{body}</TooltipContent>}
-    slotProps={merge(slotProps, {
+    slotProps={lodash.merge(slotProps, {
       ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
       tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
     })}

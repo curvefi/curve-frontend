@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import merge from 'lodash/merge'
+import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import type { PersistOptions } from 'zustand/middleware/persist'
@@ -99,7 +99,7 @@ const store: StateCreator<Store> = (set) => ({
 
 const cache: PersistOptions<Store> = {
   name: 'user-profile',
-  merge: (persistedState, currentState) => merge(currentState, persistedState),
+  merge: (persistedState, currentState) => lodash.merge(currentState, persistedState),
   version: 1,
 }
 

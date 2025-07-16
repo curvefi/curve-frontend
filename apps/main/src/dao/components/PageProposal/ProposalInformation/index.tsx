@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import { MetricsTitle } from '@/dao/components/MetricsComp'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import { getEthPath } from '@/dao/utils'

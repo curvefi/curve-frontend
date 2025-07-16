@@ -1,5 +1,5 @@
-import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
+import { usePathname, useNavigate } from '@ui-kit/hooks/router'
 import { replaceNetworkInPath } from '@ui-kit/shared/routes'
 
 export function useRedirectToEth(
@@ -7,7 +7,7 @@ export function useRedirectToEth(
   networkId: string,
   hydrated: boolean,
 ) {
-  const { push } = useRouter()
+  const push = useNavigate()
   const pathname = usePathname()
   useEffect(() => {
     if (!network?.showInSelectNetwork && pathname && hydrated) {

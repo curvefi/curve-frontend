@@ -1,5 +1,5 @@
 import { PropsWithChildren, useRef } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 import type { ChipProps } from 'ui/src/Typography/types'
 

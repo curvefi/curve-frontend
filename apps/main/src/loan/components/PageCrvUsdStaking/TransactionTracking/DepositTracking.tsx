@@ -1,4 +1,3 @@
-import Image from 'next/image'
 import { RCCrvUSDLogoXS, RCScrvUSDLogoXS } from 'ui/src/images'
 import { txIsConfirming, txIsSuccess, txIsLoading } from '@/loan/components/PageCrvUsdStaking/utils'
 import useStore from '@/loan/store/useStore'
@@ -6,6 +5,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import Image from '@ui-kit/shared/image'
 import {
   Wrapper,
   ApprovalStep,

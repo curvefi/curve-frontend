@@ -1,7 +1,4 @@
-import chunk from 'lodash/chunk'
-import orderBy from 'lodash/orderBy'
-import sortByFn from 'lodash/sortBy'
-import uniqBy from 'lodash/uniqBy'
+import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import type {
   FilterTypeKey,
@@ -13,7 +10,6 @@ import type {
 } from '@/lend/components/PageMarketList/types'
 import { _getMarketList, DEFAULT_FORM_STATUS, parseSearchTermResults } from '@/lend/components/PageMarketList/utils'
 import { TITLE } from '@/lend/constants'
-import { getTokenUsdRateQueryData } from '@/lend/entities/token'
 import { SEARCH_TERM } from '@/lend/hooks/useSearchTermMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -33,9 +29,11 @@ import { sleep } from '@/lend/utils/helpers'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { IDict } from '@curvefi/llamalend-api/lib/interfaces'
 import { logQuery, logSuccess } from '@ui-kit/lib'
+import { getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { searchByText } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
+const { chunk, orderBy, sortBy: sortByFn, uniqBy } = lodash
 
 // isTableRowOpen
 type SliceState = {

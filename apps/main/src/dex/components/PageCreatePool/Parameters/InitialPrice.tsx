@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import NumberField from '@/dex/components/PageCreatePool/components/NumberField'
 import SwitchTokensButton from '@/dex/components/PageCreatePool/components/SwitchTokensButton'
 import { TOKEN_A, TOKEN_B, TOKEN_C } from '@/dex/components/PageCreatePool/constants'

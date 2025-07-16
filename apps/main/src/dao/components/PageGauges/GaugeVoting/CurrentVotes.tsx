@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import GaugeListItem from '@/dao/components/PageGauges/GaugeListItem'
 import SmallScreenCard from '@/dao/components/PageGauges/GaugeListItem/SmallScreenCard'
 import GaugeVotingStats from '@/dao/components/PageGauges/GaugeVoting/GaugeVotingStats'

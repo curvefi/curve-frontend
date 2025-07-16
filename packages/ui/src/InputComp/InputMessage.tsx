@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import styled from 'styled-components'
+import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon/Icon'
 import { useInputContext } from './InputProvider'
 import type { InputVariant } from './types'

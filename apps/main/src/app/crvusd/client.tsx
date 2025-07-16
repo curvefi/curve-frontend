@@ -30,7 +30,6 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchAllStoredUsdRates = useStore((state) => state.usdRates.fetchAllStoredUsdRates)
   const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const hydrate = useStore((s) => s.hydrate)
 
@@ -39,7 +38,6 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        void fetchAllStoredUsdRates(curve)
         void fetchGasInfo(curve)
       }
     },
