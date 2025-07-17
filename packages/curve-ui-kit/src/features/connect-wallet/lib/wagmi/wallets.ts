@@ -20,8 +20,8 @@ const isInIframe = typeof window !== 'undefined' && window !== window.parent
 
 export const supportedWallets = [
   { label: `Browser Wallet`, icon: BrowserWalletIcon, connector: 'injected' },
-  { label: `Binance Wallet`, icon: BinanceWalletIcon, connector: 'binance' },
   { label: `Wallet Connect`, icon: WalletConnectIcon, connector: 'walletConnect' },
+  { label: `Binance Wallet`, icon: BinanceWalletIcon, connector: 'binance' },
   { label: `Coinbase`, icon: CoinbaseWalletIcon, connector: 'coinbaseWallet' },
   ...(isInIframe ? [{ label: 'Safe', icon: SafeWalletIcon, connector: 'safe' } as const] : []),
 ] satisfies WalletType[]
