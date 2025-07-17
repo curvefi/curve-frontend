@@ -1,22 +1,16 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import lodash from 'lodash'
+import { useCallback, useMemo } from 'react'
 import { FormControlLabel } from '@mui/material'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import { ColumnDef } from '@tanstack/react-table'
+import { useTableColumnVisibility } from '@ui-kit/hooks/useLocalStorage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { VisibilityGroup } from './visibility.types'
 
-export type VisibilityOption<ColumnIds> = {
-  columns: ColumnIds[] // the column ids that are affected by this option
-  active: boolean // whether the column is currently visible in the table
-  label: string // the label for the popover, without a label the option is not shown
-  enabled: boolean // whether the column can be currently used
-}
-export type VisibilityGroup<ColumnIds> = {
-  options: VisibilityOption<ColumnIds>[]
-  label: string
-}
+const { isEqual } = lodash
 const { Spacing } = SizesAndSpaces
 
 /**
@@ -102,42 +96,49 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
 
 /**
  * Hook to manage column and feature visibility settings. Currently saved in the state.
+ *
+ * @template Data - The data type of the table rows.
+ * @template Variant - The variant type for visibility settings.
+ * @template ColumnIds - The type of column identifiers.
+ * @param tableTitle - The title of the table, used as a key for local storage.
+ * @param groups - The visibility groups for all the different variants (visibility might be e.g. different in mobile).
+ * @param variant - The current variant for which visibility settings are applied.
+ * @param columns - The column definitions for the table.
  */
-export const useVisibilitySettings = <T, ColumnIds extends string>(
-  groups: VisibilityGroup<ColumnIds>[],
-  columns: ColumnDef<T, any>[],
+export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds extends string>(
+  tableTitle: string,
+  groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
+  variant: TVariant,
+  columns: ColumnDef<TData, any>[],
 ) => {
   /** current visibility settings in grouped format */
-  const [visibilitySettings, setVisibilitySettings] = useState(groups)
-
-  useEffect(() => {
-    // reset visibility settings when groups change, e.g. when connecting the wallet
-    setVisibilitySettings(groups)
-  }, [groups])
+  const [visibilitySettings, setVisibilitySettings] = useTableColumnVisibility(tableTitle, groups)
 
   /** toggle visibility of a column by its id */
   const toggleVisibility = useCallback(
     (columns: string[]): void =>
-      setVisibilitySettings((prev) =>
-        prev.map((group) => ({
+      setVisibilitySettings((prev) => ({
+        ...prev,
+        [variant]: prev[variant].map((group) => ({
           ...group,
           options: group.options.map((option) =>
-            option.columns === columns ? { ...option, active: !option.active } : option,
+            isEqual(option.columns, columns) ? { ...option, active: !option.active } : option,
           ),
         })),
-      ),
-    [],
+      })),
+    [setVisibilitySettings, tableTitle, variant],
   )
 
+  const columnSettings = visibilitySettings[variant]
   /** current column visibility state as used internally by tanstack */
   const columnVisibility = useMemo(
     () =>
       ({
-        ...flatten(visibilitySettings),
+        ...flatten(columnSettings),
         ...Object.fromEntries(columns.filter((c) => c.meta?.hidden).map((c) => [c.id, false])),
       }) as Record<ColumnIds, boolean>,
-    [columns, visibilitySettings],
+    [columnSettings, columns],
   )
 
-  return { columnSettings: visibilitySettings, columnVisibility, toggleVisibility }
+  return { columnSettings, columnVisibility, toggleVisibility }
 }

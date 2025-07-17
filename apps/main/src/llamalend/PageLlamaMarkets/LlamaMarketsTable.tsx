@@ -3,8 +3,9 @@ import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import {
-  createLlamaMarketsColumnOptions,
   createLlamaMarketsMobileColumns,
+  getColumnVariant,
+  LLAMA_MARKETS_COLUMN_OPTIONS,
 } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
 import { useLlamaMarketSortOptions } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { LendingMarketsFilters } from '@/llamalend/PageLlamaMarkets/LendingMarketsFilters'
@@ -29,6 +30,8 @@ import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFil
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
 
+const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
  * The visibility on mobile is based on the sort field.
@@ -36,13 +39,11 @@ import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibili
  */
 const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
-  const visibilitySettings = useVisibilitySettings(groups, LLAMA_MARKET_COLUMNS)
+  const variant = getColumnVariant(hasPositions)
+  const visibilitySettings = useVisibilitySettings(TITLE, LLAMA_MARKETS_COLUMN_OPTIONS, variant, LLAMA_MARKET_COLUMNS)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }
-
-const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] }], [minLiquidity])
