@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import type { ColumnFiltersState } from '@tanstack/table-core'
+import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { isBetaDefault } from '@ui-kit/utils'
 import { useStoredState } from './useStoredState'
 
@@ -43,6 +44,15 @@ export const useFilterExpanded = (tableTitle: string) =>
 
 export const useTableFilters = (tableTitle: string, defaultFilters: ColumnFiltersState) =>
   useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters)
+
+export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
+  tableTitle: string,
+  defaultVisibility: VisibilityVariants<Variant, ColumnIds>,
+) =>
+  useLocalStorage<VisibilityVariants<Variant, ColumnIds>>(
+    `table-column-visibility-${kebabCase(tableTitle)}`,
+    defaultVisibility,
+  )
 
 export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favoriteMarkets') ?? []
 export const useFavoriteMarkets = () => {
