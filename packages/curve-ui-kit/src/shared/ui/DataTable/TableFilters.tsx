@@ -15,7 +15,8 @@ import { FilterIcon } from '../../icons/FilterIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
 import { ToolkitIcon } from '../../icons/ToolkitIcon'
 import { TableSearchField } from './TableSearchField'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
+import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
+import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
 

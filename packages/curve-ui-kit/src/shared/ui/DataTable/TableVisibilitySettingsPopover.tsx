@@ -126,7 +126,7 @@ export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds 
           ),
         })),
       })),
-    [setVisibilitySettings, tableTitle, variant],
+    [setVisibilitySettings, variant],
   )
 
   const columnSettings = visibilitySettings[variant]
