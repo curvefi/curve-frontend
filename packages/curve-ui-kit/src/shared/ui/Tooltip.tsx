@@ -35,16 +35,19 @@ export const TooltipContent = ({ title, children }: { title: ReactNode; children
  * Adds a tooltip to the children with a title and content, making sure the content is not inverted on hover.
  * It sucks that we have many components with this name, but we should try to use this one only 🤓
  */
-export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) => (
-  <MuiTooltip
-    arrow
-    title={title && <TooltipContent title={title}>{body}</TooltipContent>}
-    slotProps={lodash.merge(slotProps, {
-      ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
-      tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
-    })}
-    {...props}
-  >
-    {children}
-  </MuiTooltip>
-)
+export const Tooltip = ({ title, body, clickable, children, slotProps, ...props }: TooltipProps) =>
+  title || body ? (
+    <MuiTooltip
+      arrow
+      title={title && <TooltipContent title={title}>{body}</TooltipContent>}
+      slotProps={lodash.merge(slotProps, {
+        ...(!clickable && { popper: { sx: { userSelect: 'none', pointerEvents: 'none' } } }), // prevent text selection and pointer events
+        tooltip: { sx: { '&': { padding: 0 } } }, // remove padding with inverted color
+      })}
+      {...props}
+    >
+      {children}
+    </MuiTooltip>
+  ) : (
+    children
+  )
