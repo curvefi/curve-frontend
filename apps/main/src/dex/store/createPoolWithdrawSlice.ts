@@ -20,6 +20,7 @@ import {
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -426,7 +427,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
+      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { amounts, lpToken, selected } = formValues
       let resp
       if (selected === 'token' || selected === 'lpToken') {
@@ -468,7 +469,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'WITHDRAW',
       })
-      await get().gas.fetchGasInfo(curve)
+      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       let resp
       if (formValues.selected === 'token') {
@@ -522,7 +523,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'UNSTAKE',
       })
-      await get().gas.fetchGasInfo(curve)
+      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -557,7 +558,7 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'CLAIM',
       })
-      await get().gas.fetchGasInfo(curve)
+      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       const { isClaimCrv } = get()[sliceKey].formStatus
       const resp = isClaimCrv

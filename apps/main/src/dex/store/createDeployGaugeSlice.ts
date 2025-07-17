@@ -6,6 +6,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { shortenString } from '@ui-kit/utils'
 
 type NetworkWithFactory = {
@@ -185,7 +186,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
     deployGauge: async (curve: CurveApi, gaugeType: GaugeType, deploymentType: DeploymentType, isLite = false) => {
       const { poolAddress, lpTokenAddress, sidechainGauge, currentSidechain } = get().deployGauge
       const chainId = curve.chainId
-      const fetchGasInfo = get().gas.fetchGasInfo
+      const { networks } = get().networks
       const tokenAddress = sidechainGauge ? lpTokenAddress.toLowerCase() : poolAddress.toLowerCase()
       const shortAddress = shortenString(tokenAddress)
 
@@ -196,7 +197,7 @@ const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => (
 
       dismissNotificationHandler = dismissConfirm
 
-      await fetchGasInfo(curve)
+      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks })
 
       // --- MAINNET GAUGE ---
       if (deploymentType === 'MAINNETGAUGE') {

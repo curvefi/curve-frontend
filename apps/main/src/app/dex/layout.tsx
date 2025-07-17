@@ -25,7 +25,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const network = useStore((state) => state.networks.networks[networkDef.chainId])
 
@@ -48,7 +47,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   usePageVisibleInterval(
     () => {
       if (curveApi) {
-        void fetchGasInfo(curveApi)
         void fetchPoolsVolumeTvl(curveApi)
 
         if (curveApi.signerAddress) {
