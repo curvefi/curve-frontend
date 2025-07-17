@@ -7,7 +7,7 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Container from '@mui/material/Container'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
-import type { NetworkMapping } from '@ui/utils'
+import type { NetworkDef, NetworkMapping } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useShowTestNets } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -42,10 +42,11 @@ export const ChainSwitcher = ({ networks, chainId }: ChainSwitcherProps) => {
 
   const onClick = options.length > 1 ? toggle : openSnackbar
   const top = useLayoutStore((state) => state.navHeight)
+  const network: NetworkDef | undefined = networks[chainId] // the network may not be defined when switching apps
   return (
     <>
       <IconButton size="small" onClick={onClick} data-testid="btn-change-chain">
-        <ChainSwitcherIcon network={networks[chainId]} />
+        {network && <ChainSwitcherIcon network={network} />}
         {Object.values(options).length > 1 && <KeyboardArrowDownIcon />}
       </IconButton>
 
@@ -80,7 +81,7 @@ export const ChainSwitcher = ({ networks, chainId }: ChainSwitcherProps) => {
           {isSettingsOpen ? (
             <ChainSettings showTestnets={showTestnets} setShowTestnets={setShowTestnets} />
           ) : (
-            <ChainList showTestnets={showTestnets} options={options} selectedNetwork={networks[chainId]} />
+            <ChainList showTestnets={showTestnets} options={options} selectedNetwork={network} />
           )}
         </ModalDialog>
       )}
