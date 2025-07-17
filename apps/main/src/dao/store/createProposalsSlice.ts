@@ -16,6 +16,7 @@ import { ProposalType } from '@curvefi/prices-api/proposal/models'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -87,8 +88,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const curve = getLib('curveApi')
       const { provider } = useWallet.getState()
 
-      const fetchGasInfo = get().gas.fetchGasInfo
-
       if (!curve || !provider) return
 
       const { dismiss: dismissConfirm } = notify(t`Please confirm to cast vote.`, 'pending')
@@ -105,7 +104,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       let dismissNotificationHandler = dismissConfirm
 
       try {
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks })
       } catch (error) {
         console.warn(error)
       }
@@ -190,7 +189,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()
-      const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return
 
@@ -208,7 +206,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       let dismissNotificationHandler = dismissConfirm
 
       try {
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks })
       } catch (error) {
         console.warn(error)
       }
