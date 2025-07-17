@@ -1,3 +1,4 @@
+import { getWagmiConnectorV2 as getBinanceConnector } from '@binance/w3w-wagmi-connector-v2'
 import { coinbaseWallet, injected, safe, walletConnect } from '@wagmi/connectors'
 import type { CreateConnectorFn } from '@wagmi/core'
 
@@ -9,9 +10,11 @@ export type ConnectorType =
   | typeof coinbaseWallet.type
   | typeof safe.type
   | typeof walletConnect.type
+  | 'binance'
 
 export const connectors: Record<ConnectorType, CreateConnectorFn> = {
   [injected.type]: injected(),
+  binance: getBinanceConnector()(),
   [coinbaseWallet.type]: coinbaseWallet(),
   [safe.type]: safe(),
   [walletConnect.type]: walletConnect({
