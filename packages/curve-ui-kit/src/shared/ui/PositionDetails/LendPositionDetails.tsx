@@ -39,54 +39,51 @@ export type LendPositionDetailsProps = {
 
 export const LendPositionDetails = ({ lendingAPY, shares, lentAsset }: LendPositionDetailsProps) => (
   <Box>
-    <CardHeader title={t`Your Position Details`} />
-    <Box>
-      <CardHeader title={t`Supply Information`} size="small" />
-      <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
-        <Metric
-          size="small"
-          label={t`Lending APY`}
-          value={lendingAPY?.value}
-          loading={lendingAPY?.value == null && lendingAPY?.loading}
-          valueOptions={{ unit: 'percentage', color: 'warning' }}
-          notional={
-            lendingAPY?.thirtyDayAvgRate
-              ? {
-                  value: lendingAPY.thirtyDayAvgRate,
-                  unit: { symbol: '% 30D Avg', position: 'suffix' },
-                }
-              : undefined
-          }
-        />
-        <Metric
-          size="small"
-          label={t`Shares staked`}
-          value={shares.staked && shares.value ? (shares.staked / shares.value) * 100 : null}
-          loading={shares?.value == null && shares?.loading}
-          valueOptions={{ unit: 'percentage' }}
-        />
-        <SymbolCell
-          label={t`Lent asset`}
-          symbol={lentAsset?.symbol}
-          tokenAddress={lentAsset?.address}
-          loading={lentAsset?.loading}
-          size="small"
-        />
-        <Metric
-          size="small"
-          label={t`Amount deposited`}
-          value={lentAsset?.depositedAmount}
-          loading={lentAsset?.depositedAmount == null && lentAsset?.loading}
-          valueOptions={{ unit: 'dollar' }}
-        />
-        <Metric
-          size="small"
-          label={t`Vault shares`}
-          value={shares?.value}
-          loading={shares?.value == null && shares?.loading}
-          valueOptions={{}}
-        />
-      </Box>
+    <CardHeader title={t`Supply Information`} size="small" />
+    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
+      <Metric
+        size="small"
+        label={t`Lending APY`}
+        value={lendingAPY?.value}
+        loading={lendingAPY?.value == null && lendingAPY?.loading}
+        valueOptions={{ unit: 'percentage', color: 'warning' }}
+        notional={
+          lendingAPY?.thirtyDayAvgRate
+            ? {
+                value: lendingAPY.thirtyDayAvgRate,
+                unit: { symbol: '% 30D Avg', position: 'suffix' },
+              }
+            : undefined
+        }
+      />
+      <Metric
+        size="small"
+        label={t`Shares staked`}
+        value={shares.staked && shares.value ? (shares.staked / shares.value) * 100 : null}
+        loading={shares?.value == null && shares?.loading}
+        valueOptions={{ unit: 'percentage' }}
+      />
+      <SymbolCell
+        label={t`Lent asset`}
+        symbol={lentAsset?.symbol}
+        tokenAddress={lentAsset?.address}
+        loading={lentAsset?.loading}
+        size="small"
+      />
+      <Metric
+        size="small"
+        label={t`Amount deposited`}
+        value={lentAsset?.depositedAmount}
+        loading={lentAsset?.depositedAmount == null && lentAsset?.loading}
+        valueOptions={{ unit: 'dollar' }}
+      />
+      <Metric
+        size="small"
+        label={t`Vault shares`}
+        value={shares?.value}
+        loading={shares?.value == null && shares?.loading}
+        valueOptions={{}}
+      />
     </Box>
   </Box>
 )

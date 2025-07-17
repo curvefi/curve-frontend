@@ -71,11 +71,12 @@ export const useLendPositionDetails = ({
       symbol: market?.collateral_token.symbol,
       address: market?.collateral_token.address,
       usdRate: lentAssetUsdRate,
-      depositedAmount: marketPricePerShare
-        ? +marketPricePerShare * (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge))
-        : null,
+      depositedAmount:
+        marketPricePerShare && userBalancesResp?.vaultShares && userBalancesResp?.gauge
+          ? +marketPricePerShare * (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge))
+          : null,
       depositedUsdValue:
-        lentAssetUsdRate && marketPricePerShare
+        lentAssetUsdRate && marketPricePerShare && userBalancesResp?.vaultShares && userBalancesResp?.gauge
           ? +marketPricePerShare *
             (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge)) *
             lentAssetUsdRate
