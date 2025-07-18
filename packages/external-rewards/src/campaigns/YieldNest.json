@@ -3,7 +3,7 @@
   "platform": "YieldNest",
   "description": "External token rewards for providing liquidity.",
   "platformImageId": "yieldnest.png",
-  "dashboardLink": "https://dao.yieldnest.finance/plugins/rewards/#/",
+  "dashboardLink": "https://dao.yieldnest.finance/rewards/",
   "pools": [
     {
       "id": "null",
