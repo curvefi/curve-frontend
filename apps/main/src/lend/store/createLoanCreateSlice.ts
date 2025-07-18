@@ -15,6 +15,8 @@ import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -177,7 +179,6 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       sliceState.setStateByKey('liqRangesMapper', { [activeKeyLiqRange]: resp.liqRangesMapper })
     },
     fetchEstGasApproval: async (activeKey, api, market, maxSlippage, isLeverage) => {
-      const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { userCollateral, userBorrowed, debt, n } = formValues
@@ -186,7 +187,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       if (!signerAddress || !haveDebt || n === null) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanCreate.estGasApproval(
         activeKey,
         market,
@@ -256,7 +257,6 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
 
     // steps
     fetchStepApprove: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
-      const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
 
@@ -266,7 +266,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { userCollateral, userBorrowed } = formValues
       const { error, ...resp } = await loanCreate.approve(
         activeKey,
@@ -290,7 +290,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       }
     },
     fetchStepCreate: async (activeKey, api, market, maxSlippage, formValues, isLeverage) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
       const { provider } = useWallet.getState()
@@ -307,7 +307,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         step: 'CREATE',
       })
 
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanCreate.create(
         activeKey,
         provider,

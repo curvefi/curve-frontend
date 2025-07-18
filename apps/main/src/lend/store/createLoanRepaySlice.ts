@@ -14,6 +14,8 @@ import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -112,7 +114,6 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       }
     },
     fetchEstGasApproval: async (activeKey, api, market, maxSlippage) => {
-      const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { stateCollateral, userCollateral, userBorrowed, isFullRepay } = formValues
@@ -122,7 +123,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
 
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanRepay.estGasApproval(
         activeKey,
         market,
@@ -194,7 +195,6 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
 
     // steps
     fetchStepApprove: async (activeKey, api, market, formValues, maxSlippage) => {
-      const { gas } = get()
       const sliceState = get()[sliceKey]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
@@ -202,7 +202,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       // update formStatus
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { stateCollateral, userCollateral, userBorrowed, isFullRepay } = formValues
       const { swapRequired } = _parseValues(formValues)
 
@@ -230,7 +230,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       }
     },
     fetchStepRepay: async (activeKey, api, market, formValues, maxSlippage) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
@@ -244,7 +244,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         step: 'REPAY',
       })
 
-      await gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { userBorrowed, userCollateral, stateCollateral, isFullRepay } = formValues
       const { swapRequired } = _parseValues(formValues)
 

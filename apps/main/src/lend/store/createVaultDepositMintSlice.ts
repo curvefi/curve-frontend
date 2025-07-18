@@ -8,6 +8,8 @@ import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -79,7 +81,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       if (!signerAddress || +amount <= 0 || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.estGasApproval : apiLending.vaultMint.estGasApproval
       const resp = await fn(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
@@ -141,7 +143,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.approve : apiLending.vaultMint.approve
       const { amount } = formValues
       const resp = await fn(activeKey, provider, market, amount)
@@ -167,7 +169,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.deposit : apiLending.vaultMint.mint
       const { amount } = formValues
       const resp = await fn(activeKey, provider, market, amount)

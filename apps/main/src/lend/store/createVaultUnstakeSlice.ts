@@ -8,6 +8,8 @@ import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -57,7 +59,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       if (!signerAddress || +amount <= 0 || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await apiLending.vaultUnstake.estGas(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -105,7 +107,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { amount } = formValues
       const resp = await apiLending.vaultUnstake.unstake(activeKey, provider, market, amount)
 

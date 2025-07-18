@@ -9,6 +9,8 @@ import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null
@@ -83,7 +85,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       if (!signerAddress || (!isFullWithdraw && +amount <= 0) || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
 
       let resp
       if (isFullWithdraw) {
@@ -136,7 +138,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { amount, isFullWithdraw } = formValues
       const resp = await apiLending.vaultWithdraw.withdraw(
         activeKey,

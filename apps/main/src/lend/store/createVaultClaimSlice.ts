@@ -7,6 +7,8 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep, merge } = lodash
@@ -80,7 +82,7 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
+      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const fn = type === 'crv' ? apiLending.vaultClaim.claimCrv : apiLending.vaultClaim.claimRewards
       const resp = await fn(userActiveKey, provider, market)
 
