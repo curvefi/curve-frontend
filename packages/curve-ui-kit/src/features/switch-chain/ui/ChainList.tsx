@@ -37,7 +37,7 @@ export function ChainList({
 }: {
   options: NetworkDef[]
   showTestnets: boolean
-  selectedNetwork: NetworkDef
+  selectedNetwork: NetworkDef | undefined
 }) {
   const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')

@@ -15,7 +15,8 @@ import { FilterIcon } from '../../icons/FilterIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
 import { ToolkitIcon } from '../../icons/ToolkitIcon'
 import { TableSearchField } from './TableSearchField'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
+import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
+import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,6 +61,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible,
   chips,
   sort,
+  searchText,
   onSearch,
 }: {
   title: string
@@ -70,6 +72,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible: ReactNode // filters that may be collapsed
   chips: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
+  searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
@@ -105,7 +108,7 @@ export const TableFilters = <ColumnIds extends string>({
         {isMobile ? (
           <>
             <Grid size={12}>
-              <TableSearchField onSearch={onSearch} />
+              <TableSearchField value={searchText} onChange={onSearch} />
             </Grid>
             <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
               {sort}
