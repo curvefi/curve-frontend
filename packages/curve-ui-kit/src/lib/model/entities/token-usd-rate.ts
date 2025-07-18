@@ -20,8 +20,11 @@ export const {
   validationSuite: tokenValidationSuite,
 })
 
-export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) =>
-  useQueries({
-    queries: tokenAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    combine: (results) => combineQueriesToObject(results, tokenAddresses),
+export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
+  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+
+  return useQueries({
+    queries: uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+    combine: (results) => combineQueriesToObject(results, uniqueAddresses),
   })
+}
