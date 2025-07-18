@@ -1,19 +1,19 @@
 import { CardHeader, Box } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
 import type {
   Pnl,
-  BorrowAPR,
+  BorrowAPY,
   Leverage,
   CollateralValue,
   Ltv,
   TotalDebt,
   LiquidationRange,
   BandRange,
-} from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
-import { CollateralMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/CollateralMetricTooltip'
-import { LiquidityThresholdTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/LiquidityThresholdMetricTooltip'
-import { PnlMetricTooltip } from '@ui-kit/shared/ui/PositionDetails/tooltips/PnlMetricTooltip'
+} from '@ui-kit/features/market-position-details/BorrowPositionDetails'
+import { CollateralMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/CollateralMetricTooltip'
+import { LiquidityThresholdTooltip } from '@ui-kit/features/market-position-details/tooltips/LiquidityThresholdMetricTooltip'
+import { PnlMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/PnlMetricTooltip'
+import { t } from '@ui-kit/lib/i18n'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -28,7 +28,7 @@ const dollarUnitOptions = {
 }
 
 type BorrowInformationProps = {
-  borrowAPR: BorrowAPR | undefined | null
+  borrowAPY: BorrowAPY | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null
   ltv: Ltv | undefined | null
@@ -39,7 +39,7 @@ type BorrowInformationProps = {
 }
 
 export const BorrowInformation = ({
-  borrowAPR,
+  borrowAPY,
   pnl,
   collateralValue,
   ltv,
@@ -54,13 +54,13 @@ export const BorrowInformation = ({
       <Metric
         size="small"
         label={t`Borrow APR`}
-        value={borrowAPR?.value}
-        loading={borrowAPR?.value == null && borrowAPR?.loading}
+        value={borrowAPY?.value}
+        loading={borrowAPY?.value == null && borrowAPY?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
-          borrowAPR?.thirtyDayAvgRate
+          borrowAPY?.thirtyDayAvgRate
             ? {
-                value: borrowAPR.thirtyDayAvgRate,
+                value: borrowAPY.thirtyDayAvgRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
               }
             : undefined

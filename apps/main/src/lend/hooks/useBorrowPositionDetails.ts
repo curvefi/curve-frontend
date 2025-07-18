@@ -75,7 +75,7 @@ export const useBorrowPositionDetails = ({
       value: Number(userLoanDetails?.healthFull),
       loading: isFetchingAll ?? true,
     },
-    borrowAPR: {
+    borrowAPY: {
       value: borrowApy != null ? Number(borrowApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
       loading: isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,

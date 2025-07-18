@@ -1,7 +1,7 @@
 import { CardHeader, Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { SymbolCell } from '@ui-kit/shared/ui/MarketDetails/SymbolCell'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces

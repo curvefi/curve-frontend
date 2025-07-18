@@ -1,8 +1,8 @@
 import { CardHeader, Box } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import { SymbolCell } from '@ui-kit/shared/ui/MarketDetails/SymbolCell'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 
@@ -24,7 +24,7 @@ type BorrowToken = {
   usdRate: number | undefined | null
   loading: boolean
 }
-type BorrowAPR = {
+type BorrowAPY = {
   value: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
   loading: boolean
@@ -48,10 +48,10 @@ export type MarketDetailsProps = {
   /**
    * Use true if Market Details appear on the top of the page, the upper row will have larger cells
    */
-  marketPage: boolean
+  marketPage?: boolean
   collateral: Collateral
   borrowToken: BorrowToken
-  borrowAPR: BorrowAPR
+  borrowAPY: BorrowAPY
   lendingAPY?: LendingAPY
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
@@ -64,7 +64,7 @@ export const MarketDetails = ({
   marketPage = false,
   collateral,
   borrowToken,
-  borrowAPR,
+  borrowAPY,
   lendingAPY,
   availableLiquidity,
   maxLeverage,
@@ -80,18 +80,18 @@ export const MarketDetails = ({
 
   return (
     <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-      <CardHeader title={t`Market Details`} size={marketPage ? 'medium' : 'small'} />
+      <CardHeader title={t`Market Details`} size={'small'} />
       <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
         <Metric
-          size={marketPage ? 'medium' : 'small'}
-          label={t`Borrow APR`}
-          value={borrowAPR?.value}
-          loading={borrowAPR?.value == null && borrowAPR?.loading}
+          size={'medium'}
+          label={t`Borrow APY`}
+          value={borrowAPY?.value}
+          loading={borrowAPY?.value == null && borrowAPY?.loading}
           valueOptions={{ unit: 'percentage' }}
           notional={
-            borrowAPR?.thirtyDayAvgRate
+            borrowAPY?.thirtyDayAvgRate
               ? {
-                  value: borrowAPR.thirtyDayAvgRate,
+                  value: borrowAPY.thirtyDayAvgRate,
                   unit: { symbol: '% 30D Avg', position: 'suffix' },
                 }
               : undefined
@@ -99,7 +99,7 @@ export const MarketDetails = ({
         />
         {lendingAPY && (
           <Metric
-            size={marketPage ? 'medium' : 'small'}
+            size={'medium'}
             label={t`Lending APY`}
             value={lendingAPY?.value}
             loading={lendingAPY?.value == null && lendingAPY?.loading}
@@ -115,14 +115,14 @@ export const MarketDetails = ({
           />
         )}
         <SymbolCell
-          size={marketPage ? 'medium' : 'small'}
+          size={'medium'}
           label={t`Collateral`}
           symbol={collateral?.symbol}
           tokenAddress={collateral?.tokenAddress}
           loading={collateral?.total == null && collateral?.loading}
         />
         <SymbolCell
-          size={marketPage ? 'medium' : 'small'}
+          size={'medium'}
           label={t`Debt`}
           symbol={borrowToken?.symbol}
           tokenAddress={borrowToken?.tokenAddress}

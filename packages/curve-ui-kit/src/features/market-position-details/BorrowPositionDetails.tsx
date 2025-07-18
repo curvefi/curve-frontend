@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material'
 import { Alert } from '@mui/material'
+import { BorrowInformation } from '@ui-kit/features/market-position-details/BorrowInformation'
+import { HealthDetails } from '@ui-kit/features/market-position-details/HealthDetails'
 import { t } from '@ui-kit/lib/i18n'
-import { BorrowInformation } from '@ui-kit/shared/ui/PositionDetails/BorrowInformation'
-import { HealthDetails } from '@ui-kit/shared/ui/PositionDetails/HealthDetails'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -15,7 +15,7 @@ export type Pnl = {
   loading: boolean
 }
 export type Health = { value: number | undefined | null; loading: boolean }
-export type BorrowAPR = {
+export type BorrowAPY = {
   value: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
   loading: boolean
@@ -47,7 +47,7 @@ export type TotalDebt = { value: number | undefined | null; loading: boolean }
 export type BorrowPositionDetailsProps = {
   isSoftLiquidation: boolean
   health: Health
-  borrowAPR: BorrowAPR
+  borrowAPY: BorrowAPY
   pnl?: Pnl // doesn't exist yet for crvusd
   liquidationRange: LiquidationRange
   bandRange: BandRange
@@ -60,7 +60,7 @@ export type BorrowPositionDetailsProps = {
 export const BorrowPositionDetails = ({
   isSoftLiquidation,
   health,
-  borrowAPR,
+  borrowAPY,
   pnl,
   liquidationRange,
   bandRange,
@@ -90,7 +90,7 @@ export const BorrowPositionDetails = ({
     )}
     <HealthDetails health={health} />
     <BorrowInformation
-      borrowAPR={borrowAPR}
+      borrowAPY={borrowAPY}
       pnl={pnl}
       collateralValue={collateralValue}
       ltv={ltv}
