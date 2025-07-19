@@ -9,12 +9,15 @@ import ChartUserLiquidationRange from '@/loan/components/LoanInfoUser/components
 import UserInfos from '@/loan/components/LoanInfoUser/components/UserInfos'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useUserLoanDetails, useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
+import { BorrowPositionDetails } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
@@ -28,10 +31,17 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isSoftLiquidation = useUserLoanStatus(llammaId) === 'soft_liquidation'
+  const [isBeta] = useBetaFlag()
 
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
+  const positionDetailsProps = useLoanPositionDetails({
+    chainId: rChainId,
+    llamma,
+    llammaId,
+    health: healthMode.percent,
+  })
 
   useEffect(() => {
     if (!lodash.isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
@@ -54,15 +64,18 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
   return (
     <Wrapper>
-      <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
-        <UserInfos
-          llammaId={llammaId}
-          llamma={llamma}
-          isSoftLiquidation={isSoftLiquidation}
-          healthMode={healthMode}
-          titleMapper={titleMapper}
-        />
-      </StatsWrapper>
+      {isBeta && <BorrowPositionDetails {...positionDetailsProps} />}
+      {!isBeta && (
+        <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
+          <UserInfos
+            llammaId={llammaId}
+            llamma={llamma}
+            isSoftLiquidation={isSoftLiquidation}
+            healthMode={healthMode}
+            titleMapper={titleMapper}
+          />
+        </StatsWrapper>
+      )}
 
       {!chartExpanded && (
         <div className="wrapper">

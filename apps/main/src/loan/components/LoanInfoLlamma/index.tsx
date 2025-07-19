@@ -9,6 +9,7 @@ import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types
 import useStore from '@/loan/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChainId' | 'titleMapper'> {
@@ -18,14 +19,16 @@ interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChai
 const LoanInfoLlamma = (props: Props) => {
   const { rChainId, llamma, llammaId } = props
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const [isBeta] = useBetaFlag()
 
   return (
     <Wrapper>
-      <div className="wrapper">
-        <DetailsInfo {...props} collateralId={llammaId} />
-      </div>
+      {!isBeta && (
+        <div className="wrapper">
+          <DetailsInfo {...props} collateralId={llammaId} />
+        </div>
+      )}
 
       {!chartExpanded && (
         <div className={isAdvancedMode ? 'wrapper' : ''}>
