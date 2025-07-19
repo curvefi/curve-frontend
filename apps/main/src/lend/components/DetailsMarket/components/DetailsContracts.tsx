@@ -40,7 +40,9 @@ const DetailsContracts = ({
       ],
       [
         { label: t`Vault`, address: addresses?.vault },
-        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' }
+        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' },
+        { label: 'AMM', address: addresses?.amm },
+        { label: t`Controller`, address: addresses?.controller },
       ],
     ]
   }
