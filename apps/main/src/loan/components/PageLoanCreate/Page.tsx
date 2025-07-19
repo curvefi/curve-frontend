@@ -32,13 +32,13 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { MarketDetails } from '@ui-kit/features/market-details'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { MarketDetails } from '@ui-kit/shared/ui/MarketDetails'
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)

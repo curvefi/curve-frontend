@@ -15,10 +15,10 @@ import useStore from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
+import { BorrowPositionDetails } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { BorrowPositionDetails } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
   rChainId: ChainId

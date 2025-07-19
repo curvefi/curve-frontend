@@ -3,7 +3,12 @@ import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
+import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
+import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
+import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
+import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
+import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanMange from '@/lend/components/PageLoanManage/index'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
@@ -19,6 +24,7 @@ import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import Stack from '@mui/material/Stack'
+import { useTheme } from '@mui/material/styles'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -43,7 +49,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { MarketInformationTabs } from '@ui-kit/shared/ui/MarketInformationTabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -51,6 +56,7 @@ const { Spacing } = SizesAndSpaces
 const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { llamaApi: api = null, connectState } = useConnection()
+  const theme = useTheme()
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
@@ -262,6 +268,30 @@ const Page = (params: MarketUrlParams) => {
               </MarketInformationTabs>
             )}
             {loanExists && <MarketDetails {...marketDetails} />}
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+              {networks[rChainId]?.pricesData && !chartExpanded && (
+                <ChartOhlcWrapper
+                  rChainId={rChainId}
+                  rOwmId={rOwmId}
+                  userActiveKey={userActiveKey}
+                  betaBackgroundColor={theme.design.Layer[1].Fill}
+                />
+              )}
+              <DetailsUserLoanChartBandBalances {...pageProps} />
+            </Stack>
+            {market && (
+              <Stack flexDirection="row" sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
+                  <DetailsContracts rChainId={rChainId} market={market} type={'borrow'} />
+                </Stack>
+                <Stack
+                  sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
+                >
+                  <SubTitle>{t`Parameters`}</SubTitle>
+                  <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
+                </Stack>
+              </Stack>
+            )}
           </Stack>
         </Stack>
       )}

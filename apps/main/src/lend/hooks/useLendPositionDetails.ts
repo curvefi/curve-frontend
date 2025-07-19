@@ -7,8 +7,8 @@ import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { LendPositionDetailsProps } from '@ui-kit/features/market-position-details/LendPositionDetails'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { LendPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/LendPositionDetails'
 
 type UseLendPositionDetailsProps = {
   chainId: ChainId

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUser from '@/lend/components/DetailsUser'
+import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import Vault from '@/lend/components/PageVault/index'
@@ -35,7 +36,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { MarketInformationTabs } from '@ui-kit/shared/ui/MarketInformationTabs'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -140,7 +140,7 @@ const Page = (params: MarketUrlParams) => {
     borrow: borrowPathnameFn(params, rOwmId, ''),
     lend: '',
   }
-  const hasSupplyPosition = lendPositionDetails.shares.value > 0
+  const hasSupplyPosition = lendPositionDetails.shares.value && lendPositionDetails.shares.value > 0
 
   if (!provider) {
     return (

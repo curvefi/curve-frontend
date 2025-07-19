@@ -6,7 +6,8 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
-import { MarketDetailsProps } from '@ui-kit/shared/ui/MarketDetails'
+import { MarketDetailsProps } from '@ui-kit/features/market-details'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
@@ -16,9 +17,14 @@ type UseMarketDetailsProps = {
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const collateralUsdRate = useStore((state) => state.usdRates.tokens[llamma?.collateral ?? ''])
-  const borrowedUsdRate = useStore((state) => state.usdRates.tokens[CRVUSD_ADDRESS])
+  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
+    chainId: chainId,
+    tokenAddress: llamma?.collateral,
+  })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId: chainId,
+    tokenAddress: CRVUSD_ADDRESS,
+  })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[chainId as keyof typeof networks]?.id,
     contractAddress: llamma?.controller as Address,
@@ -46,15 +52,15 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
         ? Number(loanDetails.totalCollateral) * Number(collateralUsdRate)
         : null,
       usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
-      loading: usdRatesLoading || (loanDetails?.loading ?? true),
+      loading: collateralUsdRateLoading || (loanDetails?.loading ?? true),
     },
     borrowToken: {
       symbol: 'crvUSD',
       tokenAddress: CRVUSD_ADDRESS,
       usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
-      loading: usdRatesLoading || (loanDetails?.loading ?? true),
+      loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
     },
-    borrowAPR: {
+    borrowAPY: {
       value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       thirtyDayAvgRate: thirtyDayAvgBorrowAPR,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),

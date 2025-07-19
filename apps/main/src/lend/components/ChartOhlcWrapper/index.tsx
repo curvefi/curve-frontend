@@ -17,7 +17,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
-const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperProps) => {
+const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -348,6 +348,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     chartStatus: currentChart.fetchStatus,
     chartHeight,
     chartExpanded: false,
+    betaBackgroundColor,
     themeType: theme,
     ohlcData: currentChart.data,
     volumeData: chartLlammaOhlc.volumeData,

@@ -6,8 +6,8 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
+import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { BorrowPositionDetailsProps } from '@ui-kit/shared/ui/PositionDetails/BorrowPositionDetails'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -65,7 +65,7 @@ export const useLoanPositionDetails = ({
       value: Number(health),
       loading: userLoanDetails?.loading ?? true,
     },
-    borrowAPR: {
+    borrowAPY: {
       value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
