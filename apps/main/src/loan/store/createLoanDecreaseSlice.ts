@@ -12,7 +12,6 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -180,7 +179,6 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
       })
 
       const chainId = curve.chainId as ChainId
-      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const { debt, isFullRepay } = formValues
       const approveFn = networks[chainId].api.loanDecrease.approve
       const resp = await approveFn(activeKey, provider, llamma, debt, isFullRepay)
@@ -207,7 +205,6 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
         step: 'PAY',
       })
       const chainId = curve.chainId as ChainId
-      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const repayFn = networks[chainId].api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
       if (activeKey === get()[sliceKey].activeKey) {

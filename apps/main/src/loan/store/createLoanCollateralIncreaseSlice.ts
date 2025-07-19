@@ -12,7 +12,6 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -152,7 +151,6 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         step: 'APPROVAL',
       })
       const chainId = curve.chainId as ChainId
-      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const collateralIncreaseApproveFn = networks[chainId].api.collateralIncrease.approve
       const resp = await collateralIncreaseApproveFn(activeKey, provider, llamma, formValues.collateral)
       if (activeKey === get()[sliceKey].activeKey) {
@@ -180,7 +178,6 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         step: 'ADD',
       })
       const chainId = curve.chainId as ChainId
-      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
       if (activeKey === get()[sliceKey].activeKey) {

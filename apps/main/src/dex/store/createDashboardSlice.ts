@@ -21,7 +21,6 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash
@@ -332,10 +331,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
     // steps
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
-      const {
-        pools,
-        networks: { networks },
-      } = get()
+      const { pools } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
@@ -351,7 +347,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       }
       sliceState.setStateByKey('formStatus', formStatus)
 
-      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const resp = await curvejsApi.lockCrv.claimFees(activeKey, curve, provider, key)
 
       if (resp.activeKey !== get()[sliceKey].activeKey) return
@@ -377,7 +372,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     },
     fetchStepWithdrawVecrv: async (activeKey, curve, walletAddress) => {
       const {
-        networks: { networks },
         [sliceKey]: { formValues, ...sliceState },
       } = get()
       const { provider } = useWallet.getState()
@@ -392,7 +386,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       }
       sliceState.setStateByKey('formStatus', cFormStatus)
 
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks })
       const resp = await curvejsApi.lockCrv.withdrawLockedCrv(curve, provider, walletAddress)
 
       cFormStatus.formProcessing = false

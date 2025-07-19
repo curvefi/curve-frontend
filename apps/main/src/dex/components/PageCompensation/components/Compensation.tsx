@@ -15,7 +15,6 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const Compensation = ({
@@ -60,7 +59,6 @@ const Compensation = ({
 
       try {
         setStep('claiming')
-        await fetchGasInfoAndUpdateLib({ chainId: rChainId, networks })
         const hash = await contract.claim()
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
@@ -76,7 +74,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, rChainId, networks, provider],
+    [curve, networks, provider],
   )
 
   // reset

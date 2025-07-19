@@ -4,8 +4,6 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import type { CurveApi, Wallet } from '@/dao/types/dao.types'
 import { log } from '@ui-kit/lib'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import networks from '../networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -49,7 +47,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
 
     const { user, gauges } = get()
     await Promise.all([
-      api && isNetworkSwitched && fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks }),
       api && wallet?.provider && user.updateUserData(api, wallet),
       gauges.getGauges(),
       gauges.getGaugesData(),

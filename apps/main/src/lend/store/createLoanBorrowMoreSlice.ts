@@ -17,8 +17,6 @@ import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { getLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -165,7 +163,6 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       if (!signerAddress || !haveDebt) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanBorrowMore.estGasApproval(
         activeKey,
         market,
@@ -246,7 +243,6 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { userCollateral, userBorrowed } = formValues
       const { error, ...resp } = await loanBorrowMore.approve(
         activeKey,
@@ -286,7 +282,6 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
       })
 
       // api call
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { userCollateral, userBorrowed, debt } = formValues
       const { error, ...resp } = await loanBorrowMore.borrowMore(
         activeKey,

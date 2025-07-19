@@ -8,9 +8,7 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
-import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -114,7 +112,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, loading: true })
 
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanSelfLiquidation.estGasApproval(market, maxSlippage)
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, estimatedGas: resp.estimatedGas })
 
@@ -137,7 +134,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanSelfLiquidation.approve(provider, market)
 
       if (resp) {
@@ -168,7 +164,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       })
 
       // api calls
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
 
       if (resp) {

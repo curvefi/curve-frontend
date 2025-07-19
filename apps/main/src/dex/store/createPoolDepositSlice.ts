@@ -379,7 +379,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         step: 'APPROVAL',
       })
       const { chainId } = curve
-      await fetchGasInfoAndUpdateLib({ chainId, networks: get().networks })
       const { amounts, isWrapped } = formValues
       const approveFn =
         formType === 'DEPOSIT' ? curvejsApi.poolDeposit.depositApprove : curvejsApi.poolDeposit.depositAndStakeApprove
@@ -415,7 +414,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         step: 'DEPOSIT',
       })
 
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       const { amounts, isWrapped } = formValues
       const resp = await curvejsApi.poolDeposit.deposit(
@@ -459,7 +457,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'DEPOSIT_STAKE',
       })
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       const { amounts, isWrapped } = formValues
       const resp = await curvejsApi.poolDeposit.depositAndStake(
@@ -502,7 +499,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { chainId } = curve
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
@@ -536,7 +532,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'STAKE',
       })
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { pool } = poolData
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)

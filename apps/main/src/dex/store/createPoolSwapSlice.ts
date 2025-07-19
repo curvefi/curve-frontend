@@ -356,7 +356,6 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { fromAddress, fromAmount, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swapApprove(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -390,7 +389,6 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         formProcessing: true,
         step: 'SWAP',
       })
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
       const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swap(
         activeKey,

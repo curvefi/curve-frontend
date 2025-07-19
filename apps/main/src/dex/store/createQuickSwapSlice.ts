@@ -378,7 +378,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { fromAmount } = formValues
       const { fromAddress } = searchedParams
 
-      await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: state.networks })
       const resp = await curvejsApi.router.swapApprove(activeKey, curve, provider, fromAddress, fromAmount)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -421,7 +420,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { fromAmount } = formValues
       const { fromAddress, toAddress } = searchedParams
 
-      await fetchGasInfoAndUpdateLib({ chainId, networks: state.networks })
       const resp = await curvejsApi.router.swap(
         activeKey,
         curve,

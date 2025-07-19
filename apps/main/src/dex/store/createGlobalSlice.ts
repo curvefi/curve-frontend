@@ -5,7 +5,6 @@ import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -122,7 +121,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
-      await fetchGasInfoAndUpdateLib({ chainId, networks: state.networks })
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
     }

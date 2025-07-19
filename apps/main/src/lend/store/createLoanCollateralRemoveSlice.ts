@@ -8,8 +8,6 @@ import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import networks from '../networks'
 
 const { cloneDeep } = lodash
 
@@ -103,7 +101,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanCollateralRemove.estGas(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -153,7 +150,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         step: 'REMOVE',
       })
 
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanCollateralRemove.removeCollateral(
         activeKey,
         provider,

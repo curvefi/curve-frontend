@@ -21,7 +21,6 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type SliceState = {
@@ -772,12 +771,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       const { dismiss: dismissConfirm } = notify(notifyPendingMessage, 'pending')
 
       dismissNotificationHandler = dismissConfirm
-
-      try {
-        await fetchGasInfoAndUpdateLib({ chainId, networks })
-      } catch (error) {
-        console.warn(error)
-      }
 
       set(
         produce((state) => {

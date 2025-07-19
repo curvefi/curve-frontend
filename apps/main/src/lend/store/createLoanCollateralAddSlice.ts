@@ -8,8 +8,6 @@ import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -86,7 +84,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const resp = await loanCollateralAdd.estGasApproval(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -134,7 +131,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, market, formValues.collateral)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -164,7 +160,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         step: 'ADD',
       })
 
-      await fetchGasInfoAndUpdateLib({ chainId: api.chainId, networks })
       const { error, ...resp } = await loanCollateralAdd.addCollateral(
         activeKey,
         provider,
