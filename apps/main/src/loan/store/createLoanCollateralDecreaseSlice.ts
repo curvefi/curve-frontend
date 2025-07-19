@@ -13,6 +13,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -159,8 +160,8 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
         isInProgress: true,
         step: 'REMOVE',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
+      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)

@@ -8,6 +8,8 @@ import type { State } from '@/loan/store/useStore'
 import { LlamaApi, Provider } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import networks from '../networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -138,7 +140,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       }
     },
     fetchUpdate: async (curve, pegKeeperAddress) => {
-      const { gas, ...state } = get()
+      const { ...state } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
@@ -155,7 +157,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       if (!contract) return { hash: '', error: 'Unable to get contract' }
 
       try {
-        await gas.fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId as 1, networks })
         const hash = (await contract.update())?.hash
         if (hash) await crvusdjsApi.helpers.waitForTransaction(hash, provider)
         sliceState.setStateByKey('formStatus', { [pegKeeperAddress]: { ...DEFAULT_FORM_STATUS, isComplete: true } })

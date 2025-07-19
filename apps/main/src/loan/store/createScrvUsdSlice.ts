@@ -11,10 +11,10 @@ import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.
 import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   estGas: { gas: number; fetchStatus: FetchStatus }
@@ -122,11 +122,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const lendApi = getLib('llamaApi')
         const curve = getLib('llamaApi')
-        const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
 
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId as 1, networks })
 
         try {
           // only returns number[] on base or optimism
@@ -143,11 +142,10 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const lendApi = getLib('llamaApi')
         const curve = getLib('llamaApi')
-        const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
 
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId as 1, networks })
 
         try {
           // only returns number[] on base or optimism
@@ -165,7 +163,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const curve = getLib('llamaApi')
         if (!curve) return
 
-        await get().gas.fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId as 1, networks })
 
         try {
           // only returns number[] on base or optimism
@@ -184,7 +182,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const curve = getLib('llamaApi')
         if (!curve) return
 
-        await get().gas.fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId: curve.chainId as 1, networks })
 
         try {
           // only returns number[] on base or optimism
@@ -209,9 +207,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to approve ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId, networks })
 
         get()[sliceKey].setStateByKey('approveDepositTransaction', {
           transactionStatus: 'confirming',
@@ -265,10 +262,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
-
         let dismissNotificationHandler = notify(t`Please confirm to deposit ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId, networks })
 
         get()[sliceKey].setStateByKey('depositTransaction', {
           transactionStatus: 'confirming',
@@ -322,9 +317,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = llamaApi.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(llamaApi)
+        await fetchGasInfoAndUpdateLib({ chainId, networks })
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',
@@ -379,10 +373,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
-
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
+        await fetchGasInfoAndUpdateLib({ chainId, networks })
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',

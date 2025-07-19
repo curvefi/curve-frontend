@@ -15,6 +15,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { logSuccess } from '@ui-kit/lib'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export function useInjectServerData(serverData: CrvUsdServerData) {
   useEffect(() => {
@@ -30,7 +31,6 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   const chainId = networksIdMapper[networkId]
   const { llamaApi: curve = null } = useConnection()
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const hydrate = useStore((s) => s.hydrate)
 
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
@@ -38,7 +38,7 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   usePageVisibleInterval(
     () => {
       if (isPageVisible && curve) {
-        void fetchGasInfo(curve)
+        void fetchGasInfoAndUpdateLib({ chainId, networks })
       }
     },
     REFRESH_INTERVAL['5m'],

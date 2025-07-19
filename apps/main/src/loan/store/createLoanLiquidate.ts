@@ -7,6 +7,7 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -111,8 +112,8 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
+      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const resp = await networks[chainId].api.loanLiquidate.approve(provider, llamma)
       const updatedFormStatus: FormStatus = {
         ...get()[sliceKey].formStatus,
@@ -134,8 +135,8 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'LIQUIDATE',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
+      await fetchGasInfoAndUpdateLib({ chainId, networks })
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
