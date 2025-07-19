@@ -10,6 +10,7 @@ import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 const useAutoRefresh = (isHydrated: boolean) => {
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
@@ -27,7 +28,10 @@ export default function DaoLayout({ children }: { children: ReactNode }) {
   const hydrate = useStore((s) => s.hydrate)
   const chainId = networksIdMapper[network]
   const isHydrated = useHydration('curveApi', hydrate, chainId)
+
   useRedirectToEth(networks[chainId], network, isHydrated)
+  useGasInfoAndUpdateLib({ chainId, networks }) // Refresh gas info on a regular interval, relies on a side-effect
   useAutoRefresh(isHydrated)
+
   return isHydrated && children
 }

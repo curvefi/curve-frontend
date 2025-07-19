@@ -173,7 +173,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.step = 'APPROVAL'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-      await get().gas.fetchGasInfo(curve)
       const resp = await curvejsApi.lockCrv.lockCrvApprove(activeKey, provider, curve, formValues.lockedAmt)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -205,7 +204,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         cFormStatus.step = 'CREATE_LOCK'
         get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-        await get().gas.fetchGasInfo(curve)
         const resp = await curvejsApi.lockCrv.createLock(
           activeKey,
           curve,
@@ -250,7 +248,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.formProcessing = true
       cFormStatus.step = 'INCREASE_CRV'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
-      await get().gas.fetchGasInfo(curve)
       const resp = await curvejsApi.lockCrv.increaseAmount(activeKey, curve, provider, formValues.lockedAmt)
       if (resp.activeKey === get()[sliceKey].activeKey) {
         cFormStatus = cloneDeep(get()[sliceKey].formStatus)
@@ -284,7 +281,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.step = 'INCREASE_TIME'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-      await get().gas.fetchGasInfo(curve)
       const resp = await curvejsApi.lockCrv.increaseUnlockTime(activeKey, provider, curve, formValues.days)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

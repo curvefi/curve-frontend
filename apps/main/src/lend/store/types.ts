@@ -6,17 +6,6 @@ export type DetailInfo = {
   bands: [number, number]
 }
 
-/* createGasSlice */
-export type GasInfo = {
-  gasPrice: number | null
-  max: number[]
-  priority: number[]
-  basePlusPriority: number[]
-  basePlusPriorityL1?: number[] | undefined
-  l1GasPriceWei?: number
-  l2GasPriceWei?: number
-}
-
 export type LiqRange = {
   n: number
   collateral: string

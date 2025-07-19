@@ -94,7 +94,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
     fetchEstGas: async (activeKey, api, market) => {
-      const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
@@ -102,7 +101,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await gas.fetchGasInfo(api)
       const resp = await loanCollateralRemove.estGas(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -138,7 +136,7 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
     // steps
     fetchStepDecrease: async (activeKey, api, market) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
 
@@ -152,7 +150,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         step: 'REMOVE',
       })
 
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanCollateralRemove.removeCollateral(
         activeKey,
         provider,

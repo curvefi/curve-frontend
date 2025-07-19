@@ -83,7 +83,6 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       if (!signerAddress || (!isFullWithdraw && +amount <= 0) || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
 
       let resp
       if (isFullWithdraw) {
@@ -136,7 +135,6 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const { amount, isFullWithdraw } = formValues
       const resp = await apiLending.vaultWithdraw.withdraw(
         activeKey,

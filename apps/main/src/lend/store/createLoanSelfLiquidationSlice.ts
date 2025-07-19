@@ -105,7 +105,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       void sliceState.fetchEstGasApproval(api, market, maxSlippage)
     },
     fetchEstGasApproval: async (api, market, maxSlippage) => {
-      const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
 
@@ -113,7 +112,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, loading: true })
 
-      await gas.fetchGasInfo(api)
       const resp = await loanSelfLiquidation.estGasApproval(market, maxSlippage)
       sliceState.setStateByKey('formEstGas', { ...DEFAULT_FORM_EST_GAS, estimatedGas: resp.estimatedGas })
 
@@ -127,7 +125,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
     // step
     fetchStepApprove: async (api, market, maxSlippage) => {
-      const { gas } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
@@ -137,7 +134,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanSelfLiquidation.approve(provider, market)
 
       if (resp) {
@@ -153,7 +149,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       }
     },
     fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
@@ -168,7 +164,6 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       })
 
       // api calls
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
 
       if (resp) {

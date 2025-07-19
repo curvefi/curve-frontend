@@ -14,7 +14,6 @@ import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 
 type StateKey = keyof typeof DEFAULT_STATE
-const { cloneDeep } = lodash
 
 type SliceState = {
   estGas: { gas: number; fetchStatus: FetchStatus }
@@ -122,11 +121,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const lendApi = getLib('llamaApi')
         const curve = getLib('llamaApi')
-        const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
-
-        await fetchGasInfo(curve)
 
         try {
           // only returns number[] on base or optimism
@@ -143,11 +139,8 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const lendApi = getLib('llamaApi')
         const curve = getLib('llamaApi')
-        const fetchGasInfo = get().gas.fetchGasInfo
 
         if (!curve) return
-
-        await fetchGasInfo(curve)
 
         try {
           // only returns number[] on base or optimism
@@ -165,8 +158,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const curve = getLib('llamaApi')
         if (!curve) return
 
-        await get().gas.fetchGasInfo(curve)
-
         try {
           // only returns number[] on base or optimism
           const estimatedGas = (await lendApi?.st_crvUSD.estimateGas.withdraw(amount)) as number
@@ -183,8 +174,6 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
         const lendApi = getLib('llamaApi')
         const curve = getLib('llamaApi')
         if (!curve) return
-
-        await get().gas.fetchGasInfo(curve)
 
         try {
           // only returns number[] on base or optimism
@@ -209,9 +198,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to approve ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('approveDepositTransaction', {
           transactionStatus: 'confirming',
@@ -265,10 +252,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
-
         let dismissNotificationHandler = notify(t`Please confirm to deposit ${amount} crvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('depositTransaction', {
           transactionStatus: 'confirming',
@@ -322,9 +306,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = llamaApi.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(llamaApi)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',
@@ -379,10 +361,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
         const chainId = curve.chainId as ChainId
 
-        const fetchGasInfo = get().gas.fetchGasInfo
-
         let dismissNotificationHandler = notify(t`Please confirm to withdraw ${amount} scrvUSD.`, 'pending').dismiss
-        await fetchGasInfo(curve)
 
         get()[sliceKey].setStateByKey('withdrawTransaction', {
           transactionStatus: 'confirming',

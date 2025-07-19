@@ -78,7 +78,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // reset store
     if (isNetworkSwitched) {
-      state.gas.resetState()
       state.pools.resetState()
       state.quickSwap.resetState()
       state.tokens.resetState()
@@ -122,7 +121,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
     if (isUserSwitched || isNetworkSwitched) {
-      void state.gas.fetchGasInfo(curveApi)
       void state.pools.fetchPricesApiPools(chainId)
       void state.pools.fetchBasePools(curveApi)
     }

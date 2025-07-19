@@ -77,7 +77,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
     fetchEstGasApproval: async (activeKey, api, market) => {
-      const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
@@ -85,7 +84,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await gas.fetchGasInfo(api)
       const resp = await loanCollateralAdd.estGasApproval(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -124,7 +122,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
 
     // step
     fetchStepApprove: async (activeKey, api, market, formValues) => {
-      const { gas } = get()
       const sliceState = get()[sliceKey]
       const { provider } = useWallet.getState()
 
@@ -134,7 +131,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isInProgress: true, step: 'APPROVAL' })
 
       // api calls
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanCollateralAdd.approve(activeKey, provider, market, formValues.collateral)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -150,7 +146,7 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
       }
     },
     fetchStepIncrease: async (activeKey, api, market, formValues) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const sliceState = get()[sliceKey]
       const { provider } = useWallet.getState()
 
@@ -164,7 +160,6 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         step: 'ADD',
       })
 
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanCollateralAdd.addCollateral(
         activeKey,
         provider,

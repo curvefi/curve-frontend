@@ -111,7 +111,6 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
       const resp = await networks[chainId].api.loanLiquidate.approve(provider, llamma)
       const updatedFormStatus: FormStatus = {
@@ -134,7 +133,6 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'LIQUIDATE',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)

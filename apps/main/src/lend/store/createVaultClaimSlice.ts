@@ -80,7 +80,6 @@ const createVaultClaim = (set: SetState<State>, get: GetState<State>): VaultClai
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const fn = type === 'crv' ? apiLending.vaultClaim.claimCrv : apiLending.vaultClaim.claimRewards
       const resp = await fn(userActiveKey, provider, market)
 

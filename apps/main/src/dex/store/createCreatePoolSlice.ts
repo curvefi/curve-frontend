@@ -741,7 +741,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       const chainId = curve.chainId
       const {
         pools: { fetchNewPool, basePools },
-        gas: { fetchGasInfo },
         createPool: {
           poolSymbol,
           swapType,
@@ -772,12 +771,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       const { dismiss: dismissConfirm } = notify(notifyPendingMessage, 'pending')
 
       dismissNotificationHandler = dismissConfirm
-
-      try {
-        await fetchGasInfo(curve)
-      } catch (error) {
-        console.warn(error)
-      }
 
       set(
         produce((state) => {

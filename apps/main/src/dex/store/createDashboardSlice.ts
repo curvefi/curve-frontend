@@ -331,7 +331,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
     // steps
     fetchStepClaimFees: async (activeKey, curve, walletAddress, key) => {
-      const { pools, gas } = get()
+      const { pools } = get()
       const { claimableFees, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
@@ -347,7 +347,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       }
       sliceState.setStateByKey('formStatus', formStatus)
 
-      await gas.fetchGasInfo(curve)
       const resp = await curvejsApi.lockCrv.claimFees(activeKey, curve, provider, key)
 
       if (resp.activeKey !== get()[sliceKey].activeKey) return
@@ -373,7 +372,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
     },
     fetchStepWithdrawVecrv: async (activeKey, curve, walletAddress) => {
       const {
-        gas,
         [sliceKey]: { formValues, ...sliceState },
       } = get()
       const { provider } = useWallet.getState()
@@ -388,7 +386,6 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
       }
       sliceState.setStateByKey('formStatus', cFormStatus)
 
-      await gas.fetchGasInfo(curve)
       const resp = await curvejsApi.lockCrv.withdrawLockedCrv(curve, provider, walletAddress)
 
       cFormStatus.formProcessing = false

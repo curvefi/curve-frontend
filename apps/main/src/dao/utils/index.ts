@@ -31,8 +31,6 @@ export function sleep(ms?: number) {
   return new Promise((resolve) => setTimeout(resolve, parsedMs))
 }
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
 export function getChainIdFromGaugeData(gaugeData: GaugeFormattedData | undefined) {
   if (!gaugeData) return 1
   const gaugeNetwork = gaugeData?.pool?.chain ?? gaugeData?.market?.chain ?? 'ethereum'

@@ -87,8 +87,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const curve = getLib('curveApi')
       const { provider } = useWallet.getState()
 
-      const fetchGasInfo = get().gas.fetchGasInfo
-
       if (!curve || !provider) return
 
       const { dismiss: dismissConfirm } = notify(t`Please confirm to cast vote.`, 'pending')
@@ -103,12 +101,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       })
 
       let dismissNotificationHandler = dismissConfirm
-
-      try {
-        await fetchGasInfo(curve)
-      } catch (error) {
-        console.warn(error)
-      }
 
       try {
         const voteResponseHash = await curve.dao.voteForProposal(
@@ -190,7 +182,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       const voteIdKey = `${voteId}-${voteType}`
 
       const { provider } = useWallet.getState()
-      const fetchGasInfo = get().gas.fetchGasInfo
 
       if (!curve || !provider) return
 
@@ -206,12 +197,6 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
       })
 
       let dismissNotificationHandler = dismissConfirm
-
-      try {
-        await fetchGasInfo(curve)
-      } catch (error) {
-        console.warn(error)
-      }
 
       try {
         const transactionHash = await curve.dao.executeVote(voteType.toUpperCase() as CurveJsProposalType, voteId)

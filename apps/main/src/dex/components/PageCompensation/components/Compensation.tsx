@@ -40,7 +40,6 @@ const Compensation = ({
   token: string
   vestedTotal: number
 }) => {
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const networks = useStore((state) => state.networks.networks)
 
   const [error, setError] = useState('')
@@ -60,7 +59,6 @@ const Compensation = ({
 
       try {
         setStep('claiming')
-        await fetchGasInfo(curve)
         const hash = await contract.claim()
         await curvejsApi.helpers.waitForTransaction(hash, provider)
         setStep('claimed')
@@ -76,7 +74,7 @@ const Compensation = ({
         if (typeof dismiss === 'function') dismiss()
       }
     },
-    [curve, fetchGasInfo, provider, networks],
+    [curve, networks, provider],
   )
 
   // reset
