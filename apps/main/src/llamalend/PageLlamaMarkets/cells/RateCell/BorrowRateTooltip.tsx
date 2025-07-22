@@ -37,6 +37,11 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   return (
     <Stack gap={Spacing.sm}>
       <Typography color="textSecondary">{messages[marketType]}</Typography>
+
+      {!!rebasingYield && (
+        <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offers extra yield`}</Typography>
+      )}
+
       <Stack>
         {(poolRewards.length > 0 || extraIncentives.length > 0 || !!rebasingYield) && (
           <TooltipItems secondary>
