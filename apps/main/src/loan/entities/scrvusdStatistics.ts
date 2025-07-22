@@ -50,7 +50,7 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
     return {
       lastUpdated: new Date(block?.timestamp ?? 0),
       lastUpdatedBlock: block?.number ?? 0,
-      apyProjected: apy,
+      apyProjected: apy * 100,
       supply: weiToEther(supplyNum),
     }
   }
