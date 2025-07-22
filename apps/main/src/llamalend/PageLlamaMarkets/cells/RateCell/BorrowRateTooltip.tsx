@@ -43,19 +43,27 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       )}
 
       <Stack>
-        {(poolRewards.length > 0 || extraIncentives.length > 0 || !!rebasingYield) && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Borrow fees`}>{formatPercent(borrowRate)}</TooltipItem>
+        </TooltipItems>
+
+        {(poolRewards.length > 0 || extraIncentives.length > 0) && (
           <TooltipItems secondary>
-            <TooltipItem title={t`Borrow Rate`}>{formatPercent(borrowRate)}</TooltipItem>
             <RewardsTooltipItems title={t`Borrowing incentives`} {...{ poolRewards, extraIncentives }} />
-            {!!rebasingYield && (
-              <TooltipItem subitem title={collateralSymbol}>
-                {formatPercent(rebasingYield)}
-              </TooltipItem>
-            )}
           </TooltipItems>
         )}
+
+        {!!rebasingYield && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(rebasingYield)}</TooltipItem>
+            <TooltipItem subitem title={collateralSymbol}>
+              {formatPercent(rebasingYield)}
+            </TooltipItem>
+          </TooltipItems>
+        )}
+
         <TooltipItems>
-          <TooltipItem primary title={t`Total Borrow Rate`}>
+          <TooltipItem primary title={t`Total borrow rate`}>
             {formatPercent(borrowTotalApy)}
           </TooltipItem>
           <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>

@@ -22,7 +22,7 @@ export const RewardsTooltipItems = ({
   const percentage = extraIncentives.length > 0 && formatPercent(lodash.sum(extraIncentives.map((i) => i.percentage)))
   return (
     <>
-      {percentage && <TooltipItem title={title}>{percentage}</TooltipItem>}
+      <TooltipItem title={title}>{percentage}</TooltipItem>
       {extraIncentives?.map(({ percentage, title, image }, i) => (
         <TooltipItem key={i} subitem title={title}>
           <Stack direction="row">
