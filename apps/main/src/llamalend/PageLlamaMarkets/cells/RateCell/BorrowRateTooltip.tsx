@@ -14,8 +14,8 @@ import { formatPercent, useFilteredRewards } from '../cell.format'
 const { Spacing } = SizesAndSpaces
 
 const messages = {
-  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market and its utilization.`,
-  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market and the crvUSD price.`,
+  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market, borrow incentives and its utilization.`,
+  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
 }
 
 const rateType = 'borrow' as const
