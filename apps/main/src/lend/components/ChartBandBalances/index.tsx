@@ -1,4 +1,4 @@
-import { Dispatch, useMemo } from 'react'
+import { Dispatch, ReactNode, useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -43,7 +43,7 @@ const ChartBandBalances = ({
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
   showLiquidationIndicator: boolean
-  title: string
+  title: string | ReactNode
   setBrushIndex: Dispatch<BrushStartEndIndex>
 }) => {
   const { borrowed_token, collateral_token } = market ?? {}

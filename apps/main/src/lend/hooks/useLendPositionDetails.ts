@@ -1,7 +1,7 @@
 import { meanBy } from 'lodash'
 import { useMemo } from 'react'
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import { useMarketPricePerShare } from '@/lend/entities/market-price-per-share'
+import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -24,10 +24,7 @@ export const useLendPositionDetails = ({
   userActiveKey,
 }: UseLendPositionDetailsProps): LendPositionDetailsProps => {
   const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]) // TODO: add loading state
-  const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
-    chainId: chainId,
-    marketId,
-  })
+  const { totalApr } = useSupplyTotalApr(chainId, marketId)
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
     chainId: chainId,
     marketId,
@@ -56,9 +53,10 @@ export const useLendPositionDetails = ({
 
   return {
     lendingAPY: {
-      value: onChainRatesData?.rates?.lendApy ? Number(onChainRatesData.rates.lendApy) : null,
+      value: totalApr.min ? Number(totalApr.min) : null,
+      maxApy: totalApr.max ? Number(totalApr.max) : null,
       thirtyDayAvgRate: thirtyDayAvgLendApr,
-      loading: isOnchainRatesLoading || isLendSnapshotsLoading,
+      loading: isLendSnapshotsLoading,
     },
     shares: {
       value: userBalancesResp?.vaultShares
@@ -68,8 +66,8 @@ export const useLendPositionDetails = ({
       loading: false,
     },
     lentAsset: {
-      symbol: market?.collateral_token.symbol,
-      address: market?.collateral_token.address,
+      symbol: market?.borrowed_token.symbol,
+      address: market?.borrowed_token.address,
       usdRate: lentAssetUsdRate,
       depositedAmount:
         marketPricePerShare && userBalancesResp?.vaultShares && userBalancesResp?.gauge

@@ -1,5 +1,6 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
+import { BandsComp } from '@/lend/components/BandsComp'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
@@ -7,7 +8,6 @@ import DetailsContracts from '@/lend/components/DetailsMarket/components/Details
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
-import DetailsUserLoanChartBandBalances from '@/lend/components/DetailsUser/components/DetailsUserLoanChartBandBalances'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanMange from '@/lend/components/PageLoanManage/index'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
@@ -277,7 +277,9 @@ const Page = (params: MarketUrlParams) => {
                   betaBackgroundColor={theme.design.Layer[1].Fill}
                 />
               )}
-              <DetailsUserLoanChartBandBalances {...pageProps} />
+            </Stack>
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+              <BandsComp {...pageProps} />
             </Stack>
             {market && (
               <Stack flexDirection="row" sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

@@ -81,10 +81,10 @@ export const MarketDetails = ({
   return (
     <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <CardHeader title={t`Market Details`} size={'small'} />
-      <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
+      <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" gap={3} sx={{ padding: Spacing.md }}>
         <Metric
           size={'medium'}
-          label={t`Borrow APY`}
+          label={t`Borrow rate`}
           value={borrowAPY?.value}
           loading={borrowAPY?.value == null && borrowAPY?.loading}
           valueOptions={{ unit: 'percentage' }}
@@ -100,7 +100,7 @@ export const MarketDetails = ({
         {lendingAPY && (
           <Metric
             size={'medium'}
-            label={t`Lending APY`}
+            label={t`Supply rate`}
             value={lendingAPY?.value}
             loading={lendingAPY?.value == null && lendingAPY?.loading}
             valueOptions={{ unit: 'percentage' }}

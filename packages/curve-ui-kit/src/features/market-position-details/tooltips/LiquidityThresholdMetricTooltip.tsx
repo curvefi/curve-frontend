@@ -35,7 +35,7 @@ export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: Liqui
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Band range`}</Typography>
         <Typography variant="bodySBold">
-          {bandRange?.value ? `${bandRange.value[0]} - ${bandRange.value[1]}` : '-'}
+          {bandRange?.value ? `${bandRange.value[0]} to ${bandRange.value[1]}` : '-'}
         </Typography>
       </Stack>
     </Stack>

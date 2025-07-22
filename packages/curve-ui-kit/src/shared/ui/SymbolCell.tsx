@@ -21,7 +21,7 @@ export const SymbolCell = ({ label, symbol, tokenAddress, loading, size = 'mediu
     <WithSkeleton loading={loading}>
       <Stack direction="row" alignItems="baseline" gap={1}>
         <Typography variant={MetricSize[size]}>{symbol == null ? t`N/A` : symbol}</Typography>
-        <TokenIcon address={tokenAddress} size={size === 'small' ? 'mui-sm' : 'sm'} />
+        <TokenIcon address={tokenAddress} size={'mui-sm'} />
       </Stack>
     </WithSkeleton>
   </Stack>

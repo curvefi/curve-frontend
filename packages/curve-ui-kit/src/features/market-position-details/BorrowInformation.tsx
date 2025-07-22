@@ -50,10 +50,10 @@ export const BorrowInformation = ({
 }: BorrowInformationProps) => (
   <Box>
     <CardHeader title={t`Borrow Information`} size="small" />
-    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr 1fr" gap={5} sx={{ padding: Spacing.md }}>
+    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" gap={3} sx={{ padding: Spacing.md }}>
       <Metric
-        size="small"
-        label={t`Borrow APR`}
+        size="medium"
+        label={t`Borrow rate`}
         value={borrowAPY?.value}
         loading={borrowAPY?.value == null && borrowAPY?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
@@ -66,24 +66,15 @@ export const BorrowInformation = ({
             : undefined
         }
       />
-      {pnl && ( // PNL is only available on lend for now
-        <Metric
-          size="small"
-          label={t`PNL`}
-          valueOptions={{ unit: 'dollar' }}
-          value={pnl?.currentProfit}
-          change={pnl?.percentageChange ?? undefined}
-          loading={pnl?.currentProfit == null && pnl?.loading}
-          valueTooltip={{
-            title: t`Position PNL`,
-            body: <PnlMetricTooltip pnl={pnl} />,
-            placement: 'top',
-            arrow: false,
-          }}
-        />
-      )}
       <Metric
-        size="small"
+        size="medium"
+        label={t`Total debt`}
+        value={totalDebt?.value}
+        loading={totalDebt?.value == null && totalDebt?.loading}
+        valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+      />
+      <Metric
+        size="medium"
         label={t`Collateral value`}
         value={collateralValue?.totalValue}
         loading={collateralValue?.totalValue == null && collateralValue?.loading}
@@ -96,7 +87,7 @@ export const BorrowInformation = ({
         }}
       />
       <Metric
-        size="small"
+        size="medium"
         label={t`Current LTV`}
         value={ltv?.value}
         loading={ltv?.value == null && ltv?.loading}
@@ -113,6 +104,22 @@ export const BorrowInformation = ({
             valueOptions={{ unit: 'multiplier' }}
           />
         )}
+      {pnl && ( // PNL is only available on lend for now
+        <Metric
+          size="small"
+          label={t`PNL`}
+          valueOptions={{ unit: 'dollar' }}
+          value={pnl?.currentProfit}
+          change={pnl?.percentageChange ?? undefined}
+          loading={pnl?.currentProfit == null && pnl?.loading}
+          valueTooltip={{
+            title: t`Position PNL`,
+            body: <PnlMetricTooltip pnl={pnl} />,
+            placement: 'top',
+            arrow: false,
+          }}
+        />
+      )}
       <Metric
         size="small"
         label={t`Liquidation threshold`}
@@ -133,13 +140,6 @@ export const BorrowInformation = ({
               }
             : undefined
         }
-      />
-      <Metric
-        size="small"
-        label={t`Total debt`}
-        value={totalDebt?.value}
-        loading={totalDebt?.value == null && totalDebt?.loading}
-        valueOptions={{ unit: 'dollar' }}
       />
     </Box>
   </Box>
