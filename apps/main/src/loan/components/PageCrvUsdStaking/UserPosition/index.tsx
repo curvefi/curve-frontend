@@ -32,7 +32,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
   const totalScrvUsdSupply = statisticsData?.supply
-  const scrvUsdApy = statisticsData?.aprProjected
+  const scrvUsdApy = statisticsData?.apyProjected
 
   const userShareOfTotalScrvUsdSupply = totalScrvUsdSupply
     ? Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
@@ -104,7 +104,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
           <Grid flexGrow={1}>
             <Metric
               size="small"
-              label={t`scrvUSD Staking Rate`}
+              label={t`Estimated APY`}
               value={scrvUsdApy}
               valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}
