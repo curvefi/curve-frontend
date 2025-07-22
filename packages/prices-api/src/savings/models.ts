@@ -26,7 +26,7 @@ export type Revenue = {
   timestamp: Date
 }
 
-export type Statistics = { lastUpdated: Date; lastUpdatedBlock: number; aprProjected: number; supply: number }
+export type Statistics = { lastUpdated: Date; lastUpdatedBlock: number; apyProjected: number; supply: number }
 
 export type UserStats = {
   totalDeposited: bigint

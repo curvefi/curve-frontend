@@ -57,15 +57,15 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
         direction="column"
         sx={{ marginTop: Spacing.sm, padding: Spacing.sm, gap: 1, backgroundColor: Layer[2].Fill }}
       >
-        <DataSet label={t`APR`} value={apyProjected.toFixed(2) + '%'} lineColor={Color.Primary[500]} />
+        <DataSet label={t`APY`} value={apyProjected.toFixed(2) + '%'} lineColor={Color.Primary[500]} />
         <DataSet
-          label={t`7-day MA APR`}
+          label={t`7-day MA APY`}
           value={proj_apy_7d_avg.toFixed(2) + '%'}
           lineColor={Color.Secondary[500]}
           dash="2 2"
         />
         <DataSet
-          label={t`Average APR`}
+          label={t`Average APY`}
           value={proj_apy_total_avg.toFixed(2) + '%'}
           lineColor={Color.Tertiary[400]}
           dash="4 4"

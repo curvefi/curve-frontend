@@ -36,7 +36,7 @@ export type GetRevenueResponse = {
 export type GetStatisticsResponse = {
   last_updated: string
   last_updated_block: number
-  proj_apr: number
+  proj_apy: number
   supply: number
 }
 
