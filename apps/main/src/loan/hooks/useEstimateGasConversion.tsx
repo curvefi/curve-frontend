@@ -2,9 +2,9 @@ import { useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import networks from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import { BN, formatNumber } from '@ui/utils'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
@@ -12,7 +12,8 @@ const useEstimateGasConversion = (gas: number) => {
   const chainId = useChainId() as ChainId
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
-  const basePlusPriorities = useStore().gas.gasInfo?.basePlusPriority
+  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
+  const basePlusPriorities = gasInfo?.basePlusPriority
 
   return useMemo(() => {
     const basePlusPriority =

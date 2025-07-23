@@ -138,7 +138,7 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       }
     },
     fetchUpdate: async (curve, pegKeeperAddress) => {
-      const { gas, ...state } = get()
+      const { ...state } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
 
       const { provider } = useWallet.getState()
@@ -155,7 +155,6 @@ const createPegKeepersSlice = (set: SetState<State>, get: GetState<State>): PegK
       if (!contract) return { hash: '', error: 'Unable to get contract' }
 
       try {
-        await gas.fetchGasInfo(curve)
         const hash = (await contract.update())?.hash
         if (hash) await crvusdjsApi.helpers.waitForTransaction(hash, provider)
         sliceState.setStateByKey('formStatus', { [pegKeeperAddress]: { ...DEFAULT_FORM_STATUS, isComplete: true } })

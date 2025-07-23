@@ -426,7 +426,6 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const { amounts, lpToken, selected } = formValues
       let resp
       if (selected === 'token' || selected === 'lpToken') {
@@ -468,7 +467,6 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'WITHDRAW',
       })
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       let resp
       if (formValues.selected === 'token') {
@@ -522,7 +520,6 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'UNSTAKE',
       })
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       const resp = await curvejsApi.poolWithdraw.unstake(activeKey, provider, pool, formValues.stakedLpToken)
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -557,7 +554,6 @@ const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): Po
         formProcessing: true,
         step: 'CLAIM',
       })
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       const { isClaimCrv } = get()[sliceKey].formStatus
       const resp = isClaimCrv
