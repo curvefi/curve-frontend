@@ -347,7 +347,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
     chartType: 'crvusd',
     chartStatus: currentChart.fetchStatus,
     chartHeight,
-    chartExpanded: false,
+    chartExpanded,
     betaBackgroundColor,
     themeType: theme,
     ohlcData: currentChart.data,
@@ -375,7 +375,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper {...ChartWrapperProps} />
+        <ChartWrapper {...ChartWrapperProps} chartExpanded={chartExpanded} />
       </Wrapper>
       <LpEventsWrapperExpanded>
         {market && <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />}
@@ -408,7 +408,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
       {poolInfo === 'poolActivity' && market && (
         <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />
       )}
-      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} />}
+      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} chartExpanded={chartExpanded} />}
     </Wrapper>
   )
 }

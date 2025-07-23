@@ -12,7 +12,6 @@ import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
-import { useLendPositionDetails } from '@/lend/hooks/useLendPositionDetails'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -21,7 +20,6 @@ import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import Stack from '@mui/material/Stack'
-import { useTheme } from '@mui/material/styles'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -53,7 +51,6 @@ const { Spacing } = SizesAndSpaces
 const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { llamaApi: api = null, connectState } = useConnection()
-  const theme = useTheme()
   const titleMapper = useTitleMapper()
   const market = useOneWayMarket(rChainId, rMarket).data
   const rOwmId = market?.id ?? ''
@@ -79,12 +76,6 @@ const Page = (params: MarketUrlParams) => {
   const borrowPositionDetails = useBorrowPositionDetails({
     chainId: rChainId,
     market: market ?? undefined,
-    marketId: rOwmId,
-    userActiveKey: userActiveKey,
-  })
-  const lendPositionDetails = useLendPositionDetails({
-    chainId: rChainId,
-    market: market,
     marketId: rOwmId,
     userActiveKey: userActiveKey,
   })
