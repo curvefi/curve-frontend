@@ -7,28 +7,34 @@ import { Stack } from '@mui/material'
 import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
-export const BandsComp = (pageProps: PageContentProps) => {
-  const { rChainId, rOwmId, market } = pageProps
-  const [selectedBand, setSelectedBand] = useState<'user' | 'market'>('user')
+type BandsCompProps = {
+  pageProps: PageContentProps
+  page: 'create' | 'manage'
+}
 
-  const SelectorMenu = (
-    <SelectorRow>
-      <SelectorButton
-        variant={'text'}
-        className={selectedBand === 'user' ? 'active' : ''}
-        onClick={() => setSelectedBand('user')}
-      >
-        {t`Position Bands`}
-      </SelectorButton>
-      <SelectorButton
-        variant={'text'}
-        className={selectedBand === 'market' ? 'active' : ''}
-        onClick={() => setSelectedBand('market')}
-      >
-        {t`Market Bands`}
-      </SelectorButton>
-    </SelectorRow>
-  )
+export const BandsComp = ({ pageProps, page }: BandsCompProps) => {
+  const { rChainId, rOwmId, market } = pageProps
+  const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
+
+  const SelectorMenu =
+    page === 'create' ? null : (
+      <SelectorRow>
+        <SelectorButton
+          variant={'text'}
+          className={selectedBand === 'user' ? 'active' : ''}
+          onClick={() => setSelectedBand('user')}
+        >
+          {t`Position Bands`}
+        </SelectorButton>
+        <SelectorButton
+          variant={'text'}
+          className={selectedBand === 'market' ? 'active' : ''}
+          onClick={() => setSelectedBand('market')}
+        >
+          {t`Market Bands`}
+        </SelectorButton>
+      </SelectorRow>
+    )
 
   return (
     <Stack>

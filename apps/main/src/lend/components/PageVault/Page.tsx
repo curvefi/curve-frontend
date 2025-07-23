@@ -1,19 +1,21 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
+import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
 import DetailsUser from '@/lend/components/DetailsUser'
+import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import Vault from '@/lend/components/PageVault/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useLendPositionDetails } from '@/lend/hooks/useLendPositionDetails'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { parseMarketParams, getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
@@ -27,6 +29,12 @@ import {
   AppPageInfoWrapper,
 } from '@ui/AppPage'
 import Box from '@ui/Box'
+import {
+  ExpandButton,
+  ExpandIcon,
+  PriceAndTradesExpandedContainer,
+  PriceAndTradesExpandedWrapper,
+} from '@ui/Chart/styles'
 import Tabs, { Tab } from '@ui/Tab'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
@@ -56,6 +64,8 @@ const Page = (params: MarketUrlParams) => {
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
@@ -64,12 +74,6 @@ const Page = (params: MarketUrlParams) => {
   const [isLoaded, setLoaded] = useState(false)
   const [isBeta] = useBetaFlag()
 
-  const borrowPositionDetails = useBorrowPositionDetails({
-    chainId: rChainId,
-    market: market ?? undefined,
-    marketId: rOwmId,
-    userActiveKey: userActiveKey,
-  })
   const lendPositionDetails = useLendPositionDetails({
     chainId: rChainId,
     market: market,
@@ -140,7 +144,7 @@ const Page = (params: MarketUrlParams) => {
     borrow: borrowPathnameFn(params, rOwmId, ''),
     lend: '',
   }
-  const hasSupplyPosition = lendPositionDetails.shares.value && lendPositionDetails.shares.value > 0
+  const hasSupplyPosition = (lendPositionDetails.shares.value ?? 0) > 0
 
   if (!provider) {
     return (
@@ -158,6 +162,24 @@ const Page = (params: MarketUrlParams) => {
 
   return (
     <>
+      {chartExpanded && networks[rChainId].pricesData && (
+        <PriceAndTradesExpandedContainer>
+          <Box flex padding="0 0 var(--spacing-2)">
+            <ExpandButton
+              variant={'select'}
+              onClick={() => {
+                setChartExpanded()
+              }}
+            >
+              {chartExpanded ? 'Minimize' : 'Expand'}
+              <ExpandIcon name={chartExpanded ? 'Minimize' : 'Maximize'} size={16} aria-label={t`Expand chart`} />
+            </ExpandButton>
+          </Box>
+          <PriceAndTradesExpandedWrapper variant="secondary">
+            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+          </PriceAndTradesExpandedWrapper>
+        </PriceAndTradesExpandedContainer>
+      )}
       {!isBeta ? (
         <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
           <AppPageFormsWrapper>
@@ -225,6 +247,12 @@ const Page = (params: MarketUrlParams) => {
               </MarketInformationTabs>
             )}
             {hasSupplyPosition && <MarketDetails {...marketDetails} />}
+            <MarketInformationComp
+              pageProps={pageProps}
+              chartExpanded={chartExpanded}
+              userActiveKey={''}
+              type="supply"
+            />
           </Stack>
         </Stack>
       )}

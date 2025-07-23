@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
+import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
@@ -58,7 +59,8 @@ const Page = (params: MarketUrlParams) => {
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
@@ -218,6 +220,13 @@ const Page = (params: MarketUrlParams) => {
             <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
               <MarketDetails {...marketDetails} />
             </MarketInformationTabs>
+            <MarketInformationComp
+              pageProps={pageProps}
+              chartExpanded={chartExpanded}
+              userActiveKey={userActiveKey}
+              type="borrow"
+              page="create"
+            />
           </Stack>
         </Stack>
       )}

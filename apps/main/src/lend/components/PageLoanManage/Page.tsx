@@ -1,13 +1,10 @@
 'use client'
 import { useCallback, useEffect, useState } from 'react'
-import { BandsComp } from '@/lend/components/BandsComp'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
-import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
+import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanMange from '@/lend/components/PageLoanManage/index'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
@@ -268,32 +265,12 @@ const Page = (params: MarketUrlParams) => {
               </MarketInformationTabs>
             )}
             {loanExists && <MarketDetails {...marketDetails} />}
-            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-              {networks[rChainId]?.pricesData && !chartExpanded && (
-                <ChartOhlcWrapper
-                  rChainId={rChainId}
-                  rOwmId={rOwmId}
-                  userActiveKey={userActiveKey}
-                  betaBackgroundColor={theme.design.Layer[1].Fill}
-                />
-              )}
-            </Stack>
-            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-              <BandsComp {...pageProps} />
-            </Stack>
-            {market && (
-              <Stack flexDirection="row" sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-                <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
-                  <DetailsContracts rChainId={rChainId} market={market} type={'borrow'} />
-                </Stack>
-                <Stack
-                  sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
-                >
-                  <SubTitle>{t`Parameters`}</SubTitle>
-                  <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
-                </Stack>
-              </Stack>
-            )}
+            <MarketInformationComp
+              pageProps={pageProps}
+              chartExpanded={chartExpanded}
+              userActiveKey={userActiveKey}
+              type="borrow"
+            />
           </Stack>
         </Stack>
       )}

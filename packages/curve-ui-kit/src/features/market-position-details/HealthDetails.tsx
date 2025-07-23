@@ -11,7 +11,8 @@ const getHealthValueColor = (value: number, theme: Theme) => {
   if (value < 5) return 'error'
   if (value < 15) return 'warning'
   if (value < 50) return theme.design.Color.Secondary[500]
-  return theme.design.Color.Secondary[600]
+  if (value >= 100) return theme.design.Color.Secondary[600]
+  return 'textPrimary'
 }
 
 export const HealthDetails = ({ health }: { health: Health }) => {
