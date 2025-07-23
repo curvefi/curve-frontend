@@ -1,6 +1,6 @@
 import { getEthereumCustomFeeDataValues } from '@ui/utils'
 import { getLib, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys, type ChainParams, type ChainQuery } from '@ui-kit/lib/model/query'
+import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
 import { Chain, gweiToWai } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
@@ -140,7 +140,7 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
   },
   staleTime: '5m',
   refetchInterval: '1m',
-  validationSuite: createValidationSuite(<TChainId extends number>(params: ChainParams<TChainId>) => {
+  validationSuite: createValidationSuite(<TChainId extends number>(params: GasInfoParams<TChainId>) => {
     chainValidationGroup(params)
     providerValidationGroup()
   }),
@@ -286,10 +286,10 @@ export function createGasInfoQueryOptions<TChainId extends number>({
 
   return {
     chainId,
-    gasPricesUrl: network.gasPricesUrl,
+    gasPricesUrl: network?.gasPricesUrl,
     // It seems that in the original code the Ethereum mainnet gas prices URL was used for L2 price fetching.
     // I do not question whether this is right or not. I just re-use what was already being used.
-    gasPricesUrlL2: network.gasL2 ? networks[1 as TChainId].gasPricesUrl : undefined,
+    gasPricesUrlL2: network?.gasL2 ? networks[1 as TChainId].gasPricesUrl : undefined,
   }
 }
 
