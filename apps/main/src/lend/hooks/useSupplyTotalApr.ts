@@ -71,7 +71,7 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const others = other ?? []
 
   return {
-    totalApr: getTotalApr(lendApr, crvBase, crvBoost, others),
+    totalApr: getTotalApr(lendApy, crvBase, crvBoost, others),
     tooltipValues: _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others),
   }
 }

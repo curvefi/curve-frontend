@@ -67,6 +67,7 @@ export const useMarketDetails = ({
   }, [lendingSnapshots])
 
   const borrowApy = onChainRates?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
+  const lendApy = onChainRates?.rates?.lendApy ?? marketRate?.rates?.lendApy
 
   return {
     collateral: {
@@ -97,7 +98,7 @@ export const useMarketDetails = ({
       loading: isSnapshotsLoading || (isOnChainRatesLoading ?? true),
     },
     lendingAPY: {
-      value: onChainRates?.rates.lendApy ? Number(onChainRates.rates.lendApy) : null,
+      value: lendApy != null ? Number(lendApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRates?.lendApyAvg ?? null,
       loading: isSnapshotsLoading || (isOnChainRatesLoading ?? true),
     },
