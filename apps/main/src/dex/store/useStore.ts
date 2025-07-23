@@ -6,7 +6,6 @@ import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/cr
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
-import createGasSlice, { GasSlice } from '@/dex/store/createGasSlice'
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
@@ -25,7 +24,6 @@ const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
   NetworksSlice &
-  GasSlice &
   CacheSlice &
   PoolsSlice &
   PoolDepositSlice &
@@ -46,7 +44,6 @@ export type State = GlobalSlice &
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
   ...createNetworksSlice(set, get),
-  ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
   ...createPoolListSlice(set, get),
   ...createPoolsSlice(set, get),

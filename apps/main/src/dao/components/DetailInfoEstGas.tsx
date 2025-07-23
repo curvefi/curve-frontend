@@ -3,12 +3,12 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
 import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
@@ -35,8 +35,8 @@ const DetailInfoEstGas = ({
 }) => {
   const { gasPricesDefault } = networks[chainId]
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
-  const gasInfo = useStore((state) => state.gas.gasInfo)
-  const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
+  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }

@@ -151,7 +151,6 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         isInProgress: true,
         step: 'REPAY',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)

@@ -36,19 +36,21 @@ async function _fetchSavingsStatistics(): Promise<Statistics> {
 
   if (provider) {
     const vault = new Contract(SCRVUSD_VAULT_ADDRESS, VAULT_ABI, provider)
-    const [unlock_amount, supply, block] = await Promise.all([
+    const [profitUnlockingRate, supply, block] = await Promise.all([
       vault.profitUnlockingRate(),
       vault.totalSupply(),
       provider.getBlock('latest'),
     ])
 
-    const unlockAmountNum = Number(unlock_amount)
+    const profitUnlockingRateNum = Number(profitUnlockingRate)
     const supplyNum = Number(supply)
+    const apr = supplyNum > 0 ? (profitUnlockingRateNum * UNLOCK_MULTIPLIER) / supplyNum : 0
+    const apy = (1 + apr / 100 / 365.25) ** 365.25 - 1
 
     return {
       lastUpdated: new Date(block?.timestamp ?? 0),
       lastUpdatedBlock: block?.number ?? 0,
-      aprProjected: supplyNum > 0 ? (unlockAmountNum * UNLOCK_MULTIPLIER) / supplyNum : 0,
+      apyProjected: apy * 100,
       supply: weiToEther(supplyNum),
     }
   }

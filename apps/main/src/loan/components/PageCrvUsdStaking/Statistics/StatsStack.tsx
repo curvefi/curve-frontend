@@ -39,11 +39,11 @@ const StatsStack = () => {
       </Grid>
       <Grid>
         <Metric
-          label="Current APY"
-          value={statisticsData?.aprProjected}
+          label="Current projected APY"
+          value={statisticsData?.apyProjected}
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           loading={statisticsIsFetching}
-          copyText={t`Copied current APY`}
+          copyText={t`Copied current projected APY`}
         />
       </Grid>
       <Grid>
