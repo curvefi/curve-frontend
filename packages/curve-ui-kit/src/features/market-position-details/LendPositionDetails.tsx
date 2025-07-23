@@ -47,7 +47,7 @@ export const LendPositionDetails = ({ lendingAPY, shares, lentAsset }: LendPosit
         value={lendingAPY?.value}
         loading={lendingAPY?.value == null && lendingAPY?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning' }}
-        notional={lendingAPY?.maxApy ? `max Boost ${lendingAPY.maxApy.toFixed(1)}%` : undefined}
+        notional={lendingAPY?.maxApy ? t`max Boost ${lendingAPY.maxApy.toFixed(1)}%` : undefined}
       />
       <Metric
         size="medium"
@@ -74,7 +74,7 @@ export const LendPositionDetails = ({ lendingAPY, shares, lentAsset }: LendPosit
           shares.staked && shares.value
             ? {
                 value: (shares.staked / shares.value) * 100,
-                unit: { symbol: '%', position: 'suffix' },
+                unit: { symbol: t`% staked`, position: 'suffix' },
               }
             : undefined
         }
