@@ -19,7 +19,10 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   const isMobile = useIsMobile()
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
-      <TokenPair chain={market.chain} assets={market.assets} />
+      <TokenPair
+        chain={market.chain}
+        assets={{ primary: market.assets.collateral, secondary: market.assets.borrowed }}
+      />
       <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
         <Typography
           component={Stack}

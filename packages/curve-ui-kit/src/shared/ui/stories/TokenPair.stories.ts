@@ -17,15 +17,16 @@ const meta: Meta<typeof TokenPair> = {
   args: {
     chain: 'ethereum',
     assets: {
-      borrowed: {
+      primary: {
         symbol: 'ETH',
         address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       },
-      collateral: {
+      secondary: {
         symbol: 'USDC',
         address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       },
     },
+    hideChainIcon: false,
   },
 }
 
@@ -46,11 +47,11 @@ export const ArbitrumPair: Story = {
   args: {
     chain: 'arbitrum',
     assets: {
-      borrowed: {
+      primary: {
         symbol: 'WBTC',
         address: '0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f',
       },
-      collateral: {
+      secondary: {
         symbol: 'USDT',
         address: '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9',
       },
@@ -61,15 +62,21 @@ export const ArbitrumPair: Story = {
 export const WithFallback: Story = {
   args: {
     assets: {
-      borrowed: {
+      primary: {
         symbol: 'UNKNOWN',
         address: '0x0',
       },
-      collateral: {
+      secondary: {
         symbol: 'ETH',
         address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
       },
     },
+  },
+}
+
+export const NoChainIcon: Story = {
+  args: {
+    hideChainIcon: true,
   },
 }
 

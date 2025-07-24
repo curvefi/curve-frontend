@@ -14,31 +14,34 @@ type Asset = {
 type Props = {
   chain: string
   assets: {
-    borrowed: Asset
-    collateral: Asset
+    primary: Asset
+    secondary: Asset
   }
+  hideChainIcon?: boolean
 }
 
-export const TokenPair = ({ chain, assets: { borrowed, collateral } }: Props) => (
-  <Box sx={{ position: 'relative', width: IconSize.xxl, height: IconSize.xxl }}>
+export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon = false }: Props) => (
+  <Box sx={{ position: 'relative', width: IconSize.xl, height: IconSize.xl }}>
     <TokenIcon
       blockchainId={chain}
-      address={borrowed.address}
-      tooltip={borrowed.symbol}
-      sx={{ position: 'absolute', top: '30%', left: '30%' }}
+      address={secondary.address}
+      tooltip={secondary.symbol}
+      sx={{ position: 'absolute', top: '33%', left: '33%' }}
     />
 
     <TokenIcon
       blockchainId={chain}
-      address={collateral.address}
-      tooltip={collateral.symbol}
-      sx={{ position: 'absolute', bottom: '30%', right: '30%' }}
+      address={primary.address}
+      tooltip={primary.symbol}
+      sx={{ position: 'absolute', bottom: '33%', right: '33%' }}
     />
 
-    <Tooltip title={chain} placement="top" slotProps={{ popper: { sx: { textTransform: 'capitalize' } } }}>
-      <Box sx={{ position: 'absolute', top: '0%', left: '0%' }}>
-        <ChainIcon size="xs" blockchainId={chain} />
-      </Box>
-    </Tooltip>
+    {!hideChainIcon && (
+      <Tooltip title={chain} placement="top" slotProps={{ popper: { sx: { textTransform: 'capitalize' } } }}>
+        <Box sx={{ position: 'absolute', top: '-16.66%', left: '-16.66%' }}>
+          <ChainIcon size="sm" blockchainId={chain} />
+        </Box>
+      </Tooltip>
+    )}
   </Box>
 )
