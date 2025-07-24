@@ -14,6 +14,7 @@ export const defineMuiCardHeader = (
       padding: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
       borderBottom: `1px solid ${design.Layer[3].Outline}`,
       minHeight: `calc(${ButtonSize.lg} + 1px)`, // 1px to account for border
+      '& .MuiCardHeader-avatar': { marginRight: 0 },
       variants: [
         {
           props: { size: 'small' },
