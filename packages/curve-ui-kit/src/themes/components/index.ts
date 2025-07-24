@@ -10,6 +10,7 @@ import { defineMuiCardHeader } from './card-header'
 import { defineMuiCheckbox } from './checkbox'
 import { defineMuiChip } from './chip'
 import { defineMuiAlert, defineMuiAlertTitle } from './mui-alert'
+import { defineMuiCard } from './mui-card'
 import { defineMuiMenuItem } from './mui-menu-item'
 import { defineMuiSelect } from './mui-select'
 import { defineMuiSwitch } from './mui-switch'
@@ -34,6 +35,7 @@ export const createComponents = (
       disableRipple: true,
     },
   },
+  MuiCard: defineMuiCard(design),
   MuiCardHeader: defineMuiCardHeader(design, typography),
   MuiCardActions: {
     styleOverrides: {
