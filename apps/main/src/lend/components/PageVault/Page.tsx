@@ -243,7 +243,7 @@ const Page = (params: MarketUrlParams) => {
               </MarketInformationTabs>
             ) : (
               <MarketInformationTabs currentTab={'lend'} hrefs={positionDetailsHrefs}>
-                <MarketDetails marketPage {...marketDetails} />
+                <MarketDetails {...marketDetails} />
               </MarketInformationTabs>
             )}
             {hasSupplyPosition && <MarketDetails {...marketDetails} />}
