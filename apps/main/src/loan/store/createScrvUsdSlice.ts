@@ -228,7 +228,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
           dismissNotificationHandler()
           void get()[sliceKey].checkApproval.depositApprove(amount)
 
-          const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
+          const successNotificationMessage = t`Successfully approved ${amount} crvUSD!`
           notify(successNotificationMessage, 'success', 15000)
 
           return true
@@ -286,7 +286,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStakingModuleChangeReset()
 
-          const successNotificationMessage = t`Succesfully deposited ${amount} crvUSD!`
+          const successNotificationMessage = t`Successfully deposited ${amount} crvUSD!`
           notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()
@@ -341,7 +341,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStakingModuleChangeReset()
 
-          const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
+          const successNotificationMessage = t`Successfully withdrew ${amount} scrvUSD!`
           notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()
@@ -395,7 +395,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStakingModuleChangeReset()
 
-          const successNotificationMessage = t`Succesfully withdrew ${amount} scrvUSD!`
+          const successNotificationMessage = t`Successfully withdrew ${amount} scrvUSD!`
           notify(successNotificationMessage, 'success', 15000)
         } catch (error) {
           dismissNotificationHandler()

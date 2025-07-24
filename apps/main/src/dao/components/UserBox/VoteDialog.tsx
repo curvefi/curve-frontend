@@ -59,7 +59,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
           </StyledAlertBox>
         </Box>
       )}
-      {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote succesfully cast!`}</SuccessWrapper>}
+      {executeTx?.status === 'SUCCESS' && <SuccessWrapper>{t`Proposal vote successfully cast!`}</SuccessWrapper>}
       {executeTx?.status !== 'SUCCESS' && (
         <ExecuteButton
           variant="icon-filled"
@@ -99,7 +99,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
       <Wrapper className={className}>
         <Box flex flexColumn flexGap="var(--spacing-3)">
           <VotedMessageWrapper>
-            <VotedMessage>{t`You have succesfully voted:`}</VotedMessage>
+            <VotedMessage>{t`You have successfully voted:`}</VotedMessage>
             <VotedMessage>
               {userProposalVotes?.[proposalKey] && votedFor && (
                 <VotedRow>
