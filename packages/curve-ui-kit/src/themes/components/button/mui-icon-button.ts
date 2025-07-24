@@ -1,10 +1,11 @@
 /// <reference path="./mui-icon-button.d.ts" />
 import type { Components } from '@mui/material/styles'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '../../design'
 import { SizesAndSpaces } from '../../design/1_sizes_spaces'
 import { Fonts } from '../../fonts'
 
-const { ButtonSize, OutlineWidth } = SizesAndSpaces
+const { ButtonSize, OutlineWidth, IconSize } = SizesAndSpaces
 
 // note: should use IconSize instead of ButtonSize? Plus introduce many more sizes (xs to 4xl)
 export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Components['MuiIconButton'] => ({
@@ -25,18 +26,22 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Comp
     sizeExtraSmall: {
       height: ButtonSize.xs,
       minWidth: ButtonSize.xs,
+      '& svg': handleBreakpoints({ width: IconSize.md, height: IconSize.md }),
     },
     sizeSmall: {
       height: ButtonSize.sm,
       minWidth: ButtonSize.sm,
+      '& svg': handleBreakpoints({ width: IconSize.lg, height: IconSize.lg }),
     },
     sizeMedium: {
       height: ButtonSize.md,
       minWidth: ButtonSize.md,
+      '& svg': handleBreakpoints({ width: IconSize.xl, height: IconSize.xl }),
     },
     sizeLarge: {
       height: ButtonSize.lg,
       minWidth: ButtonSize.lg,
+      '& svg': handleBreakpoints({ width: IconSize.xxl, height: IconSize.xxl }),
     },
     // colorPrimary: { '&:hover': { color: Button.Primary.Hover.Label, backgroundColor: Button.Primary.Hover.Fill } },
     // colorSecondary: { '&:hover': { color: Button.Secondary.Hover.Label, backgroundColor: Button.Secondary.Hover.Fill } },

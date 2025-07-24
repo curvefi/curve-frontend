@@ -137,7 +137,7 @@ const ActionInfo = ({
         </Tooltip>
 
         {copy && (
-          <IconButton size="small" onClick={copyValue} color="primary">
+          <IconButton size="extraSmall" onClick={copyValue} color="primary">
             <ContentCopy />
           </IconButton>
         )}
@@ -148,7 +148,7 @@ const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size="small"
+            size="extraSmall"
             color="primary"
           >
             <CallMade />
