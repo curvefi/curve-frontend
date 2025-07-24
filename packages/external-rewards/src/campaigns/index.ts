@@ -28,7 +28,6 @@ import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import Tac from './Tac.json'
 import TacTokens from './TacTokens.json'
-import Taiko from './Taiko.json'
 import Turtle from './Turtle.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
@@ -60,7 +59,6 @@ export {
   Carrot,
   Bills,
   StableLabs,
-  Taiko,
   Sonic,
   Rings,
   Tac,

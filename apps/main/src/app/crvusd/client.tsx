@@ -8,13 +8,10 @@ import { networks, networksIdMapper } from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { UrlParams } from '@/loan/types/loan.types'
 import { recordValues } from '@curvefi/prices-api/objects.util'
-import { useConnection } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useHydration } from '@ui-kit/hooks/useHydration'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { logSuccess } from '@ui-kit/lib'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export function useInjectServerData(serverData: CrvUsdServerData) {
   useEffect(() => {
@@ -28,23 +25,10 @@ export function CrvUsdClientLayout({ children, serverData }: { children: ReactNo
   useInjectServerData(serverData)
   const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
   const chainId = networksIdMapper[networkId]
-  const { llamaApi: curve = null } = useConnection()
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const hydrate = useStore((s) => s.hydrate)
-
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
 
-  usePageVisibleInterval(
-    () => {
-      if (isPageVisible && curve) {
-        void fetchGasInfo(curve)
-      }
-    },
-    REFRESH_INTERVAL['5m'],
-    isPageVisible,
-  )
-
+  useGasInfoAndUpdateLib({ chainId, networks }) // Refresh gas info on a regular interval, relies on a side-effect
   useRedirectToEth(networks[chainId], networkId, isHydrated)
 
   return isHydrated && children

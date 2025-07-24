@@ -45,10 +45,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       isNetworkSwitched,
     })
 
-    const { user, gas, gauges } = get()
-    if (isNetworkSwitched) gas.resetState()
+    const { user, gauges } = get()
     await Promise.all([
-      api && isNetworkSwitched && gas.fetchGasInfo(api),
       api && wallet?.provider && user.updateUserData(api, wallet),
       gauges.getGauges(),
       gauges.getGaugesData(),

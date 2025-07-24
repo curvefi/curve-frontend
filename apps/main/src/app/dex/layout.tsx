@@ -15,6 +15,7 @@ import { useHydration } from '@ui-kit/hooks/useHydration'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
@@ -25,9 +26,12 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
-  const fetchGasInfo = useStore((state) => state.gas.fetchGasInfo)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
   const network = useStore((state) => state.networks.networks[networkDef.chainId])
+  const networks = useStore((state) => state.networks.networks)
+
+  // Refresh gas info on a regular interval, relies on a side-effect
+  useGasInfoAndUpdateLib({ chainId: networkDef.chainId, networks })
 
   const fetchPoolsVolumeTvl = useCallback(
     async (curve: CurveApi) => {
@@ -48,7 +52,6 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
   usePageVisibleInterval(
     () => {
       if (curveApi) {
-        void fetchGasInfo(curveApi)
         void fetchPoolsVolumeTvl(curveApi)
 
         if (curveApi.signerAddress) {

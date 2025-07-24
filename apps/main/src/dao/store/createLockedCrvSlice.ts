@@ -151,7 +151,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.step = 'APPROVAL'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-      await get().gas.fetchGasInfo(curve)
       const { chainId } = curve
       const approveFn = networks[chainId].api.lockCrv.lockCrvApprove
       const resp = await approveFn(activeKey, provider, curve, formValues.lockedAmt)
@@ -185,7 +184,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         cFormStatus.step = 'CREATE_LOCK'
         get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-        await get().gas.fetchGasInfo(curve)
         const { chainId } = curve
         const fn = networks[chainId].api.lockCrv.createLock
         const resp = await fn(activeKey, curve, provider, formValues.lockedAmt, formValues.utcDate, formValues.days)
@@ -225,7 +223,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.step = 'INCREASE_CRV'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-      await get().gas.fetchGasInfo(curve)
       const { chainId } = curve
       const fn = networks[chainId].api.lockCrv.increaseAmount
       const resp = await fn(activeKey, curve, provider, formValues.lockedAmt)
@@ -266,7 +263,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       cFormStatus.step = 'INCREASE_TIME'
       get()[sliceKey].setStateByKey('formStatus', cloneDeep(cFormStatus))
 
-      await get().gas.fetchGasInfo(curve)
       const { chainId } = curve
       const fn = networks[chainId].api.lockCrv.increaseUnlockTime
       const resp = await fn(activeKey, provider, curve, formValues.days)
@@ -303,8 +299,6 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
       const { provider } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
       const curve = requireLib('curveApi')
-
-      await get().gas.fetchGasInfo(curve)
 
       let dismissNotificationHandler = notify(t`Please confirm to withdraw locked CRV.`, 'pending').dismiss
 

@@ -245,7 +245,6 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
       const approveFn = networks[chainId].api.swap.approve
       const resp = await approveFn(activeKey, provider, llamma, formValues)
@@ -278,7 +277,6 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
         isInProgress: true,
         step: 'SWAP',
       })
-      await get().gas.fetchGasInfo(curve)
       const chainId = curve.chainId as ChainId
       const swapFn = networks[chainId].api.swap.swap
       const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)

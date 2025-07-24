@@ -57,7 +57,6 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       if (!signerAddress || +amount <= 0 || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
       const resp = await apiLending.vaultUnstake.estGas(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -105,7 +104,6 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const { amount } = formValues
       const resp = await apiLending.vaultUnstake.unstake(activeKey, provider, market, amount)
 
