@@ -14,7 +14,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 const CardStory = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
     <CardHeader
-      avatar={<Avatar sx={{ marginRight: '1rem', bgcolor: 'primary.main' }}>L</Avatar>}
+      avatar={<Avatar sx={{ bgcolor: 'primary.main' }}>L</Avatar>}
       title="Llama Card"
       subheader="September 14, 2024"
     />

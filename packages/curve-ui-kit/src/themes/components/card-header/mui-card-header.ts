@@ -1,5 +1,6 @@
 /// <reference types="./mui-card-header.d.ts" />
 import type { Components, TypographyVariantsOptions } from '@mui/material/styles'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -11,10 +12,14 @@ export const defineMuiCardHeader = (
 ): Components['MuiCardHeader'] => ({
   styleOverrides: {
     root: {
-      padding: `${Spacing.lg.desktop} ${Spacing.md.desktop} ${Spacing.sm.desktop}`,
+      ...handleBreakpoints({
+        paddingBlockStart: Spacing.lg,
+        paddingBlockEnd: Spacing.sm,
+        paddingInline: Spacing.md,
+      }),
       borderBottom: `1px solid ${design.Layer[3].Outline}`,
       minHeight: `calc(${ButtonSize.lg} + 1px)`, // 1px to account for border
-      '& .MuiCardHeader-avatar': { marginRight: 0 },
+      '& .MuiCardHeader-avatar': handleBreakpoints({ marginRight: Spacing.md }),
       variants: [
         {
           props: { size: 'small' },
