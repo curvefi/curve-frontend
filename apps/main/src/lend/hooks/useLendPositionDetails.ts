@@ -2,6 +2,7 @@ import { meanBy } from 'lodash'
 import { useMemo } from 'react'
 import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
 import { useMarketPricePerShare } from '@/lend/entities/market-price-per-share'
+import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -15,16 +16,14 @@ type UseLendPositionDetailsProps = {
   chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
   marketId: string
-  userActiveKey: string
 }
 
 export const useLendPositionDetails = ({
   chainId,
   market,
   marketId,
-  userActiveKey,
 }: UseLendPositionDetailsProps): LendPositionDetailsProps => {
-  const userBalancesResp = useStore((state) => state.user.marketsBalancesMapper[userActiveKey]) // TODO: add loading state
+  const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const { totalApr } = useSupplyTotalApr(chainId, marketId)
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
@@ -64,30 +63,26 @@ export const useLendPositionDetails = ({
       value: lendApy != null ? Number(lendApy) : null,
       maxApy: totalApr.max != null ? Number(totalApr.max) : null,
       thirtyDayAvgRate: thirtyDayAvgLendApr,
-      loading: isLendSnapshotsLoading || isOnChainRatesLoading,
+      loading: isLendSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
     },
     shares: {
-      value: userBalancesResp?.vaultShares
-        ? Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge)
-        : null,
-      staked: userBalancesResp?.gauge ? Number(userBalancesResp.gauge) : null,
-      loading: false,
+      value: userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null,
+      staked: userBalances?.gauge ? Number(userBalances.gauge) : null,
+      loading: isUserBalancesLoading,
     },
     lentAsset: {
       symbol: market?.borrowed_token.symbol,
       address: market?.borrowed_token.address,
       usdRate: lentAssetUsdRate,
       depositedAmount:
-        marketPricePerShare && userBalancesResp?.vaultShares && userBalancesResp?.gauge
-          ? +marketPricePerShare * (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge))
+        marketPricePerShare && userBalances?.vaultShares && userBalances?.gauge
+          ? +marketPricePerShare * (Number(userBalances.vaultShares) + Number(userBalances.gauge))
           : null,
       depositedUsdValue:
-        lentAssetUsdRate && marketPricePerShare && userBalancesResp?.vaultShares && userBalancesResp?.gauge
-          ? +marketPricePerShare *
-            (Number(userBalancesResp.vaultShares) + Number(userBalancesResp.gauge)) *
-            lentAssetUsdRate
+        lentAssetUsdRate && marketPricePerShare && userBalances?.vaultShares && userBalances?.gauge
+          ? +marketPricePerShare * (Number(userBalances.vaultShares) + Number(userBalances.gauge)) * lentAssetUsdRate
           : null,
-      loading: isMarketPricePerShareLoading || lentAssetUsdRateLoading,
+      loading: isMarketPricePerShareLoading || lentAssetUsdRateLoading || isUserBalancesLoading,
     },
   }
 }

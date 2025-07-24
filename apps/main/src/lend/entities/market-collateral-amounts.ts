@@ -28,7 +28,7 @@ const _getMarketCollateralAmounts = async ({ marketId }: MarketQuery): Promise<M
   }
 }
 
-export const { useQuery: useMarketCollateralAmounts } = queryFactory({
+export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarketCollateralAmounts } = queryFactory({
   queryKey: (params: MarketParams) =>
     ['marketCollateralAmounts', { chainId: params.chainId }, { marketId: params.marketId }] as const,
   queryFn: _getMarketCollateralAmounts,

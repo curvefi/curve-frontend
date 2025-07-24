@@ -4,6 +4,8 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultStake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultStake/utils'
+import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
+import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -136,6 +138,8 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
         // re-fetch api
         void get().user.fetchUserMarketBalances(api, market, true)
         void get().markets.fetchAll(api, market, true)
+        invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
+        invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {
