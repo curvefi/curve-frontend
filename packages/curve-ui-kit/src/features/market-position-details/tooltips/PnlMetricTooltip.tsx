@@ -37,8 +37,8 @@ export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
           <Typography variant="bodySBold">
             {pnl?.currentProfit ? formatNumber(pnl.currentProfit, { ...FORMAT_OPTIONS.USD }) : '-'}
           </Typography>
-          {pnl?.currentPositionValue && (
-            <Typography variant="bodySRegular">{`(${formatNumber(pnl.currentPositionValue, { ...FORMAT_OPTIONS.PERCENT })})`}</Typography>
+          {pnl?.percentageChange && (
+            <Typography variant="bodySRegular">{`(${formatNumber(pnl.percentageChange, { ...FORMAT_OPTIONS.PERCENT })})`}</Typography>
           )}
         </Stack>
       </Stack>
