@@ -1,6 +1,7 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -13,17 +14,17 @@ type UseBorrowPositionDetailsProps = {
   chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
   marketId: string
-  userActiveKey: string
 }
 
 export const useBorrowPositionDetails = ({
   chainId,
   market,
   marketId,
-  userActiveKey,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
-  const userLoanDetailsResp = useStore((state) => state.user.loansDetailsMapper[userActiveKey])
-  const isFetchingAll = useStore((state) => state.markets.isFetchingAll)
+  const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
+    chainId,
+    marketId,
+  })
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
@@ -39,8 +40,6 @@ export const useBorrowPositionDetails = ({
     chainId: chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
-
-  const { details: userLoanDetails } = userLoanDetailsResp ?? {}
 
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
@@ -73,12 +72,12 @@ export const useBorrowPositionDetails = ({
     isSoftLiquidation: userLoanDetails?.status?.colorKey === 'soft_liquidation',
     health: {
       value: Number(userLoanDetails?.healthFull),
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     borrowAPY: {
       value: borrowApy != null ? Number(borrowApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRate,
-      loading: isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
+      loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {
       value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
@@ -86,11 +85,11 @@ export const useBorrowPositionDetails = ({
         prices?.prices?.oraclePrice && userLoanDetails?.prices
           ? (Number(userLoanDetails?.prices?.[1]) / Number(prices.prices.oraclePrice)) * 100
           : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     bandRange: {
       value: userLoanDetails?.bands ? userLoanDetails.bands : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
@@ -104,26 +103,26 @@ export const useBorrowPositionDetails = ({
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading: isFetchingAll || collateralUsdRateLoading || borrowedUsdRateLoading,
+      loading: !market || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
       value: collateralTotalValue ? (Number(userLoanDetails?.state?.debt) / collateralTotalValue) * 100 : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {
       currentProfit: userLoanDetails?.pnl?.currentProfit ? Number(userLoanDetails.pnl.currentProfit) : null,
       currentPositionValue: userLoanDetails?.pnl?.currentPosition ? Number(userLoanDetails.pnl.currentPosition) : null,
       depositedValue: userLoanDetails?.pnl?.deposited ? Number(userLoanDetails.pnl.deposited) : null,
       percentageChange: userLoanDetails?.pnl?.percentage ? Number(userLoanDetails.pnl.percentage) : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     leverage: {
       value: userLoanDetails?.leverage ? Number(userLoanDetails.leverage) : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
     totalDebt: {
       value: userLoanDetails?.state?.debt ? Number(userLoanDetails.state.debt) : null,
-      loading: isFetchingAll ?? true,
+      loading: !market || isUserLoanDetailsLoading,
     },
   }
 }

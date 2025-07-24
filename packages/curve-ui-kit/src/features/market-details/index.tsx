@@ -45,10 +45,6 @@ type MaxLeverage = {
 }
 
 export type MarketDetailsProps = {
-  /**
-   * Use true if Market Details appear on the top of the page, the upper row will have larger cells
-   */
-  marketPage?: boolean
   collateral: Collateral
   borrowToken: BorrowToken
   borrowAPY: BorrowAPY
@@ -61,7 +57,6 @@ const formatLiquidity = (value: number) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
 
 export const MarketDetails = ({
-  marketPage = false,
   collateral,
   borrowToken,
   borrowAPY,

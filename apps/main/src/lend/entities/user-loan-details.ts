@@ -1,0 +1,101 @@
+import {
+  _fetchChartBandBalancesData,
+  _getLiquidationStatus,
+  _reverseBands,
+  _sortBands,
+  helpers,
+} from '@/lend/lib/apiLending'
+import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import { requireLib } from '@ui-kit/features/connect-wallet'
+import { FieldsOf } from '@ui-kit/lib'
+import { queryFactory } from '@ui-kit/lib/model/query'
+import type { ChainQuery } from '@ui-kit/lib/model/query'
+import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+
+type UserLoanDetailsQuery = ChainQuery<ChainId> & { marketId: string }
+type UserLoanDetailsParams = FieldsOf<UserLoanDetailsQuery>
+
+type UserLoanDetails = {
+  health: string
+  healthFull: string
+  healthNotFull: string
+  bands: number[]
+  bandsBalances: ParsedBandsBalances[]
+  bandsPct: string
+  isCloseToLiquidation: boolean
+  loss?: UserLoss
+  prices: string[]
+  range: number | null
+  state: { collateral: string; borrowed: string; debt: string; N: string }
+  status: { label: string; colorKey: HealthColorKey; tooltip: string }
+  leverage: string
+  pnl: Record<string, string>
+}
+
+const _getUserLoanDetails = async ({ marketId }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
+  const api = requireLib('llamaApi')
+  const market = api.getLendMarket(marketId)
+  const signerAddress = api.signerAddress
+
+  const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
+    await Promise.all([
+      market.userState(),
+      market.userHealth(),
+      market.userHealth(false),
+      market.userRange(),
+      market.userBands(),
+      market.userPrices(),
+      market.userBandsBalances(),
+      market.oraclePriceBand(),
+      market.currentLeverage(signerAddress),
+      market.currentPnL(signerAddress),
+    ])
+
+  let loss: UserLoss | undefined
+  try {
+    loss = await market.userLoss()
+  } catch (error) {
+    console.error('Failed to fetch user loss:', error)
+  }
+
+  const resp = await market.stats.bandsInfo()
+  const { liquidationBand } = resp ?? {}
+
+  const reversedUserBands = _reverseBands(bands)
+  const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
+    reversedUserBands[0],
+    liquidationBand,
+    oraclePriceBand,
+  )
+  const parsedBandsBalances = await _fetchChartBandBalancesData(
+    _sortBands(bandsBalances),
+    liquidationBand,
+    market,
+    false,
+  )
+
+  return {
+    state,
+    health: +healthNotFull < 0 ? healthNotFull : healthFull,
+    healthFull,
+    healthNotFull,
+    bands: reversedUserBands,
+    bandsBalances: parsedBandsBalances,
+    bandsPct: range ? await market.calcRangePct(range) : '0',
+    isCloseToLiquidation,
+    range,
+    prices,
+    loss,
+    leverage,
+    pnl,
+    status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+  }
+}
+
+export const { useQuery: useUserLoanDetails } = queryFactory({
+  queryKey: (params: UserLoanDetailsParams) =>
+    ['userLoanDetails', { chainId: params.chainId }, { marketId: params.marketId }] as const,
+  queryFn: _getUserLoanDetails,
+  refetchInterval: '5m',
+  validationSuite: llamaApiValidationSuite,
+})

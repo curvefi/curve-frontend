@@ -1,5 +1,6 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
+import { useMarketCapAndAvailable } from '@/lend/entities/market-cap-and-available'
 import { useMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
 import { useMarketMaxLeverage } from '@/lend/entities/market-max-leverage'
 import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
@@ -22,9 +23,12 @@ export const useMarketDetails = ({
   llamma,
   llammaId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
-  const capAndAvailable = useStore((state) => state.markets.statsCapAndAvailableMapper[chainId]?.[llammaId])
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[llammaId])
 
+  const { data: capAndAvailable, isLoading: isCapAndAvailableLoading } = useMarketCapAndAvailable({
+    chainId,
+    marketId: llammaId,
+  })
   const { data: collateralAmounts, isLoading: isCollateralAmountsLoading } = useMarketCollateralAmounts({
     chainId,
     marketId: llammaId,
@@ -79,7 +83,7 @@ export const useMarketDetails = ({
           ? collateralAmounts.collateralAmount * collateralUsdRate
           : null,
       usdRate: collateralUsdRate ?? null,
-      loading: isCollateralAmountsLoading || collateralUsdRateLoading,
+      loading: !llamma || isCollateralAmountsLoading || collateralUsdRateLoading,
     },
     borrowToken: {
       symbol: llamma?.borrowed_token.symbol ?? null,
@@ -90,27 +94,27 @@ export const useMarketDetails = ({
           ? collateralAmounts.borrowedAmount * borrowedUsdRate
           : null,
       usdRate: borrowedUsdRate ?? null,
-      loading: isCollateralAmountsLoading || borrowedUsdRateLoading,
+      loading: !llamma || isCollateralAmountsLoading || borrowedUsdRateLoading,
     },
     borrowAPY: {
       value: borrowApy != null ? Number(borrowApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRates?.borrowApyAvg ?? null,
-      loading: isSnapshotsLoading || (isOnChainRatesLoading ?? true),
+      loading: !llamma || isSnapshotsLoading || (isOnChainRatesLoading ?? true),
     },
     lendingAPY: {
       value: lendApy != null ? Number(lendApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRates?.lendApyAvg ?? null,
-      loading: isSnapshotsLoading || (isOnChainRatesLoading ?? true),
+      loading: !llamma || isSnapshotsLoading || (isOnChainRatesLoading ?? true),
     },
     availableLiquidity: {
-      value: capAndAvailable?.available ? Number(capAndAvailable.available) : null,
-      max: capAndAvailable?.cap ? Number(capAndAvailable.cap) : null,
-      loading: false, // to do: set up loading state
+      value: capAndAvailable?.available ? capAndAvailable.available : null,
+      max: capAndAvailable?.cap ? capAndAvailable.cap : null,
+      loading: !llamma || isCapAndAvailableLoading,
     },
     maxLeverage: maxLeverage
       ? {
           value: Number(maxLeverage.value),
-          loading: maxLeverageLoading,
+          loading: !llamma || maxLeverageLoading,
         }
       : undefined,
   }

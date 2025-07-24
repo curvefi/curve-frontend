@@ -77,7 +77,6 @@ const Page = (params: MarketUrlParams) => {
     chainId: rChainId,
     market: market ?? undefined,
     marketId: rOwmId,
-    userActiveKey: userActiveKey,
   })
   const marketDetails = useMarketDetails({
     chainId: rChainId,
@@ -252,7 +251,7 @@ const Page = (params: MarketUrlParams) => {
               </MarketInformationTabs>
             ) : (
               <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
-                <MarketDetails marketPage {...marketDetails} />
+                <MarketDetails {...marketDetails} />
               </MarketInformationTabs>
             )}
             {loanExists && <MarketDetails {...marketDetails} />}

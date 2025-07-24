@@ -25,7 +25,6 @@ import { getLib } from '@ui-kit/features/connect-wallet'
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  isFetchingAll: boolean
   statsParametersMapper: { [chainId: string]: MarketsStatsParametersMapper }
   statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
   statsTotalsMapper: { [chainId: string]: MarketsStatsTotalsMapper }
@@ -63,7 +62,6 @@ export type MarketsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  isFetchingAll: true,
   statsParametersMapper: {},
   statsBandsMapper: {},
   statsTotalsMapper: {},
@@ -87,8 +85,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
       const { ...sliceState } = get()[sliceKey]
 
       const { chainId } = api
-
-      sliceState.setStateByKey('isFetchingAll', true)
 
       const fnMapper = {
         statsParametersMapper: apiLending.market.fetchStatsParameters,
@@ -120,7 +116,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         cMapper[owmId] = resp[owmId]
       })
       sliceState.setStateByActiveKey(k, chainId.toString(), cMapper)
-      sliceState.setStateByKey('isFetchingAll', false)
     },
 
     fetchAll: async (api, OneWayMarketTemplate, shouldRefetch) => {
