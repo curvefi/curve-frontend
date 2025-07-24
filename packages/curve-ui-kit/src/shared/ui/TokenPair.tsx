@@ -14,25 +14,25 @@ type Asset = {
 type Props = {
   chain: string
   assets: {
-    borrowed: Asset
-    collateral: Asset
+    primary: Asset
+    secondary: Asset
   }
   hideChainIcon?: boolean
 }
 
-export const TokenPair = ({ chain, assets: { borrowed, collateral }, hideChainIcon = false }: Props) => (
+export const TokenPair = ({ chain, assets: { primary, secondary }, hideChainIcon = false }: Props) => (
   <Box sx={{ position: 'relative', width: IconSize.xl, height: IconSize.xl }}>
     <TokenIcon
       blockchainId={chain}
-      address={borrowed.address}
-      tooltip={borrowed.symbol}
+      address={secondary.address}
+      tooltip={secondary.symbol}
       sx={{ position: 'absolute', top: '33%', left: '33%' }}
     />
 
     <TokenIcon
       blockchainId={chain}
-      address={collateral.address}
-      tooltip={collateral.symbol}
+      address={primary.address}
+      tooltip={primary.symbol}
       sx={{ position: 'absolute', bottom: '33%', right: '33%' }}
     />
 
