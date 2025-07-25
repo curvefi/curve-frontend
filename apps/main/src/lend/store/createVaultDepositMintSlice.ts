@@ -4,6 +4,7 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDepositMint/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultDepositMint/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
@@ -175,7 +176,7 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
         void get().user.fetchUserMarketBalances(api, market, true)
         void get().markets.fetchAll(api, market, true)
         invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-
+        invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
         // update state
         const partialFormStatus: Partial<FormStatus> = {
           error: resp.error,

@@ -4,6 +4,7 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultUnstake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultUnstake/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
@@ -113,6 +114,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
         void get().user.fetchUserMarketBalances(api, market, true)
         void get().markets.fetchAll(api, market, true)
         invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

@@ -1,6 +1,6 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
+import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'

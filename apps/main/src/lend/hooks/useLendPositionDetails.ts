@@ -1,7 +1,6 @@
 import { meanBy } from 'lodash'
 import { useMemo } from 'react'
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
-import { useMarketPricePerShare } from '@/lend/entities/market-price-per-share'
+import { useMarketOnChainRates, useMarketPricePerShare } from '@/lend/entities/market-details'
 import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
 import useSupplyTotalApr from '@/lend/hooks/useSupplyTotalApr'
 import networks from '@/lend/networks'
