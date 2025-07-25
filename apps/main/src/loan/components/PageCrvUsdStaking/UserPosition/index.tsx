@@ -39,14 +39,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
     : undefined
 
   return (
-    <Card
-      sx={{
-        width: '100%',
-        maxWidth: chartExpanded ? '100%' : MaxWidth.section,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        boxShadow: 'none',
-      }}
-    >
+    <Card sx={{ width: '100%', maxWidth: chartExpanded ? '100%' : MaxWidth.section }}>
       <CardHeader title={t`Position Details`} />
       <Stack padding={Spacing.md} gap={Spacing.md}>
         <Grid

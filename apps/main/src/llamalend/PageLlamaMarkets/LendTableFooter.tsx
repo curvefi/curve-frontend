@@ -32,7 +32,6 @@ export const LendTableFooter = () => (
       paddingInline: Spacing.lg,
       paddingBlockStart: Spacing.lg,
       paddingBlockEnd: Spacing.sm,
-      backgroundColor: (t) => t.design.Layer[1].Fill,
     }}
   >
     <Grid container spacing={Spacing.lg} rowGap={Spacing.md}>
