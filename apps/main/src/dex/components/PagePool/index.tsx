@@ -87,7 +87,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
-  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
