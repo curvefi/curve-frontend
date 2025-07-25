@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PegKeeperDetails, Pool } from '../types'
 import { PegChip, pegStatus } from './PegChip'
@@ -16,16 +16,7 @@ type Props = {
 
 export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate }: Props) => (
   <CardHeader
-    avatar={
-      <TokenPair
-        chain="ethereum"
-        assets={{
-          primary: { symbol: underlyingCoins[0], address: underlyingCoinAddresses[0] },
-          secondary: { symbol: underlyingCoins[1], address: underlyingCoinAddresses[1] },
-        }}
-        hideChainIcon
-      />
-    }
+    avatar={<TokenIcon blockchainId="ethereum" address={underlyingCoinAddresses[0]} />}
     title={
       <Stack direction="row" alignItems="center">
         {underlyingCoins[0]}
