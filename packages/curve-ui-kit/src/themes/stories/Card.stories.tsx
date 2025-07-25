@@ -10,6 +10,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { SizesAndSpaces } from '../design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const CardStory = (props: CardProps) => (
   <Card sx={{ maxWidth: '20rem' }} {...props}>
@@ -33,9 +36,11 @@ const CardStory = (props: CardProps) => (
     </CardContent>
 
     <CardActions disableSpacing>
-      <Stack direction="row" gap="1rem">
-        <Button size="small">Share</Button>
-        <Button size="small">Learn More</Button>
+      <Stack direction="row" gap={Spacing.xs} flexGrow={1}>
+        <Button fullWidth>Share</Button>
+        <Button fullWidth color="secondary">
+          Learn More
+        </Button>
       </Stack>
     </CardActions>
   </Card>
@@ -52,7 +57,7 @@ const CardStorySimple = (props: CardProps) => (
     </CardContent>
 
     <CardActions>
-      <Button size="small">Action</Button>
+      <Button fullWidth>Action</Button>
     </CardActions>
   </Card>
 )
@@ -93,7 +98,7 @@ const CardStoryTokenPairAvatar = (props: CardProps) => (
     </CardContent>
 
     <CardActions>
-      <Button size="small">Action</Button>
+      <Button fullWidth>Action</Button>
     </CardActions>
   </Card>
 )
