@@ -78,7 +78,6 @@ const Page = (params: MarketUrlParams) => {
     chainId: rChainId,
     market: market,
     marketId: rOwmId,
-    userActiveKey: userActiveKey,
   })
   const marketDetails = useMarketDetails({
     chainId: rChainId,

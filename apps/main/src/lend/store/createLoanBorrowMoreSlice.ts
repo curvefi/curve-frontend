@@ -12,6 +12,8 @@ import {
 } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
+import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -308,6 +310,8 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
           if (loanExists) void user.fetchAll(api, market, true)
           void markets.fetchAll(api, market, true)
+          invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
+          invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
 
           // update formStatus
           sliceState.setStateByKeys({
