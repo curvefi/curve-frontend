@@ -9,8 +9,7 @@ import type {
 } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
-import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
-import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
@@ -328,8 +327,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
             await user.fetchAll(api, market, true)
             void markets.fetchAll(api, market, true)
             markets.setStateByKey('marketDetailsView', 'user')
-            invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
-            invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
 
             // update formStatus
             sliceState.setStateByKeys({

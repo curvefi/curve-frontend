@@ -1,3 +1,4 @@
+import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
 import {
   _fetchChartBandBalancesData,
   _getLiquidationStatus,
@@ -92,10 +93,15 @@ const _getUserLoanDetails = async ({ marketId }: UserLoanDetailsQuery): Promise<
   }
 }
 
-export const { useQuery: useUserLoanDetails } = queryFactory({
+export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetails } = queryFactory({
   queryKey: (params: UserLoanDetailsParams) =>
     ['userLoanDetails', { chainId: params.chainId }, { marketId: params.marketId }] as const,
   queryFn: _getUserLoanDetails,
   refetchInterval: '5m',
   validationSuite: llamaApiValidationSuite,
 })
+
+export const invalidateAllUserBorrowDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
+  invalidateUserMarketBalances({ chainId, marketId })
+  invalidateUserLoanDetails({ chainId, marketId })
+}

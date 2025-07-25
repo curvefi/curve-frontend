@@ -109,8 +109,12 @@ export const BorrowInformation = ({
           size="small"
           label={t`PNL`}
           valueOptions={{ unit: 'dollar' }}
-          value={pnl?.currentProfit}
-          change={pnl?.percentageChange ?? undefined}
+          value={
+            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue ? pnl?.currentProfit : undefined
+          }
+          change={
+            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue ? pnl?.currentProfit : undefined
+          }
           loading={pnl?.currentProfit == null && pnl?.loading}
           valueTooltip={{
             title: t`Position PNL`,

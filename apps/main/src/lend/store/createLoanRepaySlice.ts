@@ -9,8 +9,7 @@ import {
 } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
-import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
-import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
@@ -271,12 +270,10 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         } else {
           if (loanExists) {
             void user.fetchAll(api, market, true)
-            invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
-            invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           } else {
             void user.fetchUserMarketBalances(api, market, true)
-            invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
-            invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
             const userActiveKey = getUserActiveKey(api, market)
             user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
           }

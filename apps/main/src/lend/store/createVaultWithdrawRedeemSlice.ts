@@ -4,8 +4,7 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
-import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
-import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
@@ -151,8 +150,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
         // api calls
         void get().user.fetchUserMarketBalances(api, market, true)
         void get()[sliceKey].fetchMax(api, formType, market)
-        invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
-        invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }

@@ -3,8 +3,7 @@ import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralRemove/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
-import { invalidateMarketCollateralAmounts } from '@/lend/entities/market-collateral-amounts'
-import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -166,10 +165,11 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) void user.fetchAll(api, market, true)
+          if (loanExists) {
+            void user.fetchAll(api, market, true)
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+          }
           void void markets.fetchAll(api, market, true)
-          invalidateUserMarketBalances({ chainId: api.chainId, marketId: market.id })
-          invalidateMarketCollateralAmounts({ chainId: api.chainId, marketId: market.id })
 
           // update formStatus
           sliceState.setStateByKeys({
