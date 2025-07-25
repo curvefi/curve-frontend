@@ -1,11 +1,9 @@
-import { Contract, ContractRunner, ethers } from 'ethers'
 import produce from 'immer'
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { type State } from '@/loan/store/useStore'
 import { type ChainId, type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
-import { Interface } from '@ethersproject/abi'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -17,7 +15,6 @@ type SliceState = {
 
 // prettier-ignore
 export interface AppSlice extends SliceState {
-  getContract(jsonModuleName: string, contractAddress: string, provider: ContractRunner): Promise<ethers.Contract | null>
   updateGlobalStoreByKey<T>(key: DefaultStateKeys, value: T): void
 
   /** Hydrate resets states and refreshes store data from the API */
@@ -36,19 +33,6 @@ const DEFAULT_STATE: SliceState = {
 const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   ...DEFAULT_STATE,
 
-  getContract: async (jsonModuleName, contractAddress, provider) => {
-    try {
-      const abi = await import(`@/loan/abis/${jsonModuleName}.json`).then((module) => module.default)
-
-      if (!abi) throw new Error(`Unable to get abi ${jsonModuleName}`)
-
-      const iface = new Interface(abi)
-      return new Contract(contractAddress, iface.format(), provider)
-    } catch (error) {
-      console.error(error)
-      return null
-    }
-  },
   updateGlobalStoreByKey: <T>(key: DefaultStateKeys, value: T) => {
     set(
       produce((state) => {
