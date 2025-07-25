@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
+import { abbreviateNumber, copyToClipboard, scaleSuffix, type SxProps } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -242,6 +242,7 @@ type Props = {
   alignment?: Alignment
   loading?: boolean
   testId?: string
+  sx?: SxProps
 }
 
 export const Metric = ({
@@ -260,6 +261,7 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
+  sx,
 }: Props) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
 
@@ -282,7 +284,7 @@ export const Metric = ({
   )
 
   return (
-    <Stack alignItems={alignment} data-testid={testId}>
+    <Stack alignItems={alignment} data-testid={testId} sx={sx}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (
