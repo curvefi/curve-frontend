@@ -103,5 +103,8 @@
   },
   {
     "campaign": "TacTokens.json"
+  },
+  {
+    "campaign": "Loop.json"
   }
 ]
