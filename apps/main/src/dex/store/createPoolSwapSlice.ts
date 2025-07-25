@@ -225,7 +225,10 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       // stored values
       const userPoolBalances = await get()[sliceKey].fetchTokenWalletBalance(curve, pool.id, formValues.fromAddress)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
-      const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId: curve.chainId, networks: get().networks })
+      const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
+        chainId: curve.chainId,
+        networks: get().networks.networks,
+      })
 
       let fromAmount = walletFromBalance ?? '0'
 
