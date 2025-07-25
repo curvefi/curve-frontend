@@ -85,10 +85,12 @@ const getFormattingDefaults = (formatting: Formatting) => ({
 
 /** Default formatter for values and notionals. */
 const formatValue = (value: number, decimals?: number): string =>
-  value.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
+  value === 0
+    ? '0'
+    : value.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })
 
 const formatChange = (value: number) => {
   // Looks aesthetically more pleasing without decimals.
