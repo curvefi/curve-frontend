@@ -48,10 +48,11 @@ export type UnitOptions = {
   position: 'prefix' | 'suffix'
 }
 
+const none: UnitOptions = { symbol: '', position: 'suffix' }
 const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
 const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
 const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
-const UNIT_MAP = { dollar, percentage, multiplier } as const
+const UNIT_MAP = { none, dollar, percentage, multiplier } as const
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
