@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import ChartBandBalances from '@/loan/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -20,7 +20,15 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-const ChartUserBands = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
+const ChartUserBands = ({
+  llammaId,
+  llamma,
+  selectorMenu,
+}: {
+  llammaId: string
+  llamma: Llamma | null
+  selectorMenu?: ReactNode
+}) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const { userBandsBalances, userLiquidationBand } = useUserLoanDetails(llammaId) ?? {}
 
@@ -75,7 +83,7 @@ const ChartUserBands = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
       showLiquidationIndicator={!!userLiquidationBand}
-      title={t`Bands`}
+      title={selectorMenu ?? t`Bands`}
       setBrushIndex={setBrushIndex}
     />
   )

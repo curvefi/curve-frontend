@@ -29,8 +29,9 @@ export interface TradesDataProps {
   chainId: ChainId
 }
 
-export interface ChartOhlcWrapperProps {
+export type ChartOhlcWrapperProps = {
   rChainId: ChainId
-  userActiveKey: string
   rOwmId: string
+  userActiveKey: string
+  betaBackgroundColor?: string
 }

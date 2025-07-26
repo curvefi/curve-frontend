@@ -1963,7 +1963,11 @@ export default apiLending
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
  */
-function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
+export function _getLiquidationStatus(
+  healthNotFull: string,
+  userIsCloseToLiquidation: boolean,
+  userStateStablecoin: string,
+) {
   const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
@@ -1988,11 +1992,11 @@ function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: 
   return userStatus
 }
 
-function _reverseBands(bands: [number, number] | number[]) {
+export function _reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }
 
-function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+export function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
   const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
@@ -2002,7 +2006,7 @@ function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collat
   return { bandsBalancesArr, bandsBalances }
 }
 
-async function _fetchChartBandBalancesData(
+export async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,

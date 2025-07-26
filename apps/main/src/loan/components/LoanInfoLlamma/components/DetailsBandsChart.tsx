@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import ChartBandBalances from '@/loan/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/loan/components/ChartBandBalances/types'
 import useStore from '@/loan/store/useStore'
@@ -19,7 +19,15 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-const DetailsBandsChart = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
+const DetailsBandsChart = ({
+  llammaId,
+  llamma,
+  selectorMenu,
+}: {
+  llammaId: string
+  llamma: Llamma | null
+  selectorMenu?: ReactNode
+}) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
@@ -68,7 +76,7 @@ const DetailsBandsChart = ({ llammaId, llamma }: { llammaId: string; llamma: Lla
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
       showLiquidationIndicator={false}
-      title={t`Bands`}
+      title={selectorMenu ?? t`Bands`}
       setBrushIndex={setBrushIndex}
     />
   )

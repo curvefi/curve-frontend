@@ -1,4 +1,4 @@
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
+import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 

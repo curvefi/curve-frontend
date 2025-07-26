@@ -204,6 +204,7 @@ const detailInfo = {
     )
 
     const fetchedUserDetails: UserLoanDetails = {
+      loading: false,
       ...fetchedPartialUserLoanInfo,
       userBandsBalances: parsedBandsBalances,
       userBandsRange,

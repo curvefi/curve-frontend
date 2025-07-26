@@ -65,7 +65,7 @@ const nextConfiguration = {
     permanent: false
   }, {
     source: '/llamalend/:network',
-    destination: '/llamalend/ethereum/markets/',
+    destination: '/llamalend/:network/markets/',
     permanent: false
   }, {
     source: '/crvusd/:network',

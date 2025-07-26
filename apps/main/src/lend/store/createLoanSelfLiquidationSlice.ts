@@ -4,6 +4,8 @@ import { FormWarning } from '@/lend/components/AlertFormWarning'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -178,7 +180,11 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
           return { ...resp, error, loanExists }
         } else {
           // api calls
-          if (loanExists) void user.fetchAll(api, market, true)
+          if (loanExists) {
+            void user.fetchAll(api, market, true)
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+          }
+          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
           void markets.fetchAll(api, market, true)
 
           // update state

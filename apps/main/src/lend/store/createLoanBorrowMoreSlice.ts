@@ -12,6 +12,8 @@ import {
 } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -306,7 +308,11 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) void user.fetchAll(api, market, true)
+          if (loanExists) {
+            void user.fetchAll(api, market, true)
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+          }
+          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
           void markets.fetchAll(api, market, true)
 
           // update formStatus

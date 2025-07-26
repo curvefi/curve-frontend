@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useMarketOnChainRates } from '@/lend/entities/market-onchain-rate'
+import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
@@ -71,7 +71,7 @@ function _getTotalAndTooltip(marketRewardsResp: MarketRewards, marketRatesResp: 
   const others = other ?? []
 
   return {
-    totalApr: getTotalApr(lendApr, crvBase, crvBoost, others),
+    totalApr: getTotalApr(lendApy, crvBase, crvBoost, others),
     tooltipValues: _getTooltipValue(lendApr, lendApy, crvBase, crvBoost, others),
   }
 }

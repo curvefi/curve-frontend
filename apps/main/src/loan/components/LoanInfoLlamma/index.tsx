@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import PoolInfoData from '@/loan/components/ChartOhlcWrapper'
+import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import DetailsBandsChart from '@/loan/components/LoanInfoLlamma/components/DetailsBandsChart'
 import DetailsInfo from '@/loan/components/LoanInfoLlamma/components/DetailsInfo'
@@ -18,7 +18,6 @@ interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'rChai
 const LoanInfoLlamma = (props: Props) => {
   const { rChainId, llamma, llammaId } = props
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
-
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   return (
@@ -29,7 +28,7 @@ const LoanInfoLlamma = (props: Props) => {
 
       {!chartExpanded && (
         <div className={isAdvancedMode ? 'wrapper' : ''}>
-          <PoolInfoData {...props} />
+          <ChartOhlcWrapper {...props} />
         </div>
       )}
 

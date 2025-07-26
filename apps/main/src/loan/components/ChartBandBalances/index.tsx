@@ -1,4 +1,4 @@
-import { Dispatch, useMemo } from 'react'
+import { Dispatch, ReactNode, useMemo } from 'react'
 import {
   Bar,
   Brush,
@@ -32,7 +32,7 @@ interface Props extends Pick<PageLoanManageProps, 'llamma'> {
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
   showLiquidationIndicator: boolean
-  title: string
+  title: string | ReactNode
   setBrushIndex: Dispatch<BrushStartEndIndex>
 }
 

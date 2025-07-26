@@ -3,15 +3,20 @@ import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsMarket from '@/lend/components/DetailsMarket'
+import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
+import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { getVaultPathname } from '@/lend/utils/utilsRouter'
+import Stack from '@mui/material/Stack'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -29,10 +34,15 @@ import {
 } from '@ui/Chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { MarketDetails } from '@ui-kit/features/market-details'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const Page = (params: MarketUrlParams) => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
@@ -49,11 +59,19 @@ const Page = (params: MarketUrlParams) => {
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const rOwmId = market?.id ?? ''
+  const [isBeta] = useBetaFlag()
+
+  const marketDetails = useMarketDetails({
+    chainId: rChainId,
+    llamma: market,
+    llammaId: rOwmId,
+  })
 
   const fetchInitial = useCallback(
     async (api: Api, market: OneWayMarketTemplate) => {
@@ -116,6 +134,10 @@ const Page = (params: MarketUrlParams) => {
     titleMapper,
     userActiveKey,
   }
+  const positionDetailsHrefs = {
+    borrow: '',
+    lend: getVaultPathname(params, rOwmId, 'deposit'),
+  }
 
   if (!provider) {
     return (
@@ -151,28 +173,63 @@ const Page = (params: MarketUrlParams) => {
         </PriceAndTradesExpandedContainer>
       )}
 
-      <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
-        <AppPageFormsWrapper>
-          {(!isMdUp || !isAdvancedMode) && <TitleComp />}
-          {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
-        </AppPageFormsWrapper>
+      {!isBeta ? (
+        <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
+          <AppPageFormsWrapper>
+            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
+            {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
+          </AppPageFormsWrapper>
 
-        {isAdvancedMode && rChainId && rOwmId && (
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <Box margin="0 0 var(--spacing-2)">
-              <CampaignRewardsBanner
-                borrowAddress={market?.addresses?.controller || ''}
-                supplyAddress={market?.addresses?.vault || ''}
-              />
-            </Box>
-            <AppPageInfoContentWrapper variant="secondary">
-              <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
-              <DetailsMarket {...pageProps} type="borrow" />
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        )}
-      </AppPageFormContainer>
+          {isAdvancedMode && rChainId && rOwmId && (
+            <AppPageInfoWrapper>
+              {isMdUp && <TitleComp />}
+              <Box margin="0 0 var(--spacing-2)">
+                <CampaignRewardsBanner
+                  borrowAddress={market?.addresses?.controller || ''}
+                  supplyAddress={market?.addresses?.vault || ''}
+                />
+              </Box>
+              <AppPageInfoContentWrapper variant="secondary">
+                <AppPageInfoContentHeader>Market Details</AppPageInfoContentHeader>
+                <DetailsMarket {...pageProps} type="borrow" />
+              </AppPageInfoContentWrapper>
+            </AppPageInfoWrapper>
+          )}
+        </AppPageFormContainer>
+      ) : (
+        // New design layout, only in beta for now
+        <Stack
+          flexDirection="row"
+          sx={{
+            marginRight: Spacing.md,
+            marginLeft: Spacing.md,
+            marginTop: Spacing.xl,
+            marginBottom: Spacing.xxl,
+            gap: Spacing.xl,
+          }}
+        >
+          <AppPageFormsWrapper>
+            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
+            {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}
+          </AppPageFormsWrapper>
+          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+            <CampaignRewardsBanner
+              borrowAddress={market?.addresses?.controller || ''}
+              supplyAddress={market?.addresses?.vault || ''}
+            />
+            <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
+              <MarketDetails {...marketDetails} />
+            </MarketInformationTabs>
+            <MarketInformationComp
+              pageProps={pageProps}
+              chartExpanded={chartExpanded}
+              userActiveKey={userActiveKey}
+              type="borrow"
+              page="create"
+            />
+          </Stack>
+        </Stack>
+      )}
     </>
   )
 }
