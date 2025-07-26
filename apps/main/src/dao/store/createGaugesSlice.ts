@@ -408,7 +408,7 @@ const createGaugesSlice = (set: SetState<State>, get: GetState<State>): GaugesSl
           }),
         )
         dismissLoading()
-        const successNotificationMessage = t`Succesfully cast vote!`
+        const successNotificationMessage = t`Successfully cast vote!`
         notify(successNotificationMessage, 'success', 15000)
 
         invalidateUserGaugeWeightVotesQuery({
