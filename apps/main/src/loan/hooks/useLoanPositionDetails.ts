@@ -1,6 +1,9 @@
-import meanBy from 'lodash/meanBy'
-import { useMemo } from 'react'
+import lodash from 'lodash'
+import { useEffect, useMemo, useState } from 'react'
+import { getHealthMode } from '@/loan/components/DetailInfoHealth'
+import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -13,17 +16,38 @@ type UseLoanPositionDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
-  health: string | undefined
 }
 
 export const useLoanPositionDetails = ({
   chainId,
   llamma,
   llammaId,
-  health,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
+  const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
+  const { oraclePriceBand } = loanDetails ?? {}
+
+  const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
+
+  useEffect(() => {
+    if (!lodash.isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
+      const fetchedHealthMode = getHealthMode(
+        oraclePriceBand,
+        '',
+        userBands,
+        '',
+        healthFull,
+        healthNotFull,
+        false,
+        '',
+        '',
+      )
+      setHealthMode(fetchedHealthMode)
+    } else {
+      setHealthMode(DEFAULT_HEALTH_MODE)
+    }
+  }, [oraclePriceBand, healthFull, healthNotFull, userBands])
 
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,
@@ -48,7 +72,7 @@ export const useLoanPositionDetails = ({
 
     if (recentSnapshots.length === 0) return null
 
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
+    return lodash.meanBy(recentSnapshots, ({ rate }) => rate) * 100
   }, [crvUsdSnapshots])
 
   const collateralTotalValue = useMemo(() => {
@@ -62,7 +86,7 @@ export const useLoanPositionDetails = ({
   return {
     isSoftLiquidation: userLoanDetails?.userStatus?.colorKey === 'soft_liquidation',
     health: {
-      value: Number(health),
+      value: Number(healthMode.percent),
       loading: userLoanDetails?.loading ?? true,
     },
     borrowAPY: {

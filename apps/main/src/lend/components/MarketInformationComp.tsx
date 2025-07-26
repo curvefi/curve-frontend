@@ -36,16 +36,16 @@ export const MarketInformationComp = ({
 
   return (
     <>
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-        {networks[rChainId]?.pricesData && !chartExpanded && (
+      {networks[rChainId]?.pricesData && !chartExpanded && (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <ChartOhlcWrapper
             rChainId={rChainId}
             rOwmId={rOwmId}
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-        )}
-      </Stack>
+        </Stack>
+      )}
       {type === 'borrow' && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} />

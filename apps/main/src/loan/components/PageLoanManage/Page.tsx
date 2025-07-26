@@ -4,9 +4,12 @@ import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import LoanInfoUser from '@/loan/components/LoanInfoUser'
+import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { DetailInfoTypes, FormType } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
+import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
@@ -17,6 +20,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import Stack from '@mui/material/Stack'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -33,11 +37,17 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { MarketDetails } from '@ui-kit/features/market-details'
+import { BorrowPositionDetails } from '@ui-kit/features/market-position-details'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
@@ -64,6 +74,7 @@ const Page = (params: CollateralUrlParams) => {
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('user')
   const [loaded, setLoaded] = useState(false)
+  const [isBeta] = useBetaFlag()
 
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!llamma
@@ -78,6 +89,13 @@ const Page = (params: CollateralUrlParams) => {
         : [{ label: t`Your Loan Details`, key: 'user' }],
     [isAdvancedMode],
   )
+
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
+  const positionDetails = useLoanPositionDetails({
+    chainId: rChainId,
+    llamma,
+    llammaId,
+  })
 
   useEffect(() => {
     if (curve && pageLoaded) {
@@ -167,55 +185,95 @@ const Page = (params: CollateralUrlParams) => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper>
-          {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
-          {isValidRouterParams && (
-            <LoanMange
-              {...formProps}
-              params={params}
-              rChainId={rChainId}
-              rCollateralId={rCollateralId}
-              rFormType={rFormType as FormType}
-              titleMapper={titleMapper}
-            />
-          )}
-        </AppPageFormsWrapper>
+      {!isBeta ? (
+        <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
+          <AppPageFormsWrapper>
+            {(!isMdUp || !isAdvancedMode) && !chartExpanded && <TitleComp />}
+            {isValidRouterParams && (
+              <LoanMange
+                {...formProps}
+                params={params}
+                rChainId={rChainId}
+                rCollateralId={rCollateralId}
+                rFormType={rFormType as FormType}
+                titleMapper={titleMapper}
+              />
+            )}
+          </AppPageFormsWrapper>
 
-        <AppPageInfoWrapper>
-          {isMdUp && !chartExpanded && <TitleComp />}
-          <AppPageInfoTabsWrapper>
-            <Tabs>
-              {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                <Tab
-                  key={key}
-                  className={selectedTab === key ? 'active' : ''}
-                  variant="secondary"
-                  disabled={typeof loanExists === 'undefined'}
-                  onClick={() => {
-                    if (loanExists) {
-                      setSelectedTab(key)
-                    } else {
-                      resetUserDetailsState(llamma)
-                      push(getLoanCreatePathname(params, rCollateralId))
-                    }
-                  }}
-                >
-                  {label}
-                </Tab>
-              ))}
-            </Tabs>
-          </AppPageInfoTabsWrapper>
-          <AppPageInfoContentWrapper variant="secondary">
-            {selectedTab === 'llamma' && isValidRouterParams && (
-              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+          <AppPageInfoWrapper>
+            {isMdUp && !chartExpanded && <TitleComp />}
+            <AppPageInfoTabsWrapper>
+              <Tabs>
+                {DETAIL_INFO_TYPES.map(({ key, label }) => (
+                  <Tab
+                    key={key}
+                    className={selectedTab === key ? 'active' : ''}
+                    variant="secondary"
+                    disabled={typeof loanExists === 'undefined'}
+                    onClick={() => {
+                      if (loanExists) {
+                        setSelectedTab(key)
+                      } else {
+                        resetUserDetailsState(llamma)
+                        push(getLoanCreatePathname(params, rCollateralId))
+                      }
+                    }}
+                  >
+                    {label}
+                  </Tab>
+                ))}
+              </Tabs>
+            </AppPageInfoTabsWrapper>
+            <AppPageInfoContentWrapper variant="secondary">
+              {selectedTab === 'llamma' && isValidRouterParams && (
+                <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+              )}
+              {selectedTab === 'user' && isValidRouterParams && (
+                <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+              )}
+            </AppPageInfoContentWrapper>
+          </AppPageInfoWrapper>
+        </Wrapper>
+      ) : (
+        <Stack
+          flexDirection="row"
+          sx={{
+            marginRight: Spacing.md,
+            marginLeft: Spacing.md,
+            marginTop: Spacing.xl,
+            marginBottom: Spacing.xxl,
+            gap: Spacing.xl,
+          }}
+        >
+          <AppPageFormsWrapper>
+            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
+            {isValidRouterParams && (
+              <LoanMange
+                {...formProps}
+                params={params}
+                rChainId={rChainId}
+                rCollateralId={rCollateralId}
+                rFormType={rFormType as FormType}
+                titleMapper={titleMapper}
+              />
             )}
-            {selectedTab === 'user' && isValidRouterParams && (
-              <LoanInfoUser {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </Wrapper>
+          </AppPageFormsWrapper>
+          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <BorrowPositionDetails {...positionDetails} />
+            </Stack>
+            <MarketDetails {...marketDetails} />
+            <MarketInformationComp
+              llamma={llamma}
+              llammaId={llammaId}
+              chainId={rChainId}
+              chartExpanded={chartExpanded}
+              page="manage"
+            />
+          </Stack>
+        </Stack>
+      )}
     </>
   ) : (
     <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">

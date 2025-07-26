@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
+import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
@@ -17,6 +18,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import Stack from '@mui/material/Stack'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -39,6 +41,9 @@ import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const Page = (params: CollateralUrlParams) => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
@@ -72,11 +77,7 @@ const Page = (params: CollateralUrlParams) => {
   const isLeverage = rFormType === 'leverage'
 
   const [isBeta] = useBetaFlag()
-  const marketDetailsProps = useMarketDetails({
-    chainId: rChainId,
-    llamma,
-    llammaId,
-  })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
 
   const fetchInitial = useCallback(
     (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
@@ -193,37 +194,78 @@ const Page = (params: CollateralUrlParams) => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-        <AppPageFormsWrapper>
-          {!isMdUp && !chartExpanded && <TitleComp />}
-          {rChainId && rCollateralId && (
-            <LoanCreate
-              curve={curve}
-              isReady={isReady}
-              isLeverage={isLeverage}
-              loanExists={loanExists}
+      {!isBeta ? (
+        <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
+          <AppPageFormsWrapper>
+            {!isMdUp && !chartExpanded && <TitleComp />}
+            {rChainId && rCollateralId && (
+              <LoanCreate
+                curve={curve}
+                isReady={isReady}
+                isLeverage={isLeverage}
+                loanExists={loanExists}
+                llamma={llamma}
+                llammaId={llammaId}
+                params={params}
+                rChainId={rChainId}
+                rCollateralId={rCollateralId}
+                rFormType={rFormType}
+                fetchInitial={fetchInitial}
+              />
+            )}
+          </AppPageFormsWrapper>
+
+          <AppPageInfoWrapper>
+            {isMdUp && !chartExpanded && <TitleComp />}
+            <AppPageInfoContentWrapper variant="secondary">
+              <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
+              {isValidRouterParams && rChainId && (
+                <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
+              )}
+            </AppPageInfoContentWrapper>
+          </AppPageInfoWrapper>
+        </Wrapper>
+      ) : (
+        <Stack
+          flexDirection="row"
+          sx={{
+            marginRight: Spacing.md,
+            marginLeft: Spacing.md,
+            marginTop: Spacing.xl,
+            marginBottom: Spacing.xxl,
+            gap: Spacing.xl,
+          }}
+        >
+          <AppPageFormsWrapper>
+            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
+            {rChainId && rCollateralId && (
+              <LoanCreate
+                curve={curve}
+                isReady={isReady}
+                isLeverage={isLeverage}
+                loanExists={loanExists}
+                llamma={llamma}
+                llammaId={llammaId}
+                params={params}
+                rChainId={rChainId}
+                rCollateralId={rCollateralId}
+                rFormType={rFormType}
+                fetchInitial={fetchInitial}
+              />
+            )}
+          </AppPageFormsWrapper>
+          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+            <MarketDetails {...marketDetails} />
+            <MarketInformationComp
               llamma={llamma}
               llammaId={llammaId}
-              params={params}
-              rChainId={rChainId}
-              rCollateralId={rCollateralId}
-              rFormType={rFormType}
-              fetchInitial={fetchInitial}
+              chainId={rChainId}
+              chartExpanded={chartExpanded}
+              page="create"
             />
-          )}
-        </AppPageFormsWrapper>
-
-        <AppPageInfoWrapper>
-          {isMdUp && !chartExpanded && <TitleComp />}
-          <AppPageInfoContentWrapper variant="secondary">
-            {isBeta && <MarketDetails {...marketDetailsProps} />}
-            {!isBeta && <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>}
-            {isValidRouterParams && rChainId && (
-              <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-            )}
-          </AppPageInfoContentWrapper>
-        </AppPageInfoWrapper>
-      </Wrapper>
+          </Stack>
+        </Stack>
+      )}
     </>
   ) : (
     <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
