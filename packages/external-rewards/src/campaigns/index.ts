@@ -28,7 +28,6 @@ import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TacTokens from './TacTokens.json'
-import Turtle from './Turtle.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -61,7 +60,6 @@ export {
   StableLabs,
   Sonic,
   Rings,
-  Turtle,
   Infinifi,
   Asymmetry,
   GoNuts,
