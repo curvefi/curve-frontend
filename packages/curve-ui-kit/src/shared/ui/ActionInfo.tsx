@@ -47,12 +47,15 @@ export type ActionInfoProps = {
   link?: string
   /** Whether or not the value can be copied */
   copy?: boolean
+  /** Value to be copied. Example use case would be copying the full address when the value is formatted / shortened. Defaults to original value. */
+  copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
   /** Size of the component */
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  testId?: string
   sx?: SxProps
 }
 
@@ -87,19 +90,21 @@ const ActionInfo = ({
   link,
   size = 'medium',
   copy = false,
+  copyValue,
   copiedTitle,
   loading = false,
+  testId,
   sx,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
 
-  const copyValue = () => {
-    void copyToClipboard(value)
+  const handleCopyValue = () => {
+    void copyToClipboard(copyValue ?? value)
     open()
   }
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx} data-testid={testId}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
         {label}
       </Typography>
@@ -137,7 +142,7 @@ const ActionInfo = ({
         </Tooltip>
 
         {copy && (
-          <IconButton size="small" onClick={copyValue} color="primary">
+          <IconButton size="extraSmall" onClick={handleCopyValue} color="primary">
             <ContentCopy />
           </IconButton>
         )}
@@ -148,7 +153,7 @@ const ActionInfo = ({
             href={link}
             target="_blank"
             rel="noopener"
-            size="small"
+            size="extraSmall"
             color="primary"
           >
             <CallMade />
@@ -159,7 +164,7 @@ const ActionInfo = ({
       <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           <AlertTitle>{copiedTitle ?? t`Value has been copied to clipboard`}</AlertTitle>
-          {value}
+          {copyValue ?? value}
         </Alert>
       </Snackbar>
     </Stack>

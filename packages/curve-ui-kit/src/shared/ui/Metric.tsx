@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { abbreviateNumber, copyToClipboard, scaleSuffix } from '@ui-kit/utils'
+import { abbreviateNumber, copyToClipboard, scaleSuffix, type SxProps } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -48,10 +48,11 @@ export type UnitOptions = {
   position: 'prefix' | 'suffix'
 }
 
+const none: UnitOptions = { symbol: '', position: 'suffix' }
 const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
 const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
 const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
-const UNIT_MAP = { dollar, percentage, multiplier } as const
+const UNIT_MAP = { none, dollar, percentage, multiplier } as const
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
 export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
@@ -85,10 +86,12 @@ const getFormattingDefaults = (formatting: Formatting) => ({
 
 /** Default formatter for values and notionals. */
 const formatValue = (value: number, decimals?: number): string =>
-  value.toLocaleString(undefined, {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  })
+  value === 0
+    ? '0'
+    : value.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })
 
 const formatChange = (value: number) => {
   // Looks aesthetically more pleasing without decimals.
@@ -240,6 +243,7 @@ type Props = {
   alignment?: Alignment
   loading?: boolean
   testId?: string
+  sx?: SxProps
 }
 
 export const Metric = ({
@@ -258,6 +262,7 @@ export const Metric = ({
   alignment = 'start',
   loading = false,
   testId,
+  sx,
 }: Props) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
 
@@ -280,7 +285,7 @@ export const Metric = ({
   )
 
   return (
-    <Stack alignItems={alignment} data-testid={testId}>
+    <Stack alignItems={alignment} data-testid={testId} sx={sx}>
       <Typography variant="bodyXsRegular" color="textTertiary">
         {label}
         {labelTooltip && (

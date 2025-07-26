@@ -74,13 +74,14 @@ export const createWagmiConfig = memoize(
            *    - Primary: http transport with default URL (batch size 3 for DRPC compliance)
            *    - Fallbacks: Additional http transports for each fallback RPC URL
            *    - Prevents error code 29 from exceeding batch limits
+           *    - Gives browsers a time window for the opportunity to batch multiple calls
            *
            * Note: WalletConnect ignores this transport configuration and uses chain.rpcUrls.default.http
            * in order, but having multiple transports helps with injected wallet resilience.
            */
           fallback([
             unstable_connector(injected),
-            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3 } })),
+            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
           ]),
         ]),
       ) as Record<ChainId, Transport>,

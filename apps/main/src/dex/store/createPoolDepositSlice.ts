@@ -137,7 +137,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           cFormValues.isWrapped,
           parseAmountsForAPI(cFormValues.amounts),
         )
-        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks: get().networks })
+        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks: get().networks.networks })
 
         if (!resp.error && resp.estimatedGas && basePlusPriority?.[0]) {
           cFormValues.amounts[idx].value = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], userBalance)

@@ -1,57 +1,47 @@
-import { useEffect, useState } from 'react'
-import { styled } from 'styled-components'
-import PegKeeperContent from '@/loan/components/PagePegKeepers/components/PegKeeperContent'
-import { PEG_KEEPERS } from '@/loan/constants'
-import useStore from '@/loan/store/useStore'
-import { ChainId, Provider } from '@/loan/types/loan.types'
-import { breakpoints } from '@ui/utils/responsive'
-import { useLayoutStore } from '@ui-kit/features/layout'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+'use client'
+import type { NetworkUrlParams } from '@/loan/types/loan.types'
+import Box from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Footer } from './components/Footer'
+import { PegKeeper } from './components/PegKeeper'
+import { Statistics } from './components/Statistics'
+import { PEG_KEEPERS } from './constants'
 
-const PagePegKeepers = ({ rChainId, provider }: { rChainId: ChainId; provider: Provider }) => {
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const fetchDetails = useStore((state) => state.pegKeepers.fetchDetails)
-  const resetState = useStore((state) => state.pegKeepers.resetState)
+const {
+  Spacing,
+  Grid: { Column_Spacing, Row_Spacing },
+} = SizesAndSpaces
 
-  const [loaded, setLoaded] = useState(false)
+type Props = NetworkUrlParams // Even though we use it, NextJS will complain without the real page.tsx
 
-  useEffect(() => {
-    if (provider) {
-      void fetchDetails(provider)
-      setLoaded(true)
-    }
-  }, [fetchDetails, provider])
+export const Page = ({}: Props) => (
+  <Stack
+    sx={{
+      paddingBlock: Spacing.xl,
+      paddingInline: Spacing.md,
+      gap: Spacing.xxl,
+    }}
+    data-testid="pegkeepers"
+  >
+    <Statistics />
 
-  usePageVisibleInterval(
-    () => {
-      if (!loaded) return
-
-      resetState()
-      if (provider) void fetchDetails(provider)
-    },
-    REFRESH_INTERVAL['5m'],
-    isPageVisible,
-  )
-
-  return (
-    <Wrapper>
-      {Object.entries(PEG_KEEPERS).map(([k, pegKeeperContent], idx) => (
-        <PegKeeperContent key={`pegKeeper${idx}`} {...pegKeeperContent} rChainId={rChainId} pegKeeperAddress={k} />
+    <Box
+      display="grid"
+      columnGap={Column_Spacing}
+      rowGap={Row_Spacing}
+      gridTemplateColumns="repeat(auto-fit, minmax(20rem, 1fr))"
+    >
+      {PEG_KEEPERS.map((pegkeeper) => (
+        <PegKeeper
+          key={pegkeeper.address}
+          {...pegkeeper}
+          sx={{ maxWidth: '30rem' }}
+          testId={`pegkeeper-${pegkeeper.address}`}
+        />
       ))}
-    </Wrapper>
-  )
-}
+    </Box>
 
-const Wrapper = styled.ul`
-  display: flex;
-  flex-direction: column;
-  grid-gap: var(--spacing-normal);
-
-  @media (min-width: ${breakpoints.xs}rem) {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-`
-
-export default PagePegKeepers
+    <Footer />
+  </Stack>
+)

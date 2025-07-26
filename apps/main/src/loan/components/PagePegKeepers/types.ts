@@ -1,15 +1,12 @@
-export type FormStatus = {
-  isComplete: boolean
-  isInProgress: boolean
-  error: string
+import type { PEG_KEEPERS } from './constants'
+
+export type PegKeeper = (typeof PEG_KEEPERS)[number]
+
+export type PegKeeperDetails = {
+  rate: string | undefined
+  debt: string | undefined
+  estCallerProfit: string | undefined
+  debtCeiling: string | undefined
 }
 
-export type Details = {
-  debt: string
-  estCallerProfit: string
-  debtCeiling: string
-}
-
-export type DetailsMapper = {
-  [pegKeeperAddress: string]: Details
-}
+export type Pool = PegKeeper['pool']
