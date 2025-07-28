@@ -7,6 +7,7 @@ import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
@@ -21,9 +22,11 @@ export const useBorrowPositionDetails = ({
   market,
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { wallet } = useWallet()
   const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
     chainId,
     marketId,
+    userAddress: wallet?.account.address,
   })
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
@@ -103,7 +106,7 @@ export const useBorrowPositionDetails = ({
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
-      loading: !market || collateralUsdRateLoading || borrowedUsdRateLoading,
+      loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
       value: collateralTotalValue ? (Number(userLoanDetails?.state?.debt) / collateralTotalValue) * 100 : null,

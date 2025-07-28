@@ -7,13 +7,17 @@ import {
   helpers,
 } from '@/lend/lib/apiLending'
 import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import type { Address } from '@curvefi/prices-api'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
+import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
+import { createValidationSuite } from '@ui-kit/lib/validation'
 
-type UserLoanDetailsQuery = ChainQuery<ChainId> & { marketId: string }
+type UserLoanDetailsQuery = ChainQuery<ChainId> & { marketId: string; userAddress: Address }
 type UserLoanDetailsParams = FieldsOf<UserLoanDetailsQuery>
 
 type UserLoanDetails = {
@@ -33,10 +37,9 @@ type UserLoanDetails = {
   pnl: Record<string, string>
 }
 
-const _getUserLoanDetails = async ({ marketId }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
+const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQuery): Promise<UserLoanDetails> => {
   const api = requireLib('llamaApi')
   const market = api.getLendMarket(marketId)
-  const signerAddress = api.signerAddress
 
   const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
     await Promise.all([
@@ -48,8 +51,8 @@ const _getUserLoanDetails = async ({ marketId }: UserLoanDetailsQuery): Promise<
       market.userPrices(),
       market.userBandsBalances(),
       market.oraclePriceBand(),
-      market.currentLeverage(signerAddress),
-      market.currentPnL(signerAddress),
+      market.currentLeverage(userAddress),
+      market.currentPnL(userAddress),
     ])
 
   let loss: UserLoss | undefined
@@ -95,10 +98,19 @@ const _getUserLoanDetails = async ({ marketId }: UserLoanDetailsQuery): Promise<
 
 export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetails } = queryFactory({
   queryKey: (params: UserLoanDetailsParams) =>
-    ['userLoanDetails', { chainId: params.chainId }, { marketId: params.marketId }] as const,
+    [
+      'userLoanDetails',
+      { chainId: params.chainId },
+      { marketId: params.marketId },
+      { userAddress: params.userAddress },
+    ] as const,
   queryFn: _getUserLoanDetails,
   refetchInterval: '5m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: createValidationSuite((params: UserLoanDetailsParams) => {
+    chainValidationGroup(params)
+    llamaApiValidationGroup(params)
+    userAddressValidationGroup(params)
+  }),
 })
 
 export const invalidateAllUserBorrowDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
