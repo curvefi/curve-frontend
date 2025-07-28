@@ -27,7 +27,10 @@ export const NoPosition = ({ type }: NoPositionProps) => (
       <Typography variant="headingSBold" sx={{ maxWidth: '27.5rem', textAlign: 'center' }}>
         {title[type]}
       </Typography>
-      <Typography variant="bodyMRegular" sx={{ maxWidth: '27.5rem', textAlign: 'center' }}>
+      <Typography
+        variant="bodyMRegular"
+        sx={{ maxWidth: '27.5rem', textAlign: 'center', color: (t) => t.design.Text.TextColors.Secondary }}
+      >
         {description[type]}
       </Typography>
     </Stack>
