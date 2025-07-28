@@ -50,7 +50,16 @@ export const MarketInformationComp = ({
         </Stack>
       )}
       {llamma && isAdvancedMode && (
-        <Stack flexDirection="row" sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <Stack
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            flexDirection: 'column',
+            // 1100px
+            '@media (min-width: 68.75rem)': {
+              flexDirection: 'row',
+            },
+          }}
+        >
           <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
             <SubTitle>{t`Contracts`}</SubTitle>
             <DetailInfoAddressLookup isBorderBottom chainId={chainId} title={t`AMM`} address={llamma?.address ?? ''} />

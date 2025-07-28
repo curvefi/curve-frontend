@@ -228,13 +228,17 @@ const Page = (params: CollateralUrlParams) => {
         </Wrapper>
       ) : (
         <Stack
-          flexDirection="row"
           sx={{
             marginRight: Spacing.md,
             marginLeft: Spacing.md,
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
+            flexDirection: 'column',
+            // 960px
+            '@media (min-width: 60rem)': {
+              flexDirection: 'row', // 1100px
+            },
           }}
         >
           <AppPageFormsWrapper>
