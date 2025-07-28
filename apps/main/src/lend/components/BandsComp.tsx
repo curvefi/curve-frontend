@@ -10,9 +10,10 @@ import { t } from '@ui-kit/lib/i18n'
 type BandsCompProps = {
   pageProps: PageContentProps
   page: 'create' | 'manage'
+  loanExists: boolean
 }
 
-export const BandsComp = ({ pageProps, page }: BandsCompProps) => {
+export const BandsComp = ({ pageProps, page, loanExists }: BandsCompProps) => {
   const { rChainId, rOwmId, market } = pageProps
   const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
 
@@ -38,9 +39,16 @@ export const BandsComp = ({ pageProps, page }: BandsCompProps) => {
 
   return (
     <Stack>
-      {selectedBand === 'user' && <DetailsUserLoanChartBandBalances {...pageProps} selectorMenu={SelectorMenu} />}
-      {selectedBand === 'market' && (
-        <DetailsLoanChartBalances rChainId={rChainId} rOwmId={rOwmId} market={market} selectorMenu={SelectorMenu} />
+      {selectedBand === 'user' && loanExists && (
+        <DetailsUserLoanChartBandBalances {...pageProps} selectorMenu={SelectorMenu} />
+      )}
+      {(selectedBand === 'market' || !loanExists) && (
+        <DetailsLoanChartBalances
+          rChainId={rChainId}
+          rOwmId={rOwmId}
+          market={market}
+          selectorMenu={loanExists ? SelectorMenu : undefined}
+        />
       )}
     </Stack>
   )

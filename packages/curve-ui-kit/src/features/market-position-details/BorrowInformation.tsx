@@ -50,7 +50,18 @@ export const BorrowInformation = ({
 }: BorrowInformationProps) => (
   <Box>
     <CardHeader title={t`Borrow Information`} size="small" />
-    <Box display="grid" gridTemplateColumns="1fr 1fr 1fr 1fr" gap={3} sx={{ padding: Spacing.md }}>
+    <Box
+      display="grid"
+      gap={3}
+      sx={{
+        padding: Spacing.md,
+        gridTemplateColumns: '1fr 1fr',
+        // 550px
+        '@media (min-width: 33.125rem)': {
+          gridTemplateColumns: '1fr 1fr 1fr 1fr',
+        },
+      }}
+    >
       <Metric
         size="medium"
         label={t`Borrow rate`}

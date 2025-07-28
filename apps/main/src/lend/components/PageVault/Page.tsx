@@ -221,13 +221,17 @@ const Page = (params: MarketUrlParams) => {
       ) : (
         // New design layout, only in beta for now
         <Stack
-          flexDirection="row"
           sx={{
             marginRight: Spacing.md,
             marginLeft: Spacing.md,
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
+            flexDirection: 'column',
+            // 960px
+            '@media (min-width: 60rem)': {
+              flexDirection: 'row', // 1100px
+            },
           }}
         >
           <AppPageFormsWrapper>{rChainId && rOwmId && <Vault {...pageProps} params={params} />}</AppPageFormsWrapper>

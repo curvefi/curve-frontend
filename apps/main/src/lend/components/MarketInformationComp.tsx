@@ -15,6 +15,7 @@ const { Spacing } = SizesAndSpaces
 type MarketInformationCompProps = {
   pageProps: PageContentProps
   chartExpanded: boolean
+  loanExists?: boolean
   userActiveKey: string
   type: 'borrow' | 'supply'
   page?: 'create' | 'manage'
@@ -26,6 +27,7 @@ type MarketInformationCompProps = {
 export const MarketInformationComp = ({
   pageProps,
   chartExpanded,
+  loanExists = false,
   userActiveKey,
   type,
   page = 'manage',
@@ -48,11 +50,20 @@ export const MarketInformationComp = ({
       )}
       {type === 'borrow' && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp pageProps={pageProps} page={page} />
+          <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>
       )}
       {market && isAdvancedMode && (
-        <Stack flexDirection="row" sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <Stack
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            flexDirection: 'column',
+            // 1100px
+            '@media (min-width: 68.75rem)': {
+              flexDirection: 'row',
+            },
+          }}
+        >
           <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
             <DetailsContracts rChainId={rChainId} market={market} type={type} />
           </Stack>

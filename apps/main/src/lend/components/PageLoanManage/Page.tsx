@@ -60,7 +60,7 @@ const Page = (params: MarketUrlParams) => {
   const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey])
+  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey])?.loanExists
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
@@ -230,13 +230,17 @@ const Page = (params: MarketUrlParams) => {
       ) : (
         // New design layout, only in beta for now
         <Stack
-          flexDirection="row"
           sx={{
             marginRight: Spacing.md,
             marginLeft: Spacing.md,
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
+            flexDirection: 'column',
+            // 960px
+            '@media (min-width: 60rem)': {
+              flexDirection: 'row', // 1100px
+            },
           }}
         >
           <AppPageFormsWrapper>{rChainId && rOwmId && <LoanMange {...pageProps} />}</AppPageFormsWrapper>
@@ -260,6 +264,7 @@ const Page = (params: MarketUrlParams) => {
               chartExpanded={chartExpanded}
               userActiveKey={userActiveKey}
               type="borrow"
+              loanExists={loanExists}
             />
           </Stack>
         </Stack>
