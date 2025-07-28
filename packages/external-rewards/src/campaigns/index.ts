@@ -27,7 +27,6 @@ import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
-import Tac from './Tac.json'
 import TacTokens from './TacTokens.json'
 import Turtle from './Turtle.json'
 import Usual from './Usual.json'
@@ -62,7 +61,6 @@ export {
   StableLabs,
   Sonic,
   Rings,
-  Tac,
   Turtle,
   Infinifi,
   Asymmetry,
