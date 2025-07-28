@@ -10,10 +10,12 @@ type CollateralMetricTooltipProps = {
   collateralValue: CollateralValue | undefined | null
 }
 
+const UnavailableNotation = '-'
+
 const formatMetricValue = (value?: number | null) => {
   if (value === 0) return '0'
   if (value) return formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-  return '-'
+  return UnavailableNotation
 }
 
 const formatPercentage = (
@@ -47,7 +49,7 @@ export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricToo
 
   const totalValueFormatted = collateralValue?.totalValue
     ? formatNumber(collateralValue.totalValue, { ...FORMAT_OPTIONS.USD })
-    : '-'
+    : UnavailableNotation
 
   return (
     <Stack gap={3} sx={{ maxWidth: '20rem' }}>
@@ -59,15 +61,15 @@ export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricToo
         <Stack direction="row" justifyContent="space-between" gap={5}>
           <Typography variant="bodySRegular">{t`Deposit token`}</Typography>
           <Stack direction="row" gap={2}>
-            <Typography variant="bodySBold">{`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? '-'}`}</Typography>
+            <Typography variant="bodySBold">{`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}</Typography>
             {collateralPercentage && <Typography variant="bodySRegular">{`(${collateralPercentage})`}</Typography>}
           </Stack>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between" gap={5}>
-          <Typography variant="bodySRegular">{collateralValue?.borrow?.symbol ?? '-'}</Typography>
+          <Typography variant="bodySRegular">{collateralValue?.borrow?.symbol ?? UnavailableNotation}</Typography>
           <Stack direction="row" gap={2}>
-            <Typography variant="bodySBold">{`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? '-'}`}</Typography>
+            <Typography variant="bodySBold">{`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}</Typography>
             <Typography variant="bodySRegular">{`(${crvUSDPercentage})`}</Typography>
           </Stack>
         </Stack>

@@ -10,6 +10,8 @@ type PnlMetricTooltipProps = {
   pnl: Pnl | undefined | null
 }
 
+const UnavailableNotation = '-'
+
 export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
     <Typography variant="bodySRegular">{t`Profit and Loss (PnL) is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}</Typography>
@@ -20,14 +22,16 @@ export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Collateral value`}</Typography>
         <Typography variant="bodySBold">
-          {pnl?.currentPositionValue ? formatNumber(pnl.currentPositionValue, { ...FORMAT_OPTIONS.USD }) : '-'}
+          {pnl?.currentPositionValue
+            ? formatNumber(pnl.currentPositionValue, { ...FORMAT_OPTIONS.USD })
+            : UnavailableNotation}
         </Typography>
       </Stack>
 
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Value at deposit`}</Typography>
         <Typography variant="bodySBold">
-          {pnl?.depositedValue ? formatNumber(pnl.depositedValue, { ...FORMAT_OPTIONS.USD }) : '-'}
+          {pnl?.depositedValue ? formatNumber(pnl.depositedValue, { ...FORMAT_OPTIONS.USD }) : UnavailableNotation}
         </Typography>
       </Stack>
 
@@ -37,7 +41,7 @@ export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
           <Typography variant="bodySBold">
             {pnl?.currentProfit && pnl?.depositedValue && pnl?.currentPositionValue
               ? formatNumber(pnl.currentProfit, { ...FORMAT_OPTIONS.USD })
-              : '-'}
+              : UnavailableNotation}
           </Typography>
           {pnl?.percentageChange && (
             <Typography variant="bodySRegular">{`(${formatNumber(pnl.percentageChange, { ...FORMAT_OPTIONS.PERCENT })})`}</Typography>

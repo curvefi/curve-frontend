@@ -11,6 +11,8 @@ type LiquidityThresholdTooltipProps = {
   bandRange: BandRange | undefined | null
 }
 
+const UnavailableNotation = '-'
+
 export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: LiquidityThresholdTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
     <Typography variant="bodySRegular">{t`The price at which your position enters liquidation protection and your collateral starts to be eroded.`}</Typography>
@@ -21,21 +23,25 @@ export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: Liqui
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Liquidation threshold`}</Typography>
         <Typography variant="bodySBold">
-          {liquidationRange?.value?.[1] ? formatNumber(liquidationRange.value[1], { ...FORMAT_OPTIONS.USD }) : '-'}
+          {liquidationRange?.value?.[1]
+            ? formatNumber(liquidationRange.value[1], { ...FORMAT_OPTIONS.USD })
+            : UnavailableNotation}
         </Typography>
       </Stack>
 
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Liquidation lower bound`}</Typography>
         <Typography variant="bodySBold">
-          {liquidationRange?.value?.[0] ? formatNumber(liquidationRange.value[0], { ...FORMAT_OPTIONS.USD }) : '-'}
+          {liquidationRange?.value?.[0]
+            ? formatNumber(liquidationRange.value[0], { ...FORMAT_OPTIONS.USD })
+            : UnavailableNotation}
         </Typography>
       </Stack>
 
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Band range`}</Typography>
         <Typography variant="bodySBold">
-          {bandRange?.value ? `${bandRange.value[0]} to ${bandRange.value[1]}` : '-'}
+          {bandRange?.value ? `${bandRange.value[0]} to ${bandRange.value[1]}` : UnavailableNotation}
         </Typography>
       </Stack>
     </Stack>
