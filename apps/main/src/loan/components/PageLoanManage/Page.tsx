@@ -39,6 +39,7 @@ import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-ki
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
 import { BorrowPositionDetails } from '@ui-kit/features/market-position-details'
+import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
@@ -260,8 +261,8 @@ const Page = (params: CollateralUrlParams) => {
             )}
           </AppPageFormsWrapper>
           <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              <BorrowPositionDetails {...positionDetails} />
+            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              {loanExists?.loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
             </Stack>
             <MarketDetails {...marketDetails} />
             <MarketInformationComp

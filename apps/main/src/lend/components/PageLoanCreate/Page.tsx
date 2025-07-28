@@ -35,6 +35,7 @@ import {
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
+import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
@@ -221,8 +222,11 @@ const Page = (params: MarketUrlParams) => {
               supplyAddress={market?.addresses?.vault || ''}
             />
             <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
-              <MarketDetails {...marketDetails} />
+              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <NoPosition type="borrow" />
+              </Stack>
             </MarketInformationTabs>
+            <MarketDetails {...marketDetails} />
             <MarketInformationComp
               pageProps={pageProps}
               chartExpanded={chartExpanded}

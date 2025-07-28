@@ -35,6 +35,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
+import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
@@ -237,7 +238,6 @@ const Page = (params: CollateralUrlParams) => {
           }}
         >
           <AppPageFormsWrapper>
-            {(!isMdUp || !isAdvancedMode) && <TitleComp />}
             {rChainId && rCollateralId && (
               <LoanCreate
                 curve={curve}
@@ -255,6 +255,12 @@ const Page = (params: CollateralUrlParams) => {
             )}
           </AppPageFormsWrapper>
           <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+            {!loanExists && (
+              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <NoPosition type="borrow" />
+              </Stack>
+            )}
+
             <MarketDetails {...marketDetails} />
             <MarketInformationComp
               llamma={llamma}

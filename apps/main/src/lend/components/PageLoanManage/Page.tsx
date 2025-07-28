@@ -40,6 +40,7 @@ import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-ki
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
 import { BorrowPositionDetails } from '@ui-kit/features/market-position-details'
+import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -249,16 +250,16 @@ const Page = (params: MarketUrlParams) => {
               borrowAddress={market?.addresses?.controller || ''}
               supplyAddress={market?.addresses?.vault || ''}
             />
-            {loanExists ? (
-              <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
+            <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
+              {loanExists ? (
                 <BorrowPositionDetails {...borrowPositionDetails} />
-              </MarketInformationTabs>
-            ) : (
-              <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
-                <MarketDetails {...marketDetails} />
-              </MarketInformationTabs>
-            )}
-            {loanExists && <MarketDetails {...marketDetails} />}
+              ) : (
+                <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                  <NoPosition type="borrow" />
+                </Stack>
+              )}
+            </MarketInformationTabs>
+            <MarketDetails {...marketDetails} />
             <MarketInformationComp
               pageProps={pageProps}
               chartExpanded={chartExpanded}
