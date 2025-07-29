@@ -220,6 +220,18 @@
       "multiplier": "tac",
       "tags": ["tokens"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1436e4Ca2c687335b7c5E1b446AE532b9e287160",
+      "network": "tac",
+      "multiplier": "tac",
+      "tags": ["tokens"],
+      "lock": "false"
     }
   ]
 }
