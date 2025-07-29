@@ -266,7 +266,9 @@ const Page = (params: CollateralUrlParams) => {
           </AppPageFormsWrapper>
           <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
             {loanExists?.loanExists ? (
-              <BorrowPositionDetails {...positionDetails} />
+              <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <BorrowPositionDetails {...positionDetails} />
+              </Stack>
             ) : (
               <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
                 <NoPosition type="borrow" />
