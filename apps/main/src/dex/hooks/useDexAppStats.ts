@@ -43,7 +43,7 @@ export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
               {
                 app: 'dex' as const,
                 route: _createSwapPath(network.swap, routerCached),
-                label: () => t`Quickswap`,
+                label: () => t`Swap`,
               },
             ]
           : [swapRoute]
