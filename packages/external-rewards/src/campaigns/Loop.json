@@ -1,0 +1,33 @@
+{
+  "campaignName": "LOOP Points",
+  "platform": "Looping Collective",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "loop.png",
+  "dashboardLink": "https://www.loopingcollective.org/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xB0Bf227BB447512DDbB45C28CcbE644bb15a4d83",
+      "network": "hyperliquid",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xfCD3B0A9434Dc65C31650C4B6eE11a66Db8093Bd",
+      "network": "hyperliquid",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

@@ -24,7 +24,6 @@ import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoan
 import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
 import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
-import createPegKeepersSlice, { PegKeepersSlice } from '@/loan/store/createPegKeepersSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
 export type State = CacheSlice &
@@ -43,7 +42,6 @@ export type State = CacheSlice &
   LoanLiquidateSlice &
   IntegrationsSlice &
   OhlcChartSlice &
-  PegKeepersSlice &
   ScrvUsdSlice &
   CampaignRewardsSlice
 
@@ -64,7 +62,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLoanLiquidate(set, get),
   ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),
-  ...createPegKeepersSlice(set, get),
   ...createScrvUsdSlice(set, get),
   ...createCampaignRewardsSlice(set, get),
 })

@@ -55,13 +55,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
           : MaxWidth.section,
       }}
     >
-      <Card
-        sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
-          boxShadow: 'none',
-        }}
-        elevation={0}
-      >
+      <Card elevation={0}>
         <CardHeader title="Statistics" />
         <Box sx={{ padding: Spacing.md, marginBottom: smallView ? Spacing.xl : 0 }}>
           <StatsStack />

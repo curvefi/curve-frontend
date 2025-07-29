@@ -78,12 +78,6 @@
     "campaign": "Rings.json"
   },
   {
-    "campaign": "Tac.json"
-  },
-  {
-    "campaign": "Turtle.json"
-  },
-  {
     "campaign": "Infinifi.json"
   },
   {
@@ -103,5 +97,8 @@
   },
   {
     "campaign": "TacTokens.json"
+  },
+  {
+    "campaign": "Loop.json"
   }
 ]

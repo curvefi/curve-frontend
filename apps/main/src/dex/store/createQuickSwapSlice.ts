@@ -130,7 +130,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         if (fromAddress.toLowerCase() === ethAddress) {
           const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
             chainId,
-            networks: state.networks,
+            networks: state.networks.networks,
           })
           const firstBasePlusPriority = basePlusPriority?.[0]
 

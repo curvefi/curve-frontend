@@ -18,6 +18,7 @@ import Infinifi from './Infinifi.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
+import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
@@ -26,9 +27,7 @@ import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
-import Tac from './Tac.json'
 import TacTokens from './TacTokens.json'
-import Turtle from './Turtle.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -61,8 +60,6 @@ export {
   StableLabs,
   Sonic,
   Rings,
-  Tac,
-  Turtle,
   Infinifi,
   Asymmetry,
   GoNuts,
@@ -70,4 +67,5 @@ export {
   Falcon,
   Hyperwave,
   TacTokens,
+  Loop,
 }
