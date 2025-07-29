@@ -265,9 +265,13 @@ const Page = (params: CollateralUrlParams) => {
             )}
           </AppPageFormsWrapper>
           <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-              {loanExists?.loanExists ? <BorrowPositionDetails {...positionDetails} /> : <NoPosition type="borrow" />}
-            </Stack>
+            {loanExists?.loanExists ? (
+              <BorrowPositionDetails {...positionDetails} />
+            ) : (
+              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <NoPosition type="borrow" />
+              </Stack>
+            )}
             <MarketDetails {...marketDetails} />
             <MarketInformationComp
               llamma={llamma}
