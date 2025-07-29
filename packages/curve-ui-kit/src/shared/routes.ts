@@ -57,7 +57,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dex: {
     label: 'DEX',
     routes: [
-      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
+      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Swap` },
       { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
       { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
       { app: 'dex', route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
