@@ -92,9 +92,9 @@ const CrvStats = () => {
             value={noProvider || !statsSuccess ? null : veCrvApr.current}
             valueOptions={{ unit: 'percentage', decimals: 2 }}
             notional={
-              provider && (!statsLoading || !veCrvFeesLoading || !aprLoading)
-                ? `${veCrvApr.fourDayAverage.toFixed(2)}% 4w avg`
-                : undefined
+              Boolean(loading || veCrvFeesLoading || aprLoading)
+                ? undefined
+                : `${veCrvApr.fourDayAverage.toFixed(2)}% 4w avg`
             }
           />
         </MetricsContainer>
