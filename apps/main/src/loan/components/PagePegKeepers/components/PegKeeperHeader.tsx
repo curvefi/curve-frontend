@@ -16,7 +16,17 @@ type Props = {
 
 export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate }: Props) => (
   <CardHeader
-    avatar={<TokenIcon blockchainId="ethereum" address={underlyingCoinAddresses[0]} />}
+    avatar={
+      <TokenIcon
+        blockchainId="ethereum"
+        address={underlyingCoinAddresses[0]}
+        sx={{
+          // Default space between avatar and card header content is a bit too big for this specific card, so we reduce it by half
+          '--avatar-margin-right': Spacing.md,
+          marginRight: 'calc(-1 * var(--avatar-margin-right) / 2)',
+        }}
+      />
+    }
     title={
       <Stack direction="row" alignItems="center">
         {underlyingCoins[0]}
