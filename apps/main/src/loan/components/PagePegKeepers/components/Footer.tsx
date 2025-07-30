@@ -7,8 +7,8 @@ import Link from '@mui/material/Link'
 import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { MarketTypeIcon } from '@ui-kit/shared/icons/MarketTypeIcon'
-import { RowSpacingIcon } from '@ui-kit/shared/icons/RowSpacingIcon'
+import { ArbitrageIcon } from '@ui-kit/shared/icons/ArbitrageIcon'
+import { RebalancingIcon } from '@ui-kit/shared/icons/RebalancingIcon'
 import { SecurityIcon } from '@ui-kit/shared/icons/SecurityIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -34,25 +34,29 @@ export const Footer = () => (
       paddingBlockEnd: Spacing.sm,
     }}
   >
-    <Grid container spacing={Spacing.lg} rowGap={Spacing.md}>
+    <Grid container spacing={Spacing.lg} rowGap={Spacing.sm}>
       <Grid size={12}>
         <Typography variant="headingSBold" textAlign="center">{t`What are the Peg Stability reserves?`}</Typography>
       </Grid>
 
-      <GridItem title={t`Autonomous peg stabilization`} icon={RowSpacingIcon}>
-        {t`The Peg Stability Reserves (PSDR) are smart contracts designed to automatically stabilize the crvUSD peg around $1.`}{' '}
-        {t`They monitor price deviations on Curve pools and react without human input, stepping in when the market strays too far from the peg.`}{' '}
-        {t`This autonomous mechanism builds trust through transparency, predictability, and continuous price targeting.`}
+      <GridItem title={t`Autonomous peg stabilization`} icon={RebalancingIcon}>
+        <strong>{t`Peg Stability Reserves`}</strong>{' '}
+        {t`(PSRs) are fully autonomous smart contracts designed to keep crvUSD close to $1. Each PSR monitors the price in a specific Curve pool.`}{' '}
+        {t`When the price deviates too far from $1,`} <strong>{t`anyone can trigger a rebalancing`}</strong>{' '}
+        {t`action—minting or burning crvUSD—to restore the peg. These actions are only allowed when on‑chain conditions are met, and callers receive a small reward for valid execution.`}
       </GridItem>
 
-      <GridItem title={t`Market-based arbitrage, on-chain`} icon={MarketTypeIcon}>
-        {t`When crvUSD trades below $1, peg keepers buy it from the pool and burn it. When it trades above $1, they mint new crvUSD and sell it into the pool.`}{' '}
-        {t`This creates on-chain arbitrage pressure that constantly nudges the market price back to parity, much like central bank FX interventions—only fully automated and transparent.`}
+      <GridItem title={t`Automated Market-Based Arbitrage, On-Chain`} icon={ArbitrageIcon}>
+        {t`If crvUSD trades`} <strong>{t`above $1`}</strong> {t`PSR mints and adds crvUSD to the pool. If it trades`}{' '}
+        <strong>{t`below $1`}</strong> {t`PSR withdraws and burns crvUSD.`}{' '}
+        {t`Each PSR targets a single Curve pool with set thresholds and a debt cap. Updates are permissionless, rewarded, and triggered the moment conditions are met.`}
       </GridItem>
 
-      <GridItem title={t`Non-custodial & risk-isolated`} icon={SecurityIcon}>
-        {t`The PSR do not touch user funds. They operate using protocol-owned liquidity and are isolated from user positions or LLAMMA (Lending-Liquidating AMM) mechanics.`}{' '}
-        {t`This separation ensures that peg maintenance does not compromise user security, making the system robust by design.`}
+      <GridItem title={t`Non-Custodial & Risk-Isolated`} icon={SecurityIcon}>
+        <strong>{t`PSRs never touch user funds or LLAMMA positions.`}</strong>{' '}
+        {t`They only operate on crvUSD they mint and the LP tokens they hold—within the confines of a single Curve pool.`}{' '}
+        <strong>{t`All logic is on-chain,`}</strong>{' '}
+        {t`auditable, and capped by a hard-coded debt ceiling. If the ceiling is reached, minting halts. Users stay safe. The peg stays defended.`}
       </GridItem>
 
       <Grid size={12}>
@@ -64,7 +68,7 @@ export const Footer = () => (
           href="https://resources.curve.finance/crvusd/faq/#peg-keepers"
           target="_blank"
         >
-          Learn
+          Learn More
         </Button>
       </Grid>
     </Grid>
