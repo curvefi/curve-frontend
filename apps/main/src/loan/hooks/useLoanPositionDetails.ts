@@ -23,9 +23,15 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
-  const userLoanDetails = useStore((state) => state.loans.userDetailsMapper[llammaId])
+  const {
+    userState: { collateral, stablecoin, debt } = {},
+    userPrices,
+    userBands,
+    userStatus,
+    loading: userLoanDetailsLoading,
+  } = useStore((state) => state.loans.userDetailsMapper[llammaId]) ?? {}
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
-  const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
+  const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -76,18 +82,18 @@ export const useLoanPositionDetails = ({
   }, [crvUsdSnapshots])
 
   const collateralTotalValue = useMemo(() => {
-    if (!collateralUsdRate || !userLoanDetails?.userState?.collateral) return null
-    return (
-      Number(userLoanDetails?.userState?.collateral) * Number(collateralUsdRate) +
-      Number(userLoanDetails?.userState?.stablecoin)
-    )
-  }, [userLoanDetails?.userState?.collateral, userLoanDetails?.userState?.stablecoin, collateralUsdRate])
+    if (!collateralUsdRate || !collateral) return null
+    return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
+  }, [collateral, stablecoin, collateralUsdRate])
 
   return {
-    isSoftLiquidation: userLoanDetails?.userStatus?.colorKey === 'soft_liquidation',
+    liquidationAlert: {
+      softLiquidation: userStatus?.colorKey === 'soft_liquidation',
+      hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
+    },
     health: {
       value: Number(healthMode.percent),
-      loading: userLoanDetails?.loading ?? true,
+      loading: userLoanDetailsLoading ?? true,
     },
     borrowAPY: {
       value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
@@ -95,38 +101,38 @@ export const useLoanPositionDetails = ({
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     liquidationRange: {
-      value: userLoanDetails?.userPrices ? userLoanDetails.userPrices.map(Number) : null,
+      value: userPrices ? userPrices.map(Number) : null,
       rangeToLiquidation:
-        loanDetails?.priceInfo?.oraclePrice && userLoanDetails?.userPrices
-          ? (Number(userLoanDetails?.userPrices?.[1]) / Number(loanDetails.priceInfo.oraclePrice)) * 100
+        loanDetails?.priceInfo?.oraclePrice && userPrices
+          ? (Number(userPrices?.[1]) / Number(loanDetails.priceInfo.oraclePrice)) * 100
           : null,
-      loading: userLoanDetails?.loading ?? true,
+      loading: userLoanDetailsLoading ?? true,
     },
     bandRange: {
-      value: userLoanDetails?.userBands ? userLoanDetails.userBands : null,
-      loading: userLoanDetails?.loading ?? true,
+      value: userBands ? userBands : null,
+      loading: userLoanDetailsLoading ?? true,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
       collateral: {
-        value: userLoanDetails?.userState?.collateral ? Number(userLoanDetails.userState.collateral) : null,
+        value: collateral ? Number(collateral) : null,
         usdRate: collateralUsdRate ? Number(collateralUsdRate) : null,
         symbol: llamma?.collateralSymbol,
       },
       borrow: {
-        value: userLoanDetails?.userState?.stablecoin ? Number(userLoanDetails.userState.stablecoin) : null,
+        value: stablecoin ? Number(stablecoin) : null,
         usdRate: borrowedUsdRate ? Number(borrowedUsdRate) : null,
         symbol: 'crvUSD',
       },
-      loading: (userLoanDetails?.loading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
+      loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue ? (Number(userLoanDetails?.userState?.debt) / collateralTotalValue) * 100 : null,
-      loading: userLoanDetails?.loading ?? true,
+      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
+      loading: userLoanDetailsLoading ?? true,
     },
     totalDebt: {
-      value: userLoanDetails?.userState?.debt ? Number(userLoanDetails.userState.debt) : null,
-      loading: userLoanDetails?.loading ?? true,
+      value: debt ? Number(debt) : null,
+      loading: userLoanDetailsLoading ?? true,
     },
   }
 }

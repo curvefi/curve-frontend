@@ -79,7 +79,10 @@ export const useBorrowPositionDetails = ({
   }, [collateral, borrowed, collateralUsdRate])
 
   return {
-    isSoftLiquidation: status?.colorKey === 'soft_liquidation',
+    liquidationAlert: {
+      softLiquidation: status?.colorKey === 'soft_liquidation',
+      hardLiquidation: status?.colorKey === 'hard_liquidation',
+    },
     health: {
       value: Number(healthFull),
       loading: !market || isUserLoanDetailsLoading,
