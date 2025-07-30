@@ -1,4 +1,4 @@
-import { Box, Typography, type Theme } from '@mui/material'
+import { Stack, Typography, type Theme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Reds, Blues } from '@ui-kit/themes/design/0_primitives'
 
@@ -21,7 +21,7 @@ const getLineColor = (color: LineColor) => (t: Theme) =>
   })[color]
 
 const Line = ({ first, position, color }: { first?: boolean; position: string; color: LineColor }) => (
-  <Box
+  <Stack
     sx={{
       position: 'absolute',
       top: 0,
@@ -44,7 +44,7 @@ const Label = ({
   position: string
   text: string
 }) => (
-  <Box
+  <Stack
     sx={{
       position: 'absolute',
       left: first || last ? position : `calc(${position} - (${LINE_WIDTH} / 2))`,
@@ -55,7 +55,7 @@ const Label = ({
     <Typography variant="bodyXsRegular" color="textTertiary" sx={{ whiteSpace: 'nowrap' }}>
       {text}
     </Typography>
-  </Box>
+  </Stack>
 )
 
 export const HealthBar = ({ health }: HealthBarProps) => {
@@ -64,14 +64,14 @@ export const HealthBar = ({ health }: HealthBarProps) => {
   const trackColor = health != null && health < 5 ? Reds[500] : Blues[500]
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: LABEL_GAP }} paddingBottom="0.3125rem">
-      <Box sx={{ display: 'flex', position: 'relative', width: '100%', height: '1rem' }}>
+    <Stack sx={{ gap: LABEL_GAP }} paddingBottom="0.3125rem">
+      <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
         <Label first position="0%" text={t`liquidation`} />
         <Label position="15%" text={t`risky`} />
         <Label position="50%" text={t`good`} />
         <Label last position="100%" text={t`pristine`} />
-      </Box>
-      <Box
+      </Stack>
+      <Stack
         sx={{
           position: 'relative',
           width: '100%',
@@ -80,7 +80,7 @@ export const HealthBar = ({ health }: HealthBarProps) => {
           transition: 'background-color 0.3s ease-in-out',
         }}
       >
-        <Box
+        <Stack
           sx={{
             width: `${healthPercentage}%`,
             height: '100%',
@@ -92,7 +92,7 @@ export const HealthBar = ({ health }: HealthBarProps) => {
         <Line position="15%" color={'orange'} />
         <Line position="50%" color={'green'} />
         <Line position="100%" color={'dark-green'} />
-      </Box>
-    </Box>
+      </Stack>
+    </Stack>
   )
 }

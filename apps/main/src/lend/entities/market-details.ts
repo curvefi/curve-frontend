@@ -137,10 +137,10 @@ export const useMarketDetails = (params: MarketParams, options?: { enabled?: boo
 
   return {
     data: {
-      ...(marketCapAndAvailable ?? {}),
-      ...(marketMaxLeverage ?? {}),
-      ...(marketCollateralAmounts ?? {}),
-      ...(marketOnChainRates ?? {}),
+      ...(marketCapAndAvailable ?? undefined),
+      ...(marketMaxLeverage ?? undefined),
+      ...(marketCollateralAmounts ?? undefined),
+      ...(marketOnChainRates ?? undefined),
       pricePerShare: marketPricePerShare,
     },
     isLoading: {

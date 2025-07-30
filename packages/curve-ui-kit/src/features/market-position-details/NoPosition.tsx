@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
 type AppType = 'borrow' | 'supply'
 type NoPositionProps = {
@@ -22,7 +22,7 @@ const description: Record<AppType, string> = {
 
 export const NoPosition = ({ type }: NoPositionProps) => (
   <Stack flexDirection="column" alignItems="center" gap={4} padding={Spacing.md}>
-    <LlamaIcon sx={{ width: 48, height: 48 }} />
+    <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
     <Stack alignItems="center">
       <Typography variant="headingSBold" sx={{ maxWidth: '27.5rem', textAlign: 'center' }}>
         {title[type]}

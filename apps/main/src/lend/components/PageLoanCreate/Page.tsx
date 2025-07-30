@@ -206,8 +206,7 @@ const Page = (params: MarketUrlParams) => {
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
-            flexDirection: 'column',
-            // 960px
+            // 960px, matches old Action card breakpoint
             '@media (min-width: 60rem)': {
               flexDirection: 'row', // 1100px
             },

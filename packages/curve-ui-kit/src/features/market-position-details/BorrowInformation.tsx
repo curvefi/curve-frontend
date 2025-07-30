@@ -116,6 +116,7 @@ export const BorrowInformation = ({
           />
         )}
       {pnl && ( // PNL is only available on lend for now
+        // Checking if currentPositionValue exists, otherwise pnl will return currentProfit as depositedValue
         <Metric
           size="small"
           label={t`PNL`}

@@ -1,5 +1,6 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
+import { useAccount } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
 import networks from '@/lend/networks'
@@ -7,7 +8,6 @@ import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import { useWallet } from '@ui-kit/features/connect-wallet'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
@@ -22,12 +22,21 @@ export const useBorrowPositionDetails = ({
   market,
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
-  const { wallet } = useWallet()
+  const { address: userAddress } = useAccount()
   const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
     chainId,
     marketId,
-    userAddress: wallet?.account.address,
+    userAddress,
   })
+  const {
+    bands,
+    healthFull,
+    leverage,
+    pnl,
+    prices: liquidationPrices,
+    status,
+    state: { collateral, borrowed, debt } = {},
+  } = userLoanDetails ?? {}
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
@@ -55,7 +64,7 @@ export const useBorrowPositionDetails = ({
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
-    const recentSnapshots = lendSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
+    const recentSnapshots = lendSnapshots.filter((snapshot) => snapshot.timestamp > thirtyDaysAgo)
 
     if (recentSnapshots.length === 0) return null
 
@@ -65,16 +74,14 @@ export const useBorrowPositionDetails = ({
   const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
 
   const collateralTotalValue = useMemo(() => {
-    if (!collateralUsdRate || !userLoanDetails?.state?.collateral) return null
-    return (
-      Number(userLoanDetails?.state?.collateral) * Number(collateralUsdRate) + Number(userLoanDetails?.state?.borrowed)
-    )
-  }, [userLoanDetails?.state?.collateral, userLoanDetails?.state?.borrowed, collateralUsdRate])
+    if (!collateralUsdRate || !collateral || !borrowed) return null
+    return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
+  }, [collateral, borrowed, collateralUsdRate])
 
   return {
-    isSoftLiquidation: userLoanDetails?.status?.colorKey === 'soft_liquidation',
+    isSoftLiquidation: status?.colorKey === 'soft_liquidation',
     health: {
-      value: Number(userLoanDetails?.healthFull),
+      value: Number(healthFull),
       loading: !market || isUserLoanDetailsLoading,
     },
     borrowAPY: {
@@ -83,48 +90,48 @@ export const useBorrowPositionDetails = ({
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {
-      value: userLoanDetails?.prices ? userLoanDetails.prices.map(Number) : null,
+      value: liquidationPrices ? liquidationPrices.map(Number) : null,
       rangeToLiquidation:
-        prices?.prices?.oraclePrice && userLoanDetails?.prices
-          ? (Number(userLoanDetails?.prices?.[1]) / Number(prices.prices.oraclePrice)) * 100
+        prices?.prices?.oraclePrice && liquidationPrices
+          ? (Number(liquidationPrices?.[1]) / Number(prices.prices.oraclePrice)) * 100
           : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     bandRange: {
-      value: userLoanDetails?.bands ? userLoanDetails.bands : null,
+      value: bands,
       loading: !market || isUserLoanDetailsLoading,
     },
     collateralValue: {
       totalValue: collateralTotalValue,
       collateral: {
-        value: userLoanDetails?.state?.collateral ? Number(userLoanDetails.state.collateral) : null,
+        value: collateral ? Number(collateral) : null,
         usdRate: collateralUsdRate ?? null,
         symbol: market?.collateral_token?.symbol,
       },
       borrow: {
-        value: userLoanDetails?.state?.borrowed ? Number(userLoanDetails.state.borrowed) : null,
+        value: borrowed ? Number(borrowed) : null,
         usdRate: borrowedUsdRate ?? null,
         symbol: market?.borrowed_token?.symbol,
       },
       loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue ? (Number(userLoanDetails?.state?.debt) / collateralTotalValue) * 100 : null,
+      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {
-      currentProfit: userLoanDetails?.pnl?.currentProfit ? Number(userLoanDetails.pnl.currentProfit) : null,
-      currentPositionValue: userLoanDetails?.pnl?.currentPosition ? Number(userLoanDetails.pnl.currentPosition) : null,
-      depositedValue: userLoanDetails?.pnl?.deposited ? Number(userLoanDetails.pnl.deposited) : null,
-      percentageChange: userLoanDetails?.pnl?.percentage ? Number(userLoanDetails.pnl.percentage) : null,
+      currentProfit: pnl?.currentProfit ? Number(pnl.currentProfit) : null,
+      currentPositionValue: pnl?.currentPosition ? Number(pnl.currentPosition) : null,
+      depositedValue: pnl?.deposited ? Number(pnl.deposited) : null,
+      percentageChange: pnl?.percentage ? Number(pnl.percentage) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     leverage: {
-      value: userLoanDetails?.leverage ? Number(userLoanDetails.leverage) : null,
+      value: leverage ? Number(leverage) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     totalDebt: {
-      value: userLoanDetails?.state?.debt ? Number(userLoanDetails.state.debt) : null,
+      value: debt ? Number(debt) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
   }

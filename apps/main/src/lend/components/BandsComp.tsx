@@ -21,14 +21,14 @@ export const BandsComp = ({ pageProps, page, loanExists }: BandsCompProps) => {
     page === 'create' ? null : (
       <SelectorRow>
         <SelectorButton
-          variant={'text'}
+          variant="text"
           className={selectedBand === 'user' ? 'active' : ''}
           onClick={() => setSelectedBand('user')}
         >
           {t`Position Bands`}
         </SelectorButton>
         <SelectorButton
-          variant={'text'}
+          variant="text"
           className={selectedBand === 'market' ? 'active' : ''}
           onClick={() => setSelectedBand('market')}
         >

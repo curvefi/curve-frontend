@@ -1,4 +1,4 @@
-import { Box, Typography, type Theme, useTheme } from '@mui/material'
+import { Stack, Typography, type Theme, useTheme } from '@mui/material'
 import type { Health } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { HealthBar } from '@ui-kit/features/market-position-details/HealthBar'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,24 +18,9 @@ const getHealthValueColor = (value: number, theme: Theme) => {
 export const HealthDetails = ({ health }: { health: Health }) => {
   const theme = useTheme()
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      sx={{
-        padding: Spacing.md,
-      }}
-    >
-      <Box
-        display="flex"
-        flexDirection="column"
-        gap={2}
-        sx={{
-          padding: Spacing.md,
-          border: 2,
-          borderColor: (t) => t.design.Layer.Highlight.Fill,
-        }}
-      >
-        <Box display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
+    <Stack sx={{ padding: Spacing.md }}>
+      <Stack gap={2}>
+        <Stack display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
           <Metric
             label={t`Health`}
             value={Number(health?.value)}
@@ -44,16 +29,16 @@ export const HealthDetails = ({ health }: { health: Health }) => {
             size="large"
           />
           <HealthBar health={Number(health?.value)} />
-        </Box>
-        <Box display="flex" flexDirection="column">
+        </Stack>
+        <Stack display="flex" flexDirection="column">
           <Typography variant="bodyXsRegular">
             {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
           </Typography>
           <Typography variant="bodyXsRegular" sx={{ fontWeight: (t) => t.typography.fontWeightBold }}>
-            {t`Liquidations occur when health reaches 0.`}
+            {t`Liquidation may occur when health reaches 0.`}
           </Typography>
-        </Box>
-      </Box>
-    </Box>
+        </Stack>
+      </Stack>
+    </Stack>
   )
 }
