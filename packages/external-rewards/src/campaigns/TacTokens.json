@@ -155,7 +155,7 @@
       "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x51178ce64e2518A9a9347a15157d0a5a54b9B7a1",
+      "address": "0xed0CDC6363222eF823eF44d30B57f76CF980c368",
       "network": "tac",
       "multiplier": "tac",
       "tags": ["tokens"],
