@@ -77,6 +77,20 @@ const SearchDebounceMs = 166 // 10 frames at 60fps
  */
 export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
   const lastValue = useRef(defaultValue)
+
+  /**
+   * Update lastValue when defaultValue changes to handle async initialization.
+   * This prevents stale comparisons when defaultValue is loaded asynchronously.
+   *
+   * Example: In llamalend markets search bar, the search value is loaded from localStorage
+   * asynchronously. Without this update, clearing the search after async load would compare
+   * the new empty string against the initial empty string (before localStorage loaded),
+   * causing the callback to not fire and missing the table filter reset.
+   */
+  useEffect(() => {
+    lastValue.current = defaultValue
+  }, [defaultValue])
+
   const debounceCallback = useCallback(
     (value: T) => {
       if (typeof value === 'string') {

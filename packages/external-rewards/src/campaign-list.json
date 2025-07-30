@@ -75,9 +75,6 @@
     "campaign": "Sonic.json"
   },
   {
-    "campaign": "Rings.json"
-  },
-  {
     "campaign": "Infinifi.json"
   },
   {
@@ -100,5 +97,8 @@
   },
   {
     "campaign": "Loop.json"
+  },
+  {
+    "campaign": "Noon.json"
   }
 ]

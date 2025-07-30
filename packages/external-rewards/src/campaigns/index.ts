@@ -20,9 +20,9 @@ import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
+import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
-import Rings from './Rings.json'
 import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
@@ -59,7 +59,6 @@ export {
   Bills,
   StableLabs,
   Sonic,
-  Rings,
   Infinifi,
   Asymmetry,
   GoNuts,
@@ -68,4 +67,5 @@ export {
   Hyperwave,
   TacTokens,
   Loop,
+  Noon,
 }

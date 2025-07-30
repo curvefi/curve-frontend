@@ -16,6 +16,18 @@
       "multiplier": "1x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xfCD3B0A9434Dc65C31650C4B6eE11a66Db8093Bd",
+      "network": "hyperliquid",
+      "multiplier": "1x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }

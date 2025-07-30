@@ -45,7 +45,7 @@ const UserInformation = ({ params: { network } }: { params: NetworkUrlParams }) 
           </Typography>
           <Typography variant="bodyMRegular">
             {t`We recommend using Curve's`}{' '}
-            <RouterLink href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>QuickSwap</RouterLink>
+            <RouterLink href={getInternalUrl('dex', network, DEX_ROUTES.PAGE_SWAP)}>swap</RouterLink>
             {t`, or alternatively an aggregator like`}{' '}
             <Link href="https://swap.cow.fi/#/1/swap/WETH/scrvUSD">Cowswap</Link>.
           </Typography>
