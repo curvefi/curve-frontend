@@ -1,19 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Common Development Commands
-
-```bash
-# Development
-yarn dev                # Start all apps in development mode on localhost:3000
-yarn build              # Build all apps for production
-yarn start              # Start production builds
-yarn lint               # Lint all code
-yarn lint:fix           # Fix linting issues automatically
-yarn typecheck          # Run TypeScript checks across all packages
-yarn format             # Format code with Prettier
-yarn format:check       # Check code formatting without fixing
 
 # Testing
 cd tests
