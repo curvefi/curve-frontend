@@ -35,7 +35,7 @@ export const PegKeeperHeader = ({ underlyingCoins, underlyingCoinAddresses, rate
           sx={{
             position: 'absolute',
             right: Spacing.md,
-            top: Spacing.sm,
+            top: Spacing.md,
             display: 'flex', // Block displays have lineheight which add whitespace
           }}
         >
