@@ -1,9 +1,12 @@
 import { useAccount } from 'wagmi'
-import { CardContent } from '@mui/material'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { ConnectWalletButton } from '@ui-kit/features/connect-wallet/ui/ConnectWalletButton'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 type Props = {
   canRebalance: boolean
@@ -16,7 +19,7 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
   const { connect } = useWallet()
 
   return (
-    <CardContent>
+    <Box sx={{ paddingInline: Spacing.md, paddingBlockEnd: Spacing.md }}>
       {isConnected ? (
         <Button
           variant="contained"
@@ -30,6 +33,6 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
       ) : (
         <ConnectWalletButton onClick={() => connect()} loading={isConnecting} fullWidth />
       )}
-    </CardContent>
+    </Box>
   )
 }

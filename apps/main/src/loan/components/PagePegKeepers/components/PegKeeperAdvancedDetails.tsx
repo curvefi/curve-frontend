@@ -34,7 +34,13 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
       {t`Advanced details`}
     </Typography>
 
-    <Stack sx={{ paddingInline: Spacing.md }}>
+    <Stack
+      sx={{
+        paddingBlockStart: Spacing.xs,
+        paddingBlockEnd: Spacing.sm,
+        paddingInline: Spacing.md,
+      }}
+    >
       <ActionInfo
         label={t`Pool`}
         value={shortenAddress(poolAddress, { digits: 2 })}
