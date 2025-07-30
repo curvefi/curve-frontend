@@ -68,6 +68,7 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
             />
           </Tooltip>
         }
+        sx={{ paddingBlockStart: Spacing.md }}
       />
     </Stack>
   </Stack>
