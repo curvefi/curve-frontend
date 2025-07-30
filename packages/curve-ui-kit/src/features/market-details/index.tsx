@@ -93,12 +93,13 @@ export const MarketDetails = ({
           label={t`Borrow rate`}
           value={borrowAPY?.value}
           loading={borrowAPY?.value == null && borrowAPY?.loading}
-          valueOptions={{ unit: 'percentage' }}
+          valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={
             borrowAPY?.thirtyDayAvgRate
               ? {
                   value: borrowAPY.thirtyDayAvgRate,
                   unit: { symbol: '% 30D Avg', position: 'suffix' },
+                  decimals: 2,
                 }
               : undefined
           }
@@ -109,12 +110,13 @@ export const MarketDetails = ({
             label={t`Supply rate`}
             value={lendingAPY?.value}
             loading={lendingAPY?.value == null && lendingAPY?.loading}
-            valueOptions={{ unit: 'percentage' }}
+            valueOptions={{ unit: 'percentage', decimals: 2 }}
             notional={
               lendingAPY?.thirtyDayAvgRate
                 ? {
                     value: lendingAPY.thirtyDayAvgRate,
                     unit: { symbol: '% 30D Avg', position: 'suffix' },
+                    decimals: 2,
                   }
                 : undefined
             }
@@ -148,7 +150,7 @@ export const MarketDetails = ({
           label={t`Utilization`}
           value={utilization}
           loading={utilization == null && availableLiquidity?.loading}
-          valueOptions={{ unit: 'percentage' }}
+          valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={utilization ? utilizationBreakdown : undefined}
         />
         <Metric

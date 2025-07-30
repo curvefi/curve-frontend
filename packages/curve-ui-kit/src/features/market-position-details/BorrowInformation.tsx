@@ -67,7 +67,7 @@ export const BorrowInformation = ({
         label={t`Borrow rate`}
         value={borrowAPY?.value}
         loading={borrowAPY?.value == null && borrowAPY?.loading}
-        valueOptions={{ unit: 'percentage', color: 'warning' }}
+        valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
         notional={
           borrowAPY?.thirtyDayAvgRate
             ? {
@@ -102,7 +102,7 @@ export const BorrowInformation = ({
         label={t`Current LTV`}
         value={ltv?.value}
         loading={ltv?.value == null && ltv?.loading}
-        valueOptions={{ unit: 'percentage' }}
+        valueOptions={{ unit: 'percentage', decimals: 2 }}
       />
       {leverage &&
         leverage?.value &&
@@ -153,6 +153,7 @@ export const BorrowInformation = ({
             ? {
                 value: liquidationRange.rangeToLiquidation,
                 unit: { symbol: '% Buffer to liquidation', position: 'suffix' },
+                decimals: 2,
               }
             : undefined
         }
