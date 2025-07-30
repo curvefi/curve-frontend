@@ -34,7 +34,13 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
       {t`Advanced details`}
     </Typography>
 
-    <Stack sx={{ paddingInline: Spacing.md }}>
+    <Stack
+      sx={{
+        paddingBlockStart: Spacing.xs,
+        paddingBlockEnd: Spacing.sm,
+        paddingInline: Spacing.md,
+      }}
+    >
       <ActionInfo
         label={t`Pool`}
         value={shortenAddress(poolAddress, { digits: 2 })}
@@ -61,13 +67,14 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
           <Tooltip arrow placement="top" title={t`Profit is denominated in ${poolName} LP Tokens`}>
             <InfoOutlinedIcon
               sx={{
-                width: IconSize.xs,
-                height: IconSize.xs,
-                color: (t) => t.design.Text.TextColors.Secondary,
+                width: IconSize.md,
+                height: IconSize.md,
+                color: (t) => t.design.Text.TextColors.Primary,
               }}
             />
           </Tooltip>
         }
+        sx={{ paddingBlockStart: Spacing.md }}
       />
     </Stack>
   </Stack>
