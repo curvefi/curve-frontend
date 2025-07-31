@@ -34,12 +34,13 @@ export const TokenSelector = ({
 
   const filteredTokens = useMemo(() => {
     const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {})
+
     return Object.values(tokensMapper)
       .filter(
         (token): token is Token =>
-          token !== undefined &&
+          !!token &&
           token.decimals === 18 &&
-          aliasesCrv !== undefined &&
+          !!aliasesCrv &&
           ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
             isAddressEqual(rewardToken as Address, token.address as Address),
           ),
