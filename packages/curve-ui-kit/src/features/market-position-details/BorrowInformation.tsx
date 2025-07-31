@@ -126,7 +126,9 @@ export const BorrowInformation = ({
             pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue ? pnl?.currentProfit : undefined
           }
           change={
-            pnl?.currentPositionValue && pnl?.currentProfit && pnl?.depositedValue ? pnl?.currentProfit : undefined
+            pnl?.currentPositionValue && pnl?.percentageChange && pnl?.depositedValue
+              ? pnl?.percentageChange
+              : undefined
           }
           loading={pnl?.currentProfit == null && pnl?.loading}
           valueTooltip={{
