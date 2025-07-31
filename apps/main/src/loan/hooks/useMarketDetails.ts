@@ -1,6 +1,7 @@
 import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -29,6 +30,10 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     blockchainId: networks[chainId as keyof typeof networks]?.id,
     contractAddress: llamma?.controller as Address,
   })
+  const { data: maxLeverage, isLoading: isMaxLeverageLoading } = useMintMarketMaxLeverage({
+    chainId: chainId,
+    marketId: llammaId,
+  })
 
   const thirtyDayAvgBorrowAPR = useMemo(() => {
     if (!crvUsdSnapshots) return null
@@ -42,6 +47,8 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
 
     return meanBy(recentSnapshots, ({ rate }) => rate) * 100
   }, [crvUsdSnapshots])
+
+  console.log('maxLeverage', maxLeverage)
 
   return {
     collateral: {
@@ -70,5 +77,12 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       max: loanDetails?.capAndAvailable?.cap ? Number(loanDetails.capAndAvailable.cap) : null,
       loading: loanDetails?.loading ?? true,
     },
+    ...(maxLeverage &&
+      Number(maxLeverage.value) > 0 && {
+        maxLeverage: {
+          value: Number(maxLeverage.value),
+          loading: isMaxLeverageLoading,
+        },
+      }),
   }
 }
