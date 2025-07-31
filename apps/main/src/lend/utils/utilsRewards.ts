@@ -1,14 +1,14 @@
 import { RewardOther } from '@/lend/types/lend.types'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
-export function getTotalApr(lendApr: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
+export function getTotalApr(lendApy: number, crvBase: number, crvBoost: number, others: RewardOther[]) {
   const othersTotal = (others ?? []).reduce((prev, curr) => {
     prev += curr.apy
     return prev
   }, 0)
 
-  const min = (lendApr + crvBase + othersTotal).toString()
-  const max = (lendApr + crvBoost + othersTotal).toString()
+  const min = (lendApy + crvBase + othersTotal).toString()
+  const max = (lendApy + crvBoost + othersTotal).toString()
 
   return {
     min,

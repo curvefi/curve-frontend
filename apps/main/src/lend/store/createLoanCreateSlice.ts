@@ -9,6 +9,8 @@ import type {
 } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
@@ -326,13 +328,14 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
             await user.fetchAll(api, market, true)
             void markets.fetchAll(api, market, true)
             markets.setStateByKey('marketDetailsView', 'user')
-
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
             // update formStatus
             sliceState.setStateByKeys({
               ...DEFAULT_STATE,
               formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
             })
           }
+          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
           return { ...resp, error }
         }
       }

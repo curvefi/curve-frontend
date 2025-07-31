@@ -25,6 +25,7 @@ export type ChartWrapperProps = {
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
   chartExpanded: boolean
+  betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
@@ -72,6 +73,7 @@ const ChartWrapper = ({
   chartStatus,
   chartHeight,
   chartExpanded,
+  betaBackgroundColor,
   themeType,
   ohlcData,
   volumeData,
@@ -105,8 +107,9 @@ const ChartWrapper = ({
 
   useEffect(() => {
     const style = getComputedStyle(document.body)
-    const backgroundColor =
-      chartType === 'crvusd' && !chartExpanded
+    const backgroundColor = betaBackgroundColor
+      ? betaBackgroundColor
+      : chartType === 'crvusd' && !chartExpanded
         ? style.getPropertyValue('--tab-secondary--content--background-color')
         : style.getPropertyValue('--box--secondary--background-color')
     const lineColor = style.getPropertyValue('--line-color')
@@ -142,7 +145,7 @@ const ChartWrapper = ({
       rangeColorA25Old,
     })
     setLastTheme(themeType)
-  }, [chartExpanded, chartType, lastTheme, themeType])
+  }, [betaBackgroundColor, chartExpanded, chartType, lastTheme, themeType])
 
   return (
     <Wrapper>

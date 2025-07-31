@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 import ChartBandBalances from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
@@ -14,7 +14,10 @@ const DetailsUserLoanChartBandBalances = ({
   rOwmId,
   api,
   market,
-}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'market'>) => {
+  selectorMenu,
+}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'market'> & {
+  selectorMenu?: ReactNode
+}) => {
   const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
   const userActiveKey = helpers.getUserActiveKey(api, market!)
@@ -70,7 +73,7 @@ const DetailsUserLoanChartBandBalances = ({
       oraclePrice={oraclePrice}
       oraclePriceBand={oraclePriceBand}
       showLiquidationIndicator={!!liquidationBand}
-      title={t`Bands`}
+      title={selectorMenu ?? t`Bands`}
       setBrushIndex={setBrushIndex}
     />
   )

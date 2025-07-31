@@ -17,7 +17,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
-const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperProps) => {
+const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -347,7 +347,8 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
     chartType: 'crvusd',
     chartStatus: currentChart.fetchStatus,
     chartHeight,
-    chartExpanded: false,
+    chartExpanded,
+    betaBackgroundColor,
     themeType: theme,
     ohlcData: currentChart.data,
     volumeData: chartLlammaOhlc.volumeData,
@@ -374,7 +375,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
   return chartExpanded ? (
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
-        <ChartWrapper {...ChartWrapperProps} />
+        <ChartWrapper {...ChartWrapperProps} chartExpanded={chartExpanded} />
       </Wrapper>
       <LpEventsWrapperExpanded>
         {market && <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />}
@@ -407,7 +408,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId }: ChartOhlcWrapperP
       {poolInfo === 'poolActivity' && market && (
         <PoolActivity poolAddress={market.addresses.amm} chainId={rChainId} coins={coins} />
       )}
-      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} />}
+      {poolInfo === 'chart' && <ChartWrapper {...ChartWrapperProps} chartExpanded={chartExpanded} />}
     </Wrapper>
   )
 }

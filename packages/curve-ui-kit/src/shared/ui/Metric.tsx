@@ -20,14 +20,14 @@ const { Spacing, IconSize } = SizesAndSpaces
 export const ALIGNMENTS = ['start', 'center', 'end'] as const
 type Alignment = (typeof ALIGNMENTS)[number]
 
-const MetricSize = {
+export const MetricSize = {
   small: 'highlightM',
   medium: 'highlightL',
   large: 'highlightXl',
   extraLarge: 'highlightXxl',
 } as const satisfies Record<string, TypographyVariantKey>
 
-const MetricUnitSize = {
+export const MetricUnitSize = {
   small: 'highlightXs',
   medium: 'highlightS',
   large: 'highlightM',
