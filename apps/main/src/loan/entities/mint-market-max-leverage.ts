@@ -21,7 +21,7 @@ const _getMintMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<{ v
 
 export const { useQuery: useMintMarketMaxLeverage } = queryFactory({
   queryKey: (params: MarketParams) =>
-    ['mintMarketMaxLeverage', { chainId: params.chainId }, { marketId: params.marketId }] as const,
+    ['mintMarketMaxLeverage', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
   queryFn: _getMintMarketMaxLeverage,
   validationSuite: llamaApiValidationSuite,
 })

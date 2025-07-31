@@ -103,6 +103,7 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
       { chainId: params.chainId },
       { marketId: params.marketId },
       { userAddress: params.userAddress },
+      'v1',
     ] as const,
   queryFn: _getUserLoanDetails,
   refetchInterval: '5m',

@@ -30,7 +30,7 @@ const _fetchUserMarketBalances = async ({ marketId }: UserMarketBalancesQuery): 
 
 export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarketBalances } = queryFactory({
   queryKey: (params: UserMarketBalancesParams) =>
-    ['userMarketBalances', { chainId: params.chainId }, { marketId: params.marketId }] as const,
+    ['userMarketBalances', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
   queryFn: _fetchUserMarketBalances,
   refetchInterval: '1m',
   validationSuite: llamaApiValidationSuite,
