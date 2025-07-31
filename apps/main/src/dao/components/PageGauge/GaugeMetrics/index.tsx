@@ -10,7 +10,7 @@ import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
 import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress } from '@ui-kit/utils'
 
 interface GaugeMetricsProps {
   gaugeData: GaugeFormattedData | undefined
@@ -21,6 +21,8 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
   const gaugeAddress = gaugeData?.effective_address?.toLowerCase() ?? gaugeData?.address?.toLowerCase() ?? ''
   const gaugeCurveApiData = useStore((state) => state.gauges.gaugeCurveApiData.data[gaugeAddress])
   const chainId = getChainIdFromGaugeData(gaugeData)
+  const isSideChain = chainId !== Chain.Ethereum
+  const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
   const gaugeExternalLink = gaugeCurveApiData?.isPool
     ? gaugeCurveApiData.poolUrls.deposit[0]
     : gaugeCurveApiData?.lendingVaultUrls.deposit
@@ -66,20 +68,16 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             </StyledMetricsColumnData>
           }
         />
-        {gaugeData?.emissions ? (
+        {emissions ? (
           <MetricsComp
             loading={dataLoading}
-            title={t`Emissions (CRV)`}
-            data={
-              <StyledMetricsColumnData>
-                {formatNumber(gaugeData.emissions, { notation: 'compact' })}
-              </StyledMetricsColumnData>
-            }
+            title={isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}
+            data={<StyledMetricsColumnData>{formatNumber(emissions, { notation: 'compact' })}</StyledMetricsColumnData>}
           />
         ) : (
           <MetricsComp
             loading={dataLoading}
-            title={t`Emissions (CRV)`}
+            title={isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}
             data={<StyledMetricsColumnData>{t`N/A`}</StyledMetricsColumnData>}
           />
         )}

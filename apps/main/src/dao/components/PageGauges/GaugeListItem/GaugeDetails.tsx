@@ -15,6 +15,8 @@ import { Chain, shortenAddress } from '@ui-kit/utils'
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
+  const isSideChain = chainId !== Chain.Ethereum
+  const emissions = isSideChain ? gaugeData.prev_epoch_emissions : gaugeData.emissions
 
   return (
     <Wrapper className={className}>
@@ -62,7 +64,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       <Box flex flexColumn>
         <StatsTitleRow>
           <h6>{t`Gauge`}</h6>
-          <h6>{chainId === Chain.Ethereum ? t`Current Week Emissions (CRV)` : t`Next Week Emissions (CRV)`}</h6>
+          <h6>{isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}</h6>
           <h6>{t`Created`}</h6>
         </StatsTitleRow>
         <StatsRow>
@@ -79,19 +81,17 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
           <Chip
             size="md"
             tooltip={
-              chainId !== Chain.Ethereum &&
+              isSideChain &&
               t`Side chain gauge emissions are on a 1-week delay, as they first have to be accumulated before they can be bridged to the designated chain`
             }
           >
             <h5>
-              {gaugeData.emissions
-                ? formatNumber(gaugeData.emissions, {
+              {emissions
+                ? formatNumber(emissions, {
                     showDecimalIfSmallNumberOnly: true,
                   })
                 : 'N/A'}
-              {chainId !== Chain.Ethereum && (
-                <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />
-              )}
+              {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
             </h5>
           </Chip>
           <h5>{formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}</h5>
