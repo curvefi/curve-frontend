@@ -2,18 +2,18 @@ import { createSvgIcon } from '@mui/material/utils'
 
 export const RebalancingIcon = createSvgIcon(
   <svg viewBox="0 0 50 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <rect x="5" y="5" width="40" height="20" rx="1" stroke="#191815" />
-    <rect width="24" height="4" rx="1" transform="matrix(1 0 0 -1 13 5)" stroke="#191815" />
-    <rect x="1" y="11" width="4" height="8" rx="1" stroke="#191815" />
-    <rect x="49" y="19" width="4" height="8" rx="1" transform="rotate(-180 49 19)" stroke="#191815" />
+    <rect x="5" y="5" width="40" height="20" rx="1" stroke="currentcolor" />
+    <rect width="24" height="4" rx="1" transform="matrix(1 0 0 -1 13 5)" stroke="currentcolor" />
+    <rect x="1" y="11" width="4" height="8" rx="1" stroke="currentcolor" />
+    <rect x="49" y="19" width="4" height="8" rx="1" transform="rotate(-180 49 19)" stroke="currentcolor" />
     <path
       d="M37 20C37 20.5523 36.5523 21 36 21H14C13.4477 21 13 20.5523 13 20V10C13 9.44772 13.4477 9 14 9H36C36.5523 9 37 9.44772 37 10V20ZM20 12C18.3431 12 17 13.3431 17 15C17 16.6569 18.3431 18 20 18C21.6569 18 23 16.6569 23 15C23 13.3431 21.6569 12 20 12ZM30 12C28.3431 12 27 13.3431 27 15C27 16.6569 28.3431 18 30 18C31.6569 18 33 16.6569 33 15C33 13.3431 31.6569 12 30 12Z"
-      fill="#191815"
+      fill="currentcolor"
     />
-    <path d="M5 42L45 42" stroke="#191815" stroke-linecap="round" />
+    <path d="M5 42L45 42" stroke="currentcolor" stroke-linecap="round" />
     <path
       d="M29 46C29 44.9391 28.5786 43.9217 27.8284 43.1716C27.0783 42.4214 26.0609 42 25 42C23.9391 42 22.9217 42.4214 22.1716 43.1716C21.4214 43.9217 21 44.9391 21 46L25 46H29Z"
-      fill="#191815"
+      fill="currentcolor"
     />
     <rect x="19" y="28" width="12" height="12" rx="6" fill="url(#pattern0_10068_205082)" />
     <defs>

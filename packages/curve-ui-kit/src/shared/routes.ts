@@ -25,7 +25,7 @@ export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_DISCLAIMER,
-  PAGE_PEGKEEPERS: '/pegkeepers',
+  PAGE_PSR: '/psr',
   PAGE_INTEGRATIONS,
 }
 
@@ -70,7 +70,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
       { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PSR, label: () => t`Peg Stability Reserves` },
     ],
   },
   dao: {
