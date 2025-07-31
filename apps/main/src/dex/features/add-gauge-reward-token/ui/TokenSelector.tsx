@@ -39,7 +39,7 @@ export const TokenSelector = ({
         (token): token is Token =>
           token !== undefined &&
           token.decimals === 18 &&
-          !aliasesCrv &&
+          aliasesCrv !== undefined &&
           ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
             isAddressEqual(rewardToken as Address, token.address as Address),
           ),
