@@ -32,20 +32,23 @@ export const TokenSelector = ({
     poolId,
   })
 
-  const filteredTokens = useMemo(() => {
-    const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {}) // Tokens already added as reward
-
-    return Object.values(tokensMapper)
-      .filter(
-        (token): token is Token =>
-          !!token &&
-          !!aliasesCrv &&
-          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
-            isAddressEqual(rewardToken as Address, token.address as Address),
-          ),
-      )
-      .map(toTokenOption(network?.networkId))
-  }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
+  const filteredTokens = useMemo(
+    () =>
+      Object.values(tokensMapper)
+        .filter(
+          (token): token is Token =>
+            !!token &&
+            !!aliasesCrv &&
+            ![
+              ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
+              zeroAddress,
+              ethAddress,
+              aliasesCrv,
+            ].some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
+        )
+        .map(toTokenOption(network?.networkId)),
+    [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId],
+  )
 
   const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
 
