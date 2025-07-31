@@ -5,13 +5,21 @@ import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
-import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
+
+export const StyledInformationSquare16 = styled(Icon)`
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 1;
+  }
+`
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
