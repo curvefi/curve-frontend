@@ -46,7 +46,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
         <RewardsContainer>
           <Box flex fillWidth>
             <RewardsTitle>{t`Base vAPY`}</RewardsTitle>
-            <Tooltip placement="bottom" tooltip={t`Variable APY based on today's trading activity.`}>
+            <Tooltip placement="bottom" tooltip={t`Variable APY (vAPY) is the annualised yield from trading fees based on the activity over the past 24h. If a pool holds a yield bearing asset, the intrinsic yield is added.`}>
               <StyledInformationIcon name="InformationSquare" size={16} />
             </Tooltip>
             <StyledDescriptionChip>
