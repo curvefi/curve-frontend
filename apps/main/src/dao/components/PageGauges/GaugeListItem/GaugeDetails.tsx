@@ -72,7 +72,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       <Box flex flexColumn>
         <StatsTitleRow>
           <h6>{t`Gauge`}</h6>
-          <h6>{isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}</h6>
+          <h6>{t`Emissions (CRV)`}</h6>
           <h6>{t`Created`}</h6>
         </StatsTitleRow>
         <StatsRow>

@@ -71,13 +71,13 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
         {emissions ? (
           <MetricsComp
             loading={dataLoading}
-            title={isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}
+            title={t`Emissions (CRV)`}
             data={<StyledMetricsColumnData>{formatNumber(emissions, { notation: 'compact' })}</StyledMetricsColumnData>}
           />
         ) : (
           <MetricsComp
             loading={dataLoading}
-            title={isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}
+            title={t`Emissions (CRV)`}
             data={<StyledMetricsColumnData>{t`N/A`}</StyledMetricsColumnData>}
           />
         )}

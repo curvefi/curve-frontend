@@ -75,7 +75,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
       <Box flex flexColumn margin="var(--spacing-3) 0 0">
         <CategoryTitle>{t`Gauge Information`}</CategoryTitle>
         <StatsRow>
-          <StatTitle>{isSideChain ? t`Next Week Emissions (CRV)` : t`Current Week Emissions (CRV)`}</StatTitle>
+          <StatTitle>{t`Emissions (CRV)`}</StatTitle>
           <StatData>
             {emissions
               ? formatNumber(emissions, {
