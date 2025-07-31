@@ -6,13 +6,25 @@ import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
+import { Chip } from '@ui/Typography'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress } from '@ui-kit/utils'
+
+export const StyledInformationSquare16 = styled(Icon)`
+  opacity: 0.4;
+
+  &:hover {
+    opacity: 1;
+  }
+`
 
 const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData; className?: string }) => {
   const chainId = getChainIdFromGaugeData(gaugeData)
+  const isSideChain = chainId !== Chain.Ethereum
+  const emissions = isSideChain ? gaugeData.prev_epoch_emissions : gaugeData.emissions
 
   return (
     <Wrapper className={className}>
@@ -60,7 +72,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
       <Box flex flexColumn>
         <StatsTitleRow>
           <h6>{t`Gauge`}</h6>
-          <h6>{t`Current Week Emissions (CRV)`}</h6>
+          <h6>{t`Emissions (CRV)`}</h6>
           <h6>{t`Created`}</h6>
         </StatsTitleRow>
         <StatsRow>
@@ -74,13 +86,22 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />
           </Box>
-          <h5>
-            {gaugeData.emissions
-              ? formatNumber(gaugeData.emissions, {
-                  showDecimalIfSmallNumberOnly: true,
-                })
-              : 'N/A'}
-          </h5>
+          <Chip
+            size="md"
+            tooltip={
+              isSideChain &&
+              t`Side chain gauge emissions are on a 1-week delay, as they first have to be accumulated before they can be bridged to the designated chain`
+            }
+          >
+            <h5>
+              {emissions
+                ? formatNumber(emissions, {
+                    showDecimalIfSmallNumberOnly: true,
+                  })
+                : 'N/A'}
+              {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
+            </h5>
+          </Chip>
           <h5>{formatDate(new Date(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime())), 'long')}</h5>
         </StatsRow>
       </Box>

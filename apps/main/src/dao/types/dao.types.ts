@@ -48,6 +48,7 @@ export type PricesGaugeOverviewData = {
   } | null
   is_killed: boolean | null
   emissions: number
+  prev_epoch_emissions: number
   gauge_weight: string
   gauge_weight_7d_delta: number | null
   gauge_weight_60d_delta: number | null
