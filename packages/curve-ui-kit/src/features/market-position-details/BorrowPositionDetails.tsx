@@ -1,5 +1,4 @@
-import { Stack, Typography } from '@mui/material'
-import { Alert } from '@mui/material'
+import { Alert, Stack, Typography } from '@mui/material'
 import { BorrowInformation } from '@ui-kit/features/market-position-details/BorrowInformation'
 import { HealthDetails } from '@ui-kit/features/market-position-details/HealthDetails'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,42 +60,36 @@ export type BorrowPositionDetailsProps = {
   totalDebt: TotalDebt
 }
 
-const SoftLiquidationAlert = () => (
-  <Stack
-    sx={{
-      paddingTop: Spacing.md,
-      paddingRight: Spacing.md,
-      paddingLeft: Spacing.md,
-    }}
-  >
-    <Alert variant="filled" severity="error">
-      <Stack display="flex" flexDirection="column">
-        <Typography variant="bodySBold">{t`Soft-Liquidation active`}</Typography>
-        <Typography variant="bodyXsRegular">
-          {t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`}
-        </Typography>
-      </Stack>
-    </Alert>
-  </Stack>
-)
-const HardLiquidationAlert = () => (
-  <Stack
-    sx={{
-      paddingTop: Spacing.md,
-      paddingRight: Spacing.md,
-      paddingLeft: Spacing.md,
-    }}
-  >
-    <Alert variant="filled" severity="error">
-      <Stack display="flex" flexDirection="column">
-        <Typography variant="bodySBold">{t`Risk of hard liquidation`}</Typography>
-        <Typography variant="bodyXsRegular">
-          {t`Your position is at risk of being fully liquidated. Manage your position to avoid hard liquidation.`}
-        </Typography>
-      </Stack>
-    </Alert>
-  </Stack>
-)
+const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
+  const alerts = {
+    soft: {
+      title: t`Soft-Liquidation active`,
+      description: t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`,
+    },
+    hard: {
+      title: t`Your position health is below 0`,
+      description: t`It can now be liquidated at any time. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
+    },
+  }
+  const { title, description } = alerts[type]
+
+  return (
+    <Stack
+      sx={{
+        paddingTop: Spacing.md,
+        paddingRight: Spacing.md,
+        paddingLeft: Spacing.md,
+      }}
+    >
+      <Alert variant="filled" severity="error">
+        <Stack display="flex" flexDirection="column">
+          <Typography variant="bodySBold">{title}</Typography>
+          <Typography variant="bodyXsRegular">{description}</Typography>
+        </Stack>
+      </Alert>
+    </Stack>
+  )
+}
 
 export const BorrowPositionDetails = ({
   liquidationAlert,
@@ -111,8 +104,8 @@ export const BorrowPositionDetails = ({
   totalDebt,
 }: BorrowPositionDetailsProps) => (
   <Stack>
-    {liquidationAlert.softLiquidation && <SoftLiquidationAlert />}
-    {liquidationAlert.hardLiquidation && <HardLiquidationAlert />}
+    {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
+    {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
     <HealthDetails health={health} />
     <BorrowInformation
       borrowAPY={borrowAPY}

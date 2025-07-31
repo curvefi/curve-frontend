@@ -73,6 +73,7 @@ export const BorrowInformation = ({
             ? {
                 value: borrowAPY.thirtyDayAvgRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
+                decimals: 2,
               }
             : undefined
         }
