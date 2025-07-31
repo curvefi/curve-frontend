@@ -1,6 +1,6 @@
 import { LOAD_TIMEOUT, oneViewport } from '@/support/ui'
 
-describe(`PegKeepers`, () => {
+describe(`Peg Stability Reserves`, () => {
   let width: number, height: number
 
   beforeEach(() => {
@@ -8,7 +8,7 @@ describe(`PegKeepers`, () => {
 
     cy.viewport(width, height)
     cy.setCookie('cypress', 'true') // disable server data fetching to speed testing up, it's not needed anyway
-    cy.visit('/crvusd/ethereum/pegkeepers/', {
+    cy.visit('/crvusd/ethereum/psr/', {
       onBeforeLoad: (window) => window.localStorage.clear(),
       ...LOAD_TIMEOUT,
     })
