@@ -38,6 +38,7 @@ export const TokenSelector = ({
         .filter(
           (token): token is Token =>
             !!token &&
+            token.decimals == 18 && // "There is a reason, unfortunately I don't remember what that is but it's a good reason"
             !!aliasesCrv &&
             ![
               ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
