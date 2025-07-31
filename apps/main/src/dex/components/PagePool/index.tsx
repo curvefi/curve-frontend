@@ -19,7 +19,7 @@ import type {
 import MySharesStats from '@/dex/components/PagePool/UserDetails'
 import Withdraw from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
-import { useGaugeManager } from '@/dex/entities/gauge'
+import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
@@ -96,6 +96,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     poolId: poolData?.pool.id!,
   })
 
+  const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors({
+    chainId: rChainId,
+    poolId: poolData?.pool.id!,
+  })
+
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
@@ -164,13 +169,24 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     }
   }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
 
-  const isAvailableManageGauge = useMemo(
+  const isRewardsDistributor = useMemo(
     () =>
-      !isPendingGaugeManager &&
+      !!rewardDistributors &&
       !!signerAddress &&
-      !!gaugeManager &&
-      isAddressEqual(gaugeManager, signerAddress as Address),
-    [isPendingGaugeManager, signerAddress, gaugeManager],
+      Object.values(rewardDistributors).some((distributorId) =>
+        isAddressEqual(distributorId as Address, signerAddress as Address),
+      ),
+    [rewardDistributors, signerAddress],
+  )
+
+  const isGaugeManager = useMemo(
+    () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress as Address),
+    [gaugeManager, signerAddress],
+  )
+
+  const isAvailableManageGauge = useMemo(
+    () => !isPendingGaugeManager && !isPendingRewardsDistributors && (isRewardsDistributor || isGaugeManager),
+    [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
   const ACTION_TABS: { key: TransferFormType; label: string }[] = [
