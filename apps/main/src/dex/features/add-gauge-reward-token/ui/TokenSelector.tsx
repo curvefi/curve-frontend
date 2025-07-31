@@ -33,7 +33,7 @@ export const TokenSelector = ({
   })
 
   const filteredTokens = useMemo(() => {
-    const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {})
+    const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {}) // Tokens already added as reward
 
     return Object.values(tokensMapper)
       .filter(
