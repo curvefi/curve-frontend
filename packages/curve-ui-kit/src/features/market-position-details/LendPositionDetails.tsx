@@ -43,14 +43,14 @@ export const LendPositionDetails = ({ lendingAPY, shares, lentAsset }: LendPosit
     <Box
       display="grid"
       gap={3}
-      sx={{
+      sx={(theme) => ({
         padding: Spacing.md,
         gridTemplateColumns: '1fr 1fr',
         // 550px
-        '@media (min-width: 33.125rem)': {
+        [theme.breakpoints.up(550)]: {
           gridTemplateColumns: '1fr 1fr 1fr 1fr',
         },
-      }}
+      })}
     >
       <Metric
         size="medium"

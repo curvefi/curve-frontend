@@ -200,17 +200,17 @@ const Page = (params: MarketUrlParams) => {
       ) : (
         // New design layout, only in beta for now
         <Stack
-          sx={{
+          sx={(theme) => ({
             marginRight: Spacing.md,
             marginLeft: Spacing.md,
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
-            // 960px, matches old Action card breakpoint
-            '@media (min-width: 60rem)': {
+            // 961px, matches old Action card breakpoint
+            [theme.breakpoints.up(961)]: {
               flexDirection: 'row', // 1100px
             },
-          }}
+          })}
         >
           <AppPageFormsWrapper>
             {rChainId && rOwmId && <LoanCreate {...pageProps} params={params} />}

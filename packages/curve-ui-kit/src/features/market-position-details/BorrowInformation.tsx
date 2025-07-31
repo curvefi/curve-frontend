@@ -1,4 +1,4 @@
-import { CardHeader, Box } from '@mui/material'
+import { CardHeader, Stack } from '@mui/material'
 import type {
   Pnl,
   BorrowAPY,
@@ -48,19 +48,19 @@ export const BorrowInformation = ({
   bandRange,
   totalDebt,
 }: BorrowInformationProps) => (
-  <Box>
+  <Stack>
     <CardHeader title={t`Borrow Information`} size="small" />
-    <Box
+    <Stack
       display="grid"
       gap={3}
-      sx={{
+      sx={(theme) => ({
         padding: Spacing.md,
         gridTemplateColumns: '1fr 1fr',
         // 550px
-        '@media (min-width: 33.125rem)': {
+        [theme.breakpoints.up(550)]: {
           gridTemplateColumns: '1fr 1fr 1fr 1fr',
         },
-      }}
+      })}
     >
       <Metric
         size="medium"
@@ -158,6 +158,6 @@ export const BorrowInformation = ({
             : undefined
         }
       />
-    </Box>
-  </Box>
+    </Stack>
+  </Stack>
 )

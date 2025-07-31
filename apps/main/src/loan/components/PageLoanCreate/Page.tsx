@@ -228,18 +228,18 @@ const Page = (params: CollateralUrlParams) => {
         </Wrapper>
       ) : (
         <Stack
-          sx={{
+          sx={(theme) => ({
             marginRight: Spacing.md,
             marginLeft: Spacing.md,
             marginTop: Spacing.xl,
             marginBottom: Spacing.xxl,
             gap: Spacing.xl,
             flexDirection: 'column',
-            // 960px
-            '@media (min-width: 60rem)': {
+            // 961px, matches old Action card breakpoint
+            [theme.breakpoints.up(961)]: {
               flexDirection: 'row', // 1100px
             },
-          }}
+          })}
         >
           <AppPageFormsWrapper>
             {rChainId && rCollateralId && (
