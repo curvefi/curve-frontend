@@ -38,7 +38,9 @@ export const TokenSelector = ({
         .filter(
           (token): token is Token =>
             !!token &&
-            token.decimals == 18 && // "There is a reason, unfortunately I don't remember what that is but it's a good reason"
+            // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
+            // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
+            token.decimals == 18 &&
             !!aliasesCrv &&
             ![
               ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
