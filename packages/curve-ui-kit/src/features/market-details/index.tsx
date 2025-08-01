@@ -66,7 +66,7 @@ export const MarketDetails = ({
 }: MarketDetailsProps) => {
   const utilization =
     availableLiquidity?.value && availableLiquidity.max
-      ? (availableLiquidity.value / availableLiquidity.max) * 100
+      ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100
       : undefined
   const utilizationBreakdown =
     availableLiquidity?.value && availableLiquidity.max
