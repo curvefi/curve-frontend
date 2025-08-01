@@ -6710,17 +6710,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-a11y@npm:8.6.14":
-  version: 8.6.14
-  resolution: "@storybook/addon-a11y@npm:8.6.14"
+"@storybook/addon-a11y@npm:9.1.0":
+  version: 9.1.0
+  resolution: "@storybook/addon-a11y@npm:9.1.0"
   dependencies:
-    "@storybook/addon-highlight": "npm:8.6.14"
     "@storybook/global": "npm:^5.0.0"
-    "@storybook/test": "npm:8.6.14"
     axe-core: "npm:^4.2.0"
   peerDependencies:
-    storybook: ^8.6.14
-  checksum: 10c0/bc1ea6bc4f4229f2a88f40a1fc768628cad7744ca39676228a99656211942d96783d1d20aa475ac03bc653c29ed896a6179b3b17c8226effb598111cd8c8d146
+    storybook: ^9.1.0
+  checksum: 10c0/e1a2689965c332f8408d4466cad57e4ae59dadc5f29dd6808d7933817d34e6f6a6ae3e359b840f0995478af3286b69aca3fbb35aa2d917138f1beea247c16cb8
   languageName: node
   linkType: hard
 
@@ -11257,7 +11255,7 @@ __metadata:
     "@mui/icons-material": "npm:^7.2.0"
     "@mui/material": "npm:^7.2.0"
     "@mui/utils": "npm:^7.2.0"
-    "@storybook/addon-a11y": "npm:8.6.14"
+    "@storybook/addon-a11y": "npm:9.1.0"
     "@storybook/addon-docs": "npm:8.6.14"
     "@storybook/addon-essentials": "npm:8.6.14"
     "@storybook/addon-interactions": "npm:8.6.14"
