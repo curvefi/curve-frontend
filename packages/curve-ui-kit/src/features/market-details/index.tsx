@@ -70,7 +70,7 @@ export const MarketDetails = ({
       : undefined
   const utilizationBreakdown =
     availableLiquidity?.value && availableLiquidity.max
-      ? `${formatLiquidity(availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
+      ? `${formatLiquidity(availableLiquidity.max - availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
       : undefined
 
   return (
