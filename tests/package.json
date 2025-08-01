@@ -20,14 +20,14 @@
     "@cypress/vite-dev-server": "^6.0.3",
     "@types/cypress": "^1.1.6",
     "@types/wait-on": "^5.3.4",
-    "@vitejs/plugin-react": "^4.6.0",
-    "cypress": "^14.5.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "cypress": "^14.5.3",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
-    "hardhat": "^2.25.0",
+    "hardhat": "^2.26.1",
     "tsconfig": "*",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4",
-    "wait-on": "^8.0.3"
+    "wait-on": "^8.0.4"
   }
 }

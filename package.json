@@ -33,14 +33,14 @@
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "eslint-config-turbo": "2.5.4",
+    "eslint-config-turbo": "2.5.5",
     "ethers": "*",
     "husky": "^9.1.7",
     "lint-staged": "16.1.2",
     "prettier": "^3.6.2",
     "react": "*",
     "react-dom": "*",
-    "turbo": "^2.5.4",
+    "turbo": "^2.5.5",
     "typescript": "*"
   },
   "packageManager": "yarn@4.6.0",
@@ -52,14 +52,14 @@
   },
   "resolutions": {
     "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.30.0",
-    "@types/react": "19.1.8",
-    "@types/react-dom": "19.1.6",
-    "eslint": "9.30.0",
-    "ethers": "6.14.4",
+    "@eslint/js": "9.32.0",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
+    "eslint": "9.32.0",
+    "ethers": "6.15.0",
     "next": "15.3.5",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
-    "typescript": "5.8.3"
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
+    "typescript": "5.9.2"
   }
 }
