@@ -7156,6 +7156,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@storybook/react-dom-shim@npm:9.1.0":
+  version: 9.1.0
+  resolution: "@storybook/react-dom-shim@npm:9.1.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+    storybook: ^9.1.0
+  checksum: 10c0/8dd8ee7c3835862ee78619b97fc6f2c458f818238fe58d6ab415cb2be8b267f862c04b89762a611263c0c32066df7636226c045c954b9825a66340d22ce68254
+  languageName: node
+  linkType: hard
+
 "@storybook/react@npm:8.6.14":
   version: 8.6.14
   resolution: "@storybook/react@npm:8.6.14"
@@ -7178,6 +7189,24 @@ __metadata:
     typescript:
       optional: true
   checksum: 10c0/e447892d523b32a52708e6eabc142a3dc0433c23fc28d59206e3b03fe070df77e80998839c3496c22ad11b712499b8e0fbec0dacf31a006ea99b171dba74c43b
+  languageName: node
+  linkType: hard
+
+"@storybook/react@npm:9.1.0":
+  version: 9.1.0
+  resolution: "@storybook/react@npm:9.1.0"
+  dependencies:
+    "@storybook/global": "npm:^5.0.0"
+    "@storybook/react-dom-shim": "npm:9.1.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0-beta
+    storybook: ^9.1.0
+    typescript: ">= 4.9.x"
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/302f0f6a80bfd867e3c33ae2e7d5be9d58fa79e4dc59b4ca5bd929397d7dd6fc28ace5b1fc7474a77e0a7287d5a946445fa1b25ca81004c4f20d900a48731af3
   languageName: node
   linkType: hard
 
@@ -11264,7 +11293,7 @@ __metadata:
     "@storybook/addon-themes": "npm:8.6.14"
     "@storybook/blocks": "npm:8.6.14"
     "@storybook/nextjs": "npm:8.6.14"
-    "@storybook/react": "npm:8.6.14"
+    "@storybook/react": "npm:9.1.0"
     "@storybook/test": "npm:8.6.14"
     "@tanstack/query-sync-storage-persister": "npm:5.81.5"
     "@tanstack/react-query": "npm:5.81.5"
