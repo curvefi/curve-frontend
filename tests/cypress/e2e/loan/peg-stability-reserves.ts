@@ -1,3 +1,4 @@
+import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { LOAD_TIMEOUT, oneViewport } from '@/support/ui'
 
 describe(`Peg Stability Reserves`, () => {
@@ -15,10 +16,9 @@ describe(`Peg Stability Reserves`, () => {
     cy.get('[data-testid="pegkeepers"]', LOAD_TIMEOUT).should('be.visible')
   })
 
-  // Ideally I would match it with the number of entries from PEG_KEEPERS, but that import from @/loan isn't available in tests
   it('should render all pegkeepers', () => {
-    cy.get('[data-testid^="pegkeeper-"]').should('have.length.greaterThan', 0)
-    cy.get('[data-testid^="pegkeeper-"]').each(($el) => {
+    cy.get('[data-testid^="pegkeeper-card"]').should('have.length', PEG_KEEPERS.length)
+    cy.get('[data-testid^="pegkeeper-card"]').each(($el) => {
       cy.wrap($el).should('be.visible')
     })
   })
