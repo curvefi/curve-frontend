@@ -45,7 +45,7 @@ const TableHead = ({
   }
 
   const REWARDS_OTHER_TOOLTIP = t`Token APR based on current prices of tokens and reward rates`
-  const REWARDS_BASE_TOOLTIP = t`Variable APY (vAPY) is the annualised yield from trading fees based on the activity over the past 24h. If a pool holds a yield bearing asset, the intrinsic yield is added.`
+  const REWARDS_BASE_TOOLTIP = t`Base variable APY (vAPY) is the annualized yield from trading fees based on the activity over the past 24h. If a pool holds a yield bearing asset, the intrinsic yield is added.`
 
   return (
     <>
