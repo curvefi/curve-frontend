@@ -127,15 +127,15 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
         <GlobalStyle />
         <ThemeProvider theme={theme}>
           <OverlayProvider>
-            <QueryProvider persister={persister} queryClient={queryClient}>
-              <WagmiProvider config={config}>
+            <WagmiProvider config={config}>
+              <QueryProvider persister={persister} queryClient={queryClient}>
                 <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
                   <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
                     {children}
                   </GlobalLayout>
                 </ConnectionProvider>
-              </WagmiProvider>
-            </QueryProvider>
+              </QueryProvider>
+            </WagmiProvider>
           </OverlayProvider>
         </ThemeProvider>
       </div>
