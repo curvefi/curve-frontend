@@ -21,36 +21,53 @@ const DECIMALS: Record<number, number> = {
   [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18
 }
 
+/** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
+const wagmiChainsMap = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+
+/**
+ * Gets a list of unique RPC URLs for a given chain in priority order:
+ * 1. Hardcoded RPC URLs from RPC configuration
+ * 2. Network-specific RPC URL from the provided configuration
+ * 3. Default Wagmi chain RPC URLs as fallbacks
+ *
+ * @param chainId - The chain ID to get RPC URLs for
+ * @param networkRpcUrl - The primary RPC URL from the network configuration
+ * @returns Array of unique RPC URLs in priority order
+ */
+export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, networkRpcUrl: string) =>
+  lodash.uniq([...(RPC[chainId] ?? []), networkRpcUrl, ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
+
+type CreateWagmiConfigOptions = {
+  getRpcUrls?: typeof defaultGetRpcUrls
+}
+
 /**
  * Creates a Wagmi configuration based on the provided network configurations.
  * We use memoize here because useMemo may be called multiple times, breaking the wagmi auto-reconnect.
  * @param networks - A record mapping chain IDs to their respective network configurations.
+ * @param options - Configuration options including custom RPC URL resolver
  * @return A Wagmi configuration object that includes chains, connectors, and transports.
  */
 export const createWagmiConfig = memoize(
-  <ChainId extends number, NetworkConfig extends NetworkDef>(networks: Record<ChainId, NetworkConfig>) => {
-    const wagmi = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
+  <ChainId extends number, NetworkConfig extends NetworkDef>(
+    networks: Record<ChainId, NetworkConfig>,
+    options: CreateWagmiConfigOptions = {},
+  ) => {
     const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
-
-    /**
-     * Gets a list of the RPC URLs for a given chain.
-     * First the hardcoded RPC URLs, then the CurveJS URL and then all default wagmi URLs
-     */
-    const getRpcUrls = (id: ChainId) =>
-      lodash.uniq([...(RPC[id] ?? []), networks[id].rpcUrl, ...(wagmi[id]?.rpcUrls.default.http ?? [])])
+    const { getRpcUrls = defaultGetRpcUrls } = options
 
     return createConfig({
       chains: networkEntries.map(
         ([id, config]): Chain =>
           // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
           defineChain({
-            ...(wagmi[id] ?? {
+            ...(wagmiChainsMap[id] ?? {
               nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
             }),
             id,
             testnet: config.isTestnet,
             name: config.name,
-            rpcUrls: { default: { http: getRpcUrls(id) } },
+            rpcUrls: { default: { http: getRpcUrls(id, config.rpcUrl) } },
             ...(config.explorerUrl && {
               blockExplorers: { default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl } },
             }),
@@ -81,7 +98,7 @@ export const createWagmiConfig = memoize(
            */
           fallback([
             unstable_connector(injected),
-            ...getRpcUrls(id).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
+            ...getRpcUrls(id, config.rpcUrl).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
           ]),
         ]),
       ) as Record<ChainId, Transport>,
