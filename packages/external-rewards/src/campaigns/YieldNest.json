@@ -16,18 +16,6 @@
       "multiplier": "ynd",
       "tags": ["tokens"],
       "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "lp",
-      "description": "This pool is actively rewarded with YND. Please visit Yieldnest's Dapp for more information. No user action is required.",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
-      "address": "0xE5c78cbcf6241f1793caF496f6480B45Fa5BDb46",
-      "network": "ethereum",
-      "multiplier": "ynd",
-      "tags": ["tokens"],
-      "lock": "false"
     }
   ]
 }
