@@ -39,7 +39,7 @@ export const PEG_KEEPERS = [
     poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-42/deposit`),
     pool: {
       id: 'factory-stable-ng-42',
-      name: 'pyUSD/crvUSD',
+      name: 'crvUSD/pyUSD',
       address: '0x625e92624bc2d88619accc1788365a69767f6200',
       underlyingCoins: ['PYUSD', 'crvUSD'],
       underlyingCoinAddresses: [
