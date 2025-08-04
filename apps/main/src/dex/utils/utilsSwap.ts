@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js'
 import { ethAddress } from 'viem'
+import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
-import { ZERO_ADDRESS } from '@/dex/constants'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import type { IRoute } from '@curvefi/api/lib/interfaces'
 import { t } from '@ui-kit/lib/i18n'
@@ -177,7 +177,7 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toA
   const lastRoute = routes[routes.length - 1]
 
   // zero address has no stored rate
-  if (lastRoute.poolAddress === ZERO_ADDRESS) {
+  if (lastRoute.poolAddress === zeroAddress) {
     return undefined
   }
 
