@@ -1,14 +1,19 @@
 'use client'
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import type { Chain } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
 import GlobalStyle from '@/globalStyle'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
 import type { NetworkDef } from '@ui/utils'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
-import { createWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/wagmi-config'
+import {
+  ConnectionProvider,
+  createChainFromNetwork,
+  createTransportFromNetwork,
+  createWagmiConfig,
+  defaultGetRpcUrls,
+} from '@ui-kit/features/connect-wallet'
 import { getPageWidthClassName, useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
@@ -59,13 +64,11 @@ const useLayoutStoreResponsive = () => {
   }, [document, handleResizeListener, setPageVisible, updateShowScrollButton])
 }
 
-function useNetworkFromUrl<ChainId extends number, NetworkConfig extends NetworkDef>(
-  networks: Record<ChainId, NetworkConfig>,
-) {
+function useNetworkFromUrl(networks: NetworkDef[]) {
   const navigate = useNavigate()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
-  const network = useMemo(() => recordValues(networks).find((n) => n.id == networkId), [networkId, networks])
+  const network = useMemo(() => networks.find((n) => n.id == networkId), [networkId, networks])
   useEffect(() => {
     if (network || !pathname) {
       return
@@ -99,11 +102,15 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   preferredScheme,
 }: {
   children: ReactNode
-  networks: Record<ChainId, NetworkDef<TId, ChainId>>
+  networks: NetworkDef<TId, ChainId>[]
   preferredScheme: 'light' | 'dark' | null
 }) => {
-  const theme = useThemeAfterSsr(preferredScheme)
-  const config = useMemo(() => createWagmiConfig(networks), [networks])
+  const chains = networks.map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [Chain, ...Chain[]]
+  const transports = Object.fromEntries(
+    networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
+  )
+  const config = useMemo(() => createWagmiConfig({ chains, transports }), [chains, transports])
+
   const pathname = usePathname()
   const push = useNavigate()
   useLayoutStoreResponsive()
@@ -119,8 +126,9 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
     [networks, pathname, push],
   )
   const network = useNetworkFromUrl(networks)
-
+  const theme = useThemeAfterSsr(preferredScheme)
   const currentApp = getCurrentApp(pathname)
+
   return (
     network && (
       <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>

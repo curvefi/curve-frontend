@@ -7,6 +7,7 @@ import { getNetworkDefs } from '@/dex/lib/networks'
 import '@ui/styles/base.css'
 import { CURVE_LOGO_URL } from '@ui/utils/utilsConstants'
 import { RootCssProperties } from '@ui-kit/themes/fonts'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 
 const injectIpfsPrefix = `
 (function () {
@@ -72,7 +73,7 @@ const Layout = async ({ children }: { children: ReactNode }) => (
     </Head>
     <body>
       <StyledComponentsRegistry>
-        <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>
+        <ClientWrapper networks={recordValues(await getNetworkDefs())} preferredScheme={await getScheme()}>
           {children}
         </ClientWrapper>
       </StyledComponentsRegistry>

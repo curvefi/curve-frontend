@@ -1,14 +1,7 @@
-import lodash from 'lodash'
 import memoize from 'memoizee'
 import type { Chain } from 'viem'
-import { defineChain } from 'viem/utils'
-import type { NetworkDef } from '@ui/utils'
-import { wagmiChains } from '@ui-kit/features/connect-wallet/lib/wagmi/chains'
-import { Chain as ChainId } from '@ui-kit/utils/network'
-import { injected } from '@wagmi/connectors'
-import { createConfig, fallback, http, type Transport, unstable_connector } from '@wagmi/core'
-import { connectors } from './connectors'
-import { RPC } from './rpc'
+import { createConfig, type Transport, type CreateConnectorFn } from '@wagmi/core'
+import { connectors as defaultConnectors } from './connectors'
 
 declare module 'wagmi' {
   /** Enable Wagmi to infer types in places that wouldn't normally have access to type info via React Context alone. */
@@ -17,99 +10,38 @@ declare module 'wagmi' {
   }
 }
 
-const DECIMALS: Record<number, number> = {
-  [ChainId.Tac]: 8, // TAC has 8 decimals instead of 18
-}
-
-/** Mapping of chain IDs to their corresponding Wagmi chain configurations for easy lookup */
-const wagmiChainsMap = Object.fromEntries(wagmiChains.map((chain) => [chain.id, chain]))
-
-/**
- * Gets a list of unique RPC URLs for a given chain in priority order:
- * 1. Hardcoded RPC URLs from RPC configuration
- * 2. Network-specific RPC URL from the provided configuration
- * 3. Default Wagmi chain RPC URLs as fallbacks
- *
- * @param chainId - The chain ID to get RPC URLs for
- * @param networkRpcUrl - The primary RPC URL from the network configuration
- * @returns Array of unique RPC URLs in priority order
- */
-export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, networkRpcUrl: string) =>
-  lodash.uniq([...(RPC[chainId] ?? []), networkRpcUrl, ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
-
-type CreateWagmiConfigOptions = {
-  getRpcUrls?: typeof defaultGetRpcUrls
+type CreateWagmiConfigOptions<TChains extends readonly [Chain, ...Chain[]]> = {
+  /** An array of Chain objects to configure */
+  chains: TChains
+  /** A record mapping chain IDs to their respective transport configurations */
+  transports: Record<TChains[number]['id'], Transport>
+  /** Optional record of connector functions (defaults to defaultConnectors) */
+  connectors?: CreateConnectorFn[]
 }
 
 /**
- * Creates a Wagmi configuration based on the provided network configurations.
- * We use memoize here because useMemo may be called multiple times, breaking the wagmi auto-reconnect.
- * @param networks - A record mapping chain IDs to their respective network configurations.
- * @param options - Configuration options including custom RPC URL resolver
+ * Creates a Wagmi configuration based on chains, transports and connectors.
+ * We use memoize here to ensure only one config instance exists, preventing issues with wagmi auto-reconnect.
+ * Auto-reconnect for injected wallets is disabled to prevent unwanted reconnections on disconnect.
  * @return A Wagmi configuration object that includes chains, connectors, and transports.
  */
 export const createWagmiConfig = memoize(
-  <ChainId extends number, NetworkConfig extends NetworkDef>(
-    networks: Record<ChainId, NetworkConfig>,
-    options: CreateWagmiConfigOptions = {},
-  ) => {
-    const networkEntries = Object.entries(networks).map(([id, config]) => [+id, config]) as [ChainId, NetworkConfig][]
-    const { getRpcUrls = defaultGetRpcUrls } = options
-
-    return createConfig({
-      chains: networkEntries.map(
-        ([id, config]): Chain =>
-          // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
-          defineChain({
-            ...(wagmiChainsMap[id] ?? {
-              nativeCurrency: { name: config.symbol, symbol: config.symbol, decimals: DECIMALS[id] ?? 18 },
-            }),
-            id,
-            testnet: config.isTestnet,
-            name: config.name,
-            rpcUrls: { default: { http: getRpcUrls(id, config.rpcUrl) } },
-            ...(config.explorerUrl && {
-              blockExplorers: { default: { name: new URL(config.explorerUrl).host, url: config.explorerUrl } },
-            }),
-          }),
-      ) as [Chain, ...Chain[]],
-      connectors: Object.values(connectors),
-      transports: Object.fromEntries(
-        networkEntries.map(([id, config]) => [
-          id,
-          /**
-           * Transport configuration for Wagmi:
-           * 1. unstable_connector(injected) - Uses the user's injected wallet for transactions
-           *
-           *    According to Wagmi docs, it is highly recommended to use unstable_connector
-           *    inside a fallback transport because connector requests may fail due to:
-           *    - Chain ID mismatches
-           *    - Limited RPC method support
-           *    - Rate-limiting of wallet provider
-           *
-           * 2. Multiple http transports - Used as fallback when connector transport fails
-           *    - Primary: http transport with default URL (batch size 3 for DRPC compliance)
-           *    - Fallbacks: Additional http transports for each fallback RPC URL
-           *    - Prevents error code 29 from exceeding batch limits
-           *    - Gives browsers a time window for the opportunity to batch multiple calls
-           *
-           * Note: WalletConnect ignores this transport configuration and uses chain.rpcUrls.default.http
-           * in order, but having multiple transports helps with injected wallet resilience.
-           */
-          fallback([
-            unstable_connector(injected),
-            ...getRpcUrls(id, config.rpcUrl).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
-          ]),
-        ]),
-      ) as Record<ChainId, Transport>,
+  <TChains extends readonly [Chain, ...Chain[]]>({
+    chains,
+    transports,
+    connectors = Object.values(defaultConnectors),
+  }: CreateWagmiConfigOptions<TChains>) =>
+    createConfig({
+      chains,
+      connectors,
+      transports,
       /**
        * Disabled to prevent auto-reconnect on disconnecting an injected wallet.
        * Solves the same issue as discussed on https://github.com/wevm/wagmi/discussions/3537.
        * We don't use wallet specific injected connectors anyway and prefer to use the single global one.
        */
       multiInjectedProviderDiscovery: false,
-    })
-  },
+    }),
   {
     max: 1, // only memoize the last call
   },
