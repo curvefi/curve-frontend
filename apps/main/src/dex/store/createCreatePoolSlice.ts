@@ -17,6 +17,7 @@ import {
 } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/components/PageCreatePool/types'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import { ZERO_ADDRESS } from '@/dex/constants'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
@@ -957,8 +958,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
-            const oracleAddress =
-              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000'
+            const oracleAddress = coin.ngAssetType === 1 ? coin.oracleAddress : ZERO_ADDRESS
             const oracleFunction = coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
@@ -1047,9 +1047,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
           try {
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
-            const oracleAddresses = coins.map((coin) =>
-              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000',
-            )
+            const oracleAddresses = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleAddress : ZERO_ADDRESS))
             const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 

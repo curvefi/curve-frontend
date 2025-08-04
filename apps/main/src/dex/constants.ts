@@ -2,6 +2,7 @@ import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
 
 export const LARGE_APY = 5000
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 
 export const MAIN_ROUTE = {
   ...DEX_ROUTES,

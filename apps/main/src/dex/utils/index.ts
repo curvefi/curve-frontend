@@ -1,4 +1,5 @@
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
+import { ZERO_ADDRESS } from '@/dex/constants'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@ui-kit/features/select-token'
 import type { Address } from '@ui-kit/utils'
@@ -13,8 +14,7 @@ export function shortenTokenName(token: string) {
   }
 }
 
-export const isValidAddress = (address: string) =>
-  address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
+export const isValidAddress = (address: string) => address?.length === 42 && address !== ZERO_ADDRESS
 
 export function isHighSlippage(slippage: number, maxSlippage: string) {
   return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
