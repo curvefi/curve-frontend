@@ -32,6 +32,7 @@ import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
+  routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { DateValue } from '@internationalized/date'
@@ -276,9 +277,10 @@ const router = {
 
         if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
 
-        const [fetchedToAmount, priceImpact] = await Promise.all([
+        const [fetchedToAmount, priceImpact, toStoredRate] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fromAmount),
+          routerGetToStoredRate(routes, curve, toAddress),
         ])
 
         resp = {
@@ -291,6 +293,7 @@ const router = {
             poolsMapper,
             fetchedToAmount,
             toAddress,
+            toStoredRate,
             fromAmount,
             fromAddress,
           ),
@@ -307,9 +310,10 @@ const router = {
 
         if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
 
-        const [fetchedToAmount, priceImpact] = await Promise.all([
+        const [fetchedToAmount, priceImpact, toStoredRate] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fetchedFromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fetchedFromAmount),
+          routerGetToStoredRate(routes, curve, toAddress),
         ])
 
         resp = {
@@ -322,6 +326,7 @@ const router = {
             poolsMapper,
             toAmount,
             toAddress,
+            toStoredRate,
             fetchedFromAmount,
             fromAddress,
             fetchedToAmount,

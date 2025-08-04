@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { ethAddress } from 'viem'
+import { zeroAddress } from 'viem'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { parseRouterRoutes } from '@/dex/components/PageRouterSwap/utils'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
@@ -33,9 +34,21 @@ export function excludeLowExchangeRateCheck(fromAddress: string, toAddress: stri
 }
 
 // router swap
-export function getIsLowExchangeRate(isCrypto: boolean, expected: string, fromAmount: string) {
+export function getIsLowExchangeRate(
+  isCrypto: boolean,
+  expected: string,
+  fromAmount: string,
+  toStoredRate: string | undefined,
+) {
   if (isCrypto || Number(expected) === 0) {
     return false
+  }
+
+  /**
+   * toStoredRate is above 1 if the "toToken" is a token of type oracle or of type erc4626 in a stableswap-ng pool.
+   */
+  if (toStoredRate && Number(toStoredRate) > 1) {
+    return Number(fromAmount) / Number(expected) < Number(toStoredRate) * LOW_EXCHANGE_RATE
   }
 
   const rate = Number(expected) / Number(fromAmount)
@@ -94,6 +107,7 @@ export function _parseRoutesAndOutput(
   poolsMapper: { [poolId: string]: PoolData },
   toAmount: string,
   toAddress: string,
+  toStoredRate: string | undefined,
   fromAmount: string,
   fromAddress: string,
   fetchedToAmount?: string,
@@ -105,7 +119,7 @@ export function _parseRoutesAndOutput(
     exchangeRates,
     isExchangeRateLow: excludeLowExchangeRateCheck(fromAddress, toAddress, parseRoutes)
       ? false
-      : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount),
+      : getIsLowExchangeRate(haveCryptoRoutes, toAmount, fromAmount, toStoredRate),
     isHighSlippage: haveCryptoRoutes ? false : Number(exchangeRates[0]) > 0.98,
     isStableswapRoute: !haveCryptoRoutes,
     priceImpact,
@@ -147,4 +161,34 @@ export function getSlippageImpact({ maxSlippage, toAmount, priceImpact, fetchedT
     // if input toAmount and fetchedToAmount differ is more than slippage, inform user they will get expected not desired
     ...(fetchedToAmount ? { isExpectedToAmount: +toAmount - +(fetchedToAmount ?? 0) > +maxSlippage } : {}),
   }
+}
+
+/**
+ * Get the stored rate for the to token in the last route.
+ * Stored rate is important for checking if a token is of type oracle or erc4626.
+ * Tokens of type oracle or erc4626 can have stored rates above 1 and should be handled differently when checking for low exchange rate.
+ * @returns The stored rate for the to token in the last route.
+ */
+export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toAddress: string) {
+  if (routes.length === 0) {
+    return undefined
+  }
+
+  const lastRoute = routes[routes.length - 1]
+
+  // zero address has no stored rate
+  if (lastRoute.poolAddress === zeroAddress) {
+    return undefined
+  }
+
+  const pool = curve.getPool(lastRoute.poolId)
+  const storedRates = await pool.getStoredRates()
+  const ratesWithAddresses = pool.underlyingCoinAddresses.map((address, index) => ({
+    coinAddress: address.toLowerCase(),
+    rate: storedRates[index],
+  }))
+
+  const toStoredRate = ratesWithAddresses.find((r) => r.coinAddress === toAddress.toLowerCase())?.rate
+
+  return toStoredRate
 }

@@ -8,16 +8,13 @@ import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import TuneIcon from '@mui/icons-material/Tune'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { InvertTheme } from '@ui-kit/shared/ui/ThemeProvider'
 
 export const PageRouterSwap = (props: NetworkUrlParams) => {
   const push = useNavigate()
@@ -32,12 +29,10 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
   const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const theme = useUserProfileStore((state) => state.theme)
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
   const isStableswapRoute = routesAndOutput?.isStableswapRoute
-  const storeMaxSlippage = isStableswapRoute ? stableMaxSlippage : cryptoMaxSlippage
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
@@ -129,17 +124,7 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <SlippageSettings
-          maxSlippage={storeMaxSlippage}
-          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
-          buttonIcon={
-            // This component is a MUI component on a non MUI page.
-            // That means the icon button color doesn't mesh well with the header box color in chad theme.
-            <InvertTheme inverted={theme === 'chad'}>
-              <TuneIcon color="action" />
-            </InvertTheme>
-          }
-        />
+        <IconButton testId="hidden" hidden />
       </BoxHeader>
 
       <Box grid gridRowGap={3} padding>
