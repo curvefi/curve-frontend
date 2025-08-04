@@ -173,18 +173,15 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveApi, toA
     return undefined
   }
 
-  const allRates = await Promise.all(
-    routes.map(async (route) => {
-      const pool = curve.getPool(route.poolId)
-      const rates = await pool.getStoredRates()
-      return pool.underlyingCoinAddresses.map((address, index) => ({
-        coinAddress: address.toLowerCase(),
-        rate: rates[index],
-      }))
-    }),
-  )
+  const lastRoute = routes[routes.length - 1]
+  const pool = curve.getPool(lastRoute.poolId)
+  const storedRates = await pool.getStoredRates()
+  const ratesWithAddresses = pool.underlyingCoinAddresses.map((address, index) => ({
+    coinAddress: address.toLowerCase(),
+    rate: storedRates[index],
+  }))
 
-  const toStoredRate = allRates[allRates.length - 1].find((r) => r.coinAddress === toAddress.toLowerCase())?.rate
+  const toStoredRate = ratesWithAddresses.find((r) => r.coinAddress === toAddress.toLowerCase())?.rate
 
   return toStoredRate
 }
