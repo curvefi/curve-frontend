@@ -26,7 +26,7 @@ export const SlippageSettings = ({ disabled = false, button, buttonIcon, maxSlip
       {button ? (
         button({ maxSlippage, onClick: toggleModal })
       ) : (
-        <IconButton onClick={toggleModal} disabled={disabled}>
+        <IconButton onClick={toggleModal} disabled={disabled} size="small">
           {buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
         </IconButton>
       )}

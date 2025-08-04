@@ -129,17 +129,7 @@ export const PageRouterSwap = (props: NetworkUrlParams) => {
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
-        <SlippageSettings
-          maxSlippage={storeMaxSlippage}
-          onSave={(slippage) => setMaxSlippage(slippage, isStableswapRoute ? 'stable' : 'crypto')}
-          buttonIcon={
-            // This component is a MUI component on a non MUI page.
-            // That means the icon button color doesn't mesh well with the header box color in chad theme.
-            <InvertTheme inverted={theme === 'chad'}>
-              <TuneIcon color="action" />
-            </InvertTheme>
-          }
-        />
+        <IconButton testId="hidden" hidden />
       </BoxHeader>
 
       <Box grid gridRowGap={3} padding>
