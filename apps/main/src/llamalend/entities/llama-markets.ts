@@ -48,6 +48,12 @@ export type LlamaMarket = {
     lendCrvAprBoosted: number | null
     borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
+    // extra lending incentives, like OP rewards (so non CRV)
+    incentives: {
+      address: Address
+      symbol: string
+      rate: number
+    }[]
   }
   type: LlamaMarketType
   url: string
@@ -81,6 +87,7 @@ const convertLendingVault = (
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
+    extraRewardApr,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
@@ -122,6 +129,7 @@ const convertLendingVault = (
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
+      incentives: extraRewardApr,
     },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
@@ -195,6 +203,7 @@ const convertMintMarket = (
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
       borrowTotalApy: rate * 100,
+      incentives: [],
     },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
