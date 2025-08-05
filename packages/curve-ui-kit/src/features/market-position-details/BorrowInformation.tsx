@@ -148,8 +148,14 @@ export const BorrowInformation = ({
         loading={liquidationRange?.value == null && liquidationRange?.loading}
         valueOptions={dollarUnitOptions}
         valueTooltip={{
-          title: t`Liquidation threshold`,
-          body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
+          title: t`Liquidation Threshold (LT)`,
+          body: (
+            <LiquidityThresholdTooltip
+              liquidationRange={liquidationRange}
+              rangeToLiquidation={liquidationRange?.rangeToLiquidation}
+              bandRange={bandRange}
+            />
+          ),
           placement: 'top',
           arrow: false,
           clickable: true,
@@ -159,8 +165,7 @@ export const BorrowInformation = ({
             ? {
                 value: liquidationRange.rangeToLiquidation,
                 unit: {
-                  // negative rangeToLiquidation happens when the position is inside or below the liquidation range
-                  symbol: `% ${liquidationRange.rangeToLiquidation > 0 ? 'Buffer to liquidation' : 'to liquidation threshold'}`,
+                  symbol: `% distance to LT`,
                   position: 'suffix',
                 },
                 decimals: 2,
