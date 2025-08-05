@@ -15,7 +15,12 @@ export const useMarketExtraIncentives = (
     if (type !== 'lend') return []
 
     return notFalsy(
-      lendCrvAprUnboosted && { title: t`CRV`, percentage: lendCrvAprUnboosted, address: CRV_ADDRESS, blockchainId },
+      lendCrvAprUnboosted && {
+        title: t`CRV`,
+        percentage: lendCrvAprUnboosted,
+        address: CRV_ADDRESS,
+        blockchainId: 'ethereum',
+      },
       ...incentives.map((incentive) => ({
         title: incentive.symbol,
         percentage: incentive.rate,
