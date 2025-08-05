@@ -158,7 +158,11 @@ export const BorrowInformation = ({
           liquidationRange?.rangeToLiquidation
             ? {
                 value: liquidationRange.rangeToLiquidation,
-                unit: { symbol: '% Buffer to liquidation', position: 'suffix' },
+                unit: {
+                  // negative rangeToLiquidation happens when the position is inside or below the liquidation range
+                  symbol: `% ${liquidationRange.rangeToLiquidation > 0 ? 'Buffer to liquidation' : 'to liquidation threshold'}`,
+                  position: 'suffix',
+                },
                 decimals: 2,
               }
             : undefined
