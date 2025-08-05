@@ -18,6 +18,7 @@ const rateType = 'lend' as const
 const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { averageRate, period, maxBoostedAprAverage } = useSnapshots(market, rateType)
   const {
+    chain,
     rates,
     rates: { lend, lendApr, lendCrvAprBoosted },
     assets: { borrowed },
@@ -26,7 +27,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   } = market
 
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rateType, rates)
+  const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
   const extraIncentivesApr = extraIncentives.reduce((acc, x) => acc + x.percentage, 0)
 
   return (
