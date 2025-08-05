@@ -4,7 +4,7 @@ import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { Address } from '@curvefi/prices-api'
+import { Address, Chain } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -44,6 +44,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   }, [crvUsdSnapshots])
 
   return {
+    blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,
       tokenAddress: llamma?.collateral,

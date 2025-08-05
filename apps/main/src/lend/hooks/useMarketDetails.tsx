@@ -59,6 +59,7 @@ export const useMarketDetails = ({
   const lendApy = marketDetails.rates?.lendApy ?? marketRate?.rates?.lendApy
 
   return {
+    blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: llamma?.collateral_token.symbol ?? null,
       tokenAddress: llamma?.collateral_token.address,
