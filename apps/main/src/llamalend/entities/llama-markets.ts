@@ -97,7 +97,8 @@ const convertLendingVault = (
   const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
-  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0)
+  const totalExtraRewardApr = extraRewardApr.reduce((acc, x) => acc + x.rate, 0)
+  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
     chain,
     address: vault,
@@ -122,7 +123,7 @@ const convertLendingVault = (
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     rates: {
-      lend, // this is the total yield, including CRV and collateral yield, and is displayed in the table
+      lend, // this is the total yield, including incentive and collateral yield, and is displayed in the table
       lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
