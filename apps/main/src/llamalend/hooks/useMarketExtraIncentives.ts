@@ -5,12 +5,12 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { RCCrvLogoMD } from '@ui/images'
 import { t } from '@ui-kit/lib/i18n'
 
-export const useMarketExtraIncentives = (type: RateType, { lendCrvAprUnboosted }: LlamaMarket['rates']) =>
-  useMemo(
-    () =>
-      notFalsy(
-        type === 'lend' &&
-          lendCrvAprUnboosted && { title: t`CRV`, percentage: lendCrvAprUnboosted, image: RCCrvLogoMD },
-      ),
-    [lendCrvAprUnboosted, type],
-  )
+export const useMarketExtraIncentives = (type: RateType, { lendCrvAprUnboosted, incentives }: LlamaMarket['rates']) =>
+  useMemo(() => {
+    if (type !== 'lend') return []
+
+    return notFalsy(
+      lendCrvAprUnboosted && { title: t`CRV`, percentage: lendCrvAprUnboosted, image: RCCrvLogoMD },
+      ...incentives.map((incentive) => ({ title: incentive.symbol, percentage: incentive.rate, image: RCCrvLogoMD })),
+    )
+  }, [incentives, lendCrvAprUnboosted, type])
