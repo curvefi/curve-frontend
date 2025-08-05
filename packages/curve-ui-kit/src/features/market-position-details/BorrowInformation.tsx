@@ -96,6 +96,7 @@ export const BorrowInformation = ({
           body: <CollateralMetricTooltip collateralValue={collateralValue} />,
           placement: 'top',
           arrow: false,
+          clickable: true,
         }}
       />
       <Metric
@@ -136,6 +137,7 @@ export const BorrowInformation = ({
             body: <PnlMetricTooltip pnl={pnl} />,
             placement: 'top',
             arrow: false,
+            clickable: true,
           }}
         />
       )}
@@ -150,6 +152,7 @@ export const BorrowInformation = ({
           body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
           placement: 'top',
           arrow: false,
+          clickable: true,
         }}
         notional={
           liquidationRange?.rangeToLiquidation
