@@ -9,6 +9,7 @@ import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
+import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type UseBorrowPositionDetailsProps = {
@@ -96,7 +97,7 @@ export const useBorrowPositionDetails = ({
       value: liquidationPrices ? liquidationPrices.map(Number) : null,
       rangeToLiquidation:
         prices?.prices?.oraclePrice && liquidationPrices
-          ? (Number(liquidationPrices?.[1]) / Number(prices.prices.oraclePrice)) * 100
+          ? calculateRangeToLiquidation(Number(liquidationPrices?.[1]), Number(prices.prices.oraclePrice))
           : null,
       loading: !market || isUserLoanDetailsLoading,
     },
