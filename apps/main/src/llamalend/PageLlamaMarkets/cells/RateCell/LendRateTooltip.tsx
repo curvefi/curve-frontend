@@ -45,7 +45,9 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
               {formatPercent(borrowed.rebasingYield)}
             </TooltipItem>
           )}
-          <RewardsTooltipItems title={t`Staking incentives`} {...{ poolRewards, extraIncentives }} />
+          {poolRewards.length + extraIncentives.length > 0 && (
+            <RewardsTooltipItems title={t`Staking incentives`} {...{ poolRewards, extraIncentives }} />
+          )}
         </TooltipItems>
         <TooltipItems>
           <TooltipItem primary title={`${t`Total APR`}`}>
