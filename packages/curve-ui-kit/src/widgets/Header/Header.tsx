@@ -19,6 +19,7 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
     () =>
       routes[currentMenu]
         .filter((props) => !props.betaFeature || isBeta)
+        .filter((props) => !props.deprecate)
         .map((props) => routeToPage(props, { networkId, pathname })),
     [currentMenu, isBeta, networkId, pathname, routes],
   )
