@@ -24,7 +24,7 @@ import {
   type ValueMapperCached,
 } from '@/dex/types/main.types'
 import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
-import { groupSearchTerms, searchByText } from '@ui-kit/utils'
+import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy, uniqBy, chunk } = lodash
@@ -157,9 +157,9 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       } = get()
       const { hideSmallPoolsTvl } = networks[chainId]
 
-      return poolDatas.length < 10
-        ? poolDatas
-        : poolDatas.filter(({ pool }) => +(tvlMapper?.[pool.id]?.value || '0') > hideSmallPoolsTvl)
+      const result = takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
+
+      return result
     },
     sortFn: (
       sortKey,
