@@ -79,8 +79,8 @@ type Notional = Formatting & {
 /** Merges default formatting options with user-provided formatting options. */
 const getFormattingDefaults = (formatting: Formatting) => ({
   abbreviate: true,
-  decimals: 1,
-  formatter: (value: number) => formatValue(value, formatting.decimals ?? 1),
+  decimals: 2,
+  formatter: (value: number) => formatValue(value, formatting.decimals ?? 2),
   ...formatting,
 })
 
