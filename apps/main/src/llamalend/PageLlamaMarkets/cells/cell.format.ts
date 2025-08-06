@@ -8,10 +8,10 @@ import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
  * @param rate - The rate to format, when null, it defaults to 0 (please do not display this, show Skeleton instead).
  */
 export const formatPercent = (rate: number | null) =>
-  (rate || 0).toLocaleString(undefined, {
+  `${(rate || 0).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
-  })
+  })}%`
 
 export const useFilteredRewards = (rewards: PoolRewards[], marketType: LlamaMarketType, rateType: RateType) =>
   useMemo(() => {
