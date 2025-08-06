@@ -130,7 +130,7 @@ const convertLendingVault = (
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
-      incentives: extraRewardApr,
+      incentives: extraRewardApr ?? [],
     },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
