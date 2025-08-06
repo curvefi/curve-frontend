@@ -37,10 +37,7 @@ export const RewardsIcons = ({
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
       <Stack direction="row" minWidth={IconSize.md} data-testid="rewards-icons">
         {extraIncentives.map(({ title, address, blockchainId }) => (
-          <RewardChip
-            key={title}
-            icon={<TokenIcon blockchainId={blockchainId} address={address} tooltip={title} size="mui-sm" />}
-          />
+          <RewardChip key={title} icon={<TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />} />
         ))}
         {lodash.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
           <RewardChip key={img} icon={<RewardIcon size="sm" key={img} imageId={img} />} />

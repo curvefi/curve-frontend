@@ -29,7 +29,7 @@ export const RewardsTooltipItems = ({
       {extraIncentives?.map(({ percentage, title, address, blockchainId }, i) => (
         <TooltipItem key={i} subitem title={title}>
           <Stack direction="row" gap={Spacing.xs} alignItems="center">
-            <TokenIcon blockchainId={blockchainId} address={address} tooltip={title} size="mui-sm" />
+            <TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />
             {formatPercent(percentage)}
           </Stack>
         </TooltipItem>
