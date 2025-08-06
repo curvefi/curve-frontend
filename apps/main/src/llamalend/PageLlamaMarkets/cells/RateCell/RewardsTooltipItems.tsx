@@ -6,9 +6,12 @@ import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import type { ImageData } from '@ui-kit/shared/image'
-import { RewardIcon, RewardsImg } from '@ui-kit/shared/ui/RewardIcon'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 export const RewardsTooltipItems = ({
   poolRewards,
@@ -17,16 +20,16 @@ export const RewardsTooltipItems = ({
 }: {
   title: string
   poolRewards: PoolRewards[]
-  extraIncentives: { title: string; percentage: number; image: ImageData }[]
+  extraIncentives: { title: string; percentage: number; address: string; blockchainId: string }[]
 }) => {
   const percentage = extraIncentives.length > 0 && formatPercent(lodash.sum(extraIncentives.map((i) => i.percentage)))
   return (
     <>
       <TooltipItem title={title}>{percentage}</TooltipItem>
-      {extraIncentives?.map(({ percentage, title, image }, i) => (
+      {extraIncentives?.map(({ percentage, title, address, blockchainId }, i) => (
         <TooltipItem key={i} subitem title={title}>
-          <Stack direction="row">
-            <RewardsImg src={image} alt={title} width={20} />
+          <Stack direction="row" gap={Spacing.xs} alignItems="center">
+            <TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />
             {formatPercent(percentage)}
           </Stack>
         </TooltipItem>

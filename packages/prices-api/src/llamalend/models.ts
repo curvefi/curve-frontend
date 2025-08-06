@@ -49,6 +49,11 @@ export type Market = {
     rebasingYield: number | null
   }
   leverage: number
+  extraRewardApr: {
+    address: Address
+    symbol: string
+    rate: number
+  }[]
 }
 
 export type Snapshot = {

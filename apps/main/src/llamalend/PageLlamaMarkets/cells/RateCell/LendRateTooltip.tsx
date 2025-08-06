@@ -18,14 +18,18 @@ const rateType = 'lend' as const
 const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { averageRate, period, maxBoostedAprAverage } = useSnapshots(market, rateType)
   const {
+    chain,
     rates,
     rates: { lend, lendApr, lendCrvAprBoosted },
     assets: { borrowed },
     rewards,
     type: marketType,
   } = market
+
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rateType, rates)
+  const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
+  const extraIncentivesApr = extraIncentives.reduce((acc, x) => acc + x.percentage, 0)
+
   return (
     <Stack gap={Spacing.sm}>
       <Stack>
@@ -67,7 +71,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         {lendCrvAprBoosted ? (
           <TooltipItems>
             <TooltipItem primary title={`${t`Total max boosted APR`}`}>
-              {formatPercent((lendApr ?? 0) + lendCrvAprBoosted)}
+              {formatPercent((lendApr ?? 0) + lendCrvAprBoosted + extraIncentivesApr)}
             </TooltipItem>
             <TooltipItem subitem loading={maxBoostedAprAverage == null} title={t`7D average`}>
               {formatPercent(maxBoostedAprAverage)}

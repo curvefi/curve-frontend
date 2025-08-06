@@ -22,6 +22,7 @@ const rateType = 'borrow' as const
 
 const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const {
+    chain,
     rewards,
     type: marketType,
     rates,
@@ -32,7 +33,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   } = market
   const { averageRate, period } = useSnapshots(market, rateType)
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rateType, rates)
+  const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
 
   return (
     <Stack gap={Spacing.sm}>
