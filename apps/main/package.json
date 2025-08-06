@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "@curvefi/api": "2.68.2",
-    "@curvefi/llamalend-api": "1.0.27",
+    "@curvefi/llamalend-api": "1.0.28",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
