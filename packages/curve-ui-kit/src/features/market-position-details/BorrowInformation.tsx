@@ -96,6 +96,7 @@ export const BorrowInformation = ({
           body: <CollateralMetricTooltip collateralValue={collateralValue} />,
           placement: 'top',
           arrow: false,
+          clickable: true,
         }}
       />
       <Metric
@@ -136,6 +137,7 @@ export const BorrowInformation = ({
             body: <PnlMetricTooltip pnl={pnl} />,
             placement: 'top',
             arrow: false,
+            clickable: true,
           }}
         />
       )}
@@ -146,16 +148,26 @@ export const BorrowInformation = ({
         loading={liquidationRange?.value == null && liquidationRange?.loading}
         valueOptions={dollarUnitOptions}
         valueTooltip={{
-          title: t`Liquidation threshold`,
-          body: <LiquidityThresholdTooltip liquidationRange={liquidationRange} bandRange={bandRange} />,
+          title: t`Liquidation Threshold (LT)`,
+          body: (
+            <LiquidityThresholdTooltip
+              liquidationRange={liquidationRange}
+              rangeToLiquidation={liquidationRange?.rangeToLiquidation}
+              bandRange={bandRange}
+            />
+          ),
           placement: 'top',
           arrow: false,
+          clickable: true,
         }}
         notional={
           liquidationRange?.rangeToLiquidation
             ? {
                 value: liquidationRange.rangeToLiquidation,
-                unit: { symbol: '% Buffer to liquidation', position: 'suffix' },
+                unit: {
+                  symbol: `% distance to LT`,
+                  position: 'suffix',
+                },
                 decimals: 2,
               }
             : undefined

@@ -10,10 +10,18 @@ type SymbolCellProps = {
   tokenAddress: string | undefined | null
   loading: boolean
   size?: keyof Pick<typeof MetricSize, 'small' | 'medium'>
+  blockchainId: string
 }
 
 /** Mimics the style of Metric but is used for cells that only have a symbol and a token icon. */
-export const SymbolCell = ({ label, symbol, tokenAddress, loading, size = 'medium' }: SymbolCellProps) => (
+export const SymbolCell = ({
+  label,
+  symbol,
+  tokenAddress,
+  loading,
+  size = 'medium',
+  blockchainId,
+}: SymbolCellProps) => (
   <Stack alignItems={'start'}>
     <Typography variant="bodyXsRegular" color="textTertiary">
       {label}
@@ -21,7 +29,7 @@ export const SymbolCell = ({ label, symbol, tokenAddress, loading, size = 'mediu
     <WithSkeleton loading={loading}>
       <Stack direction="row" alignItems="baseline" gap={1}>
         <Typography variant={MetricSize[size]}>{symbol == null ? t`N/A` : symbol}</Typography>
-        <TokenIcon address={tokenAddress} size={'mui-sm'} />
+        <TokenIcon blockchainId={blockchainId} address={tokenAddress} size={'mui-sm'} />
       </Stack>
     </WithSkeleton>
   </Stack>
