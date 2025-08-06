@@ -97,7 +97,7 @@ const convertLendingVault = (
   const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
-  const totalExtraRewardApr = extraRewardApr.reduce((acc, x) => acc + x.rate, 0)
+  const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
   const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
     chain,
