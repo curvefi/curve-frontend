@@ -14,7 +14,7 @@ const UnavailableNotation = '-'
 
 const formatMetricValue = (value?: number | null) => {
   if (value === 0) return '0'
-  if (value) return formatNumber(value, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+  if (value) return formatNumber(value, { notation: 'compact' })
   return UnavailableNotation
 }
 
@@ -60,17 +60,39 @@ export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricToo
 
         <Stack direction="row" justifyContent="space-between" gap={5}>
           <Typography variant="bodySRegular">{t`Deposit token`}</Typography>
-          <Stack direction="row" gap={2}>
-            <Typography variant="bodySBold">{`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}</Typography>
-            {collateralPercentage && <Typography variant="bodySRegular">{`(${collateralPercentage})`}</Typography>}
+          <Stack
+            direction="row"
+            gap={2}
+            sx={{
+              flexWrap: 'wrap',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Typography
+              variant="bodySBold"
+              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
+            >{`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}</Typography>
+            {collateralPercentage && (
+              <Typography variant="bodySRegular" sx={{ textAlign: 'right' }}>{`(${collateralPercentage})`}</Typography>
+            )}
           </Stack>
         </Stack>
 
         <Stack direction="row" justifyContent="space-between" gap={5}>
           <Typography variant="bodySRegular">{collateralValue?.borrow?.symbol ?? UnavailableNotation}</Typography>
-          <Stack direction="row" gap={2}>
-            <Typography variant="bodySBold">{`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}</Typography>
-            <Typography variant="bodySRegular">{`(${crvUSDPercentage})`}</Typography>
+          <Stack
+            direction="row"
+            gap={2}
+            sx={{
+              flexWrap: 'wrap',
+              justifyContent: 'flex-end',
+            }}
+          >
+            <Typography
+              variant="bodySBold"
+              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
+            >{`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}</Typography>
+            <Typography variant="bodySRegular" sx={{ textAlign: 'right' }}>{`(${crvUSDPercentage})`}</Typography>
           </Stack>
         </Stack>
       </Stack>

@@ -10,6 +10,7 @@ import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
+import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type UseLoanPositionDetailsProps = {
@@ -104,7 +105,7 @@ export const useLoanPositionDetails = ({
       value: userPrices ? userPrices.map(Number) : null,
       rangeToLiquidation:
         loanDetails?.priceInfo?.oraclePrice && userPrices
-          ? (Number(userPrices?.[1]) / Number(loanDetails.priceInfo.oraclePrice)) * 100
+          ? calculateRangeToLiquidation(Number(userPrices?.[1]), Number(loanDetails.priceInfo.oraclePrice))
           : null,
       loading: userLoanDetailsLoading ?? true,
     },

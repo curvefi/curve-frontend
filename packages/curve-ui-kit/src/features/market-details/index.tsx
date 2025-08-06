@@ -51,6 +51,7 @@ export type MarketDetailsProps = {
   lendingAPY?: LendingAPY
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
+  blockchainId: string
 }
 
 const formatLiquidity = (value: number) =>
@@ -63,6 +64,7 @@ export const MarketDetails = ({
   lendingAPY,
   availableLiquidity,
   maxLeverage,
+  blockchainId,
 }: MarketDetailsProps) => {
   const utilization =
     availableLiquidity?.value && availableLiquidity.max
@@ -128,6 +130,7 @@ export const MarketDetails = ({
           symbol={collateral?.symbol}
           tokenAddress={collateral?.tokenAddress}
           loading={collateral?.total == null && collateral?.loading}
+          blockchainId={blockchainId}
         />
         <SymbolCell
           size={'medium'}
@@ -135,6 +138,7 @@ export const MarketDetails = ({
           symbol={borrowToken?.symbol}
           tokenAddress={borrowToken?.tokenAddress}
           loading={borrowToken?.symbol == null && borrowToken?.loading}
+          blockchainId={blockchainId}
         />
         {/* Insert empty box to maintain grid layout when there is no lending APY metric */}
         {!lendingAPY && <Box />}

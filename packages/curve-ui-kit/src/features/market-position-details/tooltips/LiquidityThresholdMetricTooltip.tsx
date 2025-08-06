@@ -8,17 +8,28 @@ const { Spacing } = SizesAndSpaces
 
 type LiquidityThresholdTooltipProps = {
   liquidationRange: LiquidationRange | undefined | null
+  rangeToLiquidation: number | undefined | null
   bandRange: BandRange | undefined | null
 }
 
 const UnavailableNotation = '-'
 
-export const LiquidityThresholdTooltip = ({ liquidationRange, bandRange }: LiquidityThresholdTooltipProps) => (
+export const LiquidityThresholdTooltip = ({
+  liquidationRange,
+  rangeToLiquidation,
+  bandRange,
+}: LiquidityThresholdTooltipProps) => (
   <Stack gap={3} sx={{ maxWidth: '20rem' }}>
-    <Typography variant="bodySRegular">{t`The price at which your position enters liquidation protection and your collateral starts to be eroded.`}</Typography>
-
+    <Typography variant="bodySRegular">
+      {t`The price at which your position enters the liquidation zone  and your collateral starts to be eroded by LLAMMA. The distance to LT indicates the distance between the current price and the LT.`}
+    </Typography>
     <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
-      <Typography variant="bodySBold">{t`Breakdown`}</Typography>
+      <Stack direction="row" justifyContent="space-between" gap={5}>
+        <Typography variant="bodySRegular">{t`Distance to LT`}</Typography>
+        <Typography variant="bodySBold">
+          {rangeToLiquidation ? formatNumber(rangeToLiquidation, { ...FORMAT_OPTIONS.PERCENT }) : UnavailableNotation}
+        </Typography>
+      </Stack>
 
       <Stack direction="row" justifyContent="space-between" gap={5}>
         <Typography variant="bodySRegular">{t`Liquidation threshold`}</Typography>
