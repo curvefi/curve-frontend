@@ -1,8 +1,8 @@
 import { CssBaseline, ThemeProvider } from '@mui/material'
 import Box from '@mui/material/Box'
 import { withThemeFromJSXProvider } from '@storybook/addon-themes'
-import { DocsContainer } from '@storybook/blocks'
-import type { Decorator, Preview, ReactRenderer } from '@storybook/react'
+import { DocsContainer } from '@storybook/addon-docs/blocks'
+import type { Decorator, Preview, ReactRenderer } from '@storybook/nextjs'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
 import { minecraft, monaSans } from '../src/themes/fonts'
 

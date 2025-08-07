@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { TokenLabel } from '../TokenLabel'
 
 const meta: Meta<typeof TokenLabel> = {
