@@ -178,7 +178,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         </MessageWrapper>
       ),
     })
-    const SynthetixUsdAlert = (): PoolAlert => ({
+    const synthetixUsdAlert = (): PoolAlert => ({
       alertType: 'danger',
       isDisableDeposit: true,
       isDisableSwap: true,
