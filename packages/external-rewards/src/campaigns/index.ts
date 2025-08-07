@@ -22,6 +22,7 @@ import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
+import Plume from './Plume.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
@@ -72,4 +73,5 @@ export {
   Noon,
   Apple,
   Tharwa,
+  Plume,
 }
