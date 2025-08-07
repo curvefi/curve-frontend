@@ -5,9 +5,16 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
+import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
+import { DebtTokenTooltip } from './tooltips/DebtTokenTooltip'
+import { MaxLeverageTooltip } from './tooltips/MaxLeverageTooltip'
+import { TotalCollateralTooltip } from './tooltips/TotalCollateralTooltip'
+import { UtilizationTooltip } from './tooltips/UtilizationTooltip'
 
 const { Spacing } = SizesAndSpaces
 
+export type MarketType = 'lend' | 'mint'
 type Collateral = {
   total: number | undefined | null
   totalUsdValue: number | undefined | null
@@ -52,6 +59,7 @@ export type MarketDetailsProps = {
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
   blockchainId: string
+  marketType: MarketType
 }
 
 const formatLiquidity = (value: number) =>
@@ -65,6 +73,7 @@ export const MarketDetails = ({
   availableLiquidity,
   maxLeverage,
   blockchainId,
+  marketType,
 }: MarketDetailsProps) => {
   const utilization =
     availableLiquidity?.value && availableLiquidity.max
@@ -131,6 +140,13 @@ export const MarketDetails = ({
           tokenAddress={collateral?.tokenAddress}
           loading={collateral?.total == null && collateral?.loading}
           blockchainId={blockchainId}
+          valueTooltip={{
+            title: t`Collateral Token`,
+            body: <CollateralTokenTooltip />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         <SymbolCell
           size={'medium'}
@@ -139,6 +155,13 @@ export const MarketDetails = ({
           tokenAddress={borrowToken?.tokenAddress}
           loading={borrowToken?.symbol == null && borrowToken?.loading}
           blockchainId={blockchainId}
+          valueTooltip={{
+            title: t`Debt Token ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            body: <DebtTokenTooltip marketType={marketType} />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         {/* Insert empty box to maintain grid layout when there is no lending APY metric */}
         {!lendingAPY && <Box />}
@@ -148,6 +171,13 @@ export const MarketDetails = ({
           value={availableLiquidity?.value}
           loading={availableLiquidity?.value == null && availableLiquidity?.loading}
           valueOptions={{ unit: 'dollar' }}
+          valueTooltip={{
+            title: t`Available Liquidity ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            body: <AvailableLiquidityTooltip marketType={marketType} />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         <Metric
           size="small"
@@ -156,6 +186,13 @@ export const MarketDetails = ({
           loading={utilization == null && availableLiquidity?.loading}
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={utilization ? utilizationBreakdown : undefined}
+          valueTooltip={{
+            title: t`Utilization ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            body: <UtilizationTooltip marketType={marketType} />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         <Metric
           size="small"
@@ -171,6 +208,13 @@ export const MarketDetails = ({
                 }
               : undefined
           }
+          valueTooltip={{
+            title: t`Total Collateral`,
+            body: <TotalCollateralTooltip />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         {maxLeverage && (
           <Metric
@@ -179,6 +223,13 @@ export const MarketDetails = ({
             value={maxLeverage?.value}
             loading={maxLeverage?.value == null && maxLeverage?.loading}
             valueOptions={{ unit: 'multiplier' }}
+            valueTooltip={{
+              title: t`Maximum Leverage`,
+              body: <MaxLeverageTooltip />,
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
           />
         )}
       </Box>

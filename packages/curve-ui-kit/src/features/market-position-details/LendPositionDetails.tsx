@@ -2,6 +2,7 @@ import { CardHeader, Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { AmountSuppliedTooltip } from './tooltips/Amount Supplied'
 
 const { Spacing } = SizesAndSpaces
 
@@ -74,6 +75,13 @@ export const LendPositionDetails = ({ lendingAPY, shares, lentAsset }: LendPosit
               }
             : undefined
         }
+        valueTooltip={{
+          title: t`Amount Supplied`,
+          body: <AmountSuppliedTooltip />,
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
       />
       <Metric
         size="medium"

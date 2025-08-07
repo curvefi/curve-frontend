@@ -10,7 +10,7 @@ import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
+import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type UseLoanPositionDetailsProps = {
@@ -128,7 +128,7 @@ export const useLoanPositionDetails = ({
       loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
+      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
       loading: userLoanDetailsLoading ?? true,
     },
     totalDebt: {

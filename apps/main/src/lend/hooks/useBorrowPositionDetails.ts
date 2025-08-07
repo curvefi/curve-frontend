@@ -9,7 +9,7 @@ import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
+import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type UseBorrowPositionDetailsProps = {
@@ -120,7 +120,7 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
+      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {

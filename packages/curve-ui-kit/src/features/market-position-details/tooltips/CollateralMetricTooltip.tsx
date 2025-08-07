@@ -1,10 +1,8 @@
-import { Stack, Typography } from '@mui/material'
+import { Stack } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { CollateralValue } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
+import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
 type CollateralMetricTooltipProps = {
   collateralValue: CollateralValue | undefined | null
@@ -52,55 +50,27 @@ export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricToo
     : UnavailableNotation
 
   return (
-    <Stack gap={3} sx={{ maxWidth: '20rem' }}>
-      <Typography variant="bodySRegular">{t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include crvUSD due to liquidation protection.`}</Typography>
+    <TooltipWrapper>
+      <TooltipDescription
+        text={t`Collateral value is taken by multiplying tokens in collateral by the oracle price. In soft liquidation, it may include crvUSD due to liquidation protection.`}
+      />
 
-      <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
-        <Typography variant="bodySBold">{t`Breakdown`}</Typography>
-
-        <Stack direction="row" justifyContent="space-between" gap={5}>
-          <Typography variant="bodySRegular">{t`Deposit token`}</Typography>
-          <Stack
-            direction="row"
-            gap={2}
-            sx={{
-              flexWrap: 'wrap',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Typography
-              variant="bodySBold"
-              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
-            >{`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}</Typography>
-            {collateralPercentage && (
-              <Typography variant="bodySRegular" sx={{ textAlign: 'right' }}>{`(${collateralPercentage})`}</Typography>
-            )}
-          </Stack>
-        </Stack>
-
-        <Stack direction="row" justifyContent="space-between" gap={5}>
-          <Typography variant="bodySRegular">{collateralValue?.borrow?.symbol ?? UnavailableNotation}</Typography>
-          <Stack
-            direction="row"
-            gap={2}
-            sx={{
-              flexWrap: 'wrap',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Typography
-              variant="bodySBold"
-              sx={{ textAlign: 'right', whiteSpace: 'nowrap' }}
-            >{`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}</Typography>
-            <Typography variant="bodySRegular" sx={{ textAlign: 'right' }}>{`(${crvUSDPercentage})`}</Typography>
-          </Stack>
-        </Stack>
+      <Stack>
+        <TooltipItems secondary>
+          <TooltipItem title={t`Deposit token`} variant="independent">
+            {`${collateralValueFormatted} ${collateralValue?.collateral?.symbol ?? UnavailableNotation}`}
+            {collateralPercentage && ` (${collateralPercentage})`}
+          </TooltipItem>
+          <TooltipItem title={t`Borrow token`} variant="independent">
+            {`${crvUSDValueFormatted} ${collateralValue?.borrow?.symbol ?? UnavailableNotation}`}
+            {crvUSDPercentage && ` (${crvUSDPercentage})`}
+          </TooltipItem>
+        </TooltipItems>
       </Stack>
 
-      <Stack direction="row" justifyContent="space-between" gap={5}>
-        <Typography variant="bodySBold">{t`Total collateral value`}</Typography>
-        <Typography variant="highlightS">{totalValueFormatted}</Typography>
-      </Stack>
-    </Stack>
+      <TooltipItem title={t`Total collateral value`} variant="independent">
+        {totalValueFormatted}
+      </TooltipItem>
+    </TooltipWrapper>
   )
 }
