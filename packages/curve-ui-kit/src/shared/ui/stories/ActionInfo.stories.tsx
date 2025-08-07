@@ -1,7 +1,7 @@
 import AcUnitIcon from '@mui/icons-material/AcUnit'
 import WhatshotIcon from '@mui/icons-material/Whatshot'
 import Switch from '@mui/material/Switch'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { shortenAddress } from '@ui-kit/utils'
 import ActionInfo from '../ActionInfo'
 

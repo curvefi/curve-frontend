@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
+import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { LargeTokenInput, type LargeTokenInputRef } from '../LargeTokenInput'
 
 const TOKEN_OPTIONS = [

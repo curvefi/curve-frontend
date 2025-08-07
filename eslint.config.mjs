@@ -1,3 +1,6 @@
+// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
+import storybook from "eslint-plugin-storybook";
+
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import js from '@eslint/js'
@@ -11,15 +14,12 @@ const compat = new FlatCompat({
   allConfig: js.configs.all,
 })
 
-const config = [
-  ...compat.extends('custom'),
-  {
-    settings: {
-      next: {
-        rootDir: ['apps/*/', 'packages/ui/*/'],
-      },
+const config = [...compat.extends('custom'), {
+  settings: {
+    next: {
+      rootDir: ['apps/*/', 'packages/ui/*/'],
     },
   },
-]
+}, ...storybook.configs["flat/recommended"]]
 
 export default config
