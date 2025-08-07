@@ -48,12 +48,12 @@ export const TooltipItem = ({
   title,
   children,
   loading = false,
-  variant,
+  variant = 'default',
 }: {
   title: ReactNode
   children?: ReactNode
   loading?: boolean // shows skeleton instead of children
-  variant: ItemVariant
+  variant?: ItemVariant
 }) => (
   <Stack direction="row" justifyContent="space-between">
     <Typography
