@@ -1,0 +1,57 @@
+{
+  "campaignName": "Apple XTZ",
+  "platform": "Etherlink",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "apple.png",
+  "dashboardLink": "https://app.applefarm.xyz/users/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for applXTZ rewards. Visit Apple Farm to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x942644106B073E30D72c2C5D7529D5C296ea91ab",
+      "network": "etherlink",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for applXTZ rewards. Visit Apple Farm to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x0714027E44802b2Ff76389daF5371990CC3a4C24",
+      "network": "etherlink",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for applXTZ rewards. Visit Apple Farm to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1E8D78e9b3f0152D54d32904B7933f1cFE439Df1",
+      "network": "etherlink",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for applXTZ rewards. Visit Apple Farm to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2D84D79C852f6842AbE0304b70bBaA1506AdD457",
+      "network": "etherlink",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}

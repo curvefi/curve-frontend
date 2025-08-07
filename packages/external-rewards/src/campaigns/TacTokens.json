@@ -1,5 +1,5 @@
 {
-  "campaignName": "",
+  "campaignName": "WTAC",
   "platform": "TAC",
   "description": "Tokens for providing liquidity.",
   "platformImageId": "tac.png",
@@ -8,7 +8,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xAaD47973427b39bE737C1154F50DD6595083FA88",
@@ -20,7 +20,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x93DD63B4D8FD8F086ab70c71e0a160aaeddad26B",
@@ -32,7 +32,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x1635D9ae7B8eF28b0aA9630a9F0A75160Bd677ef",
@@ -44,7 +44,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x24894F0c4f80837d61CA21730A75Fa216FED7200",
@@ -56,7 +56,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x51d701D23E1e6a58202694352E486b3614b75946",
@@ -68,7 +68,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x9c15DC1c8991E852CEaf623b30162A98A1c83f3D",
@@ -80,7 +80,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x3e3D5E3c098D1576112AF93598D7C55F895f83fF",
@@ -92,7 +92,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x76E28170713659bf213Bd985E39C3729f9618D4c",
@@ -104,7 +104,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xE9973C24945CB4B4e87DbEe6908DB5E07484113D",
@@ -116,7 +116,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x52297F3E1F099dA7f4fc0A66Bc8732016aB3F9b1",
@@ -128,7 +128,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xE5948A817d7A061a0eF40128E91379046Da1009e",
@@ -140,7 +140,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x2F5FEbcA5530676a609cd125954C44aaB4Cd1c48",
@@ -152,7 +152,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xed0CDC6363222eF823eF44d30B57f76CF980c368",
@@ -164,7 +164,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x330F1b8877Ed07950448DDECe9803cf9295F39F8",
@@ -176,11 +176,11 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xFfF8634dE89271b6075C55FA89B4E9A087Fdb9FE",
-      "network": "ethereum",
+      "address": "0x51178ce64e2518A9a9347a15157d0a5a54b9B7a1",
+      "network": "tac",
       "multiplier": "tac",
       "tags": ["tokens"],
       "lock": "false"
@@ -188,11 +188,11 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xc73B0328Bd40Ea35Aad34d0fDC1dBE64C4f9c59F",
-      "network": "ethereum",
+      "address": "0x80FF7cA41A709bbd28252e2fB21Ce47772bb1779",
+      "network": "tac",
       "multiplier": "tac",
       "tags": ["tokens"],
       "lock": "false"
@@ -200,11 +200,11 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "Providing liquidity in this pool makes you eligible for TAC rewards. Visit Merkl to view and claim them.",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x51F5466690978173f45270f57e06e25b0c888261",
-      "network": "ethereum",
+      "address": "0xA8Be149F69c23469B51891530107e282eA0Dd49d",
+      "network": "tac",
       "multiplier": "tac",
       "tags": ["tokens"],
       "lock": "false"
@@ -212,7 +212,7 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0xC8228FcF835E020FD33262FD3ea720bC799C8783",
@@ -224,10 +224,22 @@
     {
       "id": "null",
       "action": "lp",
-      "description": "null",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
       "address": "0x1436e4Ca2c687335b7c5E1b446AE532b9e287160",
+      "network": "tac",
+      "multiplier": "tac",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xc25708EA0E8ABe67A08eC39AEF0dAdA3a25dD708",
       "network": "tac",
       "multiplier": "tac",
       "tags": ["tokens"],
