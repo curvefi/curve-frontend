@@ -106,5 +106,8 @@
   },
   {
     "campaign": "Apple.json"
+  },
+  {
+    "campaign": "Plume.json"
   }
 ]
