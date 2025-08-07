@@ -1,0 +1,21 @@
+{
+  "campaignName": "",
+  "platform": "Tharwa",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "tharwa.png",
+  "dashboardLink": "https://app.tharwa.finance/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xF88dE5987a4a114Fab1Fe98E681f83216F4b6E76",
+      "network": "ethereum",
+      "multiplier": "1.2x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

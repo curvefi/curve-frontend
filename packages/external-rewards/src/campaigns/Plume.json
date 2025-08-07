@@ -1,0 +1,21 @@
+{
+  "campaignName": "WPLUME",
+  "platform": "Plume",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "wplume.png",
+  "dashboardLink": "https://app.merkl.xyz/users/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for WPLUME rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xc25708EA0E8ABe67A08eC39AEF0dAdA3a25dD708",
+      "network": "plume",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
