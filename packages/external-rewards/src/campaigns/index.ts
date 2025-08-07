@@ -1,3 +1,4 @@
+import Apple from './Apple.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
@@ -28,6 +29,7 @@ import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import TacTokens from './TacTokens.json'
+import Tharwa from './Tharwa.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -68,4 +70,6 @@ export {
   TacTokens,
   Loop,
   Noon,
+  Apple,
+  Tharwa,
 }
