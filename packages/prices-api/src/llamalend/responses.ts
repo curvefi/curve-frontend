@@ -72,22 +72,34 @@ export type GetSnapshotsResponse = {
       lend_apr: number
       lend_apr_crv_0_boost: number
       lend_apr_crv_max_boost: number
+      liquidation_discount: number
+      loan_discount: number
       n_loans: number
       price_oracle: string
       amm_price: string
+      base_price: string
       total_debt: string
       total_debt_usd: string
       total_assets: string
       total_assets_usd: string
       minted: string
       redeemed: string
+      minted_usd: string
+      redeemed_usd: string
+      min_band: string
+      max_band: string
       collateral_balance: string
       collateral_balance_usd: string
       borrowed_balance: string
       borrowed_balance_usd: string
+      amm_a: string
+      sum_debt_squared: string
+      extra_reward_apr: {
+        address: Address
+        symbol: string
+        apr: number
+      }[]
       timestamp: string
-      liquidation_discount: number
-      loan_discount: number
     },
   ]
 }
