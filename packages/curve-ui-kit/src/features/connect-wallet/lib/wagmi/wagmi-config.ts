@@ -44,6 +44,11 @@ export const createWagmiConfig = memoize(
     }),
   {
     max: 1, // only memoize the last call
+    normalizer: ([{ chains, transports }]) =>
+      JSON.stringify({
+        chainIds: chains.map((c) => c.id),
+        transportIds: Object.keys(transports),
+      }),
   },
 )
 

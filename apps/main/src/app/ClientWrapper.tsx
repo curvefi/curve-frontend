@@ -109,7 +109,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const transports = Object.fromEntries(
     networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
   )
-  const config = useMemo(() => createWagmiConfig({ chains, transports }), [chains, transports])
+  const config = createWagmiConfig({ chains, transports })
 
   const pathname = usePathname()
   const push = useNavigate()
