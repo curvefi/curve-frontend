@@ -5,6 +5,7 @@ import type { Chain } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
 import GlobalStyle from '@/globalStyle'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
 import type { NetworkDef } from '@ui/utils'
 import {
@@ -98,13 +99,14 @@ function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
  */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
-  networks,
+  networkDefs,
   preferredScheme,
 }: {
   children: ReactNode
-  networks: NetworkDef<TId, ChainId>[]
+  networkDefs: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
 }) => {
+  const networks = recordValues(networkDefs)
   const chains = networks.map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [Chain, ...Chain[]]
   const transports = Object.fromEntries(
     networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
@@ -138,7 +140,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
             <WagmiProvider config={config}>
               <QueryProvider persister={persister} queryClient={queryClient}>
                 <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
-                  <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+                  <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
                     {children}
                   </GlobalLayout>
                 </ConnectionProvider>
