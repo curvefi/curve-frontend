@@ -14,7 +14,7 @@ type MarketCapAndAvailable = {
   available: number
 }
 type MarketMaxLeverage = {
-  value: string
+  maxLeverage: string
 }
 type MarketCollateralAmounts = {
   collateralAmount: number
@@ -51,7 +51,7 @@ const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketM
   const api = requireLib('llamaApi')
   const market = api.getLendMarket(marketId)
   const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
-  return { value: maxLeverage }
+  return { maxLeverage }
 }
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
@@ -85,6 +85,8 @@ export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarke
 
 const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
   rates: await requireLib('llamaApi').getLendMarket(marketId).stats.rates(false, false),
+  rewardsApr: await requireLib('llamaApi').getLendMarket(marketId).vault.rewardsApr(false),
+  crvRates: await requireLib('llamaApi').getLendMarket(marketId).vault.crvApr(false),
 })
 
 /**

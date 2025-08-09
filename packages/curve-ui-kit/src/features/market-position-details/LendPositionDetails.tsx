@@ -2,7 +2,7 @@ import { CardHeader, Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { AmountSuppliedTooltip } from './tooltips/Amount Supplied'
+import { AmountSuppliedTooltip } from './tooltips/AmountSupplied'
 
 const { Spacing } = SizesAndSpaces
 

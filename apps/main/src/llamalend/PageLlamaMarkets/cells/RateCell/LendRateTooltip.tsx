@@ -5,12 +5,9 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { TooltipItem, TooltipItems, TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { formatPercent, useFilteredRewards } from '../cell.format'
 import { RewardsTooltipItems } from './RewardsTooltipItems'
-
-const { Spacing } = SizesAndSpaces
 
 const rateType = 'lend' as const
 

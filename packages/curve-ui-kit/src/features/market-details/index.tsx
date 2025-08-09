@@ -1,8 +1,10 @@
-import { CardHeader, Box } from '@mui/material'
+import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
+import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
+import { MarketBorrowRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
@@ -33,12 +35,25 @@ type BorrowToken = {
 }
 type BorrowAPY = {
   value: number | undefined | null
+  totalApy: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 type LendingAPY = {
   value: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
+  lendAprCrvMinBoost: number | undefined | null
+  lendAprCrvMaxBoost: number | undefined | null
+  totalAprMinBoost: number | undefined | null
+  totalAprMaxBoost: number | undefined | null
+  extraIncentives: {
+    title: string
+    percentage: number
+    address: string
+    blockchainId: string
+  }[]
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 type AvailableLiquidity = {
@@ -114,6 +129,24 @@ export const MarketDetails = ({
                 }
               : undefined
           }
+          valueTooltip={{
+            title: t`Borrow Rate`,
+            body: (
+              <MarketBorrowRateTooltip
+                marketType={marketType}
+                borrowRate={borrowAPY?.value}
+                borrowTotalApy={borrowAPY?.totalApy}
+                averageRate={borrowAPY?.thirtyDayAvgRate}
+                periodLabel="30D"
+                extraRewards={borrowAPY?.extraRewards ?? []}
+                extraIncentives={[]}
+                isLoading={borrowAPY?.loading}
+              />
+            ),
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
         {lendingAPY && (
           <Metric
