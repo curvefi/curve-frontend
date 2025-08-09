@@ -94,7 +94,7 @@ export type GetSnapshotsResponse = {
       borrowed_balance_usd: string
       amm_a: string
       sum_debt_squared: string
-      extra_reward_apr: {
+      extra_rewards_apr: {
         address: Address
         symbol: string
         apr: number

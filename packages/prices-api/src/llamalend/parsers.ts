@@ -89,7 +89,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   maxBand: parseFloat(x.max_band),
   ammA: parseFloat(x.amm_a),
   sumDebtSquared: parseFloat(x.sum_debt_squared),
-  extraRewardApr: x.extra_reward_apr.map((y) => ({
+  extraRewardApr: x.extra_rewards_apr.map((y) => ({
     address: y.address,
     symbol: y.symbol,
     rate: y.apr,
