@@ -10,8 +10,10 @@ import type {
   BandRange,
 } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { CollateralMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/CollateralMetricTooltip'
+import { CurrentLTVTooltip } from '@ui-kit/features/market-position-details/tooltips/CurrentLTVTooltip'
 import { LiquidityThresholdTooltip } from '@ui-kit/features/market-position-details/tooltips/LiquidityThresholdMetricTooltip'
 import { PnlMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/PnlMetricTooltip'
+import { TotalDebtTooltip } from '@ui-kit/features/market-position-details/tooltips/TotalDebtTooltip'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -84,6 +86,13 @@ export const BorrowInformation = ({
         value={totalDebt?.value}
         loading={totalDebt?.value == null && totalDebt?.loading}
         valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
+        valueTooltip={{
+          title: t`Total Debt`,
+          body: <TotalDebtTooltip />,
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
       />
       <Metric
         size="medium"
@@ -105,6 +114,13 @@ export const BorrowInformation = ({
         value={ltv?.value}
         loading={ltv?.value == null && ltv?.loading}
         valueOptions={{ unit: 'percentage', decimals: 2 }}
+        valueTooltip={{
+          title: t`Current LTV (Loan To Value ratio)`,
+          body: <CurrentLTVTooltip />,
+          placement: 'top',
+          arrow: false,
+          clickable: true,
+        }}
       />
       {leverage &&
         leverage?.value &&

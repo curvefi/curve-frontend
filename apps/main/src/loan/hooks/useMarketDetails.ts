@@ -44,6 +44,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   }, [crvUsdSnapshots])
 
   return {
+    marketType: 'mint',
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,

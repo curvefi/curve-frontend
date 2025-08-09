@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import { TooltipItem } from '@/llamalend/components/TooltipItem'
 import type { PoolRewards } from '@/llamalend/entities/campaigns'
 import { formatPercent } from '@/llamalend/PageLlamaMarkets/cells/cell.format'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
@@ -8,6 +7,7 @@ import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -27,7 +27,7 @@ export const RewardsTooltipItems = ({
     <>
       <TooltipItem title={title}>{percentage}</TooltipItem>
       {extraIncentives?.map(({ percentage, title, address, blockchainId }, i) => (
-        <TooltipItem key={i} subitem title={title}>
+        <TooltipItem key={i} variant="subItem" title={title}>
           <Stack direction="row" gap={Spacing.xs} alignItems="center">
             <TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />
             {formatPercent(percentage)}
@@ -35,7 +35,7 @@ export const RewardsTooltipItems = ({
         </TooltipItem>
       ))}
       {poolRewards.map((r, i) => (
-        <TooltipItem subitem key={i} title={t`Points`}>
+        <TooltipItem variant="subItem" key={i} title={t`Points`}>
           <Stack
             component={Link}
             href={r.dashboardLink}

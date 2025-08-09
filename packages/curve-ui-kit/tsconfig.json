@@ -12,6 +12,8 @@
     "paths": {
       "@ui": ["../../../packages/ui/src/index.ts"],
       "@ui/*": ["../../../packages/ui/src/*"],
+      "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
+      "@external-rewards/*": ["../../../packages/external-rewards/src/*"],
       "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"],
       "@ui-kit/*": ["./*"]

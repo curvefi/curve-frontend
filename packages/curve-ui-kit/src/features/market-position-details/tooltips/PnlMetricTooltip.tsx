@@ -1,10 +1,7 @@
-import { Stack, Typography } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { Pnl } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { t } from '@ui-kit/lib/i18n'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
+import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
 type PnlMetricTooltipProps = {
   pnl: Pnl | undefined | null
@@ -13,41 +10,27 @@ type PnlMetricTooltipProps = {
 const UnavailableNotation = '-'
 
 export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
-  <Stack gap={3} sx={{ maxWidth: '20rem' }}>
-    <Typography variant="bodySRegular">{t`Profit and Loss (PnL) is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}</Typography>
+  <TooltipWrapper>
+    <TooltipDescription
+      text={t`Profit and Loss (PnL) is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}
+    />
+    <TooltipItems secondary>
+      <TooltipItem title={t`Collateral value`} variant="independent">
+        {pnl?.currentPositionValue
+          ? formatNumber(pnl.currentPositionValue, { ...FORMAT_OPTIONS.USD })
+          : UnavailableNotation}
+      </TooltipItem>
 
-    <Stack gap={2} display="column" sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.sm }}>
-      <Typography variant="bodySBold">{t`Breakdown`}</Typography>
+      <TooltipItem title={t`Value at deposit`} variant="independent">
+        {pnl?.depositedValue ? formatNumber(pnl.depositedValue, { ...FORMAT_OPTIONS.USD }) : UnavailableNotation}
+      </TooltipItem>
 
-      <Stack direction="row" justifyContent="space-between" gap={5}>
-        <Typography variant="bodySRegular">{t`Collateral value`}</Typography>
-        <Typography variant="bodySBold">
-          {pnl?.currentPositionValue
-            ? formatNumber(pnl.currentPositionValue, { ...FORMAT_OPTIONS.USD })
-            : UnavailableNotation}
-        </Typography>
-      </Stack>
-
-      <Stack direction="row" justifyContent="space-between" gap={5}>
-        <Typography variant="bodySRegular">{t`Value at deposit`}</Typography>
-        <Typography variant="bodySBold">
-          {pnl?.depositedValue ? formatNumber(pnl.depositedValue, { ...FORMAT_OPTIONS.USD }) : UnavailableNotation}
-        </Typography>
-      </Stack>
-
-      <Stack direction="row" justifyContent="space-between" gap={5}>
-        <Typography variant="bodySRegular">{t`Profit/Loss`}</Typography>
-        <Stack direction="row" gap={2}>
-          <Typography variant="bodySBold">
-            {pnl?.currentProfit && pnl?.depositedValue && pnl?.currentPositionValue
-              ? formatNumber(pnl.currentProfit, { ...FORMAT_OPTIONS.USD })
-              : UnavailableNotation}
-          </Typography>
-          {pnl?.percentageChange && (
-            <Typography variant="bodySRegular">{`(${formatNumber(pnl.percentageChange, { ...FORMAT_OPTIONS.PERCENT })})`}</Typography>
-          )}
-        </Stack>
-      </Stack>
-    </Stack>
-  </Stack>
+      <TooltipItem title={t`Profit/Loss`} variant="independent">
+        {pnl?.currentProfit && pnl?.depositedValue && pnl?.currentPositionValue
+          ? formatNumber(pnl.currentProfit, { ...FORMAT_OPTIONS.USD })
+          : UnavailableNotation}
+        {pnl?.percentageChange && `(${formatNumber(pnl.percentageChange, { ...FORMAT_OPTIONS.PERCENT })})`}
+      </TooltipItem>
+    </TooltipItems>
+  </TooltipWrapper>
 )

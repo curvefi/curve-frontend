@@ -1,17 +1,13 @@
 import { ReactElement } from 'react'
-import { TooltipItem, TooltipItems } from '@/llamalend/components/TooltipItem'
 import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
 import { useMarketExtraIncentives } from '@/llamalend/hooks/useMarketExtraIncentives'
 import { RewardsTooltipItems } from '@/llamalend/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 import { useSnapshots } from '../../hooks/useSnapshots'
 import { formatPercent, useFilteredRewards } from '../cell.format'
-
-const { Spacing } = SizesAndSpaces
 
 const messages = {
   [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market, borrow incentives and its utilization.`,
@@ -36,11 +32,11 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
 
   return (
-    <Stack gap={Spacing.sm}>
-      <Typography color="textSecondary">{messages[marketType]}</Typography>
+    <TooltipWrapper>
+      <TooltipDescription text={messages[marketType]} />
 
       {!!rebasingYield && (
-        <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offers extra yield`}</Typography>
+        <TooltipDescription text={t`The collateral of this market is yield bearing and offers extra yield`} />
       )}
 
       <Stack>
@@ -57,22 +53,22 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
         {!!rebasingYield && (
           <TooltipItems secondary>
             <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(rebasingYield)}</TooltipItem>
-            <TooltipItem subitem title={collateralSymbol}>
+            <TooltipItem variant="subItem" title={collateralSymbol}>
               {formatPercent(rebasingYield)}
             </TooltipItem>
           </TooltipItems>
         )}
 
         <TooltipItems>
-          <TooltipItem primary title={t`Total borrow rate`}>
+          <TooltipItem variant="primary" title={t`Total borrow rate`}>
             {formatPercent(borrowTotalApy)}
           </TooltipItem>
-          <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
+          <TooltipItem variant="subItem" loading={averageRate == null} title={`${period} ${t`Average`}`}>
             {formatPercent(averageRate)}
           </TooltipItem>
         </TooltipItems>
       </Stack>
-    </Stack>
+    </TooltipWrapper>
   )
 }
 
