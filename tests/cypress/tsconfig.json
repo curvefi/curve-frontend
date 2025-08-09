@@ -4,7 +4,7 @@
     "jsx": "react",
     "baseUrl": "./",
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["*", "../../apps/main/src/*"],
       "@curvefi/prices-api": ["../../packages/prices-api/src"],
       "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"]

@@ -34,6 +34,7 @@ export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
         debtCeiling={debtCeiling}
         poolName={poolName}
         underlyingCoins={underlyingCoins}
+        testId={testId}
       />
 
       <PegKeeperAdvancedDetails
@@ -42,12 +43,14 @@ export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
         poolId={poolId}
         poolName={poolName}
         poolAddress={poolAddress}
+        testId={testId}
       />
 
       <PegKeeperRebalanceButton
         canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
         isRebalancing={isRebalancing}
         onRebalance={rebalance}
+        testId={testId}
       />
     </Card>
   )

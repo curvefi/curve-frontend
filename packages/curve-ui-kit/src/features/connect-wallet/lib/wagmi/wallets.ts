@@ -25,3 +25,5 @@ export const supportedWallets = [
   { label: `Coinbase`, icon: CoinbaseWalletIcon, connector: 'coinbaseWallet' },
   ...(isInIframe ? [{ label: 'Safe', icon: SafeWalletIcon, connector: 'safe' } as const] : []),
 ] satisfies WalletType[]
+
+export type Connector = (typeof supportedWallets)[number]['connector']

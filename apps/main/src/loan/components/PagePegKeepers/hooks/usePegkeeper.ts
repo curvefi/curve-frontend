@@ -22,6 +22,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
   })
 
   // There's an `estimate_caller_profit` view function in the abi, but it's very inaccurate (by design)
+  // However, if this function fails we fall back to it (could be when no wallet is connected)
   const {
     data: estCallerProfit,
     refetch: refetchEstCallerProfit,
@@ -33,6 +34,16 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     query: {
       ...query,
       retry: false, // If it fails it's most likely because the profit is actually zero
+    },
+  })
+
+  const { data: estCallerProfitFallback } = useReadContract({
+    abi: pegkeeperAbi,
+    address,
+    functionName: 'estimate_caller_profit',
+    query: {
+      ...query,
+      enabled: estCallerProfitError,
     },
   })
 
@@ -102,7 +113,9 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     rate,
     debt: debt !== undefined ? formatEther(debt) : undefined,
     estCallerProfit: estCallerProfitError
-      ? '0'
+      ? estCallerProfitFallback !== undefined
+        ? formatEther(estCallerProfitFallback)
+        : '0'
       : estCallerProfit?.result !== undefined
         ? formatEther(estCallerProfit.result)
         : undefined,

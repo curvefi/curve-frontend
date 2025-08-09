@@ -93,7 +93,7 @@ const ActionInfo = ({
   copyValue,
   copiedTitle,
   loading = false,
-  testId,
+  testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
   const [isOpen, open, close] = useSwitch(false)
@@ -128,7 +128,7 @@ const ActionInfo = ({
 
         <Tooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
-          <Stack direction="row" alignItems="center" gap={Spacing.xxs}>
+          <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
 
             <WithSkeleton loading={!!loading}>

@@ -6,7 +6,7 @@
  * properly when WalletConnect initializes its provider with:
  * `new WalletConnectProvider({ rpc: chain.rpcUrls.default.http[0] })`
  *
- * blockExplorers are not defined here, they get set in `createWagmiConfig`.
+ * blockExplorers are not defined here, they get set in `createChain`.
  */
 import { chainConfig } from 'viem/op-stack'
 import { defineChain } from 'viem/utils'

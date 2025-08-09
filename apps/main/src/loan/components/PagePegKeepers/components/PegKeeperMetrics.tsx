@@ -11,9 +11,17 @@ const { Spacing } = SizesAndSpaces
 type Props = Pick<PegKeeperDetails, 'debt' | 'debtCeiling' | 'rate'> & {
   poolName: Pool['name']
   underlyingCoins: Pool['underlyingCoins']
+  testId?: string
 }
 
-export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, underlyingCoins }: Props) => (
+export const PegKeeperMetrics = ({
+  rate,
+  debt,
+  debtCeiling,
+  poolName,
+  underlyingCoins,
+  testId = 'pegkeeper',
+}: Props) => (
   <CardContent>
     <Stack gap={Spacing.sm}>
       <Stack direction="row" gap={Spacing.md}>
@@ -23,6 +31,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, underlying
           loading={rate == null}
           value={Number(rate)}
           valueOptions={{ decimals: 5, unit: 'none' }}
+          testId={`${testId}-metric-rate`}
         />
       </Stack>
 
@@ -32,6 +41,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, underlying
           loading={debt == null}
           value={Number(debt)}
           valueOptions={{ unit: CRVUSD_UNIT }}
+          testId={`${testId}-metric-debt`}
           sx={{ flex: 1 }}
         />
 
@@ -40,6 +50,7 @@ export const PegKeeperMetrics = ({ rate, debt, debtCeiling, poolName, underlying
           loading={debtCeiling == null}
           value={Number(debtCeiling)}
           valueOptions={{ unit: { symbol: underlyingCoins[0], position: 'suffix' }, abbreviate: true }}
+          testId={`${testId}-metric-ceiling`}
           sx={{ flex: 1 }}
         />
       </Stack>

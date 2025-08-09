@@ -18,9 +18,17 @@ type Props = {
   poolName: Pool['name']
   poolId: Pool['id']
   poolAddress: Pool['address']
+  testId?: string
 }
 
-export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poolName, poolAddress }: Props) => (
+export const PegKeeperAdvancedDetails = ({
+  address,
+  estCallerProfit,
+  poolId,
+  poolName,
+  poolAddress,
+  testId = 'pegkeeper',
+}: Props) => (
   <Stack>
     <Typography
       variant="headingXsBold"
@@ -47,7 +55,7 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
         link={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
         copy
         copyValue={poolAddress}
-        testId="pegkeeper-action-info-pool"
+        testId={`${testId}-action-info-pool`}
       />
 
       <ActionInfo
@@ -56,7 +64,7 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
         link={`https://etherscan.io/address/${address}`}
         copy
         copyValue={address}
-        testId="pegkeeper-action-info-contract"
+        testId={`${testId}-action-info-contract`}
       />
 
       <ActionInfo
@@ -75,6 +83,7 @@ export const PegKeeperAdvancedDetails = ({ address, estCallerProfit, poolId, poo
           </Tooltip>
         }
         sx={{ paddingBlockStart: Spacing.md }}
+        testId={`${testId}-action-info-profit`}
       />
     </Stack>
   </Stack>

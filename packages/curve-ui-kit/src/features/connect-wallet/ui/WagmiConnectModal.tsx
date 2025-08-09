@@ -10,7 +10,7 @@ import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useWallet } from '../lib'
-import { supportedWallets, type WalletType } from '../lib/wagmi/wallets'
+import { supportedWallets, type Connector, type WalletType } from '../lib/wagmi/wallets'
 
 const { IconSize } = SizesAndSpaces
 
@@ -52,7 +52,7 @@ const WalletListItem = ({
 export const WagmiConnectModal = () => {
   const { connect, showModal, closeModal } = useWallet()
   const [error, setError] = useState<unknown>(null)
-  const [isConnectingType, setIsConnectingType] = useState<(typeof supportedWallets)[number]['connector'] | null>(null)
+  const [isConnectingType, setIsConnectingType] = useState<Connector | null>(null)
 
   const onConnect = useCallback(
     async ({ connector }: WalletType) => {

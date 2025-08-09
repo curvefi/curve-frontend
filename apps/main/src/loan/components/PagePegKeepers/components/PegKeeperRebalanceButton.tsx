@@ -12,9 +12,10 @@ type Props = {
   canRebalance: boolean
   isRebalancing: boolean
   onRebalance: () => void
+  testId?: string
 }
 
-export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebalance }: Props) => {
+export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebalance, testId = 'pegkeeper' }: Props) => {
   const { isConnected, isConnecting } = useAccount()
   const { connect } = useWallet()
 
@@ -27,6 +28,7 @@ export const PegKeeperRebalanceButton = ({ canRebalance, isRebalancing, onRebala
           disabled={!canRebalance || isRebalancing}
           onClick={onRebalance}
           fullWidth
+          data-testid={`${testId}-rebalance-button`}
         >
           {isRebalancing ? t`Rebalancing...` : t`Rebalance`}
         </Button>
