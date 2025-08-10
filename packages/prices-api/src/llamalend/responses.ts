@@ -99,6 +99,16 @@ export type GetSnapshotsResponse = {
         symbol: string
         apr: number
       }[]
+      collateral_token: {
+        symbol: string
+        address: Address
+        rebasing_yield: number | null
+      }
+      borrowed_token: {
+        symbol: string
+        address: Address
+        rebasing_yield: number | null
+      }
       timestamp: string
     },
   ]

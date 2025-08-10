@@ -90,6 +90,16 @@ export type Snapshot = {
     symbol: string
     rate: number
   }[]
+  collateralToken: {
+    symbol: string
+    address: Address
+    rebasingYield: number | null
+  }
+  borrowedToken: {
+    symbol: string
+    address: Address
+    rebasingYield: number | null
+  }
   timestamp: Date
 }
 

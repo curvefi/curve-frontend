@@ -94,6 +94,16 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     symbol: y.symbol,
     rate: y.apr,
   })),
+  collateralToken: {
+    symbol: x.collateral_token.symbol,
+    address: x.collateral_token.address,
+    rebasingYield: x.collateral_token.rebasing_yield,
+  },
+  borrowedToken: {
+    symbol: x.borrowed_token.symbol,
+    address: x.borrowed_token.address,
+    rebasingYield: x.borrowed_token.rebasing_yield,
+  },
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
