@@ -5,7 +5,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { MarketBorrowRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltip'
+import { MarketSupplyRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { MarketType, ExtraIncentive } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
 import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
@@ -16,7 +18,6 @@ import { UtilizationTooltip } from './tooltips/UtilizationTooltip'
 
 const { Spacing } = SizesAndSpaces
 
-export type MarketType = 'lend' | 'mint'
 type Collateral = {
   total: number | undefined | null
   totalUsdValue: number | undefined | null
@@ -35,7 +36,6 @@ type BorrowToken = {
 }
 type BorrowAPY = {
   value: number | undefined | null
-  totalApy: number | undefined | null
   thirtyDayAvgRate: number | undefined | null
   extraRewards: PoolRewards[]
   loading: boolean
@@ -45,14 +45,7 @@ type LendingAPY = {
   thirtyDayAvgRate: number | undefined | null
   lendAprCrvMinBoost: number | undefined | null
   lendAprCrvMaxBoost: number | undefined | null
-  totalAprMinBoost: number | undefined | null
-  totalAprMaxBoost: number | undefined | null
-  extraIncentives: {
-    title: string
-    percentage: number
-    address: string
-    blockchainId: string
-  }[]
+  extraIncentives: ExtraIncentive[]
   extraRewards: PoolRewards[]
   loading: boolean
 }
@@ -164,6 +157,24 @@ export const MarketDetails = ({
                   }
                 : undefined
             }
+            valueTooltip={{
+              title: t`Supply Rate`,
+              body: (
+                <MarketSupplyRateTooltip
+                  supplyRate={lendingAPY?.value}
+                  averageRate={lendingAPY?.thirtyDayAvgRate}
+                  minBoostApr={lendingAPY?.lendAprCrvMinBoost}
+                  maxBoostApr={lendingAPY?.lendAprCrvMaxBoost}
+                  isLoading={lendingAPY?.loading}
+                  periodLabel="30D"
+                  extraRewards={lendingAPY?.extraRewards ?? []}
+                  extraIncentives={lendingAPY?.extraIncentives ?? []}
+                />
+              ),
+              placement: 'top',
+              arrow: false,
+              clickable: true,
+            }}
           />
         )}
         <SymbolCell

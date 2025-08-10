@@ -1,0 +1,24 @@
+import { useMemo } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
+import type { MarketRateType, ExtraIncentive } from '@ui-kit/types/market'
+
+const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52'
+
+export const useMarketExtraIncentives = (
+  type: MarketRateType,
+  incentives: ExtraIncentive[],
+  boosterApr: number | null | undefined,
+) =>
+  useMemo(() => {
+    if (type !== 'supply') return []
+
+    return notFalsy(
+      boosterApr && {
+        title: 'CRV',
+        percentage: boosterApr,
+        address: CRV_ADDRESS,
+        blockchainId: 'ethereum',
+      },
+      ...incentives.map((incentive) => incentive.percentage > 0 && incentive),
+    )
+  }, [incentives, boosterApr, type])

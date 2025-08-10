@@ -63,17 +63,12 @@ export const useMarketDetails = ({
     }
   }, [lendingSnapshots])
 
-  const borrowApy = Number(rates?.borrowApy ?? marketRate?.rates?.borrowApy)
+  const borrowApy = rates?.borrowApy ?? marketRate?.rates?.borrowApy
   // TODO: add collateral token rebasing yield
-  const lendApy = Number(rates?.lendApy ?? marketRate?.rates?.lendApy)
+  const lendApy = rates?.lendApy ?? marketRate?.rates?.lendApy
   const lendAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const lendAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  // TODO: add rebasing yield
-  const lendTotalExtraRewardApr = rewardsApr
-    ? (rewardsApr ?? []).reduce((acc, x) => acc + x.apy, 0)
-    : ((lendingSnapshots?.[0]?.extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0) ?? 0)
-  const lendTotalAprMinBoost = (lendApy ?? 0) + lendAprCrvMinBoost + lendTotalExtraRewardApr
-  const lendTotalAprMaxBoost = (lendApy ?? 0) + lendAprCrvMaxBoost + lendTotalExtraRewardApr
+  // TODO: add supply token rebasing yield
 
   const campaignRewards =
     campaigns && vault && controller
@@ -100,19 +95,17 @@ export const useMarketDetails = ({
       loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
     },
     borrowAPY: {
-      value: borrowApy != null ? borrowApy : null,
-      totalApy: borrowApy != null ? borrowApy : null,
+      value: borrowApy != null ? Number(borrowApy) : null,
+      totalApy: borrowApy != null ? Number(borrowApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRates?.borrowApyAvg ?? null,
       extraRewards: campaignRewards,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     lendingAPY: {
-      value: lendApy != null ? lendApy : null,
+      value: lendApy != null ? Number(lendApy) : null,
       thirtyDayAvgRate: thirtyDayAvgRates?.lendApyAvg ?? null,
       lendAprCrvMinBoost,
       lendAprCrvMaxBoost,
-      totalAprMinBoost: lendTotalAprMinBoost,
-      totalAprMaxBoost: lendTotalAprMaxBoost,
       extraIncentives: rewardsApr
         ? rewardsApr.map((r) => ({
             title: r.symbol,
