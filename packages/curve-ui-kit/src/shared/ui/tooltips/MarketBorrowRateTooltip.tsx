@@ -3,19 +3,17 @@ import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 import type { MarketType } from '@ui-kit/types/market'
-import { RewardsTooltipItems, type ExtraIncentiveItem } from './RewardTooltipItems'
+import { RewardsTooltipItems } from './RewardTooltipItems'
 import { formatPercent } from './utils'
 
 export type MarketBorrowRateTooltipProps = {
   marketType: MarketType
   borrowRate: number | null | undefined
-  borrowTotalApy: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: PoolRewards[]
-  extraIncentives: ExtraIncentiveItem[]
-  rebasingYield?: number | null | undefined
-  collateralSymbol?: string | null | undefined
+  rebasingYield: number | null | undefined
+  collateralSymbol: string | null | undefined
   isLoading?: boolean
 }
 
@@ -27,56 +25,54 @@ const messages: Record<MarketType, string> = {
 export const MarketBorrowRateTooltip = ({
   marketType,
   borrowRate,
-  borrowTotalApy,
   averageRate,
   periodLabel,
   extraRewards,
-  extraIncentives,
   rebasingYield,
   collateralSymbol,
   isLoading,
-}: MarketBorrowRateTooltipProps) => (
-  <TooltipWrapper>
-    <TooltipDescription text={messages[marketType]} />
+}: MarketBorrowRateTooltipProps) => {
+  const borrowTotalApy = (borrowRate ?? 0) - (rebasingYield ?? 0)
 
-    {!!rebasingYield && (
-      <TooltipDescription text={t`The collateral of this market is yield bearing and offers extra yield`} />
-    )}
-
-    <Stack>
-      <TooltipItems secondary>
-        <TooltipItem title={t`Borrow rate`}>{formatPercent(borrowRate ?? 0)}</TooltipItem>
-      </TooltipItems>
-
-      {(extraRewards.length > 0 || extraIncentives.length > 0) && (
-        <TooltipItems secondary>
-          <RewardsTooltipItems
-            title={t`Borrowing incentives`}
-            extraRewards={extraRewards}
-            extraIncentives={extraIncentives}
-          />
-        </TooltipItems>
-      )}
+  return (
+    <TooltipWrapper>
+      <TooltipDescription text={messages[marketType]} />
 
       {!!rebasingYield && (
-        <TooltipItems secondary>
-          <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(rebasingYield)}</TooltipItem>
-          {!!collateralSymbol && (
-            <TooltipItem variant="subItem" title={collateralSymbol}>
-              {formatPercent(rebasingYield)}
-            </TooltipItem>
-          )}
-        </TooltipItems>
+        <TooltipDescription text={t`The collateral of this market is yield bearing and offers extra yield`} />
       )}
 
-      <TooltipItems>
-        <TooltipItem variant="primary" title={t`Total borrow rate`}>
-          {formatPercent(borrowTotalApy ?? 0)}
-        </TooltipItem>
-        <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {averageRate ? formatPercent(averageRate) : 'N/A'}
-        </TooltipItem>
-      </TooltipItems>
-    </Stack>
-  </TooltipWrapper>
-)
+      <Stack>
+        <TooltipItems secondary>
+          <TooltipItem title={t`Borrow rate`}>{formatPercent(borrowRate ?? 0)}</TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {averageRate ? formatPercent(averageRate) : 'N/A'}
+          </TooltipItem>
+        </TooltipItems>
+
+        {extraRewards.length > 0 && (
+          <TooltipItems secondary>
+            <RewardsTooltipItems title={t`Borrowing incentives`} extraRewards={extraRewards} extraIncentives={[]} />
+          </TooltipItems>
+        )}
+
+        {!!rebasingYield && (
+          <TooltipItems secondary>
+            <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(rebasingYield * -1)}</TooltipItem>
+            {!!collateralSymbol && (
+              <TooltipItem variant="subItem" title={collateralSymbol}>
+                {formatPercent(rebasingYield * -1)}
+              </TooltipItem>
+            )}
+          </TooltipItems>
+        )}
+
+        <TooltipItems>
+          <TooltipItem variant="primary" title={t`Total borrow rate`}>
+            {formatPercent(borrowTotalApy ?? 0)}
+          </TooltipItem>
+        </TooltipItems>
+      </Stack>
+    </TooltipWrapper>
+  )
+}

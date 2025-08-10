@@ -11,8 +11,8 @@ import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
 import Vault from '@/lend/components/PageVault/index'
 import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useLendPositionDetails } from '@/lend/hooks/useLendPositionDetails'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
+import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
@@ -39,7 +39,7 @@ import Tabs, { Tab } from '@ui/Tab'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
-import { LendPositionDetails } from '@ui-kit/features/market-position-details'
+import { SupplyPositionDetails } from '@ui-kit/features/market-position-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
@@ -75,7 +75,7 @@ const Page = (params: MarketUrlParams) => {
   const [isLoaded, setLoaded] = useState(false)
   const [isBeta] = useBetaFlag()
 
-  const lendPositionDetails = useLendPositionDetails({
+  const supplyPositionDetails = useSupplyPositionDetails({
     chainId: rChainId,
     market: market,
     marketId: rOwmId,
@@ -142,9 +142,9 @@ const Page = (params: MarketUrlParams) => {
   const borrowPathnameFn = loanExists ? getLoanManagePathname : getLoanCreatePathname
   const positionDetailsHrefs = {
     borrow: borrowPathnameFn(params, rOwmId, ''),
-    lend: '',
+    supply: '',
   }
-  const hasSupplyPosition = (lendPositionDetails.shares.value ?? 0) > 0
+  const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   if (!provider) {
     return (
@@ -240,9 +240,9 @@ const Page = (params: MarketUrlParams) => {
               borrowAddress={market?.addresses?.controller || ''}
               supplyAddress={market?.addresses?.vault || ''}
             />
-            <MarketInformationTabs currentTab={'lend'} hrefs={positionDetailsHrefs}>
+            <MarketInformationTabs currentTab={'supply'} hrefs={positionDetailsHrefs}>
               {hasSupplyPosition ? (
-                <LendPositionDetails {...lendPositionDetails} />
+                <SupplyPositionDetails {...supplyPositionDetails} />
               ) : (
                 <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
                   <NoPosition type="supply" />

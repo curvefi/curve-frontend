@@ -137,7 +137,7 @@ const Page = (params: MarketUrlParams) => {
   }
   const positionDetailsHrefs = {
     borrow: '',
-    lend: getVaultPathname(params, rOwmId, 'deposit'),
+    supply: getVaultPathname(params, rOwmId, 'deposit'),
   }
 
   if (!provider) {

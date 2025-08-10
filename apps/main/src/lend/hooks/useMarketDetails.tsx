@@ -64,11 +64,9 @@ export const useMarketDetails = ({
   }, [lendingSnapshots])
 
   const borrowApy = rates?.borrowApy ?? marketRate?.rates?.borrowApy
-  // TODO: add collateral token rebasing yield
-  const lendApy = rates?.lendApy ?? marketRate?.rates?.lendApy
-  const lendAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
-  const lendAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  // TODO: add supply token rebasing yield
+  const supplyApy = rates?.lendApy ?? marketRate?.rates?.lendApy
+  const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
+  const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
 
   const campaignRewards =
     campaigns && vault && controller
@@ -95,17 +93,20 @@ export const useMarketDetails = ({
       loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
     },
     borrowAPY: {
-      value: borrowApy != null ? Number(borrowApy) : null,
-      totalApy: borrowApy != null ? Number(borrowApy) : null,
-      thirtyDayAvgRate: thirtyDayAvgRates?.borrowApyAvg ?? null,
+      rate: borrowApy != null ? Number(borrowApy) : null,
+      averageRate: thirtyDayAvgRates?.borrowApyAvg ?? null,
+      averageRateLabel: '30D',
+      rebasingYield: lendingSnapshots?.[0]?.collateralToken?.rebasingYield ?? null,
       extraRewards: campaignRewards,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
-    lendingAPY: {
-      value: lendApy != null ? Number(lendApy) : null,
-      thirtyDayAvgRate: thirtyDayAvgRates?.lendApyAvg ?? null,
-      lendAprCrvMinBoost,
-      lendAprCrvMaxBoost,
+    supplyAPY: {
+      rate: supplyApy != null ? Number(supplyApy) : null,
+      averageRate: thirtyDayAvgRates?.lendApyAvg ?? null,
+      averageRateLabel: '30D',
+      supplyAprCrvMinBoost,
+      supplyAprCrvMaxBoost,
+      rebasingYield: lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? null,
       extraIncentives: rewardsApr
         ? rewardsApr.map((r) => ({
             title: r.symbol,

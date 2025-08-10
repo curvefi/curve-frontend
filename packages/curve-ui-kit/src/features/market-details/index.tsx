@@ -35,16 +35,20 @@ type BorrowToken = {
   loading: boolean
 }
 type BorrowAPY = {
-  value: number | undefined | null
-  thirtyDayAvgRate: number | undefined | null
+  rate: number | undefined | null
+  averageRate: number | undefined | null
+  averageRateLabel: string
+  rebasingYield: number | null
   extraRewards: PoolRewards[]
   loading: boolean
 }
-type LendingAPY = {
-  value: number | undefined | null
-  thirtyDayAvgRate: number | undefined | null
-  lendAprCrvMinBoost: number | undefined | null
-  lendAprCrvMaxBoost: number | undefined | null
+type SupplyAPY = {
+  rate: number | undefined | null
+  averageRate: number | undefined | null
+  averageRateLabel: string
+  supplyAprCrvMinBoost: number | undefined | null
+  supplyAprCrvMaxBoost: number | undefined | null
+  rebasingYield: number | null
   extraIncentives: ExtraIncentive[]
   extraRewards: PoolRewards[]
   loading: boolean
@@ -63,7 +67,7 @@ export type MarketDetailsProps = {
   collateral: Collateral
   borrowToken: BorrowToken
   borrowAPY: BorrowAPY
-  lendingAPY?: LendingAPY
+  supplyAPY?: SupplyAPY
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
   blockchainId: string
@@ -77,7 +81,7 @@ export const MarketDetails = ({
   collateral,
   borrowToken,
   borrowAPY,
-  lendingAPY,
+  supplyAPY,
   availableLiquidity,
   maxLeverage,
   blockchainId,
@@ -110,14 +114,14 @@ export const MarketDetails = ({
         <Metric
           size={'medium'}
           label={t`Borrow rate`}
-          value={borrowAPY?.value}
-          loading={borrowAPY?.value == null && borrowAPY?.loading}
+          value={borrowAPY?.rate}
+          loading={borrowAPY?.rate == null && borrowAPY?.loading}
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={
-            borrowAPY?.thirtyDayAvgRate
+            borrowAPY?.averageRate
               ? {
-                  value: borrowAPY.thirtyDayAvgRate,
-                  unit: { symbol: '% 30D Avg', position: 'suffix' },
+                  value: borrowAPY.averageRate,
+                  unit: { symbol: `% ${borrowAPY.averageRateLabel} Avg`, position: 'suffix' },
                   decimals: 2,
                 }
               : undefined
@@ -127,12 +131,12 @@ export const MarketDetails = ({
             body: (
               <MarketBorrowRateTooltip
                 marketType={marketType}
-                borrowRate={borrowAPY?.value}
-                borrowTotalApy={borrowAPY?.totalApy}
-                averageRate={borrowAPY?.thirtyDayAvgRate}
-                periodLabel="30D"
+                borrowRate={borrowAPY?.rate}
+                averageRate={borrowAPY?.averageRate}
+                periodLabel={borrowAPY?.averageRateLabel}
                 extraRewards={borrowAPY?.extraRewards ?? []}
-                extraIncentives={[]}
+                rebasingYield={borrowAPY?.rebasingYield}
+                collateralSymbol={collateral?.symbol}
                 isLoading={borrowAPY?.loading}
               />
             ),
@@ -141,18 +145,18 @@ export const MarketDetails = ({
             clickable: true,
           }}
         />
-        {lendingAPY && (
+        {supplyAPY && (
           <Metric
             size={'medium'}
             label={t`Supply rate`}
-            value={lendingAPY?.value}
-            loading={lendingAPY?.value == null && lendingAPY?.loading}
+            value={supplyAPY?.rate}
+            loading={supplyAPY?.rate == null && supplyAPY?.loading}
             valueOptions={{ unit: 'percentage', decimals: 2 }}
             notional={
-              lendingAPY?.thirtyDayAvgRate
+              supplyAPY?.averageRate
                 ? {
-                    value: lendingAPY.thirtyDayAvgRate,
-                    unit: { symbol: '% 30D Avg', position: 'suffix' },
+                    value: supplyAPY.averageRate,
+                    unit: { symbol: `% ${supplyAPY.averageRateLabel} Avg`, position: 'suffix' },
                     decimals: 2,
                   }
                 : undefined
@@ -161,14 +165,15 @@ export const MarketDetails = ({
               title: t`Supply Rate`,
               body: (
                 <MarketSupplyRateTooltip
-                  supplyRate={lendingAPY?.value}
-                  averageRate={lendingAPY?.thirtyDayAvgRate}
-                  minBoostApr={lendingAPY?.lendAprCrvMinBoost}
-                  maxBoostApr={lendingAPY?.lendAprCrvMaxBoost}
-                  isLoading={lendingAPY?.loading}
-                  periodLabel="30D"
-                  extraRewards={lendingAPY?.extraRewards ?? []}
-                  extraIncentives={lendingAPY?.extraIncentives ?? []}
+                  supplyRate={supplyAPY?.rate}
+                  averageRate={supplyAPY?.averageRate}
+                  minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
+                  maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
+                  rebasingYield={supplyAPY?.rebasingYield}
+                  isLoading={supplyAPY?.loading}
+                  periodLabel={supplyAPY?.averageRateLabel}
+                  extraRewards={supplyAPY?.extraRewards ?? []}
+                  extraIncentives={supplyAPY?.extraIncentives ?? []}
                 />
               ),
               placement: 'top',
@@ -208,7 +213,7 @@ export const MarketDetails = ({
           }}
         />
         {/* Insert empty box to maintain grid layout when there is no lending APY metric */}
-        {!lendingAPY && <Box />}
+        {!supplyAPY && <Box />}
         <Metric
           size="small"
           label={t`Available liquidity`}

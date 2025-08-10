@@ -1,8 +1,10 @@
 import { Alert, Stack, Typography } from '@mui/material'
+import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { BorrowInformation } from '@ui-kit/features/market-position-details/BorrowInformation'
 import { HealthDetails } from '@ui-kit/features/market-position-details/HealthDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { MarketType } from '@ui-kit/types/market'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,8 +21,11 @@ export type Pnl = {
 }
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowAPY = {
-  value: number | undefined | null
-  thirtyDayAvgRate: number | undefined | null
+  rate: number | undefined | null
+  averageRate: number | undefined | null
+  averageRateLabel: string
+  rebasingYield: number | null
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 export type LiquidationRange = {
@@ -48,6 +53,7 @@ export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
 export type BorrowPositionDetailsProps = {
+  marketType: MarketType
   liquidationAlert: LiquidationAlert
   health: Health
   borrowAPY: BorrowAPY
@@ -92,6 +98,7 @@ const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
 }
 
 export const BorrowPositionDetails = ({
+  marketType,
   liquidationAlert,
   health,
   borrowAPY,
@@ -108,6 +115,7 @@ export const BorrowPositionDetails = ({
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
     <HealthDetails health={health} />
     <BorrowInformation
+      marketType={marketType}
       borrowAPY={borrowAPY}
       pnl={pnl}
       collateralValue={collateralValue}

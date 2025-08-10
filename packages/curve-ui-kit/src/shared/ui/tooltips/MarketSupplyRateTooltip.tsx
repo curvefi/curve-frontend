@@ -14,7 +14,7 @@ export type MarketSupplyRateTooltipProps = {
   extraIncentives: ExtraIncentiveItem[]
   minBoostApr: number | null | undefined
   maxBoostApr: number | null | undefined
-  rebasingYield?: number | null | undefined
+  rebasingYield: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
 }
@@ -46,6 +46,11 @@ export const MarketSupplyRateTooltip = ({
       <Stack>
         <TooltipItems secondary>
           <TooltipItem title={t`Supply rate`}>{formatPercent(supplyRate)}</TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {averageRate ? formatPercent(averageRate) : 'N/A'}
+          </TooltipItem>
+        </TooltipItems>
+        <TooltipItems secondary>
           {!!rebasingYield && rebasingSymbol && (
             <TooltipItem variant="subItem" title={rebasingSymbol}>
               {formatPercent(rebasingYield)}

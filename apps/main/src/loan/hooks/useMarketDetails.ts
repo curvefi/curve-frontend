@@ -5,6 +5,8 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address, Chain } from '@curvefi/prices-api'
+import { useQuery } from '@tanstack/react-query'
+import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -16,6 +18,7 @@ type UseMarketDetailsProps = {
 }
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
+  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,
@@ -43,6 +46,11 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     return meanBy(recentSnapshots, ({ rate }) => rate) * 100
   }, [crvUsdSnapshots])
 
+  const campaignRewards = useMemo(() => {
+    if (!campaigns || !llamma?.controller) return []
+    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
+  }, [campaigns, llamma?.controller])
+
   return {
     marketType: 'mint',
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
@@ -63,8 +71,12 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
     },
     borrowAPY: {
-      value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      thirtyDayAvgRate: thirtyDayAvgBorrowAPR,
+      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      averageRate: thirtyDayAvgBorrowAPR,
+      averageRateLabel: '30D',
+      // TODO: add rebasing yield when available in the snapshots endpoint
+      rebasingYield: null,
+      extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     availableLiquidity: {

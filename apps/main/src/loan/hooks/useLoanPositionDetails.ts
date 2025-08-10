@@ -8,6 +8,8 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
+import { useQuery } from '@tanstack/react-query'
+import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
@@ -24,6 +26,7 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,
@@ -87,7 +90,13 @@ export const useLoanPositionDetails = ({
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
+  const campaignRewards = useMemo(() => {
+    if (!campaigns || !llamma?.controller) return []
+    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
+  }, [campaigns, llamma?.controller])
+
   return {
+    marketType: 'mint',
     liquidationAlert: {
       softLiquidation: userStatus?.colorKey === 'soft_liquidation',
       hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
@@ -97,8 +106,12 @@ export const useLoanPositionDetails = ({
       loading: userLoanDetailsLoading ?? true,
     },
     borrowAPY: {
-      value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      thirtyDayAvgRate: thirtyDayAvgRate,
+      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      // TODO: add rebasing yield when available in the snapshots endpoint
+      rebasingYield: null,
+      averageRate: thirtyDayAvgRate,
+      averageRateLabel: '30D',
+      extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     liquidationRange: {
