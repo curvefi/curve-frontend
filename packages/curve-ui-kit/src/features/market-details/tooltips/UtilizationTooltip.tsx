@@ -1,6 +1,6 @@
-import type { MarketType } from '@ui-kit/features/market-details'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import type { MarketType } from '@ui-kit/types/market'
 
 const descriptions: Record<MarketType, string[]> = {
   lend: [
@@ -8,7 +8,7 @@ const descriptions: Record<MarketType, string[]> = {
     t`High utilization can increase borrow rates and limit new borrowing or withdrawals.`,
   ],
   mint: [
-    t`The percentage of the market’s borrow cap that has been used.`,
+    t`The percentage of the market's borrow cap that has been used.`,
     t`High utilization means less crvUSD can be borrowed until capacity is expanded or repaid.`,
   ],
 }

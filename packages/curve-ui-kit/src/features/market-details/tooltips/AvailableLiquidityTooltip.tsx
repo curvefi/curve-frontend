@@ -1,6 +1,6 @@
-import type { MarketType } from '@ui-kit/features/market-details'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import type { MarketType } from '@ui-kit/types/market'
 
 const descriptions: Record<MarketType, string[]> = {
   lend: [

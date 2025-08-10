@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
-import { PoolRewards } from '@/llamalend/entities/campaigns'
 import { LlamaMarketType } from '@/llamalend/entities/llama-markets'
 import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
+import type { PoolRewards } from '@ui-kit/entities/campaigns'
 
 /**
  * Formats a rate as a percentage string with 4 significant digits.
