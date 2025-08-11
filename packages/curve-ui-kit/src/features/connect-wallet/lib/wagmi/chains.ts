@@ -1,4 +1,5 @@
 import { defineChain, type Chain } from 'viem'
+import type { NetworkDef } from '@ui/utils'
 import { Chain as ChainId } from '@ui-kit/utils/network'
 import {
   arbitrum,
@@ -25,7 +26,6 @@ import {
   xLayer,
   zksync,
 } from '@wagmi/core/chains'
-import type { Network } from '../types'
 import { ethereum as mainnet, expchain, hyperliquid, megaeth, strata, tac } from './custom-chains'
 import type { defaultGetRpcUrls } from './rpc'
 
@@ -78,7 +78,7 @@ const DECIMALS: Record<number, number> = {
  * @param getRpcUrls - Function to resolve RPC URLs for the chain
  * @returns A Viem Chain configuration ready for use with wagmi
  */
-export const createChainFromNetwork = (network: Network, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
+export const createChainFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls): Chain =>
   // use the backend data to configure new chains, but use wagmi contract addresses and useful properties/RPCs
   defineChain({
     ...(wagmiChainsMap[network.chainId] ?? {

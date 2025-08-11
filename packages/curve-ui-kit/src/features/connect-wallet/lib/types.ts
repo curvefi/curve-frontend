@@ -38,12 +38,3 @@ export type Libs = {
 export type LibKey = keyof Libs
 
 export { CurveChainId, LlamaChainId, CurveNetworkId, LlamaNetworkId }
-
-export type Network = {
-  chainId: number
-  name: string
-  symbol: string
-  rpcUrl: string
-  explorerUrl: string
-  isTestnet: boolean
-}

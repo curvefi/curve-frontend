@@ -1,6 +1,6 @@
+import type { NetworkDef } from '@ui/utils'
 import { injected } from '@wagmi/connectors'
 import { fallback, http, unstable_connector } from '@wagmi/core'
-import type { Network } from '../types'
 import type { defaultGetRpcUrls } from './rpc'
 
 /**
@@ -26,7 +26,7 @@ import type { defaultGetRpcUrls } from './rpc'
  * @param getRpcUrls - Function to resolve primary and fallback RPC URLs
  * @returns Configured fallback transport for the specified network
  */
-export const createTransportFromNetwork = (network: Network, getRpcUrls: typeof defaultGetRpcUrls) =>
+export const createTransportFromNetwork = (network: NetworkDef, getRpcUrls: typeof defaultGetRpcUrls) =>
   fallback([
     unstable_connector(injected),
     ...getRpcUrls(network.chainId, network.rpcUrl).map((url) => http(url, { batch: { batchSize: 3, wait: 50 } })),
