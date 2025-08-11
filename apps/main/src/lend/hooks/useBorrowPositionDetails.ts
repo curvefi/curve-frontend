@@ -44,7 +44,7 @@ export const useBorrowPositionDetails = ({
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
-  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
+  const { data: campaigns } = useQuery(getCampaignsOptions({}))
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
     chainId: chainId,
     marketId,
@@ -96,10 +96,12 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading,
     },
     borrowAPY: {
-      rate: borrowApy != null ? Number(borrowApy) : null,
+      rate: borrowApy == null ? null : Number(borrowApy),
       averageRate: thirtyDayAvgRate,
       averageRateLabel: '30D',
       rebasingYield: lendSnapshots?.[0]?.collateralToken?.rebasingYield ?? null,
+      totalBorrowRate:
+        borrowApy == null ? null : Number(borrowApy) - (lendSnapshots?.[0]?.collateralToken?.rebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },

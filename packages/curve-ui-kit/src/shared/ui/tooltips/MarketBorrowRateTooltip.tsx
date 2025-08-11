@@ -9,6 +9,7 @@ import { formatPercent } from './utils'
 export type MarketBorrowRateTooltipProps = {
   marketType: MarketType
   borrowRate: number | null | undefined
+  totalBorrowRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: PoolRewards[]
@@ -25,6 +26,7 @@ const messages: Record<MarketType, string> = {
 export const MarketBorrowRateTooltip = ({
   marketType,
   borrowRate,
+  totalBorrowRate,
   averageRate,
   periodLabel,
   extraRewards,
@@ -32,8 +34,6 @@ export const MarketBorrowRateTooltip = ({
   collateralSymbol,
   isLoading,
 }: MarketBorrowRateTooltipProps) => {
-  const borrowTotalApy = (borrowRate ?? 0) - (rebasingYield ?? 0)
-
   return (
     <TooltipWrapper>
       <TooltipDescription text={messages[marketType]} />
@@ -69,7 +69,7 @@ export const MarketBorrowRateTooltip = ({
 
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Total borrow rate`}>
-            {formatPercent(borrowTotalApy ?? 0)}
+            {formatPercent(totalBorrowRate ?? 0)}
           </TooltipItem>
         </TooltipItems>
       </Stack>

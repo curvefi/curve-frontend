@@ -72,6 +72,7 @@ export const useMarketDetails = ({
     campaigns && vault && controller
       ? [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
       : []
+  const extraIncentivesTotalApr = rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
 
   return {
     marketType: 'lend',
@@ -97,6 +98,8 @@ export const useMarketDetails = ({
       averageRate: thirtyDayAvgRates?.borrowApyAvg ?? null,
       averageRateLabel: '30D',
       rebasingYield: lendingSnapshots?.[0]?.collateralToken?.rebasingYield ?? null,
+      totalBorrowRate:
+        borrowApy == null ? null : Number(borrowApy) - (lendingSnapshots?.[0]?.collateralToken?.rebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
@@ -106,6 +109,20 @@ export const useMarketDetails = ({
       averageRateLabel: '30D',
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
+      totalSupplyRateMinBoost:
+        supplyApy == null
+          ? null
+          : Number(supplyApy) +
+            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
+            extraIncentivesTotalApr +
+            (supplyAprCrvMinBoost ?? 0),
+      totalSupplyRateMaxBoost:
+        supplyApy == null
+          ? null
+          : Number(supplyApy) +
+            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
+            extraIncentivesTotalApr +
+            (supplyAprCrvMaxBoost ?? 0),
       rebasingYield: lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? null,
       extraIncentives: rewardsApr
         ? rewardsApr.map((r) => ({

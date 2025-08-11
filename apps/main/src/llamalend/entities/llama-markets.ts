@@ -47,6 +47,7 @@ export type LlamaMarket = {
     lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
+    lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
     borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
@@ -124,6 +125,8 @@ const convertLendingVault = (
       lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
+      lendTotalApyMaxBoosted:
+        lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
@@ -207,6 +210,7 @@ const convertMintMarket = (
       lendApr: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
+      lendTotalApyMaxBoosted: null,
       borrowTotalApy: rate * 100,
       incentives: [],
     },

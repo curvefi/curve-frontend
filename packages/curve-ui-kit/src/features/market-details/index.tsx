@@ -39,6 +39,8 @@ type BorrowAPY = {
   averageRate: number | undefined | null
   averageRateLabel: string
   rebasingYield: number | null
+  // total = rate - rebasingYield
+  totalBorrowRate: number | null
   extraRewards: PoolRewards[]
   loading: boolean
 }
@@ -49,6 +51,9 @@ type SupplyAPY = {
   supplyAprCrvMinBoost: number | undefined | null
   supplyAprCrvMaxBoost: number | undefined | null
   rebasingYield: number | null
+  // total = rate - rebasingYield + combined extra incentives + boosted (min or max) yield
+  totalSupplyRateMinBoost: number | null
+  totalSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
   extraRewards: PoolRewards[]
   loading: boolean
@@ -114,8 +119,8 @@ export const MarketDetails = ({
         <Metric
           size={'medium'}
           label={t`Borrow rate`}
-          value={borrowAPY?.rate}
-          loading={borrowAPY?.rate == null && borrowAPY?.loading}
+          value={borrowAPY?.totalBorrowRate}
+          loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={
             borrowAPY?.averageRate
@@ -132,6 +137,7 @@ export const MarketDetails = ({
               <MarketBorrowRateTooltip
                 marketType={marketType}
                 borrowRate={borrowAPY?.rate}
+                totalBorrowRate={borrowAPY?.totalBorrowRate}
                 averageRate={borrowAPY?.averageRate}
                 periodLabel={borrowAPY?.averageRateLabel}
                 extraRewards={borrowAPY?.extraRewards ?? []}
@@ -149,8 +155,8 @@ export const MarketDetails = ({
           <Metric
             size={'medium'}
             label={t`Supply rate`}
-            value={supplyAPY?.rate}
-            loading={supplyAPY?.rate == null && supplyAPY?.loading}
+            value={supplyAPY?.totalSupplyRateMinBoost}
+            loading={supplyAPY?.totalSupplyRateMinBoost == null && supplyAPY?.loading}
             valueOptions={{ unit: 'percentage', decimals: 2 }}
             notional={
               supplyAPY?.averageRate
@@ -169,6 +175,8 @@ export const MarketDetails = ({
                   averageRate={supplyAPY?.averageRate}
                   minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
                   maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
+                  totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
+                  totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
                   rebasingYield={supplyAPY?.rebasingYield}
                   isLoading={supplyAPY?.loading}
                   periodLabel={supplyAPY?.averageRateLabel}

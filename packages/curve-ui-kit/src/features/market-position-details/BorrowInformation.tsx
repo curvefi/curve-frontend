@@ -71,8 +71,8 @@ export const BorrowInformation = ({
       <Metric
         size="medium"
         label={t`Borrow rate`}
-        value={borrowAPY?.rate}
-        loading={borrowAPY?.rate == null && borrowAPY?.loading}
+        value={borrowAPY?.totalBorrowRate}
+        loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
         notional={
           borrowAPY?.averageRate
@@ -89,6 +89,7 @@ export const BorrowInformation = ({
             <MarketBorrowRateTooltip
               marketType={marketType}
               borrowRate={borrowAPY?.rate}
+              totalBorrowRate={borrowAPY?.totalBorrowRate}
               averageRate={borrowAPY?.averageRate}
               rebasingYield={borrowAPY?.rebasingYield}
               collateralSymbol={collateralValue?.collateral?.symbol}

@@ -110,6 +110,9 @@ export const useLoanPositionDetails = ({
       rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
       averageRate: thirtyDayAvgRate,
       averageRateLabel: '30D',
+      totalBorrowRate: loanDetails?.parameters?.rate
+        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        : null,
       extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

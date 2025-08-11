@@ -65,6 +65,8 @@ export const useSupplyPositionDetails = ({
     return [...(campaigns[market?.addresses?.vault.toLowerCase()] ?? [])]
   }, [campaigns, market?.addresses?.vault])
 
+  const extraIncentivesTotalApr = onChainRates?.rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
+
   return {
     supplyAPY: {
       rate: supplyApy != null ? Number(supplyApy) : null,
@@ -73,7 +75,28 @@ export const useSupplyPositionDetails = ({
       rebasingYield: lendingSnapshots?.[0]?.borrowedToken?.rebasingYield,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
-      extraIncentives: [],
+      totalSupplyRateMinBoost:
+        supplyApy != null
+          ? Number(supplyApy) -
+            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
+            extraIncentivesTotalApr +
+            (supplyAprCrvMinBoost ?? 0)
+          : null,
+      totalSupplyRateMaxBoost:
+        supplyApy != null
+          ? Number(supplyApy) -
+            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
+            extraIncentivesTotalApr +
+            (supplyAprCrvMaxBoost ?? 0)
+          : null,
+      extraIncentives: onChainRates?.rewardsApr
+        ? onChainRates?.rewardsApr.map((r) => ({
+            title: r.symbol,
+            percentage: r.apy,
+            blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+            address: r.tokenAddress,
+          }))
+        : [],
       extraRewards: campaignRewards,
       loading: islendingSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
     },

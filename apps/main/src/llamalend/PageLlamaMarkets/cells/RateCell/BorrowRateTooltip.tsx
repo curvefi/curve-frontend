@@ -12,7 +12,7 @@ export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; c
   const {
     rewards,
     type: marketType,
-    rates: { borrow: borrowRate },
+    rates: { borrow: borrowRate, borrowTotalApy },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
@@ -30,6 +30,7 @@ export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; c
           borrowRate={borrowRate}
           averageRate={averageRate}
           periodLabel={period}
+          totalBorrowRate={borrowTotalApy}
           extraRewards={poolRewards}
           rebasingYield={rebasingYield}
           collateralSymbol={collateralSymbol}

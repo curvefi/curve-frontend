@@ -13,7 +13,7 @@ export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; chi
   const { averageRate, period } = useSnapshots(market, rateType)
   const {
     rates,
-    rates: { lendApr, lendCrvAprUnboosted, lendCrvAprBoosted },
+    rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
     assets: { borrowed },
     rewards,
     type: marketType,
@@ -34,6 +34,8 @@ export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; chi
           extraIncentives={rates.incentives}
           minBoostApr={lendCrvAprUnboosted}
           maxBoostApr={lendCrvAprBoosted}
+          totalSupplyRateMinBoost={lend}
+          totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
           rebasingYield={borrowed?.rebasingYield}
           isLoading={averageRate == null}
         />

@@ -16,6 +16,9 @@ type SupplyAPY = {
   rebasingYield?: number | null
   supplyAprCrvMinBoost: number | undefined | null
   supplyAprCrvMaxBoost: number | undefined | null
+  //total = rate - rebasingYield + combined extra incentives
+  totalSupplyRateMinBoost: number | null
+  totalSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
   extraRewards: PoolRewards[]
   loading: boolean
@@ -83,6 +86,8 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
                 extraIncentives={supplyAPY?.extraIncentives ?? []}
                 minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
                 maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
+                totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
+                totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
                 rebasingYield={supplyAPY?.rebasingYield}
                 rebasingSymbol={supplyAsset?.symbol}
                 isLoading={supplyAPY?.loading}

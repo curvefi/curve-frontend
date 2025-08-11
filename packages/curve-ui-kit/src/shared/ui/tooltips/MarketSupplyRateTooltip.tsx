@@ -14,6 +14,8 @@ export type MarketSupplyRateTooltipProps = {
   extraIncentives: ExtraIncentiveItem[]
   minBoostApr: number | null | undefined
   maxBoostApr: number | null | undefined
+  totalSupplyRateMinBoost: number | null | undefined
+  totalSupplyRateMaxBoost: number | null | undefined
   rebasingYield: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
@@ -27,13 +29,12 @@ export const MarketSupplyRateTooltip = ({
   extraIncentives,
   minBoostApr,
   maxBoostApr,
+  totalSupplyRateMinBoost,
+  totalSupplyRateMaxBoost,
   rebasingYield,
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipProps) => {
-  const extraIncentivesApr = extraIncentives.reduce((acc, x) => acc + x.percentage, 0)
-  const totalAprMinBoost = (supplyRate ?? 0) + (minBoostApr ?? 0) + extraIncentivesApr
-  const totalAprMaxBoost = (supplyRate ?? 0) + (maxBoostApr ?? 0) + extraIncentivesApr
   const extraIncentivesFormatted = useMarketExtraIncentives('supply', extraIncentives, minBoostApr)
 
   return (
@@ -68,7 +69,7 @@ export const MarketSupplyRateTooltip = ({
         )}
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Total APR`}>
-            {formatPercent(totalAprMinBoost)}
+            {formatPercent(totalSupplyRateMinBoost)}
           </TooltipItem>
         </TooltipItems>
         {(minBoostApr ?? 0) > 0 && (
@@ -81,7 +82,7 @@ export const MarketSupplyRateTooltip = ({
         {(maxBoostApr ?? 0) > 0 && (
           <TooltipItems>
             <TooltipItem variant="primary" title={`${t`Total max boosted APR`}`}>
-              {formatPercent(totalAprMaxBoost)}
+              {formatPercent(totalSupplyRateMaxBoost)}
             </TooltipItem>
           </TooltipItems>
         )}

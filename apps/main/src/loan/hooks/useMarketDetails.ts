@@ -76,6 +76,9 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       averageRateLabel: '30D',
       rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
       extraRewards: campaignRewards,
+      totalBorrowRate: loanDetails?.parameters?.rate
+        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     availableLiquidity: {
