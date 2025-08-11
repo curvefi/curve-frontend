@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
+import { fn } from 'storybook/test'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import FormGroup from '@mui/material/FormGroup'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
   const [state, setState] = useState({

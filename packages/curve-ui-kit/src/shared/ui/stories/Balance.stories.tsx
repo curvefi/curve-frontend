@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import { Balance } from '../Balance'
 
 const meta: Meta<typeof Balance> = {

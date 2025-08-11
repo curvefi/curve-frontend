@@ -14,6 +14,7 @@ import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { Header as Header } from '@ui-kit/widgets/Header'
+import NextTopLoader from 'nextjs-toploader'
 
 const { MinHeight } = SizesAndSpaces
 
@@ -65,6 +66,16 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   networks: NetworkMapping<TId, TChainId>
 }) => (
   <Stack sx={EXPAND_WHEN_HIDDEN}>
+    <NextTopLoader
+      color="var(--primary-400)"
+      initialPosition={0.1}
+      crawlSpeed={200}
+      height={5}
+      crawl={true}
+      showSpinner={false}
+      easing="ease"
+      speed={200}
+    />
     <Header
       currentApp={currentApp}
       chainId={network.chainId}

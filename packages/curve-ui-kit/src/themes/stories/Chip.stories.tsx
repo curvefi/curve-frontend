@@ -1,11 +1,11 @@
+import { fn } from 'storybook/test'
 import CheckIcon from '@mui/icons-material/Check'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import type { ChipProps } from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 type ChipStoryProps = {
   color: ChipProps['color']

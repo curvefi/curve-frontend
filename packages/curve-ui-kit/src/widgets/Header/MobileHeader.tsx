@@ -17,6 +17,7 @@ import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
@@ -41,6 +42,7 @@ export const MobileHeader = ({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
+  const [isBeta] = useBetaFlag()
   const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
@@ -52,9 +54,12 @@ export const MobileHeader = ({
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes.map((p) => routeToPage(p, { networkId, pathname })),
+          pages: routes
+            .filter((x) => !x.betaFeature || isBeta)
+            .filter((x) => !x.deprecate)
+            .map((p) => routeToPage(p, { networkId, pathname })),
         })),
-    [currentMenu, networkId, pathname],
+    [currentMenu, isBeta, networkId, pathname],
   )
   return (
     <AppBar

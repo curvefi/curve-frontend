@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid'
+import { random } from 'lodash'
 
 type NotificationType = 'pending' | 'success' | 'error' | 'hint'
 
@@ -15,7 +15,7 @@ const removeMessageKey = 'walletNotificationDismiss' as const
 
 export const notify = (message: string, type: NotificationType, autoDismiss?: number): { dismiss: () => void } => {
   const detail = {
-    id: uuid(),
+    id: random(0, 1e16).toString(),
     type,
     message,
     ...(typeof autoDismiss !== 'undefined' && { autoDismiss }),

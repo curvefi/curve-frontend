@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
