@@ -11,6 +11,7 @@ import { getCampaignsOptions, type PoolRewards } from '@ui-kit/entities/campaign
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { type ExtraIncentive } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {
@@ -49,11 +50,7 @@ export type LlamaMarket = {
     borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
-    incentives: {
-      address: Address
-      symbol: string
-      rate: number
-    }[]
+    incentives: ExtraIncentive[]
   }
   type: LlamaMarketType
   url: string
@@ -130,7 +127,14 @@ const convertLendingVault = (
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
-      incentives: extraRewardApr ?? [],
+      incentives: extraRewardApr
+        ? extraRewardApr.map(({ address, symbol, rate }) => ({
+            title: symbol,
+            percentage: rate,
+            address,
+            blockchainId: chain,
+          }))
+        : [],
     },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(

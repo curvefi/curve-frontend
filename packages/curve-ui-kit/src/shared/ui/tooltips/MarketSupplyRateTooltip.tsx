@@ -50,26 +50,25 @@ export const MarketSupplyRateTooltip = ({
             {averageRate ? formatPercent(averageRate) : 'N/A'}
           </TooltipItem>
         </TooltipItems>
-        <TooltipItems secondary>
-          {!!rebasingYield && rebasingSymbol && (
+        {!!rebasingYield && rebasingSymbol && (
+          <TooltipItems secondary>
             <TooltipItem variant="subItem" title={rebasingSymbol}>
               {formatPercent(rebasingYield)}
             </TooltipItem>
-          )}
-          {(extraRewards.length > 0 || extraIncentives.length > 0) && (
+          </TooltipItems>
+        )}
+        {extraRewards.length + extraIncentivesFormatted.length > 0 && (
+          <TooltipItems secondary>
             <RewardsTooltipItems
               title={t`Staking incentives`}
               extraRewards={extraRewards}
               extraIncentives={extraIncentivesFormatted}
             />
-          )}
-        </TooltipItems>
+          </TooltipItems>
+        )}
         <TooltipItems>
           <TooltipItem variant="primary" title={t`Total APR`}>
             {formatPercent(totalAprMinBoost)}
-          </TooltipItem>
-          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {averageRate ? formatPercent(averageRate) : 'N/A'}
           </TooltipItem>
         </TooltipItems>
         {(minBoostApr ?? 0) > 0 && (

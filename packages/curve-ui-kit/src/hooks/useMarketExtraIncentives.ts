@@ -7,18 +7,18 @@ const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52'
 export const useMarketExtraIncentives = (
   type: MarketRateType,
   incentives: ExtraIncentive[],
-  boosterApr: number | null | undefined,
+  boostedApr: number | null | undefined,
 ) =>
   useMemo(() => {
     if (type !== 'supply') return []
 
     return notFalsy(
-      boosterApr && {
+      boostedApr && {
         title: 'CRV',
-        percentage: boosterApr,
+        percentage: boostedApr,
         address: CRV_ADDRESS,
         blockchainId: 'ethereum',
       },
       ...incentives.map((incentive) => incentive.percentage > 0 && incentive),
     )
-  }, [incentives, boosterApr, type])
+  }, [incentives, boostedApr, type])
