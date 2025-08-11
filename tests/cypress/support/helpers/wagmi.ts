@@ -28,11 +28,9 @@ export function createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl }: Optio
     blockExplorers: explorerUrl ? { default: { name: 'Tenderly Explorer', url: explorerUrl } } : undefined,
   })
 
-  const config = createWagmiConfig({
+  return createWagmiConfig({
     chains: [chain],
     transports: { [chain.id]: http(rpcUrl) },
     connectors: [createTestConnector({ privateKey, chain })],
   })
-
-  return config
 }
