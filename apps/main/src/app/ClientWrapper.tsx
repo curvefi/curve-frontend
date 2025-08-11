@@ -106,12 +106,19 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   networkDefs: Record<ChainId, NetworkDef<TId, ChainId>>
   preferredScheme: 'light' | 'dark' | null
 }) => {
-  const networks = recordValues(networkDefs)
-  const chains = networks.map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [Chain, ...Chain[]]
-  const transports = Object.fromEntries(
-    networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
+  const networks = useMemo(() => recordValues(networkDefs), [networkDefs])
+  const chains = useMemo(
+    () => networks.map((network) => createChainFromNetwork(network, defaultGetRpcUrls)) as [Chain, ...Chain[]],
+    [networks],
   )
-  const config = createWagmiConfig({ chains, transports })
+  const transports = useMemo(
+    () =>
+      Object.fromEntries(
+        networks.map((network) => [network.chainId, createTransportFromNetwork(network, defaultGetRpcUrls)]),
+      ),
+    [networks],
+  )
+  const config = useMemo(() => createWagmiConfig({ chains, transports }), [chains, transports])
 
   const pathname = usePathname()
   const push = useNavigate()
