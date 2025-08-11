@@ -1,5 +1,5 @@
 'use client'
-import { useServerInsertedHTML } from '@ui-kit/hooks/router'
+import { useServerInsertedHTML } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 import { ServerStyleSheet, StyleSheetManager } from 'styled-components'
 import { shouldForwardProp } from '@ui/styled-containers'

@@ -1,5 +1,5 @@
 import { headers } from 'next/headers'
-import { notFound } from '@ui-kit/hooks/router'
+import { notFound } from 'next/navigation'
 import type { ReactNode } from 'react'
 import type { DexServerSideNetworkCache } from '@/app/api/dex/types'
 import { getServerData } from '@/background'
