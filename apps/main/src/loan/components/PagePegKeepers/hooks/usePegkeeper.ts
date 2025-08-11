@@ -115,7 +115,7 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     estCallerProfit: estCallerProfitError
       ? estCallerProfitFallback !== undefined
         ? formatEther(estCallerProfitFallback)
-        : '0'
+        : undefined
       : estCallerProfit?.result !== undefined
         ? formatEther(estCallerProfit.result)
         : undefined,
