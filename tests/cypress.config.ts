@@ -1,5 +1,4 @@
 import { defineConfig } from 'cypress'
-import { setupNodeEvents } from 'support/tasks'
 
 export default defineConfig({
   defaultCommandTimeout: 5000,
@@ -18,6 +17,5 @@ export default defineConfig({
     },
     indexHtmlFile: 'cypress/support/component-index.html',
     supportFile: 'cypress/support/component.ts',
-    setupNodeEvents,
   },
 })

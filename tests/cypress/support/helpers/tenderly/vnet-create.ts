@@ -89,27 +89,30 @@ export type CreateVirtualTestnetResponse = Required<
   }[]
 }
 
-export async function createVirtualTestnet({
+export function createVirtualTestnet({
   accountSlug,
   projectSlug,
   accessKey,
   ...createOptions
-}: TenderlyAccount & CreateVirtualTestnetOptions): Promise<CreateVirtualTestnetResponse> {
-  const response = await fetch(`https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'X-Access-Key': accessKey,
-    },
-    body: JSON.stringify(createOptions),
-  })
-
-  if (!response.ok) {
-    throw new Error(
-      `Failed to create virtual testnet '${createOptions.slug}': ${response.status} ${response.statusText}`,
-    )
-  }
-
-  return response.json()
+}: TenderlyAccount & CreateVirtualTestnetOptions) {
+  return cy
+    .request({
+      url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        'X-Access-Key': accessKey,
+      },
+      body: createOptions,
+      failOnStatusCode: false,
+    })
+    .then((response) => {
+      if (!response.isOkStatusCode) {
+        throw new Error(
+          `Failed to create virtual testnet '${createOptions.slug}': ${response.status} ${response.statusText}`,
+        )
+      }
+      return response.body as CreateVirtualTestnetResponse
+    })
 }

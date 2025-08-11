@@ -1,18 +1,14 @@
 import { generatePrivateKey } from 'viem/accounts'
-import type {
-  CreateVirtualTestnetOptions,
-  CreateVirtualTestnetResponse,
-  DeleteVirtualTestnetsOptions,
-} from '../tasks/tenderly'
-import { createTestWagmiConfig } from './wagmi'
+import { createTestWagmiConfig } from '../wagmi'
+import {
+  createVirtualTestnet,
+  deleteVirtualTestnets,
+  tenderlyAccount,
+  type CreateVirtualTestnetOptions,
+  type CreateVirtualTestnetResponse,
+  type DeleteVirtualTestnetsOptions,
+} from './'
 
-/**
- * Creates a Wagmi configuration for testing from a Tenderly virtual testnet response
- *
- * @param vnet - Virtual testnet response from Tenderly
- * @returns Configured Wagmi config instance or undefined if vnet is invalid
- * @throws Error when RPC URL is not found in the virtual testnet response
- */
 export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
   const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
@@ -37,7 +33,6 @@ export type DeepPartial<T> = {
 }
 
 /**
-/**
  * Creates a Cypress test helper that manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns testnet configuration options based on UUID
@@ -60,6 +55,11 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
   let vnet: CreateVirtualTestnetResponse
 
   before(() => {
+    if (!tenderlyAccount) {
+      cy.log('Tenderly credentials not configured, skipping virtual testnet creation')
+      return
+    }
+
     const uuid = Cypress._.random(0, 1e6)
 
     const defaultOpts: CreateVirtualTestnetOptions = {
@@ -76,9 +76,7 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
 
     const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
 
-    cy.task('createVirtualTestnet', finalOpts).then((created) => {
-      vnet = created
-    })
+    createVirtualTestnet({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
   })
 
   after(() => {
@@ -88,7 +86,7 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
       vnet_ids: [vnet.id],
     }
 
-    cy.task('deleteVirtualTestnets', deleteOpts)
+    deleteVirtualTestnets({ ...tenderlyAccount!, ...deleteOpts })
   })
 
   return () => vnet

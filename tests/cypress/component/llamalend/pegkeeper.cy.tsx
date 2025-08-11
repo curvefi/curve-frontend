@@ -2,7 +2,7 @@ import React from 'react'
 import { PegKeeper } from '@/loan/components/PagePegKeepers/components/PegKeeper'
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ClientWrapper, type Config } from '@/support/helpers/ClientWrapper'
-import { createTestWagmiConfigFromVNet, withVirtualTestnet } from '@/support/helpers/vnet'
+import { createTestWagmiConfigFromVNet, withVirtualTestnet } from '@/support/helpers/tenderly'
 
 const getVirtualNetwork = withVirtualTestnet((uuid) => ({
   slug: `pegkeepers-${uuid}`,
