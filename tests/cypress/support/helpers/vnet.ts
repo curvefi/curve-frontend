@@ -45,13 +45,13 @@ export type DeepPartial<T> = {
  *
  * @example
  * ```typescript
- * const getVNet = withVirtualTestnet((uuid) => ({
+ * const getVirtualNetwork = withVirtualTestnet((uuid) => ({
  *   display_name: `Custom Testnet ${uuid}`,
  *   fork_config: { network_id: 137 }
  * }))
  *
  * it('should work with virtual testnet', () => {
- *   const vnet = getVNet()
+ *   const virtualNetwork = getVirtualNetwork()
  *   // Use vnet in your test
  * })
  * ```

@@ -4,7 +4,7 @@ import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ClientWrapper, type Config } from '@/support/helpers/ClientWrapper'
 import { createTestWagmiConfigFromVNet, withVirtualTestnet } from '@/support/helpers/vnet'
 
-const getVnet = withVirtualTestnet((uuid) => ({
+const getVirtualNetwork = withVirtualTestnet((uuid) => ({
   slug: `pegkeepers-${uuid}`,
   display_name: `Pegkeepers (${uuid})`,
   fork_config: {
@@ -20,7 +20,7 @@ const TestComponent = ({ config }: { config: Config }) => (
 
 describe('PegKeeper', () => {
   it(`should work for blocknumber 23039344`, () => {
-    const vnet = getVnet()
+    const vnet = getVirtualNetwork()
     if (!vnet) {
       cy.log('Could not create virtual testnet')
       return
