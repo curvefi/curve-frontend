@@ -36,6 +36,7 @@
     "memoizee": "^0.4.17",
     "next": "15.3.5",
     "next-images": "^1.8.5",
+    "nextjs-toploader": "^3.8.16",
     "react": "*",
     "react-dom": "*",
     "react-hook-form": "7.59.0",

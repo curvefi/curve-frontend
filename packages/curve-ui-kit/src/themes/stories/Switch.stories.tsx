@@ -1,7 +1,7 @@
 import { useState } from 'react'
+import { fn } from 'storybook/test'
 import Switch, { SwitchProps } from '@mui/material/Switch'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 const SwitchStory = ({ checked, onChange, ...props }: SwitchProps) => {
   const [isChecked, setIsChecked] = useState(checked)

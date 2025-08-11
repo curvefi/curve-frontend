@@ -3,7 +3,7 @@ import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 
 type StoryProps = {
   title?: string
@@ -39,6 +39,6 @@ const meta: Meta<typeof AccordionStory> = {
 
 type Story = StoryObj<typeof AccordionStory>
 
-export const accordion: Story = {}
+export const Default: Story = {}
 
 export default meta
