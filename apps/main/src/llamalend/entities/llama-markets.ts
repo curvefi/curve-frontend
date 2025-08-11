@@ -186,7 +186,7 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
-        rebasingYield: null,
+        rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -195,7 +195,7 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: null,
+        rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%

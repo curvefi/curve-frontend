@@ -18,10 +18,12 @@ export type GetMarketsResponse = {
     collateral_token: {
       symbol: string
       address: Address
+      rebasing_yield: number | null
     }
     stablecoin_token: {
       symbol: string
       address: Address
+      rebasing_yield: number | null
     }
   }[]
   count: number
@@ -39,14 +41,31 @@ export type GetSnapshotsResponse = {
     total_collateral: number
     total_collateral_usd: number
     total_stablecoin: number
+    total_stablecoin_usd: number
     total_debt: number
+    total_debt_usd: number
     n_loans: number
     amm_price: number
+    amm_a: number
     price_oracle: number
+    base_price: number
+    min_band: number
+    max_band: number
     borrowable: number
     dt: string
     liquidation_discount: number
     loan_discount: number
+    sum_debt_squared: number
+    collateral_token: {
+      symbol: string
+      address: string
+      rebasing_yield: number
+    }
+    stablecoin_token: {
+      symbol: string
+      address: string
+      rebasing_yield: number
+    }
   }[]
 }
 

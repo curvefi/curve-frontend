@@ -74,8 +74,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       averageRate: thirtyDayAvgBorrowAPR,
       averageRateLabel: '30D',
-      // TODO: add rebasing yield when available in the snapshots endpoint
-      rebasingYield: null,
+      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
       extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

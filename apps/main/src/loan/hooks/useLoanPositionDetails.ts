@@ -107,8 +107,7 @@ export const useLoanPositionDetails = ({
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      // TODO: add rebasing yield when available in the snapshots endpoint
-      rebasingYield: null,
+      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
       averageRate: thirtyDayAvgRate,
       averageRateLabel: '30D',
       extraRewards: campaignRewards,
