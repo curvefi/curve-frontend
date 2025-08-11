@@ -18,6 +18,8 @@ import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
 
+const { delay } = lodash
+
 const useLayoutStoreResponsive = () => {
   const { document } = typeof window === 'undefined' ? {} : window
   const theme = useUserProfileStore((state) => state.theme)
@@ -46,7 +48,7 @@ const useLayoutStoreResponsive = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange)
     window.addEventListener('resize', () => handleResizeListener())
-    window.addEventListener('scroll', () => lodash.delay(handleScrollListener, 200))
+    window.addEventListener('scroll', () => delay(handleScrollListener, 200))
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange)

@@ -12,7 +12,7 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 const rootRoute = createRootRoute({
   loader: async () => {
     const networks = await getNetworkDefs()
-    const preferredScheme = null // Handle client-side
+    const preferredScheme = null // Handle client-side. todo: delete the prop!
     return { networks, preferredScheme }
   },
   component: () => {
@@ -25,7 +25,6 @@ const rootRoute = createRootRoute({
       </ClientWrapper>
     )
   },
-  notFoundComponent: lazy(() => import('./app/not-found')),
 })
 
 // Home page
@@ -124,7 +123,7 @@ const crvusdNetworkMarketManageNoFormTypeRoute = createRoute({
 
 const crvusdNetworkPegkeepersRoute = createRoute({
   getParentRoute: () => crvusdLayoutRoute,
-  path: '$network/pegkeepers',
+  path: '$network/psr',
   component: lazy(() => import('./app/crvusd/[network]/psr/page')),
   head: () => ({
     meta: [{ title: 'Peg Stability Reserves - Curve' }],
@@ -555,6 +554,7 @@ export const router = createRouter({
   routeTree,
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
+  defaultNotFoundComponent: lazy(() => import('./app/not-found')),
 })
 
 // Register router for type safety

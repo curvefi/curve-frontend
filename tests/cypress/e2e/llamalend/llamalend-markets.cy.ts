@@ -254,8 +254,7 @@ describe(`LlamaLend Markets`, () => {
   it('should hide columns', () => {
     if (breakpoint == 'mobile') {
       // mobile viewports do not have this feature
-      const [width, height] = oneDesktopViewport()
-      cy.viewport(width, height)
+      cy.viewport(...oneDesktopViewport())
     }
     const { toggle, element } = oneOf(
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
