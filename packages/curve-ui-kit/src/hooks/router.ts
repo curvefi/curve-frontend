@@ -1,7 +1,7 @@
-import { useRouter, useSearchParams as useOriginalSearchParams } from 'next/navigation'
 import { useCallback } from 'react'
+import { useRouter, useSearchParams as useOriginalSearchParams } from '@ui-kit/hooks/router'
 
-export { useParams, usePathname } from 'next/navigation'
+export { useParams, usePathname } from '@ui-kit/hooks/router'
 
 export const useNavigate = () => {
   const { push, replace } = useRouter()
