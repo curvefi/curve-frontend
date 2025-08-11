@@ -56,6 +56,7 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
     borrowed_balance_usd: borrowedBalance * borrowedPrice,
     collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
     borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
+    extra_reward_apr: [],
   }
 }
 
