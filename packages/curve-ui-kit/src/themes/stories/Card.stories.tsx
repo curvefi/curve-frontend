@@ -8,7 +8,7 @@ import CardHeader from '@mui/material/CardHeader'
 import CardMedia from '@mui/material/CardMedia'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 

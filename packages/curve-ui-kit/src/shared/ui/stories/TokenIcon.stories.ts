@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenIcon } from '../TokenIcon'
 
 const meta: Meta<typeof TokenIcon> = {

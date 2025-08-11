@@ -93,12 +93,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
     chainId: rChainId,
-    poolId: poolData?.pool.id!,
+    poolId: poolData?.pool.id,
   })
 
   const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors({
     chainId: rChainId,
-    poolId: poolData?.pool.id!,
+    poolId: poolData?.pool.id,
   })
 
   const [selectedTab, setSelectedTab] = useState<DetailInfoTypes>('pool')

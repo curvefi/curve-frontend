@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TabsSwitcher } from '../../shared/ui/TabsSwitcher'
 
 const TABS = [

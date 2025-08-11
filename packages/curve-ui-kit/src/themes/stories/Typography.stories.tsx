@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import { Divider, List, ListItem, Stack, Typography } from '@mui/material'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TYPOGRAPHY_VARIANTS, TypographyVariantDefinition, TypographyVariantKey } from '../typography'
 
 const meta: Meta<typeof Typography> = {
