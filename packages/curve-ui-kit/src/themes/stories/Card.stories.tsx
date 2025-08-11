@@ -10,6 +10,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/nextjs'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -82,7 +83,7 @@ const CardStoryTokenPairAvatar = (props: CardProps) => (
           hideChainIcon
           chain="ethereum"
           assets={{
-            primary: { symbol: 'crvUSD', address: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e' },
+            primary: { symbol: 'crvUSD', address: CRVUSD_ADDRESS },
             secondary: { symbol: 'USDC', address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' },
           }}
         />
