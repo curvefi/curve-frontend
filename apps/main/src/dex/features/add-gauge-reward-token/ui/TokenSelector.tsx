@@ -32,20 +32,26 @@ export const TokenSelector = ({
     poolId,
   })
 
-  const filteredTokens = useMemo(() => {
-    const gaugeRewardTokens = Object.keys(gaugeRewardsDistributors || {})
-    return Object.values(tokensMapper)
-      .filter(
-        (token): token is Token =>
-          token !== undefined &&
-          token.decimals === 18 &&
-          !aliasesCrv &&
-          ![...gaugeRewardTokens, zeroAddress, ethAddress, aliasesCrv].some((rewardToken) =>
-            isAddressEqual(rewardToken as Address, token.address as Address),
-          ),
-      )
-      .map(toTokenOption(network?.networkId))
-  }, [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId])
+  const filteredTokens = useMemo(
+    () =>
+      Object.values(tokensMapper)
+        .filter(
+          (token): token is Token =>
+            !!token &&
+            // Roman: "There are calculation errors for coins with small decimals, including USDC. Though, new cross chain gauges are good with it, so it depends which gauge do you ask"
+            // I fixed it here: https://github.com/curvefi/curve-xchain-factory/blob/3e03f19d49826cad7c1e84829b35cc34955b046e/contracts/implementations/ChildGauge.vy#L117
+            token.decimals == 18 &&
+            !!aliasesCrv &&
+            ![
+              ...Object.keys(gaugeRewardsDistributors || {}), // Tokens already added as reward
+              zeroAddress,
+              ethAddress,
+              aliasesCrv,
+            ].some((rewardToken) => isAddressEqual(rewardToken as Address, token.address as Address)),
+        )
+        .map(toTokenOption(network?.networkId)),
+    [gaugeRewardsDistributors, tokensMapper, aliasesCrv, network.networkId],
+  )
 
   const selectedToken = filteredTokens.find((x) => x.address === rewardTokenId)
 

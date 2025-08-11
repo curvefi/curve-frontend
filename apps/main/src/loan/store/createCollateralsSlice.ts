@@ -63,9 +63,6 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       get()[sliceKey].setStateByActiveKey('collateralDatas', chainId.toString(), collateralDatas)
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
 
-      // fetch collaterals USD rates
-      void get().usdRates.fetchUsdRateByTokens(curve, collateralAddresses)
-
       // add to cache
       void get().storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)
 

@@ -125,9 +125,9 @@ const crvusdNetworkMarketManageNoFormTypeRoute = createRoute({
 const crvusdNetworkPegkeepersRoute = createRoute({
   getParentRoute: () => crvusdLayoutRoute,
   path: '$network/pegkeepers',
-  component: lazy(() => import('./app/crvusd/[network]/pegkeepers/page')),
+  component: lazy(() => import('./app/crvusd/[network]/psr/page')),
   head: () => ({
-    meta: [{ title: 'PegKeepers - Curve' }],
+    meta: [{ title: 'Peg Stability Reserves - Curve' }],
   }),
 })
 

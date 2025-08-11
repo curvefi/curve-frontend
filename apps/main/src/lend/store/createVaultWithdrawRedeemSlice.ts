@@ -4,6 +4,7 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWithdrawRedeem/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
@@ -83,7 +84,6 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       if (!signerAddress || (!isFullWithdraw && +amount <= 0) || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
 
       let resp
       if (isFullWithdraw) {
@@ -136,7 +136,6 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const { amount, isFullWithdraw } = formValues
       const resp = await apiLending.vaultWithdraw.withdraw(
         activeKey,
@@ -151,6 +150,7 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
         // api calls
         void get().user.fetchUserMarketBalances(api, market, true)
         void get()[sliceKey].fetchMax(api, formType, market)
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = { error: resp.error, isComplete: !resp.error }

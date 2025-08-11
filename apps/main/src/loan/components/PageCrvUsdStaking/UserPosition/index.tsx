@@ -23,7 +23,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   } = useTheme()
   const { data: statisticsData, isLoading: isStatisticsLoading } = useScrvUsdStatistics({})
   const { data: userBalance, isLoading: userBalanceLoading } = useScrvUsdUserBalances({ userAddress: address })
-  const usdRateLoading = useStore((state) => state.usdRates.loading)
+  const usdRateLoading = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus === 'loading')
   const scrvUsdExchangeRateFetchStatus = useStore((state) => state.scrvusd.scrvUsdExchangeRate.fetchStatus)
   const scrvUsdRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate.value)
 
@@ -32,21 +32,14 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
   const exchangeRateLoading = !isReady(scrvUsdExchangeRateFetchStatus)
 
   const totalScrvUsdSupply = statisticsData?.supply
-  const scrvUsdApy = statisticsData?.aprProjected
+  const scrvUsdApy = statisticsData?.apyProjected
 
   const userShareOfTotalScrvUsdSupply = totalScrvUsdSupply
     ? Number(BigNumber(userScrvUsdBalance).div(totalScrvUsdSupply).times(100))
     : undefined
 
   return (
-    <Card
-      sx={{
-        width: '100%',
-        maxWidth: chartExpanded ? '100%' : MaxWidth.section,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        boxShadow: 'none',
-      }}
-    >
+    <Card sx={{ width: '100%', maxWidth: chartExpanded ? '100%' : MaxWidth.section }}>
       <CardHeader title={t`Position Details`} />
       <Stack padding={Spacing.md} gap={Spacing.md}>
         <Grid
@@ -104,7 +97,7 @@ const UserPosition = ({ chartExpanded = false }: { chartExpanded?: boolean }) =>
           <Grid flexGrow={1}>
             <Metric
               size="small"
-              label={t`scrvUSD Staking Rate`}
+              label={t`Estimated APY`}
               value={scrvUsdApy}
               valueOptions={{ unit: 'percentage' }}
               loading={isStatisticsLoading}

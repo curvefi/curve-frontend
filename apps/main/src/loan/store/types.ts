@@ -3,9 +3,6 @@ import { BrowserProvider } from 'ethers'
 /* createCreateLoanSlice */
 export type DetailInfo = { healthFull: string; healthNotFull: string; prices: string[]; bands: [number, number] }
 
-/* createGasSlice */
-export type GasInfo = { base: number; priority: number[]; max: number[]; basePlusPriority: number[] }
-
 /* createLiqRangesSlice */
 export type MaxRecvLeverage = { maxBorrowable: string; maxCollateral: string; leverage: string; routeIdx: number }
 

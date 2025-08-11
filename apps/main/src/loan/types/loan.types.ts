@@ -82,6 +82,7 @@ export type LoanParameter = {
 }
 export type BandBalance = Record<string, { stablecoin: string; collateral: string }>
 export type LoanDetails = {
+  loading: boolean
   oraclePriceBand: number | null
   parameters: LoanParameter
   balances: [string, string]
@@ -108,6 +109,7 @@ export type BandsBalancesData = {
   collateralStablecoinUsd: number
 }
 export type UserLoanDetails = {
+  loading: boolean
   healthFull: string
   healthNotFull: string
   userBands: number[]

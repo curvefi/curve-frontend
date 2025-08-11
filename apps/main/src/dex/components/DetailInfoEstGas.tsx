@@ -9,6 +9,8 @@ import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Chain, gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -31,11 +33,11 @@ const DetailInfoEstGas = ({
   stepProgress?: StepProgress | null
 }) => {
   const { curveApi } = useConnection()
-  const networks = useStore((state) => state.networks.networks)
+  const { networks } = useStore((state) => state.networks)
   const { gasPricesDefault } = networks[chainId]
-  const chainTokenUsdRate = useStore((state) => state.usdRates.usdRatesMapper[ethAddress])
-  const gasInfo = useStore((state) => state.gas.gasInfo)
-  const basePlusPriority = useStore((state) => state.gas.gasInfo?.basePlusPriority?.[gasPricesDefault])
+  const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
+  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     const resp = { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }

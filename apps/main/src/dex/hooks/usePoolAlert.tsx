@@ -178,6 +178,24 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
         </MessageWrapper>
       ),
     })
+    const synthetixUsdAlert = (): PoolAlert => ({
+      alertType: 'danger',
+      isDisableDeposit: true,
+      isDisableSwap: true,
+      isInformationOnly: true,
+      isCloseOnTooltipOnly: true,
+      message: (
+        <MessageWrapper>
+          <div>
+            Deposit and swap are disabled, see{' '}
+            <ExternalLink $noStyles href="https://x.com/synthetix_io/status/1953054538610688198">
+              https://x.com/synthetix_io/status/1953054538610688198
+            </ExternalLink>{' '}
+            for additional information.
+          </div>
+        </MessageWrapper>
+      ),
+    })
 
     // Fantom networks
     const crossCurveAlert = (externalLinks: { label: string; url: string }[]): PoolAlert => ({
@@ -276,6 +294,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x8818a9bb44fbf33502be7c15c500d0c783b73067': synthetixAlert(),
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       '0x2dded6da1bf5dbdf597c45fcfaa3194e53ecfeaf': ironbankAlert(),
+      '0xa5407eae9ba41422680e2e00537571bcc53efbfd': synthetixUsdAlert(),
       "0x4f493b7de8aac7d55f71853688b1f7c8f0243c85": crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
       '0x3ee841f47947fefbe510366e4bbb49e145484195': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),
       '0x74345504eaea3d9408fc69ae7eb2d14095643c5b': crossCurveAlert([CrossCurveLabel.swap(CrossCurveChain.Ethereum, token1, CrossCurveChain.Ethereum, token2)]),

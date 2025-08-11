@@ -9,7 +9,6 @@ import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/c
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
 import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/createCollateralListSlice'
 import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
-import createGasSlice, { GasSlice } from '@/loan/store/createGasSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanCollateralDecrease, {
   LoanCollateralDecreaseSlice,
@@ -25,14 +24,10 @@ import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoan
 import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
 import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
-import createPegKeepersSlice, { PegKeepersSlice } from '@/loan/store/createPegKeepersSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/loan/store/createUsdRatesSlice'
 
 export type State = CacheSlice &
   AppSlice &
-  GasSlice &
-  UsdRatesSlice &
   ChartBandsSlice &
   CollateralsSlice &
   LoansSlice &
@@ -47,15 +42,12 @@ export type State = CacheSlice &
   LoanLiquidateSlice &
   IntegrationsSlice &
   OhlcChartSlice &
-  PegKeepersSlice &
   ScrvUsdSlice &
   CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
-  ...createGasSlice(set, get),
-  ...createUsdRatesSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createCollateralsSlice(set, get),
   ...createLoansSlice(set, get),
@@ -70,7 +62,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLoanLiquidate(set, get),
   ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),
-  ...createPegKeepersSlice(set, get),
   ...createScrvUsdSlice(set, get),
   ...createCampaignRewardsSlice(set, get),
 })

@@ -21,7 +21,6 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     },
   ]
 
-  const [activeTab, setActiveTab] = useState<TabValue>('add_reward')
   const { data: signerAddress } = useSignerAddress()
 
   const { data: gaugeManager } = useGaugeManager({ chainId, poolId })
@@ -42,6 +41,8 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     [rewardDistributors, signerAddress],
   )
 
+  const [activeTab, setActiveTab] = useState<TabValue>(isGaugeManager ? 'add_reward' : 'deposit_reward')
+
   const renderActiveTab = useCallback(() => {
     switch (activeTab) {
       case 'add_reward':
@@ -59,7 +60,7 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
         return isGaugeManager
       }
       if (tab.value === 'deposit_reward') {
-        return isGaugeManager && isRewardsDistributor
+        return isRewardsDistributor
       }
       return false
     },

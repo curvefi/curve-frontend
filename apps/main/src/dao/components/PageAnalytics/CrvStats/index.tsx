@@ -1,12 +1,14 @@
+import lodash from 'lodash'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
-import MetricsComp, { MetricsColumnData } from '@/dao/components/MetricsComp'
+import { CONTRACT_CRV } from '@/dao/constants'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip'
-import { formatNumber } from '@ui/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Chain } from '@ui-kit/utils/network'
 
 const CrvStats = () => {
@@ -15,20 +17,28 @@ const CrvStats = () => {
   const { curveApi: { chainId } = {} } = useConnection()
   const veCrvFees = useStore((state) => state.analytics.veCrvFees)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const usdRatesLoading = useStore((state) => state.usdRates.loading)
-  const usdRatesMapper = useStore((state) => state.usdRates.usdRatesMapper)
-  const crv = usdRatesMapper.crv
+  const { data: crv, isFetching: isLoadingCrv } = useTokenUsdRate({ chainId, tokenAddress: CONTRACT_CRV })
 
   // protect against trying to load data on non-mainnet networks
   const notMainnet = chainId !== Chain.Ethereum
   const noProvider = !provider || notMainnet
   const veCrvFeesLoading = veCrvFees.fetchStatus === 'LOADING'
-  const aprLoading = statsLoading || veCrvFeesLoading || usdRatesLoading || !crv
+  const aprLoading = statsLoading || veCrvFeesLoading || isLoadingCrv || crv == null
 
-  const veCrvApr =
-    aprLoading || notMainnet || !statsSuccess
-      ? 0
-      : calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv)
+  const veCrvApr = useMemo(
+    () =>
+      aprLoading || notMainnet || !statsSuccess
+        ? { current: 0, fourDayAverage: 0 }
+        : {
+            current: calculateApr(veCrvFees.fees[1].feesUsd, veCrvData.totalVeCrv.fromWei(), crv),
+            fourDayAverage: calculateFourWeekAverageApr(
+              veCrvFees.fees.slice(1, 5).map((fee) => fee.feesUsd),
+              veCrvData.totalVeCrv.fromWei(),
+              crv,
+            ),
+          },
+    [aprLoading, notMainnet, statsSuccess, veCrvFees, veCrvData, crv],
+  )
 
   const loading = Boolean(provider && statsLoading)
 
@@ -37,74 +47,54 @@ const CrvStats = () => {
       <Container>
         <h4>{t`VECRV METRICS`}</h4>
         <MetricsContainer>
-          <MetricsComp
+          <Metric
+            size="small"
+            label={t`Total CRV`}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalCrv.fromWei()}
             loading={loading}
-            title={t`Total CRV`}
-            data={
-              <MetricsColumnData>
-                {noProvider || !statsSuccess
-                  ? '-'
-                  : formatNumber(veCrvData.totalCrv.fromWei(), { notation: 'compact' })}
-              </MetricsColumnData>
-            }
+            valueOptions={{}}
           />
-          <MetricsComp
+          <Metric
+            size="small"
             loading={loading}
-            title={t`Locked CRV`}
-            data={
-              <MetricsColumnData>
-                {noProvider || !statsSuccess
-                  ? '-'
-                  : formatNumber(veCrvData.totalLockedCrv.fromWei(), { notation: 'compact' })}
-              </MetricsColumnData>
-            }
+            label={t`Locked CRV`}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalLockedCrv.fromWei()}
+            valueOptions={{}}
           />
-          <MetricsComp
+          <Metric
+            size="small"
             loading={loading}
-            title={t`veCRV`}
-            data={
-              <MetricsColumnData>
-                {noProvider || !statsSuccess
-                  ? '-'
-                  : formatNumber(veCrvData.totalVeCrv.fromWei(), { notation: 'compact' })}
-              </MetricsColumnData>
-            }
+            label={t`veCRV`}
+            value={noProvider || !statsSuccess ? null : veCrvData.totalVeCrv.fromWei()}
+            valueOptions={{}}
           />
-          <MetricsComp
+          <Metric
+            size="small"
             loading={veCrvHolders.fetchStatus === 'LOADING'}
-            title={t`Holders`}
-            data={
-              <StyledTooltip
-                tooltip={t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`}
-              >
-                <MetricsColumnData>
-                  {formatNumber(veCrvHolders.totalHolders, { notation: 'compact' })}
-                </MetricsColumnData>
-              </StyledTooltip>
-            }
+            label={t`Holders`}
+            value={veCrvHolders.totalHolders}
+            valueOptions={{ abbreviate: false, decimals: 0 }}
+            labelTooltip={{
+              title: t`${veCrvHolders.canCreateVote} veCRV holders can create a new proposal (minimum 2500 veCRV is required)`,
+            }}
           />
-          <MetricsComp
+          <Metric
+            size="small"
             loading={loading}
-            title={t`CRV Supply Locked`}
-            data={
-              <MetricsColumnData>
-                {noProvider || !statsSuccess
-                  ? '-'
-                  : `${formatNumber(veCrvData.lockedPercentage, {
-                      notation: 'compact',
-                    })}%`}
-              </MetricsColumnData>
-            }
+            label={t`CRV Supply Locked`}
+            value={noProvider || !statsSuccess ? null : veCrvData.lockedPercentage}
+            valueOptions={{ unit: 'percentage', decimals: 2 }}
           />
-          <MetricsComp
-            loading={Boolean(provider && (statsLoading || veCrvFeesLoading || aprLoading))}
-            title={t`veCRV APR`}
-            data={
-              <AprRow>
-                <MetricsColumnData noMargin>
-                  {noProvider || !statsSuccess ? '-' : `~${formatNumber(veCrvApr, { notation: 'compact' })}%`}
-                </MetricsColumnData>
-              </AprRow>
+          <Metric
+            size="small"
+            loading={Boolean(loading || veCrvFeesLoading || aprLoading)}
+            label={t`veCRV APR`}
+            value={noProvider || !statsSuccess ? null : veCrvApr.current}
+            valueOptions={{ unit: 'percentage', decimals: 2 }}
+            notional={
+              Boolean(loading || veCrvFeesLoading || aprLoading)
+                ? undefined
+                : `${veCrvApr.fourDayAverage.toFixed(2)}% 4w avg`
             }
           />
         </MetricsContainer>
@@ -115,6 +105,9 @@ const CrvStats = () => {
 
 const calculateApr = (fees: number, totalVeCrv: number, crvPrice: number) =>
   (((fees / totalVeCrv) * 52) / crvPrice) * 100
+
+const calculateFourWeekAverageApr = (fees: number[], totalVeCrv: number, crvPrice: number) =>
+  lodash.meanBy(fees, (fee) => calculateApr(fee, totalVeCrv, crvPrice))
 
 const Wrapper = styled(Box)`
   display: flex;
@@ -144,17 +137,6 @@ const MetricsContainer = styled(Box)`
   @media (min-width: 28.125rem) {
     grid-template-columns: 1fr 1fr 1fr;
   }
-`
-
-const StyledTooltip = styled(Tooltip)`
-  min-height: 0;
-`
-
-const AprRow = styled.div`
-  display: flex;
-  gap: 0 var(--spacing-1);
-  padding-top: var(--spacing-1);
-  align-items: flex-end;
 `
 
 export default CrvStats

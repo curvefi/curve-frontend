@@ -4,6 +4,8 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultUnstake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultUnstake/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -57,7 +59,6 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       if (!signerAddress || +amount <= 0 || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
       const resp = await apiLending.vaultUnstake.estGas(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -105,7 +106,6 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const { amount } = formValues
       const resp = await apiLending.vaultUnstake.unstake(activeKey, provider, market, amount)
 
@@ -113,6 +113,8 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
         // re-fetch api
         void get().user.fetchUserMarketBalances(api, market, true)
         void get().markets.fetchAll(api, market, true)
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

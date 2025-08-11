@@ -72,19 +72,7 @@
     "campaign": "StableLabs.json"
   },
   {
-    "campaign": "Taiko.json"
-  },
-  {
     "campaign": "Sonic.json"
-  },
-  {
-    "campaign": "Rings.json"
-  },
-  {
-    "campaign": "Tac.json"
-  },
-  {
-    "campaign": "Turtle.json"
   },
   {
     "campaign": "Infinifi.json"
@@ -106,5 +94,20 @@
   },
   {
     "campaign": "TacTokens.json"
+  },
+  {
+    "campaign": "Loop.json"
+  },
+  {
+    "campaign": "Noon.json"
+  },
+  {
+    "campaign": "Tharwa.json"
+  },
+  {
+    "campaign": "Apple.json"
+  },
+  {
+    "campaign": "Plume.json"
   }
 ]

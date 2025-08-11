@@ -27,6 +27,7 @@ import {
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -224,7 +225,10 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
       // stored values
       const userPoolBalances = await get()[sliceKey].fetchTokenWalletBalance(curve, pool.id, formValues.fromAddress)
       const walletFromBalance = userPoolBalances[formValues.fromAddress]
-      const { basePlusPriority } = get().gas.gasInfo ?? {}
+      const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
+        chainId: curve.chainId,
+        networks: get().networks.networks,
+      })
 
       let fromAmount = walletFromBalance ?? '0'
 
@@ -355,7 +359,6 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const { fromAddress, fromAmount, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swapApprove(activeKey, provider, pool, isWrapped, fromAddress, fromAmount)
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -389,7 +392,6 @@ const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSw
         formProcessing: true,
         step: 'SWAP',
       })
-      await get().gas.fetchGasInfo(curve)
       const { fromAddress, fromToken, fromAmount, toAddress, toToken, isWrapped } = formValues
       const resp = await curvejsApi.poolSwap.swap(
         activeKey,

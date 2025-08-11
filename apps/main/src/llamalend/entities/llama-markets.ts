@@ -48,6 +48,12 @@ export type LlamaMarket = {
     lendCrvAprBoosted: number | null
     borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
+    // extra lending incentives, like OP rewards (so non CRV)
+    incentives: {
+      address: Address
+      symbol: string
+      rate: number
+    }[]
   }
   type: LlamaMarketType
   url: string
@@ -81,6 +87,7 @@ const convertLendingVault = (
     aprLendCrv0Boost: lendCrvAprUnboosted,
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
+    extraRewardApr,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
@@ -90,7 +97,8 @@ const convertLendingVault = (
   const hasBorrow = userBorrows.has(controller)
   const hasLend = userSupplied.has(vault)
   const hasPosition = hasBorrow || hasLend
-  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0)
+  const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
+  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
     chain,
     address: vault,
@@ -115,13 +123,14 @@ const convertLendingVault = (
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
     rates: {
-      lend, // this is the total yield, including CRV and collateral yield, and is displayed in the table
+      lend, // this is the total yield, including incentive and collateral yield, and is displayed in the table
       lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
+      incentives: extraRewardApr ?? [],
     },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
@@ -195,6 +204,7 @@ const convertMintMarket = (
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
       borrowTotalApy: rate * 100,
+      incentives: [],
     },
     type: LlamaMarketType.Mint,
     deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),

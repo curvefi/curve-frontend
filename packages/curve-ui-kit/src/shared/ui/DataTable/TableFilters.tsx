@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode, useCallback, useMemo, useRef, useState } from 'react'
+import { forwardRef, ReactNode, useCallback, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
@@ -8,14 +8,15 @@ import SvgIcon from '@mui/material/SvgIcon'
 import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
-import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
+import { useFilterExpanded, useTableFilters } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
 import { ToolkitIcon } from '../../icons/ToolkitIcon'
 import { TableSearchField } from './TableSearchField'
-import { TableVisibilitySettingsPopover, VisibilityGroup } from './TableVisibilitySettingsPopover'
+import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
+import type { VisibilityGroup } from './visibility.types'
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,6 +61,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible,
   chips,
   sort,
+  searchText,
   onSearch,
 }: {
   title: string
@@ -70,6 +72,7 @@ export const TableFilters = <ColumnIds extends string>({
   collapsible: ReactNode // filters that may be collapsed
   chips: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
+  searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
@@ -105,7 +108,7 @@ export const TableFilters = <ColumnIds extends string>({
         {isMobile ? (
           <>
             <Grid size={12}>
-              <TableSearchField onSearch={onSearch} />
+              <TableSearchField value={searchText} onChange={onSearch} />
             </Grid>
             <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
               {sort}
@@ -142,8 +145,8 @@ export const TableFilters = <ColumnIds extends string>({
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  */
-export function useColumnFilters(defaultFilters: ColumnFiltersState = []) {
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(defaultFilters)
+export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = []) {
+  const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
@@ -157,7 +160,7 @@ export function useColumnFilters(defaultFilters: ColumnFiltersState = []) {
               },
             ]),
       ]),
-    [],
+    [setColumnFilters],
   )
   const columnFiltersById: Record<string, unknown> = useMemo(
     () =>
@@ -171,7 +174,7 @@ export function useColumnFilters(defaultFilters: ColumnFiltersState = []) {
     [columnFilters],
   )
 
-  const resetFilters = useCallback(() => setColumnFilters(defaultFilters), [defaultFilters])
+  const resetFilters = useCallback(() => setColumnFilters(defaultFilters), [defaultFilters, setColumnFilters])
 
   return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }

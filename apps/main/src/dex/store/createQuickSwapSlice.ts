@@ -17,6 +17,7 @@ import { sleep } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -40,7 +41,6 @@ export type QuickSwapSlice = {
       fromAddress: string,
       toAddress: string,
     ): Promise<{ fromAmount: string; toAmount: string }>
-    fetchUsdRates(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
     fetchMaxAmount(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string | undefined): Promise<void>
     fetchRoutesAndOutput(curve: CurveApi, searchedParams: SearchedParams, maxSlippage: string): Promise<void>
     fetchEstGasApproval(curve: CurveApi, searchedParams: SearchedParams): Promise<void>
@@ -110,13 +110,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
         toAmount: get().userBalances.userBalancesMapper[toAddress] ?? '0',
       }
     },
-    fetchUsdRates: async (curve, { fromAddress, toAddress }) => {
-      const usdRateMapper = get().usdRates.usdRatesMapper
-
-      if (typeof usdRateMapper[toAddress] === 'undefined' || typeof usdRateMapper[fromAddress] === 'undefined') {
-        await get().usdRates.fetchUsdRateByTokens(curve, [fromAddress, toAddress])
-      }
-    },
     fetchMaxAmount: async (curve, searchedParams, maxSlippage) => {
       const state = get()
       const sliceState = state[sliceKey]
@@ -135,8 +128,10 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
-          await state.gas.fetchGasInfo(curve)
-          const { basePlusPriority } = get().gas.gasInfo ?? {}
+          const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
+            chainId,
+            networks: state.networks.networks,
+          })
           const firstBasePlusPriority = basePlusPriority?.[0]
 
           if (typeof firstBasePlusPriority !== 'undefined' && +userBalance > 0) {
@@ -322,7 +317,7 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
 
-      const { signerAddress } = curve
+      const { signerAddress, chainId } = curve
 
       // set loading
       const storedRoutesAndOutput = sliceState.routesAndOutput[activeKey]
@@ -335,9 +330,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // get max if MAX button is clicked
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
-
-      // get usdRates
-      await sliceState.fetchUsdRates(curve, searchedParams)
 
       // api calls
       await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
@@ -366,13 +358,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       // Get user balances
       await state.userBalances.fetchUserBalancesByTokens(curve, tokens)
-      const userBalancesMapper = get().userBalances.userBalancesMapper
-      const filteredUserBalancesList = Object.keys(userBalancesMapper).filter(
-        (k) => +(userBalancesMapper[k] ?? '0') > 0,
-      )
-
-      // Get prices of user balance tokens
-      await state.usdRates.fetchUsdRateByTokens(curve, [...filteredUserBalancesList, ethAddress])
     },
 
     // steps
@@ -393,7 +378,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { fromAmount } = formValues
       const { fromAddress } = searchedParams
 
-      await state.gas.fetchGasInfo(curve)
       const resp = await curvejsApi.router.swapApprove(activeKey, curve, provider, fromAddress, fromAmount)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
@@ -436,7 +420,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       const { fromAmount } = formValues
       const { fromAddress, toAddress } = searchedParams
 
-      await state.gas.fetchGasInfo(curve)
       const resp = await curvejsApi.router.swap(
         activeKey,
         curve,

@@ -1,3 +1,4 @@
+import Apple from './Apple.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
@@ -18,18 +19,18 @@ import Infinifi from './Infinifi.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
+import Loop from './Loop.json'
 import Mellow from './Mellow.json'
+import Noon from './Noon.json'
+import Plume from './Plume.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
-import Rings from './Rings.json'
 import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
-import Tac from './Tac.json'
 import TacTokens from './TacTokens.json'
-import Taiko from './Taiko.json'
-import Turtle from './Turtle.json'
+import Tharwa from './Tharwa.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
@@ -60,11 +61,7 @@ export {
   Carrot,
   Bills,
   StableLabs,
-  Taiko,
   Sonic,
-  Rings,
-  Tac,
-  Turtle,
   Infinifi,
   Asymmetry,
   GoNuts,
@@ -72,4 +69,9 @@ export {
   Falcon,
   Hyperwave,
   TacTokens,
+  Loop,
+  Noon,
+  Apple,
+  Tharwa,
+  Plume,
 }

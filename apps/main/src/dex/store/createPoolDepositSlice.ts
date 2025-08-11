@@ -34,6 +34,7 @@ import { isBonus, isHighSlippage } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -136,7 +137,7 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           cFormValues.isWrapped,
           parseAmountsForAPI(cFormValues.amounts),
         )
-        const basePlusPriority = get().gas.gasInfo?.basePlusPriority
+        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks: get().networks.networks })
 
         if (!resp.error && resp.estimatedGas && basePlusPriority?.[0]) {
           cFormValues.amounts[idx].value = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], userBalance)
@@ -377,7 +378,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const { chainId } = curve
       const { amounts, isWrapped } = formValues
       const approveFn =
@@ -414,7 +414,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         step: 'DEPOSIT',
       })
 
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       const { amounts, isWrapped } = formValues
       const resp = await curvejsApi.poolDeposit.deposit(
@@ -458,7 +457,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'DEPOSIT_STAKE',
       })
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       const { amounts, isWrapped } = formValues
       const resp = await curvejsApi.poolDeposit.depositAndStake(
@@ -501,7 +499,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'APPROVAL',
       })
-      await get().gas.fetchGasInfo(curve)
       const { chainId } = curve
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stakeApprove(activeKey, provider, pool, lpToken)
@@ -535,7 +532,6 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
         formProcessing: true,
         step: 'STAKE',
       })
-      await get().gas.fetchGasInfo(curve)
       const { pool } = poolData
       const { lpToken } = formValues
       const resp = await curvejsApi.poolDeposit.stake(activeKey, provider, pool, lpToken)

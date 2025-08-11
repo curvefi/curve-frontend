@@ -6,7 +6,8 @@ import { useFilteredRewards } from '@/llamalend/PageLlamaMarkets/cells/cell.form
 import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
-import { RewardIcon, RewardsImg } from '@ui-kit/shared/ui/RewardIcon'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
@@ -24,19 +25,19 @@ const RewardChip = ({ icon }: { icon: ReactElement }) => (
 )
 
 export const RewardsIcons = ({
-  market: { rewards, type: marketType, rates },
+  market: { chain, rewards, type: marketType, rates },
   rateType,
 }: {
   market: LlamaMarket
   rateType: RateType
 }) => {
   const filteredRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rateType, rates)
+  const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
   return (
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
       <Stack direction="row" minWidth={IconSize.md} data-testid="rewards-icons">
-        {extraIncentives.map(({ title, image }) => (
-          <RewardChip key={title} icon={<RewardsImg src={image} alt={title} />} />
+        {extraIncentives.map(({ title, address, blockchainId }) => (
+          <RewardChip key={title} icon={<TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />} />
         ))}
         {lodash.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
           <RewardChip key={img} icon={<RewardIcon size="sm" key={img} imageId={img} />} />

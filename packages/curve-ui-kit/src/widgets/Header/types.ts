@@ -14,6 +14,7 @@ export type AppRoute = {
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
   betaFeature?: boolean
+  deprecate?: boolean // when we want to deprecate a page, we want to hide the page from navbar, but not remove routing in case of emergency
 }
 
 export type AppRoutes = {

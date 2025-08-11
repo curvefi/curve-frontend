@@ -1,3 +1,4 @@
+import { zeroAddress } from 'viem'
 import type { AlertFormErrorKey } from '@/dex/components/AlertFormError'
 import type { ChainId, Token } from '@/dex/types/main.types'
 import type { TokenOption } from '@ui-kit/features/select-token'
@@ -13,8 +14,7 @@ export function shortenTokenName(token: string) {
   }
 }
 
-export const isValidAddress = (address: string) =>
-  address?.length === 42 && address !== '0x0000000000000000000000000000000000000000'
+export const isValidAddress = (address: string) => address?.length === 42 && address !== zeroAddress
 
 export function isHighSlippage(slippage: number, maxSlippage: string) {
   return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)

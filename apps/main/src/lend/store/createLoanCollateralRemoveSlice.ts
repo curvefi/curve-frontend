@@ -3,6 +3,8 @@ import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralRemove/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -94,7 +96,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       sliceState.setStateByActiveKey('detailInfo', resp.activeKey, resp.resp)
     },
     fetchEstGas: async (activeKey, api, market) => {
-      const { gas } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { signerAddress } = api
       const { collateral, collateralError } = formValues
@@ -102,7 +103,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
       if (!signerAddress || +collateral <= 0 || collateralError) return
 
       sliceState.setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await gas.fetchGasInfo(api)
       const resp = await loanCollateralRemove.estGas(activeKey, market, collateral)
       sliceState.setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas, loading: false } })
 
@@ -138,7 +138,7 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
 
     // steps
     fetchStepDecrease: async (activeKey, api, market) => {
-      const { gas, markets, user } = get()
+      const { markets, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
       const { provider } = useWallet.getState()
 
@@ -152,7 +152,6 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         step: 'REMOVE',
       })
 
-      await gas.fetchGasInfo(api)
       const { error, ...resp } = await loanCollateralRemove.removeCollateral(
         activeKey,
         provider,
@@ -167,8 +166,12 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         } else {
           // api calls
           const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExists) void user.fetchAll(api, market, true)
-          void void markets.fetchAll(api, market, true)
+          if (loanExists) {
+            void user.fetchAll(api, market, true)
+            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+          }
+          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
+          void markets.fetchAll(api, market, true)
 
           // update formStatus
           sliceState.setStateByKeys({

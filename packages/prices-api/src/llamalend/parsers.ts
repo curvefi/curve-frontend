@@ -49,6 +49,11 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     rebasingYield: x.borrowed_token.rebasing_yield,
   },
   leverage: x.leverage,
+  extraRewardApr: x.extra_reward_apr.map((y) => ({
+    address: y.address,
+    symbol: y.symbol,
+    rate: y.apr,
+  })),
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>

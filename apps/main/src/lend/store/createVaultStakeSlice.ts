@@ -4,6 +4,8 @@ import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultStake/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultStake/utils'
+import { invalidateMarketDetails } from '@/lend/entities/market-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -58,7 +60,6 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       if (!signerAddress || +amount <= 0 || amountError) return
 
       get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: { ...DEFAULT_FORM_EST_GAS, loading: true } })
-      await get().gas.fetchGasInfo(api)
       const resp = await apiLending.vaultStake.estGasApproval(activeKey, market, amount)
       get()[sliceKey].setStateByKey('formEstGas', { [resp.activeKey]: { estimatedGas: resp.estimatedGas } })
 
@@ -106,7 +107,6 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'APPROVAL' }
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
-      await get().gas.fetchGasInfo(api)
       const { amount } = formValues
       const resp = await apiLending.vaultStake.approve(activeKey, provider, market, amount)
 
@@ -131,7 +131,6 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(get()[sliceKey].formStatus), partialFormStatus))
 
       // api calls
-      await get().gas.fetchGasInfo(api)
       const { amount } = formValues
       const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
 
@@ -139,6 +138,8 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
         // re-fetch api
         void get().user.fetchUserMarketBalances(api, market, true)
         void get().markets.fetchAll(api, market, true)
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

@@ -258,7 +258,6 @@ export type Tvl = {
 }
 export type TvlMapper = { [poolId: string]: Tvl }
 export type ValueMapperCached = { [poolId: string]: { value: string } }
-export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type UserPoolListMapper = { [poolId: string]: boolean }
 export type Volume = {
   poolId: string
@@ -281,15 +280,6 @@ export interface PoolAlert extends TooltipProps {
 }
 
 export type EstimatedGas = number | number[] | null
-export type GasInfo = {
-  gasPrice: number | null
-  max: number[]
-  priority: number[]
-  basePlusPriority: number[]
-  basePlusPriorityL1?: number[] | undefined
-  l1GasPriceWei?: number
-  l2GasPriceWei?: number
-}
 
 export interface FnStepEstGasApprovalResponse {
   activeKey: string

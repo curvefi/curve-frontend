@@ -6,7 +6,6 @@ import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/cr
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
-import createGasSlice, { GasSlice } from '@/dex/store/createGasSlice'
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
@@ -18,7 +17,6 @@ import createPoolSwapSlice, { PoolSwapSlice } from '@/dex/store/createPoolSwapSl
 import createPoolWithdrawSlice, { PoolWithdrawSlice } from '@/dex/store/createPoolWithdrawSlice'
 import createQuickSwapSlice, { QuickSwapSlice } from '@/dex/store/createQuickSwapSlice'
 import createTokensSlice, { TokensSlice } from '@/dex/store/createTokensSlice'
-import createUsdRatesSlice, { UsdRatesSlice } from '@/dex/store/createUsdRatesSlice'
 import createUserBalancesSlice, { UserBalancesSlice } from '@/dex/store/createUserBalancesSlice'
 import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 
@@ -26,7 +24,6 @@ const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
   NetworksSlice &
-  GasSlice &
   CacheSlice &
   PoolsSlice &
   PoolDepositSlice &
@@ -38,7 +35,6 @@ export type State = GlobalSlice &
   UserBalancesSlice &
   DashboardSlice &
   TokensSlice &
-  UsdRatesSlice &
   LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
@@ -48,7 +44,6 @@ export type State = GlobalSlice &
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
   ...createNetworksSlice(set, get),
-  ...createGasSlice(set, get),
   ...createCacheSlice(set, get),
   ...createPoolListSlice(set, get),
   ...createPoolsSlice(set, get),
@@ -60,7 +55,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createQuickSwapSlice(set, get),
   ...createUserBalancesSlice(set, get),
   ...createTokensSlice(set, get),
-  ...createUsdRatesSlice(set, get),
   ...createLockedCrvSlice(set, get),
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),

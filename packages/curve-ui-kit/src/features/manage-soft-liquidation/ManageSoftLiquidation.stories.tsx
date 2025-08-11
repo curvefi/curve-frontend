@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import type { Meta, StoryObj } from '@storybook/react'
-import { fn } from '@storybook/test'
+import { fn } from 'storybook/test'
+import { ethAddress } from 'viem'
+import type { Meta, StoryObj } from '@storybook/nextjs'
 import type { Address } from '@ui-kit/utils'
 import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
@@ -16,7 +17,7 @@ const debtToken: Token = {
 const collateralToRecover = [
   {
     symbol: 'ETH',
-    address: '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE' as Address,
+    address: ethAddress,
     amount: 26539422,
     usd: 638000,
   },

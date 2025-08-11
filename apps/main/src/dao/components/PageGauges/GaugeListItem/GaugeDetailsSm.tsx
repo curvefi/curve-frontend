@@ -2,11 +2,12 @@ import { styled } from 'styled-components'
 import { ETHEREUM_CHAIN_ID } from '@/dao/constants'
 import networks from '@/dao/networks'
 import { GaugeFormattedData, UserGaugeVoteWeight } from '@/dao/types/dao.types'
+import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
 import { ExternalLink } from '@ui/Link'
 import { formatNumber, convertToLocaleTimestamp, formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { shortenAddress } from '@ui-kit/utils'
+import { Chain, shortenAddress } from '@ui-kit/utils'
 
 type GaugeDetailsSmProps = {
   gaugeData: GaugeFormattedData
@@ -17,6 +18,10 @@ type GaugeDetailsSmProps = {
 const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: GaugeDetailsSmProps) => {
   const { userVeCrv, userFutureVeCrv } = userGaugeWeightVoteData || {}
   const hasFutureVeCrv = userVeCrv && userFutureVeCrv && userFutureVeCrv > userVeCrv
+
+  const chainId = getChainIdFromGaugeData(gaugeData)
+  const isSideChain = chainId !== Chain.Ethereum
+  const emissions = isSideChain ? gaugeData?.prev_epoch_emissions : gaugeData?.emissions
 
   return (
     <Wrapper className={className}>
@@ -72,8 +77,8 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <StatsRow>
           <StatTitle>{t`Emissions (CRV)`}</StatTitle>
           <StatData>
-            {gaugeData.emissions
-              ? formatNumber(gaugeData.emissions, {
+            {emissions
+              ? formatNumber(emissions, {
                   showDecimalIfSmallNumberOnly: true,
                 })
               : 'N/A'}

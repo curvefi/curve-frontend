@@ -74,43 +74,6 @@ export const helpers = {
     val2 = val2 || '0'
     return BN(val1).isGreaterThan(val2)
   },
-  fetchCustomGasFees: async (curve: Api) => {
-    const resp: { customFeeData: Record<string, number> | null; error: string } = { customFeeData: null, error: '' }
-    try {
-      resp.customFeeData = await curve.getGasInfoForL2()
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
-  fetchL2GasPrice: async (api: Api) => {
-    const resp = { l2GasPriceWei: 0, error: '' }
-    try {
-      resp.l2GasPriceWei = await api.getGasPriceFromL2()
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
-  fetchL1AndL2GasPrice: async (api: Api) => {
-    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
-    try {
-      if (networks[api.chainId].gasL2) {
-        // const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([api.getGasPriceFromL2(), api.getGasPriceFromL1()])
-        // resp.l2GasPriceWei = l2GasPriceWei
-        // resp.l1GasPriceWei = l1GasPriceWei
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
   getStepStatus: (isComplete: boolean, isInProgress: boolean, isValid: boolean): StepStatus =>
     isComplete ? 'succeeded' : isInProgress ? 'in-progress' : isValid ? 'current' : 'pending',
   getUserActiveKey: (api: Api | null, market: OneWayMarketTemplate) => {
@@ -2000,7 +1963,11 @@ export default apiLending
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
  */
-function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: boolean, userStateStablecoin: string) {
+export function _getLiquidationStatus(
+  healthNotFull: string,
+  userIsCloseToLiquidation: boolean,
+  userStateStablecoin: string,
+) {
   const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
     label: 'Healthy',
     colorKey: 'healthy',
@@ -2025,11 +1992,11 @@ function _getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: 
   return userStatus
 }
 
-function _reverseBands(bands: [number, number] | number[]) {
+export function _reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }
 
-function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+export function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
   const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
   for (const k of sortedKeys) {
@@ -2039,7 +2006,7 @@ function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collat
   return { bandsBalancesArr, bandsBalances }
 }
 
-async function _fetchChartBandBalancesData(
+export async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,

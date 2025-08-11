@@ -36,7 +36,7 @@ export const parseRevenue = (x: Responses.GetRevenueResponse['history'][number])
 export const parseStatistics = (x: Responses.GetStatisticsResponse): Models.Statistics => ({
   lastUpdated: toDate(x.last_updated),
   lastUpdatedBlock: x.last_updated_block,
-  aprProjected: x.proj_apr,
+  apyProjected: x.proj_apy,
   supply: x.supply,
 })
 

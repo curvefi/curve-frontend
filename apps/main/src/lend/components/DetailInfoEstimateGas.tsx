@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
-import { useTokenUsdRate } from '@/lend/entities/token'
 import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
@@ -28,10 +28,8 @@ interface Props {
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
-  // TODO: allow gas prices priority adjustment
-  const basePlusPriorities = useStore((state) => state.gas.gasInfo?.basePlusPriority)
-  const basePlusPriority =
-    basePlusPriorities && typeof gasPricesDefault !== 'undefined' && basePlusPriorities[gasPricesDefault]
+  const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     if (estimatedGas && chainId && chainTokenUsdRate && basePlusPriority) {

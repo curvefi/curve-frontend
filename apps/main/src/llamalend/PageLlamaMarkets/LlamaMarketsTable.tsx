@@ -1,10 +1,12 @@
+import lodash from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import {
-  createLlamaMarketsColumnOptions,
   createLlamaMarketsMobileColumns,
+  getColumnVariant,
+  LLAMA_MARKETS_COLUMN_OPTIONS,
 } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
 import { useLlamaMarketSortOptions } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { LendingMarketsFilters } from '@/llamalend/PageLlamaMarkets/LendingMarketsFilters'
@@ -19,6 +21,8 @@ import {
   SortingState,
   useReactTable,
 } from '@tanstack/react-table'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
@@ -26,9 +30,9 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable/TableVisibilitySettingsPopover'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { isEqual } = lodash
+const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -37,30 +41,43 @@ const { Spacing, MaxWidth } = SizesAndSpaces
  */
 const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined) => {
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const groups = useMemo(() => createLlamaMarketsColumnOptions(hasPositions), [hasPositions])
-  const visibilitySettings = useVisibilitySettings(groups, LLAMA_MARKET_COLUMNS)
+  const variant = getColumnVariant(hasPositions)
+  const visibilitySettings = useVisibilitySettings(TITLE, LLAMA_MARKETS_COLUMN_OPTIONS, variant, LLAMA_MARKET_COLUMNS)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }
+
+const useDefaultLlamaFilter = (minLiquidity: number) =>
+  useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, null] }], [minLiquidity])
+
+const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: (id: string, value: unknown) => void) =>
+  [
+    (columnFiltersById[LlamaMarketColumnId.Assets] as string) ?? '',
+    useCallback(
+      (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
+      [setColumnFilter],
+    ),
+  ] as const
 
 export const LlamaMarketsTable = ({
   onReload,
   result,
   isError,
-  minLiquidity,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
-  minLiquidity: number
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters([
-    { id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, undefined] },
-  ])
+
+  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
+  const defaultFilters = useDefaultLlamaFilter(minLiquidity)
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, result?.hasPositions)
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(sorting, hasPositions)
   const [expanded, setExpanded] = useState<ExpandedState>({})
+  const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
+
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -70,15 +87,12 @@ export const LlamaMarketsTable = ({
     getFilteredRowModel: result && getFilteredRowModel(),
     onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel(),
+    autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
     state: { expanded, sorting, columnVisibility, columnFilters },
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
   })
 
-  const onSearch = useCallback(
-    (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
-    [setColumnFilter],
-  )
   return (
     <DataTable
       table={table}
@@ -87,11 +101,12 @@ export const LlamaMarketsTable = ({
       shouldStickFirstColumn={useIsTablet() && !!hasPositions}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={t`Llamalend Markets`}
+        title={TITLE}
         subtitle={t`Borrow with the power of Curve soft liquidations`}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
+        searchText={searchText}
         onSearch={onSearch}
         collapsible={
           <LendingMarketsFilters
@@ -103,11 +118,12 @@ export const LlamaMarketsTable = ({
         }
         chips={
           <MarketsFilterChips
+            searchText={searchText}
             onSearch={onSearch}
             hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
             columnFiltersById={columnFiltersById}
             setColumnFilter={setColumnFilter}
-            hasFilters={columnFilters.length > 0}
+            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             hasPositions={hasPositions}
             hasFavorites={hasFavorites}
             resetFilters={resetFilters}

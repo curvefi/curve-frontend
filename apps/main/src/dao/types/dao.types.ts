@@ -25,16 +25,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
 
 export type Provider = ethers.BrowserProvider
 export type EstimatedGas = number | number[] | null
-export type GasInfo = {
-  gasPrice: number | null
-  max: number[]
-  priority: number[]
-  basePlusPriority: number[]
-  basePlusPriorityL1?: number[] | undefined
-  l1GasPriceWei?: number
-  l2GasPriceWei?: number
-}
-export type UsdRatesMapper = { [tokenAddress: string]: number | undefined }
 export type CurveJsProposalType = 'PARAMETER' | 'OWNERSHIP'
 
 export type PricesGaugeOverviewData = {
@@ -58,6 +48,7 @@ export type PricesGaugeOverviewData = {
   } | null
   is_killed: boolean | null
   emissions: number
+  prev_epoch_emissions: number
   gauge_weight: string
   gauge_weight_7d_delta: number | null
   gauge_weight_60d_delta: number | null

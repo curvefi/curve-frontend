@@ -25,7 +25,7 @@ export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
   PAGE_DISCLAIMER,
-  PAGE_PEGKEEPERS: '/pegkeepers',
+  PAGE_PSR: '/psr',
   PAGE_INTEGRATIONS,
 }
 
@@ -57,7 +57,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
   dex: {
     label: 'DEX',
     routes: [
-      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Quickswap` },
+      { app: 'dex', route: DEX_ROUTES.PAGE_SWAP, label: () => t`Swap` },
       { app: 'dex', route: DEX_ROUTES.PAGE_POOLS, label: () => t`Pools` },
       { app: 'dex', route: DEX_ROUTES.PAGE_CREATE_POOL, label: () => t`Pool Creation` },
       { app: 'dex', route: DEX_ROUTES.PAGE_DASHBOARD, label: () => t`Dashboard` },
@@ -67,10 +67,10 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
     label: 'Llamalend',
     routes: [
       { app: 'llamalend', route: LLAMALEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD` },
-      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD`, deprecate: true },
+      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend`, deprecate: true },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PEGKEEPERS, label: () => t`Peg Keepers` },
+      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PSR, label: () => t`Peg Stability Reserves` },
     ],
   },
   dao: {

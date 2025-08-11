@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Meta, StoryObj } from '@storybook/react'
+import { Meta, StoryObj } from '@storybook/nextjs'
 import { SearchField } from '../SearchField'
 
 const meta: Meta<typeof SearchField> = {

@@ -51,6 +51,11 @@ export type GetMarketsResponse = {
       rebasing_yield: number | null
     }
     leverage: number
+    extra_reward_apr: {
+      address: Address
+      symbol: string
+      apr: number
+    }[]
   }[]
 }
 

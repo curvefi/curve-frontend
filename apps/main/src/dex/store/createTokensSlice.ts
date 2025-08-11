@@ -11,7 +11,6 @@ const { countBy } = lodash
 type SliceState = {
   tokensNameMapper: { [chainId: string]: TokensNameMapper }
   tokensMapper: { [chainId: string]: TokensMapper } // list of all tokens from poolDatas
-  tokensMapperNonSmallTvl: { [chainId: string]: TokensMapper }
   loading: boolean
 }
 
@@ -41,7 +40,6 @@ const DEFAULT_TOKEN: Token = {
 const DEFAULT_STATE: SliceState = {
   tokensNameMapper: {},
   tokensMapper: {},
-  tokensMapperNonSmallTvl: {},
   loading: true,
 }
 
@@ -51,16 +49,14 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
     setTokensMapper: async (chainId, poolDatas) => {
       const { pools, networks } = get()
-      const { tokensMapper, tokensMapperNonSmallTvl, ...sliceState } = get()[sliceKey]
+      const { tokensMapper, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
-      const { hideSmallPoolsTvl: chainTvl } = networks.networks[chainId]
       const tvlMapper = pools.tvlMapper[chainId] ?? {}
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
-      const cTokensMapperNonSmallTvl: TokensMapper = { ...(tokensMapperNonSmallTvl[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
@@ -88,11 +84,6 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
             cTokensMapper[address] = obj
             partialTokensMapper[address] = obj
-
-            // if pool list is <= 10 or if pool's tvl >= chain's tvl (etc. 10000) add to list
-            if (poolDatas.length <= 10 || tvl >= chainTvl) {
-              cTokensMapperNonSmallTvl[address] = obj
-            }
           } else {
             log(`Missing token name in pool ${pool.id}`)
           }
@@ -101,10 +92,6 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       // update have same token name value
       cTokensMapper = updateHaveSameTokenNames(cTokensMapper)
-      const parsedTokensMapperNonSmallTvl: TokensMapper = {}
-      for (const key in cTokensMapperNonSmallTvl) {
-        parsedTokensMapperNonSmallTvl[key] = cTokensMapper[key]
-      }
 
       const parsedPartialTokensMapper: TokensMapper = {}
       for (const key in partialTokensMapper) {
@@ -113,7 +100,6 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       const chainIdStr = chainId.toString()
       sliceState.setStateByActiveKey('tokensMapper', chainIdStr, cTokensMapper)
-      sliceState.setStateByActiveKey('tokensMapperNonSmallTvl', chainIdStr, parsedTokensMapperNonSmallTvl)
       sliceState.setStateByKey('loading', false)
 
       return Object.keys(parsedPartialTokensMapper)

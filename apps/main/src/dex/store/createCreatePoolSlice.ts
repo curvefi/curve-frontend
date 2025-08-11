@@ -1,6 +1,7 @@
 import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import produce from 'immer'
+import { zeroAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import {
   CRYPTOSWAP,
@@ -21,6 +22,7 @@ import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 type SliceState = {
   navigationIndex: number
@@ -431,37 +433,39 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         ...get().createPool.initialPrice,
       }
 
+      const { chainId } = curve
+
       // set token prices
       if (tokenA.address !== '') {
-        const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenA.address)
+        const tokenAPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenA.address })
         initialPriceUpdates.tokenA = Number(tokenAPriceRaw)
       }
       if (tokenB.address !== '') {
-        const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenB.address)
+        const tokenBPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenB.address })
         initialPriceUpdates.tokenB = Number(tokenBPriceRaw)
       }
       if (tokenC.address !== '') {
-        const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenC.address)
+        const tokenCPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenC.address })
         initialPriceUpdates.tokenC = Number(tokenCPriceRaw)
       }
       if (tokenD.address !== '') {
-        const tokenDPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenD.address)
+        const tokenDPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenD.address })
         initialPriceUpdates.tokenD = Number(tokenDPriceRaw)
       }
       if (tokenE.address !== '') {
-        const tokenEPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenE.address)
+        const tokenEPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenE.address })
         initialPriceUpdates.tokenE = Number(tokenEPriceRaw)
       }
       if (tokenF.address !== '') {
-        const tokenFPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenF.address)
+        const tokenFPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenF.address })
         initialPriceUpdates.tokenF = Number(tokenFPriceRaw)
       }
       if (tokenG.address !== '') {
-        const tokenGPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenG.address)
+        const tokenGPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenG.address })
         initialPriceUpdates.tokenG = Number(tokenGPriceRaw)
       }
       if (tokenH.address !== '') {
-        const tokenHPriceRaw = await get().usdRates.fetchUsdRateByToken(curve, tokenH.address)
+        const tokenHPriceRaw = await fetchTokenUsdRate({ chainId, tokenAddress: tokenH.address })
         initialPriceUpdates.tokenH = Number(tokenHPriceRaw)
       }
 
@@ -577,18 +581,20 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       }
     },
     refreshInitialPrice: async (curve: CurveApi) => {
-      const tokenAPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
-        get().createPool.tokensInPool[TOKEN_A].address,
-      )
-      const tokenBPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
-        get().createPool.tokensInPool[TOKEN_B].address,
-      )
-      const tokenCPriceRaw = await get().usdRates.fetchUsdRateByToken(
-        curve,
-        get().createPool.tokensInPool[TOKEN_C].address,
-      )
+      const { chainId } = curve
+
+      const tokenAPriceRaw = await fetchTokenUsdRate({
+        chainId,
+        tokenAddress: get().createPool.tokensInPool[TOKEN_A].address,
+      })
+      const tokenBPriceRaw = await fetchTokenUsdRate({
+        chainId,
+        tokenAddress: get().createPool.tokensInPool[TOKEN_B].address,
+      })
+      const tokenCPriceRaw = await fetchTokenUsdRate({
+        chainId,
+        tokenAddress: get().createPool.tokensInPool[TOKEN_C].address,
+      })
       const tokenAPrice = Number(tokenAPriceRaw)
       const tokenBPrice = Number(tokenBPriceRaw)
       const tokenCPrice = Number(tokenCPriceRaw)
@@ -736,7 +742,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       const chainId = curve.chainId
       const {
         pools: { fetchNewPool, basePools },
-        gas: { fetchGasInfo },
         createPool: {
           poolSymbol,
           swapType,
@@ -767,12 +772,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       const { dismiss: dismissConfirm } = notify(notifyPendingMessage, 'pending')
 
       dismissNotificationHandler = dismissConfirm
-
-      try {
-        await fetchGasInfo(curve)
-      } catch (error) {
-        console.warn(error)
-      }
 
       set(
         produce((state) => {
@@ -959,8 +958,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         if (networks[chainId].stableswapFactory) {
           // STABLE NG META
           try {
-            const oracleAddress =
-              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000'
+            const oracleAddress = coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress
             const oracleFunction = coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 
@@ -1049,9 +1047,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
           try {
             const coinAddresses = coins.map((coin) => coin.address)
             const assetTypes = coins.map((coin) => coin.ngAssetType)
-            const oracleAddresses = coins.map((coin) =>
-              coin.ngAssetType === 1 ? coin.oracleAddress : '0x0000000000000000000000000000000000000000',
-            )
+            const oracleAddresses = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleAddress : zeroAddress))
             const oracleFunctions = coins.map((coin) => (coin.ngAssetType === 1 ? coin.oracleFunction : '0x00000000'))
             const maExpTimeFormatted = Math.round(+maExpTime / 0.693)
 

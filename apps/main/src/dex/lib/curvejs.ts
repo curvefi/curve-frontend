@@ -17,7 +17,6 @@ import {
   RewardCrv,
   RewardOther,
   RewardsApy,
-  UsdRatesMapper,
   UserBalancesMapper,
 } from '@/dex/types/main.types'
 import { fulfilledValue, getErrorMessage, isValidAddress } from '@/dex/utils'
@@ -33,6 +32,7 @@ import {
   excludeLowExchangeRateCheck,
   getExchangeRates,
   getSwapIsLowExchangeRate,
+  routerGetToStoredRate,
 } from '@/dex/utils/utilsSwap'
 import type { IProfit } from '@curvefi/api/lib/interfaces'
 import type { DateValue } from '@internationalized/date'
@@ -45,68 +45,7 @@ import { log } from '@ui-kit/lib/logging'
 
 const { chunk, flatten, isUndefined } = lodash
 
-const helpers = {
-  fetchCustomGasFees: async (curve: CurveApi) => {
-    const resp: { customFeeData: Record<string, number | null> | null; error: string } = {
-      customFeeData: null,
-      error: '',
-    }
-    try {
-      resp.customFeeData = await curve.getGasInfoForL2()
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
-  fetchL2GasPrice: async (curve: CurveApi) => {
-    const resp = { l2GasPrice: 0, error: '' }
-    try {
-      resp.l2GasPrice = await curve.getGasPriceFromL2()
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
-  fetchL1AndL2GasPrice: async (curve: CurveApi, network: NetworkConfig) => {
-    const resp = { l1GasPriceWei: 0, l2GasPriceWei: 0, error: '' }
-    try {
-      if (network.gasL2) {
-        const [l2GasPriceWei, l1GasPriceWei] = await Promise.all([curve.getGasPriceFromL2(), curve.getGasPriceFromL1()])
-        resp.l2GasPriceWei = l2GasPriceWei
-        resp.l1GasPriceWei = l1GasPriceWei
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-get-gas')
-      return resp
-    }
-  },
-  fetchUsdRates: async (curve: CurveApi, tokenAddresses: string[]) => {
-    log('fetchUsdRates', tokenAddresses.length)
-    const results: UsdRatesMapper = {}
-
-    await PromisePool.for(tokenAddresses)
-      .withConcurrency(5)
-      .process(async (tokenAddress) => {
-        try {
-          results[tokenAddress] = await curve.getUsdRate(tokenAddress)
-        } catch (error) {
-          if (!curve.getIsLiteChain()) {
-            console.error(`Unable to get usd rate for ${tokenAddress}`, error)
-          }
-          results[tokenAddress] = NaN
-        }
-      })
-    return results
-  },
-  waitForTransaction,
-  waitForTransactions,
-}
+const helpers = { waitForTransaction, waitForTransactions }
 
 // curve
 const network = {
@@ -338,9 +277,10 @@ const router = {
 
         if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
 
-        const [fetchedToAmount, priceImpact] = await Promise.all([
+        const [fetchedToAmount, priceImpact, toStoredRate] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fromAmount),
+          routerGetToStoredRate(routes, curve, toAddress),
         ])
 
         resp = {
@@ -353,6 +293,7 @@ const router = {
             poolsMapper,
             fetchedToAmount,
             toAddress,
+            toStoredRate,
             fromAmount,
             fromAddress,
           ),
@@ -369,9 +310,10 @@ const router = {
 
         if (Array.isArray(routes) && routes.length === 0 && +output === 0) return resp
 
-        const [fetchedToAmount, priceImpact] = await Promise.all([
+        const [fetchedToAmount, priceImpact, toStoredRate] = await Promise.all([
           curve.router.expected(fromAddress, toAddress, fetchedFromAmount),
           curve.router.priceImpact(fromAddress, toAddress, fetchedFromAmount),
+          routerGetToStoredRate(routes, curve, toAddress),
         ])
 
         resp = {
@@ -384,6 +326,7 @@ const router = {
             poolsMapper,
             toAmount,
             toAddress,
+            toStoredRate,
             fetchedFromAmount,
             fromAddress,
             fetchedToAmount,
