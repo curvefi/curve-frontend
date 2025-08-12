@@ -10,7 +10,7 @@ export async function clientLoader() {
   }
 }
 
-/** Redirect is handled by the `ClientWrapper` component, as we need the client to access the url after # */
+/** Redirect is handled by the `ClientWrapper` component, rendered in the layout */
 export default function Component() {
   return <Skeleton width="100%" height={MinHeight.pageContent} />
 }

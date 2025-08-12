@@ -5,8 +5,17 @@ import DaoLayout from '@/app/dao/layout'
 import DexLayout from '@/app/dex/layout'
 import LendLayout from '@/app/lend/layout'
 import { getNetworkDefs } from '@/dex/lib/networks'
-import { createRootRoute, createRoute, createRouter, HeadContent, Outlet } from '@tanstack/react-router'
+import {
+  createRootRoute,
+  createRoute,
+  createRouter,
+  HeadContent,
+  Outlet,
+  redirect as routerRedirect,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+
+const redirectTo = <T extends string>(to: T) => routerRedirect({ to, throw: true, replace: true })
 
 // Create root route
 const rootRoute = createRootRoute({
@@ -363,6 +372,13 @@ const lendLayoutRoute = createRoute({
   ),
 })
 
+// Llamalend layout route
+const llamalendLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'llamalend',
+  component: () => <Outlet />,
+})
+
 // Lend routes
 const lendRoute = createRoute({
   getParentRoute: () => lendLayoutRoute,
@@ -454,6 +470,61 @@ const lendNetworkMarketVaultNoFormTypeRoute = createRoute({
   }),
 })
 
+// Redirect routes
+const dexIntegrationsRedirectRoute = createRoute({
+  getParentRoute: () => dexLayoutRoute,
+  path: '/integrations',
+  loader: () => redirectTo('/dex/ethereum/integrations'),
+})
+
+const integrationsRedirectRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/integrations',
+  loader: () => redirectTo('/dex/ethereum/integrations'),
+})
+
+const dexNetworkRedirectRoute = createRoute({
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network',
+  loader: ({ params: { network } }) => redirectTo(`/dex/${network}/pools`),
+})
+
+const crvusdBetaMarketsRedirectRoute = createRoute({
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network/beta-markets',
+  loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets`),
+})
+
+const crvusdNetworkRedirectRoute = createRoute({
+  getParentRoute: () => crvusdLayoutRoute,
+  path: '$network',
+  loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/markets`),
+})
+
+const lendNetworkRedirectRoute = createRoute({
+  getParentRoute: () => lendLayoutRoute,
+  path: '$network',
+  loader: ({ params: { network } }) => redirectTo(`/lend/${network}/markets`),
+})
+
+const daoNetworkRedirectRoute = createRoute({
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network',
+  loader: ({ params: { network } }) => redirectTo(`/dao/${network}/proposals`),
+})
+
+const llamalendNetworkRedirectRoute = createRoute({
+  getParentRoute: () => llamalendLayoutRoute,
+  path: '$network',
+  loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets`),
+})
+
+const daoNetworkIntegrationsRedirectRoute = createRoute({
+  getParentRoute: () => daoLayoutRoute,
+  path: '$network/integrations',
+  loader: ({ params: { network } }) => redirectTo(`/dex/${network}/integrations`),
+})
+
 // LlamaLend routes
 const llamalendNetworkDisclaimerRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -485,6 +556,8 @@ const llamalendNetworkMarketsRoute = createRoute({
 // Add children to layout routes
 crvusdLayoutRoute.addChildren([
   crvusdRoute,
+  crvusdNetworkRedirectRoute,
+  crvusdBetaMarketsRedirectRoute,
   crvusdNetworkDisclaimerRoute,
   crvusdNetworkIntegrationsRoute,
   crvusdNetworkMarketsRoute,
@@ -498,6 +571,8 @@ crvusdLayoutRoute.addChildren([
 
 daoLayoutRoute.addChildren([
   daoRoute,
+  daoNetworkRedirectRoute,
+  daoNetworkIntegrationsRedirectRoute,
   daoNetworkAnalyticsRoute,
   daoNetworkDisclaimerRoute,
   daoNetworkGaugesRoute,
@@ -511,6 +586,7 @@ daoLayoutRoute.addChildren([
 
 dexLayoutRoute.addChildren([
   dexRoute,
+  dexNetworkRedirectRoute,
   dexNetworkCompensationRoute,
   dexNetworkCreatePoolRoute,
   dexNetworkDashboardRoute,
@@ -525,6 +601,7 @@ dexLayoutRoute.addChildren([
 
 lendLayoutRoute.addChildren([
   lendRoute,
+  lendNetworkRedirectRoute,
   lendNetworkDisclaimerRoute,
   lendNetworkIntegrationsRoute,
   lendNetworkMarketsRoute,
@@ -536,6 +613,13 @@ lendLayoutRoute.addChildren([
   lendNetworkMarketVaultNoFormTypeRoute,
 ])
 
+llamalendLayoutRoute.addChildren([
+  llamalendNetworkRedirectRoute,
+  llamalendNetworkDisclaimerRoute,
+  llamalendNetworkIntegrationsRoute,
+  llamalendNetworkMarketsRoute,
+])
+
 // Create the route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
@@ -543,10 +627,10 @@ const routeTree = rootRoute.addChildren([
   daoLayoutRoute,
   dexLayoutRoute,
   lendLayoutRoute,
-  // LlamaLend routes (no layout yet)
-  llamalendNetworkDisclaimerRoute,
-  llamalendNetworkIntegrationsRoute,
-  llamalendNetworkMarketsRoute,
+  llamalendLayoutRoute,
+  // Redirect routes
+  dexIntegrationsRedirectRoute,
+  integrationsRedirectRoute,
 ])
 
 // Create the router
