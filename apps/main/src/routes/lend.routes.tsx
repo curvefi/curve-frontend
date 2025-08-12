@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import LendLayout from '@/app/lend/layout'
 import { createRoute, Outlet } from '@tanstack/react-router'
-import { rootRoute } from './root'
+import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
 export const lendLayoutRoute = createRoute({

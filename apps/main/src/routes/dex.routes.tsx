@@ -1,8 +1,8 @@
 import { lazy } from 'react'
 import DexLayout from '@/app/dex/layout'
-import { redirectTo } from '@/routes/util.ts'
+import { redirectTo } from '@/routes/util'
 import { createRoute, Outlet } from '@tanstack/react-router'
-import { rootRoute } from './root'
+import { rootRoute } from './root.routes'
 
 const dexRoute = createRoute({
   getParentRoute: () => dexLayoutRoute,

@@ -1,12 +1,12 @@
 import { lazy } from 'react'
-import { rootRoute } from '@/routes/root'
+import { rootRoute } from '@/routes/root.routes'
 import { redirectTo } from '@/routes/util'
 import { createRoute, createRouter } from '@tanstack/react-router'
-import { crvusdRoutes } from './crvusd'
-import { daoRoutes } from './dao'
-import { dexRoutes } from './dex'
-import { lendRoutes } from './lend'
-import { llamalendRoutes } from './llamalend'
+import { crvusdRoutes } from './crvusd.routes'
+import { daoRoutes } from './dao.routes'
+import { dexRoutes } from './dex.routes'
+import { lendRoutes } from './lend.routes'
+import { llamalendRoutes } from './llamalend.routes'
 
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,

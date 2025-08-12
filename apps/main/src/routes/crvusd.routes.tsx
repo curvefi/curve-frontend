@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 import CrvUsdLayout from '@/app/crvusd/layout'
 import { createRoute, Outlet } from '@tanstack/react-router'
-import { rootRoute } from './root'
+import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
 const crvusdLayoutRoute = createRoute({

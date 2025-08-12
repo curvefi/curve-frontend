@@ -1,8 +1,8 @@
 import { lazy } from 'react'
 import DaoLayout from '@/app/dao/layout'
-import { redirectTo } from '@/routes/util.ts'
+import { redirectTo } from '@/routes/util'
 import { createRoute, Outlet } from '@tanstack/react-router'
-import { rootRoute } from './root'
+import { rootRoute } from './root.routes'
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
