@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd apps/main && yarn build",
-  "outputDirectory": "apps/main/dist",
+  "buildCommand": "yarn build",
   "rewrites": [
     {
       "source": "/.well-known/walletconnect.txt",
