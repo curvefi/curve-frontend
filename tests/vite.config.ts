@@ -8,6 +8,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: 'next/font/local', replacement: resolve(__dirname, 'cypress/fixtures/next-font-local.ts') },
+      { find: '@', replacement: resolve(__dirname, './cypress') },
       { find: '@ui', replacement: resolve(__dirname, '../packages/ui/src/') },
       { find: '@ui-kit', replacement: resolve(__dirname, '../packages/curve-ui-kit/src') },
       { find: '@external-rewards', replacement: resolve(__dirname, '../packages/external-rewards/src/index.ts') },

@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
@@ -17,7 +18,6 @@ import { SidebarSection } from './SidebarSection'
 import { SocialSidebarSection } from './SocialSidebarSection'
 import { HeaderImplementationProps } from './types'
 import { useMainNavRef } from './useMainNavRef'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 
 const HIDE_SCROLLBAR = {
   // hide the scrollbar, on mobile it's not needed, and it messes up with the SideBarFooter
