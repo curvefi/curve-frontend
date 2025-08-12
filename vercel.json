@@ -3,6 +3,10 @@
   "framework": "vite",
   "rewrites": [
     {
+      "source": "/.well-known/walletconnect.txt",
+      "destination": "/public/.well-known/walletconnect.txt"
+    },
+    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
