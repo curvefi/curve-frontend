@@ -1,4 +1,4 @@
-import { t } from '@ui-kit/lib/i18n.ts'
+import { t } from '@ui-kit/lib/i18n'
 import { PageNotFound } from '@ui-kit/pages/PageNotFound'
 
 export default function NotFound() {
