@@ -1,6 +1,15 @@
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { LOAD_TIMEOUT, oneViewport } from '@/support/ui'
 
+/**
+ * Gets pegkeeper cards by test ID suffix.
+ * The complete test ID format is: pegkeeper-card-{contractAddress}-{suffix}
+ * where contractAddress makes each pegkeeper's test IDs unique.
+ */
+function getPegkeeperCards(suffix: string) {
+  return cy.get(`[data-testid^="pegkeeper-card"][data-testid$="-${suffix}"]`)
+}
+
 describe(`Peg Stability Reserves`, () => {
   let width: number, height: number
 
@@ -17,8 +26,8 @@ describe(`Peg Stability Reserves`, () => {
   })
 
   it('should render all pegkeepers', () => {
-    cy.get('[data-testid^="pegkeeper-card"]').should('have.length', PEG_KEEPERS.length)
-    cy.get('[data-testid^="pegkeeper-card"]').each(($el) => {
+    getPegkeeperCards('root').as('cards').should('have.length', PEG_KEEPERS.length)
+    cy.get('@cards').each(($el) => {
       cy.wrap($el).should('be.visible')
     })
   })
@@ -29,20 +38,24 @@ describe(`Peg Stability Reserves`, () => {
   })
 
   it('should render advanced details with pool links', () => {
-    cy.get('[data-testid="pegkeeper-action-info-pool"]').should('have.length.greaterThan', 0)
-    cy.get('[data-testid="pegkeeper-action-info-pool"] a').each(($el) => {
-      cy.wrap($el)
-        .should('have.attr', 'href')
-        .and('match', /\/dex\/ethereum\/pools\/.*\//)
-    })
+    getPegkeeperCards('action-info-pool').as('infos').should('have.length.greaterThan', 0)
+    cy.get('@infos')
+      .find('a')
+      .each(($el) => {
+        cy.wrap($el)
+          .should('have.attr', 'href')
+          .and('match', /\/dex\/ethereum\/pools\/.*\//)
+      })
   })
 
   it('should render advanced details with contract links', () => {
-    cy.get('[data-testid="pegkeeper-action-info-contract"]').should('have.length.greaterThan', 0)
-    cy.get('[data-testid="pegkeeper-action-info-contract"] a').each(($el) => {
-      cy.wrap($el)
-        .should('have.attr', 'href')
-        .and('match', /https:\/\/etherscan\.io\/address\/.*/)
-    })
+    getPegkeeperCards('action-info-contract').as('infos').should('have.length.greaterThan', 0)
+    cy.get('@infos')
+      .find('a')
+      .each(($el) => {
+        cy.wrap($el)
+          .should('have.attr', 'href')
+          .and('match', /https:\/\/etherscan\.io\/address\/.*/)
+      })
   })
 })
