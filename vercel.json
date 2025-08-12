@@ -3,8 +3,8 @@
   "buildCommand": "yarn build",
   "rewrites": [
     {
-      "source": "/.well-known/walletconnect.txt",
-      "destination": "/public/.well-known/walletconnect.txt"
+      "source": "/example-api/:path*",
+      "destination": "https://api.example.com/:path*"
     },
     {
       "source": "/(.*)",

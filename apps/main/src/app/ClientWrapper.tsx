@@ -78,7 +78,6 @@ function useNetworkFromUrl<ChainId extends number, NetworkConfig extends Network
 
 /**
  * During SSR, we cannot access the user's theme preference, so that can lead to hydration mismatch.
- * TODO: Store the preference in a cookie so we can read it from the server.
  */
 function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
   const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
@@ -90,7 +89,7 @@ function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
 }
 
 /**
- * This is the part of the root layout that needs to be a client component.
+ * TODO: Rename this to RootLayout
  */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
