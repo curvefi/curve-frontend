@@ -1,3 +1,4 @@
+import NextTopLoader from 'nextjs-toploader'
 import { type ReactNode } from 'react'
 import daoNetworks from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
