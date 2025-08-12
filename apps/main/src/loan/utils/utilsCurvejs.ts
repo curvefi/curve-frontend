@@ -1,20 +1,7 @@
-import type { Eip1193Provider } from 'ethers'
 import lodash from 'lodash'
-import networks from '@/loan/networks'
-import { BandBalance, ChainId, type LlamaApi, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { BandBalance, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
-
-export async function initLlamaApi(
-  chainId: ChainId,
-  externalProvider?: Eip1193Provider,
-): Promise<LlamaApi | undefined> {
-  if (!externalProvider) return
-  const network = networks[chainId].networkId
-  const api = lodash.cloneDeep((await import('@curvefi/llamalend-api')).default) as LlamaApi
-  await api.init('Web3', { network, externalProvider }, { chainId })
-  return api
-}
 
 export function getIsUserCloseToLiquidation(
   userFirstBand: number,
