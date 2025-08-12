@@ -7,6 +7,7 @@ import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkDef } from '@ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 export const defaultNetworks = Object.entries({
@@ -59,7 +60,7 @@ export const defaultNetworks = Object.entries({
     ],
     createQuickList: [
       {
-        address: '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
+        address: CRVUSD_ADDRESS,
         haveSameTokenName: false,
         symbol: 'crvUSD',
       },
