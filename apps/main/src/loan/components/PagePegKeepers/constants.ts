@@ -48,4 +48,19 @@ export const PEG_KEEPERS = [
       ],
     },
   },
+  {
+    address: '0x338cb2d827112d989a861cde87cd9ffd913a1f9d',
+    token: 'frxUSD',
+    poolUrl: getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/factory-stable-ng-510/deposit`),
+    pool: {
+      id: 'factory-stable-ng-510',
+      name: 'crvUSD/frxUSD',
+      address: '0x13e12bb0e6a2f1a3d6901a59a9d585e89a6243e1',
+      underlyingCoins: ['frxUSD', 'crvUSD'],
+      underlyingCoinAddresses: [
+        '0xcacd6fd266af91b8aed52accc382b4e165586e29',
+        '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e',
+      ],
+    },
+  },
 ] as const
