@@ -8,7 +8,6 @@ import { dexRoutes } from './dex'
 import { lendRoutes } from './lend'
 import { llamalendRoutes } from './llamalend'
 
-// Home page
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',

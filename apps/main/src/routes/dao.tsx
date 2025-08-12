@@ -107,13 +107,10 @@ const daoNetworkVecrvRoute = createRoute({
   }),
 })
 
-const daoNetworkVecrvNoFormTypeRoute = createRoute({
+const daoNetworkVecrvNoFormTypeRedirectRoute = createRoute({
   getParentRoute: () => daoLayoutRoute,
   path: '$network/vecrv',
-  component: lazy(() => import('../app/dao/[network]/vecrv/[[...formType]]/page')),
-  head: () => ({
-    meta: [{ title: 'CRV Locker - Curve' }],
-  }),
+  loader: ({ params: { network } }) => redirectTo(`/dao/${network}/vecrv/create/`),
 })
 
 export const daoRoutes = daoLayoutRoute.addChildren([
@@ -128,5 +125,5 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   daoNetworkProposalDetailRoute,
   daoNetworkUserRoute,
   daoNetworkVecrvRoute,
-  daoNetworkVecrvNoFormTypeRoute,
+  daoNetworkVecrvNoFormTypeRedirectRoute,
 ])

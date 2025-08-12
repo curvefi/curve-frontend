@@ -14,7 +14,7 @@ export type NetworkUrlParams = { network: INetworkName }
 export type GaugeUrlParams = NetworkUrlParams & { gaugeAddress: Address }
 export type UserUrlParams = NetworkUrlParams & { userAddress: Address }
 export type ProposalUrlParams = NetworkUrlParams & { proposalId: string }
-export type VeCrvUrlParams = NetworkUrlParams & { formType: [FormType] }
+export type VeCrvUrlParams = NetworkUrlParams & { formType: FormType }
 export type UrlParams = NetworkUrlParams & Partial<GaugeUrlParams & UserUrlParams & ProposalUrlParams & VeCrvUrlParams>
 
 export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
