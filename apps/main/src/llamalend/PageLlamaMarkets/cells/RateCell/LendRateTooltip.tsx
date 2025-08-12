@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { MarketSupplyRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltip'
+import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltipContent'
 import { useFilteredRewards } from '@ui-kit/shared/ui/tooltips/utils'
 import { useSnapshots } from '../../hooks/useSnapshots'
 
@@ -26,7 +26,7 @@ export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; chi
       clickable
       title={t`Supply Yield`}
       body={
-        <MarketSupplyRateTooltip
+        <MarketSupplyRateTooltipContent
           supplyRate={lendApr}
           averageRate={averageRate}
           periodLabel={period}

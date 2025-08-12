@@ -6,7 +6,7 @@ import type { MarketType } from '@ui-kit/types/market'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 import { formatPercent } from './utils'
 
-export type MarketBorrowRateTooltipProps = {
+export type MarketBorrowRateTooltipContentProps = {
   marketType: MarketType
   borrowRate: number | null | undefined
   totalBorrowRate: number | null | undefined
@@ -23,7 +23,7 @@ const messages: Record<MarketType, string> = {
   mint: t`The borrow rate is the cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
 }
 
-export const MarketBorrowRateTooltip = ({
+export const MarketBorrowRateTooltipContent = ({
   marketType,
   borrowRate,
   totalBorrowRate,
@@ -33,7 +33,7 @@ export const MarketBorrowRateTooltip = ({
   rebasingYield,
   collateralSymbol,
   isLoading,
-}: MarketBorrowRateTooltipProps) => {
+}: MarketBorrowRateTooltipContentProps) => {
   return (
     <TooltipWrapper>
       <TooltipDescription text={messages[marketType]} />

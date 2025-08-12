@@ -4,7 +4,7 @@ import { CollateralValue } from '@ui-kit/features/market-position-details/Borrow
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
-type CollateralMetricTooltipProps = {
+type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null
 }
 
@@ -30,7 +30,7 @@ const formatPercentage = (
   return null
 }
 
-export const CollateralMetricTooltip = ({ collateralValue }: CollateralMetricTooltipProps) => {
+export const CollateralMetricTooltipContent = ({ collateralValue }: CollateralMetricTooltipContentProps) => {
   const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
   const collateralPercentage = formatPercentage(
     collateralValue?.collateral?.value,

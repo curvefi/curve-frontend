@@ -4,8 +4,8 @@ import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
-import { MarketBorrowRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltip'
-import { MarketSupplyRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltip'
+import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
+import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketType, ExtraIncentive } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
@@ -145,7 +145,7 @@ export const MarketDetails = ({
           valueTooltip={{
             title: t`Borrow Rate`,
             body: (
-              <MarketBorrowRateTooltip
+              <MarketBorrowRateTooltipContent
                 marketType={marketType}
                 borrowRate={borrowAPY?.rate}
                 totalBorrowRate={borrowAPY?.totalBorrowRate}
@@ -179,7 +179,7 @@ export const MarketDetails = ({
             valueTooltip={{
               title: t`Supply Rate`,
               body: (
-                <MarketSupplyRateTooltip
+                <MarketSupplyRateTooltipContent
                   supplyRate={supplyAPY?.rate}
                   averageRate={supplyAPY?.averageRate}
                   minBoostApr={supplyAPY?.supplyAprCrvMinBoost}

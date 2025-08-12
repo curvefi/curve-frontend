@@ -2,10 +2,10 @@ import { CardHeader, Box } from '@mui/material'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { MarketSupplyRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltip'
+import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
-import { AmountSuppliedTooltip } from './tooltips/AmountSupplied'
+import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -78,7 +78,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
           valueTooltip={{
             title: t`Supply Rate`,
             body: (
-              <MarketSupplyRateTooltip
+              <MarketSupplyRateTooltipContent
                 supplyRate={supplyAPY?.rate}
                 averageRate={supplyAPY?.averageRate}
                 periodLabel={supplyAPY?.averageRateLabel ?? ''}
@@ -114,7 +114,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
           }
           valueTooltip={{
             title: t`Amount Supplied`,
-            body: <AmountSuppliedTooltip />,
+            body: <AmountSuppliedTooltipContent />,
             placement: 'top',
             arrow: false,
             clickable: true,

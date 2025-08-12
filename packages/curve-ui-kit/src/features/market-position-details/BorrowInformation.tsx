@@ -9,14 +9,14 @@ import type {
   LiquidationRange,
   BandRange,
 } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { CollateralMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/CollateralMetricTooltip'
-import { CurrentLTVTooltip } from '@ui-kit/features/market-position-details/tooltips/CurrentLTVTooltip'
-import { LiquidityThresholdTooltip } from '@ui-kit/features/market-position-details/tooltips/LiquidityThresholdMetricTooltip'
-import { PnlMetricTooltip } from '@ui-kit/features/market-position-details/tooltips/PnlMetricTooltip'
-import { TotalDebtTooltip } from '@ui-kit/features/market-position-details/tooltips/TotalDebtTooltip'
+import { CollateralMetricTooltipContent } from '@ui-kit/features/market-position-details/tooltips/CollateralMetricTooltipContent'
+import { CurrentLTVTooltipContent } from '@ui-kit/features/market-position-details/tooltips/CurrentLTVTooltipContent'
+import { LiquidityThresholdTooltipContent } from '@ui-kit/features/market-position-details/tooltips/LiquidityThresholdMetricTooltipContent'
+import { PnlMetricTooltipContent } from '@ui-kit/features/market-position-details/tooltips/PnlMetricTooltipContent'
+import { TotalDebtTooltipContent } from '@ui-kit/features/market-position-details/tooltips/TotalDebtTooltipContent'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
-import { MarketBorrowRateTooltip } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltip'
+import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketType } from '@ui-kit/types/market'
 
@@ -86,7 +86,7 @@ export const BorrowInformation = ({
         valueTooltip={{
           title: t`Borrow Rate`,
           body: (
-            <MarketBorrowRateTooltip
+            <MarketBorrowRateTooltipContent
               marketType={marketType}
               borrowRate={borrowAPY?.rate}
               totalBorrowRate={borrowAPY?.totalBorrowRate}
@@ -110,7 +110,7 @@ export const BorrowInformation = ({
         valueOptions={{ unit: { symbol: 'crvUSD', position: 'suffix' } }}
         valueTooltip={{
           title: t`Total Debt`,
-          body: <TotalDebtTooltip />,
+          body: <TotalDebtTooltipContent />,
           placement: 'top',
           arrow: false,
           clickable: true,
@@ -124,7 +124,7 @@ export const BorrowInformation = ({
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
           title: t`Collateral value`,
-          body: <CollateralMetricTooltip collateralValue={collateralValue} />,
+          body: <CollateralMetricTooltipContent collateralValue={collateralValue} />,
           placement: 'top',
           arrow: false,
           clickable: true,
@@ -138,7 +138,7 @@ export const BorrowInformation = ({
         valueOptions={{ unit: 'percentage', decimals: 2 }}
         valueTooltip={{
           title: t`Current LTV (Loan To Value ratio)`,
-          body: <CurrentLTVTooltip />,
+          body: <CurrentLTVTooltipContent />,
           placement: 'top',
           arrow: false,
           clickable: true,
@@ -172,7 +172,7 @@ export const BorrowInformation = ({
           loading={pnl?.currentProfit == null && pnl?.loading}
           valueTooltip={{
             title: t`Position PNL`,
-            body: <PnlMetricTooltip pnl={pnl} />,
+            body: <PnlMetricTooltipContent pnl={pnl} />,
             placement: 'top',
             arrow: false,
             clickable: true,
@@ -188,7 +188,7 @@ export const BorrowInformation = ({
         valueTooltip={{
           title: t`Liquidation Threshold (LT)`,
           body: (
-            <LiquidityThresholdTooltip
+            <LiquidityThresholdTooltipContent
               liquidationRange={liquidationRange}
               rangeToLiquidation={liquidationRange?.rangeToLiquidation}
               bandRange={bandRange}

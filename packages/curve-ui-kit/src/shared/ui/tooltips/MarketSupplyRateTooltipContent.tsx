@@ -6,7 +6,7 @@ import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@
 import { RewardsTooltipItems, type ExtraIncentiveItem } from './RewardTooltipItems'
 import { formatPercent } from './utils'
 
-export type MarketSupplyRateTooltipProps = {
+export type MarketSupplyRateTooltipContentProps = {
   supplyRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string
@@ -21,7 +21,7 @@ export type MarketSupplyRateTooltipProps = {
   isLoading: boolean
 }
 
-export const MarketSupplyRateTooltip = ({
+export const MarketSupplyRateTooltipContent = ({
   supplyRate,
   averageRate,
   periodLabel,
@@ -34,7 +34,7 @@ export const MarketSupplyRateTooltip = ({
   rebasingYield,
   rebasingSymbol,
   isLoading,
-}: MarketSupplyRateTooltipProps) => {
+}: MarketSupplyRateTooltipContentProps) => {
   const extraIncentivesFormatted = useMarketExtraIncentives('supply', extraIncentives, minBoostApr)
 
   return (

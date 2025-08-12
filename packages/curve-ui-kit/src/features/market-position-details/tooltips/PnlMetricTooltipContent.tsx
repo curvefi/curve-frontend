@@ -3,13 +3,13 @@ import { Pnl } from '@ui-kit/features/market-position-details/BorrowPositionDeta
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
-type PnlMetricTooltipProps = {
+type PnlMetricTooltipContentProps = {
   pnl: Pnl | undefined | null
 }
 
 const UnavailableNotation = '-'
 
-export const PnlMetricTooltip = ({ pnl }: PnlMetricTooltipProps) => (
+export const PnlMetricTooltipContent = ({ pnl }: PnlMetricTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription
       text={t`Profit and Loss (PnL) is calculated based on the value of the collateral at deposits minus the borrow costs and eventual losses if the position was in soft-liquidation.`}

@@ -3,7 +3,7 @@ import { BandRange, LiquidationRange } from '@ui-kit/features/market-position-de
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
-type LiquidityThresholdTooltipProps = {
+type LiquidityThresholdTooltipContentProps = {
   liquidationRange: LiquidationRange | undefined | null
   rangeToLiquidation: number | undefined | null
   bandRange: BandRange | undefined | null
@@ -11,11 +11,11 @@ type LiquidityThresholdTooltipProps = {
 
 const UnavailableNotation = '-'
 
-export const LiquidityThresholdTooltip = ({
+export const LiquidityThresholdTooltipContent = ({
   liquidationRange,
   rangeToLiquidation,
   bandRange,
-}: LiquidityThresholdTooltipProps) => (
+}: LiquidityThresholdTooltipContentProps) => (
   <TooltipWrapper>
     <TooltipDescription
       text={t`The price at which your position enters the liquidation zone  and your collateral starts to be eroded by LLAMMA. The distance to LT indicates the distance between the current price and the LT.`}
