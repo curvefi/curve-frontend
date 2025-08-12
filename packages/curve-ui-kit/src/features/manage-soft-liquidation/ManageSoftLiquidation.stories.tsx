@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import type { Address } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
@@ -10,7 +10,7 @@ type Token = TokenOption & { amount: number }
 
 const debtToken: Token = {
   symbol: 'crvUSD',
-  address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
+  address: CRVUSD_ADDRESS,
   amount: 321.01,
 }
 
@@ -23,7 +23,7 @@ const collateralToRecover = [
   },
   {
     symbol: 'crvUSD',
-    address: '0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E' as Address,
+    address: CRVUSD_ADDRESS,
     amount: 12450,
     usd: 12450,
   },
