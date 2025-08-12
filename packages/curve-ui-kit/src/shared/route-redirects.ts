@@ -40,7 +40,7 @@ const OldRoutes: Record<AppName, string[]> = {
  * We also handle old redirects that were hardcoded in react-router.
  */
 export function getHashRedirectUrl({ pathname, search, hash, host }: Location) {
-  const hashPath = hash.replace(/^#\/?/, '')
+  const hashPath = hash.replace(/^#\/?/, '/')
   const oldApp = oldOrigins.find((app) => host.startsWith(app)) || (pathname === '/' && hashPath && 'dex')
   const [, app, network, ...rest] = `${oldApp ? `/${oldApp}` : ''}${pathname}${hashPath}`.split('/')
   if ([app, network].includes('integrations')) {

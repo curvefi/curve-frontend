@@ -8,7 +8,7 @@ describe('Basic Access Test', () => {
 
   it('should redirect from the old root URL successfully', () => {
     cy.visit('/lend/#/ethereum')
-    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/markets\/$/)
+    cy.url(LOAD_TIMEOUT).should('match', /http:\/\/localhost:\d+\/lend\/ethereum\/markets\/?$/)
     cy.title().should('equal', 'Markets - Curve Lend')
   })
 
