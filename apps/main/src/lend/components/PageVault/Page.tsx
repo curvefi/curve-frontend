@@ -240,7 +240,7 @@ const Page = (params: MarketUrlParams) => {
               borrowAddress={market?.addresses?.controller || ''}
               supplyAddress={market?.addresses?.vault || ''}
             />
-            <MarketInformationTabs currentTab={'supply'} hrefs={positionDetailsHrefs}>
+            <MarketInformationTabs currentTab="supply" hrefs={positionDetailsHrefs}>
               {hasSupplyPosition ? (
                 <SupplyPositionDetails {...supplyPositionDetails} />
               ) : (

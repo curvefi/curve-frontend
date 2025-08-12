@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
+import { type LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
 import { PercentageCell } from '@/llamalend/PageLlamaMarkets/cells/PercentageCell'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'

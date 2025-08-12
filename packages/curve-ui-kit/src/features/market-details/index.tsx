@@ -82,6 +82,17 @@ export type MarketDetailsProps = {
 const formatLiquidity = (value: number) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
 
+const TooltipOptions = {
+  placement: 'top',
+  arrow: false,
+  clickable: true,
+} as const
+
+const MarketTypeSuffix: Record<MarketType, string> = {
+  lend: t`(Lending Markets)`,
+  mint: t`(Mint Markets)`,
+}
+
 export const MarketDetails = ({
   collateral,
   borrowToken,
@@ -146,9 +157,7 @@ export const MarketDetails = ({
                 isLoading={borrowAPY?.loading}
               />
             ),
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         {supplyAPY && (
@@ -184,9 +193,7 @@ export const MarketDetails = ({
                   extraIncentives={supplyAPY?.extraIncentives ?? []}
                 />
               ),
-              placement: 'top',
-              arrow: false,
-              clickable: true,
+              ...TooltipOptions,
             }}
           />
         )}
@@ -200,9 +207,7 @@ export const MarketDetails = ({
           valueTooltip={{
             title: t`Collateral Token`,
             body: <CollateralTokenTooltip />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         <SymbolCell
@@ -213,11 +218,9 @@ export const MarketDetails = ({
           loading={borrowToken?.symbol == null && borrowToken?.loading}
           blockchainId={blockchainId}
           valueTooltip={{
-            title: t`Debt Token ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            title: t`Debt Token ${MarketTypeSuffix[marketType]}`,
             body: <DebtTokenTooltip marketType={marketType} />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         {/* Insert empty box to maintain grid layout when there is no lending APY metric */}
@@ -229,11 +232,9 @@ export const MarketDetails = ({
           loading={availableLiquidity?.value == null && availableLiquidity?.loading}
           valueOptions={{ unit: 'dollar' }}
           valueTooltip={{
-            title: t`Available Liquidity ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            title: t`Available Liquidity ${MarketTypeSuffix[marketType]}`,
             body: <AvailableLiquidityTooltip marketType={marketType} />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         <Metric
@@ -244,11 +245,9 @@ export const MarketDetails = ({
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={utilization ? utilizationBreakdown : undefined}
           valueTooltip={{
-            title: t`Utilization ${marketType === 'lend' ? t`(Lending Markets)` : t`(Mint Markets)`}`,
+            title: t`Utilization ${MarketTypeSuffix[marketType]}`,
             body: <UtilizationTooltip marketType={marketType} />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         <Metric
@@ -268,9 +267,7 @@ export const MarketDetails = ({
           valueTooltip={{
             title: t`Total Collateral`,
             body: <TotalCollateralTooltip />,
-            placement: 'top',
-            arrow: false,
-            clickable: true,
+            ...TooltipOptions,
           }}
         />
         {maxLeverage && (
@@ -283,9 +280,7 @@ export const MarketDetails = ({
             valueTooltip={{
               title: t`Maximum Leverage`,
               body: <MaxLeverageTooltip />,
-              placement: 'top',
-              arrow: false,
-              clickable: true,
+              ...TooltipOptions,
             }}
           />
         )}
