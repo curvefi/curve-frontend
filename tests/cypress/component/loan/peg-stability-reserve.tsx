@@ -18,7 +18,7 @@ const TestComponent = ({ config }: { config: Config }) => (
   </ClientWrapper>
 )
 
-describe('Peg stability reserves', () => {
+describe('Peg stability reserve', () => {
   it(`should work for blocknumber 23039344`, () => {
     const vnet = getVirtualNetwork()
     if (!vnet) {
