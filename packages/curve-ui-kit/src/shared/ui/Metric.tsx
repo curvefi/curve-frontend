@@ -156,13 +156,13 @@ function notionalsToString(notionals: Props['notional']) {
     .join(' + ')
 }
 
-type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change'> & {
+type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testId'> & {
   size: NonNullable<Props['size']>
   tooltip?: Props['valueTooltip']
   copyValue?: () => void
 }
 
-const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: MetricValueProps) => {
+const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
   const { color = 'textPrimary', unit } = valueOptions
   const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
@@ -179,6 +179,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip }: 
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
         title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        data-testid={`${testId}-value`}
       >
         <Stack direction="row" alignItems="baseline">
           {position === 'prefix' && numberValue !== null && (
@@ -261,7 +262,7 @@ export const Metric = ({
   size = 'medium',
   alignment = 'start',
   loading = false,
-  testId,
+  testId = 'metric',
   sx,
 }: Props) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
@@ -280,8 +281,9 @@ export const Metric = ({
       size,
       copyValue: value != null ? copyValue : undefined,
       tooltip: valueTooltip,
+      testId,
     }),
-    [change, copyValue, size, value, valueOptions, valueTooltip],
+    [change, copyValue, size, testId, value, valueOptions, valueTooltip],
   )
 
   return (

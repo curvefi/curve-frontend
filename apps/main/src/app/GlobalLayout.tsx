@@ -1,3 +1,4 @@
+import NextTopLoader from 'nextjs-toploader'
 import { type ReactNode } from 'react'
 import daoNetworks from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
@@ -14,7 +15,6 @@ import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { Header as Header } from '@ui-kit/widgets/Header'
-import NextTopLoader from 'nextjs-toploader'
 
 const { MinHeight } = SizesAndSpaces
 

@@ -1,14 +1,21 @@
 import { styled } from 'styled-components'
-import { SubNavItem } from '@/loan/components/PageCrvUsdStaking/components/SubNav/types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 
+export const SUB_NAV_ITEMS = [
+  { key: 'deposit', label: 'Deposit' },
+  { key: 'withdraw', label: 'Withdraw' },
+  { key: 'swap', label: 'Swap' },
+] as const
+
+export type SubNavItem = (typeof SUB_NAV_ITEMS)[number]
+
 interface SubNavProps {
   activeKey: string
-  navItems: SubNavItem[]
+  navItems: readonly SubNavItem[]
   nested?: boolean
   className?: string
-  setNavChange: (key: string) => void
+  setNavChange: (key: SubNavItem['key']) => void
 }
 
 const SubNav = ({ activeKey, navItems, setNavChange, nested, className }: SubNavProps) => (

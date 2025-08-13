@@ -1,11 +1,11 @@
 import { type BrowserProvider } from 'ethers'
 import { useCallback, useEffect } from 'react'
-import { useConnect, useDisconnect, useEnsName } from 'wagmi'
+import { useConnect, useConnectors, useDisconnect, useEnsName } from 'wagmi'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
+import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
-import { connectors } from './wagmi/connectors'
-import { supportedWallets } from './wagmi/wallets'
+import type { Connector } from './wagmi/wallets'
 
 const state: {
   provider: BrowserProvider | null
@@ -20,6 +20,7 @@ export const useWallet = () => {
   const [showModal, setShowModal] = useGlobalState<boolean>('showConnectModal', false)
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider } = useConnection()
+  const connectors = useConnectors()
   state.wallet = wallet ?? null
   state.provider = provider ?? null
 
@@ -28,23 +29,23 @@ export const useWallet = () => {
   const { disconnect } = useDisconnect()
 
   const connect = useCallback(
-    async (connector?: (typeof supportedWallets)[number]['connector']) => {
-      if (!connector) {
+    async (selectedConnector?: Connector) => {
+      // When using Cypress, we want to use the one and only (test) connector without blocking modal
+      if (!selectedConnector && !isCypress) {
         setShowModal(true)
         return
       }
 
-      // take the first (injected) as default. This is temporary until we get rid of onboard
-      const walletType = supportedWallets.find((w) => w.connector === connector) ?? supportedWallets[0]!
+      const connector = connectors.find((x) => x.id === selectedConnector) ?? connectors[0]
       try {
-        await connectAsync({ connector: connectors[walletType.connector] })
+        await connectAsync({ connector })
         setShowModal(false)
       } catch (err) {
         console.error('Error connecting wallet:', err)
         throw err
       }
     },
-    [connectAsync, setShowModal],
+    [connectAsync, connectors, setShowModal],
   )
 
   const { data: ensName } = useEnsName({ address: wallet?.account.address })
