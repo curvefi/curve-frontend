@@ -1,9 +1,7 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
 import { CampaignRewardsItem, type CampaignRewardsPool, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
-import { MarketType, MarketRateType } from '@ui-kit/types/market'
 import campaigns from '@external-rewards'
 
 export type PoolRewards = {
@@ -65,9 +63,3 @@ export const { getQueryOptions: getCampaignsOptions } = queryFactory({
   validationSuite: EmptyValidationSuite,
   refetchInterval: '10m',
 })
-
-export const useFilteredRewards = (rewards: PoolRewards[], marketType: MarketType, rateType: MarketRateType) =>
-  useMemo(() => {
-    const rewardsAction = rateType == 'borrow' ? (marketType === 'mint' ? 'loan' : 'borrow') : 'supply'
-    return rewards.filter(({ action }) => action == rewardsAction)
-  }, [rewards, marketType, rateType])

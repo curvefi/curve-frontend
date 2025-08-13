@@ -67,27 +67,22 @@ export const useSupplyPositionDetails = ({
 
   const extraIncentivesTotalApr = onChainRates?.rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
 
+  const rebasingYield = lendingSnapshots?.[0]?.borrowedToken?.rebasingYield // take the most recent rebasing yield
   return {
     supplyAPY: {
       rate: supplyApy != null ? Number(supplyApy) : null,
       averageRate: thirtyDayAvgSupplyApr,
       averageRateLabel: '30D',
-      rebasingYield: lendingSnapshots?.[0]?.borrowedToken?.rebasingYield,
+      rebasingYield: rebasingYield,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
       totalSupplyRateMinBoost:
         supplyApy != null
-          ? Number(supplyApy) -
-            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
-            extraIncentivesTotalApr +
-            (supplyAprCrvMinBoost ?? 0)
+          ? Number(supplyApy) - (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
           : null,
       totalSupplyRateMaxBoost:
         supplyApy != null
-          ? Number(supplyApy) -
-            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
-            extraIncentivesTotalApr +
-            (supplyAprCrvMaxBoost ?? 0)
+          ? Number(supplyApy) - (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
           : null,
       extraIncentives: onChainRates?.rewardsApr
         ? onChainRates?.rewardsApr.map((r) => ({

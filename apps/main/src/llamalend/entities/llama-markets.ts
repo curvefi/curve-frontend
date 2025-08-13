@@ -11,12 +11,18 @@ import { getCampaignsOptions, type PoolRewards } from '@ui-kit/entities/campaign
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive } from '@ui-kit/types/market'
+import { type ExtraIncentive, type MarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
 
 export enum LlamaMarketType {
   Mint = 'Mint',
   Lend = 'Lend',
+}
+
+// todo: there are two market type types, they should be unified. For now, a mapping is used to convert LlamaMarketType to MarketType
+export const MarketTypeMapping: Record<LlamaMarketType, MarketType> = {
+  [LlamaMarketType.Mint]: 'mint',
+  [LlamaMarketType.Lend]: 'lend',
 }
 
 export type Assets = {

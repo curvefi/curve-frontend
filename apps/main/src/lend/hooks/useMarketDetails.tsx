@@ -1,4 +1,4 @@
-import meanBy from 'lodash/meanBy'
+import lodash from 'lodash'
 import { useMemo } from 'react'
 import { useMarketDetails as useLendMarketDetails } from '@/lend/entities/market-details'
 import { networks } from '@/lend/networks'
@@ -10,6 +10,8 @@ import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+
+const { meanBy, sum } = lodash
 
 type UseMarketDetailsProps = {
   chainId: ChainId
@@ -72,8 +74,9 @@ export const useMarketDetails = ({
     campaigns && vault && controller
       ? [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
       : []
-  const extraIncentivesTotalApr = rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
+  const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
 
+  const borrowRebasingYield = lendingSnapshots?.[0]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
   return {
     marketType: 'lend',
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
@@ -112,18 +115,12 @@ export const useMarketDetails = ({
       totalSupplyRateMinBoost:
         supplyApy == null
           ? null
-          : Number(supplyApy) +
-            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
-            extraIncentivesTotalApr +
-            (supplyAprCrvMinBoost ?? 0),
+          : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0),
       totalSupplyRateMaxBoost:
         supplyApy == null
           ? null
-          : Number(supplyApy) +
-            (lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? 0) +
-            extraIncentivesTotalApr +
-            (supplyAprCrvMaxBoost ?? 0),
-      rebasingYield: lendingSnapshots?.[0]?.borrowedToken?.rebasingYield ?? null,
+          : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0),
+      rebasingYield: borrowRebasingYield ?? null,
       extraIncentives: rewardsApr
         ? rewardsApr.map((r) => ({
             title: r.symbol,

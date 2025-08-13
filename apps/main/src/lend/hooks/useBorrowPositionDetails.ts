@@ -85,6 +85,7 @@ export const useBorrowPositionDetails = ({
     return [...(campaigns[controller.toLowerCase()] ?? [])]
   }, [campaigns, controller])
 
+  const rebasingYield = lendSnapshots?.[0]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
     marketType: 'lend',
     liquidationAlert: {
@@ -99,9 +100,8 @@ export const useBorrowPositionDetails = ({
       rate: borrowApy == null ? null : Number(borrowApy),
       averageRate: thirtyDayAvgRate,
       averageRateLabel: '30D',
-      rebasingYield: lendSnapshots?.[0]?.collateralToken?.rebasingYield ?? null,
-      totalBorrowRate:
-        borrowApy == null ? null : Number(borrowApy) - (lendSnapshots?.[0]?.collateralToken?.rebasingYield ?? 0),
+      rebasingYield: rebasingYield ?? null,
+      totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
