@@ -72,7 +72,7 @@ const Layout = async ({ children }: { children: ReactNode }) => (
     </Head>
     <body>
       <StyledComponentsRegistry>
-        <ClientWrapper networks={await getNetworkDefs()} preferredScheme={await getScheme()}>
+        <ClientWrapper networkDefs={await getNetworkDefs()} preferredScheme={await getScheme()}>
           {children}
         </ClientWrapper>
       </StyledComponentsRegistry>

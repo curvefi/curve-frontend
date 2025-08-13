@@ -37,7 +37,7 @@ export const Page = ({}: Props) => (
           key={pegkeeper.address}
           {...pegkeeper}
           sx={{ maxWidth: '30rem' }}
-          testId={`pegkeeper-${pegkeeper.address}`}
+          testId={`pegkeeper-card-${pegkeeper.address}`}
         />
       ))}
     </Box>

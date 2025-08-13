@@ -1,8 +1,8 @@
+import lodash from 'lodash'
 import { Chain as ChainId } from '@ui-kit/utils/network'
+import { wagmiChainsMap } from './chains'
 
-/**
- * Fallback RPC URLs for each chain to improve wallet connection resilience.
- */
+/** Fallback RPC URLs for each chain to improve wallet connection resilience. */
 export const RPC: Record<ChainId, string[]> = {
   [ChainId.Ethereum]: ['https://eth.drpc.org', 'https://eth-pokt.nodies.app', 'https://eth.blockrazor.xyz'],
   [ChainId.Arbitrum]: ['https://arb1.arbitrum.io/rpc', 'https://1rpc.io/arb'],
@@ -33,3 +33,16 @@ export const RPC: Record<ChainId, string[]> = {
   [ChainId.ExpChain]: ['https://rpc0-testnet.expchain.ai'],
   [ChainId.ZkSync]: ['https://zksync.drpc.org', 'https://mainnet.era.zksync.io'],
 } as const
+
+/**
+ * Gets a list of unique RPC URLs for a given chain in priority order:
+ * 1. Hardcoded RPC URLs from RPC configuration
+ * 2. Network-specific RPC URL from the provided configuration
+ * 3. Default Wagmi chain RPC URLs as fallbacks
+ *
+ * @param chainId - The chain ID to get RPC URLs for
+ * @param networkRpcUrl - The primary RPC URL from the network configuration
+ * @returns Array of unique RPC URLs in priority order
+ */
+export const defaultGetRpcUrls = <ChainId extends number>(chainId: ChainId, networkRpcUrl: string) =>
+  lodash.uniq([...(RPC[chainId] ?? []), networkRpcUrl, ...(wagmiChainsMap[chainId]?.rpcUrls.default.http ?? [])])
