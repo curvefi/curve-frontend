@@ -21,6 +21,7 @@ export async function getMarkets(
 export async function getAllMarkets(
   params: {
     fetch_on_chain?: boolean
+    sort_by?: 'created_at' // the API does not read this field yet, but the results are sorted by creation date
   } = { fetch_on_chain: true },
   options?: Options,
 ) {

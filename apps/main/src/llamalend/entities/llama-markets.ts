@@ -1,8 +1,12 @@
 import { ethAddress } from 'viem'
 import { getCampaignsOptions, PoolRewards } from '@/llamalend/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
-import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/llamalend/entities/lending-vaults'
-import { getUserLendingSuppliesOptions } from '@/llamalend/entities/lending-vaults'
+import {
+  getLendingVaultsOptions,
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+} from '@/llamalend/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
@@ -167,9 +171,11 @@ const convertMintMarket = (
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
+  collateralCount: number, // number of markets with the same collateral token, used to create a unique name
 ): LlamaMarket => {
   const hasBorrow = userMintMarkets.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
+  const name = collateralCount > 1 ? `${collateralSymbol}${collateralCount}` : collateralSymbol
   return {
     chain,
     address: llamma,
@@ -211,7 +217,7 @@ const convertMintMarket = (
     url: getInternalUrl(
       'crvusd',
       chain,
-      `${CRVUSD_ROUTES.PAGE_MARKETS}/${collateralSymbol}/${hasBorrow ? 'manage/loan' : 'create'}`,
+      `${CRVUSD_ROUTES.PAGE_MARKETS}/${name}/${hasBorrow ? 'manage/loan' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
@@ -224,6 +230,21 @@ export type LlamaMarketsResult = {
   markets: LlamaMarket[]
   hasPositions: boolean
   hasFavorites: boolean
+}
+
+/**
+ * Creates a function that counts the number of markets for each collateral token.
+ * This is used to create unique names for markets with the same collateral token, used in the URL.
+ * The order is expected to be by market creation date, so the first market will have count 1, the second 2, etc.
+ */
+function createCountMarket() {
+  const marketsByCollateral = new Map<string, number>()
+  return ({ collateralToken }: MintMarket) => {
+    const [symbol] = getCollateral(collateralToken)
+    const count = (marketsByCollateral.get(symbol) ?? 0) + 1
+    marketsByCollateral.set(symbol, count)
+    return count
+  }
 }
 
 /**
@@ -257,6 +278,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
       const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
+      const countMarket = createCountMarket()
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
@@ -276,7 +298,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
                   convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userBorrows, userSupplied),
                 ),
                 ...(mintMarkets.data ?? []).map((market) =>
-                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints),
+                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints, countMarket(market)),
                 ),
               ],
             }
