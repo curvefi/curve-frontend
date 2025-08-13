@@ -1,14 +1,11 @@
-import type { Eip1193Provider } from 'ethers'
 import lodash from 'lodash'
 import { zeroAddress } from 'viem'
-import networks from '@/lend/networks'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
 import {
   Api,
   BandsBalances,
   BandsBalancesArr,
-  ChainId,
   DetailInfoLeverageResp,
   DetailInfoResp,
   EstimatedGas,
@@ -47,16 +44,6 @@ import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  initApi: async (chainId: ChainId, provider?: Eip1193Provider) => {
-    if (!provider) return
-    if (!(chainId in networks)) {
-      throw new Error(`ChainId ${chainId} not supported`)
-    }
-    const network = networks[chainId].networkId
-    const api = lodash.cloneDeep((await import('@curvefi/llamalend-api')).default) as Api
-    await api.init('Web3', { network, externalProvider: provider }, { chainId })
-    return api
-  },
   getIsUserCloseToLiquidation: (
     userFirstBand: number,
     userLiquidationBand: number | null,
