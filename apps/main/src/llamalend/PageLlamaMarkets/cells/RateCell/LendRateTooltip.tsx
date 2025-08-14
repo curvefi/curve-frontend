@@ -6,7 +6,7 @@ import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/Marke
 import { useFilteredRewards } from '@ui-kit/shared/ui/tooltips/utils'
 import { useSnapshots } from '../../hooks/useSnapshots'
 
-const rateType = 'lend' as const
+const rateType = 'supply' as const
 const marketRateType = 'supply' as const
 
 export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => {

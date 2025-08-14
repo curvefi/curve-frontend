@@ -13,12 +13,12 @@ import { RewardsIcons } from './RewardsIcons'
 const { Spacing } = SizesAndSpaces
 
 const RateTypes = {
-  [LlamaMarketColumnId.LendRate]: 'lend',
+  [LlamaMarketColumnId.LendRate]: 'supply',
   [LlamaMarketColumnId.BorrowRate]: 'borrow',
 } as const
 
 const TooltipComponents = {
-  lend: LendRateTooltip,
+  supply: LendRateTooltip,
   borrow: BorrowRateTooltip,
 } as const
 

@@ -3,8 +3,7 @@ import { useMemo } from 'react'
 import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-
-export type RateType = 'borrow' | 'lend'
+import type { MarketRateType } from '@ui-kit/types/market'
 
 type UseSnapshotsResult<T> = {
   snapshots: T[] | null
@@ -19,7 +18,7 @@ type UseSnapshotsResult<T> = {
 
 export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
-  type: RateType,
+  type: MarketRateType,
   enabled: boolean = true,
 ): UseSnapshotsResult<T> {
   const isLend = marketType == LlamaMarketType.Lend
@@ -53,7 +52,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     () =>
       snapshots &&
       isLend &&
-      type === 'lend' &&
+      type === 'supply' &&
       lodash.meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
     [snapshots, isLend, type],
   )

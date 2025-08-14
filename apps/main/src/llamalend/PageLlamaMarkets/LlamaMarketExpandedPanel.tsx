@@ -5,7 +5,6 @@ import { BorrowRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/B
 import { LendRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/LendRateTooltip'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
-import type { RateType } from '@/llamalend/PageLlamaMarkets/hooks/useSnapshots'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -20,6 +19,7 @@ import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { Metric, type UnitOptions } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket } from '../entities/llama-markets'
 import { LlamaMarketType } from '../entities/llama-markets'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
@@ -27,8 +27,13 @@ import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 const { Spacing } = SizesAndSpaces
 
 const TooltipComponents = {
-  lend: LendRateTooltip,
+  supply: LendRateTooltip,
   borrow: BorrowRateTooltip,
+} as const
+
+const RateMapping = {
+  supply: 'lend',
+  borrow: 'borrow',
 } as const
 
 function useMobileGraphSize() {
@@ -37,15 +42,16 @@ function useMobileGraphSize() {
   return useMemo(() => ({ width: pageWidth ? pageWidth - (isTiny ? 20 : 40) : 300, height: 48 }), [pageWidth, isTiny])
 }
 
-const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string; type: RateType }) => {
+const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string; type: MarketRateType }) => {
   const Tooltip = TooltipComponents[type]
+  const rate = market.rates[RateMapping[type]]
   return (
-    market.rates[type] != null && (
+    rate != null && (
       <Grid size={6}>
         <Tooltip market={market}>
           <Stack direction="row" alignItems="center" gap={2}>
             {/* todo: omit metric component tooltip */}
-            <Metric label={title} value={market.rates[type]} valueOptions={{ unit: 'percentage' }} />
+            <Metric label={title} value={rate} valueOptions={{ unit: 'percentage' }} />
             <RewardsIcons market={market} rateType="borrow" />
           </Stack>
         </Tooltip>
@@ -83,7 +89,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           ></CardHeader>
         </Grid>
         <RateItem market={market} type="borrow" title={t`Borrow rate`} />
-        <RateItem market={market} type="lend" title={t`Supply yield`} />
+        <RateItem market={market} type="supply" title={t`Supply yield`} />
         {leverage > 0 && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
