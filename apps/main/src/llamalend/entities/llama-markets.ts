@@ -171,11 +171,11 @@ const convertMintMarket = (
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, PoolRewards[]> = {},
   userMintMarkets: Set<Address>,
-  collateralCount: number, // number of markets with the same collateral token, used to create a unique name
+  collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
 ): LlamaMarket => {
   const hasBorrow = userMintMarkets.has(address)
   const [collateralSymbol, collateralAddress] = getCollateral(collateralToken)
-  const name = collateralCount > 1 ? `${collateralSymbol}${collateralCount}` : collateralSymbol
+  const name = collateralIndex > 1 ? `${collateralSymbol}${collateralIndex}` : collateralSymbol
   return {
     chain,
     address: llamma,
@@ -236,13 +236,15 @@ export type LlamaMarketsResult = {
  * Creates a function that counts the number of markets for each collateral token.
  * This is used to create unique names for markets with the same collateral token, used in the URL.
  * The order is expected to be by market creation date, so the first market will have count 1, the second 2, etc.
+ * The backend is hardcoded to return markets in the order of creation, so this should work correctly.
+ * @returns A function that takes a MintMarket and returns the count of markets for the collateral token.
  */
 function createCountMarket() {
-  const marketsByCollateral = new Map<string, number>()
+  const marketCountByCollateral = new Map<string, number>()
   return ({ collateralToken }: MintMarket) => {
     const [symbol] = getCollateral(collateralToken)
-    const count = (marketsByCollateral.get(symbol) ?? 0) + 1
-    marketsByCollateral.set(symbol, count)
+    const count = (marketCountByCollateral.get(symbol) ?? 0) + 1
+    marketCountByCollateral.set(symbol, count)
     return count
   }
 }

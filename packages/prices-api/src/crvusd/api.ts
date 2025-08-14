@@ -4,6 +4,7 @@ import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
+/** Retrieve all markets for a specific chain, sorted by date of creation. */
 export async function getMarkets(
   chain: Chain,
   params: {
@@ -18,10 +19,10 @@ export async function getMarkets(
   return resp.data.map(Parsers.parseMarket)
 }
 
+/** Retrieve all markets across all chains, sorted by date of creation. */
 export async function getAllMarkets(
   params: {
     fetch_on_chain?: boolean
-    sort_by?: 'created_at' // the API does not read this field yet, but the results are sorted by creation date
   } = { fetch_on_chain: true },
   options?: Options,
 ) {

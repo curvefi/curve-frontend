@@ -43,9 +43,7 @@ export const {
   queryKey: () => ['mint-markets', 'v1'] as const,
   queryFn: async (): Promise<MintMarket[]> => {
     const results = await Promise.all(
-      // fetch all markets from the API and add stablecoin prices
-      // we need the `created_at` sort because we use the market index to generate the page URL
-      Object.entries(await getAllMarkets({ sort_by: 'created_at' })).flatMap(([blockchainId, data]) =>
+      Object.entries(await getAllMarkets()).flatMap(([blockchainId, data]) =>
         addStableCoinPrices({ chain: blockchainId as Chain, data }),
       ),
     )
