@@ -13,7 +13,7 @@ export const rootRoute = createRootRoute({
   component: () => {
     const { networks, preferredScheme } = rootRoute.useLoaderData()
     return (
-      <ClientWrapper networks={networks} preferredScheme={preferredScheme}>
+      <ClientWrapper networkDefs={networks} preferredScheme={preferredScheme}>
         <HeadContent />
         <Outlet />
         <TanStackRouterDevtools />
