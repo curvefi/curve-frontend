@@ -16,24 +16,23 @@ import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { CopyIconButton } from '@ui-kit/shared/ui/CopyIconButton'
 import { type ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
-import { Metric, type UnitOptions } from '@ui-kit/shared/ui/Metric'
+import { Metric } from '@ui-kit/shared/ui/Metric'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket } from '../entities/llama-markets'
-import { LlamaMarketType } from '../entities/llama-markets'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 
 const { Spacing } = SizesAndSpaces
 
 const TooltipComponents = {
-  supply: LendRateTooltip,
-  borrow: BorrowRateTooltip,
+  [MarketRateType.Supply]: LendRateTooltip,
+  [MarketRateType.Borrow]: BorrowRateTooltip,
 } as const
 
 const RateMapping = {
-  supply: 'lend',
-  borrow: 'borrow',
+  [MarketRateType.Supply]: 'lend',
+  [MarketRateType.Borrow]: 'borrow',
 } as const
 
 function useMobileGraphSize() {
@@ -52,7 +51,7 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
           <Stack direction="row" alignItems="center" gap={2}>
             {/* todo: omit metric component tooltip */}
             <Metric label={title} value={rate} valueOptions={{ unit: 'percentage' }} />
-            <RewardsIcons market={market} rateType="borrow" />
+            <RewardsIcons market={market} rateType={MarketRateType.Borrow} />
           </Stack>
         </Tooltip>
       </Grid>
@@ -64,8 +63,13 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const { address, assets, leverage, liquidityUsd, type, url, userHasPosition, utilizationPercent } = market
-  const borrowedUnit: UnitOptions = { symbol: assets.borrowed.symbol, position: 'suffix' }
   const graphSize = useMobileGraphSize()
+
+  const UnitMapping = {
+    [LlamaMarketType.Lend]: { symbol: assets.borrowed.symbol, position: 'suffix' },
+    [LlamaMarketType.Mint]: 'dollar',
+  } as const
+
   return (
     <>
       <Grid container spacing={Spacing.md}>
@@ -88,8 +92,8 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
             sx={{ paddingInline: 0 }}
           ></CardHeader>
         </Grid>
-        <RateItem market={market} type="borrow" title={t`Borrow rate`} />
-        <RateItem market={market} type="supply" title={t`Supply yield`} />
+        <RateItem market={market} type={MarketRateType.Borrow} title={t`Borrow rate`} />
+        <RateItem market={market} type={MarketRateType.Supply} title={t`Supply yield`} />
         {leverage > 0 && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
@@ -112,7 +116,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               {t`7D Rate Chart`}
             </Typography>
 
-            <LineGraphCell market={market} type="borrow" graphSize={graphSize} />
+            <LineGraphCell market={market} type={MarketRateType.Borrow} graphSize={graphSize} />
           </Stack>
         </Grid>
       </Grid>
@@ -131,7 +135,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
               <Metric
                 label={t`Supplied Amount`}
                 value={deposited.earnings.totalCurrentAssets}
-                valueOptions={{ unit: type === LlamaMarketType.Lend ? borrowedUnit : 'dollar' }}
+                valueOptions={{ unit: UnitMapping[type] }}
               />
             </Grid>
           )}

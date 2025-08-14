@@ -2,12 +2,12 @@ import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
-import type { MarketType } from '@ui-kit/types/market'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 import { formatPercent } from './utils'
 
 export type MarketBorrowRateTooltipContentProps = {
-  marketType: MarketType
+  marketType: LlamaMarketType
   borrowRate: number | null | undefined
   totalBorrowRate: number | null | undefined
   averageRate: number | null | undefined
@@ -18,9 +18,9 @@ export type MarketBorrowRateTooltipContentProps = {
   isLoading?: boolean
 }
 
-const messages: Record<MarketType, string> = {
-  lend: t`The borrow rate is the cost related to your borrow and varies according to the lend market, borrow incentives and its utilization.`,
-  mint: t`The borrow rate is the cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
+const messages: Record<LlamaMarketType, string> = {
+  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market, borrow incentives and its utilization.`,
+  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
 }
 
 export const MarketBorrowRateTooltipContent = ({

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
-import type { MarketType, MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 /**
  * Formats a rate as a percentage string with 4 significant digits.
@@ -12,8 +12,19 @@ export const formatPercent = (rate: number | null | undefined) =>
     maximumFractionDigits: 2,
   })}%`
 
-export const useFilteredRewards = (rewards: PoolRewards[], marketType: MarketType, rateType: MarketRateType) =>
-  useMemo(() => {
-    const rewardsAction = rateType == 'borrow' ? (marketType === 'mint' ? 'loan' : 'borrow') : 'supply'
-    return rewards.filter(({ action }) => action == rewardsAction)
-  }, [rewards, marketType, rateType])
+const RewardsActionMap = {
+  [MarketRateType.Borrow]: {
+    [LlamaMarketType.Mint]: 'loan',
+    [LlamaMarketType.Lend]: 'borrow',
+  },
+  [MarketRateType.Supply]: {
+    [LlamaMarketType.Mint]: 'supply',
+    [LlamaMarketType.Lend]: 'supply',
+  },
+} as const
+
+export const useFilteredRewards = (rewards: PoolRewards[], marketType: LlamaMarketType, rateType: MarketRateType) =>
+  useMemo(
+    () => rewards.filter(({ action }) => action == RewardsActionMap[rateType][marketType]),
+    [rewards, marketType, rateType],
+  )

@@ -9,6 +9,7 @@ import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 const { meanBy, sum } = lodash
 
@@ -77,7 +78,7 @@ export const useMarketDetails = ({
 
   const borrowRebasingYield = lendingSnapshots?.[0]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
   return {
-    marketType: 'lend',
+    marketType: LlamaMarketType.Lend,
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: collateral_token?.symbol ?? null,

@@ -18,7 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { MarketType } from '@ui-kit/types/market'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,7 +32,7 @@ const dollarUnitOptions = {
 }
 
 type BorrowInformationProps = {
-  marketType: MarketType
+  marketType: LlamaMarketType
   borrowAPY: BorrowAPY | undefined | null
   pnl: Pnl | undefined | null
   collateralValue: CollateralValue | undefined | null

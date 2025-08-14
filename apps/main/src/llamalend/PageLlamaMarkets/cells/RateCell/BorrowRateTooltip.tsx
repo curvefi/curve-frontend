@@ -1,12 +1,13 @@
 import { ReactElement } from 'react'
-import { LlamaMarket, MarketTypeMapping } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
 import { useFilteredRewards } from '@ui-kit/shared/ui/tooltips/utils'
+import { MarketRateType } from '@ui-kit/types/market'
 import { useSnapshots } from '../../hooks/useSnapshots'
 
-const rateType = 'borrow' as const
+const rateType = MarketRateType.Borrow
 
 export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => {
   const {
@@ -18,7 +19,7 @@ export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; c
     },
   } = market
   const { averageRate, period } = useSnapshots(market, rateType)
-  const poolRewards = useFilteredRewards(rewards, MarketTypeMapping[marketType], rateType)
+  const poolRewards = useFilteredRewards(rewards, marketType, rateType)
 
   return (
     <Tooltip
@@ -26,7 +27,7 @@ export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; c
       title={t`Borrow Rate`}
       body={
         <MarketBorrowRateTooltipContent
-          marketType={MarketTypeMapping[marketType]}
+          marketType={marketType}
           borrowRate={borrowRate}
           averageRate={averageRate}
           periodLabel={period}

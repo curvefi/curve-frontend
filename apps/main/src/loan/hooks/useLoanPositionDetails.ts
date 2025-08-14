@@ -11,8 +11,9 @@ import { Address } from '@curvefi/prices-api'
 import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
+import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -95,7 +96,7 @@ export const useLoanPositionDetails = ({
   }, [campaigns, llamma?.controller])
 
   return {
-    marketType: 'mint',
+    marketType: LlamaMarketType.Mint,
     liquidationAlert: {
       softLiquidation: userStatus?.colorKey === 'soft_liquidation',
       hardLiquidation: userStatus?.colorKey === 'hard_liquidation',

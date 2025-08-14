@@ -9,6 +9,7 @@ import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
@@ -51,7 +52,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   }, [campaigns, llamma?.controller])
 
   return {
-    marketType: 'mint',
+    marketType: LlamaMarketType.Mint,
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,

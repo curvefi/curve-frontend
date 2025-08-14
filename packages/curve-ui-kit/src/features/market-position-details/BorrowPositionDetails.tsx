@@ -4,7 +4,7 @@ import { BorrowInformation } from '@ui-kit/features/market-position-details/Borr
 import { HealthDetails } from '@ui-kit/features/market-position-details/HealthDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { MarketType } from '@ui-kit/types/market'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 
 const { Spacing } = SizesAndSpaces
 
@@ -55,7 +55,7 @@ export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 
 export type BorrowPositionDetailsProps = {
-  marketType: MarketType
+  marketType: LlamaMarketType
   liquidationAlert: LiquidationAlert
   health: Health
   borrowAPY: BorrowAPY

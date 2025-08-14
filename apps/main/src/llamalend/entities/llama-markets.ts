@@ -1,7 +1,11 @@
 import { ethAddress } from 'viem'
 import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
-import { getLendingVaultsOptions, getUserLendingVaultsOptions, LendingVault } from '@/llamalend/entities/lending-vaults'
-import { getUserLendingSuppliesOptions } from '@/llamalend/entities/lending-vaults'
+import {
+  getLendingVaultsOptions,
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+} from '@/llamalend/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
@@ -11,19 +15,8 @@ import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive, type MarketType } from '@ui-kit/types/market'
+import { type ExtraIncentive, LlamaMarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
-
-export enum LlamaMarketType {
-  Mint = 'Mint',
-  Lend = 'Lend',
-}
-
-// todo: there are two market type types, they should be unified. For now, a mapping is used to convert LlamaMarketType to MarketType
-export const MarketTypeMapping: Record<LlamaMarketType, MarketType> = {
-  [LlamaMarketType.Mint]: 'mint',
-  [LlamaMarketType.Lend]: 'lend',
-}
 
 export type Assets = {
   borrowed: AssetDetails

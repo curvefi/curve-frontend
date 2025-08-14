@@ -7,7 +7,7 @@ import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { MarketType, ExtraIncentive } from '@ui-kit/types/market'
+import { LlamaMarketType, type ExtraIncentive } from '@ui-kit/types/market'
 import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
 import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
 import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
@@ -76,7 +76,7 @@ export type MarketDetailsProps = {
   availableLiquidity: AvailableLiquidity
   maxLeverage?: MaxLeverage
   blockchainId: string
-  marketType: MarketType
+  marketType: LlamaMarketType
 }
 
 const formatLiquidity = (value: number) =>
@@ -88,9 +88,9 @@ const TooltipOptions = {
   clickable: true,
 } as const
 
-const MarketTypeSuffix: Record<MarketType, string> = {
-  lend: t`(Lending Markets)`,
-  mint: t`(Mint Markets)`,
+const MarketTypeSuffix: Record<LlamaMarketType, string> = {
+  [LlamaMarketType.Lend]: t`(Lending Markets)`,
+  [LlamaMarketType.Mint]: t`(Mint Markets)`,
 }
 
 export const MarketDetails = ({

@@ -1,9 +1,9 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
-import type { MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'
 
 type UseSnapshotsResult<T> = {
   snapshots: T[] | null
@@ -16,6 +16,16 @@ type UseSnapshotsResult<T> = {
   period: '7D' // this will be extended in the future
 }
 
+const SnapshotKeys = {
+  [MarketRateType.Borrow]: 'borrowApy',
+  [MarketRateType.Supply]: 'lendApr',
+} as const
+
+const RateKeys = {
+  [MarketRateType.Borrow]: 'borrow',
+  [MarketRateType.Supply]: 'lendApr',
+} as const
+
 export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   { chain, controllerAddress, type: marketType, rates }: LlamaMarket,
   type: MarketRateType,
@@ -23,7 +33,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
 ): UseSnapshotsResult<T> {
   const isLend = marketType == LlamaMarketType.Lend
   const showLendGraph = isLend && enabled
-  const showMintGraph = !isLend && type === 'borrow' && enabled
+  const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
   const contractAddress = controllerAddress
   const params = { blockchainId: chain, contractAddress }
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
@@ -33,7 +43,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     ? {
         snapshots: (showLendGraph && poolSnapshots) || null,
         isLoading: !enabled || lendIsLoading,
-        snapshotKey: type === 'borrow' ? (`borrowApy` as const) : (`lendApr` as const),
+        snapshotKey: SnapshotKeys[type],
         error: poolError,
       }
     : {
@@ -52,7 +62,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     () =>
       snapshots &&
       isLend &&
-      type === 'supply' &&
+      type === MarketRateType.Supply &&
       lodash.meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
     [snapshots, isLend, type],
   )
@@ -61,7 +71,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     snapshots,
     isLoading,
     snapshotKey,
-    rate: type === 'borrow' ? rates.borrow : rates.lendApr,
+    rate: rates[RateKeys[type]],
     averageRate,
     maxBoostedAprAverage,
     error,

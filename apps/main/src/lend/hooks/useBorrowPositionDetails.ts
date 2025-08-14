@@ -10,8 +10,9 @@ import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
+import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
@@ -86,7 +87,7 @@ export const useBorrowPositionDetails = ({
 
   const rebasingYield = lendSnapshots?.[0]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
-    marketType: 'lend',
+    marketType: LlamaMarketType.Lend,
     liquidationAlert: {
       softLiquidation: status?.colorKey === 'soft_liquidation',
       hardLiquidation: status?.colorKey === 'hard_liquidation',

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { ReactElement } from 'react'
-import { LlamaMarket, MarketTypeMapping } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { useMarketExtraIncentives } from '@ui-kit/hooks/useMarketExtraIncentives'
@@ -31,7 +31,7 @@ export const RewardsIcons = ({
   market: LlamaMarket
   rateType: MarketRateType
 }) => {
-  const filteredRewards = useFilteredRewards(rewards, MarketTypeMapping[marketType], rateType)
+  const filteredRewards = useFilteredRewards(rewards, marketType, rateType)
   const extraIncentives = useMarketExtraIncentives(rateType, rates.incentives, rates.lendCrvAprUnboosted)
   return (
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (

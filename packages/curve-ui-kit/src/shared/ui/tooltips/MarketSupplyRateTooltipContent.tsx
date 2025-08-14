@@ -2,8 +2,9 @@ import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { useMarketExtraIncentives } from '@ui-kit/hooks/useMarketExtraIncentives'
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
-import { RewardsTooltipItems, type ExtraIncentiveItem } from './RewardTooltipItems'
+import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
+import { MarketRateType } from '@ui-kit/types/market'
+import { type ExtraIncentiveItem, RewardsTooltipItems } from './RewardTooltipItems'
 import { formatPercent } from './utils'
 
 export type MarketSupplyRateTooltipContentProps = {
@@ -35,7 +36,7 @@ export const MarketSupplyRateTooltipContent = ({
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const extraIncentivesFormatted = useMarketExtraIncentives('supply', extraIncentives, minBoostApr)
+  const extraIncentivesFormatted = useMarketExtraIncentives(MarketRateType.Supply, extraIncentives, minBoostApr)
 
   return (
     <TooltipWrapper>
