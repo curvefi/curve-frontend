@@ -18,7 +18,7 @@ const RewardsActionMap = {
     [LlamaMarketType.Lend]: 'borrow',
   },
   [MarketRateType.Supply]: {
-    [LlamaMarketType.Mint]: 'supply',
+    [LlamaMarketType.Mint]: undefined, // no supply action for mint markets
     [LlamaMarketType.Lend]: 'supply',
   },
 } as const
