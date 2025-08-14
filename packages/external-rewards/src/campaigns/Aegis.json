@@ -1,0 +1,45 @@
+{
+  "campaignName": "",
+  "platform": "Aegis",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "aegis.png",
+  "dashboardLink": "https://app.aegis.im/earn/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xCF908d925b21594f9a92b264167A85B0649051a8",
+      "network": "ethereum",
+      "multiplier": "10x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x9804C30875127246AC92D72D5CDF0630aA356861",
+      "network": "ethereum",
+      "multiplier": "10x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2Cc565dDe7C078A8E477763a34C40e52b13e6396",
+      "network": "ethereum",
+      "multiplier": "10x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}
