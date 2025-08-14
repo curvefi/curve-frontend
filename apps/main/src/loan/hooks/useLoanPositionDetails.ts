@@ -8,8 +8,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
-import { useQuery } from '@tanstack/react-query'
-import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { calculateRangeToLiquidation, calculateLtv } from '@ui-kit/features/market-position-details/utils'
@@ -26,7 +25,7 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
-  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
+  const { data: campaigns } = useCampaigns({})
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,

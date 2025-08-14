@@ -5,8 +5,7 @@ import { networks } from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Chain, Address } from '@curvefi/prices-api'
-import { useQuery } from '@tanstack/react-query'
-import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -47,7 +46,7 @@ export const useMarketDetails = ({
     chainId: chainId,
     tokenAddress: borrowed_token?.address,
   })
-  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
+  const { data: campaigns } = useCampaigns({})
 
   const thirtyDayAvgRates = useMemo(() => {
     if (!lendingSnapshots) return null

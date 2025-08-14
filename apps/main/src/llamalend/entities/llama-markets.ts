@@ -7,7 +7,7 @@ import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
-import { getCampaignsOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
+import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -251,7 +251,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
     queries: [
       getLendingVaultsOptions({}, enabled),
       getMintMarketOptions({}, enabled),
-      getCampaignsOptions({}, enabled),
+      getCampaignOptions({}, enabled),
       getFavoriteMarketOptions({}, enabled),
       getUserLendingVaultsOptions({ userAddress }, enabled),
       getUserLendingSuppliesOptions({ userAddress }, enabled),

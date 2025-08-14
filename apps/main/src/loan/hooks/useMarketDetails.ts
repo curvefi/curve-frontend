@@ -5,8 +5,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address, Chain } from '@curvefi/prices-api'
-import { useQuery } from '@tanstack/react-query'
-import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -18,7 +17,7 @@ type UseMarketDetailsProps = {
 }
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
-  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
+  const { data: campaigns } = useCampaigns({})
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,

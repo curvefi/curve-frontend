@@ -6,8 +6,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { useQuery } from '@tanstack/react-query'
-import { getCampaignsOptions } from '@ui-kit/entities/campaigns'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { SupplyPositionDetailsProps } from '@ui-kit/features/market-position-details/SupplyPositionDetails'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
@@ -23,7 +22,7 @@ export const useSupplyPositionDetails = ({
   market,
   marketId,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
-  const { data: campaigns } = useQuery(getCampaignsOptions({}, true))
+  const { data: campaigns } = useCampaigns({})
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
