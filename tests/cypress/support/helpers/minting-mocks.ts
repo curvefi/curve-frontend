@@ -1,5 +1,5 @@
 export const mockMintMarkets = () =>
-  cy.intercept('https://prices.curve.finance/v1/crvusd/markets?fetch_on_chain=true', {
+  cy.intercept('https://prices.curve.finance/v1/crvusd/markets', {
     fixture: 'minting-markets.json',
   })
 
