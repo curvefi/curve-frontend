@@ -10,8 +10,7 @@ export async function getMarkets(
   params: {
     page?: number
     per_page?: number
-    fetch_on_chain?: boolean
-  } = { fetch_on_chain: true },
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)
@@ -22,8 +21,9 @@ export async function getMarkets(
 /** Retrieve all markets across all chains, sorted by date of creation. */
 export async function getAllMarkets(
   params: {
-    fetch_on_chain?: boolean
-  } = { fetch_on_chain: true },
+    page?: number
+    per_page?: number
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)
