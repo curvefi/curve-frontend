@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../../columns.enum'
 import { formatPercent } from '../cell.format'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
@@ -13,13 +14,13 @@ import { RewardsIcons } from './RewardsIcons'
 const { Spacing } = SizesAndSpaces
 
 const RateTypes = {
-  [LlamaMarketColumnId.LendRate]: 'lend',
-  [LlamaMarketColumnId.BorrowRate]: 'borrow',
+  [LlamaMarketColumnId.LendRate]: MarketRateType.Supply,
+  [LlamaMarketColumnId.BorrowRate]: MarketRateType.Borrow,
 } as const
 
 const TooltipComponents = {
-  lend: LendRateTooltip,
-  borrow: BorrowRateTooltip,
+  [MarketRateType.Supply]: LendRateTooltip,
+  [MarketRateType.Borrow]: BorrowRateTooltip,
 } as const
 
 export const RateCell = ({

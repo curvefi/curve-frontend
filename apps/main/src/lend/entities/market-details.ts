@@ -6,6 +6,8 @@ import { queryFactory } from '@ui-kit/lib/model/query'
 import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 
+const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
+
 type MarketQuery = ChainQuery<ChainId> & { marketId: string }
 type MarketParams = FieldsOf<MarketQuery>
 
@@ -14,7 +16,7 @@ type MarketCapAndAvailable = {
   available: number
 }
 type MarketMaxLeverage = {
-  value: string
+  maxLeverage: string
 }
 type MarketCollateralAmounts = {
   collateralAmount: number
@@ -26,8 +28,7 @@ type MarketCollateralAmounts = {
  * in order to display the most current data when a wallet is connected.
  * */
 const _getMarketCapAndAvailable = async ({ marketId }: MarketQuery): Promise<MarketCapAndAvailable> => {
-  const api = requireLib('llamaApi')
-  const market = api.getLendMarket(marketId)
+  const market = getLendMarket(marketId)
   const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
   return {
     cap: +capAndAvailable.cap,
@@ -48,10 +49,9 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
  * in order to display the most current data when a wallet is connected.
  * */
 const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketMaxLeverage> => {
-  const api = requireLib('llamaApi')
-  const market = api.getLendMarket(marketId)
+  const market = getLendMarket(marketId)
   const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
-  return { value: maxLeverage }
+  return { maxLeverage }
 }
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
@@ -66,8 +66,7 @@ export const { useQuery: useMarketMaxLeverage } = queryFactory({
  * in order to display the most current data when a wallet is connected.
  * */
 const _getMarketCollateralAmounts = async ({ marketId }: MarketQuery): Promise<MarketCollateralAmounts> => {
-  const api = requireLib('llamaApi')
-  const market = api.getLendMarket(marketId)
+  const market = getLendMarket(marketId)
   const ammBalance = await market.stats.ammBalances(false, USE_API)
   return {
     collateralAmount: +ammBalance.collateral,
@@ -84,7 +83,9 @@ export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarke
 })
 
 const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
-  rates: await requireLib('llamaApi').getLendMarket(marketId).stats.rates(false, false),
+  rates: await getLendMarket(marketId).stats.rates(false, false),
+  rewardsApr: await getLendMarket(marketId).vault.rewardsApr(false),
+  crvRates: await getLendMarket(marketId).vault.crvApr(false),
 })
 
 /**
@@ -101,8 +102,7 @@ export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnCh
 })
 
 const _fetchMarketPricePerShare = async ({ marketId }: MarketQuery) => {
-  const api = requireLib('llamaApi')
-  const market = api.getLendMarket(marketId)
+  const market = getLendMarket(marketId)
   return await market.vault.previewRedeem(1)
 }
 

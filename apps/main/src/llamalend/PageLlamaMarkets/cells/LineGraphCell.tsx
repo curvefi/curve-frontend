@@ -8,7 +8,8 @@ import Typography from '@mui/material/Typography'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { RateType, useSnapshots } from '../hooks/useSnapshots'
+import type { MarketRateType } from '@ui-kit/types/market'
+import { useSnapshots } from '../hooks/useSnapshots'
 
 const defaultGraphSize = { width: 100, height: 48 }
 
@@ -32,7 +33,7 @@ const calculateDomain =
 
 type RateCellProps = {
   market: LlamaMarket
-  type: RateType
+  type: MarketRateType
   graphSize?: typeof defaultGraphSize
 }
 

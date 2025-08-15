@@ -1,5 +1,5 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
@@ -9,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 const { Spacing, Sizing } = SizesAndSpaces
 
