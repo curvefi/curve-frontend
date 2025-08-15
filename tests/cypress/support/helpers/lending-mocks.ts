@@ -1,7 +1,7 @@
-import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@/support/generators'
-import { oneToken } from '@/support/helpers/tokens'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@cy/support/generators'
+import { oneToken } from '@cy/support/helpers/tokens'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const
 export type Chain = (typeof LendingChains)[number]
@@ -56,6 +56,7 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
     borrowed_balance_usd: borrowedBalance * borrowedPrice,
     collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
     borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
+    extra_reward_apr: [],
   }
 }
 
@@ -97,9 +98,20 @@ export const createLendingVaultChainsResponse = (): Record<Chain, GetMarketsResp
   fromEntries(LendingChains.map((chain) => [chain, oneLendingVaultResponse(chain)]))
 
 export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets?fetch_on_chain=true', { body: { chains } })
+  cy.intercept('https://prices.curve.finance/v1/lending/markets', { body: { chains } })
 
-export const mockLendingSnapshots = () =>
+const HOUR = 60 * 60 * 1000
+export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
   cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=true', {
-    fixture: 'lending-snapshots.json',
+    body: {
+      chain,
+      data: range(84).map((i) => ({
+        borrow_apy: i / 2, // increasing APY, graph should be green
+        lend_apy: 2 / (i + 1), // decreasing APY, graph should be red
+        timestamp: new Date('2024-12-24T').getTime() - i * 4 * HOUR, // 4h intervals
+        extra_rewards_apr: [],
+        collateral_token: oneToken(chain),
+        borrowed_token: oneToken(chain),
+      })),
+    },
   })

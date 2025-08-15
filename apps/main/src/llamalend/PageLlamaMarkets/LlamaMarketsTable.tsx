@@ -87,6 +87,7 @@ export const LlamaMarketsTable = ({
     getFilteredRowModel: result && getFilteredRowModel(),
     onExpandedChange: setExpanded,
     getExpandedRowModel: getExpandedRowModel(),
+    autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
     state: { expanded, sorting, columnVisibility, columnFilters },
     onSortingChange,
     maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift

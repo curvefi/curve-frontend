@@ -3,6 +3,8 @@ import { type CSSProperties } from 'react'
 
 // Fonts might not load when running Storybook locally.
 const isStorybook = process.env.STORYBOOK === 'true'
+const isCypress = process.env.CYPRESS_COMPONENT_TEST === 'true'
+const isTest = isStorybook || isCypress
 
 // localFont calls have to be standalone, so the actual storybook check happens below.
 const monaSansFont = localFont({ src: '../../public/fonts/Mona-Sans.woff2' })
@@ -20,9 +22,9 @@ const minecraftFont = localFont({
   ],
 })
 
-export const monaSans = isStorybook ? { style: { fontFamily: 'MonaSans' } } : monaSansFont
-export const hubotSans = isStorybook ? { style: { fontFamily: 'Hubot Sans' } } : hubotSansFont
-export const minecraft = isStorybook ? { style: { fontFamily: 'Minecraft' } } : minecraftFont
+export const monaSans = isTest ? { style: { fontFamily: 'MonaSans' } } : monaSansFont
+export const hubotSans = isTest ? { style: { fontFamily: 'Hubot Sans' } } : hubotSansFont
+export const minecraft = isTest ? { style: { fontFamily: 'Minecraft' } } : minecraftFont
 
 const MonaSans = [monaSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
 const HubotSans = [hubotSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')

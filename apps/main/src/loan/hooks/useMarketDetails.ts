@@ -5,9 +5,11 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address, Chain } from '@curvefi/prices-api'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
@@ -16,6 +18,7 @@ type UseMarketDetailsProps = {
 }
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
+  const { data: campaigns } = useCampaigns({})
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,
@@ -43,7 +46,13 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     return meanBy(recentSnapshots, ({ rate }) => rate) * 100
   }, [crvUsdSnapshots])
 
+  const campaignRewards = useMemo(() => {
+    if (!campaigns || !llamma?.controller) return []
+    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
+  }, [campaigns, llamma?.controller])
+
   return {
+    marketType: LlamaMarketType.Mint,
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,
@@ -62,8 +71,14 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       loading: borrowedUsdRateLoading || (loanDetails?.loading ?? true),
     },
     borrowAPY: {
-      value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      thirtyDayAvgRate: thirtyDayAvgBorrowAPR,
+      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      averageRate: thirtyDayAvgBorrowAPR,
+      averageRateLabel: '30D',
+      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
+      extraRewards: campaignRewards,
+      totalBorrowRate: loanDetails?.parameters?.rate
+        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     availableLiquidity: {

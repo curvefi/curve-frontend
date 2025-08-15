@@ -1,14 +1,15 @@
 import lodash from 'lodash'
-import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
+import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
   createLendingVaultChainsResponse,
   HighUtilizationAddress,
   mockLendingSnapshots,
   mockLendingVaults,
-} from '@/support/helpers/lending-mocks'
-import { mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { mockTokenPrices } from '@/support/helpers/tokens'
+} from '@cy/support/helpers/lending-mocks'
+import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
   assertInViewport,
   assertNotInViewport,
@@ -17,9 +18,9 @@ import {
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
-} from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+} from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
+import { MarketRateType } from '@ui-kit/types/market'
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
@@ -96,7 +97,7 @@ describe(`LlamaLend Markets`, () => {
     if (breakpoint != 'mobile') {
       enableGraphColumn()
     }
-    checkLineGraphColor('borrow', '#ed242f')
+    checkLineGraphColor(MarketRateType.Borrow, '#ed242f')
 
     // check that scrolling loads more snapshots:
     cy.get(`@lend-snapshots.all`, LOAD_TIMEOUT).then((calls1) => {
@@ -293,7 +294,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
   }
 
-  function checkLineGraphColor(type: 'lend' | 'borrow', color: string) {
+  function checkLineGraphColor(type: MarketRateType, color: string) {
     // the graphs are lazy loaded, so we need to scroll to them first before checking the color
     if (breakpoint != 'mobile') {
       // no need to scroll on mobile, the graph is already in view after collapsing the row

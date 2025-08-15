@@ -3,13 +3,13 @@ import { Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
-type TabValue = 'borrow' | 'lend'
+type TabValue = 'borrow' | 'supply'
 
 type MarketInformationTabsProps = {
   currentTab: TabValue
   hrefs: {
     borrow: string
-    lend: string
+    supply: string
   }
   children: ReactNode
 }
@@ -21,7 +21,7 @@ type MarketInformationTabsProps = {
 export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInformationTabsProps) => {
   const TABS: { value: TabValue; label: string; href: string }[] = [
     { value: 'borrow', label: t`Borrow`, href: hrefs.borrow },
-    { value: 'lend', label: t`Lend`, href: hrefs.lend },
+    { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
   const [tab, setTab] = useState<TabValue>(currentTab)
 

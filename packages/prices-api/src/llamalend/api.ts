@@ -10,7 +10,10 @@ export async function getChains(options?: Options): Promise<Chain[]> {
 }
 
 export async function getAllMarkets(
-  params: { fetch_on_chain?: boolean } = { fetch_on_chain: true },
+  params: {
+    page?: number
+    per_page?: number
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)
@@ -23,8 +26,7 @@ export async function getMarkets(
   params: {
     page?: number
     per_page?: number
-    fetch_on_chain?: boolean
-  } = { fetch_on_chain: true },
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)

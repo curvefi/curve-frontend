@@ -12,7 +12,7 @@ type Props = PegKeeperType & {
   sx?: SxProps
 }
 
-export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
+export const PegKeeper = ({ sx, testId = 'pegkeeper', ...pegkeeper }: Props) => {
   const {
     address,
     pool: { id: poolId, name: poolName, address: poolAddress, underlyingCoins, underlyingCoinAddresses },
@@ -21,7 +21,7 @@ export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
   const { rate, debt, debtCeiling, estCallerProfit, rebalance, isRebalancing } = usePegkeeper(pegkeeper)
 
   return (
-    <Card sx={sx} data-testid={testId}>
+    <Card sx={sx} data-testid={`${testId}-root`}>
       <PegKeeperHeader
         underlyingCoins={underlyingCoins}
         underlyingCoinAddresses={underlyingCoinAddresses}
@@ -34,6 +34,7 @@ export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
         debtCeiling={debtCeiling}
         poolName={poolName}
         underlyingCoins={underlyingCoins}
+        testId={testId}
       />
 
       <PegKeeperAdvancedDetails
@@ -42,12 +43,14 @@ export const PegKeeper = ({ sx, testId, ...pegkeeper }: Props) => {
         poolId={poolId}
         poolName={poolName}
         poolAddress={poolAddress}
+        testId={testId}
       />
 
       <PegKeeperRebalanceButton
         canRebalance={!!estCallerProfit && estCallerProfit !== '0'}
         isRebalancing={isRebalancing}
         onRebalance={rebalance}
+        testId={testId}
       />
     </Card>
   )

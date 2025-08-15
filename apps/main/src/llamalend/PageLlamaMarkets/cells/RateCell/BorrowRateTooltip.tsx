@@ -1,31 +1,18 @@
 import { ReactElement } from 'react'
-import { TooltipItem, TooltipItems } from '@/llamalend/components/TooltipItem'
-import { LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
-import { useMarketExtraIncentives } from '@/llamalend/hooks/useMarketExtraIncentives'
-import { RewardsTooltipItems } from '@/llamalend/PageLlamaMarkets/cells/RateCell/RewardsTooltipItems'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
+import { useFilteredRewards } from '@ui-kit/shared/ui/tooltips/utils'
+import { MarketRateType } from '@ui-kit/types/market'
 import { useSnapshots } from '../../hooks/useSnapshots'
-import { formatPercent, useFilteredRewards } from '../cell.format'
 
-const { Spacing } = SizesAndSpaces
+const rateType = MarketRateType.Borrow
 
-const messages = {
-  [LlamaMarketType.Lend]: t`The borrow rate is the cost related to your borrow and varies according to the lend market, borrow incentives and its utilization.`,
-  [LlamaMarketType.Mint]: t`The borrow rate is the cost related to your borrow and varies according to the mint market, borrow incentives and the crvUSD's peg.`,
-}
-
-const rateType = 'borrow' as const
-
-const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
+export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => {
   const {
-    chain,
     rewards,
     type: marketType,
-    rates,
     rates: { borrow: borrowRate, borrowTotalApy },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
@@ -33,51 +20,26 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   } = market
   const { averageRate, period } = useSnapshots(market, rateType)
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
-  const extraIncentives = useMarketExtraIncentives(rateType, chain, rates)
 
   return (
-    <Stack gap={Spacing.sm}>
-      <Typography color="textSecondary">{messages[marketType]}</Typography>
-
-      {!!rebasingYield && (
-        <Typography color="textSecondary">{t`The collateral of this market is yield bearing and offers extra yield`}</Typography>
-      )}
-
-      <Stack>
-        <TooltipItems secondary>
-          <TooltipItem title={t`Borrow fees`}>{formatPercent(borrowRate)}</TooltipItem>
-        </TooltipItems>
-
-        {(poolRewards.length > 0 || extraIncentives.length > 0) && (
-          <TooltipItems secondary>
-            <RewardsTooltipItems title={t`Borrowing incentives`} {...{ poolRewards, extraIncentives }} />
-          </TooltipItems>
-        )}
-
-        {!!rebasingYield && (
-          <TooltipItems secondary>
-            <TooltipItem title={t`Yield bearing tokens`}>{formatPercent(rebasingYield)}</TooltipItem>
-            <TooltipItem subitem title={collateralSymbol}>
-              {formatPercent(rebasingYield)}
-            </TooltipItem>
-          </TooltipItems>
-        )}
-
-        <TooltipItems>
-          <TooltipItem primary title={t`Total borrow rate`}>
-            {formatPercent(borrowTotalApy)}
-          </TooltipItem>
-          <TooltipItem subitem loading={averageRate == null} title={`${period} ${t`Average`}`}>
-            {formatPercent(averageRate)}
-          </TooltipItem>
-        </TooltipItems>
-      </Stack>
-    </Stack>
+    <Tooltip
+      clickable
+      title={t`Borrow Rate`}
+      body={
+        <MarketBorrowRateTooltipContent
+          marketType={marketType}
+          borrowRate={borrowRate}
+          averageRate={averageRate}
+          periodLabel={period}
+          totalBorrowRate={borrowTotalApy}
+          extraRewards={poolRewards}
+          rebasingYield={rebasingYield}
+          collateralSymbol={collateralSymbol}
+        />
+      }
+      placement="top"
+    >
+      {children}
+    </Tooltip>
   )
 }
-
-export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
-  <Tooltip clickable title={t`Borrow Rate`} body={<BorrowRateTooltipContent market={market} />} placement="top">
-    {children}
-  </Tooltip>
-)

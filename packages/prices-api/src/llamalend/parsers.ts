@@ -82,6 +82,28 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   timestamp: toDate(x.timestamp),
   discountLiquidation: x.liquidation_discount,
   discountLoan: x.loan_discount,
+  basePrice: parseFloat(x.base_price),
+  mintedUsd: parseFloat(x.minted_usd),
+  redeemedUsd: parseFloat(x.redeemed_usd),
+  minBand: parseFloat(x.min_band),
+  maxBand: parseFloat(x.max_band),
+  ammA: parseFloat(x.amm_a),
+  sumDebtSquared: parseFloat(x.sum_debt_squared),
+  extraRewardApr: x.extra_rewards_apr.map((y) => ({
+    address: y.address,
+    symbol: y.symbol,
+    rate: y.apr,
+  })),
+  collateralToken: {
+    symbol: x.collateral_token.symbol,
+    address: x.collateral_token.address,
+    rebasingYield: x.collateral_token.rebasing_yield,
+  },
+  borrowedToken: {
+    symbol: x.borrowed_token.symbol,
+    address: x.borrowed_token.address,
+    rebasingYield: x.borrowed_token.rebasing_yield,
+  },
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>

@@ -4,10 +4,9 @@ import Link from '@mui/material/Link'
 import { usePathname } from '@ui-kit/hooks/router'
 import { DEX_ROUTES, getCurrentNetwork, getInternalUrl } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 const { IconSize } = SizesAndSpaces
-
-const CRVUSD_ADDRESS = '0xf939e0a03fb07f59a73314e73794be0e57ac1b4e'
 
 /**
  * Button component that redirects users to the DEX swap page with crvUSD pre-selected as the destination token.

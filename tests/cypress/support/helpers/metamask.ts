@@ -1,5 +1,5 @@
 import { ethers } from 'ethers'
-import { Eip1193BridgeV6 } from '@/tools/Eip1193BridgeV6'
+import { Eip1193BridgeV6 } from '@cy/tools/Eip1193BridgeV6'
 
 export function injectMetamaskProvider(win: Cypress.AUTWindow, wallet: ethers.HDNodeWallet) {
   win.ethereum = new Eip1193BridgeV6(wallet)
