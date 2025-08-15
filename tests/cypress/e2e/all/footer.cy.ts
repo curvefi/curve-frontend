@@ -1,4 +1,4 @@
-import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneMobileViewport, oneTabletViewport } from '@/support/ui'
+import { LOAD_TIMEOUT, oneAppPath, oneDesktopViewport, oneMobileViewport, oneTabletViewport } from '@cy/support/ui'
 
 const viewports = [oneDesktopViewport(), oneTabletViewport(), oneMobileViewport()]
 

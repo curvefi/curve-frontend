@@ -8,7 +8,7 @@ import {
   oneMobileOrTabletViewport,
   SCROLL_WIDTH,
   TABLET_BREAKPOINT,
-} from '@/support/ui'
+} from '@cy/support/ui'
 
 const expectedMainNavHeight = 56
 const expectedSubNavHeight = 42 // 40 + 2px border

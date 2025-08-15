@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
-import createLoanSettings from '@/fixtures/create-loan-settings.json'
-import markets from '@/fixtures/markets.json'
-import tokens from '@/fixtures/tokens.json'
+import createLoanSettings from '@cy/fixtures/create-loan-settings.json'
+import markets from '@cy/fixtures/markets.json'
+import tokens from '@cy/fixtures/tokens.json'
 
 const CHAIN = 'mainnet'
 const MARKET_ID = 'CRV-crvUSD'

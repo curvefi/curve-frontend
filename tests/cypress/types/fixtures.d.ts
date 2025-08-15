@@ -1,4 +1,4 @@
-declare module '@/fixtures/whales.json' {
+declare module '@cy/fixtures/whales.json' {
   export interface Whales {
     [alias: string]: {
       [key: string]: string[]
@@ -9,7 +9,7 @@ declare module '@/fixtures/whales.json' {
   export default value
 }
 
-declare module '@/fixtures/markets.json' {
+declare module '@cy/fixtures/markets.json' {
   export interface Market {
     id: string
     collateral: string
@@ -27,7 +27,7 @@ declare module '@/fixtures/markets.json' {
   export default value
 }
 
-declare module '@/fixtures/create-loan-settings.json' {
+declare module '@cy/fixtures/create-loan-settings.json' {
   export interface LoanSetting {
     ethersToAllocate: string
     collateralTokenToAllocate: string
@@ -43,7 +43,7 @@ declare module '@/fixtures/create-loan-settings.json' {
   export default value
 }
 
-declare module '@/fixtures/tokens.json' {
+declare module '@cy/fixtures/tokens.json' {
   export interface Token {
     address: string
     decimals: number
@@ -61,7 +61,7 @@ declare module '@/fixtures/tokens.json' {
   export default value
 }
 
-declare module '@/fixtures/networks.json' {
+declare module '@cy/fixtures/networks.json' {
   export interface Network {
     id: number
     alias: string

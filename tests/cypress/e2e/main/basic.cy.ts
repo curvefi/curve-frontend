@@ -1,5 +1,5 @@
-import { oneOf } from '@/support/generators'
-import { LOAD_TIMEOUT } from '@/support/ui'
+import { oneOf } from '@cy/support/generators'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Basic Access Test', () => {
   ;['/', '/dex'].forEach((path) => {
