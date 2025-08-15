@@ -1,4 +1,4 @@
-import { range } from '@/support/generators'
+import { range } from '@cy/support/generators'
 
 /**
  * Cypress does not allow queries that return 0 or more elements. This works around by using the underlying jQuery.

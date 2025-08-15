@@ -1,4 +1,4 @@
-import { LOAD_TIMEOUT } from '@/support/ui'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 
 describe('Basic Access Test', () => {
   it('should open the DAO DApp successfully', () => {

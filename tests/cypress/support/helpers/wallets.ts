@@ -1,7 +1,7 @@
 import { ethers } from 'ethers'
-import TokensList from '@/fixtures/tokens.json'
-import WhalesList from '@/fixtures/whales.json'
-import { setEthBalance, allocateToken, getTokenBalance } from '@/tools/network'
+import TokensList from '@cy/fixtures/tokens.json'
+import WhalesList from '@cy/fixtures/whales.json'
+import { setEthBalance, allocateToken, getTokenBalance } from '@cy/tools/network'
 
 /**
  * Creates a random wallet with the given Ethereum JSON RPC provider.
