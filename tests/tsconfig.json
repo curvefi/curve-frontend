@@ -8,7 +8,8 @@
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["*", "../../apps/main/src/*"],
+      "@/*": ["../../apps/main/src/*"],
+      "@cy/*": ["*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
