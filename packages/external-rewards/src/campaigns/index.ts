@@ -1,3 +1,4 @@
+import Aegis from './Aegis.json'
 import Apple from './Apple.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
@@ -74,4 +75,5 @@ export {
   Apple,
   Tharwa,
   Plume,
+  Aegis,
 }

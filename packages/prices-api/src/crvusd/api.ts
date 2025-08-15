@@ -4,13 +4,13 @@ import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
+/** Retrieve all markets for a specific chain, sorted by date of creation. */
 export async function getMarkets(
   chain: Chain,
   params: {
     page?: number
     per_page?: number
-    fetch_on_chain?: boolean
-  } = { fetch_on_chain: true },
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)
@@ -18,10 +18,12 @@ export async function getMarkets(
   return resp.data.map(Parsers.parseMarket)
 }
 
+/** Retrieve all markets across all chains, sorted by date of creation. */
 export async function getAllMarkets(
   params: {
-    fetch_on_chain?: boolean
-  } = { fetch_on_chain: true },
+    page?: number
+    per_page?: number
+  } = {},
   options?: Options,
 ) {
   const host = getHost(options)
