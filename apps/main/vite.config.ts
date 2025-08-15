@@ -28,6 +28,7 @@ export default defineConfig(({ command }) => ({
     'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"',
   },
   vercel: {
+    buildCommand: 'yarn build',
     rewrites: [
       {
         source: '/favicon',

@@ -11,7 +11,7 @@ export * from './number'
 export * from './searchText'
 export * from './mui'
 
-export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: boolean }).Cypress)
+export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: unknown }).Cypress)
 export const isBetaDefault =
   process.env.NODE_ENV === 'development' ||
   (typeof window !== 'undefined' &&
