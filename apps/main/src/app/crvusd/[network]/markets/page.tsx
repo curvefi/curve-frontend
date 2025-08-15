@@ -1,11 +1,7 @@
-import type { Metadata } from 'next'
 import MarketList from '@/loan/components/PageMarketList/Page'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { useParams } from '@ui-kit/hooks/router'
 
-type MarketListPageProps = { params: Promise<CollateralUrlParams> }
-
-export const metadata: Metadata = { title: 'Markets - Curve' }
-
-const CreateLoanPage = async ({ params }: MarketListPageProps) => <MarketList {...await params} />
-
-export default CreateLoanPage
+export default function Component() {
+  return <MarketList {...useParams<CollateralUrlParams>()} />
+}

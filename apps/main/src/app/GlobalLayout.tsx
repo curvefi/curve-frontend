@@ -66,16 +66,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
   networks: NetworkMapping<TId, TChainId>
 }) => (
   <Stack sx={EXPAND_WHEN_HIDDEN}>
-    <NextTopLoader
-      color="var(--primary-400)"
-      initialPosition={0.1}
-      crawlSpeed={200}
-      height={5}
-      crawl={true}
-      showSpinner={false}
-      easing="ease"
-      speed={200}
-    />
     <Header
       currentApp={currentApp}
       chainId={network.chainId}

@@ -1,6 +1,5 @@
 import { SyntheticEvent, useState } from 'react'
 import { styled } from 'styled-components'
-import Image from '@ui-kit/shared/image'
 
 export type Props = {
   label: string
@@ -20,7 +19,7 @@ const SelectNetworkItem = ({ label, src, fallbackSrc }: Props) => {
 
   return (
     <IconWrapper>
-      <Image
+      <img
         alt={label}
         onError={(evt) => handleOnError(evt, fallbackSrc)}
         src={src}

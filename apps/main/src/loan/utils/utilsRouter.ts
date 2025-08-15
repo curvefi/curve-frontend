@@ -33,7 +33,7 @@ export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: st
  */
 export const getRestFullPathname = () => window.location.pathname.substring(1).split('/').slice(2).join('/')
 
-export const parseCollateralParams = ({ collateralId, formType: [rFormType] = [] }: CollateralUrlParams) => ({
+export const parseCollateralParams = ({ collateralId, formType: rFormType }: CollateralUrlParams) => ({
   rFormType,
   rCollateralId: collateralId.toLowerCase(),
 })

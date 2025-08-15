@@ -15,7 +15,7 @@ export type ChainId = 1 // note lend also has other chains, but we only use eth 
 export type NetworkEnum = Extract<INetworkName, 'ethereum'>
 
 export type NetworkUrlParams = { network: NetworkEnum }
-type CollateralExtraParams = { collateralId: string; formType?: RFormType[] }
+type CollateralExtraParams = { collateralId: string; formType?: RFormType }
 export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 

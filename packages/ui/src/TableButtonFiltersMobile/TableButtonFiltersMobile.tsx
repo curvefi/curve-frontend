@@ -1,9 +1,9 @@
 import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { useMemo } from 'react'
+import { useOverlayTriggerState } from '@react-stately/overlays'
 import ModalDialog, { OpenDialogButton } from 'ui/src/Dialog'
 import { RadioGroup } from 'ui/src/Radio'
 import { delayAction } from 'ui/src/utils/helpers'
-import { useOverlayTriggerState } from '@react-stately/overlays'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
 import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
 

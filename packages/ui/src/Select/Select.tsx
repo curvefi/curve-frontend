@@ -1,5 +1,5 @@
 import { CSSProperties, ReactNode, useRef } from 'react'
-import { AriaSelectOptions, HiddenSelect, useSelect } from 'react-aria'
+import { type AriaSelectOptions, HiddenSelect, useSelect, type AriaSelectProps } from 'react-aria'
 import type { SelectProps as ReactStatelySelectProps } from 'react-stately'
 import { useSelectState } from 'react-stately'
 import { styled } from 'styled-components'
@@ -23,6 +23,7 @@ export interface SelectProps<T extends object>
   selectSearchOptions?: {
     searchFilterKeys: string[]
   }
+  children?: AriaSelectProps<T>['children'] // todo: children is excluded from AriaSelectOptions for some reason, does this even work?
 }
 
 function Select<T extends object>({

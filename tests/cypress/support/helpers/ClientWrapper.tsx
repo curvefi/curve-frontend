@@ -1,6 +1,5 @@
 import React, { type ReactNode } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
-import GlobalStyle from '@/globalStyle'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 
@@ -23,7 +22,6 @@ type Props = {
 export function ClientWrapper({ config, children, autoConnect }: Props) {
   return (
     <>
-      <GlobalStyle />
       <ThemeProvider theme="light">
         <WagmiProvider config={config} reconnectOnMount={autoConnect}>
           <QueryProvider persister={persister} queryClient={queryClient}>

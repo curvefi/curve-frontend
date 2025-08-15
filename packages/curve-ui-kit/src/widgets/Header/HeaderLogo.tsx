@@ -11,8 +11,6 @@ const Image = styled('img')({
   marginRight: 8,
 })
 
-const LogoImageSrc = (LogoImg as unknown as { src: string }).src
-
 export type HeaderLogoProps = {
   currentMenu: AppMenuOption
   isLite: boolean
@@ -27,7 +25,7 @@ const APP_NAMES = {
 
 export const HeaderLogo = ({ currentMenu, isLite, sx }: HeaderLogoProps) => (
   <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
-    <Image src={LogoImageSrc} alt="Curve" width={30} />
+    <Image src={LogoImg} alt="Curve" width={30} />
     <Box display="inline-flex" flexDirection="column">
       {/* Note: Anti-pattern to change the line height, however we want the subtitle to fit nicely */}
       <Typography

@@ -178,6 +178,7 @@ class BigDecimal {
       throw new Error('Exponent must be an integer')
     }
     let result = this.create(1)
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     let base = this
     let exp = Math.abs(n)
     while (exp > 0) {

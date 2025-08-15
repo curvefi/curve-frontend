@@ -16,10 +16,9 @@ import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { WrongNetwork } from './WrongNetwork'
 
-export const PageVeCrv = (params: VeCrvUrlParams) => {
-  const [rFormType] = params.formType
+export const PageVeCrv = ({ formType: rFormType, network }: VeCrvUrlParams) => {
   const { curveApi = null, connectState } = useConnection()
-  const rChainId = networksIdMapper[params.network]
+  const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
 
   const { address: userAddress } = useAccount()

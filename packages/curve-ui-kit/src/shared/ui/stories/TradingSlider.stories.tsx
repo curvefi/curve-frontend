@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TradingSlider } from '../TradingSlider'
 
 const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider>) => {

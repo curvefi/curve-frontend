@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { CLASS_BORDERLESS } from '../components/slider'
 
 const SliderComponent = (props: React.ComponentProps<typeof Slider>) => {

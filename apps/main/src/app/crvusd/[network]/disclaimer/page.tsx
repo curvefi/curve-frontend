@@ -1,14 +1,7 @@
-import type { Metadata } from 'next'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
-import { t } from '@ui-kit/lib/i18n'
+import { useParams } from '@ui-kit/hooks/router'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 
-export const metadata: Metadata = { title: t`Risk Disclaimer - Curve` }
-
-type DisclaimerPageProps = {
-  params: Promise<NetworkUrlParams>
+export default function Component() {
+  return <Disclaimer currentApp="crvusd" {...useParams<NetworkUrlParams>()} />
 }
-
-const DisclaimerPage = async ({ params }: DisclaimerPageProps) => <Disclaimer currentApp="crvusd" {...await params} />
-
-export default DisclaimerPage

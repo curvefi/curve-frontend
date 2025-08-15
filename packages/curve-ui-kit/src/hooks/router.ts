@@ -1,15 +1,23 @@
-import { useRouter, useSearchParams as useOriginalSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
+import {
+  useLocation as useTanstackLocation,
+  useNavigate as useTanstackNavigate,
+  useParams as useTanstackParams,
+} from '@tanstack/react-router'
 
-export { useParams, usePathname } from 'next/navigation'
-
-export const useNavigate = () => {
-  const { push, replace } = useRouter()
+export function useNavigate() {
+  const navigate = useTanstackNavigate()
   return useCallback(
-    (url: string, { replace: shouldReplace }: { replace?: boolean } = {}): void =>
-      void (shouldReplace ? replace : push)(url),
-    [push, replace],
+    (to: string, options: { replace?: boolean; state?: any } = {}): void => void navigate({ to, ...options }),
+    [navigate],
   )
 }
 
-export const useSearchParams = useOriginalSearchParams as () => URLSearchParams
+export function useSearchParams(): URLSearchParams {
+  const { search } = useTanstackLocation()
+  return useMemo(() => new URLSearchParams(search), [search])
+}
+
+export const useParams = <T>() => useTanstackParams({ strict: false }) as T
+
+export const usePathname = () => useTanstackLocation().pathname

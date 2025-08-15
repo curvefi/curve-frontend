@@ -26,5 +26,5 @@ export const getRestFullPathname = () => window.location.pathname.substring(1).s
 export const parseMarketParams = ({ formType, market, network }: MarketUrlParams) => ({
   rMarket: market.toLowerCase(),
   rChainId: networksIdMapper[network],
-  rFormType: formType?.[0] ?? '',
+  rFormType: formType ?? null,
 })

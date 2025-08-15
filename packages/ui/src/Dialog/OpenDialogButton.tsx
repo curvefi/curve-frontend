@@ -2,11 +2,11 @@ import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { ReactNode, useRef } from 'react'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
+import type { OverlayTriggerState } from '@react-stately/overlays'
 import Button from 'ui/src/Button'
 import type { ButtonProps } from 'ui/src/Button/types'
 import Icon from 'ui/src/Icon/Icon'
 import { delayAction } from 'ui/src/utils/helpers'
-import type { OverlayTriggerState } from '@react-stately/overlays'
 
 interface OpenDialogButtonProps extends ButtonProps {
   children: ReactNode

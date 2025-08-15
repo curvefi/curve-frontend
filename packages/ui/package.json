@@ -6,7 +6,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "lint": "eslint \"**/*.ts*\""
+    "lint": "eslint \"**/*.ts*\"",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@carbon/icons-react": "^11.62.0",

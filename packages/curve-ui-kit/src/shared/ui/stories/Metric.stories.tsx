@@ -1,5 +1,5 @@
 import Typography from '@mui/material/Typography'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Metric, SIZES, ALIGNMENTS } from '../Metric'
 
 const meta: Meta<typeof Metric> = {

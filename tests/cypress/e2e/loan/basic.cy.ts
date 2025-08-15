@@ -9,6 +9,6 @@ describe('Basic Access Test', () => {
   it(`should redirect from the old URL successfully`, () => {
     cy.visit(`/crvusd/#/ethereum/scrvUSD`)
     cy.title(LOAD_TIMEOUT).should('equal', 'Savings crvUSD - Curve')
-    cy.url().should('match', /http:\/\/localhost:\d+\/crvusd\/ethereum\/scrvUSD\/$/)
+    cy.url().should('match', /http:\/\/localhost:\d+\/crvusd\/ethereum\/scrvUSD\/?$/)
   })
 })
