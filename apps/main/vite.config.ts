@@ -2,6 +2,7 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
+import vercel from 'vite-plugin-vercel'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
@@ -10,7 +11,7 @@ export default defineConfig(({ command }) => ({
     hmr: true,
   },
   preview: { port: 3000 },
-  plugins: [react(), svgr()],
+  plugins: [react(), svgr(), vercel()],
   optimizeDeps: {
     include: ['styled-components', '@mui/material', '@mui/icons-material'],
   },
@@ -26,4 +27,5 @@ export default defineConfig(({ command }) => ({
   define: {
     'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"',
   },
+  vercel: {},
 }))

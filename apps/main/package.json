@@ -69,6 +69,6 @@
     "tsconfig": "*",
     "typescript": "*",
     "typescript-eslint": "^8.35.1",
-    "vite": "^7.0.3"
+    "vite": "*"
   }
 }

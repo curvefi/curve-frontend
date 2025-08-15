@@ -39,7 +39,9 @@
     "prettier": "^3.6.2",
     "react": "*",
     "react-dom": "*",
-    "typescript": "*"
+    "typescript": "*",
+    "vite": "6.3.5",
+    "vite-plugin-vercel": "9.0.7"
   },
   "packageManager": "yarn@4.6.0",
   "lint-staged": {
