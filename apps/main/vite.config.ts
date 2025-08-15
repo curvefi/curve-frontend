@@ -27,5 +27,16 @@ export default defineConfig(({ command }) => ({
   define: {
     'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"',
   },
-  vercel: {},
+  vercel: {
+    rewrites: [
+      {
+        source: '/favicon',
+        destination: '/favicon.ico',
+      },
+      {
+        source: '/(.*)',
+        destination: '/index.html',
+      },
+    ],
+  },
 }))
