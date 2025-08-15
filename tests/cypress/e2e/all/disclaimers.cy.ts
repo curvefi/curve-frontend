@@ -1,4 +1,4 @@
-import { oneOf } from '@/support/generators'
+import { oneOf } from '@cy/support/generators'
 import {
   API_LOAD_TIMEOUT,
   LOAD_TIMEOUT,
@@ -6,7 +6,7 @@ import {
   oneDesktopViewport,
   oneTabletViewport,
   oneViewport,
-} from '@/support/ui'
+} from '@cy/support/ui'
 
 describe('Disclaimers', () => {
   describe('Footer link', () => {

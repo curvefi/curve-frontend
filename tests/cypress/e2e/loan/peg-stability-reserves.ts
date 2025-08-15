@@ -1,5 +1,5 @@
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
-import { LOAD_TIMEOUT, oneViewport } from '@/support/ui'
+import { LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 /**
  * Gets pegkeeper cards by test ID suffix.

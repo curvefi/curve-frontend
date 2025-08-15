@@ -1,14 +1,15 @@
 import lodash from 'lodash'
-import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@/support/generators'
+import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
   createLendingVaultChainsResponse,
   HighUtilizationAddress,
   mockLendingSnapshots,
   mockLendingVaults,
-} from '@/support/helpers/lending-mocks'
-import { mockMintMarkets, mockMintSnapshots } from '@/support/helpers/minting-mocks'
-import { mockTokenPrices } from '@/support/helpers/tokens'
+} from '@cy/support/helpers/lending-mocks'
+import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
+import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
   assertInViewport,
   assertNotInViewport,
@@ -17,8 +18,7 @@ import {
   oneDesktopViewport,
   oneViewport,
   RETRY_IN_CI,
-} from '@/support/ui'
-import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
+} from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 describe(`LlamaLend Markets`, () => {
