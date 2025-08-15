@@ -352,6 +352,7 @@ export async function getNetworks() {
     (prev, { chainId, ...config }) => {
       const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
       const isUpgraded = !!baseConfig // networks upgraded from lite to full
+      const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko // networks that has only been upgraded to show pool rewards APY
       prev[chainId] = {
         ...DEFAULT_NETWORK_CONFIG,
         ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
@@ -378,6 +379,9 @@ export async function getNetworks() {
         pricesApi: isUpgraded,
         isLite: !isUpgraded,
         isCrvRewardsEnabled: isUpgraded,
+        ...(isOnlyPoolRewardsUpgraded && {
+          isCrvRewardsEnabled: true,
+        }),
       }
       return prev
     },
