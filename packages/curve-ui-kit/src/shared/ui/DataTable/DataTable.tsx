@@ -5,6 +5,7 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { SkeletonRows } from '@ui-kit/shared/ui/DataTable/SkeletonRows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -21,12 +22,14 @@ export const DataTable = <T extends TableItem>({
   table,
   emptyText,
   children,
+  loading,
   ...rowProps
 }: {
   table: TanstackTable<T>
   emptyText: string
   children?: ReactNode // passed to <FilterRow />
   minRowHeight?: number
+  loading: boolean
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { rows } = table.getRowModel()
   const { shouldStickFirstColumn } = rowProps
@@ -67,10 +70,17 @@ export const DataTable = <T extends TableItem>({
         ))}
       </TableHead>
       <TableBody>
-        {rows.length === 0 && <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>}
-        {rows.map((row, index) => (
-          <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
-        ))}
+        {loading ? (
+          <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+        ) : rows.length === 0 ? (
+          <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>
+        ) : (
+          <>
+            {rows.map((row, index) => (
+              <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   )
