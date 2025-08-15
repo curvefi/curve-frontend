@@ -1,8 +1,9 @@
 import { useAccount } from 'wagmi'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/entities/lending-vaults'
-import { type LlamaMarket, LlamaMarketType } from '@/llamalend/entities/llama-markets'
+import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/entities/mint-markets'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 const statsColumns = [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed]
 const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited]

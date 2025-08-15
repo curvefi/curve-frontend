@@ -18,10 +18,12 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   collateralToken: {
     symbol: x.collateral_token.symbol,
     address: x.collateral_token.address,
+    rebasingYield: x.collateral_token.rebasing_yield,
   },
   stablecoinToken: {
     symbol: x.stablecoin_token.symbol,
     address: x.stablecoin_token.address,
+    rebasingYield: x.stablecoin_token.rebasing_yield,
   },
   fees: {
     pending: x.pending_fees,
@@ -41,12 +43,29 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
   totalCollateral: x.total_collateral,
   totalCollateralUsd: x.total_collateral_usd,
   totalStablecoin: x.total_stablecoin,
+  totalStablecoinUsd: x.total_stablecoin_usd,
   totalDebt: x.total_debt,
+  totalDebtUsd: x.total_debt_usd,
   priceAMM: x.amm_price,
   priceOracle: x.price_oracle,
   borrowable: x.borrowable,
   discountLiquidation: x.liquidation_discount,
   discountLoan: x.loan_discount,
+  ammA: x.amm_a,
+  basePrice: x.base_price,
+  minBand: x.min_band,
+  maxBand: x.max_band,
+  sumDebtSquared: x.sum_debt_squared,
+  collateralToken: {
+    symbol: x.collateral_token.symbol,
+    address: x.collateral_token.address,
+    rebasingYield: x.collateral_token.rebasing_yield,
+  },
+  stablecoinToken: {
+    symbol: x.stablecoin_token.symbol,
+    address: x.stablecoin_token.address,
+    rebasingYield: x.stablecoin_token.rebasing_yield,
+  },
 })
 
 export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]): Models.Keeper => ({

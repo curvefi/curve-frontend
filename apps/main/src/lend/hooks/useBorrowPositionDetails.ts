@@ -7,10 +7,12 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { Address, Chain } from '@curvefi/prices-api'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
+import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
@@ -23,6 +25,7 @@ export const useBorrowPositionDetails = ({
   market,
   marketId,
 }: UseBorrowPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { controller } = market?.addresses ?? {}
   const { address: userAddress } = useAccount()
   const { data: userLoanDetails, isLoading: isUserLoanDetailsLoading } = useUserLoanDetails({
     chainId,
@@ -41,6 +44,7 @@ export const useBorrowPositionDetails = ({
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
+  const { data: campaigns } = useCampaigns({})
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
     chainId: chainId,
     marketId,
@@ -53,7 +57,6 @@ export const useBorrowPositionDetails = ({
     chainId: chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
-
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
@@ -72,25 +75,34 @@ export const useBorrowPositionDetails = ({
     return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
   }, [lendSnapshots])
 
-  const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy
-
+  const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy ?? null
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
   }, [collateral, borrowed, collateralUsdRate])
+  const campaignRewards = useMemo(() => {
+    if (!campaigns || !controller) return []
+    return [...(campaigns[controller.toLowerCase()] ?? [])]
+  }, [campaigns, controller])
 
+  const rebasingYield = lendSnapshots?.[0]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
+    marketType: LlamaMarketType.Lend,
     liquidationAlert: {
       softLiquidation: status?.colorKey === 'soft_liquidation',
       hardLiquidation: status?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: Number(healthFull),
+      value: healthFull ? Number(healthFull) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     borrowAPY: {
-      value: borrowApy != null ? Number(borrowApy) : null,
-      thirtyDayAvgRate: thirtyDayAvgRate,
+      rate: borrowApy == null ? null : Number(borrowApy),
+      averageRate: thirtyDayAvgRate,
+      averageRateLabel: '30D',
+      rebasingYield: rebasingYield ?? null,
+      totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
+      extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {
@@ -120,7 +132,7 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
+      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {

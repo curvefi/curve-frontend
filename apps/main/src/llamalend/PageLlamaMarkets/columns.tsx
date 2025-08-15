@@ -3,6 +3,7 @@ import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
+import { MarketRateType } from '@ui-kit/types/market'
 import {
   CompactUsdCell,
   LineGraphCell,
@@ -79,7 +80,7 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor('rates.borrow', {
     id: LlamaMarketColumnId.BorrowChart,
     header: t`7D Rate Chart`,
-    cell: (c) => <LineGraphCell market={c.row.original} type="borrow" />,
+    cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: t`Utilization`,

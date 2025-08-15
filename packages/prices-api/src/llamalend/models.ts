@@ -63,22 +63,44 @@ export type Snapshot = {
   lendApr: number
   lendAprCrv0Boost: number
   lendAprCrvMaxBoost: number
+  discountLiquidation: number
+  discountLoan: number
   numLoans: number
   priceOracle: number
   ammPrice: number
+  basePrice: number
   totalDebt: number
   totalDebtUsd: number
   totalAssets: number
   totalAssetsUsd: number
   minted: number
   redeemed: number
+  mintedUsd: number
+  redeemedUsd: number
+  minBand: number
+  maxBand: number
   collateralBalance: number
   collateralBalanceUsd: number
   borrowedBalance: number
   borrowedBalanceUsd: number
+  ammA: number
+  sumDebtSquared: number
+  extraRewardApr: {
+    address: Address
+    symbol: string
+    rate: number
+  }[]
+  collateralToken: {
+    symbol: string
+    address: Address
+    rebasingYield: number | null
+  }
+  borrowedToken: {
+    symbol: string
+    address: Address
+    rebasingYield: number | null
+  }
   timestamp: Date
-  discountLiquidation: number
-  discountLoan: number
 }
 
 /** More specifically, the markets where a user holds a position */

@@ -40,7 +40,7 @@ export const {
   fetchQuery: fetchMintMarkets,
   setQueryData: setMintMarkets,
 } = queryFactory({
-  queryKey: () => ['mint-markets', 'v1'] as const,
+  queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> => {
     const results = await Promise.all(
       Object.entries(await getAllMarkets()).flatMap(([blockchainId, data]) =>

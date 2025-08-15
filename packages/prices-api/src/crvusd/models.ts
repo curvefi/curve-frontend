@@ -15,10 +15,12 @@ export type Market = {
   collateralToken: {
     symbol: string
     address: Address
+    rebasingYield: number | null
   }
   stablecoinToken: {
     symbol: string
     address: Address
+    rebasingYield: number | null
   }
   fees: {
     pending: number
@@ -35,12 +37,29 @@ export type Snapshot = {
   totalCollateral: number
   totalCollateralUsd: number
   totalStablecoin: number
+  totalStablecoinUsd: number
   totalDebt: number
+  totalDebtUsd: number
   priceAMM: number
   priceOracle: number
   borrowable: number
   discountLiquidation: number
   discountLoan: number
+  ammA: number
+  basePrice: number
+  minBand: number
+  maxBand: number
+  sumDebtSquared: number
+  collateralToken: {
+    symbol: string
+    address: string
+    rebasingYield: number
+  }
+  stablecoinToken: {
+    symbol: string
+    address: string
+    rebasingYield: number
+  }
 }
 
 export type PoolPrice = {
