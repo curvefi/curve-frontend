@@ -2,7 +2,7 @@ import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import { getCellSx } from '@ui-kit/shared/ui/DataTable/DataCell'
+import { getCellSx, getCellVariant } from '@ui-kit/shared/ui/DataTable/DataCell'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 
 export const SkeletonRows = <T extends TableItem>({
@@ -16,7 +16,7 @@ export const SkeletonRows = <T extends TableItem>({
 }) => (
   <>
     {Array.from({ length }).map((_, i) => (
-      <TableRow key={`loading-row-${i}`} sx={{ marginBlock: 0 }} data-testid={`data-table-loading-${i}`}>
+      <TableRow key={`loading-row-${i}`} data-testid={`data-table-loading-${i}`}>
         {table
           .getHeaderGroups()
           .flatMap((headerGroup) => headerGroup.headers)
@@ -27,9 +27,10 @@ export const SkeletonRows = <T extends TableItem>({
             >
               <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
                 <Typography
-                  variant={column.columnDef.meta?.variant ?? 'tableCellMBold'}
-                  color="text.primary"
+                  variant={getCellVariant(column)}
+                  data-variant={getCellVariant(column)}
                   data-testid={`data-table-cell-${column.id}`}
+                  sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
                 >
                   0
                 </Typography>

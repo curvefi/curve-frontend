@@ -2,7 +2,7 @@ import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { type Cell, Column, flexRender } from '@tanstack/react-table'
+import { type Cell, type Column, flexRender } from '@tanstack/react-table'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
 import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -28,7 +28,7 @@ export function getCellSx<T extends TableItem>({
   const sx = {
     ...(!showCollapseIcon && wrapperSx),
     ...getExtraColumnPadding(column),
-    ...((borderRight || isSticky) && { borderRight: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}` }),
+    ...((borderRight || isSticky) && { borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}` }),
     ...(isSticky && {
       position: 'sticky',
       left: 0,
@@ -39,6 +39,8 @@ export function getCellSx<T extends TableItem>({
   }
   return [sx, showCollapseIcon ? wrapperSx : {}]
 }
+
+export const getCellVariant = <T extends any>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
 
 /**
  * DataCell component to render the data cell in the table.
@@ -53,13 +55,12 @@ export const DataCell = <T extends TableItem>({
   isSticky: boolean
 }) => {
   const { column, row } = cell
-  const { variant } = column.columnDef.meta ?? {}
   const children = flexRender(column.columnDef.cell, cell.getContext())
   const showCollapseIcon = isMobile && column.getIsLastColumn()
   const [sx, wrapperSx] = getCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography
-      variant={variant ?? 'tableCellMBold'}
+      variant={getCellVariant(column)}
       color="text.primary"
       component="td"
       sx={sx}

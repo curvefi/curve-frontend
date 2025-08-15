@@ -83,7 +83,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
           minHeight: MinHeight.pageContent,
         }}
       >
-        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading />
       </Stack>
 
       <LendTableFooter />
