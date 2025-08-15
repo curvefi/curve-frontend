@@ -1,5 +1,4 @@
 import { ethAddress } from 'viem'
-import { getCampaignsOptions, PoolRewards } from '@/llamalend/entities/campaigns'
 import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
 import {
   getLendingVaultsOptions,
@@ -12,15 +11,12 @@ import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
+import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
+import { type ExtraIncentive, LlamaMarketType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
-
-export enum LlamaMarketType {
-  Mint = 'Mint',
-  Lend = 'Lend',
-}
 
 export type Assets = {
   borrowed: AssetDetails
@@ -50,14 +46,11 @@ export type LlamaMarket = {
     lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
+    lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
     borrow: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
-    incentives: {
-      address: Address
-      symbol: string
-      rate: number
-    }[]
+    incentives: ExtraIncentive[]
   }
   type: LlamaMarketType
   url: string
@@ -131,10 +124,19 @@ const convertLendingVault = (
       lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
+      lendTotalApyMaxBoosted:
+        lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
       borrow: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
-      incentives: extraRewardApr ?? [],
+      incentives: extraRewardApr
+        ? extraRewardApr.map(({ address, symbol, rate }) => ({
+            title: symbol,
+            percentage: rate,
+            address,
+            blockchainId: chain,
+          }))
+        : [],
     },
     type: LlamaMarketType.Lend,
     url: getInternalUrl(
@@ -188,7 +190,7 @@ const convertMintMarket = (
         chain,
         balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
-        rebasingYield: null,
+        rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
       },
       collateral: {
         symbol: collateralSymbol,
@@ -197,7 +199,7 @@ const convertMintMarket = (
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
-        rebasingYield: null,
+        rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
       },
     },
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
@@ -209,6 +211,7 @@ const convertMintMarket = (
       lendApr: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
+      lendTotalApyMaxBoosted: null,
       borrowTotalApy: rate * 100,
       incentives: [],
     },
@@ -260,7 +263,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
     queries: [
       getLendingVaultsOptions({}, enabled),
       getMintMarketOptions({}, enabled),
-      getCampaignsOptions({}, enabled),
+      getCampaignOptions({}, enabled),
       getFavoriteMarketOptions({}, enabled),
       getUserLendingVaultsOptions({ userAddress }, enabled),
       getUserLendingSuppliesOptions({ userAddress }, enabled),

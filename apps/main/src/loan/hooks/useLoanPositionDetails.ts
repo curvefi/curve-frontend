@@ -8,10 +8,12 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
+import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LlamaMarketType } from '@ui-kit/types/market'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -24,6 +26,7 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
+  const { data: campaigns } = useCampaigns({})
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,
@@ -87,7 +90,13 @@ export const useLoanPositionDetails = ({
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
+  const campaignRewards = useMemo(() => {
+    if (!campaigns || !llamma?.controller) return []
+    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
+  }, [campaigns, llamma?.controller])
+
   return {
+    marketType: LlamaMarketType.Mint,
     liquidationAlert: {
       softLiquidation: userStatus?.colorKey === 'soft_liquidation',
       hardLiquidation: userStatus?.colorKey === 'hard_liquidation',
@@ -97,8 +106,14 @@ export const useLoanPositionDetails = ({
       loading: userLoanDetailsLoading ?? true,
     },
     borrowAPY: {
-      value: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      thirtyDayAvgRate: thirtyDayAvgRate,
+      rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
+      averageRate: thirtyDayAvgRate,
+      averageRateLabel: '30D',
+      totalBorrowRate: loanDetails?.parameters?.rate
+        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        : null,
+      extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     liquidationRange: {
@@ -128,7 +143,7 @@ export const useLoanPositionDetails = ({
       loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? (Number(debt) / collateralTotalValue) * 100 : null,
+      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
       loading: userLoanDetailsLoading ?? true,
     },
     totalDebt: {

@@ -27,7 +27,7 @@ export const {
   fetchQuery: fetchLendingVaults,
   setQueryData: setLendingVaults,
 } = queryFactory({
-  queryKey: () => ['lending-vaults', 'v1'] as const,
+  queryKey: () => ['lending-vaults', 'v2'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
       markets.map((market) => ({ ...market, chain: chain as ChainName })),
