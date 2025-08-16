@@ -27,7 +27,7 @@ const LoanInfoLlamma = (props: Props) => {
       </div>
 
       {!chartExpanded && (
-        <div className={isAdvancedMode ? 'wrapper' : ''}>
+        <div className="wrapper">
           <ChartOhlcWrapper {...props} />
         </div>
       )}

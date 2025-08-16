@@ -264,15 +264,16 @@ const Page = (params: CollateralUrlParams) => {
                 <NoPosition type="borrow" />
               </Stack>
             )}
-
-            <MarketDetails {...marketDetails} />
-            <MarketInformationComp
-              llamma={llamma}
-              llammaId={llammaId}
-              chainId={rChainId}
-              chartExpanded={chartExpanded}
-              page="create"
-            />
+            <Stack>
+              <MarketDetails {...marketDetails} />
+              <MarketInformationComp
+                llamma={llamma}
+                llammaId={llammaId}
+                chainId={rChainId}
+                chartExpanded={chartExpanded}
+                page="create"
+              />
+            </Stack>
           </Stack>
         </Stack>
       )}
