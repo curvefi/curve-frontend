@@ -331,7 +331,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
-    <Wrapper className={isAdvancedMode ? '' : 'normal-mode'} chartExpanded={chartExpanded}>
+    <Wrapper chartExpanded={chartExpanded}>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -377,12 +377,6 @@ const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
-  &.normal-mode {
-    padding: var(--spacing-3);
-    @media screen and (min-width: 53.125rem) {
-      padding: 2rem;
-    }
-  }
 `
 
 const SelectorRow = styled.div`
