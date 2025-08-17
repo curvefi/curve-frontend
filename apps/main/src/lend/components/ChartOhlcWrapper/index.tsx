@@ -40,7 +40,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
     (state) => state.loanCollateralRemove.detailInfo[loanCollateralRemoveActiveKey]?.prices ?? null,
   )
   const theme = useUserProfileStore((state) => state.theme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
