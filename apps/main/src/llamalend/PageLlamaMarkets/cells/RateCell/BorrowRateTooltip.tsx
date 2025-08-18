@@ -9,7 +9,8 @@ import { useSnapshots } from '../../hooks/useSnapshots'
 
 const rateType = MarketRateType.Borrow
 
-export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => {
+const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
+  const { averageRate, period } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
   const {
     rewards,
     type: marketType,
@@ -18,28 +19,23 @@ export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; c
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
   } = market
-  const { averageRate, period } = useSnapshots(market, rateType)
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
-
   return (
-    <Tooltip
-      clickable
-      title={t`Borrow Rate`}
-      body={
-        <MarketBorrowRateTooltipContent
-          marketType={marketType}
-          borrowRate={borrowRate}
-          averageRate={averageRate}
-          periodLabel={period}
-          totalBorrowRate={borrowTotalApy}
-          extraRewards={poolRewards}
-          rebasingYield={rebasingYield}
-          collateralSymbol={collateralSymbol}
-        />
-      }
-      placement="top"
-    >
-      {children}
-    </Tooltip>
+    <MarketBorrowRateTooltipContent
+      marketType={marketType}
+      borrowRate={borrowRate}
+      averageRate={averageRate}
+      periodLabel={period}
+      totalBorrowRate={borrowTotalApy}
+      extraRewards={poolRewards}
+      rebasingYield={rebasingYield}
+      collateralSymbol={collateralSymbol}
+    />
   )
 }
+
+export const BorrowRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
+  <Tooltip clickable title={t`Borrow Rate`} body={<BorrowRateTooltipContent market={market} />} placement="top">
+    {children}
+  </Tooltip>
+)
