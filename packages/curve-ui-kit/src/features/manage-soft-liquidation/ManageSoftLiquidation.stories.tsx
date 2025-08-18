@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
@@ -57,40 +58,51 @@ const ManageSoftLiquidationWithState = (props: Props) => {
     actionInfosTimeout = setTimeout(() => setUpdatingActionInfos(false), 3000)
   }
 
-  return (
-    <ManageSoftLiquidation
-      {...props}
-      actionInfos={{ ...props.actionInfos, loading: updatingActionInfos }}
-      improveHealth={{
-        ...props.improveHealth,
-        status: improveHealthStatus,
-        onDebtBalance: (balance) => {
-          props.improveHealth.onDebtBalance(balance)
-          mockActionInfoUpdating()
-        },
-        onRepay: (...args) => {
-          props.improveHealth.onRepay(...args)
-          mockExecution('repay', 'improve-health')
-        },
-        onApproveLimited: (...args) => {
-          props.improveHealth.onApproveLimited(...args)
-          mockExecution('approve-limited', 'improve-health')
-        },
-        onApproveInfinite: (...args) => {
-          props.improveHealth.onApproveInfinite(...args)
-          mockExecution('approve-infinite', 'improve-health')
-        },
-      }}
-      closePosition={{
-        ...props.closePosition,
-        status: withdrawStatus,
-        onClose: (...args) => {
-          props.closePosition.onClose(...args)
-          mockExecution('close', 'close')
-        },
-      }}
-    />
-  )
+  // Create a router for the get crvusd button to work in the story
+  // Works for now, might need a better solution later for other stories that use the router as well
+  const router = createRouter({
+    routeTree: createRootRoute({
+      component: () => (
+        <ManageSoftLiquidation
+          {...props}
+          actionInfos={{ ...props.actionInfos, loading: updatingActionInfos }}
+          improveHealth={{
+            ...props.improveHealth,
+            status: improveHealthStatus,
+            onDebtBalance: (balance) => {
+              props.improveHealth.onDebtBalance(balance)
+              mockActionInfoUpdating()
+            },
+            onRepay: (...args) => {
+              props.improveHealth.onRepay(...args)
+              mockExecution('repay', 'improve-health')
+            },
+            onApproveLimited: (...args) => {
+              props.improveHealth.onApproveLimited(...args)
+              mockExecution('approve-limited', 'improve-health')
+            },
+            onApproveInfinite: (...args) => {
+              props.improveHealth.onApproveInfinite(...args)
+              mockExecution('approve-infinite', 'improve-health')
+            },
+          }}
+          closePosition={{
+            ...props.closePosition,
+            status: withdrawStatus,
+            onClose: (...args) => {
+              props.closePosition.onClose(...args)
+              mockExecution('close', 'close')
+            },
+          }}
+        />
+      ),
+    }),
+    history: createMemoryHistory({
+      initialEntries: ['/'],
+    }),
+  })
+
+  return <RouterProvider router={router} />
 }
 
 const actionInfos = {
