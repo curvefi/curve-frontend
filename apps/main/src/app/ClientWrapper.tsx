@@ -139,21 +139,21 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      {network && (
-        <ThemeProvider theme={theme}>
-          <OverlayProvider>
-            <WagmiProvider config={config}>
-              <QueryProvider persister={persister} queryClient={queryClient}>
+      <ThemeProvider theme={theme}>
+        <OverlayProvider>
+          <WagmiProvider config={config}>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              {network && (
                 <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
                   <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
                     {children}
                   </GlobalLayout>
                 </ConnectionProvider>
-              </QueryProvider>
-            </WagmiProvider>
-          </OverlayProvider>
-        </ThemeProvider>
-      )}
+              )}
+            </QueryProvider>
+          </WagmiProvider>
+        </OverlayProvider>
+      </ThemeProvider>
     </StyleSheetManager>
   )
 }
