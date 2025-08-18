@@ -9,8 +9,8 @@ import { useSnapshots } from '../../hooks/useSnapshots'
 
 const rateType = MarketRateType.Supply
 
-export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => {
-  const { averageRate, period } = useSnapshots(market, rateType)
+const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
+  const { averageRate, period } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
   const {
     rates,
     rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
@@ -22,27 +22,24 @@ export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; chi
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
 
   return (
-    <Tooltip
-      clickable
-      title={t`Supply Yield`}
-      body={
-        <MarketSupplyRateTooltipContent
-          supplyRate={lendApr}
-          averageRate={averageRate}
-          periodLabel={period}
-          extraRewards={poolRewards}
-          extraIncentives={rates.incentives}
-          minBoostApr={lendCrvAprUnboosted}
-          maxBoostApr={lendCrvAprBoosted}
-          totalSupplyRateMinBoost={lend}
-          totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
-          rebasingYield={borrowed?.rebasingYield}
-          isLoading={averageRate == null}
-        />
-      }
-      placement="top"
-    >
-      {children}
-    </Tooltip>
+    <MarketSupplyRateTooltipContent
+      supplyRate={lendApr}
+      averageRate={averageRate}
+      periodLabel={period}
+      extraRewards={poolRewards}
+      extraIncentives={rates.incentives}
+      minBoostApr={lendCrvAprUnboosted}
+      maxBoostApr={lendCrvAprBoosted}
+      totalSupplyRateMinBoost={lend}
+      totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
+      rebasingYield={borrowed?.rebasingYield}
+      isLoading={averageRate == null}
+    />
   )
 }
+
+export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
+  <Tooltip clickable title={t`Supply Yield`} body={<LendRateTooltipContent market={market} />} placement="top">
+    {children}
+  </Tooltip>
+)
