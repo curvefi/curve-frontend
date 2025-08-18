@@ -1,12 +1,13 @@
 'use client'
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { StyleSheetManager } from 'styled-components'
 import type { Chain } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
-import { StyledComponentsRegistry } from '@/app/StyledComponentsRegistry'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
+import { shouldForwardProp } from '@ui/styled-containers'
 import type { NetworkDef } from '@ui/utils'
 import {
   ConnectionProvider,
@@ -137,7 +138,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const currentApp = getCurrentApp(pathname)
 
   return (
-    <StyledComponentsRegistry>
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       {network && (
         <ThemeProvider theme={theme}>
           <OverlayProvider>
@@ -153,6 +154,6 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
           </OverlayProvider>
         </ThemeProvider>
       )}
-    </StyledComponentsRegistry>
+    </StyleSheetManager>
   )
 }
