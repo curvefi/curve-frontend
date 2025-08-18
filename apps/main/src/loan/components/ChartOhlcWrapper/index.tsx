@@ -38,7 +38,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     (state) => state.loanCollateralDecrease.detailInfo[collateralDecreaseActiveKey]?.prices ?? null,
   )
   const theme = useUserProfileStore((state) => state.theme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const chartLlammaOhlc = useStore((state) => state.ohlcCharts.chartLlammaOhlc)
   const chartOraclePoolOhlc = useStore((state) => state.ohlcCharts.chartOraclePoolOhlc)
@@ -331,7 +330,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
       </LpEventsWrapperExpanded>
     </ExpandedWrapper>
   ) : (
-    <Wrapper className={isAdvancedMode ? '' : 'normal-mode'} chartExpanded={chartExpanded}>
+    <Wrapper chartExpanded={chartExpanded}>
       <SelectorRow>
         <SelectorButton
           variant={'text'}
@@ -377,12 +376,6 @@ const Wrapper = styled(Box)<{ chartExpanded: boolean }>`
   display: flex;
   flex-direction: column;
   padding: ${(props) => (props.chartExpanded ? 'var(--spacing-3)' : '0')};
-  &.normal-mode {
-    padding: var(--spacing-3);
-    @media screen and (min-width: 53.125rem) {
-      padding: 2rem;
-    }
-  }
 `
 
 const SelectorRow = styled.div`
