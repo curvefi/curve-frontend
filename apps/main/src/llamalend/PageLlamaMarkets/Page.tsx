@@ -73,7 +73,11 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   const [isReloading, onReload] = useOnReload({ address, isFetching })
 
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
-  const forceLoading = useMemo(() => localStorage.getItem('llamalend-force-loading') !== null, []) // todo: remove after testing
+  const forceLoading = useMemo(
+    // todo: remove after testing
+    () => typeof window !== 'undefined' && window.localStorage.getItem('llamalend-force-loading') !== null,
+    [],
+  )
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
       <Stack
