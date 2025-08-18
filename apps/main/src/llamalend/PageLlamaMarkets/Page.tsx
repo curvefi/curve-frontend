@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAccount } from 'wagmi'
 import type { LlamalendServerData } from '@/app/api/llamalend/types'
 import {
@@ -73,6 +73,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
   const [isReloading, onReload] = useOnReload({ address, isFetching })
 
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
+  const forceLoading = useMemo(() => localStorage.getItem('llamalend-force-loading') !== null, []) // todo: remove after testing
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
       <Stack
@@ -83,7 +84,7 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
           minHeight: MinHeight.pageContent,
         }}
       >
-        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
+        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading || forceLoading} />
       </Stack>
 
       <LendTableFooter />

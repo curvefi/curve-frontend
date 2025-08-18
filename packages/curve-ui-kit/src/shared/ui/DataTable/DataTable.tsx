@@ -42,7 +42,7 @@ export const DataTable = <T extends TableItem>({
         backgroundColor: (t) => t.design.Layer[1].Fill,
         borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
       }}
-      data-testid="data-table"
+      data-testid={!loading && 'data-table'}
     >
       <TableHead
         sx={(t) => ({
