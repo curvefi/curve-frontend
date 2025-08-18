@@ -2,15 +2,15 @@
 
 ## Overview
 
-Curve Frontend is a Next.js 15.2.4 monorepo for DeFi protocols including DEX, lending, governance, and crvUSD. Uses Turborepo with domain-driven architecture across multiple blockchain networks.
+Curve Frontend is a Next.js monorepo for DeFi protocols including DEX, lending, governance, and crvUSD. Uses Turborepo with domain-driven architecture across multiple blockchain networks.
 
 ### Core Technologies
 
-- Next.js 15.2.4 with App Router
-- React 19.1.0
-- TypeScript 5.8.3
-- Node.js 22 (exact version required)
-- Yarn 4.6.0
+- Next.js with App Router
+- React
+- TypeScript
+- Node.js (exact version required)
+- Yarn
 
 ## Key Architecture Patterns
 
@@ -46,8 +46,8 @@ src/[domain]/
 
 ### State Management (Transitioning)
 
-- **Old code**: Zustand 4.5.7 + Immer 9.0.21 for mutable updates (being deprecated)
-- **New code**: @tanstack/react-query 5.76.1 for server state (preferred for all new code)
+- **Old code**: Zustand + Immer for mutable updates (being deprecated)
+- **New code**: @tanstack/react-query for server state (preferred for all new code)
 - State slices use consistent patterns like `setStateByKey`, `setStateByActiveKey`, `resetState`
 - All state updates use `cloneDeep` and `merge` from lodash
 - Local storage integration for user preferences
@@ -144,9 +144,9 @@ The wagmi configuration supports 26+ chains including Ethereum, Optimism, Polygo
 
 ### Blockchain Interactions
 
-- Uses `@curvefi/api` 2.67.2 (DEX) and `@curvefi/llamalend-api` 1.0.21 (lending/minting)
-- BigNumber.js 9.3.0 for precise financial calculations (never use floating point), but transition to javascript's native `bigint` where possible
-- Ethers.js 6.14.1 for blockchain interactions for legacy code, but transitioning to Viem
+- Uses `@curvefi/api` (DEX) and `@curvefi/llamalend-api` (lending/minting)
+- BigNumber.js for precise financial calculations (never use floating point), but transition to javascript's native `bigint` where possible
+- Ethers.js for blockchain interactions for legacy code, but transitioning to Viem
 - Viem utilities for address validation: `isAddress`, `isAddressEqual`, `zeroAddress`
 
 ### Error Handling
@@ -167,7 +167,7 @@ The wagmi configuration supports 26+ chains including Ethereum, Optimism, Polygo
 
 ### Dependencies
 
-- Node.js 22 (exact version required) with Yarn 4.6.0
+- Node.js (exact version required) with Yarn
 - Never install dependencies without understanding the existing patterns
 - Use workspace aliases: `@ui-kit`, `@curvefi/prices-api`
 
@@ -194,7 +194,7 @@ The wagmi configuration supports 26+ chains including Ethereum, Optimism, Polygo
 ## Code Quality & Conventions
 
 - **ESLint** with custom configuration + **Prettier** for formatting
-- **TypeScript** 5.8.3 in strict mode
+- **TypeScript** in strict mode
 - **Husky** git hooks with **lint-staged** for pre-commit checks
 - **Commitlint** enforcing conventional commits
 - Always run `yarn typecheck`, `yarn format` and `yarn lint:fix` before committing
