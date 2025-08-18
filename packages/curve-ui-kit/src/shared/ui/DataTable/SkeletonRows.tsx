@@ -15,20 +15,19 @@ export const SkeletonRows = <T extends TableItem>({
   length?: number
 }) => (
   <>
-    {Array.from({ length }).map((_, i) => (
-      <TableRow key={`loading-row-${i}`} data-testid={`data-table-loading-${i}`}>
+    {Array.from({ length }).map((_, rowIndex) => (
+      <TableRow key={`loading-row-${rowIndex}`} data-testid={`data-table-loading-${rowIndex}`}>
         {table
           .getHeaderGroups()
           .flatMap((headerGroup) => headerGroup.headers)
-          .map(({ column }, index) => (
+          .map(({ column }, columnIndex) => (
             <TableCell
-              key={`loading-row-${index}`}
-              sx={getCellSx({ isSticky: shouldStickFirstColumn && !index, column })}
+              key={`loading-row-${columnIndex}`}
+              sx={getCellSx({ isSticky: shouldStickFirstColumn && !columnIndex, column })}
             >
               <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
                 <Typography
                   variant={getCellVariant(column)}
-                  data-variant={getCellVariant(column)}
                   data-testid={`data-table-cell-${column.id}`}
                   sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
                 >
