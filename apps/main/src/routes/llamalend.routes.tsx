@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
@@ -18,7 +19,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => import('../app/llamalend/[network]/disclaimer/page'),
+    component: lazy(() => import('../app/llamalend/[network]/disclaimer/page')),
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve Llamalend' }],
     }),
@@ -26,7 +27,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: () => import('../app/llamalend/[network]/integrations/page'),
+    component: lazy(() => import('../app/llamalend/[network]/integrations/page')),
     head: () => ({
       meta: [{ title: 'Integrations - Curve Llamalend' }],
     }),
@@ -34,7 +35,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: () => import('../app/llamalend/[network]/markets/page'),
+    component: lazy(() => import('../app/llamalend/[network]/markets/page')),
     head: () => ({
       meta: [{ title: 'Llamalend Beta Markets - Curve' }],
     }),

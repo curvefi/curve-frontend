@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import DaoLayout from '@/app/dao/layout'
 import { redirectTo } from '@/routes/util'
 import { createRoute, Outlet } from '@tanstack/react-router'
@@ -18,7 +19,7 @@ const layoutProps = { getParentRoute: () => daoLayoutRoute }
 export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '/',
-    component: () => import('../app/dao/page'),
+    component: lazy(() => import('../app/dao/page')),
     head: () => ({
       meta: [{ title: 'DAO - Curve' }],
     }),
@@ -36,7 +37,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/analytics',
-    component: () => import('../app/dao/[network]/analytics/page'),
+    component: lazy(() => import('../app/dao/[network]/analytics/page')),
     head: () => ({
       meta: [{ title: 'Analytics - Curve' }],
     }),
@@ -44,7 +45,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => import('../app/dao/[network]/disclaimer/page'),
+    component: lazy(() => import('../app/dao/[network]/disclaimer/page')),
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve' }],
     }),
@@ -52,7 +53,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/gauges',
-    component: () => import('../app/dao/[network]/gauges/page'),
+    component: lazy(() => import('../app/dao/[network]/gauges/page')),
     head: () => ({
       meta: [{ title: 'Gauges - Curve' }],
     }),
@@ -60,7 +61,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/gauges/$gaugeAddress',
-    component: () => import('../app/dao/[network]/gauges/[gaugeAddress]/page'),
+    component: lazy(() => import('../app/dao/[network]/gauges/[gaugeAddress]/page')),
     head: ({ params }) => ({
       meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }],
     }),
@@ -68,7 +69,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/proposals',
-    component: () => import('../app/dao/[network]/proposals/page'),
+    component: lazy(() => import('../app/dao/[network]/proposals/page')),
     head: () => ({
       meta: [{ title: 'Proposals - Curve' }],
     }),
@@ -76,7 +77,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/proposals/$proposalId',
-    component: () => import('../app/dao/[network]/proposals/[proposalId]/page'),
+    component: lazy(() => import('../app/dao/[network]/proposals/[proposalId]/page')),
     head: ({ params }) => ({
       meta: [{ title: `Proposal - ${params.proposalId} - Curve` }],
     }),
@@ -84,7 +85,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/user/$userAddress',
-    component: () => import('../app/dao/[network]/user/[userAddress]/page'),
+    component: lazy(() => import('../app/dao/[network]/user/[userAddress]/page')),
     head: ({ params }) => ({
       meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }],
     }),
@@ -92,7 +93,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/vecrv/$formType',
-    component: () => import('../app/dao/[network]/vecrv/[[...formType]]/page'),
+    component: lazy(() => import('../app/dao/[network]/vecrv/[[...formType]]/page')),
     head: () => ({
       meta: [{ title: 'CRV Locker - Curve' }],
     }),

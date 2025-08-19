@@ -1,3 +1,4 @@
+import { lazy } from 'react'
 import DexLayout from '@/app/dex/layout'
 import { redirectTo } from '@/routes/util'
 import { createRoute, Outlet } from '@tanstack/react-router'
@@ -18,7 +19,7 @@ const layoutProps = { getParentRoute: () => dexLayoutRoute }
 export const dexRoutes = dexLayoutRoute.addChildren([
   createRoute({
     path: '/',
-    component: () => import('../app/dex/page'),
+    component: lazy(() => import('../app/dex/page')),
     head: () => ({
       meta: [{ title: 'DEX - Curve' }],
     }),
@@ -36,7 +37,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/compensation',
-    component: () => import('../app/dex/[network]/compensation/page'),
+    component: lazy(() => import('../app/dex/[network]/compensation/page')),
     head: () => ({
       meta: [{ title: 'Compensation - Curve' }],
     }),
@@ -44,7 +45,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/create-pool',
-    component: () => import('../app/dex/[network]/create-pool/page'),
+    component: lazy(() => import('../app/dex/[network]/create-pool/page')),
     head: () => ({
       meta: [{ title: 'Create Pool - Curve' }],
     }),
@@ -52,7 +53,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/dashboard',
-    component: () => import('../app/dex/[network]/dashboard/page'),
+    component: lazy(() => import('../app/dex/[network]/dashboard/page')),
     head: () => ({
       meta: [{ title: 'Dashboard - Curve' }],
     }),
@@ -60,7 +61,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/deploy-gauge',
-    component: () => import('../app/dex/[network]/deploy-gauge/page'),
+    component: lazy(() => import('../app/dex/[network]/deploy-gauge/page')),
     head: () => ({
       meta: [{ title: 'Deploy Gauge - Curve' }],
     }),
@@ -68,7 +69,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => import('../app/dex/[network]/disclaimer/page'),
+    component: lazy(() => import('../app/dex/[network]/disclaimer/page')),
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve' }],
     }),
@@ -76,7 +77,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: () => import('../app/dex/[network]/integrations/page'),
+    component: lazy(() => import('../app/dex/[network]/integrations/page')),
     head: () => ({
       meta: [{ title: 'Integrations - Curve' }],
     }),
@@ -84,7 +85,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools',
-    component: () => import('../app/dex/[network]/pools/page'),
+    component: lazy(() => import('../app/dex/[network]/pools/page')),
     head: () => ({
       meta: [{ title: 'Pools - Curve' }],
     }),
@@ -92,7 +93,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools/$pool/$formType',
-    component: () => import('../app/dex/[network]/pools/[pool]/[[...formType]]/page'),
+    component: lazy(() => import('../app/dex/[network]/pools/[pool]/[[...formType]]/page')),
     head: ({ params }) => ({
       meta: [{ title: `Curve - Pool - ${params.pool} - Curve` }],
     }),
@@ -100,7 +101,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/pools/$pool',
-    component: () => import('../app/dex/[network]/pools/[pool]/[[...formType]]/page'),
+    component: lazy(() => import('../app/dex/[network]/pools/[pool]/[[...formType]]/page')),
     head: ({ params }) => ({
       meta: [{ title: `Curve - Pool - ${params.pool} - Curve` }],
     }),
@@ -108,7 +109,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/swap',
-    component: () => import('../app/dex/[network]/swap/page'),
+    component: lazy(() => import('../app/dex/[network]/swap/page')),
     head: () => ({
       meta: [{ title: 'Swap - Curve' }],
     }),
