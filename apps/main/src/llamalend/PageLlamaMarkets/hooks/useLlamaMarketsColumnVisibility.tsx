@@ -75,8 +75,4 @@ const createLlamaMarketsColumnOptions = ({
 export const LLAMA_MARKETS_COLUMN_OPTIONS = {
   hasPositions: createLlamaMarketsColumnOptions({ hasPositions: true }),
   noPositions: createLlamaMarketsColumnOptions({ hasPositions: false }),
-  unknown: [],
 }
-
-export const getColumnVariant = (hasPositions: boolean | undefined): keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS =>
-  hasPositions == null ? 'unknown' : hasPositions ? 'hasPositions' : 'noPositions'

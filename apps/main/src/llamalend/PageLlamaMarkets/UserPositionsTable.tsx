@@ -1,55 +1,55 @@
 import lodash from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
-import { LlamaListFilterChips } from '@/llamalend/PageLlamaMarkets/chips/LlamaListFilterChips'
-import { MarketsFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketsFilterChips'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import {
-  maxMultiSortColCount,
-  useLlamaMarketSortOptions,
-} from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import type { MarketRateType } from '@ui-kit/types/market'
+import { type LlamaMarketsResult } from '../entities/llama-markets'
+import { MarketsFilterChips } from './chips/MarketsFilterChips'
+import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
+import { LlamaMarketColumnId } from './columns.enum'
+import { maxMultiSortColCount, useLlamaMarketSortOptions } from './hooks/useLlamaMarketSortOptions'
 import { useSearch } from './hooks/useSearch'
 import { useVisibility } from './hooks/useVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const { isEqual } = lodash
-const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+const TITLE = 'User Positions' // not using the t`` here as the value is used as a key in the local storage
 
-const useDefaultLlamaFilter = (minLiquidity: number) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, null] }], [minLiquidity])
+const useDefaultUserFilter = (type: MarketRateType) =>
+  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPosition, value: type }], [type])
 
-export const LlamaMarketsTable = ({
-  onReload,
-  result,
-  isError,
-  loading,
-}: {
+export type UserPositionsTableProps = {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
   loading: boolean
-}) => {
-  const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
+}
 
-  const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const defaultFilters = useDefaultLlamaFilter(minLiquidity)
+export const UserPositionsTable = ({
+  onReload,
+  result,
+  isError,
+  loading,
+  type,
+}: UserPositionsTableProps & { type: MarketRateType }) => {
+  const { markets: data = [], hasPositions } = result ?? {}
+
+  const defaultFilters = useDefaultUserFilter(type)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(TITLE, sorting, 'noPositions')
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, 'userSort')
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(
+    TITLE,
+    sorting,
+    'hasPositions',
+  )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -79,12 +79,7 @@ export const LlamaMarketsTable = ({
         searchText={searchText}
         onSearch={onSearch}
         collapsible={
-          <LendingMarketsFilters
-            columnFilters={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-            data={data}
-            minLiquidity={minLiquidity}
-          />
+          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
         }
         chips={
           <MarketsFilterChips
@@ -95,14 +90,7 @@ export const LlamaMarketsTable = ({
             setColumnFilter={setColumnFilter}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
-          >
-            <LlamaListFilterChips
-              hasPositions={hasPositions}
-              hasFavorites={hasFavorites}
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-            />
-          </MarketsFilterChips>
+          />
         }
         sort={
           <SelectFilter

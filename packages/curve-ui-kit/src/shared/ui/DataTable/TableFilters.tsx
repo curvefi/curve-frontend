@@ -145,10 +145,12 @@ export const TableFilters = <ColumnIds extends string>({
   )
 }
 
+const DEFAULT: ColumnFiltersState = []
+
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  */
-export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = []) {
+export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = DEFAULT) {
   const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>

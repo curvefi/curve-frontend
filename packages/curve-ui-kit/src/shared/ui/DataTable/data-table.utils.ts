@@ -1,4 +1,11 @@
-import { type Column, type useReactTable } from '@tanstack/react-table'
+import {
+  type Column,
+  getCoreRowModel,
+  getExpandedRowModel,
+  getFilteredRowModel,
+  getSortedRowModel,
+  type useReactTable,
+} from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 /** css class to hide elements on desktop unless the row is hovered */
@@ -35,3 +42,11 @@ export type FilterProps<T extends string> = {
   columnFiltersById: Record<T, unknown>
   setColumnFilter: (id: T, value: unknown) => void
 }
+
+export const getTableModels = <T>(result: T | undefined) => ({
+  getCoreRowModel: getCoreRowModel<T>(),
+  getSortedRowModel: getSortedRowModel<T>(),
+  // only pass the filtered model once loaded, it causes an error: https://github.com/TanStack/table/issues/5026
+  getFilteredRowModel: result && getFilteredRowModel<T>(),
+  getExpandedRowModel: getExpandedRowModel<T>(),
+})

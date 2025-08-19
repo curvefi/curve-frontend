@@ -8,14 +8,14 @@ import {
 } from '@/llamalend/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
 import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive, LlamaMarketType } from '@ui-kit/types/market'
+import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
 
 export type Assets = {
@@ -231,7 +231,7 @@ const convertMintMarket = (
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]
-  hasPositions: boolean
+  hasPositions: MarketRateType[]
   hasFavorites: boolean
 }
 
@@ -270,6 +270,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       getUserMintMarketsOptions({ userAddress }, enabled),
     ],
     combine: (results): PartialQueryResult<LlamaMarketsResult> => {
+      console.log(results.map((r) => r.data))
       const [
         lendingVaults,
         mintMarkets,
@@ -296,7 +297,10 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const data =
         showData && showUserData
           ? {
-              hasPositions: userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0,
+              hasPositions: notFalsy(
+                (userBorrows.size > 0 || userMints.size > 0) && MarketRateType.Borrow,
+                userSupplied.size > 0 && MarketRateType.Supply,
+              ),
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? []).map((vault) =>

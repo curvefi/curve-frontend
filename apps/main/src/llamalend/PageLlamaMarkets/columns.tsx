@@ -13,7 +13,7 @@ import {
   RateCell,
   UtilizationCell,
 } from './cells'
-import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
+import { boolFilterFn, enumListFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
@@ -97,7 +97,7 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
   hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(LlamaMarketColumnId.UserHasPosition, LlamaMarketColumnId.UserHasPosition, boolFilterFn),
+  hidden(LlamaMarketColumnId.UserHasPosition, LlamaMarketColumnId.UserHasPosition, enumListFilterFn),
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
