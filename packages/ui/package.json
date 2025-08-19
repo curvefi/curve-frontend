@@ -10,15 +10,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@carbon/icons-react": "^11.62.0",
-    "@lingui/detect-locale": "^5.3.2",
-    "bignumber.js": "^9.3.0",
+    "@carbon/icons-react": "^11.65.0",
+    "@lingui/detect-locale": "^5.4.1",
+    "bignumber.js": "^9.3.1",
     "ethers": "*",
     "lodash": "4.17.21",
     "react": "*",
-    "react-aria": "3.41.1",
+    "react-aria": "3.42.0",
     "react-dom": "*",
-    "react-stately": "3.39.0"
+    "react-stately": "3.40.0"
   },
   "devDependencies": {
     "@types/react": "*",

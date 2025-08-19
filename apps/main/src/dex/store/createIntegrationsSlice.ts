@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import produce from 'immer'
+import { produce } from 'immer'
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { httpFetcher } from '@/dex/lib/utils'

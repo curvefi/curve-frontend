@@ -1,5 +1,5 @@
 import { Contract } from 'ethers'
-import produce from 'immer'
+import { produce } from 'immer'
 import type { GetState, SetState } from 'zustand'
 import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { CONTRACT_VECRV } from '@/dao/constants'
