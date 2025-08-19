@@ -33,5 +33,5 @@ export default function DaoLayout({ children }: { children: ReactNode }) {
   useGasInfoAndUpdateLib({ chainId, networks }) // Refresh gas info on a regular interval, relies on a side-effect
   useAutoRefresh(isHydrated)
 
-  return isHydrated && children
+  return children
 }
