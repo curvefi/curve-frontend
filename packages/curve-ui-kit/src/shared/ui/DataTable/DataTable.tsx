@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
@@ -11,6 +11,15 @@ import { DataRow, type DataRowProps } from './DataRow'
 import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+
+function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
+  const { columnFilters } = table.getState()
+  useEffect(() => {
+    if (columnFilters.length) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }, [columnFilters])
+}
 
 const { Sizing } = SizesAndSpaces
 
@@ -33,6 +42,8 @@ export const DataTable = <T extends TableItem>({
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
+  useScrollToTopOnFilterChange(table)
+
   return (
     <Table
       sx={{
