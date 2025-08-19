@@ -5,7 +5,6 @@ import Typography from '@mui/material/Typography'
 import { LogoImg } from '@ui/images'
 import { getBackgroundUrl } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import NextImage from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 type ConnectWalletPromptProps = {
@@ -64,7 +63,7 @@ export const ConnectWalletPrompt = ({
   </Stack>
 )
 
-const CurveLogo = styled(NextImage)({
+const CurveLogo = styled('img')({
   width: '3rem',
   height: '3rem',
   margin: '0 auto',

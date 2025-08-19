@@ -4,7 +4,7 @@ import FormControl from '@mui/material/FormControl'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Radio, { RadioProps } from '@mui/material/Radio'
 import RadioGroup from '@mui/material/RadioGroup'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const RadioStory = ({ checked, onChange, ...props }: RadioProps) => {
   const [value, setValue] = useState(checked ? 'option1' : 'option2')

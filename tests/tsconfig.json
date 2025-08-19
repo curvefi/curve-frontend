@@ -1,11 +1,15 @@
 {
   "extends": "tsconfig/base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "types": ["hardhat"],
     "baseUrl": "./cypress",
+    "lib": ["es2022", "dom"],
+    "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
-      "@/*": ["*"],
+      "@/*": ["../../apps/main/src/*"],
+      "@cy/*": ["*"],
       "@ui": ["../../packages/ui/src/index.ts"],
       "@ui/*": ["../../packages/ui/src/*"],
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
@@ -15,10 +19,12 @@
   },
   "include": [
     "./**/*.ts",
-    "cypress/types/**/*.d.ts",
+    "cypress/**/*.d.ts",
     "cypress.config.ts",
     "hardhat.config.js",
     "runHardhatNodes.js",
-    "killHardhatNodes.js"
+    "killHardhatNodes.js",
+    "../packages/curve-ui-kit/**/*.d.ts",
+    "../packages/ui/**/*.d.ts",
   ]
 }

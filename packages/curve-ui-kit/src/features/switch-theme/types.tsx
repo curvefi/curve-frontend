@@ -1,5 +1,4 @@
 import { ChadImg, RCMoon, RCSun } from 'ui'
-import Image from '@ui-kit/shared/image'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 const DEFAULT_SIZE = 24
@@ -18,7 +17,7 @@ export const themes = [
   },
   {
     type: 'chad',
-    Component: ({ size = DEFAULT_SIZE }: { size?: number }) => <Image width={size} src={ChadImg} alt="Fun theme" />,
+    Component: ({ size = DEFAULT_SIZE }: { size?: number }) => <img width={size} src={ChadImg} alt="Fun theme" />,
   },
 ] as const
 

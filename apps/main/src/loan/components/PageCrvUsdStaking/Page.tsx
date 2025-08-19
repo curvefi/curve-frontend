@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import Image from '@ui-kit/shared/image'
 import { Spacing as PrimitiveSpacing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -33,7 +32,7 @@ const Page = (params: NetworkUrlParams) => (
         paddingInline={Spacing.sm}
         paddingBlock={Spacing.md}
       >
-        <Image height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
+        <img height={55} src={RCScrvUSDLogoSM} alt="crvUSD logo" />
         <Box flex flexColumn>
           <Typography variant="headingMBold">{t`Savings crvUSD`}</Typography>
           <Typography variant="bodySRegular">{t`Let your idle crvUSD do more for you.`}</Typography>

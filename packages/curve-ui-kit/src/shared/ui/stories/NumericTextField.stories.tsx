@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { NumericTextField } from '../NumericTextField'
 
 const NumericTextFieldWrapper = (props: any) => {

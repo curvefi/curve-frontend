@@ -1,11 +1,10 @@
 import { styled } from '@mui/material/styles'
 import { CURVE_ASSETS_URL } from '@ui/utils'
-import NextImage from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
-const RewardsImg = styled(NextImage)({ border: '1px solid transparent', borderRadius: '50%' })
+const RewardsImg = styled('img')({ border: '1px solid transparent', borderRadius: '50%' })
 
 type IconSize = keyof typeof IconSize
 

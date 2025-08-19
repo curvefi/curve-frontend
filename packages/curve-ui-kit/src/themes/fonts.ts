@@ -1,40 +1,10 @@
-import localFont from 'next/font/local'
-import { type CSSProperties } from 'react'
-
-// Fonts might not load when running Storybook locally.
-const isStorybook = process.env.STORYBOOK === 'true'
-const isCypress = process.env.CYPRESS_COMPONENT_TEST === 'true'
-const isTest = isStorybook || isCypress
-
-// localFont calls have to be standalone, so the actual storybook check happens below.
-const monaSansFont = localFont({ src: '../../public/fonts/Mona-Sans.woff2' })
-const hubotSansFont = localFont({ src: '../../public/fonts/Hubot-Sans.woff2' })
-const minecraftFont = localFont({
-  src: [
-    {
-      path: '../../public/fonts/Minecraft-Regular.otf',
-      weight: 'normal',
-    },
-    {
-      path: '../../public/fonts/Minecraft-Bold.otf',
-      weight: 'bold',
-    },
-  ],
-})
-
-export const monaSans = isTest ? { style: { fontFamily: 'MonaSans' } } : monaSansFont
-export const hubotSans = isTest ? { style: { fontFamily: 'Hubot Sans' } } : hubotSansFont
-export const minecraft = isTest ? { style: { fontFamily: 'Minecraft' } } : minecraftFont
-
-const MonaSans = [monaSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
-const HubotSans = [hubotSans.style.fontFamily, '"Helvetica Neue"', 'Helvetica', 'sans-serif'].join(',')
-const Minecraft = [minecraft.style.fontFamily, '"SF Mono Regular 11"', '"Ubuntu Mono"', 'monospace'].join(',')
+/**
+ * Utility function to create a font stack. The quotes are important to create valid CSS font stacks.
+ */
+const fontStack = (...fonts: string[]) => fonts.map((f) => `"${f}"`).join(', ')
 
 export const Fonts = {
-  'Mona Sans': MonaSans,
-  'Hubot Sans': HubotSans,
-  Minecraft,
+  'Mona Sans': fontStack('Mona Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
+  'Hubot Sans': fontStack('Hubot Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
+  Minecraft: fontStack('Minecraft', 'SF Mono Regular 11', 'Ubuntu Mono', 'monospace'),
 }
-
-export const RootCssProperties = { '--font': MonaSans, '--font-mono': Minecraft } as CSSProperties
-export const ChadCssProperties = { '--font': HubotSans, '--button--font': Minecraft } as CSSProperties
