@@ -3,7 +3,6 @@ import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 import svgr from 'vite-plugin-svgr'
 import vercel from 'vite-plugin-vercel'
-import { getEntriesFromFs } from 'vite-plugin-vercel/utils'
 
 // https://vite.dev/config/
 export default defineConfig(async ({ command }) => ({
@@ -12,16 +11,7 @@ export default defineConfig(async ({ command }) => ({
     hmr: true,
   },
   preview: { port: 3000 },
-  plugins: [
-    react(),
-    svgr(),
-    vercel({
-      // Scan `_api` directory for entries, and map them to `/api/*`
-      entries: await getEntriesFromFs('_api', {
-        destination: 'api',
-      }),
-    }),
-  ],
+  plugins: [react(), svgr(), vercel()],
   optimizeDeps: {
     include: ['styled-components', '@mui/material', '@mui/icons-material'],
   },
