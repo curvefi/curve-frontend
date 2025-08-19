@@ -40,7 +40,7 @@ export function getCellSx<T extends TableItem>({
   return [sx, showCollapseIcon ? wrapperSx : {}]
 }
 
-export const getCellVariant = <T extends any>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
+export const getCellVariant = <T,>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
 
 /**
  * DataCell component to render the data cell in the table.
