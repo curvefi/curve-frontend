@@ -61,6 +61,7 @@ const layoutProps = { getParentRoute: () => daoLayoutRoute }
 export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '/',
+    /** Redirect is handled by the `RootLayout` component */
     component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
     head: () => ({
       meta: [{ title: 'DAO - Curve' }],

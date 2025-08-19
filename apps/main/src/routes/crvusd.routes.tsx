@@ -45,6 +45,7 @@ const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
 export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '/',
+    /** Redirect is handled by the `RootLayout` component */
     component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
     head: () => ({
       meta: [{ title: 'crvUSD - Curve' }],
