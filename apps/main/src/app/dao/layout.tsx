@@ -24,7 +24,7 @@ const useAutoRefresh = (isHydrated: boolean) => {
 }
 
 export default function DaoLayout({ children }: { children: ReactNode }) {
-  const { network = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const { network = 'ethereum' } = useParams<Partial<UrlParams>>() // network absent only in root
   const hydrate = useStore((s) => s.hydrate)
   const chainId = networksIdMapper[network]
   const isHydrated = useHydration('curveApi', hydrate, chainId)

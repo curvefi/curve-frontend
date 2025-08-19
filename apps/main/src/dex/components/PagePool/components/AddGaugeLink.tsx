@@ -24,7 +24,7 @@ const AddGaugeLink = ({
     (state) => state.deployGauge,
   )
 
-  const params = useParams() as PoolUrlParams
+  const params = useParams<PoolUrlParams>()
   const push = useNavigate()
 
   const handleClick = () => {

@@ -68,7 +68,7 @@ const useAutoRefresh = (networkDef: NetworkDef) => {
 
 export default function DexLayout({ children }: { children: ReactNode }) {
   const networks = use(getNetworkDefs())
-  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>() // network absent only in root
   const [appLoaded, setAppLoaded] = useState(false)
   const fetchNetworks = useStore((state) => state.networks.fetchNetworks)
   const hydrate = useStore((s) => s.hydrate)

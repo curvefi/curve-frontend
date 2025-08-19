@@ -10,7 +10,7 @@ import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 
 export default function LendLayout({ children }: { children: ReactNode }) {
-  const { network: networkId = 'ethereum' } = useParams() as Partial<UrlParams> // network absent only in root
+  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>() // network absent only in root
   const chainId = networksIdMapper[networkId]
   const hydrate = useStore((s) => s.hydrate)
   const isHydrated = useHydration('llamaApi', hydrate, chainId)
