@@ -12,13 +12,13 @@ describe('Basic Access Test', () => {
     it(`should redirect from the old URL successfully at ${path}`, () => {
       cy.visit(`${path}#/ethereum/create-pool`)
       cy.title(LOAD_TIMEOUT).should('equal', 'Create Pool - Curve')
-      cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/create-pool\/$/)
+      cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/create-pool\/?$/)
     })
 
     it('should redirect from the old integrations URL successfully', () => {
       cy.visit(`${path.replace('/', '')}${oneOf('', '#')}/integrations`)
       cy.title(LOAD_TIMEOUT).should('equal', 'Integrations - Curve')
-      cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/$/)
+      cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/?$/)
     })
   })
 })

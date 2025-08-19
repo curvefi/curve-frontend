@@ -1,6 +1,6 @@
 import { fn } from 'storybook/test'
 import Button from '@mui/material/Button'
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 
 const meta: Meta<typeof Button> = {
   title: 'UI Kit/Primitives/Button',

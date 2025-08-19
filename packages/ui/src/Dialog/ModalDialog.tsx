@@ -3,11 +3,11 @@ import type { AriaOverlayProps } from 'react-aria'
 import { FocusScope, Overlay, useButton, useDialog, useModalOverlay, usePreventScroll } from 'react-aria'
 import type { OverlayTriggerState } from 'react-stately'
 import { styled } from 'styled-components'
+import type { AriaDialogProps } from '@react-types/dialog'
 import Box from 'ui/src/Box/Box'
 import Icon from 'ui/src/Icon/Icon'
 import IconButton from 'ui/src/IconButton'
 import { breakpoints } from 'ui/src/utils/responsive'
-import type { AriaDialogProps } from '@react-types/dialog'
 
 const ModalDialog = ({
   children,

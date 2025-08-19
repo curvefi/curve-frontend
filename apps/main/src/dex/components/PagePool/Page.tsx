@@ -12,7 +12,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 export const PagePool = (props: PoolUrlParams) => {
   const push = useNavigate()
   const { curveApi = null, connectState } = useConnection()
-  const { pool: rPoolId, formType: [rFormType] = [], network: networkId } = props
+  const { pool: rPoolId, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
 
   const hasDepositAndStake = useStore((state) => state.getNetworkConfigFromApi(rChainId).hasDepositAndStake)
@@ -27,7 +27,7 @@ export const PagePool = (props: PoolUrlParams) => {
   useEffect(() => {
     if (!rChainId) return
 
-    const { pool: rPoolId, formType: [rFormType] = [] } = props
+    const { pool: rPoolId, formType: rFormType } = props
     const reRoutePathname = getPath(props, ROUTE.PAGE_POOLS)
     if (!rFormType || network.excludePoolsMapper[rPoolId]) {
       push(reRoutePathname)

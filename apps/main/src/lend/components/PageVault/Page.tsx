@@ -249,13 +249,15 @@ const Page = (params: MarketUrlParams) => {
                 </Stack>
               )}
             </MarketInformationTabs>
-            <MarketDetails {...marketDetails} />
-            <MarketInformationComp
-              pageProps={pageProps}
-              chartExpanded={chartExpanded}
-              userActiveKey={''}
-              type="supply"
-            />
+            <Stack>
+              <MarketDetails {...marketDetails} />
+              <MarketInformationComp
+                pageProps={pageProps}
+                chartExpanded={chartExpanded}
+                userActiveKey={''}
+                type="supply"
+              />
+            </Stack>
           </Stack>
         </Stack>
       )}

@@ -1,11 +1,10 @@
 import { getBlockchainIconUrl } from 'ui'
 import { styled } from '@mui/material/styles'
-import Image from '@ui-kit/shared/image'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 
-const Icon = styled(Image)({})
+const Icon = styled('img')({})
 
 export const ChainIcon = ({ blockchainId, size }: { blockchainId: string; size: keyof typeof IconSize }) => {
   // width and height are required, but overridden by responsive design tokens

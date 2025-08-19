@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs'
+import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TokenPair } from '../TokenPair'
 
 const meta: Meta<typeof TokenPair> = {
