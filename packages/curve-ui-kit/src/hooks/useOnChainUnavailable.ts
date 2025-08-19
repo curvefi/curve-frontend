@@ -1,3 +1,8 @@
+import { useCallback } from 'react'
+import { NetworkDef } from '@ui/utils'
+import { replaceNetworkInPath } from '@ui-kit/shared/routes'
+import { useNavigate, usePathname } from './router'
+
 export function useOnChainUnavailable(networks: NetworkDef[]) {
   const pathname = usePathname()
   const push = useNavigate()
