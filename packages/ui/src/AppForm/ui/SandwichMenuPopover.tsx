@@ -34,7 +34,8 @@ const SandwichMenuPopover = ({ onClose, onItemClick, triggerRef }: SandwichMenuP
       'aria-label': 'Pool Management',
       label: 'Pool Management',
       items: menuItems,
-      children: ({ id, name }: SandwichMenuItem) => <StyledItem key={id}>{name}</StyledItem>,
+      // todo: the type doesn't actually include children, does it even work?
+      ...({ children: ({ id, name }: SandwichMenuItem) => <StyledItem key={id}>{name}</StyledItem> } as any),
       onSelectionChange: (key: Key | null) => {
         onItemClick(key!.toString())
         onClose()

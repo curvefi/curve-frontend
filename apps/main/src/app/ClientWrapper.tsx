@@ -1,12 +1,13 @@
 'use client'
 import lodash from 'lodash'
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
+import { StyleSheetManager } from 'styled-components'
 import type { Chain } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { GlobalLayout } from '@/app/GlobalLayout'
-import GlobalStyle from '@/globalStyle'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
+import { shouldForwardProp } from '@ui/styled-containers'
 import type { NetworkDef } from '@ui/utils'
 import {
   ConnectionProvider,
@@ -23,7 +24,6 @@ import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ThemeKey } from '@ui-kit/themes/basic-theme'
-import { ChadCssProperties } from '@ui-kit/themes/fonts'
 
 const { delay } = lodash
 
@@ -83,7 +83,6 @@ function useNetworkFromUrl(networks: NetworkDef[]) {
 
 /**
  * During SSR, we cannot access the user's theme preference, so that can lead to hydration mismatch.
- * TODO: Store the preference in a cookie so we can read it from the server.
  */
 function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
   const [theme, setTheme] = useState<ThemeKey>(preferredScheme ?? 'light')
@@ -95,7 +94,7 @@ function useThemeAfterSsr(preferredScheme: 'light' | 'dark' | null) {
 }
 
 /**
- * This is the part of the root layout that needs to be a client component.
+ * TODO: Rename this to RootLayout
  */
 export const ClientWrapper = <TId extends string, ChainId extends number>({
   children,
@@ -128,7 +127,7 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
     ([walletChainId]: [ChainId, ChainId]) => {
       const network = networks[walletChainId]?.id
       if (pathname && network) {
-        console.warn(`Network switched to ${network}, redirecting...`, location.href)
+        console.warn(`Network switched to ${network}, redirecting...`, pathname)
         push(replaceNetworkInPath(pathname, network))
       }
     },
@@ -139,23 +138,22 @@ export const ClientWrapper = <TId extends string, ChainId extends number>({
   const currentApp = getCurrentApp(pathname)
 
   return (
-    network && (
-      <div style={{ ...(theme === 'chad' && ChadCssProperties) }}>
-        <GlobalStyle />
-        <ThemeProvider theme={theme}>
-          <OverlayProvider>
-            <WagmiProvider config={config}>
-              <QueryProvider persister={persister} queryClient={queryClient}>
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <ThemeProvider theme={theme}>
+        <OverlayProvider>
+          <WagmiProvider config={config}>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              {network && (
                 <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
                   <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
                     {children}
                   </GlobalLayout>
                 </ConnectionProvider>
-              </QueryProvider>
-            </WagmiProvider>
-          </OverlayProvider>
-        </ThemeProvider>
-      </div>
-    )
+              )}
+            </QueryProvider>
+          </WagmiProvider>
+        </OverlayProvider>
+      </ThemeProvider>
+    </StyleSheetManager>
   )
 }

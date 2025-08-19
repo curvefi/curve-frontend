@@ -19,6 +19,7 @@ jobs:
       - run: yarn install --immutable
       - run: yarn lint
       - run: yarn format:check
+      - run: yarn typecheck
   cypress:
     strategy:
       fail-fast: false
@@ -31,9 +32,6 @@ jobs:
     name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
-    env:
-      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

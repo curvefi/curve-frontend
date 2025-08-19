@@ -1,21 +1,20 @@
 {
   "name": "main",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "22"
   },
   "scripts": {
-    "next": "next",
-    "dev": "next dev --turbopack --port 3000",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint",
+    "start": "vite preview",
     "typecheck": "tsc --noEmit",
     "commit": "commit",
     "prepublishOnly": "pinst --disable",
-    "postpublish": "pinst --enable",
-    "analyze": "ANALYZE=true next build"
+    "postpublish": "pinst --enable"
   },
   "dependencies": {
     "@curvefi/api": "2.68.5",
@@ -24,6 +23,8 @@
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.0.1",
     "@supercharge/promise-pool": "^3.2.0",
+    "@tanstack/react-router": "^1.125.6",
+    "@tanstack/react-router-devtools": "^1.125.6",
     "@types/memoizee": "^0.4.12",
     "bignumber.js": "^9.3.0",
     "curve-ui-kit": "*",
@@ -31,12 +32,10 @@
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "immer": "^9.0.21",
+    "isbot": "^5",
     "lightweight-charts": "^5.0.7",
     "lodash": "4.17.21",
     "memoizee": "^0.4.17",
-    "next": "15.3.5",
-    "next-images": "^1.8.5",
-    "nextjs-toploader": "^3.8.16",
     "react": "*",
     "react-dom": "*",
     "react-hook-form": "7.59.0",
@@ -48,21 +47,28 @@
     "ui": "*",
     "validator": "^13.15.0",
     "vest": "^5.4.6",
+    "vite-plugin-svgr": "^4.3.0",
     "zustand": "^4.5.7"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "15.3.4",
-    "@svgr/webpack": "^8.1.0",
+    "@eslint/js": "*",
     "@types/lodash": "^4.17.17",
     "@types/memoizee": "^0.4.12",
     "@types/node": "22.15.21",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@types/validator": "^13.15.1",
+    "@vitejs/plugin-react": "^4.6.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "eslint": "*",
     "eslint-config-custom": "*",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
     "pinst": "^3.0.0",
     "tsconfig": "*",
     "typescript": "*",
-    "webpack": "^5.99.9"
+    "typescript-eslint": "^8.35.1",
+    "vite": "*"
   }
 }

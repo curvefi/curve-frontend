@@ -2,6 +2,7 @@ import { ChangeEvent, ReactNode, useRef } from 'react'
 import { useButton, useComboBox, useFocusRing } from 'react-aria'
 import type { ComboBoxStateOptions } from 'react-stately'
 import { styled } from 'styled-components'
+import { useComboBoxState } from '@react-stately/combobox'
 import Box from 'ui/src/Box/Box'
 import ListBox from 'ui/src/DialogComboBox/ListBox'
 import Icon from 'ui/src/Icon'
@@ -11,7 +12,6 @@ import InputProvider from 'ui/src/InputComp/InputProvider'
 import { StyledInput } from 'ui/src/InputComp/styles'
 import Popover from 'ui/src/Popover/Popover'
 import { breakpoints } from 'ui/src/utils/responsive'
-import { useComboBoxState } from '@react-stately/combobox'
 
 function ComboBox<T extends object>({
   listBoxHeight,
