@@ -46,7 +46,7 @@ function DaoLayout() {
   useGasInfoAndUpdateLib({ chainId, networks })
   useAutoRefresh(isHydrated)
 
-  return isHydrated && <Outlet />
+  return <Outlet />
 }
 
 const daoLayoutRoute = createRoute({

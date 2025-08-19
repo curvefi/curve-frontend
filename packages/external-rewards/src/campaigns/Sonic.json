@@ -748,6 +748,18 @@
       "multiplier": "",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Only whitelisted assets earns Sonic Points. For more information please visit issuer.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xA1A0eCcCD628A70434221e3e5f832517E97A697C",
+      "network": "sonic",
+      "multiplier": "",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
