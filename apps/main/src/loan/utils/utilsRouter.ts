@@ -28,6 +28,6 @@ export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: st
   getPath(params, `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
 export const parseCollateralParams = ({ collateralId, formType: rFormType }: CollateralUrlParams) => ({
-  rFormType,
+  rFormType: rFormType ?? '',
   rCollateralId: collateralId.toLowerCase(),
 })
