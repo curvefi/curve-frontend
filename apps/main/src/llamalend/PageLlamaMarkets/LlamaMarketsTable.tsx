@@ -18,8 +18,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
-import { useVisibility } from './hooks/useVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -46,7 +46,11 @@ export const LlamaMarketsTable = ({
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(TITLE, sorting, 'noPositions')
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
+    TITLE,
+    sorting,
+    'noPositions',
+  )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
 
@@ -66,7 +70,7 @@ export const LlamaMarketsTable = ({
       table={table}
       emptyText={isError ? t`Could not load markets` : t`No markets found`}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={useIsTablet() && !!hasPositions}
+      shouldStickFirstColumn={Boolean(useIsTablet() && hasPositions?.length)}
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>

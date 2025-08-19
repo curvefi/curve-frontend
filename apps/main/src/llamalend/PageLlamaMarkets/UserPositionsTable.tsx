@@ -13,8 +13,8 @@ import { MarketsFilterChips } from './chips/MarketsFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { maxMultiSortColCount, useLlamaMarketSortOptions } from './hooks/useLlamaMarketSortOptions'
+import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
-import { useVisibility } from './hooks/useVisibility'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
@@ -43,7 +43,7 @@ export const UserPositionsTable = ({
   const defaultFilters = useDefaultUserFilter(type)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, 'userSort')
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useVisibility(
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     TITLE,
     sorting,
     'hasPositions',
@@ -66,7 +66,7 @@ export const UserPositionsTable = ({
       table={table}
       emptyText={isError ? t`Could not load markets` : t`No markets found`}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={useIsTablet() && !!hasPositions}
+      shouldStickFirstColumn={Boolean(useIsTablet() && hasPositions?.length)}
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>

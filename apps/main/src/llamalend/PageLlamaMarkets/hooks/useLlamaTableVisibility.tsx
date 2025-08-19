@@ -14,7 +14,7 @@ import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
  * The visibility on mobile is based on the sort field.
  * On larger devices, it uses the visibility settings that may be customized by the user.
  */
-export const useVisibility = (
+export const useLlamaTableVisibility = (
   title: string,
   sorting: SortingState,
   variant: keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS,

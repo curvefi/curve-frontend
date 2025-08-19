@@ -10,6 +10,7 @@ import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@ui-kit/types/market'
 
 const { Spacing } = SizesAndSpaces
 
@@ -18,11 +19,11 @@ export const LlamaListFilterChips = ({
   hasFavorites,
   ...props
 }: {
-  hasPositions: boolean | undefined
+  hasPositions: MarketRateType[] | undefined
   hasFavorites: boolean | undefined
 } & FilterProps<LlamaMarketKey>) => {
   const { address } = useAccount()
-  const isConnected = hasPositions != null && !!address
+  const isConnected = Boolean(hasPositions?.length && address)
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPosition, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
@@ -35,7 +36,7 @@ export const LlamaListFilterChips = ({
           toggle={toggleMyMarkets}
           icon={<PersonIcon />}
           data-testid="chip-my-markets"
-          disabled={!hasPositions}
+          disabled={!hasPositions?.length}
         />
       )}
       <GridChip
