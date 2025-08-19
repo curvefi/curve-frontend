@@ -8,8 +8,10 @@ import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { useParams } from '@ui-kit/hooks/router'
 
-export const PageDashboard = (props: NetworkUrlParams) => {
+export const PageDashboard = () => {
+  const props = useParams<NetworkUrlParams>()
   const { curveApi = null, connectState } = useConnection()
   const rChainId = useChainId(props.network)
   const { provider, connect: connectWallet } = useWallet()

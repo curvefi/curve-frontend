@@ -2,12 +2,11 @@
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import PoolCreation from '@/dex/components/PageCreatePool/index'
-import { type NetworkUrlParams } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 
-export const PageCreatePool = (_: NetworkUrlParams) => {
+export const PageCreatePool = () => {
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet } = useWallet()
   const { address } = useAccount()

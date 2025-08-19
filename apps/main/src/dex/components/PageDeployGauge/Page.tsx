@@ -3,12 +3,16 @@ import { styled } from 'styled-components'
 import { DeployGauge } from '@/dex/components/PageDeployGauge/index'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams } from '@ui-kit/hooks/router'
 
-export const PageDeployGauge = (props: NetworkUrlParams) => (
-  <Container>
-    <DeployGauge {...props} />
-  </Container>
-)
+export const PageDeployGauge = () => {
+  const props = useParams<NetworkUrlParams>()
+  return (
+    <Container>
+      <DeployGauge {...props} />
+    </Container>
+  )
+}
 
 const Container = styled.div`
   margin: 0 auto;

@@ -7,11 +7,12 @@ import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
-import { useNavigate } from '@ui-kit/hooks/router'
+import { useNavigate, useParams } from '@ui-kit/hooks/router'
 
-export const PagePool = (props: PoolUrlParams) => {
+export const PagePool = () => {
   const push = useNavigate()
   const { curveApi = null, connectState } = useConnection()
+  const props = useParams<PoolUrlParams>()
   const { pool: rPoolId, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
 
