@@ -4,7 +4,7 @@
 const fontStack = (...fonts: string[]) => fonts.map((f) => `"${f}"`).join(', ')
 
 export const Fonts = {
-  'Mona Sans': fontStack('MonaSans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
+  'Mona Sans': fontStack('Mona Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
   'Hubot Sans': fontStack('Hubot Sans', 'Helvetica Neue', 'Helvetica', 'sans-serif'),
   Minecraft: fontStack('Minecraft', 'SF Mono Regular 11', 'Ubuntu Mono', 'monospace'),
 }
