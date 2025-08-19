@@ -6,17 +6,15 @@ import { PageProposal } from '@/dao/components/PageProposal/Page'
 import { PageDao } from '@/dao/components/PageProposals/Page'
 import { PageUser } from '@/dao/components/PageUser/Page'
 import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
+import { useAutoRefresh } from '@/dao/hooks/useAutoRefresh'
 import networks, { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { type UrlParams } from '@/dao/types/dao.types'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute, Outlet } from '@tanstack/react-router'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { useHydration } from '@ui-kit/hooks/useHydration'
-import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
@@ -24,17 +22,6 @@ import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
-
-const useAutoRefresh = (isHydrated: boolean) => {
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const getGauges = useStore((state) => state.gauges.getGauges)
-  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
-  usePageVisibleInterval(
-    () => Promise.all([getGauges(), getGaugesData()]),
-    REFRESH_INTERVAL['5m'],
-    isPageVisible && isHydrated,
-  )
-}
 
 function DaoLayout() {
   const { network = 'ethereum' } = useParams<Partial<UrlParams>>()
