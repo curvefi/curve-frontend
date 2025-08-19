@@ -28,21 +28,22 @@ const TableButton = forwardRef<
   {
     onClick: () => void
     active?: boolean
+    loading?: boolean
     testId?: string
     icon: typeof SvgIcon
   }
->(function TableButton({ onClick, active, icon: Icon, testId }, ref) {
+>(function TableButton({ active, icon: Icon, testId, ...rest }, ref) {
   return (
     <IconButton
       ref={ref}
       size="small"
-      onClick={onClick}
       data-testid={testId}
       sx={(t) => ({
         border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
         backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
         transition: t.design.Button.Transition,
       })}
+      {...rest}
     >
       <Icon />
     </IconButton>
@@ -55,6 +56,7 @@ const TableButton = forwardRef<
 export const TableFilters = <ColumnIds extends string>({
   title,
   subtitle,
+  loading,
   onReload,
   visibilityGroups,
   toggleVisibility,
@@ -66,6 +68,7 @@ export const TableFilters = <ColumnIds extends string>({
 }: {
   title: string
   subtitle: string
+  loading: boolean
   onReload: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
@@ -103,7 +106,7 @@ export const TableFilters = <ColumnIds extends string>({
             icon={FilterIcon}
             testId="btn-expand-filters"
           />
-          <TableButton onClick={onReload} icon={ReloadIcon} />
+          <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />
         </Grid>
         {isMobile ? (
           <>

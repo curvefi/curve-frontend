@@ -63,10 +63,12 @@ export const LlamaMarketsTable = ({
   onReload,
   result,
   isError,
+  loading,
 }: {
   onReload: () => void
   result: LlamaMarketsResult | undefined
   isError: boolean
+  loading: boolean
 }) => {
   const { markets: data = [], hasPositions, hasFavorites } = result ?? {}
 
@@ -99,10 +101,12 @@ export const LlamaMarketsTable = ({
       emptyText={isError ? t`Could not load markets` : t`No markets found`}
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={useIsTablet() && !!hasPositions}
+      loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
         title={TITLE}
         subtitle={t`Borrow with the power of Curve soft liquidations`}
+        loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
