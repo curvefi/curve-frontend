@@ -1,41 +1,41 @@
-# Copilot Instructions for Curve Frontend
+# CLAUDE.md
 
-## Overview
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-Curve Frontend is a Next.js monorepo for DeFi protocols including DEX, lending, governance, and crvUSD. Uses Turborepo with domain-driven architecture across multiple blockchain networks.
+## Common Development Commands
 
-### Core Technologies
+```bash
+# Development
+yarn dev                # Start all apps in development mode on localhost:3000
+yarn build              # Build all apps for production
+yarn start              # Start production builds
+yarn lint               # Lint all code
+yarn lint:fix           # Fix linting issues automatically
+yarn typecheck          # Run TypeScript checks across all packages
+yarn format             # Format code with Prettier
+yarn format:check       # Check code formatting without fixing
 
-- Next.js with App Router
-- React
-- TypeScript
-- Node.js (exact version required)
-- Yarn
+# Testing
+cd tests
+yarn cy:open:e2e        # Open Cypress E2E tests interactively
+yarn cy:run:e2e         # Run Cypress E2E tests headless
+yarn cy:open:component  # Open Cypress component tests interactively
+yarn cy:run:component   # Run Cypress component tests headless
 
-## Key Architecture Patterns
+# Bundle Analysis
+cd apps/main
+yarn analyze            # Analyze bundle size (sets ANALYZE=true)
 
-### Domain Organization
-
-Main app is organized by financial products under `/apps/main/src/app/`:
-
-- `/dex`: Router swaps, pool management, pool creation
-- `/crvusd`: crvUSD minting, collateral management
-- `/lend`: LlamaLend lending/borrowing markets
-- `/dao`: Governance, voting, veCRV features
-
-Each domain follows this structure:
-
+# UI Kit Development
+yarn storybook          # Run Storybook for UI components
+yarn storybook:build    # Build Storybook static files
 ```
-src/[domain]/
-  components/     # Domain-specific React components
-  store/         # Zustand state slices
-  entities/      # Data models with React Query
-  utils/         # Domain utilities
-  hooks/         # Custom hooks
-  types/         # TypeScript types
-```
+
+## Architecture Overview
 
 ### Monorepo Structure
+
+This is a **Turborepo monorepo** with a single Next.js 15.2.4 application that handles multiple DeFi domains:
 
 - **`/apps/main`**: Main Next.js app with App Router containing all domains
 - **`/packages/curve-ui-kit`**: Shared UI components with Storybook
@@ -44,13 +44,58 @@ src/[domain]/
 - **`/packages/external-rewards`**: Campaign rewards configuration
 - **`/tests`**: Cypress E2E tests with Hardhat node support
 
-### State Management (Transitioning)
+### Domain Organization
 
-- **Old code**: Zustand + Immer for mutable updates (being deprecated)
-- **New code**: @tanstack/react-query for server state (preferred for all new code)
-- State slices use consistent patterns like `setStateByKey`, `setStateByActiveKey`, `resetState`
-- All state updates use `cloneDeep` and `merge` from lodash
-- Local storage integration for user preferences
+The main app is organized by financial product domains under `/apps/main/src/app/`:
+
+- **`/dex`**: Router swaps, pool management (deposit/withdraw/swap), pool creation
+- **`/crvusd`**: crvUSD minting, collateral management, liquidation
+- **`/lend`**: LlamaLend markets, lending/borrowing functionality
+- **`/dao`**: Governance, voting, gauge management, veCRV features
+
+Each domain follows a consistent structure:
+
+```
+src/[domain]/
+  components/          # Domain-specific React components
+  store/              # Zustand state slices
+  utils/              # Domain utilities
+  hooks/              # Custom hooks
+  entities/           # Data models and validation
+  types/              # TypeScript types
+```
+
+### Key Technologies
+
+**Core Stack:**
+
+- Next.js 15.2.4 with App Router
+- React 19.1.0
+- TypeScript 5.8.3
+- Node.js 22 (required)
+- Yarn 4.6.0
+
+**State & Data:**
+
+- Zustand 4.5.7 for client state (we want to deprecate this in favor of tanstack react-query)
+- Immer 9.0.21 for immutable updates
+- @tanstack/react-query 5.76.1 (we want to deprecate Zustand in favor of this)
+
+**Blockchain:**
+
+- @curvefi/api 2.67.2 (main protocol)
+- @curvefi/llamalend-api 1.0.21 (lending and minting)
+- Ethers.js 6.14.1
+- BigNumber.js 9.3.0
+
+**UI/Forms:**
+
+- Styled Components 6.1.18 (we want to deprecate this in favor of curve-ui-kit)
+- Material-UI based curve-ui-kit
+- React Hook Form 7.56.4 (we want to deprecate this in favor of curve-ui-kit)
+- Vest 5.4.6 (validation in new code)
+
+## Development Patterns
 
 ### Feature-Sliced Design (FSD)
 
@@ -62,9 +107,10 @@ The codebase follows Feature-Sliced Design architecture:
 
 ### Validation with Vest
 
-Data validation uses Vest library with validation groups:
+Data validation should use Vest library with validation groups:
 
 ```typescript
+// Example validation group
 export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
   group('poolValidation', () => {
     chainValidationGroup({ chainId })
@@ -73,140 +119,99 @@ export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
     })
   })
 
-const validatedData = assertValidity(poolValidationSuite, data)
+// Usage
+const isValid = checkValidity(poolValidationGroup, data)
+const validatedData = assertValidity(poolValidationGroup, data)
 ```
 
-### React Query Patterns
+### State Management
 
-```typescript
-const { useQuery, invalidate } = queryFactory({
-  queryKey: ({ chainId, poolId }) => ['pool', { chainId }, { poolId }] as const,
-  queryFn: ({ chainId, poolId }) => fetchPoolData(chainId, poolId),
-  validationSuite: poolValidationSuite,
-})
-```
+- **React Query** for any new code
+- **Zustand** and **Immer** for old code (being deprecated)
+- Local storage integration for user preferences
 
-## Essential Development Commands
+### Multi-Chain Support
 
-```bash
-# Development
-yarn dev              # Start all apps in dev mode (localhost:3000)
-yarn build            # Build all apps for production
-yarn start            # Start production builds
-yarn lint             # Lint all code
-yarn lint:fix         # Fix linting issues automatically
-yarn typecheck        # Run TypeScript checks across all packages
-yarn format           # Format code with Prettier
-yarn format:check     # Check code formatting without fixing
+- Supports 15+ blockchain networks
+- Network-specific routing: `/[domain]/[network]/`
+- Dynamic RPC configuration via environment variables
+- Chain-specific state management and validation
 
-# Testing
-cd tests
-yarn cy:open:e2e      # Open Cypress E2E tests interactively
-yarn cy:run:e2e       # Run Cypress E2E tests headless
-yarn cy:open:component # Open Cypress component tests interactively
-yarn cy:run:component  # Run Cypress component tests headless
+## Wallet connection
 
-# UI Kit Development
-yarn storybook        # Run Storybook for UI components
-yarn storybook:build  # Build Storybook static files
+The wagmi configuration in this Curve Frontend codebase is quite comprehensive. Here's how it's set up:
 
-# Bundle Analysis
-cd apps/main
-yarn analyze          # Analyze bundle size (sets ANALYZE=true)
-```
+Core Configuration
 
-## Multi-Chain Architecture
+Location: /packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/wagmi-config.ts
 
-- Supports 15+ networks with chain-specific routing: `/[domain]/[network]/`
-- Chain validation in every query using `chainValidationGroup`
-- Network configs in `/networks` with RPC URLs via environment variables
-- Wallet connection via wagmi with custom chains (Hyperliquid, TAC, etc.)
+The wagmi config supports 26+ chains including Ethereum, Optimism, Polygon, Arbitrum, Base, and several custom chains like Hyperliquid and TAC.
 
-## UI Component Strategy
+Key Features
 
-- **curve-ui-kit**: Material-UI based shared components with Storybook
-- **Styled Components**: Legacy styling (being deprecated)
-- Form handling with React Hook Form (being deprecated in favor of curve-ui-kit)
+Transport Strategy:
 
-## Wallet Connection
+- Primary: unstable_connector(injected) for user's wallet
+- Fallback: HTTP transport with batch size 3 (DRPC compliance)
 
-The wagmi configuration supports 26+ chains including Ethereum, Optimism, Polygon, Arbitrum, Base, and several custom chains like Hyperliquid and TAC.
+Supported Wallets:
 
-### Key Features
+- Browser/Injected wallets
+- WalletConnect (project ID: 982ea4bdf92e49746bd040a981283b36)
+- Coinbase Wallet
+- Safe (iframe only)
 
-- **Transport Strategy**: Primary unstable_connector(injected) for user's wallet, fallback HTTP transport with batch size 3 (DRPC compliance)
-- **Supported Wallets**: Browser/Injected wallets, WalletConnect, Coinbase Wallet, Safe (iframe only)
-- **Custom Chains**: Includes Hyperliquid (999), TAC (2390), MegaETH (6342), Strata (8091), and EXPchain (18880)
-- **Integration**: Wrapped in ClientWrapper.tsx with custom ConnectionContext for chain switching
-- **Compatibility**: Provides compatibility layer for ethersJS integration with CurveJS libraries
+Custom Chains: Includes Hyperliquid (999), TAC (2390), MegaETH (6342), Strata (8091), and EXPchain (18880)
 
-## Critical Patterns to Follow
+The wallet gives a compatibility layer for ethersJS so it may be passed to CurveJS libraries.
 
-### Blockchain Interactions
+### Integration
 
-- Uses `@curvefi/api` (DEX) and `@curvefi/llamalend-api` (lending/minting)
-- BigNumber.js for precise financial calculations (never use floating point), but transition to javascript's native `bigint` where possible
-- Ethers.js for blockchain interactions for legacy code, but transitioning to Viem
-- Viem utilities for address validation: `isAddress`, `isAddressEqual`, `zeroAddress`
+The config is wrapped around the entire app in ClientWrapper.tsx and integrates with a custom ConnectionContext that handles chain switching and coordinates with CurveJS libraries.
+The UI uses a modal system with useConnection and useWallet hooks for wallet interactions.
 
-### Error Handling
+## Environment Setup
 
-- Never use `any` or `ts-ignore`
-- Leave data as `undefined/null` instead of setting to `0`, `''`, or `NaN` on errors
-- Display unexpected errors instead of silently failing
-- Use immutable data structures for all state updates
+### Prerequisites
 
-### File Naming & Structure
+- Node.js 22 (exact version required)
+- Yarn 4.6.0
 
-- Zustand slices: `createXxxSlice.ts` with typed interfaces
-- React Query entities: domain-based in `/entities/` folders
-- Validation: `xxx-validation.ts` files with Vest groups
-- Components: Domain-specific in `/components/` folders
+### Setup Steps
 
-## Common Gotchas
+1. `git clone https://github.com/curvefi/curve-frontend.git`
+2. `cd curve-frontend && yarn`
+3. Configure environment variables as needed
+4. `yarn dev` to start development server
+5. Access at http://localhost:3000
 
-### Dependencies
+### Testing Environment
 
-- Node.js (exact version required) with Yarn
-- Never install dependencies without understanding the existing patterns
-- Use workspace aliases: `@ui-kit`, `@curvefi/prices-api`
+The tests that use Cypress with Hardhat forked networks are not working.
+The idea was to run forked nodes on ports `8545 + chainId` to allow testing against mainnet state.
+However, starting up the fork takes forever and the tests are not stable.
+In the future we want to use a test network like Sepolia for testing.
+The existing codes that run every commit do not need any fork.
 
-### State Updates
+## Code Quality Tools
 
-- Always use `produce` from Immer for Zustand updates
-- Check equality with `lodash.isEqual` before state updates
-- Use `cloneDeep` when updating nested objects
-- Avoid infinite loops in `useEffect` - add proper dependencies
+- **ESLint** with custom configuration
+- **Prettier** for code formatting
+- **TypeScript** strict mode
+- **Husky** git hooks with **lint-staged**
+- **Commitlint** for conventional commits
+- Bundle analyzer for performance optimization
 
-### Testing (Currently Limited)
+## Important Notes
 
-- Cypress E2E tests exist but Hardhat forked networks are unstable
-- Component tests use Cypress
-- Future: Moving to Sepolia test network
-
-## Network & Environment
-
-- Development RPC URLs via `NEXT_PUBLIC_[NETWORK]_DEV_RPC_URL`
-- Support for custom networks beyond standard chains
-- DRPC batch size compliance (batch size 3)
-- Wallet compatibility layer for ethers.js integration with CurveJS
-
-## Code Quality & Conventions
-
-- **ESLint** with custom configuration + **Prettier** for formatting
-- **TypeScript** in strict mode
-- **Husky** git hooks with **lint-staged** for pre-commit checks
-- **Commitlint** enforcing conventional commits
 - Always run `yarn typecheck`, `yarn format` and `yarn lint:fix` before committing
-- Avoid `eslint-disable-next-line react-hooks/exhaustive-deps` - refactor to use proper dependencies
-- Do not use hardcoded values - use constants/enums instead
-
-## Important Anti-Patterns to Avoid
-
-- **Never** use `any` or `ts-ignore` - create proper types instead
-- Don't set error values to `0`, `''`, or `NaN` - leave as `undefined/null` and display errors
-- Don't use floating point for financial calculations - use BigNumber.js or `bigint`
-- Avoid creating infinite loops in `useEffect` - be careful with dependencies
-- Don't refactor existing impure code carelessly - maintain immutable data structures
-
-Use existing patterns consistently - this codebase values predictable conventions over individual creativity.
+- Follow existing validation patterns with Vest
+- Use `@tanstack/react-query` for new data fetching logic
+- Try to get rid of duplicated code shared by multiple apps
+- Use test networks when working with blockchain interactions
+- UI components should use the curve-ui-kit package when possible
+- The existing code is often not pure, so be careful when refactoring - use only immutable data structures
+- Do not use hardcoded values but instead use constants/enums.
+- In the codebase, data is sometimes set incorrectly to 0, '' or NaN when errors occur. Please leave the data as undefined or null, and actually display unexpected errors.
+- **Never** use `any` or `ts-ignore` comments. If you need to, please create a type for it or ask for help.
+- We are trying to get rid of all `eslint-disable-next-line react-hooks/exhaustive-deps` comments, feel free to refactor the code and add proper dependencies to the useEffect hooks. However, be careful not to create infinite loops.
