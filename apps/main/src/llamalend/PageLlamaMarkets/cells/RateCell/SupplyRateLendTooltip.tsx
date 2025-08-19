@@ -38,7 +38,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   )
 }
 
-export const LendRateTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
+export const SupplyRateLendTooltip = ({ market, children }: { market: LlamaMarket; children: ReactElement }) => (
   <Tooltip clickable title={t`Supply Yield`} body={<LendRateTooltipContent market={market} />} placement="top">
     {children}
   </Tooltip>

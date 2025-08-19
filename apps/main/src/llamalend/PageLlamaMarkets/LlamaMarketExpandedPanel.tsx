@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'
 import { BorrowRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/BorrowRateTooltip'
-import { LendRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/LendRateTooltip'
+import { SupplyRateLendTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/SupplyRateLendTooltip'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
 import { ArrowRight } from '@carbon/icons-react'
@@ -26,7 +26,7 @@ import { RewardsIcons } from './cells/RateCell/RewardsIcons'
 const { Spacing } = SizesAndSpaces
 
 const TooltipComponents = {
-  [MarketRateType.Supply]: LendRateTooltip,
+  [MarketRateType.Supply]: SupplyRateLendTooltip,
   [MarketRateType.Borrow]: BorrowRateTooltip,
 } as const
 

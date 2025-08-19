@@ -4,12 +4,13 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../../columns.enum'
 import { formatPercent } from '../cell.format'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
-import { LendRateTooltip } from './LendRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
+import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
+import { SupplyRateMintTooltip } from './SupplyRateMintTooltip'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,8 +20,14 @@ const RateTypes = {
 } as const
 
 const TooltipComponents = {
-  [MarketRateType.Supply]: LendRateTooltip,
-  [MarketRateType.Borrow]: BorrowRateTooltip,
+  [MarketRateType.Supply]: {
+    [LlamaMarketType.Lend]: SupplyRateLendTooltip,
+    [LlamaMarketType.Mint]: SupplyRateMintTooltip,
+  },
+  [MarketRateType.Borrow]: {
+    [LlamaMarketType.Lend]: BorrowRateTooltip,
+    [LlamaMarketType.Mint]: BorrowRateTooltip,
+  },
 } as const
 
 export const RateCell = ({
@@ -28,12 +35,11 @@ export const RateCell = ({
   getValue,
   column: { id },
 }: CellContext<LlamaMarket, number | null>) => {
-  const rate = getValue()
-  if (rate == null) return null // mint markets do not have a supply rate
-
   const rateType = RateTypes[id as keyof typeof RateTypes]
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
-  const Tooltip = TooltipComponents[rateType]
+  const Tooltip = TooltipComponents[rateType][market.type]
+
+  const rate = getValue()
   return (
     // The box container makes sure the tooltip doesn't span the entire cell, so the tooltip arrow is placed correctly
     <Box display="flex" justifyContent="end">
