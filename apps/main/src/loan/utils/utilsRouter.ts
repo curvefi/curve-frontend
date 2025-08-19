@@ -27,12 +27,6 @@ export const getLoanCreatePathname = (
 export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>
   getPath(params, `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-/**
- * Get the part of a path after the network, removing the leading slash and the first two parts.
- * For example /:app/:network/:page/:id => `:page/:id`
- */
-export const getRestFullPathname = () => window.location.pathname.substring(1).split('/').slice(2).join('/')
-
 export const parseCollateralParams = ({ collateralId, formType: rFormType }: CollateralUrlParams) => ({
   rFormType,
   rCollateralId: collateralId.toLowerCase(),
