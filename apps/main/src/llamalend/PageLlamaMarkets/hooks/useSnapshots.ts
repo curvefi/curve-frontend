@@ -11,6 +11,8 @@ type UseSnapshotsResult<T> = {
   snapshotKey: keyof T
   rate: number | null
   averageRate: number | null
+  averageTotalBorrowRate: number | null
+  minBoostedAprAverage: number | null
   maxBoostedAprAverage: number | null
   error: unknown
   period: '7D' // this will be extended in the future
@@ -58,12 +60,47 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     [snapshots, snapshotKey],
   )
 
+  const averageTotalBorrowRate = useMemo(
+    () =>
+      snapshots &&
+      isLend &&
+      lodash.meanBy(
+        snapshots as LendingSnapshot[],
+        (row) =>
+          (row[snapshotKey as keyof LendingSnapshot] as number) * 100 - (row.collateralToken?.rebasingYield ?? 0),
+      ),
+    [snapshots, snapshotKey, isLend],
+  )
+
+  const minBoostedAprAverage = useMemo(
+    () =>
+      snapshots &&
+      isLend &&
+      type === MarketRateType.Supply &&
+      lodash.meanBy(
+        snapshots as LendingSnapshot[],
+        (row) =>
+          row.lendApr * 100 +
+          row.lendAprCrv0Boost +
+          (row.borrowedToken?.rebasingYield ?? 0) +
+          (row.extraRewardApr.reduce((acc, r) => acc + r.rate, 0) ?? 0),
+      ),
+    [snapshots, isLend, type],
+  )
+
   const maxBoostedAprAverage = useMemo(
     () =>
       snapshots &&
       isLend &&
       type === MarketRateType.Supply &&
-      lodash.meanBy(snapshots as LendingSnapshot[], (row) => row.lendApr + row.lendAprCrvMaxBoost) * 100,
+      lodash.meanBy(
+        snapshots as LendingSnapshot[],
+        (row) =>
+          row.lendApr * 100 +
+          row.lendAprCrvMaxBoost +
+          (row.borrowedToken?.rebasingYield ?? 0) +
+          (row.extraRewardApr.reduce((acc, r) => acc + r.rate, 0) ?? 0),
+      ),
     [snapshots, isLend, type],
   )
 
@@ -73,6 +110,8 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
     snapshotKey,
     rate: rates[RateKeys[type]],
     averageRate,
+    averageTotalBorrowRate,
+    minBoostedAprAverage,
     maxBoostedAprAverage,
     error,
     period: '7D',

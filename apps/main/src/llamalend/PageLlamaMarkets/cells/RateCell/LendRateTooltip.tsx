@@ -10,7 +10,7 @@ import { useSnapshots } from '../../hooks/useSnapshots'
 const rateType = MarketRateType.Supply
 
 const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
-  const { averageRate, period } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
+  const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
   const {
     rates,
     rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
@@ -32,6 +32,8 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       maxBoostApr={lendCrvAprBoosted}
       totalSupplyRateMinBoost={lend}
       totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
+      totalAverageSupplyRateMinBoost={minBoostedAprAverage}
+      totalAverageSupplyRateMaxBoost={maxBoostedAprAverage}
       rebasingYield={borrowed?.rebasingYield}
       isLoading={averageRate == null}
     />

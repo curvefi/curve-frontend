@@ -13,13 +13,19 @@ type SupplyAPY = {
   rate: number | undefined | null
   averageRate: number | undefined | null
   averageRateLabel: string
-  rebasingYield?: number | null
+  rebasingYield: number | null
+  averageRebasingYield: number | null
   supplyAprCrvMinBoost: number | undefined | null
   supplyAprCrvMaxBoost: number | undefined | null
+  averageSupplyAprCrvMinBoost: number | undefined | null
+  averageSupplyAprCrvMaxBoost: number | undefined | null
   //total = rate - rebasingYield + combined extra incentives
   totalSupplyRateMinBoost: number | null
   totalSupplyRateMaxBoost: number | null
+  totalAverageSupplyRateMinBoost: number | null
+  totalAverageSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
+  averageTotalExtraIncentivesApr: number | undefined | null
   extraRewards: PoolRewards[]
   loading: boolean
 }
@@ -29,7 +35,7 @@ type Shares = {
   loading: boolean
 }
 
-// TODO: figure out where to find boost data and add
+// TODO: add when we have boost in llamalend-js
 type Boost = {
   value: number | undefined | null
   loading: boolean
@@ -88,6 +94,8 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
                 maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
                 totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
                 totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
+                totalAverageSupplyRateMinBoost={supplyAPY?.totalAverageSupplyRateMinBoost}
+                totalAverageSupplyRateMaxBoost={supplyAPY?.totalAverageSupplyRateMaxBoost}
                 rebasingYield={supplyAPY?.rebasingYield}
                 rebasingSymbol={supplyAsset?.symbol}
                 isLoading={supplyAPY?.loading}

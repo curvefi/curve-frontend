@@ -20,6 +20,9 @@ type UseBorrowPositionDetailsProps = {
   marketId: string
 }
 
+const averageMultiplier = 30
+const averageMultiplierString = `${averageMultiplier}D`
+
 export const useBorrowPositionDetails = ({
   chainId,
   market,
@@ -60,19 +63,23 @@ export const useBorrowPositionDetails = ({
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
+    agg: 'day',
   })
 
-  const thirtyDayAvgRate = useMemo(() => {
+  const averageAPR = useMemo(() => {
     if (!lendSnapshots) return null
 
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    const averageStartDate = new Date()
+    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
 
-    const recentSnapshots = lendSnapshots.filter((snapshot) => snapshot.timestamp > thirtyDaysAgo)
+    const recentSnapshots = lendSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > averageStartDate)
 
     if (recentSnapshots.length === 0) return null
 
-    return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
+    return {
+      rate: meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100,
+      rebasingYield: meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
+    }
   }, [lendSnapshots])
 
   const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy ?? null
@@ -85,7 +92,7 @@ export const useBorrowPositionDetails = ({
     return [...(campaigns[controller.toLowerCase()] ?? [])]
   }, [campaigns, controller])
 
-  const rebasingYield = lendSnapshots?.[0]?.collateralToken?.rebasingYield // take most recent rebasing yield
+  const rebasingYield = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
     marketType: LlamaMarketType.Lend,
     liquidationAlert: {
@@ -98,10 +105,12 @@ export const useBorrowPositionDetails = ({
     },
     borrowAPY: {
       rate: borrowApy == null ? null : Number(borrowApy),
-      averageRate: thirtyDayAvgRate,
-      averageRateLabel: '30D',
+      averageRate: averageAPR?.rate,
+      averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
+      averageRebasingYield: averageAPR?.rebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
+      totalAverageBorrowRate: averageAPR?.rate == null ? null : averageAPR.rate - (averageAPR.rebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },

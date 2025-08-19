@@ -21,6 +21,9 @@ type UseLoanPositionDetailsProps = {
   llammaId: string
 }
 
+const averageMultiplier = 30
+const averageMultiplierString = `${averageMultiplier}D`
+
 export const useLoanPositionDetails = ({
   chainId,
   llamma,
@@ -70,19 +73,23 @@ export const useLoanPositionDetails = ({
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[chainId as keyof typeof networks].id,
     contractAddress: llamma?.controller as Address,
+    agg: 'day',
   })
 
-  const thirtyDayAvgRate = useMemo(() => {
+  const averageAPR = useMemo(() => {
     if (!crvUsdSnapshots) return null
 
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    const averageStartDate = new Date()
+    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
 
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
+    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > averageStartDate)
 
     if (recentSnapshots.length === 0) return null
 
-    return lodash.meanBy(recentSnapshots, ({ rate }) => rate) * 100
+    return {
+      rate: lodash.meanBy(recentSnapshots, ({ rate }) => rate) * 100,
+      rebasingYield: lodash.meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
+    }
   }, [crvUsdSnapshots])
 
   const collateralTotalValue = useMemo(() => {
@@ -94,6 +101,8 @@ export const useLoanPositionDetails = ({
     if (!campaigns || !llamma?.controller) return []
     return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
   }, [campaigns, llamma?.controller])
+
+  const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -107,12 +116,14 @@ export const useLoanPositionDetails = ({
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
-      averageRate: thirtyDayAvgRate,
-      averageRateLabel: '30D',
+      rebasingYield: collateralRebasingYield ?? null,
+      averageRate: averageAPR?.rate,
+      averageRebasingYield: averageAPR?.rebasingYield ?? null,
+      averageRateLabel: averageMultiplierString,
       totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        ? Number(loanDetails?.parameters?.rate) - (collateralRebasingYield ?? 0)
         : null,
+      totalAverageBorrowRate: averageAPR?.rate == null ? null : averageAPR.rate - (averageAPR.rebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

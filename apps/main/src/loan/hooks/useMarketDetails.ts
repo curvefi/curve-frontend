@@ -17,6 +17,9 @@ type UseMarketDetailsProps = {
   llammaId: string
 }
 
+const averageMultiplier = 30
+const averageMultiplierString = `${averageMultiplier}D`
+
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { data: campaigns } = useCampaigns({})
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
@@ -31,25 +34,31 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[chainId as keyof typeof networks]?.id,
     contractAddress: llamma?.controller as Address,
+    agg: 'day',
   })
 
-  const thirtyDayAvgBorrowAPR = useMemo(() => {
+  const averageAPR = useMemo(() => {
     if (!crvUsdSnapshots) return null
 
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    const averageStartDate = new Date()
+    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
 
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
+    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > averageStartDate)
 
     if (recentSnapshots.length === 0) return null
 
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
+    return {
+      rate: meanBy(recentSnapshots, ({ rate }) => rate) * 100,
+      rebasingYield: meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
+    }
   }, [crvUsdSnapshots])
 
   const campaignRewards = useMemo(() => {
     if (!campaigns || !llamma?.controller) return []
     return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
   }, [campaigns, llamma?.controller])
+
+  const totalAverageBorrowRate = averageAPR?.rate == null ? null : averageAPR.rate - (averageAPR.rebasingYield ?? 0)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -72,12 +81,15 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      averageRate: thirtyDayAvgBorrowAPR,
-      averageRateLabel: '30D',
-      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
+      averageRate: averageAPR?.rate,
+      averageRateLabel: averageMultiplierString,
+      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
+      averageRebasingYield: averageAPR?.rebasingYield ?? null,
+      totalAverageBorrowRate,
       extraRewards: campaignRewards,
       totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        ? Number(loanDetails?.parameters?.rate) -
+          (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
         : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

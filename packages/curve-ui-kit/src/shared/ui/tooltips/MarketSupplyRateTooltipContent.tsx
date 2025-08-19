@@ -17,6 +17,8 @@ export type MarketSupplyRateTooltipContentProps = {
   maxBoostApr: number | null | undefined
   totalSupplyRateMinBoost: number | null | undefined
   totalSupplyRateMaxBoost: number | null | undefined
+  totalAverageSupplyRateMinBoost: number | null | undefined
+  totalAverageSupplyRateMaxBoost: number | null | undefined
   rebasingYield: number | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
@@ -32,6 +34,8 @@ export const MarketSupplyRateTooltipContent = ({
   maxBoostApr,
   totalSupplyRateMinBoost,
   totalSupplyRateMaxBoost,
+  totalAverageSupplyRateMinBoost,
+  totalAverageSupplyRateMaxBoost,
   rebasingYield,
   rebasingSymbol,
   isLoading,
@@ -72,6 +76,9 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItem variant="primary" title={t`Total APR`}>
             {formatPercent(totalSupplyRateMinBoost)}
           </TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {totalAverageSupplyRateMinBoost ? formatPercent(totalAverageSupplyRateMinBoost) : 'N/A'}
+          </TooltipItem>
         </TooltipItems>
         {(minBoostApr ?? 0) > 0 && (
           <TooltipItems secondary>
@@ -84,6 +91,9 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItems>
             <TooltipItem variant="primary" title={`${t`Total max boosted APR`}`}>
               {formatPercent(totalSupplyRateMaxBoost)}
+            </TooltipItem>
+            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+              {totalAverageSupplyRateMaxBoost ? formatPercent(totalAverageSupplyRateMaxBoost) : 'N/A'}
             </TooltipItem>
           </TooltipItems>
         )}
