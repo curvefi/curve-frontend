@@ -4,12 +4,12 @@ import { StyleSheetManager } from 'styled-components'
 import type { Chain } from 'viem'
 import { WagmiProvider } from 'wagmi'
 import { getNetworkDefs } from '@/dex/lib/networks'
-import { GlobalLayout } from '@/routes/GlobalLayout.tsx'
-import { recordValues } from '@curvefi/prices-api/objects.util.ts'
+import { GlobalLayout } from '@/routes/GlobalLayout'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import { OverlayProvider } from '@react-aria/overlays'
 import { createRootRoute, HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-import { shouldForwardProp } from '@ui/styled-containers.tsx'
+import { shouldForwardProp } from '@ui/styled-containers'
 import type { NetworkDef } from '@ui/utils'
 import {
   ConnectionProvider,
@@ -18,13 +18,13 @@ import {
   createWagmiConfig,
   defaultGetRpcUrls,
 } from '@ui-kit/features/connect-wallet'
-import { useLayoutStoreResponsive } from '@ui-kit/features/layout/store.ts'
+import { useLayoutStoreResponsive } from '@ui-kit/features/layout/store'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate, usePathname } from '@ui-kit/hooks/router.ts'
+import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
-import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects.ts'
-import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes.ts'
-import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider.tsx'
+import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
+import { getCurrentApp, getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
+import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 
 function useNetworkFromUrl(networks: NetworkDef[]) {
   const navigate = useNavigate()
