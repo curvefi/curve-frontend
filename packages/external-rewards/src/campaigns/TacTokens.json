@@ -280,6 +280,18 @@
       "multiplier": "tac",
       "tags": ["tokens"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for WTAC rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xA554ffaF67627d00f25397896F23e816eE89b115",
+      "network": "tac",
+      "multiplier": "tac",
+      "tags": ["tokens"],
+      "lock": "false"
     }
   ]
 }
