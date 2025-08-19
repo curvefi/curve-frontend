@@ -322,8 +322,8 @@ const selectCoin = (symbol: string, type: TokenType) => {
 }
 
 function enableGraphColumn() {
-  cy.get(`[data-testid="line-graph-borrow"]`).should('not.exist')
+  cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).should('not.exist')
   cy.get(`[data-testid="btn-visibility-settings"]`).click()
   cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
-  cy.get(`[data-testid="line-graph-borrow"]`).first().scrollIntoView()
+  cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).first().scrollIntoView()
 }
