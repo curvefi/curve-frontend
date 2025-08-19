@@ -83,7 +83,7 @@ export type PageContentProps = {
   params: UrlParams
   rChainId: ChainId
   rOwmId: string
-  rFormType: string | null
+  rFormType: RFormType
   userActiveKey: string
   isLoaded: boolean
   api: LlamaApi | null
