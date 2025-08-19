@@ -37,7 +37,6 @@ const defaultTab: Record<AppName, DisclaimerTab> = {
 }
 
 export type DisclaimerProps = {
-  network?: CurveNetworkId | LlamaNetworkId
   currentApp: AppName
 }
 
@@ -47,9 +46,8 @@ function useAfterHydration(result: string) {
   return value
 }
 
-export const Disclaimer = ({ network: networkProp, currentApp }: DisclaimerProps) => {
-  const params = useParams() as { network?: string }
-  const network = (networkProp ?? params.network ?? 'ethereum') as CurveNetworkId | LlamaNetworkId
+export const Disclaimer = ({ currentApp }: DisclaimerProps) => {
+  const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const pathname = usePathname()
   const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
   const tabs = useMemo(

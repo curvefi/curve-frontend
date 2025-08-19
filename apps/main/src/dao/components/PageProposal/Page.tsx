@@ -3,12 +3,16 @@ import { styled } from 'styled-components'
 import { Proposal } from '@/dao/components/PageProposal/index'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 
-export const PageProposal = (props: ProposalUrlParams) => (
-  <Container>
-    <Proposal {...props} />
-  </Container>
-)
+export const PageProposal = () => {
+  const params = useParams<ProposalUrlParams>()
+  return (
+    <Container>
+      <Proposal {...params} />
+    </Container>
+  )
+}
 
 const Container = styled.div`
   height: 100%;

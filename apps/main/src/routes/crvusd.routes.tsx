@@ -1,6 +1,5 @@
 'use client'
 import '@/global-extensions'
-import { type ReactNode } from 'react'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import Integrations from '@/loan/components/PageIntegrations/Page'
 import CreateLoan from '@/loan/components/PageLoanCreate/Page'
@@ -23,8 +22,7 @@ import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
 
-// Inline CrvUsdClientLayout
-function CrvUsdClientLayout({ children }: { children: ReactNode }) {
+function CrvUsdClientLayout() {
   const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
   const chainId = networksIdMapper[networkId]
   const hydrate = useStore((s) => s.hydrate)
@@ -33,17 +31,13 @@ function CrvUsdClientLayout({ children }: { children: ReactNode }) {
   useGasInfoAndUpdateLib({ chainId, networks })
   useRedirectToEth(networks[chainId], networkId, isHydrated)
 
-  return isHydrated && children
+  return isHydrated && <Outlet />
 }
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'crvusd',
-  component: () => (
-    <CrvUsdClientLayout>
-      <Outlet />
-    </CrvUsdClientLayout>
-  ),
+  component: CrvUsdClientLayout,
 })
 
 const layoutProps = { getParentRoute: () => crvusdLayoutRoute }

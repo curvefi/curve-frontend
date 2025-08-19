@@ -3,12 +3,16 @@ import { styled } from 'styled-components'
 import Gauge from '@/dao/components/PageGauge/index'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'
 import { breakpoints } from '@ui/utils'
+import { useParams } from '@ui-kit/hooks/router'
 
-export const PageGauge = (params: GaugeUrlParams) => (
-  <Container>
-    <Gauge routerParams={params} />
-  </Container>
-)
+export const PageGauge = () => {
+  const params = useParams<GaugeUrlParams>()
+  return (
+    <Container>
+      <Gauge routerParams={params} />
+    </Container>
+  )
+}
 
 const Container = styled.div`
   height: 100%;

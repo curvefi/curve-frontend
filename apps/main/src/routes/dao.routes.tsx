@@ -1,17 +1,59 @@
-import { lazy } from 'react'
-import DaoLayout from '@/app/dao/layout'
-import { redirectTo } from '@/routes/util'
+'use client'
+import '@/global-extensions'
+import { PageAnalytics } from '@/dao/components/PageAnalytics/Page'
+import { PageGauge } from '@/dao/components/PageGauge/Page'
+import { PageGauges } from '@/dao/components/PageGauges/Page'
+import { PageProposal } from '@/dao/components/PageProposal/Page'
+import { PageDao } from '@/dao/components/PageProposals/Page'
+import { PageUser } from '@/dao/components/PageUser/Page'
+import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
+import networks, { networksIdMapper } from '@/dao/networks'
+import useStore from '@/dao/store/useStore'
+import { type UrlParams } from '@/dao/types/dao.types'
+import Skeleton from '@mui/material/Skeleton'
 import { createRoute, Outlet } from '@tanstack/react-router'
+import { useLayoutStore } from '@ui-kit/features/layout'
+import { useParams } from '@ui-kit/hooks/router'
+import { useHydration } from '@ui-kit/hooks/useHydration'
+import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
+import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 import { rootRoute } from './root.routes'
+import { redirectTo } from './util'
+
+const { MinHeight } = SizesAndSpaces
+
+const useAutoRefresh = (isHydrated: boolean) => {
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const getGaugesData = useStore((state) => state.gauges.getGaugesData)
+  usePageVisibleInterval(
+    () => Promise.all([getGauges(), getGaugesData()]),
+    REFRESH_INTERVAL['5m'],
+    isPageVisible && isHydrated,
+  )
+}
+
+function DaoLayout() {
+  const { network = 'ethereum' } = useParams<Partial<UrlParams>>()
+  const hydrate = useStore((s) => s.hydrate)
+  const chainId = networksIdMapper[network]
+  const isHydrated = useHydration('curveApi', hydrate, chainId)
+
+  useRedirectToEth(networks[chainId], network, isHydrated)
+  useGasInfoAndUpdateLib({ chainId, networks })
+  useAutoRefresh(isHydrated)
+
+  return isHydrated && <Outlet />
+}
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'dao',
-  component: () => (
-    <DaoLayout>
-      <Outlet />
-    </DaoLayout>
-  ),
+  component: DaoLayout,
 })
 
 const layoutProps = { getParentRoute: () => daoLayoutRoute }
@@ -19,7 +61,7 @@ const layoutProps = { getParentRoute: () => daoLayoutRoute }
 export const daoRoutes = daoLayoutRoute.addChildren([
   createRoute({
     path: '/',
-    component: lazy(() => import('../app/dao/page')),
+    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
     head: () => ({
       meta: [{ title: 'DAO - Curve' }],
     }),
@@ -37,7 +79,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/analytics',
-    component: lazy(() => import('../app/dao/[network]/analytics/page')),
+    component: PageAnalytics,
     head: () => ({
       meta: [{ title: 'Analytics - Curve' }],
     }),
@@ -45,7 +87,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: lazy(() => import('../app/dao/[network]/disclaimer/page')),
+    component: () => <Disclaimer currentApp="dao" />,
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve' }],
     }),
@@ -53,7 +95,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/gauges',
-    component: lazy(() => import('../app/dao/[network]/gauges/page')),
+    component: PageGauges,
     head: () => ({
       meta: [{ title: 'Gauges - Curve' }],
     }),
@@ -61,7 +103,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/gauges/$gaugeAddress',
-    component: lazy(() => import('../app/dao/[network]/gauges/[gaugeAddress]/page')),
+    component: PageGauge,
     head: ({ params }) => ({
       meta: [{ title: `Gauge - ${params.gaugeAddress} - Curve` }],
     }),
@@ -69,7 +111,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/proposals',
-    component: lazy(() => import('../app/dao/[network]/proposals/page')),
+    component: PageDao,
     head: () => ({
       meta: [{ title: 'Proposals - Curve' }],
     }),
@@ -77,7 +119,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/proposals/$proposalId',
-    component: lazy(() => import('../app/dao/[network]/proposals/[proposalId]/page')),
+    component: PageProposal,
     head: ({ params }) => ({
       meta: [{ title: `Proposal - ${params.proposalId} - Curve` }],
     }),
@@ -85,7 +127,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/user/$userAddress',
-    component: lazy(() => import('../app/dao/[network]/user/[userAddress]/page')),
+    component: PageUser,
     head: ({ params }) => ({
       meta: [{ title: `veCRV Holder - ${params.userAddress} - Curve` }],
     }),
@@ -93,7 +135,7 @@ export const daoRoutes = daoLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/vecrv/$formType',
-    component: lazy(() => import('../app/dao/[network]/vecrv/[[...formType]]/page')),
+    component: PageVeCrv,
     head: () => ({
       meta: [{ title: 'CRV Locker - Curve' }],
     }),
