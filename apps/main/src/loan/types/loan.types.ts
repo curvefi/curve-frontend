@@ -15,8 +15,7 @@ export type ChainId = 1 // note lend also has other chains, but we only use eth 
 export type NetworkEnum = Extract<INetworkName, 'ethereum'>
 
 export type NetworkUrlParams = { network: NetworkEnum }
-type CollateralExtraParams = { collateralId: string; formType?: RFormType }
-export type CollateralUrlParams = NetworkUrlParams & CollateralExtraParams
+export type CollateralUrlParams = NetworkUrlParams & { collateralId: string; formType: RFormType }
 export type UrlParams = NetworkUrlParams & Partial<CollateralUrlParams>
 
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
@@ -94,7 +93,6 @@ export type LoanDetails = {
   priceInfo: LoanPriceInfo
   capAndAvailable: { cap: string; available: string }
 }
-export type LoanDetailsMapper = { [collateralId: string]: Partial<LoanDetails> }
 export type BandsBalancesData = {
   collateral: string
   collateralUsd: string
@@ -130,7 +128,6 @@ export type UserWalletBalances = {
   error: string
 }
 export type Theme = 'default' | 'dark' | 'chad'
-export type UsdRate = { [tokenAddress: string]: string | number }
 
 export interface CollateralAlert extends TooltipProps {
   alertType: AlertType
