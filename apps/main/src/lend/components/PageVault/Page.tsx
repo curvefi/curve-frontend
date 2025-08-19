@@ -42,6 +42,7 @@ import { MarketDetails } from '@ui-kit/features/market-details'
 import { SupplyPositionDetails } from '@ui-kit/features/market-position-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useParams } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -49,7 +50,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const Page = (params: MarketUrlParams) => {
+const Page = () => {
+  const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { connect, provider } = useWallet()
   const { llamaApi: api = null, connectState } = useConnection()
