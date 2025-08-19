@@ -1,4 +1,3 @@
-'use client'
 import { styled } from 'styled-components'
 import Dashboard from '@/dex/components/PageDashboard/index'
 import { useChainId } from '@/dex/hooks/useChainId'

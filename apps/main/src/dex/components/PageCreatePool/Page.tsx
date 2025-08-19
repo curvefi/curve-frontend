@@ -1,4 +1,3 @@
-'use client'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import PoolCreation from '@/dex/components/PageCreatePool/index'

@@ -1,4 +1,3 @@
-'use client'
 import { styled } from 'styled-components'
 import Gauge from '@/dao/components/PageGauge/index'
 import type { GaugeUrlParams } from '@/dao/types/dao.types'

@@ -1,4 +1,3 @@
-'use client'
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import CollateralList from '@/loan/components/PageMarketList/index'

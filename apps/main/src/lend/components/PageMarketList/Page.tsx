@@ -1,4 +1,3 @@
-'use client'
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'

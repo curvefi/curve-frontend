@@ -1,4 +1,3 @@
-'use client'
 import { styled } from 'styled-components'
 import { Proposal } from '@/dao/components/PageProposal/index'
 import type { ProposalUrlParams } from '@/dao/types/dao.types'

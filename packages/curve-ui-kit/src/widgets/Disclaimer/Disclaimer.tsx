@@ -1,4 +1,3 @@
-'use client'
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'

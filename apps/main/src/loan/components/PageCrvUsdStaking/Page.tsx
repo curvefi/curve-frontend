@@ -1,4 +1,3 @@
-'use client'
 import { RCScrvUSDLogoSM } from 'ui/src/images'
 import CrvUsdStaking from '@/loan/components/PageCrvUsdStaking'
 import Settings from '@/loan/layout/Settings'

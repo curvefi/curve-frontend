@@ -1,4 +1,3 @@
-'use client'
 import '@/global-extensions'
 import { PageAnalytics } from '@/dao/components/PageAnalytics/Page'
 import { PageGauge } from '@/dao/components/PageGauge/Page'

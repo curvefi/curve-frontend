@@ -1,4 +1,3 @@
-'use client'
 import '@/global-extensions'
 import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import Integrations from '@/loan/components/PageIntegrations/Page'

@@ -1,4 +1,3 @@
-'use client'
 import '@/global-extensions'
 import PageIntegrations from '@/lend/components/PageIntegrations/Page'
 import PageLoanCreate from '@/lend/components/PageLoanCreate/Page'

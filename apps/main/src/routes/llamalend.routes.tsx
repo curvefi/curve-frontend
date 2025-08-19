@@ -1,4 +1,3 @@
-'use client'
 import Integrations from '@/lend/components/PageIntegrations/Page'
 import { LlamaMarketsPage } from '@/llamalend/PageLlamaMarkets/Page'
 import { createRoute, Outlet } from '@tanstack/react-router'
