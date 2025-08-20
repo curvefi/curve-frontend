@@ -10,7 +10,6 @@ import useStore from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'
@@ -39,7 +38,6 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
   })
   const userProposalVotesSortBy = useStore((state) => state.user.userProposalVotesSortBy)
   const setUserProposalVotesSortBy = useStore((state) => state.user.setUserProposalVotesSortBy)
-  const push = useNavigate()
 
   const gridTemplateColumns = '5.375rem 1fr 1fr 1fr 1fr 1fr'
 
@@ -62,14 +60,9 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
       renderRow={(proposalVote, index) => (
         <TableRowWrapper key={index} columns={VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableDataLink
-            onClick={(e) => {
-              e.preventDefault()
-              push(
-                getEthPath(
-                  `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
-                ),
-              )
-            }}
+            href={getEthPath(
+              `${DAO_ROUTES.PAGE_PROPOSALS}/${proposalVote.voteId}-${proposalVote.voteType.toUpperCase()}`,
+            )}
             className={userProposalVotesSortBy.key === 'voteId' ? 'sortby-active  align-left' : ' align-left'}
           >
             #{proposalVote.voteId}

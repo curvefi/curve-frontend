@@ -6,7 +6,6 @@ import useStore from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import { convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -25,7 +24,6 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   const gaugeVotesMapper = useStore((state) => state.gauges.gaugeVotesMapper)
   const gaugeVotesSortBy = useStore((state) => state.gauges.gaugeVotesSortBy)
   const setGaugeVotesSortBy = useStore((state) => state.gauges.setGaugeVotesSortBy)
-  const push = useNavigate()
   const gaugeVotes = gaugeVotesMapper[gaugeAddress]?.votes ?? []
   const gridTemplateColumns = '7rem 1fr 1fr'
 
@@ -76,13 +74,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
             {weightBpsToPercentage(gaugeVote.weight)}%
           </TableData>
-          <TableDataLink
-            onClick={(e) => {
-              e.preventDefault()
-              push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`))
-            }}
-            className="right-padding"
-          >
+          <TableDataLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${gaugeVote.user}`)} className="right-padding">
             {TOP_HOLDERS[gaugeVote.user.toLowerCase()]
               ? TOP_HOLDERS[gaugeVote.user.toLowerCase()].title
               : shortenAddress(gaugeVote.user)}

@@ -8,7 +8,6 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
 import { formatNumber } from '@ui/utils'
-import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -25,7 +24,6 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
     proposalId: +voteId,
     proposalType: proposalType,
   })
-  const push = useNavigate()
 
   return (
     <Wrapper className={className}>
@@ -58,12 +56,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
                   ) : (
                     <AgainstIcon name="Misuse" size={16} />
                   )}
-                  <StyledInternalLink
-                    onClick={(e) => {
-                      e.preventDefault()
-                      push(getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`))
-                    }}
-                  >
+                  <StyledInternalLink href={getEthPath(`${DAO_ROUTES.PAGE_USER}/${vote.voter}`)}>
                     {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>

@@ -4,7 +4,7 @@ import type { UrlParams } from '@/dao/types/dao.types'
 import { getPath } from '@/dao/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { InternalLink } from '@ui/Link'
-import { useParams, useNavigate } from '@ui-kit/hooks/router'
+import { useParams } from '@ui-kit/hooks/router'
 
 type InternalLinkButtonProps = {
   to: string
@@ -13,16 +13,9 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const push = useNavigate()
   const params = useParams() as UrlParams
   return (
-    <StyledInternalLink
-      size={smallSize ? 'small' : undefined}
-      onClick={(e) => {
-        e.preventDefault()
-        push(getPath(params, to))
-      }}
-    >
+    <StyledInternalLink size={smallSize ? 'small' : undefined} href={getPath(params, to)}>
       {children}
       <Icon name="ArrowRight" size={16} />
     </StyledInternalLink>
