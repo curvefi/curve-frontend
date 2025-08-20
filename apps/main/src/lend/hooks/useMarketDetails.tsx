@@ -10,8 +10,9 @@ import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
-const { meanBy, sum } = lodash
+const { sum } = lodash
 
 type UseMarketDetailsProps = {
   chainId: ChainId
@@ -53,29 +54,35 @@ export const useMarketDetails = ({
   })
   const { data: campaigns } = useCampaigns({})
 
-  const averageRates = useMemo(() => {
-    if (!lendingSnapshots) return null
-
-    const averageStartDate = new Date()
-    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
-
-    const recentSnapshots = lendingSnapshots.filter(
-      (snapshot) => new Date(snapshot.timestamp).getTime() > averageStartDate.getTime(),
-    )
-
-    if (recentSnapshots.length === 0) return null
-
-    return {
-      borrowApy: meanBy(recentSnapshots, ({ borrowApy }) => Number(borrowApy)) * 100,
-      lendApy: meanBy(recentSnapshots, ({ lendApy }) => Number(lendApy)) * 100,
-      borrowRebasingYield: meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
-      supplyRebasingYield: meanBy(recentSnapshots, ({ borrowedToken }) => borrowedToken.rebasingYield) ?? null,
-      averageSupplyAprCrvMinBoost: meanBy(recentSnapshots, ({ lendAprCrv0Boost }) => lendAprCrv0Boost) ?? null,
-      averageSupplyAprCrvMaxBoost: meanBy(recentSnapshots, ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost) ?? null,
-      averageTotalExtraIncentivesApr:
-        meanBy(recentSnapshots, ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0)) ?? null,
-    }
-  }, [lendingSnapshots])
+  const {
+    borrowApy: averageBorrowApy,
+    lendApy: averageLendApy,
+    borrowRebasingYield: averageBorrowRebasingYield,
+    supplyRebasingYield: averageSupplyRebasingYield,
+    averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost,
+    averageSupplyAprCrvMaxBoost: averageSupplyAprCrvMaxBoost,
+    averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr,
+  } = useMemo(
+    () =>
+      calculateAverageRates(lendingSnapshots, averageMultiplier, {
+        borrowApy: ({ borrowApy }) => Number(borrowApy) * 100,
+        lendApy: ({ lendApy }) => Number(lendApy) * 100,
+        borrowRebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
+        supplyRebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
+        averageSupplyAprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
+        averageSupplyAprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
+        averageTotalExtraIncentivesApr: ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0),
+      }) ?? {
+        borrowApy: null,
+        lendApy: null,
+        borrowRebasingYield: null,
+        supplyRebasingYield: null,
+        averageSupplyAprCrvMinBoost: null,
+        averageSupplyAprCrvMaxBoost: null,
+        averageTotalExtraIncentivesApr: null,
+      },
+    [lendingSnapshots],
+  )
 
   const borrowApy = rates?.borrowApy ?? marketRate?.rates?.borrowApy
   const supplyApy = rates?.lendApy ?? marketRate?.rates?.lendApy
@@ -96,22 +103,21 @@ export const useMarketDetails = ({
     supplyApy == null
       ? null
       : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
-  const totalAverageBorrowRate =
-    averageRates?.borrowApy == null ? null : averageRates.borrowApy - (averageRates.borrowRebasingYield ?? 0)
+  const totalAverageBorrowRate = averageBorrowApy == null ? null : averageBorrowApy - (averageBorrowRebasingYield ?? 0)
   const totalAverageSupplyRateMinBoost =
-    averageRates?.lendApy == null
+    averageLendApy == null
       ? null
-      : averageRates.lendApy +
-        (averageRates.supplyRebasingYield ?? 0) +
-        (averageRates.averageTotalExtraIncentivesApr ?? 0) +
-        (averageRates.averageSupplyAprCrvMinBoost ?? 0)
+      : averageLendApy +
+        (averageSupplyRebasingYield ?? 0) +
+        (averageTotalExtraIncentivesApr ?? 0) +
+        (averageSupplyAprCrvMinBoost ?? 0)
   const totalAverageSupplyRateMaxBoost =
-    averageRates?.lendApy == null
+    averageLendApy == null
       ? null
-      : averageRates.lendApy +
-        (averageRates.supplyRebasingYield ?? 0) +
-        (averageRates.averageTotalExtraIncentivesApr ?? 0) +
-        (averageRates.averageSupplyAprCrvMaxBoost ?? 0)
+      : averageLendApy +
+        (averageSupplyRebasingYield ?? 0) +
+        (averageTotalExtraIncentivesApr ?? 0) +
+        (averageSupplyAprCrvMaxBoost ?? 0)
 
   return {
     marketType: LlamaMarketType.Lend,
@@ -134,10 +140,10 @@ export const useMarketDetails = ({
     },
     borrowAPY: {
       rate: borrowApy != null ? Number(borrowApy) : null,
-      averageRate: averageRates?.borrowApy ?? null,
+      averageRate: averageBorrowApy ?? null,
       averageRateLabel: averageMultiplierString,
       rebasingYield: collateralRebasingYield ?? null,
-      averageRebasingYield: averageRates?.borrowRebasingYield ?? null,
+      averageRebasingYield: averageBorrowRebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (collateralRebasingYield ?? 0),
       totalAverageBorrowRate,
       extraRewards: campaignRewards,
@@ -145,14 +151,14 @@ export const useMarketDetails = ({
     },
     supplyAPY: {
       rate: supplyApy != null ? Number(supplyApy) : null,
-      averageRate: averageRates?.lendApy ?? null,
+      averageRate: averageLendApy ?? null,
       averageRateLabel: averageMultiplierString,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
-      averageSupplyAprCrvMinBoost: averageRates?.averageSupplyAprCrvMinBoost ?? null,
-      averageSupplyAprCrvMaxBoost: averageRates?.averageSupplyAprCrvMaxBoost ?? null,
-      averageRebasingYield: averageRates?.supplyRebasingYield ?? null,
-      averageTotalExtraIncentivesApr: averageRates?.averageTotalExtraIncentivesApr ?? null,
+      averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,
+      averageSupplyAprCrvMaxBoost: averageSupplyAprCrvMaxBoost ?? null,
+      averageRebasingYield: averageSupplyRebasingYield ?? null,
+      averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
       totalSupplyRateMinBoost,
       totalSupplyRateMaxBoost,
       totalAverageSupplyRateMinBoost,

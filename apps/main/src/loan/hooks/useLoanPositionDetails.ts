@@ -14,6 +14,7 @@ import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-det
 import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -76,21 +77,14 @@ export const useLoanPositionDetails = ({
     agg: 'day',
   })
 
-  const averageAPR = useMemo(() => {
-    if (!crvUsdSnapshots) return null
-
-    const averageStartDate = new Date()
-    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
-
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > averageStartDate)
-
-    if (recentSnapshots.length === 0) return null
-
-    return {
-      rate: lodash.meanBy(recentSnapshots, ({ rate }) => rate) * 100,
-      rebasingYield: lodash.meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
-    }
-  }, [crvUsdSnapshots])
+  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+    () =>
+      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
+        rate: ({ rate }) => rate * 100,
+        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
+      }) ?? { rate: null, rebasingYield: null },
+    [crvUsdSnapshots],
+  )
 
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral) return null
@@ -117,13 +111,13 @@ export const useLoanPositionDetails = ({
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
       rebasingYield: collateralRebasingYield ?? null,
-      averageRate: averageAPR?.rate,
-      averageRebasingYield: averageAPR?.rebasingYield ?? null,
+      averageRate: averageRate,
+      averageRebasingYield: averageRebasingYield ?? null,
       averageRateLabel: averageMultiplierString,
       totalBorrowRate: loanDetails?.parameters?.rate
         ? Number(loanDetails?.parameters?.rate) - (collateralRebasingYield ?? 0)
         : null,
-      totalAverageBorrowRate: averageAPR?.rate == null ? null : averageAPR.rate - (averageAPR.rebasingYield ?? 0),
+      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

@@ -1,4 +1,3 @@
-import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
@@ -13,6 +12,7 @@ import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-det
 import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
@@ -66,21 +66,14 @@ export const useBorrowPositionDetails = ({
     agg: 'day',
   })
 
-  const averageAPR = useMemo(() => {
-    if (!lendSnapshots) return null
-
-    const averageStartDate = new Date()
-    averageStartDate.setDate(averageStartDate.getDate() - averageMultiplier)
-
-    const recentSnapshots = lendSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > averageStartDate)
-
-    if (recentSnapshots.length === 0) return null
-
-    return {
-      rate: meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100,
-      rebasingYield: meanBy(recentSnapshots, ({ collateralToken }) => collateralToken.rebasingYield) ?? null,
-    }
-  }, [lendSnapshots])
+  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+    () =>
+      calculateAverageRates(lendSnapshots, averageMultiplier, {
+        rate: ({ borrowApy }) => borrowApy * 100,
+        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
+      }) ?? { rate: null, rebasingYield: null },
+    [lendSnapshots],
+  )
 
   const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy ?? null
   const collateralTotalValue = useMemo(() => {
@@ -105,12 +98,12 @@ export const useBorrowPositionDetails = ({
     },
     borrowAPY: {
       rate: borrowApy == null ? null : Number(borrowApy),
-      averageRate: averageAPR?.rate,
+      averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
-      averageRebasingYield: averageAPR?.rebasingYield ?? null,
+      averageRebasingYield: averageRebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
-      totalAverageBorrowRate: averageAPR?.rate == null ? null : averageAPR.rate - (averageAPR.rebasingYield ?? 0),
+      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
