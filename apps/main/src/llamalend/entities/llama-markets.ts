@@ -1,12 +1,4 @@
 import { ethAddress } from 'viem'
-import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
-import {
-  getLendingVaultsOptions,
-  getUserLendingSuppliesOptions,
-  getUserLendingVaultsOptions,
-  LendingVault,
-} from '@/llamalend/entities/lending-vaults'
-import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
@@ -17,6 +9,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
 import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
+import { getFavoriteMarketOptions } from './favorite-markets'
+import {
+  getLendingVaultsOptions,
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+} from './lending-vaults'
+import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
 
 export type Assets = {
   borrowed: AssetDetails

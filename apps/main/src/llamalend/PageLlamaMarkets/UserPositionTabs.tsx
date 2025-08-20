@@ -14,7 +14,7 @@ export const UserPositionsTabs = (props: UserPositionsTableProps) => {
   return (
     <Stack>
       <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="small" options={TABS} />
-      <UserPositionsTable {...props} type={tab} />
+      <UserPositionsTable {...props} tab={tab} />
     </Stack>
   )
 }

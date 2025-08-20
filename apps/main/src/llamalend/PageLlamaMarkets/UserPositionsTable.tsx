@@ -15,7 +15,6 @@ import { LlamaMarketColumnId } from './columns.enum'
 import { maxMultiSortColCount, useLlamaMarketSortOptions } from './hooks/useLlamaMarketSortOptions'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
-import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const { isEqual } = lodash
@@ -33,17 +32,13 @@ export type UserPositionsTableProps = {
   loading: boolean
 }
 
-export const UserPositionsTable = ({ result, loading, type }: UserPositionsTableProps & { type: MarketRateType }) => {
+export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps & { tab: MarketRateType }) => {
   const { markets: data = [], userPositions } = result ?? {}
-  const defaultFilters = useDefaultUserFilter(type)
-  const title = TITLES[type]
+  const defaultFilters = useDefaultUserFilter(tab)
+  const title = TITLES[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(title, defaultFilters)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, 'userSort')
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
-    title,
-    sorting,
-    type,
-  )
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const table = useReactTable({
@@ -72,19 +67,17 @@ export const UserPositionsTable = ({ result, loading, type }: UserPositionsTable
         toggleVisibility={toggleVisibility}
         searchText={searchText}
         onSearch={onSearch}
-        collapsible={
-          <LendingMarketsFilters columnFilters={columnFiltersById} setColumnFilter={setColumnFilter} data={data} />
-        }
         chips={
-          <MarketsFilterChips
-            searchText={searchText}
-            onSearch={onSearch}
-            hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          />
+          tab === MarketRateType.Borrow && (
+            <MarketsFilterChips
+              searchText={searchText}
+              onSearch={onSearch}
+              columnFiltersById={columnFiltersById}
+              setColumnFilter={setColumnFilter}
+              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              resetFilters={resetFilters}
+            />
+          )
         }
         sort={
           <SelectFilter

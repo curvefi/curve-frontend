@@ -1,5 +1,4 @@
 import lodash from 'lodash'
-import { getCoinPrices } from '@/llamalend/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
 import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
@@ -12,6 +11,7 @@ import {
 } from '@ui-kit/lib/model/query/user-contract'
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
+import { getCoinPrices } from './usd-prices'
 
 type MintMarketFromApi = Market
 

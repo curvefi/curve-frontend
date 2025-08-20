@@ -18,7 +18,7 @@ const { Spacing } = SizesAndSpaces
 type ColumnFilterProps = FilterProps<LlamaMarketKey>
 
 type MarketsFilterChipsProps = ColumnFilterProps & {
-  hiddenMarketCount: number
+  hiddenMarketCount?: number
   resetFilters: () => void
   searchText: string
   hasFilters: boolean
@@ -41,6 +41,7 @@ export const MarketsFilterChips = ({
       ? t`Some markets are hidden by default due to low liquidity. You may change that in the liquidity filter.`
       : null
 
+  const isMobile = useIsMobile()
   return (
     <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
       {!useIsMobile() && <TableSearchField value={searchText} onChange={onSearch} />}
@@ -60,19 +61,21 @@ export const MarketsFilterChips = ({
       </Grid>
       {children}
 
-      <Tooltip title={tooltip}>
-        <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-          <ChipGridItem {...(!useIsMobile() && { alignRight: true })}>
-            <Stack direction="row" gap={1} alignItems="center">
-              <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
-              <Typography variant="highlightS">{hiddenMarketCount}</Typography>
-            </Stack>
-          </ChipGridItem>
-          <ChipGridItem alignRight>
-            <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-          </ChipGridItem>
-        </Grid>
-      </Tooltip>
+      {hiddenMarketCount != null && (
+        <Tooltip title={tooltip}>
+          <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+            <ChipGridItem {...(!isMobile && { alignRight: true })}>
+              <Stack direction="row" gap={1} alignItems="center">
+                <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
+                <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+              </Stack>
+            </ChipGridItem>
+            <ChipGridItem alignRight>
+              <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
+            </ChipGridItem>
+          </Grid>
+        </Tooltip>
+      )}
     </Grid>
   )
 }

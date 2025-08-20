@@ -18,7 +18,7 @@ import { TableSearchField } from './TableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
 import type { VisibilityGroup } from './visibility.types'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 /**
  * A button for controlling the DataTable.
@@ -72,8 +72,8 @@ export const TableFilters = <ColumnIds extends string>({
   onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
-  collapsible: ReactNode // filters that may be collapsed
-  chips: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
+  collapsible?: ReactNode // filters that may be collapsed
+  chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
@@ -83,10 +83,11 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
+  const isCollapsible = collapsible || (isMobile && chips)
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
-        <Grid size={{ mobile: 6 }}>
+        <Grid size={{ mobile: 6 }} minHeight={ButtonSize.sm}>
           <Typography variant="headingSBold">{title}</Typography>
           {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
         </Grid>
@@ -100,12 +101,14 @@ export const TableFilters = <ColumnIds extends string>({
               active={visibilitySettingsOpen}
             />
           )}
-          <TableButton
-            onClick={() => setFilterExpanded((prev) => !prev)}
-            active={filterExpanded}
-            icon={FilterIcon}
-            testId="btn-expand-filters"
-          />
+          {isCollapsible && (
+            <TableButton
+              onClick={() => setFilterExpanded((prev) => !prev)}
+              active={filterExpanded}
+              icon={FilterIcon}
+              testId="btn-expand-filters"
+            />
+          )}
           {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
         </Grid>
         {isMobile ? (
@@ -118,19 +121,23 @@ export const TableFilters = <ColumnIds extends string>({
             </Grid>
           </>
         ) : (
-          <Grid size={12} gap={0} justifyContent="flex-end">
-            {chips}
-          </Grid>
+          chips && (
+            <Grid size={12} gap={0} justifyContent="flex-end">
+              {chips}
+            </Grid>
+          )
         )}
       </Grid>
-      <Collapse in={filterExpanded}>
-        {collapsible}
-        {isMobile && (
-          <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-            {chips}
-          </Box>
-        )}
-      </Collapse>
+      {isCollapsible && (
+        <Collapse in={filterExpanded}>
+          {collapsible}
+          {isMobile && chips && (
+            <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
+              {chips}
+            </Box>
+          )}
+        </Collapse>
+      )}
 
       {visibilitySettingsOpen != null && settingsRef.current && (
         <TableVisibilitySettingsPopover<ColumnIds>
