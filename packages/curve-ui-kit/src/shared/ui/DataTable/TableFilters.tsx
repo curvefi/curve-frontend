@@ -71,7 +71,7 @@ export const TableFilters = <ColumnIds extends string>({
   loading: boolean
   onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
-  toggleVisibility: (columns: string[]) => void
+  toggleVisibility?: (columns: string[]) => void
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
@@ -92,7 +92,7 @@ export const TableFilters = <ColumnIds extends string>({
           {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
         </Grid>
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
-          {!isMobile && (
+          {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
               onClick={openVisibilitySettings}
@@ -139,7 +139,7 @@ export const TableFilters = <ColumnIds extends string>({
         </Collapse>
       )}
 
-      {visibilitySettingsOpen != null && settingsRef.current && (
+      {visibilitySettingsOpen != null && settingsRef.current && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorEl={settingsRef.current}
           visibilityGroups={visibilityGroups}
