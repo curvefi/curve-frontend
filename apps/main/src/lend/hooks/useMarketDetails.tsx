@@ -43,6 +43,7 @@ export const useMarketDetails = ({
     blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
     contractAddress: controller as Address,
     agg: 'day',
+    limit: 30, // fetch last 30 days for 30 day average calcs
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId: chainId,

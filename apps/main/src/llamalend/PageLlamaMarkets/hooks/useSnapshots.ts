@@ -37,7 +37,7 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
   const showLendGraph = isLend && enabled
   const showMintGraph = !isLend && type === MarketRateType.Borrow && enabled
   const contractAddress = controllerAddress
-  const params = { blockchainId: chain, contractAddress }
+  const params = { blockchainId: chain, contractAddress, limit: 7 } // fetch last 7 days for 7 day average calcs
   const { data: poolSnapshots, isLoading: lendIsLoading, error: poolError } = useLendingSnapshots(params, showLendGraph)
   const { data: mintSnapshots, isLoading: mintIsLoading, error: mintError } = useCrvUsdSnapshots(params, showMintGraph)
 

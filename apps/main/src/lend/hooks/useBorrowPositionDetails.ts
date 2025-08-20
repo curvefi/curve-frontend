@@ -64,6 +64,7 @@ export const useBorrowPositionDetails = ({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
     agg: 'day',
+    limit: 30, // fetch last 30 days for 30 day average calcs
   })
 
   const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(

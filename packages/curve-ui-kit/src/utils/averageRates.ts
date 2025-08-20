@@ -1,4 +1,5 @@
-import meanBy from 'lodash/meanBy'
+import lodash from 'lodash'
+const { meanBy } = lodash
 
 /**
  * Calculates average rates from snapshots over a given time period
