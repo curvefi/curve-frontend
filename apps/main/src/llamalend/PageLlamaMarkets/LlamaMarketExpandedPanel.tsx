@@ -1,10 +1,5 @@
 import { useMemo } from 'react'
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'
-import { BorrowRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/BorrowRateTooltip'
-import { LendRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/LendRateTooltip'
-import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/chips/FavoriteMarketButton'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -21,7 +16,12 @@ import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket } from '../entities/llama-markets'
+import { LineGraphCell } from './cells'
+import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
+import { LendRateTooltip } from './cells/RateCell/LendRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
+import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
+import { LlamaMarketColumnId } from './columns.enum'
 
 const { Spacing } = SizesAndSpaces
 

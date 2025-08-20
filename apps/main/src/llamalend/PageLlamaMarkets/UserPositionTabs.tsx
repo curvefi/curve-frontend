@@ -1,11 +1,11 @@
 import { useState } from 'react'
-import { UserPositionsTable, type UserPositionsTableProps } from '@/llamalend/PageLlamaMarkets/UserPositionsTable'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
+import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
-export const UserPositionsTabs = (props: UserPositionsTableProps) => {
+export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab'>) => {
   const [tab, setTab] = useState<MarketRateType>(MarketRateType.Borrow) // todo: maybe keep in query string?
   const TABS: TabOption<MarketRateType>[] = [
     { value: MarketRateType.Borrow, label: t`Borrow` },

@@ -1,24 +1,21 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
-import { MarketTypeFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketTypeFilterChips'
-import { LlamaMarketSort } from '@/llamalend/PageLlamaMarkets/LlamaMarketSort'
-import Grid from '@mui/material/Grid'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
-import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
-import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
+import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../entities/llama-markets'
-import { MarketsFilterChips } from './chips/MarketsFilterChips'
+import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
+import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
-import { maxMultiSortColCount } from './hooks/useLlamaMarketSortOptions'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
 const TITLES = {
@@ -33,9 +30,10 @@ const useDefaultUserFilter = (type: MarketRateType) =>
 export type UserPositionsTableProps = {
   result: LlamaMarketsResult | undefined
   loading: boolean
+  tab: MarketRateType
 }
 
-export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps & { tab: MarketRateType }) => {
+export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
   const title = TITLES[tab]
@@ -44,20 +42,14 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   const { columnSettings, columnVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const isMobile = useIsMobile()
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
-    autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
     state: { expanded, sorting, columnVisibility, columnFilters },
     onSortingChange,
     onExpandedChange,
-    maxMultiSortColCount,
-    ...getTableModels(result),
+    ...getTableOptions(result),
   })
-  const filterProps = { columnFiltersById, setColumnFilter }
-
-  const showChips = userPositions?.Lend[tab] && userPositions?.Mint[tab]
   return (
     <DataTable
       table={table}
@@ -73,23 +65,19 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <MarketsFilterChips
+          <MarketFilterChipWrapper
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
           >
-            <Grid container justifyContent="space-between" size={12}>
-              {!isMobile && (
-                <Grid size={showChips ? 6 : 12}>
-                  <TableSearchField value={searchText} onChange={onSearch} />
-                </Grid>
-              )}
-              {showChips && (
-                <Grid size={6}>
-                  <MarketTypeFilterChips {...filterProps} />
-                </Grid>
-              )}
-            </Grid>
-          </MarketsFilterChips>
+            <UserPositionFilterChips
+              columnFiltersById={columnFiltersById}
+              setColumnFilter={setColumnFilter}
+              userPositions={userPositions}
+              tab={tab}
+              searchText={searchText}
+              onSearch={onSearch}
+            />
+          </MarketFilterChipWrapper>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />

@@ -43,10 +43,12 @@ export type FilterProps<T extends string> = {
   setColumnFilter: (id: T, value: unknown) => void
 }
 
-export const getTableModels = <T>(result: T | undefined) => ({
+export const getTableOptions = <T>(result: T | undefined) => ({
   getCoreRowModel: getCoreRowModel<T>(),
   getSortedRowModel: getSortedRowModel<T>(),
   // only pass the filtered model once loaded, it causes an error: https://github.com/TanStack/table/issues/5026
   getFilteredRowModel: result && getFilteredRowModel<T>(),
   getExpandedRowModel: getExpandedRowModel<T>(),
+  autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
+  maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
 })

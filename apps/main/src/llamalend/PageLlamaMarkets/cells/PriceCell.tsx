@@ -1,13 +1,13 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { ErrorCell } from '@/llamalend/PageLlamaMarkets/cells/ErrorCell'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { LlamaMarketColumnId } from '../columns.enum'
+import { ErrorCell } from './ErrorCell'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original

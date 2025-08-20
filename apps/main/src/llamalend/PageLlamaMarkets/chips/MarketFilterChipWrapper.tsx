@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react'
-import { ChipGridItem } from '@/llamalend/PageLlamaMarkets/chips/ChipGridItem'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -8,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ChipGridItem } from './ChipGridItem'
 
 const { Spacing } = SizesAndSpaces
 
@@ -18,7 +18,7 @@ type MarketsFilterChipsProps = {
   children?: ReactNode
 }
 
-export const MarketsFilterChips = ({
+export const MarketFilterChipWrapper = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,

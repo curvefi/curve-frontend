@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
+import { LlamaMarketColumnId } from '../columns.enum'
 
 export const useSearch = (
   columnFiltersById: Record<string, unknown>,

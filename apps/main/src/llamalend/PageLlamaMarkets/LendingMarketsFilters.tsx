@@ -1,9 +1,6 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import { MultiSelectFilter } from '@/llamalend/PageLlamaMarkets/filters/MultiSelectFilter'
-import { RangeSliderFilter } from '@/llamalend/PageLlamaMarkets/filters/RangeSliderFilter'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
@@ -11,6 +8,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketColumnId } from './columns.enum'
+import { MultiSelectFilter } from './filters/MultiSelectFilter'
+import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
 

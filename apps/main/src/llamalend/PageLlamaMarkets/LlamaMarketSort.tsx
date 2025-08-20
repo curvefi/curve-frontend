@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import { useLlamaMarketSortOptions } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
+import { LlamaMarketColumnId } from './columns.enum'
+import { useLlamaMarketSortOptions } from './hooks/useLlamaMarketSortOptions'
 
 export const LlamaMarketSort = ({
   sortField,

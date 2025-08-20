@@ -1,15 +1,12 @@
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import {
-  createLlamaMarketsMobileColumns,
-  LLAMA_MARKETS_COLUMN_OPTIONS,
-} from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketsColumnVisibility'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
 import { MarketRateType } from '@ui-kit/types/market'
+import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '../columns'
+import { LlamaMarketColumnId } from '../columns.enum'
+import { createLlamaMarketsMobileColumns, LLAMA_MARKETS_COLUMN_OPTIONS } from './useLlamaMarketsColumnVisibility'
 
 const getVariant = (
   userPositions: LlamaMarketsResult['userPositions'] | MarketRateType | undefined,

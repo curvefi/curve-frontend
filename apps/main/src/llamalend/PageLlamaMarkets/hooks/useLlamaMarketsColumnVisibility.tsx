@@ -1,8 +1,8 @@
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable'
 import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketColumnId } from '../columns.enum'
 
 /**
  * Create a map of column visibility for the Llama markets table on mobile devices.

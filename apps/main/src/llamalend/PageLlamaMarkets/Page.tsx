@@ -8,14 +8,14 @@ import {
 } from '@/llamalend/entities/lending-vaults'
 import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
 import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/entities/mint-markets'
-import { LendTableFooter } from '@/llamalend/PageLlamaMarkets/LendTableFooter'
-import { LlamaMarketsTable } from '@/llamalend/PageLlamaMarkets/LlamaMarketsTable'
-import { UserPositionsTabs } from '@/llamalend/PageLlamaMarkets/UserPositionTabs'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
+import { LendTableFooter } from './LendTableFooter'
+import { LlamaMarketsTable } from './LlamaMarketsTable'
+import { UserPositionsTabs } from './UserPositionTabs'
 
 /**
  * Creates a callback to reload the markets and user data.
