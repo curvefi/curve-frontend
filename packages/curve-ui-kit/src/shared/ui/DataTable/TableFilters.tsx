@@ -87,7 +87,7 @@ export const TableFilters = <ColumnIds extends string>({
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
-        <Grid size={{ mobile: 6 }} minHeight={ButtonSize.sm}>
+        <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
           {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
         </Grid>

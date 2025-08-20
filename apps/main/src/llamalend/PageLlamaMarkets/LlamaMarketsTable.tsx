@@ -11,11 +11,12 @@ import { LlamaMarketSort } from '@/llamalend/PageLlamaMarkets/LlamaMarketSort'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
@@ -51,6 +52,7 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
+  const isMobile = useIsMobile()
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
@@ -91,12 +93,11 @@ export const LlamaMarketsTable = ({
         }
         chips={
           <MarketsFilterChips
-            searchText={searchText}
-            onSearch={onSearch}
             hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
           >
+            {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
             <MarketTypeFilterChips {...filterProps} />
             <LlamaListFilterChips userPositions={userPositions} hasFavorites={hasFavorites} {...filterProps} />
           </MarketsFilterChips>

@@ -2,12 +2,14 @@ import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { MarketTypeFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketTypeFilterChips'
 import { LlamaMarketSort } from '@/llamalend/PageLlamaMarkets/LlamaMarketSort'
+import Grid from '@mui/material/Grid'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
-import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../entities/llama-markets'
 import { MarketsFilterChips } from './chips/MarketsFilterChips'
@@ -42,6 +44,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   const { columnSettings, columnVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
+  const isMobile = useIsMobile()
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
     data,
@@ -54,6 +57,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   })
   const filterProps = { columnFiltersById, setColumnFilter }
 
+  const showChips = userPositions?.Lend[tab] && userPositions?.Mint[tab]
   return (
     <DataTable
       table={table}
@@ -70,13 +74,21 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         onSearch={onSearch}
         chips={
           <MarketsFilterChips
-            searchText={searchText}
-            // todo: make search half screen
-            onSearch={onSearch}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
           >
-            {userPositions?.Lend[tab] && userPositions?.Mint[tab] && <MarketTypeFilterChips {...filterProps} />}
+            <Grid container justifyContent="space-between" size={12}>
+              {!isMobile && (
+                <Grid size={showChips ? 6 : 12}>
+                  <TableSearchField value={searchText} onChange={onSearch} />
+                </Grid>
+              )}
+              {showChips && (
+                <Grid size={6}>
+                  <MarketTypeFilterChips {...filterProps} />
+                </Grid>
+              )}
+            </Grid>
           </MarketsFilterChips>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}

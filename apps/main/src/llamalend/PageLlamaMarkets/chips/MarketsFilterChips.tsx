@@ -6,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -15,9 +14,7 @@ const { Spacing } = SizesAndSpaces
 type MarketsFilterChipsProps = {
   hiddenMarketCount?: number
   resetFilters: () => void
-  searchText: string
   hasFilters: boolean
-  onSearch: (value: string) => void
   children?: ReactNode
 }
 
@@ -25,8 +22,6 @@ export const MarketsFilterChips = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
-  searchText,
-  onSearch,
   children,
 }: MarketsFilterChipsProps) => {
   const tooltip =
@@ -37,7 +32,6 @@ export const MarketsFilterChips = ({
   const isMobile = useIsMobile()
   return (
     <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
-      {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
       {children}
 
       {hiddenMarketCount != null && (
