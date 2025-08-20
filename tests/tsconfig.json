@@ -1,11 +1,21 @@
 {
-  "extends": "tsconfig/base.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "jsx": "react-jsx",
-    "types": ["hardhat"],
+    "types": ["cypress", "node", "hardhat"],
     "baseUrl": "./cypress",
     "lib": ["es2022", "dom"],
-    "skipLibCheck": true,
     "resolveJsonModule": true,
     "paths": {
       "@/*": ["../../apps/main/src/*"],
@@ -14,17 +24,19 @@
       "@ui/*": ["../../packages/ui/src/*"],
       "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
       "@curvefi/prices-api": ["../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
-    }
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
+    },
+    "outDir": "./dist"
   },
   "include": [
-    "./**/*.ts",
+    "cypress/**/*.ts",
+    "cypress/**/*.tsx",
     "cypress/**/*.d.ts",
+    "cypress/**/*.json",
     "cypress.config.ts",
     "hardhat.config.js",
     "runHardhatNodes.js",
-    "killHardhatNodes.js",
-    "../packages/curve-ui-kit/**/*.d.ts",
-    "../packages/ui/**/*.d.ts",
-  ]
+    "killHardhatNodes.js"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

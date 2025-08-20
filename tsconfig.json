@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./apps/main" },
+    { "path": "./packages/ui" },
+    { "path": "./packages/curve-ui-kit" },
+    { "path": "./packages/prices-api" },
+    { "path": "./packages/external-rewards" },
+    { "path": "./tests" }
+  ]
+}
