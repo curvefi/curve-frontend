@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ```bash
 # Development
-yarn dev                # Start all apps in development mode on localhost:3000
-yarn build              # Build all apps for production
-yarn start              # Start production builds
+yarn dev                # Start Vite dev server on localhost:3000
+yarn build              # Build all packages for production
+yarn start              # Preview production build
 yarn lint               # Lint all code
 yarn lint:fix           # Fix linting issues automatically
 yarn typecheck          # Run TypeScript checks across all packages
@@ -18,16 +18,12 @@ yarn format:check       # Check code formatting without fixing
 # Testing
 cd tests
 yarn cy:open:e2e        # Open Cypress E2E tests interactively
-yarn cy:run:e2e         # Run Cypress E2E tests headless
+yarn cy:run:e2e         # Run Cypress E2E tests headless (requires yarn dev first)
 yarn cy:open:component  # Open Cypress component tests interactively
 yarn cy:run:component   # Run Cypress component tests headless
 
-# Bundle Analysis
-cd apps/main
-yarn analyze            # Analyze bundle size (sets ANALYZE=true)
-
 # UI Kit Development
-yarn storybook          # Run Storybook for UI components
+yarn storybook          # Run Storybook for UI components on port 6006
 yarn storybook:build    # Build Storybook static files
 ```
 
@@ -35,183 +31,253 @@ yarn storybook:build    # Build Storybook static files
 
 ### Monorepo Structure
 
-This is a **Turborepo monorepo** with a single Next.js 15.2.4 application that handles multiple DeFi domains:
+This is a **Yarn workspaces monorepo** with a Vite-powered React application:
 
-- **`/apps/main`**: Main Next.js app with App Router containing all domains
-- **`/packages/curve-ui-kit`**: Shared UI components with Storybook
-- **`/packages/ui`**: Additional UI components
+- **`/apps/main`**: Main React app with TanStack Router containing all domains
+- **`/packages/curve-ui-kit`**: MUI-based shared UI components with Storybook
+- **`/packages/ui`**: Legacy UI components (being deprecated)
 - **`/packages/prices-api`**: Curve prices API client
 - **`/packages/external-rewards`**: Campaign rewards configuration
-- **`/tests`**: Cypress E2E tests with Hardhat node support
+- **`/tests`**: Cypress E2E and component tests
 
 ### Domain Organization
 
-The main app is organized by financial product domains under `/apps/main/src/app/`:
+The main app is organized by financial product domains under `/apps/main/src/`:
 
 - **`/dex`**: Router swaps, pool management (deposit/withdraw/swap), pool creation
-- **`/crvusd`**: crvUSD minting, collateral management, liquidation
-- **`/lend`**: LlamaLend markets, lending/borrowing functionality
+- **`/crvusd`** and **`/loan`**: crvUSD minting, collateral management, liquidation
+- **`/lend`** and **`/llamalend`**: LlamaLend markets, lending/borrowing functionality
 - **`/dao`**: Governance, voting, gauge management, veCRV features
 
-Each domain follows a consistent structure:
+Each domain follows Feature-Sliced Design:
 
 ```
 src/[domain]/
-  components/          # Domain-specific React components
-  store/              # Zustand state slices
+  entities/           # Core business models with TanStack Query
+  features/           # User-facing functionality
+  components/         # Domain-specific React components
+  store/              # Zustand slices (being migrated to TanStack Query)
   utils/              # Domain utilities
   hooks/              # Custom hooks
-  entities/           # Data models and validation
   types/              # TypeScript types
+  lib/                # Domain-specific libraries
+  layout/             # Layout components
+  widgets/            # Complex UI components
 ```
 
 ### Key Technologies
 
 **Core Stack:**
 
-- Next.js 15.2.4 with App Router
-- React 19.1.0
-- TypeScript 5.8.3
+- Vite with React
+- React 19 with TypeScript
+- TanStack Router for routing
+- TanStack Query for data fetching
 - Node.js 22 (required)
-- Yarn 4.6.0
+- Yarn 4 workspaces
 
 **State & Data:**
 
-- Zustand 4.5.7 for client state (we want to deprecate this in favor of tanstack react-query)
-- Immer 9.0.21 for immutable updates
-- @tanstack/react-query 5.76.1 (we want to deprecate Zustand in favor of this)
+- TanStack Query for server state (preferred for new code)
+- Zustand for client state (being deprecated)
+- Immer for immutable updates
+- Vest for validation
 
 **Blockchain:**
 
-- @curvefi/api 2.67.2 (main protocol)
-- @curvefi/llamalend-api 1.0.21 (lending and minting)
-- Ethers.js 6.14.1
-- BigNumber.js 9.3.0
+- @curvefi/api (main protocol)
+- @curvefi/llamalend-api (lending and minting)
+- Wagmi v2 + Viem (migration target)
+- Ethers.js (being deprecated)
 
 **UI/Forms:**
 
-- Styled Components 6.1.18 (we want to deprecate this in favor of curve-ui-kit)
-- Material-UI based curve-ui-kit
-- React Hook Form 7.56.4 (we want to deprecate this in favor of curve-ui-kit)
-- Vest 5.4.6 (validation in new code)
+- curve-ui-kit (MUI-based, preferred)
+- Styled Components (being deprecated)
+- React Hook Form (being deprecated)
 
 ## Development Patterns
 
-### Feature-Sliced Design (FSD)
+### TanStack Router
 
-The codebase follows Feature-Sliced Design architecture:
+Routes are defined in `/apps/main/src/routes/` with a hierarchical structure:
 
-- **Features**: Business logic grouped by user-facing functionality
-- **Entities**: Core business models (pools, tokens, users)
-- **Shared**: Reusable utilities, hooks, components
+```typescript
+// Root route with global layout
+export const rootRoute = createRootRoute({
+  component: RootLayout,
+  loader: getNetworkDefs,
+})
+
+// Domain layout route
+export const dexLayoutRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'dex',
+  component: DexLayout,
+})
+
+// Feature route
+export const poolRoute = createRoute({
+  getParentRoute: () => dexLayoutRoute,
+  path: '$network/pool/$poolId',
+  component: PagePool,
+  head: () => ({ meta: [{ title: 'Pool - Curve' }] }),
+})
+```
+
+### TanStack Query with queryFactory
+
+The `queryFactory` pattern provides consistent query creation with built-in validation:
+
+```typescript
+import { queryFactory } from '@ui-kit/lib/model/query'
+
+// Define query with validation
+export const { useQuery: usePoolData, invalidate: invalidatePool } = queryFactory({
+  queryKey: (params: PoolParams) => ['pool', params] as const,
+  queryFn: async ({ chainId, poolId }) => {
+    const curve = await getCurve(chainId)
+    return curve.getPool(poolId)
+  },
+  staleTime: '5m', // Uses REFRESH_INTERVAL constants
+  validationSuite: poolValidationSuite,
+})
+
+// Usage in component
+const { data: pool, isLoading } = usePoolData({ chainId, poolId })
+```
+
+### Mutations with TanStack Query
+
+```typescript
+export const useAddRewardToken = ({ chainId, poolId }: GaugeParams) => {
+  return useMutation({
+    mutationKey: ['addRewardToken', { chainId, poolId }],
+    mutationFn: async (params: AddRewardMutation) => {
+      const curve = await getCurve(chainId)
+      return curve.gauge.addRewardToken(params)
+    },
+    onSuccess: (resp, { rewardTokenId }) => {
+      notify(t`Added reward token ${rewardTokenId}`, 'success')
+      return queryClient.invalidateQueries({ queryKey: ['distributors', { chainId, poolId }] })
+    },
+    onError: (error) => {
+      notify(t`Failed to add reward token`, 'error')
+    },
+  })
+}
+```
 
 ### Validation with Vest
 
-Data validation should use Vest library with validation groups:
-
 ```typescript
-// Example validation group
-export const poolValidationGroup = ({ chainId, poolId }: PoolQueryParams) =>
-  group('poolValidation', () => {
-    chainValidationGroup({ chainId })
+import { group, test } from 'vest'
+import { enforce } from 'vest/enforce'
+
+export const poolValidationGroup = ({ chainId, poolId }: PoolParams) =>
+  group('pool', () => {
+    test('chainId', () => {
+      enforce(chainId).message('Chain ID required').isNotEmpty()
+      enforce(chainId).message('Invalid chain ID').isNumber()
+    })
     test('poolId', () => {
-      enforce(poolId).message('Pool ID is required').isNotEmpty()
+      enforce(poolId).message('Pool ID required').isNotEmpty()
     })
   })
 
-// Usage
-const isValid = checkValidity(poolValidationGroup, data)
-const validatedData = assertValidity(poolValidationGroup, data)
+// Create validation suite
+export const poolValidationSuite = createValidationSuite(poolValidationGroup)
+
+// Use validation
+const isValid = checkPoolValidity(params)
+const validated = assertPoolValidity(params)
 ```
 
-### State Management
+### Wagmi Configuration
 
-- **React Query** for any new code
-- **Zustand** and **Immer** for old code (being deprecated)
-- Local storage integration for user preferences
+Located in `/packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/`:
 
-### Multi-Chain Support
+```typescript
+// Configuration supports 26+ chains
+export const createWagmiConfig = memoize(({ chains, transports, connectors }) =>
+  createConfig({
+    chains,
+    connectors,
+    transports,
+    multiInjectedProviderDiscovery: false, // Prevent auto-reconnect issues
+  }),
+)
 
-- Supports 15+ blockchain networks
-- Network-specific routing: `/[domain]/[network]/`
-- Dynamic RPC configuration via environment variables
-- Chain-specific state management and validation
+// Usage via ConnectionContext
+const { wallet, provider, chainId, switchChain } = useConnection()
+```
 
-## Wallet connection
+### Storybook Stories
 
-The wagmi configuration in this Curve Frontend codebase is quite comprehensive. Here's how it's set up:
+UI components in curve-ui-kit should have accompanying stories:
 
-Core Configuration
+```typescript
+// Example: Button.stories.tsx
+export default {
+  title: 'UI/Button',
+  component: Button,
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['contained', 'outlined', 'text'],
+    },
+  },
+} satisfies Meta<typeof Button>
 
-Location: /packages/curve-ui-kit/src/features/connect-wallet/lib/wagmi/wagmi-config.ts
+export const Default: Story = {
+  args: {
+    children: 'Click me',
+    variant: 'contained',
+  },
+}
+```
 
-The wagmi config supports 26+ chains including Ethereum, Optimism, Polygon, Arbitrum, Base, and several custom chains like Hyperliquid and TAC.
+### Cypress Testing
 
-Key Features
+- **E2E Tests**: Located in `/tests/cypress/e2e/`
+- **Component Tests**: Located in `/tests/cypress/component/`
+- Use `cy.` commands for assertions and interactions
+- Tests run against localhost:3000 (dev server must be running)
 
-Transport Strategy:
+## Migration Guidelines
 
-- Primary: unstable_connector(injected) for user's wallet
-- Fallback: HTTP transport with batch size 3 (DRPC compliance)
+**Zustand → TanStack Query**:
 
-Supported Wallets:
+- Create new queries with `queryFactory`
+- Replace store slices gradually
+- Keep Zustand only for true client state (UI preferences)
 
-- Browser/Injected wallets
-- WalletConnect (project ID: 982ea4bdf92e49746bd040a981283b36)
-- Coinbase Wallet
-- Safe (iframe only)
+**Ethers → Viem/Wagmi**:
 
-Custom Chains: Includes Hyperliquid (999), TAC (2390), MegaETH (6342), Strata (8091), and EXPchain (18880)
+- Use Viem utilities for new code
+- `isAddress`, `isAddressEqual`, `zeroAddress` from viem
+- Maintain compatibility layer for CurveJS
 
-The wallet gives a compatibility layer for ethersJS so it may be passed to CurveJS libraries.
+**Styled Components → curve-ui-kit**:
 
-### Integration
+- Use MUI-based components from curve-ui-kit
+- Create new components with MUI's sx prop or styled()
 
-The config is wrapped around the entire app in ClientWrapper.tsx and integrates with a custom ConnectionContext that handles chain switching and coordinates with CurveJS libraries.
-The UI uses a modal system with useConnection and useWallet hooks for wallet interactions.
+**React Hook Form → Controlled components**:
 
-## Environment Setup
-
-### Prerequisites
-
-- Node.js 22 (exact version required)
-- Yarn 4.6.0
-
-### Setup Steps
-
-1. `git clone https://github.com/curvefi/curve-frontend.git`
-2. `cd curve-frontend && yarn`
-3. Configure environment variables as needed
-4. `yarn dev` to start development server
-5. Access at http://localhost:3000
-
-### Testing Environment
-
-The tests that use Cypress with Hardhat forked networks are not working.
-The idea was to run forked nodes on ports `8545 + chainId` to allow testing against mainnet state.
-However, starting up the fork takes forever and the tests are not stable.
-In the future we want to use a test network like Sepolia for testing.
-The existing codes that run every commit do not need any fork.
-
-## Code Quality Tools
-
-- **ESLint** with custom configuration
-- **Prettier** for code formatting
-- **TypeScript** strict mode
-- **Husky** git hooks with **lint-staged**
-- **Commitlint** for conventional commits
-- Bundle analyzer for performance optimization
+- Use controlled components with local state
+- Validate with Vest
+- Submit with TanStack Query mutations
 
 ## Important Notes
 
 - Always run `yarn typecheck`, `yarn format` and `yarn lint:fix` before committing
-- Follow existing validation patterns with Vest
-- Use `@tanstack/react-query` for new data fetching logic
-- Try to get rid of duplicated code shared by multiple apps
-- Use test networks when working with blockchain interactions
-- UI components should use the curve-ui-kit package when possible
-- The existing code is often not pure, so be careful when refactoring - use only immutable data structures
-- Do not use hardcoded values but instead use constants/enums.
-- In the codebase, data is sometimes set incorrectly to 0, '' or NaN when errors occur. Please leave the data as undefined or null, and actually display unexpected errors.
-- **Never** use `any` or `ts-ignore` comments. If you need to, please create a type for it or ask for help.
-- We are trying to get rid of all `eslint-disable-next-line react-hooks/exhaustive-deps` comments, feel free to refactor the code and add proper dependencies to the useEffect hooks. However, be careful not to create infinite loops.
+- Use `queryFactory` pattern for all new data fetching
+- Prefer immutable data structures with Immer
+- Never use `any` or `@ts-ignore` - create proper types
+- Handle errors explicitly - avoid setting data to 0, '', or NaN on error
+- Fix `eslint-disable-next-line react-hooks/exhaustive-deps` warnings properly
+- Use constants/enums instead of hardcoded values
+- New UI components should go in curve-ui-kit with Storybook stories
+- Network-specific routing pattern: `/[domain]/[network]/[feature]`
+- Query keys should be arrays with consistent structure: `['entity', params]`
