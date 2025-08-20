@@ -12,7 +12,7 @@ export async function getSupportedChains(options?: Options) {
 
 export async function getChainInfo(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetChainInfoResponse>(`${host}/v1/chains/${chain}?page=1&per_page=1`)
+  const resp = await fetch<Responses.GetChainInfoResponse>(`${host}/v1/chains/${chain}`)
 
   return Parsers.parseChainInfo(resp)
 }
