@@ -43,7 +43,7 @@
     "vite": "*",
     "vite-plugin-vercel": "9.0.7"
   },
-  "packageManager": "yarn@4.6.0",
+  "packageManager": "yarn@4.9.2",
   "lint-staged": {
     "{apps,tests,packages}/**/*.{js,jsx,ts,tsx}": [
       "prettier --write",
