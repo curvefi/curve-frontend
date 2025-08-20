@@ -61,6 +61,12 @@ export type LlamaMarket = {
   userPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
 }
 
+export type LlamaMarketsResult = {
+  markets: LlamaMarket[]
+  userPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
+  hasFavorites: boolean
+}
+
 export type LlamaMarketKey = DeepKeys<LlamaMarket>
 
 const DEPRECATED_LLAMAS: Record<string, () => string> = {
@@ -234,12 +240,6 @@ const convertMintMarket = (
   }
 }
 
-export type LlamaMarketsResult = {
-  markets: LlamaMarket[]
-  userPositions: Record<MarketRateType | LlamaMarketType, boolean> | null
-  hasFavorites: boolean
-}
-
 /**
  * Creates a function that counts the number of markets for each collateral token.
  * This is used to create unique names for markets with the same collateral token, used in the URL.
@@ -299,16 +299,20 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
         userSuppliedMarkets.isError ||
         userMintMarkets.isError
 
-      const data =
+      const data: LlamaMarketsResult | undefined =
         showData && showUserData
           ? {
               userPositions:
                 userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
                   ? {
-                      [MarketRateType.Borrow]: userBorrows.size > 0 || userMints.size > 0,
-                      [MarketRateType.Supply]: userSupplied.size > 0,
-                      [LlamaMarketType.Mint]: userMints.size > 0,
-                      [LlamaMarketType.Lend]: userBorrows.size > 0 || userSupplied.size > 0,
+                      [LlamaMarketType.Mint]: {
+                        [MarketRateType.Borrow]: userMints.size > 0,
+                        [MarketRateType.Supply]: false,
+                      },
+                      [LlamaMarketType.Lend]: {
+                        [MarketRateType.Borrow]: userBorrows.size > 0,
+                        [MarketRateType.Supply]: userSupplied.size > 0,
+                      },
                     }
                   : null,
               hasFavorites: favoriteMarketsSet.size > 0,

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import {
@@ -12,15 +12,15 @@ import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
 import { MarketRateType } from '@ui-kit/types/market'
 
 const getVariant = (
-  userPositions: LlamaMarket['userPositions'] | MarketRateType | undefined,
+  userPositions: LlamaMarketsResult['userPositions'] | MarketRateType | undefined,
 ): keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS =>
-  userPositions === undefined
+  userPositions === undefined // undefined means its loading
     ? 'unknown'
-    : userPositions === null
+    : userPositions === null // null means no positions at all
       ? 'noPositions'
       : typeof userPositions == 'string'
-        ? userPositions
-        : 'hasPositions'
+        ? userPositions // show variant for a specific market rate type
+        : 'hasPositions' // show the general market table, for users with positions
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -30,7 +30,7 @@ const getVariant = (
 export const useLlamaTableVisibility = (
   title: string,
   sorting: SortingState,
-  userPositions: LlamaMarket['userPositions'] | MarketRateType | undefined,
+  userPositions: LlamaMarketsResult['userPositions'] | MarketRateType | undefined,
 ) => {
   const variant = getVariant(userPositions)
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId

@@ -1,14 +1,13 @@
 import lodash from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { LlamaListFilterChips } from '@/llamalend/PageLlamaMarkets/chips/LlamaListFilterChips'
 import { MarketsFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketsFilterChips'
+import { MarketTypeFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketTypeFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import {
-  maxMultiSortColCount,
-  useLlamaMarketSortOptions,
-} from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
+import { maxMultiSortColCount } from '@/llamalend/PageLlamaMarkets/hooks/useLlamaMarketSortOptions'
+import { LlamaMarketSort } from '@/llamalend/PageLlamaMarkets/LlamaMarketSort'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -16,7 +15,6 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
-import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
@@ -53,6 +51,7 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
+  const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
@@ -95,30 +94,14 @@ export const LlamaMarketsTable = ({
             searchText={searchText}
             onSearch={onSearch}
             hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-            columnFiltersById={columnFiltersById}
-            setColumnFilter={setColumnFilter}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
           >
-            <LlamaListFilterChips
-              userPositions={userPositions}
-              hasFavorites={hasFavorites}
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-            />
+            <MarketTypeFilterChips {...filterProps} />
+            <LlamaListFilterChips userPositions={userPositions} hasFavorites={hasFavorites} {...filterProps} />
           </MarketsFilterChips>
         }
-        sort={
-          <SelectFilter
-            name="sort"
-            options={useLlamaMarketSortOptions()}
-            onSelected={useCallback(
-              ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
-              [onSortingChange],
-            )}
-            value={sortField}
-          />
-        }
+        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )

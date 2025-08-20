@@ -1,18 +1,19 @@
 import lodash from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+import { MarketTypeFilterChips } from '@/llamalend/PageLlamaMarkets/chips/MarketTypeFilterChips'
+import { LlamaMarketSort } from '@/llamalend/PageLlamaMarkets/LlamaMarketSort'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
-import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../entities/llama-markets'
 import { MarketsFilterChips } from './chips/MarketsFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
-import { maxMultiSortColCount, useLlamaMarketSortOptions } from './hooks/useLlamaMarketSortOptions'
+import { maxMultiSortColCount } from './hooks/useLlamaMarketSortOptions'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
@@ -20,8 +21,8 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 const { isEqual } = lodash
 const TITLES = {
   // not using the t`` here as the value is used as a key in the local storage
-  [MarketRateType.Borrow]: 'Borrow Positions',
-  [MarketRateType.Supply]: 'Supply Positions',
+  [MarketRateType.Borrow]: 'My Borrow Positions',
+  [MarketRateType.Supply]: 'My Supply Positions',
 }
 
 const useDefaultUserFilter = (type: MarketRateType) =>
@@ -51,6 +52,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
     maxMultiSortColCount,
     ...getTableModels(result),
   })
+  const filterProps = { columnFiltersById, setColumnFilter }
 
   return (
     <DataTable
@@ -67,28 +69,17 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          tab === MarketRateType.Borrow && (
-            <MarketsFilterChips
-              searchText={searchText}
-              onSearch={onSearch}
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-              resetFilters={resetFilters}
-            />
-          )
+          <MarketsFilterChips
+            searchText={searchText}
+            // todo: make search half screen
+            onSearch={onSearch}
+            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+            resetFilters={resetFilters}
+          >
+            {userPositions?.Lend[tab] && userPositions?.Mint[tab] && <MarketTypeFilterChips {...filterProps} />}
+          </MarketsFilterChips>
         }
-        sort={
-          <SelectFilter
-            name="sort"
-            options={useLlamaMarketSortOptions()}
-            onSelected={useCallback(
-              ({ id }: Option<LlamaMarketColumnId>) => onSortingChange([{ id, desc: true }]),
-              [onSortingChange],
-            )}
-            value={sortField}
-          />
-        }
+        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )
