@@ -24,12 +24,11 @@ export function getCellSx<T extends TableItem>({
     textAlign: getAlignment(column),
     paddingInline: Spacing.sm,
   }
-  const borderRight = column.columnDef.meta?.borderRight
   const sx = {
     ...(!showCollapseIcon && wrapperSx),
     ...getExtraColumnPadding(column),
-    ...((borderRight || isSticky) && { borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}` }),
     ...(isSticky && {
+      borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
       position: 'sticky',
       left: 0,
       zIndex: (t: Theme) => t.zIndex.tableStickyColumn,

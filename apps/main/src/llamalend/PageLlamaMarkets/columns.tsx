@@ -45,7 +45,7 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.UserBorrowed,
     header: t`Borrow Amount`,
     cell: PriceCell,
-    meta: { type: 'numeric', borderRight: true },
+    meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
@@ -59,7 +59,7 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.UserDeposited,
     header: t`Supplied Amount`,
     cell: PriceCell,
-    meta: { type: 'numeric', borderRight: true },
+    meta: { type: 'numeric' },
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
