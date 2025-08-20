@@ -62,7 +62,7 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
-  const { address, assets, leverage, liquidityUsd, type, url, userHasPosition, utilizationPercent } = market
+  const { address, assets, leverage, liquidityUsd, type, url, userPositions, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   const UnitMapping = {
@@ -120,7 +120,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Stack>
         </Grid>
       </Grid>
-      {userHasPosition && (
+      {userPositions && (
         <Grid container spacing={Spacing.md}>
           <Grid size={12}>
             <CardHeader title={t`Your Position`} sx={{ paddingInline: 0 }}></CardHeader>

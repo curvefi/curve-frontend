@@ -67,9 +67,9 @@ export const TableFilters = <ColumnIds extends string>({
   onSearch,
 }: {
   title: string
-  subtitle: string
+  subtitle?: string
   loading: boolean
-  onReload: () => void
+  onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility: (columns: string[]) => void
   collapsible: ReactNode // filters that may be collapsed
@@ -88,7 +88,7 @@ export const TableFilters = <ColumnIds extends string>({
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
-          <Typography variant="bodySRegular">{subtitle}</Typography>
+          {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
         </Grid>
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           {!isMobile && (
@@ -106,7 +106,7 @@ export const TableFilters = <ColumnIds extends string>({
             icon={FilterIcon}
             testId="btn-expand-filters"
           />
-          <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />
+          {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
         </Grid>
         {isMobile ? (
           <>

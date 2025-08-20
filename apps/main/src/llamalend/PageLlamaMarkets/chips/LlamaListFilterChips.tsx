@@ -1,5 +1,5 @@
 import { useAccount } from 'wagmi'
-import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarketKey, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { GridChip } from '@/llamalend/PageLlamaMarkets/chips/GridChip'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { useToggleFilter } from '@/llamalend/PageLlamaMarkets/hooks/useToggleFilter'
@@ -10,21 +10,20 @@ import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketRateType } from '@ui-kit/types/market'
 
 const { Spacing } = SizesAndSpaces
 
 export const LlamaListFilterChips = ({
-  hasPositions,
+  userPositions,
   hasFavorites,
   ...props
 }: {
-  hasPositions: MarketRateType[] | undefined
+  userPositions: LlamaMarketsResult['userPositions'] | undefined
   hasFavorites: boolean | undefined
 } & FilterProps<LlamaMarketKey>) => {
   const { address } = useAccount()
-  const isConnected = Boolean(hasPositions?.length && address)
-  const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPosition, props)
+  const isConnected = Boolean(userPositions && address)
+  const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserPositions, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   return (
@@ -36,7 +35,7 @@ export const LlamaListFilterChips = ({
           toggle={toggleMyMarkets}
           icon={<PersonIcon />}
           data-testid="chip-my-markets"
-          disabled={!hasPositions?.length}
+          disabled={!userPositions}
         />
       )}
       <GridChip

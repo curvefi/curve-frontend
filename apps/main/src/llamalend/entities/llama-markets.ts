@@ -8,7 +8,7 @@ import {
 } from '@/llamalend/entities/lending-vaults'
 import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
-import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
 import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
@@ -58,7 +58,7 @@ export type LlamaMarket = {
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
-  userHasPosition: { lend: boolean; borrow: boolean } | null // null means no positions in either market and makes easy to filter
+  userPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
 }
 
 export type LlamaMarketKey = DeepKeys<LlamaMarket>
@@ -91,9 +91,8 @@ const convertLendingVault = (
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
-  const hasBorrow = userBorrows.has(controller)
-  const hasLend = userSupplied.has(vault)
-  const hasPosition = hasBorrow || hasLend
+  const hasBorrowed = userBorrows.has(controller)
+  const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
   const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
@@ -142,12 +141,18 @@ const convertLendingVault = (
     url: getInternalUrl(
       'lend',
       chain,
-      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasPosition ? 'manage' : 'create'}`,
+      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasBorrowed || hasSupplied ? 'manage' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage,
-    userHasPosition: hasPosition ? { borrow: hasBorrow, lend: hasLend } : null,
+    userPositions:
+      hasBorrowed || hasSupplied
+        ? {
+            [MarketRateType.Borrow]: hasBorrowed,
+            [MarketRateType.Supply]: hasSupplied,
+          }
+        : null,
   }
 }
 
@@ -225,13 +230,13 @@ const convertMintMarket = (
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
-    userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
+    userPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
   }
 }
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]
-  hasPositions: MarketRateType[]
+  userPositions: Record<MarketRateType | LlamaMarketType, boolean> | null
   hasFavorites: boolean
 }
 
@@ -270,7 +275,6 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       getUserMintMarketsOptions({ userAddress }, enabled),
     ],
     combine: (results): PartialQueryResult<LlamaMarketsResult> => {
-      console.log(results.map((r) => r.data))
       const [
         lendingVaults,
         mintMarkets,
@@ -294,13 +298,19 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
         userLendingVaults.isError ||
         userSuppliedMarkets.isError ||
         userMintMarkets.isError
+
       const data =
         showData && showUserData
           ? {
-              hasPositions: notFalsy(
-                (userBorrows.size > 0 || userMints.size > 0) && MarketRateType.Borrow,
-                userSupplied.size > 0 && MarketRateType.Supply,
-              ),
+              userPositions:
+                userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
+                  ? {
+                      [MarketRateType.Borrow]: userBorrows.size > 0 || userMints.size > 0,
+                      [MarketRateType.Supply]: userSupplied.size > 0,
+                      [LlamaMarketType.Mint]: userMints.size > 0,
+                      [LlamaMarketType.Lend]: userBorrows.size > 0 || userSupplied.size > 0,
+                    }
+                  : null,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? []).map((vault) =>

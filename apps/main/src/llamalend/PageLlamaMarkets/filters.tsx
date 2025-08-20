@@ -5,16 +5,6 @@ export const multiFilterFn: FilterFn<LlamaMarket> = (row, columnId, filterValue?
   !filterValue?.length || filterValue.includes(row.getValue(columnId))
 export const boolFilterFn: FilterFn<LlamaMarket> = (row, columnId, filterValue?: boolean) =>
   filterValue === undefined || Boolean(row.getValue<boolean>(columnId)) === Boolean(filterValue)
-export const enumListFilterFn: FilterFn<LlamaMarket> = (row, columnId, filterValue?: string | boolean) => {
-  const data = row.getValue<string[]>(columnId)
-  if (!data) console.trace(data, row.original)
-  return (
-    filterValue === undefined ||
-    (typeof filterValue === 'boolean' && Boolean(data.length) === Boolean(filterValue)) ||
-    (typeof filterValue === 'string' && data.includes(filterValue))
-  )
-}
-
 export const listFilterFn: FilterFn<LlamaMarket> = (row, columnId, filterValue?: boolean) =>
   filterValue === undefined || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
 

@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '@/llamalend/PageLlamaMarkets/columns'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import {
@@ -8,6 +9,18 @@ import {
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
+import { MarketRateType } from '@ui-kit/types/market'
+
+const getVariant = (
+  userPositions: LlamaMarket['userPositions'] | MarketRateType | undefined,
+): keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS =>
+  userPositions === undefined
+    ? 'unknown'
+    : userPositions === null
+      ? 'noPositions'
+      : typeof userPositions == 'string'
+        ? userPositions
+        : 'hasPositions'
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -17,8 +30,9 @@ import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
 export const useLlamaTableVisibility = (
   title: string,
   sorting: SortingState,
-  variant: keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS,
+  userPositions: LlamaMarket['userPositions'] | MarketRateType | undefined,
 ) => {
+  const variant = getVariant(userPositions)
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const visibilitySettings = useVisibilitySettings(title, LLAMA_MARKETS_COLUMN_OPTIONS, variant, LLAMA_MARKET_COLUMNS)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])

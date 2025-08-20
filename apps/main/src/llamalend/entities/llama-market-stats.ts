@@ -17,11 +17,11 @@ const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.U
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPosition, address: marketAddress, controllerAddress, chain } = market
+  const { type, userPositions, address: marketAddress, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
 
-  const enableStats = !!userHasPosition?.borrow && (!column || statsColumns.includes(column))
-  const enableEarnings = !!userHasPosition?.lend && column != null && earningsColumns.includes(column)
+  const enableStats = !!userPositions?.Borrow && (!column || statsColumns.includes(column))
+  const enableEarnings = !!userPositions?.Supply && column != null && earningsColumns.includes(column)
 
   const enableLendingStats = enableStats && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && type === LlamaMarketType.Mint

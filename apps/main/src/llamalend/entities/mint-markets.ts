@@ -34,12 +34,7 @@ async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMa
   }))
 }
 
-export const {
-  getQueryOptions: getMintMarketOptions,
-  invalidate: invalidateMintMarkets,
-  fetchQuery: fetchMintMarkets,
-  setQueryData: setMintMarkets,
-} = queryFactory({
+export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> => {
     const results = await Promise.all(

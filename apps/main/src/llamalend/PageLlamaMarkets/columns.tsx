@@ -1,9 +1,8 @@
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarket } from '../entities/llama-markets'
 import {
   CompactUsdCell,
   LineGraphCell,
@@ -13,7 +12,8 @@ import {
   RateCell,
   UtilizationCell,
 } from './cells'
-import { boolFilterFn, enumListFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
+import { LlamaMarketColumnId } from './columns.enum'
+import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
 
@@ -97,7 +97,18 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
   hidden('assets.borrowed.symbol', LlamaMarketColumnId.BorrowedSymbol, multiFilterFn),
   hidden(LlamaMarketColumnId.IsFavorite, LlamaMarketColumnId.IsFavorite, boolFilterFn),
-  hidden(LlamaMarketColumnId.UserHasPosition, LlamaMarketColumnId.UserHasPosition, enumListFilterFn),
+  hidden(
+    LlamaMarketColumnId.UserPositions,
+    LlamaMarketColumnId.UserPositions,
+    (row, columnId, filterValue?: MarketRateType | boolean) => {
+      const data = row.getValue<LlamaMarket[LlamaMarketColumnId.UserPositions]>(columnId)
+      return (
+        filterValue === undefined ||
+        (typeof filterValue === 'boolean' && Boolean(data) === Boolean(filterValue)) ||
+        (typeof filterValue === 'string' && Boolean(data?.[filterValue]))
+      )
+    },
+  ),
   hidden(LlamaMarketColumnId.Rewards, LlamaMarketColumnId.Rewards, listFilterFn),
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]

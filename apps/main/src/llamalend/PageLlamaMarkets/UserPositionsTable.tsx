@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableModels } from '@ui-kit/shared/ui/DataTable'
 import { type Option, SelectFilter } from '@ui-kit/shared/ui/DataTable/SelectFilter'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import type { MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../entities/llama-markets'
 import { MarketsFilterChips } from './chips/MarketsFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
@@ -19,34 +19,30 @@ import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const { isEqual } = lodash
-const TITLE = 'User Positions' // not using the t`` here as the value is used as a key in the local storage
+const TITLES = {
+  // not using the t`` here as the value is used as a key in the local storage
+  [MarketRateType.Borrow]: 'Borrow Positions',
+  [MarketRateType.Supply]: 'Supply Positions',
+}
 
 const useDefaultUserFilter = (type: MarketRateType) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPosition, value: type }], [type])
+  useMemo(() => [{ id: LlamaMarketColumnId.UserPositions, value: type }], [type])
 
 export type UserPositionsTableProps = {
-  onReload: () => void
   result: LlamaMarketsResult | undefined
-  isError: boolean
   loading: boolean
 }
 
-export const UserPositionsTable = ({
-  onReload,
-  result,
-  isError,
-  loading,
-  type,
-}: UserPositionsTableProps & { type: MarketRateType }) => {
-  const { markets: data = [], hasPositions } = result ?? {}
-
+export const UserPositionsTable = ({ result, loading, type }: UserPositionsTableProps & { type: MarketRateType }) => {
+  const { markets: data = [], userPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(type)
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
+  const title = TITLES[type]
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(title, defaultFilters)
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, 'userSort')
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
-    TITLE,
+    title,
     sorting,
-    'hasPositions',
+    type,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
@@ -64,16 +60,14 @@ export const UserPositionsTable = ({
   return (
     <DataTable
       table={table}
-      emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      emptyText={t`No positions found`}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && hasPositions?.length)}
+      shouldStickFirstColumn={Boolean(useIsTablet() && userPositions)}
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={TITLE}
-        subtitle={t`Borrow with the power of Curve soft liquidations`}
+        title={title}
         loading={loading}
-        onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         searchText={searchText}

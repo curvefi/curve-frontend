@@ -11,7 +11,7 @@ export function useSortFromQueryString(defaultSort: SortingState, fieldName = 's
       const pathname = updateSort(searchParams, typeof newSort == 'function' ? newSort(sort) : newSort, fieldName)
       window.history.pushState(null, '', pathname)
     },
-    [searchParams, sort],
+    [searchParams, sort, fieldName],
   )
   return [sort, onChange] as const
 }

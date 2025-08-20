@@ -87,7 +87,6 @@ const {
   getQueryOptions: getUserLendingSuppliesQueryOptions,
   getQueryData: getCurrentUserLendingSupplies,
   invalidate: invalidateUserLendingSupplies,
-  useQuery: useUserLendingSuppliesQuery,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v4'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Address[]>> => {
