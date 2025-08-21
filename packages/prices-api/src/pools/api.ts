@@ -4,9 +4,9 @@ import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
 import type * as Responses from './responses'
 
-export async function getPools(chain: Chain, page: number = 1, perPage: number = 9999, options?: Options) {
+export async function getPools(chain: Chain, options?: Options) {
   const host = getHost(options)
-  const resp = await fetch<Responses.GetPoolsResponse>(`${host}/v1/chains/${chain}?page=${page}&per_page=${perPage}`)
+  const resp = await fetch<Responses.GetPoolsResponse>(`${host}/v1/chains/${chain}`)
 
   return {
     chain: resp.chain,
