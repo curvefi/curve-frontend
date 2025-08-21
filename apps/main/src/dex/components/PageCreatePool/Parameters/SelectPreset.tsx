@@ -30,7 +30,7 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
 
   const overlayTriggerState = useOverlayTriggerState({})
 
-  const params = useParams() as UrlParams
+  const params = useParams<UrlParams>()
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton({ onPressEnd: () => overlayTriggerState.open() }, openButtonRef)
 

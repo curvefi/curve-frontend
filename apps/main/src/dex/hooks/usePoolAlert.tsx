@@ -71,7 +71,7 @@ class CrossCurveLabel {
 }
 
 const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
-  const params = useParams() as UrlParams
+  const params = useParams<UrlParams>()
 
   const poolAddress = poolData?.pool.address
   const hasVyperVulnerability = poolData?.hasVyperVulnerability
