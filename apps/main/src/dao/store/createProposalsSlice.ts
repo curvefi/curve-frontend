@@ -63,7 +63,7 @@ const DEFAULT_STATE: SliceState = {
   executeTxMapper: {},
   searchValue: '',
   activeFilter: 'all',
-  activeSortBy: 'endingSoon',
+  activeSortBy: 'timeCreated',
   activeSortDirection: 'desc',
 }
 
