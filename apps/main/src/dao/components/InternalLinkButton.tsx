@@ -13,7 +13,7 @@ type InternalLinkButtonProps = {
 }
 
 const InternalLinkButton = ({ to, children, smallSize }: InternalLinkButtonProps) => {
-  const params = useParams() as UrlParams
+  const params = useParams<UrlParams>()
   return (
     <StyledInternalLink size={smallSize ? 'small' : undefined} href={getPath(params, to)}>
       {children}

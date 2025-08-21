@@ -1,5 +1,3 @@
-'use client'
-import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -13,9 +11,7 @@ const {
   Grid: { Column_Spacing, Row_Spacing },
 } = SizesAndSpaces
 
-type Props = NetworkUrlParams // Even though we use it, NextJS will complain without the real page.tsx
-
-export const Page = ({}: Props) => (
+export const Page = () => (
   <Stack
     sx={{
       paddingBlock: Spacing.xl,

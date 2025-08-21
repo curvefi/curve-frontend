@@ -1,5 +1,7 @@
-import { lazy } from 'react'
+import Integrations from '@/lend/components/PageIntegrations/Page'
+import { LlamaMarketsPage } from '@/llamalend/PageLlamaMarkets/Page'
 import { createRoute, Outlet } from '@tanstack/react-router'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
@@ -19,7 +21,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: lazy(() => import('../app/llamalend/[network]/disclaimer/page')),
+    component: () => <Disclaimer currentApp="llamalend" />,
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve Llamalend' }],
     }),
@@ -27,7 +29,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: lazy(() => import('../app/llamalend/[network]/integrations/page')),
+    component: Integrations,
     head: () => ({
       meta: [{ title: 'Integrations - Curve Llamalend' }],
     }),
@@ -35,7 +37,7 @@ export const llamalendRoutes = llamalendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: lazy(() => import('../app/llamalend/[network]/markets/page')),
+    component: LlamaMarketsPage,
     head: () => ({
       meta: [{ title: 'Llamalend Beta Markets - Curve' }],
     }),

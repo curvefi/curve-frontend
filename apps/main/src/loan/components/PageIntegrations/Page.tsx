@@ -1,4 +1,3 @@
-'use client'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import IntegrationsComp from '@/loan/components/PageIntegrations/index'
@@ -8,9 +7,11 @@ import { useChainId } from '@/loan/utils/utilsRouter'
 import { ExternalLink } from '@ui/Link'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
+import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
-const Page = (params: NetworkUrlParams) => {
+const Page = () => {
+  const params = useParams<NetworkUrlParams>()
   const rChainId = useChainId(params)
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)

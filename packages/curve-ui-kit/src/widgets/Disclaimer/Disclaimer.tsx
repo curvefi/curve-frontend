@@ -1,9 +1,8 @@
-'use client'
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import { usePathname, useSearchParams } from '@ui-kit/hooks/router'
+import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -37,7 +36,6 @@ const defaultTab: Record<AppName, DisclaimerTab> = {
 }
 
 export type DisclaimerProps = {
-  network: CurveNetworkId | LlamaNetworkId
   currentApp: AppName
 }
 
@@ -47,7 +45,8 @@ function useAfterHydration(result: string) {
   return value
 }
 
-export const Disclaimer = ({ network, currentApp }: DisclaimerProps) => {
+export const Disclaimer = ({ currentApp }: DisclaimerProps) => {
+  const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const pathname = usePathname()
   const tab = useSearchParams()?.get('tab') ?? defaultTab[currentApp]
   const tabs = useMemo(

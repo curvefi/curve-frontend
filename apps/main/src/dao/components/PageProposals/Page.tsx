@@ -1,4 +1,3 @@
-'use client'
 import { styled } from 'styled-components'
 import Proposals from '@/dao/components/PageProposals/index'
 import Settings from '@/dao/layout/Settings'

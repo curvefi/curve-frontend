@@ -1,4 +1,3 @@
-'use client'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
@@ -13,10 +12,11 @@ import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
-export const PageRouterSwap = (props: NetworkUrlParams) => {
+export const PageRouterSwap = () => {
+  const props = useParams<NetworkUrlParams>()
   const push = useNavigate()
   const searchParams = useSearchParams()
   const { curveApi = null, connectState } = useConnection()

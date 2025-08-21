@@ -1,4 +1,3 @@
-'use client'
 import { type AppName, AppNames, CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES, LLAMALEND_ROUTES } from './routes'
 
 const defaultPages = { dex: 'pools', lend: 'markets', crvusd: 'markets', dao: 'proposals', llamalend: 'markets' }
