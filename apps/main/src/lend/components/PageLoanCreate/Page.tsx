@@ -1,4 +1,3 @@
-'use client'
 import { useCallback, useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
@@ -37,7 +36,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate } from '@ui-kit/hooks/router'
+import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -45,7 +44,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const Page = (params: MarketUrlParams) => {
+const Page = () => {
+  const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
 
   const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)

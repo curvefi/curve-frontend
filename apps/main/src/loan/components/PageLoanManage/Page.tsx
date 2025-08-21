@@ -1,4 +1,3 @@
-'use client'
 import { useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
@@ -41,7 +40,7 @@ import { MarketDetails } from '@ui-kit/features/market-details'
 import { BorrowPositionDetails } from '@ui-kit/features/market-position-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate } from '@ui-kit/hooks/router'
+import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -50,7 +49,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const Page = (params: CollateralUrlParams) => {
+const Page = () => {
+  const params = useParams<CollateralUrlParams>()
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()

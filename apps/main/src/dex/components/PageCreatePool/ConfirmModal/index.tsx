@@ -56,7 +56,7 @@ const ConfirmModal = ({
   const resetState = useStore((state) => state.createPool.resetState)
 
   const push = useNavigate()
-  const params = useParams() as UrlParams
+  const params = useParams<UrlParams>()
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
   const { buttonProps: openButtonProps } = useButton(

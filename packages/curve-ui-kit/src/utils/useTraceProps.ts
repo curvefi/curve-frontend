@@ -1,4 +1,3 @@
-'use client'
 import { useEffect, useRef } from 'react'
 
 export function useTraceProps<T extends Record<string, unknown>>(name: string, props: T) {

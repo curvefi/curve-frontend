@@ -1,4 +1,3 @@
-'use client'
 import { NOT_FOUND_IMAGE_URL } from 'ui/src/utils'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

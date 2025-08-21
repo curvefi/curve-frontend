@@ -1,4 +1,3 @@
-'use client'
 import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
@@ -13,10 +12,12 @@ import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { WrongNetwork } from './WrongNetwork'
 
-export const PageVeCrv = ({ formType: rFormType, network }: VeCrvUrlParams) => {
+export const PageVeCrv = () => {
+  const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
   const { curveApi = null, connectState } = useConnection()
   const rChainId = networksIdMapper[network]
   const isLoadingCurve = isLoading(connectState)
