@@ -15,4 +15,4 @@ export const { useQuery: useCrvUsdSnapshots } = queryFactory({
     getSnapshots(blockchainId as Chain, contractAddress, { agg, fetch_on_chain: true, limit }),
   staleTime: '10m',
   validationSuite: contractValidationSuite,
-} as any)
+} as any) // TODO: get rid of as any

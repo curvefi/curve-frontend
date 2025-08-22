@@ -17,4 +17,4 @@ export const { useQuery: useLendingSnapshots } = queryFactory({
   },
   staleTime: '1h',
   validationSuite: contractValidationSuite,
-} as any)
+} as any) // TODO: get rid of as any
