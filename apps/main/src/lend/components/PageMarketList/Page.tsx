@@ -1,4 +1,3 @@
-'use client'
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import MarketList from '@/lend/components/PageMarketList/index'
@@ -14,7 +13,7 @@ import { getPath } from '@/lend/utils/utilsRouter'
 import { AppPageContainer } from '@ui/AppPage'
 import Box from '@ui/Box'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 enum SEARCH {
@@ -26,7 +25,8 @@ enum SEARCH {
   type = 'type',
 }
 
-const Page = (params: NetworkUrlParams) => {
+const Page = () => {
+  const params = useParams<NetworkUrlParams>()
   const { provider, connect } = useWallet()
   const [loaded, setLoaded] = useState(false)
   const [parsedSearchParams, setParsedSearchParams] = useState<SearchParams | null>(null)

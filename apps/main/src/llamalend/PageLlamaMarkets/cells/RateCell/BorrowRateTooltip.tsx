@@ -10,7 +10,7 @@ import { useSnapshots } from '../../hooks/useSnapshots'
 const rateType = MarketRateType.Borrow
 
 const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
-  const { averageRate, period } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
+  const { averageRate, period, averageTotalBorrowRate, isLoading } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
   const {
     rewards,
     type: marketType,
@@ -20,6 +20,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
     },
   } = market
   const poolRewards = useFilteredRewards(rewards, marketType, rateType)
+
   return (
     <MarketBorrowRateTooltipContent
       marketType={marketType}
@@ -27,9 +28,11 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       averageRate={averageRate}
       periodLabel={period}
       totalBorrowRate={borrowTotalApy}
+      totalAverageBorrowRate={averageTotalBorrowRate}
       extraRewards={poolRewards}
       rebasingYield={rebasingYield}
       collateralSymbol={collateralSymbol}
+      isLoading={isLoading}
     />
   )
 }

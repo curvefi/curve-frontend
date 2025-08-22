@@ -102,7 +102,7 @@ export const mockLendingVaults = (chains: Record<Chain, GetMarketsResponse>) =>
 
 const HOUR = 60 * 60 * 1000
 export const mockLendingSnapshots = (chain = oneOf(...LendingChains)) =>
-  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?agg=none&fetch_on_chain=true', {
+  cy.intercept('https://prices.curve.finance/v1/lending/markets/*/*/snapshots?fetch_on_chain=true&limit=7', {
     body: {
       chain,
       data: range(84).map((i) => ({

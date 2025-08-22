@@ -25,8 +25,10 @@ export type BorrowAPY = {
   averageRate: number | undefined | null
   averageRateLabel: string
   rebasingYield: number | null
+  averageRebasingYield: number | null
   // total = rate - rebasingYield
   totalBorrowRate: number | null
+  totalAverageBorrowRate: number | null
   extraRewards: PoolRewards[]
   loading: boolean
 }

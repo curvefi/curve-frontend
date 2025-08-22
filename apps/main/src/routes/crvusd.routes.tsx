@@ -1,17 +1,42 @@
-import { lazy } from 'react'
-import CrvUsdLayout from '@/app/crvusd/layout'
+import '@/global-extensions'
+import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
+import Integrations from '@/loan/components/PageIntegrations/Page'
+import CreateLoan from '@/loan/components/PageLoanCreate/Page'
+import ManageLoan from '@/loan/components/PageLoanManage/Page'
+import MarketList from '@/loan/components/PageMarketList/Page'
+import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
+import { networks, networksIdMapper } from '@/loan/networks'
+import useStore from '@/loan/store/useStore'
+import type { UrlParams } from '@/loan/types/loan.types'
+import Skeleton from '@mui/material/Skeleton'
 import { createRoute, Outlet } from '@tanstack/react-router'
+import { useParams } from '@ui-kit/hooks/router'
+import { useHydration } from '@ui-kit/hooks/useHydration'
+import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
+import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
+
+const { MinHeight } = SizesAndSpaces
+
+function CrvUsdClientLayout() {
+  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
+  const chainId = networksIdMapper[networkId]
+  const hydrate = useStore((s) => s.hydrate)
+  const isHydrated = useHydration('llamaApi', hydrate, chainId)
+
+  useGasInfoAndUpdateLib({ chainId, networks })
+  useRedirectToEth(networks[chainId], networkId, isHydrated)
+
+  return isHydrated && <Outlet />
+}
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'crvusd',
-  component: () => (
-    <CrvUsdLayout>
-      <Outlet />
-    </CrvUsdLayout>
-  ),
+  component: CrvUsdClientLayout,
 })
 
 const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
@@ -19,7 +44,8 @@ const layoutProps = { getParentRoute: () => crvusdLayoutRoute }
 export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   createRoute({
     path: '/',
-    component: lazy(() => import('../app/crvusd/page')),
+    /** Redirect is handled by the `RootLayout` component */
+    component: () => <Skeleton width="100%" height={MinHeight.pageContent} />,
     head: () => ({
       meta: [{ title: 'crvUSD - Curve' }],
     }),
@@ -37,7 +63,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: lazy(() => import('../app/crvusd/[network]/disclaimer/page')),
+    component: () => <Disclaimer currentApp="crvusd" />,
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve' }],
     }),
@@ -45,7 +71,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/integrations',
-    component: lazy(() => import('../app/crvusd/[network]/integrations/page')),
+    component: Integrations,
     head: () => ({
       meta: [{ title: 'Integrations - Curve' }],
     }),
@@ -53,7 +79,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: lazy(() => import('../app/crvusd/[network]/markets/page')),
+    component: MarketList,
     head: () => ({
       meta: [{ title: 'Markets - Curve' }],
     }),
@@ -61,7 +87,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId/create/$formType',
-    component: lazy(() => import('../app/crvusd/[network]/markets/[collateralId]/create/[[...formType]]/page')),
+    component: CreateLoan,
     head: ({ params }) => ({
       meta: [{ title: `Create - ${params.collateralId} - Curve` }],
     }),
@@ -69,7 +95,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId/create',
-    component: lazy(() => import('../app/crvusd/[network]/markets/[collateralId]/create/[[...formType]]/page')),
+    component: CreateLoan,
     head: ({ params }) => ({
       meta: [{ title: `Create - ${params.collateralId} - Curve` }],
     }),
@@ -77,7 +103,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId/manage/$formType',
-    component: lazy(() => import('../app/crvusd/[network]/markets/[collateralId]/manage/[[...formType]]/page')),
+    component: ManageLoan,
     head: ({ params }) => ({
       meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
     }),
@@ -85,7 +111,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets/$collateralId/manage',
-    component: lazy(() => import('../app/crvusd/[network]/markets/[collateralId]/manage/[[...formType]]/page')),
+    component: ManageLoan,
     head: ({ params }) => ({
       meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
     }),
@@ -93,7 +119,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/psr',
-    component: lazy(() => import('../app/crvusd/[network]/psr/page')),
+    component: PegKeepersPage,
     head: () => ({
       meta: [{ title: 'Peg Stability Reserves - Curve' }],
     }),
@@ -106,7 +132,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/scrvUSD',
-    component: lazy(() => import('../app/crvusd/[network]/scrvUSD/page')),
+    component: CrvStaking,
     head: () => ({
       meta: [{ title: 'Savings crvUSD - Curve' }],
     }),

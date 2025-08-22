@@ -17,7 +17,7 @@ const TableRowContainer = (
   props: Omit<TableRowProps, 'market' | 'loanExists' | 'userActiveKey' | 'handleCellClick'>,
 ) => {
   const { rChainId, api, owmId, filterTypeKey, searchTermMapper } = props
-  const params = useParams() as NetworkUrlParams
+  const params = useParams<NetworkUrlParams>()
   const push = useNavigate()
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)

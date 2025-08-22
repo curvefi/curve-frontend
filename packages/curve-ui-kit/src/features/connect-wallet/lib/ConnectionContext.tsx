@@ -1,4 +1,3 @@
-'use client'
 import { BrowserProvider } from 'ethers'
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react'
 import { useAccount, useConnectorClient, useSwitchChain } from 'wagmi'

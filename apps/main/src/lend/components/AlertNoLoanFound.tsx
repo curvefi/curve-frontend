@@ -9,7 +9,7 @@ import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 const AlertNoLoanFound = ({ alertType, owmId }: { alertType?: AlertType; owmId: string }) => {
-  const params = useParams() as UrlParams
+  const params = useParams<UrlParams>()
   const push = useNavigate()
 
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)

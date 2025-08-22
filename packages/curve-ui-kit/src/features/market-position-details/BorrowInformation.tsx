@@ -75,9 +75,9 @@ export const BorrowInformation = ({
         loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
         valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
         notional={
-          borrowAPY?.averageRate
+          borrowAPY?.totalAverageBorrowRate
             ? {
-                value: borrowAPY.averageRate,
+                value: borrowAPY.totalAverageBorrowRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
                 decimals: 2,
               }
@@ -90,6 +90,7 @@ export const BorrowInformation = ({
               marketType={marketType}
               borrowRate={borrowAPY?.rate}
               totalBorrowRate={borrowAPY?.totalBorrowRate}
+              totalAverageBorrowRate={borrowAPY?.totalAverageBorrowRate}
               averageRate={borrowAPY?.averageRate}
               rebasingYield={borrowAPY?.rebasingYield}
               collateralSymbol={collateralValue?.collateral?.symbol}

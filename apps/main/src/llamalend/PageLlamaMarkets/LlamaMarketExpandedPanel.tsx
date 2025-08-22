@@ -18,15 +18,15 @@ import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket } from '../entities/llama-markets'
 import { LineGraphCell } from './cells'
 import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
-import { LendRateTooltip } from './cells/RateCell/LendRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
+import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
 import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
 import { LlamaMarketColumnId } from './columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
 const TooltipComponents = {
-  [MarketRateType.Supply]: LendRateTooltip,
+  [MarketRateType.Supply]: SupplyRateLendTooltip,
   [MarketRateType.Borrow]: BorrowRateTooltip,
 } as const
 
