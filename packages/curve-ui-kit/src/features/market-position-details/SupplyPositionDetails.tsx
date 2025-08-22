@@ -6,6 +6,7 @@ import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/Marke
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
+import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
@@ -143,6 +144,13 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
                 }
               : undefined
           }
+          valueTooltip={{
+            title: t`Vault Shares`,
+            body: <VaultSharesTooltipContent />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
       </Box>
     </Box>
