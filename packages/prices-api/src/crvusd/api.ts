@@ -37,7 +37,8 @@ export async function getSnapshots(
   params: {
     agg?: string
     fetch_on_chain?: boolean
-  } = { fetch_on_chain: true, agg: 'day' },
+    limit?: number
+  } = { fetch_on_chain: true, agg: 'day', limit: 100 },
   options?: Options,
 ) {
   const host = getHost(options)

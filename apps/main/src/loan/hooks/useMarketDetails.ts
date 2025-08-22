@@ -1,4 +1,3 @@
-import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
@@ -10,12 +9,16 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseMarketDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
   llammaId: string
 }
+
+const averageMultiplier = 30
+const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const { data: campaigns } = useCampaigns({})
@@ -31,25 +34,25 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
     blockchainId: networks[chainId as keyof typeof networks]?.id,
     contractAddress: llamma?.controller as Address,
+    agg: 'day',
+    limit: 30, // fetch last 30 days for 30 day average calcs
   })
 
-  const thirtyDayAvgBorrowAPR = useMemo(() => {
-    if (!crvUsdSnapshots) return null
-
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const recentSnapshots = crvUsdSnapshots.filter((snapshot) => new Date(snapshot.timestamp) > thirtyDaysAgo)
-
-    if (recentSnapshots.length === 0) return null
-
-    return meanBy(recentSnapshots, ({ rate }) => rate) * 100
-  }, [crvUsdSnapshots])
+  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+    () =>
+      calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
+        rate: ({ rate }) => rate * 100,
+        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
+      }) ?? { rate: null, rebasingYield: null },
+    [crvUsdSnapshots],
+  )
 
   const campaignRewards = useMemo(() => {
     if (!campaigns || !llamma?.controller) return []
     return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
   }, [campaigns, llamma?.controller])
+
+  const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
 
   return {
     marketType: LlamaMarketType.Mint,
@@ -72,12 +75,15 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
-      averageRate: thirtyDayAvgBorrowAPR,
-      averageRateLabel: '30D',
-      rebasingYield: crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? null,
+      averageRate: averageRate,
+      averageRateLabel: averageMultiplierString,
+      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
+      averageRebasingYield: averageRebasingYield ?? null,
+      totalAverageBorrowRate,
       extraRewards: campaignRewards,
       totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) - (crvUsdSnapshots?.[0]?.collateralToken.rebasingYield ?? 0)
+        ? Number(loanDetails?.parameters?.rate) -
+          (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
         : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

@@ -10,6 +10,7 @@ export type MarketBorrowRateTooltipContentProps = {
   marketType: LlamaMarketType
   borrowRate: number | null | undefined
   totalBorrowRate: number | null | undefined
+  totalAverageBorrowRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: PoolRewards[]
@@ -27,6 +28,7 @@ export const MarketBorrowRateTooltipContent = ({
   marketType,
   borrowRate,
   totalBorrowRate,
+  totalAverageBorrowRate,
   averageRate,
   periodLabel,
   extraRewards,
@@ -69,6 +71,9 @@ export const MarketBorrowRateTooltipContent = ({
       <TooltipItems>
         <TooltipItem variant="primary" title={t`Total borrow rate`}>
           {formatPercent(totalBorrowRate ?? 0)}
+        </TooltipItem>
+        <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+          {totalAverageBorrowRate ? formatPercent(totalAverageBorrowRate) : 'N/A'}
         </TooltipItem>
       </TooltipItems>
     </Stack>

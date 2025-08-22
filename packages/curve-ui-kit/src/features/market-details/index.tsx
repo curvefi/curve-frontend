@@ -39,8 +39,10 @@ type BorrowAPY = {
   averageRate: number | undefined | null
   averageRateLabel: string
   rebasingYield: number | null
+  averageRebasingYield: number | null
   // total = rate - rebasingYield
   totalBorrowRate: number | null
+  totalAverageBorrowRate: number | null
   extraRewards: PoolRewards[]
   loading: boolean
 }
@@ -50,11 +52,17 @@ type SupplyAPY = {
   averageRateLabel: string
   supplyAprCrvMinBoost: number | undefined | null
   supplyAprCrvMaxBoost: number | undefined | null
+  averageSupplyAprCrvMinBoost: number | undefined | null
+  averageSupplyAprCrvMaxBoost: number | undefined | null
   rebasingYield: number | null
+  averageRebasingYield: number | null
   // total = rate - rebasingYield + combined extra incentives + boosted (min or max) yield
   totalSupplyRateMinBoost: number | null
   totalSupplyRateMaxBoost: number | null
+  totalAverageSupplyRateMinBoost: number | null
+  totalAverageSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
+  averageTotalExtraIncentivesApr: number | undefined | null
   extraRewards: PoolRewards[]
   loading: boolean
 }
@@ -134,9 +142,9 @@ export const MarketDetails = ({
           loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
           valueOptions={{ unit: 'percentage', decimals: 2 }}
           notional={
-            borrowAPY?.averageRate
+            borrowAPY?.totalAverageBorrowRate
               ? {
-                  value: borrowAPY.averageRate,
+                  value: borrowAPY.totalAverageBorrowRate,
                   unit: { symbol: `% ${borrowAPY.averageRateLabel} Avg`, position: 'suffix' },
                   decimals: 2,
                 }
@@ -149,6 +157,7 @@ export const MarketDetails = ({
                 marketType={marketType}
                 borrowRate={borrowAPY?.rate}
                 totalBorrowRate={borrowAPY?.totalBorrowRate}
+                totalAverageBorrowRate={borrowAPY?.totalAverageBorrowRate}
                 averageRate={borrowAPY?.averageRate}
                 periodLabel={borrowAPY?.averageRateLabel}
                 extraRewards={borrowAPY?.extraRewards ?? []}
@@ -186,6 +195,8 @@ export const MarketDetails = ({
                   maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
                   totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
                   totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
+                  totalAverageSupplyRateMinBoost={supplyAPY?.totalAverageSupplyRateMinBoost}
+                  totalAverageSupplyRateMaxBoost={supplyAPY?.totalAverageSupplyRateMaxBoost}
                   rebasingYield={supplyAPY?.rebasingYield}
                   isLoading={supplyAPY?.loading}
                   periodLabel={supplyAPY?.averageRateLabel}
