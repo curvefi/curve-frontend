@@ -5,6 +5,8 @@ import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snap
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'
 
+const { meanBy, sumBy } = lodash
+
 type UseSnapshotsResult<T> = {
   snapshots: T[] | null
   isLoading: boolean
@@ -56,14 +58,14 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
       }
 
   const averageRate = useMemo(
-    () => snapshots && lodash.meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
+    () => snapshots && meanBy(snapshots as T[], (row) => row[snapshotKey as keyof T]) * 100,
     [snapshots, snapshotKey],
   )
 
   const averageTotalBorrowRate = useMemo(
     () =>
       snapshots &&
-      lodash.meanBy(
+      meanBy(
         snapshots as LendingSnapshot[],
         (row) =>
           (row[snapshotKey as keyof LendingSnapshot] as number) * 100 - (row.collateralToken?.rebasingYield ?? 0),
@@ -76,13 +78,13 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
       snapshots &&
       isLend &&
       type === MarketRateType.Supply &&
-      lodash.meanBy(
+      meanBy(
         snapshots as LendingSnapshot[],
         (row) =>
           row.lendApr * 100 +
           row.lendAprCrv0Boost +
           (row.borrowedToken?.rebasingYield ?? 0) +
-          (row.extraRewardApr.reduce((acc, r) => acc + r.rate, 0) ?? 0),
+          (sumBy(row.extraRewardApr, 'rate') ?? 0),
       ),
     [snapshots, isLend, type],
   )
@@ -92,13 +94,13 @@ export function useSnapshots<T extends CrvUsdSnapshot | LendingSnapshot>(
       snapshots &&
       isLend &&
       type === MarketRateType.Supply &&
-      lodash.meanBy(
+      meanBy(
         snapshots as LendingSnapshot[],
         (row) =>
           row.lendApr * 100 +
           row.lendAprCrvMaxBoost +
           (row.borrowedToken?.rebasingYield ?? 0) +
-          (row.extraRewardApr.reduce((acc, r) => acc + r.rate, 0) ?? 0),
+          (sumBy(row.extraRewardApr, 'rate') ?? 0),
       ),
     [snapshots, isLend, type],
   )

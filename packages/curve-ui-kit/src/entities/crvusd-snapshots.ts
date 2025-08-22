@@ -9,9 +9,10 @@ type QueryParams = ContractParams & { agg?: 'none' | 'day' | 'week'; limit?: num
 type Query = ContractQuery & { agg?: 'none' | 'day' | 'week'; limit?: number }
 
 export const { useQuery: useCrvUsdSnapshots } = queryFactory({
-  queryKey: (params: QueryParams) => [...rootKeys.contract(params), 'crvUsd', 'snapshots', 'v2'] as const,
+  queryKey: (params: QueryParams) =>
+    [...rootKeys.contract(params), 'crvUsd', 'snapshots', 'v2', { agg: params.agg, limit: params.limit }] as const,
   queryFn: ({ blockchainId, contractAddress, agg, limit }: Query): Promise<CrvUsdSnapshot[]> =>
     getSnapshots(blockchainId as Chain, contractAddress, { agg, fetch_on_chain: true, limit }),
   staleTime: '10m',
   validationSuite: contractValidationSuite,
-})
+} as any)
