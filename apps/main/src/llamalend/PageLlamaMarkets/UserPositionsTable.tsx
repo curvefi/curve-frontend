@@ -10,7 +10,7 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../entities/llama-markets'
 import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
+import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
@@ -22,6 +22,11 @@ const TITLES = {
   // not using the t`` here as the value is used as a key in the local storage
   [MarketRateType.Borrow]: 'My Borrow Positions',
   [MarketRateType.Supply]: 'My Supply Positions',
+}
+
+const DEFAULT_SORT = {
+  [MarketRateType.Borrow]: DEFAULT_SORT_BORROW,
+  [MarketRateType.Supply]: DEFAULT_SORT_SUPPLY,
 }
 
 const useDefaultUserFilter = (type: MarketRateType) =>
@@ -38,7 +43,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   const defaultFilters = useDefaultUserFilter(tab)
   const title = TITLES[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(title, defaultFilters)
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT, 'userSort')
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], 'userSort')
   const { columnSettings, columnVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
