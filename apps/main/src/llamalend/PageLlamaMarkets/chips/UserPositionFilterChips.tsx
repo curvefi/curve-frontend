@@ -21,7 +21,7 @@ export const UserPositionFilterChips = ({
   const isMobile = useIsMobile()
   const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
   return (
-    <Grid container justifyContent="space-between" size={12}>
+    <Grid container justifyContent="space-between" size={12} columnSpacing={1}>
       {!isMobile && (
         <Grid size={showChips ? 6 : 12}>
           <TableSearchField value={searchText} onChange={onSearch} />
