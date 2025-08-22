@@ -9,14 +9,14 @@ import { LlamaMarketColumnId } from '../columns.enum'
 import { createLlamaMarketsMobileColumns, LLAMA_MARKETS_COLUMN_OPTIONS } from './useLlamaMarketsColumnVisibility'
 
 const getVariant = (
-  userPositions: LlamaMarketsResult['userPositions'] | MarketRateType | undefined,
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
 ): keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS =>
-  userPositions === undefined // undefined means its loading
+  userHasPositions === undefined // undefined means its loading
     ? 'unknown'
-    : userPositions === null // null means no positions at all
+    : userHasPositions === null // null means no positions at all
       ? 'noPositions'
-      : typeof userPositions == 'string'
-        ? userPositions // show variant for a specific market rate type
+      : typeof userHasPositions == 'string'
+        ? userHasPositions // show variant for a specific market rate type
         : 'hasPositions' // show the general market table, for users with positions
 
 /**
@@ -27,9 +27,9 @@ const getVariant = (
 export const useLlamaTableVisibility = (
   title: string,
   sorting: SortingState,
-  userPositions: LlamaMarketsResult['userPositions'] | MarketRateType | undefined,
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
 ) => {
-  const variant = getVariant(userPositions)
+  const variant = getVariant(userHasPositions)
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
   const visibilitySettings = useVisibilitySettings(title, LLAMA_MARKETS_COLUMN_OPTIONS, variant, LLAMA_MARKET_COLUMNS)
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])

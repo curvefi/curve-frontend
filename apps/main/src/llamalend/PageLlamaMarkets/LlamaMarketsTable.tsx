@@ -38,7 +38,7 @@ export const LlamaMarketsTable = ({
   isError: boolean
   loading: boolean
 }) => {
-  const { markets: data = [], userPositions, hasFavorites } = result ?? {}
+  const { markets: data = [], userHasPositions, hasFavorites } = result ?? {}
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
@@ -47,7 +47,7 @@ export const LlamaMarketsTable = ({
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     TITLE,
     sorting,
-    userPositions,
+    userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
@@ -68,7 +68,7 @@ export const LlamaMarketsTable = ({
       table={table}
       emptyText={isError ? t`Could not load markets` : t`No markets found`}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && userPositions)}
+      shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
@@ -96,7 +96,7 @@ export const LlamaMarketsTable = ({
           >
             {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
             <MarketTypeFilterChips {...filterProps} />
-            <LlamaListFilterChips userPositions={userPositions} hasFavorites={hasFavorites} {...filterProps} />
+            <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
           </MarketFilterChipWrapper>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}

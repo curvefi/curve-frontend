@@ -18,7 +18,7 @@ import { TableSearchField } from './TableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
 import type { VisibilityGroup } from './visibility.types'
 
-const { Spacing, ButtonSize } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 /**
  * A button for controlling the DataTable.

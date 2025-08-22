@@ -14,16 +14,16 @@ import { GridChip } from './GridChip'
 const { Spacing } = SizesAndSpaces
 
 export const LlamaListFilterChips = ({
-  userPositions,
+  userHasPositions,
   hasFavorites,
   ...props
 }: {
-  userPositions: LlamaMarketsResult['userPositions'] | undefined
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   hasFavorites: boolean | undefined
 } & FilterProps<LlamaMarketKey>) => {
   const { address } = useAccount()
-  const isConnected = Boolean(userPositions && address)
-  const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserPositions, props)
+  const isConnected = Boolean(userHasPositions && address)
+  const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPositions, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
   return (
@@ -35,7 +35,7 @@ export const LlamaListFilterChips = ({
           toggle={toggleMyMarkets}
           icon={<PersonIcon />}
           data-testid="chip-my-markets"
-          disabled={!userPositions}
+          disabled={!userHasPositions}
         />
       )}
       <GridChip

@@ -8,18 +8,18 @@ import { MarketTypeFilterChips } from './MarketTypeFilterChips'
 
 export const UserPositionFilterChips = ({
   tab,
-  userPositions,
+  userHasPositions,
   onSearch,
   searchText,
   ...filterProps
 }: FilterProps<LlamaMarketKey> & {
-  userPositions: LlamaMarketsResult['userPositions'] | undefined
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   tab: MarketRateType
   searchText: string
   onSearch: (search: string) => void
 }) => {
   const isMobile = useIsMobile()
-  const showChips = userPositions?.Lend[tab] && userPositions?.Mint[tab]
+  const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
   return (
     <Grid container justifyContent="space-between" size={12}>
       {!isMobile && (

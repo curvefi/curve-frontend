@@ -67,7 +67,7 @@ export const LlamaMarketsPage = () => {
         }}
         gap={Spacing.xxl}
       >
-        {data?.userPositions && <UserPositionsTabs result={data} loading={loading} />}
+        {data?.userHasPositions && <UserPositionsTabs result={data} loading={loading} />}
         <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       </Stack>
 

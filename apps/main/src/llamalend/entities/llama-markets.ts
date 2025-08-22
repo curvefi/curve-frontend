@@ -58,12 +58,12 @@ export type LlamaMarket = {
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
-  userPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
+  userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
 }
 
 export type LlamaMarketsResult = {
   markets: LlamaMarket[]
-  userPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
+  userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
   hasFavorites: boolean
 }
 
@@ -152,7 +152,7 @@ const convertLendingVault = (
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage,
-    userPositions:
+    userHasPositions:
       hasBorrowed || hasSupplied
         ? {
             [MarketRateType.Borrow]: hasBorrowed,
@@ -236,7 +236,7 @@ const convertMintMarket = (
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
-    userPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
+    userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
   }
 }
 
@@ -302,7 +302,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const data: LlamaMarketsResult | undefined =
         showData && showUserData
           ? {
-              userPositions:
+              userHasPositions:
                 userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
                   ? {
                       [LlamaMarketType.Mint]: {

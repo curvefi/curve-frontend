@@ -30,7 +30,7 @@ const DEFAULT_SORT = {
 }
 
 const useDefaultUserFilter = (type: MarketRateType) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.UserPositions, value: type }], [type])
+  useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
 
 export type UserPositionsTableProps = {
   result: LlamaMarketsResult | undefined
@@ -39,7 +39,7 @@ export type UserPositionsTableProps = {
 }
 
 export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
-  const { markets: data = [], userPositions } = result ?? {}
+  const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
   const title = TITLES[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(title, defaultFilters)
@@ -60,7 +60,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
       table={table}
       emptyText={t`No positions found`}
       expandedPanel={LlamaMarketExpandedPanel}
-      shouldStickFirstColumn={Boolean(useIsTablet() && userPositions)}
+      shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
@@ -77,7 +77,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
             <UserPositionFilterChips
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
-              userPositions={userPositions}
+              userHasPositions={userHasPositions}
               tab={tab}
               searchText={searchText}
               onSearch={onSearch}
