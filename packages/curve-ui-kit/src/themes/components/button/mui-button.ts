@@ -119,6 +119,10 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
         [basicMuiTheme.breakpoints.up('tablet')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.tablet },
         [basicMuiTheme.breakpoints.up('desktop')]: { marginInlineStart: SizesAndSpaces.Spacing.xs.desktop },
       },
+      loading: {
+        // loading will show a `md` IconButton by default, which is too large for our buttons => force the size to `xs`
+        svg: { width: ButtonSize.xs, height: ButtonSize.xs },
+      },
     },
   }
 }
