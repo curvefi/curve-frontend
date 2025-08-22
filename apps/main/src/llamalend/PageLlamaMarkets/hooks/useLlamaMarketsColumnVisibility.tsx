@@ -17,6 +17,8 @@ export const createLlamaMarketsMobileColumns = (sortBy: LlamaMarketColumnId) =>
  * Create a map of column visibility for the Llama markets table that can be customized by the user.
  * This is not used on mobile devices (see `createLlamaMarketsMobileColumns` above).
  * @param hasPositions Whether the user is connected and has positions. Undefined during loading.
+ * @param onlyPositions If set, only show columns related to the given position type.
+ *      Otherwise, show all columns related to general market info and both position types (optionally).
  */
 const createLlamaMarketsColumnOptions = ({
   hasPositions,

@@ -60,6 +60,7 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
 }
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
+  // todo: update metric component(?) to show the errors when appropriate
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
   const { address, assets, leverage, liquidityUsd, type, url, userHasPositions, utilizationPercent } = market
