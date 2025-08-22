@@ -17,11 +17,17 @@ const info: BackgroundColor = (t) => t.design.Layer.Feedback.Info
 const red: BackgroundColor = (t) => t.design.Layer.Feedback.Error
 const orange: BackgroundColor = (t) => t.design.Color.Tertiary[400]
 
-function flicker(setBackgroundColor: (value: (prevState: BackgroundColor) => BackgroundColor) => void) {
+/**
+ * Function to be called in useEffect that calls the given method in interval to create a flicker effect.
+ */
+const flickerEffect = (
+  setBackgroundColor: (value: (prevState: BackgroundColor) => BackgroundColor) => void,
+  duration = Duration.Flicker,
+) => {
   let timeoutId: ReturnType<typeof setTimeout>
   const flicker = () => {
     setBackgroundColor((prev: BackgroundColor) => (prev === orange ? red : orange))
-    timeoutId = setTimeout(flicker, Duration.Flicker)
+    timeoutId = setTimeout(flicker, duration)
   }
   flicker()
   return () => clearTimeout(timeoutId)
@@ -31,7 +37,7 @@ export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
   const isSoftLiquidation = useUserMarketStats(market, LlamaMarketColumnId.UserHealth)?.data?.softLiquidation
   const [backgroundColor, setBackgroundColor] = useState<BackgroundColor>(() => info)
   useEffect(
-    () => (isSoftLiquidation ? flicker(setBackgroundColor) : setBackgroundColor(() => info)),
+    () => (isSoftLiquidation ? flickerEffect(setBackgroundColor) : setBackgroundColor(() => info)),
     [isSoftLiquidation],
   )
   return (

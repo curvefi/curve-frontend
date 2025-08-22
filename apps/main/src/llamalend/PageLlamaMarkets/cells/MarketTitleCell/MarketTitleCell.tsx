@@ -1,7 +1,6 @@
 import { MouseEvent } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { MarketBadges } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
-import { UserPositionIndicator } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/UserPositionIndicator'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -14,14 +13,18 @@ import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { UserPositionIndicator } from './UserPositionIndicator'
 
 const { Spacing } = SizesAndSpaces
+
+// the padding is removed from this cell, so we can show the indicator on the border, the spacer returns it back
+const PaddingSpacer = () => <Box sx={{ width: Spacing.md }} />
 
 export const MarketTitleCell = ({ row: { original: market } }: CellContext<LlamaMarket, LlamaMarket['assets']>) => {
   const isMobile = useIsMobile()
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
-      {market.userHasPosition ? <UserPositionIndicator market={market} /> : <Box sx={{ width: Spacing.md }} />}
+      {market.userHasPosition ? <UserPositionIndicator market={market} /> : <PaddingSpacer />}
       <TokenPair
         chain={market.chain}
         assets={{ primary: market.assets.collateral, secondary: market.assets.borrowed }}
