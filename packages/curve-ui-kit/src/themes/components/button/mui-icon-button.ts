@@ -49,5 +49,9 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Comp
     // colorInfo: { '&:hover': { color: Button.Info.Hover.Label, backgroundColor: Button.Info.Hover.Fill } },
     // colorSuccess: { '&:hover': { color: Button.Success.Hover.Label, backgroundColor: Button.Success.Hover.Fill } },
     // colorWarning: { '&:hover': { color: Button.Warning.Hover.Label, backgroundColor: Button.Warning.Hover.Fill } },
+    loadingIndicator: {
+      // IconButton sizes change the size of all svg, but the loading indicator gets larger than its container
+      svg: { maxWidth: '100%', maxHeight: '100%' },
+    },
   },
 })
