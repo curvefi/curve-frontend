@@ -8,6 +8,7 @@ import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
+import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { TableFilters, useColumnFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
@@ -66,7 +67,9 @@ export const LlamaMarketsTable = ({
   return (
     <DataTable
       table={table}
-      emptyText={isError ? t`Could not load markets` : t`No markets found`}
+      emptyState={
+        <EmptyStateRow table={table}>{isError ? t`Could not load markets` : t`No markets found`}</EmptyStateRow>
+      }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={loading}
