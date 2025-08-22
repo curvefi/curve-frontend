@@ -27,7 +27,6 @@ export type AssetDetails = {
   symbol: string
   address: string
   chain: Chain
-  usdPrice: number | null
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
@@ -103,7 +102,6 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
-        usdPrice: totalDebt && totalDebtUsd / totalDebt,
         chain,
         balance: totalDebt,
         balanceUsd: totalDebtUsd,
@@ -111,7 +109,6 @@ const convertLendingVault = (
       collateral: {
         ...collateralToken,
         chain,
-        usdPrice: totalAssets && totalAssetsUsd / totalAssets,
         balance: totalAssets,
         balanceUsd: totalAssetsUsd,
       },
@@ -186,7 +183,6 @@ const convertMintMarket = (
       borrowed: {
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
-        usdPrice: stablecoin_price,
         chain,
         balance: borrowed,
         balanceUsd: borrowed * stablecoin_price,
@@ -195,7 +191,6 @@ const convertMintMarket = (
       collateral: {
         symbol: collateralSymbol,
         address: collateralAddress,
-        usdPrice: collateralAmountUsd / collateralAmount,
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,

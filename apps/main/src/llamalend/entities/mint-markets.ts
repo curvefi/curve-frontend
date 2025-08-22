@@ -1,7 +1,10 @@
-import lodash from 'lodash'
-import { getCoinPrices } from '@/llamalend/entities/usd-prices'
 import { Chain } from '@curvefi/prices-api'
-import { getAllMarkets, getAllUserMarkets, getUserMarketStats, Market } from '@curvefi/prices-api/crvusd'
+import {
+  getAllMarkets,
+  getAllUserMarkets,
+  getUserMarketStats,
+  Market as MintMarketFromApi,
+} from '@curvefi/prices-api/crvusd'
 import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
@@ -13,42 +16,20 @@ import {
 import { EmptyValidationSuite } from '@ui-kit/lib/validation'
 import { Address } from '@ui-kit/utils'
 
-type MintMarketFromApi = Market
-
 export type MintMarket = MintMarketFromApi & {
-  stablecoin_price: number
   chain: Chain
-}
-
-/**
- * Note: The API does not provide stablecoin prices, fetch them separately and add them to the data.
- * I requested benber86 to add stablecoin prices to the API, but it may take some time.
- */
-async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMarketFromApi[] }) {
-  const stablecoinAddresses = lodash.uniq(data.map((market) => market.stablecoinToken.address))
-  const stablecoinPrices = await getCoinPrices(stablecoinAddresses, chain)
-  return data.map((market) => ({
-    ...market,
-    chain,
-    stablecoin_price: stablecoinPrices[market.stablecoinToken.address],
-  }))
 }
 
 export const {
   getQueryOptions: getMintMarketOptions,
   invalidate: invalidateMintMarkets,
-  fetchQuery: fetchMintMarkets,
   setQueryData: setMintMarkets,
 } = queryFactory({
   queryKey: () => ['mint-markets', 'v2'] as const,
-  queryFn: async (): Promise<MintMarket[]> => {
-    const results = await Promise.all(
-      Object.entries(await getAllMarkets()).flatMap(([blockchainId, data]) =>
-        addStableCoinPrices({ chain: blockchainId as Chain, data }),
-      ),
-    )
-    return results.flat()
-  },
+  queryFn: async (): Promise<MintMarket[]> =>
+    recordEntries(await getAllMarkets())
+      .flatMap(([chain, data]) => data.map((market) => ({ ...market, chain })))
+      .flat(),
   validationSuite: EmptyValidationSuite,
 })
 
