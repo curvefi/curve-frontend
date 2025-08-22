@@ -1,4 +1,6 @@
-import { Stack, Typography, type Theme, useTheme } from '@mui/material'
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
+import NotificationsIcon from '@mui/icons-material/Notifications'
+import { Stack, Typography, type Theme, useTheme, Button } from '@mui/material'
 import type { Health } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { HealthBar } from '@ui-kit/features/market-position-details/HealthBar'
 import { t } from '@ui-kit/lib/i18n'
@@ -30,13 +32,27 @@ export const HealthDetails = ({ health }: { health: Health }) => {
           />
           <HealthBar health={Number(health?.value)} />
         </Stack>
-        <Stack display="flex" flexDirection="column">
-          <Typography variant="bodyXsRegular">
-            {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
-          </Typography>
-          <Typography variant="bodyXsRegular" sx={{ fontWeight: (t) => t.typography.fontWeightBold }}>
-            {t`Liquidation may occur when health reaches 0.`}
-          </Typography>
+        <Stack flexDirection="row" gap={1} alignItems="center" justifyContent="space-between">
+          <Stack display="flex" flexDirection="column">
+            <Typography variant="bodyXsRegular">
+              {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
+            </Typography>
+            <Typography variant="bodyXsRegular" sx={{ fontWeight: (t) => t.typography.fontWeightBold }}>
+              {t`Liquidation may occur when health reaches 0.`}
+            </Typography>
+          </Stack>
+          <Button
+            variant="link"
+            color="ghost"
+            href="https://t.me/LlamalendMonitorBot?ref=news.curve.finance"
+            target="_blank"
+            rel="noreferrer"
+            sx={{ flexShrink: 0 }}
+            startIcon={<NotificationsIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
+            endIcon={<ArrowOutwardIcon sx={(t) => ({ fontSize: t.typography.fontSize })} />}
+          >
+            {t`Get alerts`}
+          </Button>
         </Stack>
       </Stack>
     </Stack>
