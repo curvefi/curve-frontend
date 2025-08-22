@@ -1,6 +1,8 @@
 import { MouseEvent } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { MarketBadges } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
+import { UserPositionIndicator } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/UserPositionIndicator'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
@@ -19,6 +21,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   const isMobile = useIsMobile()
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
+      {market.userHasPosition ? <UserPositionIndicator market={market} /> : <Box sx={{ width: Spacing.md }} />}
       <TokenPair
         chain={market.chain}
         assets={{ primary: market.assets.collateral, secondary: market.assets.borrowed }}
