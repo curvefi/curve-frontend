@@ -1,4 +1,3 @@
-import meanBy from 'lodash/meanBy'
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
@@ -13,12 +12,16 @@ import { BorrowPositionDetailsProps } from '@ui-kit/features/market-position-det
 import { calculateLtv, calculateRangeToLiquidation } from '@ui-kit/features/market-position-details/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 type UseBorrowPositionDetailsProps = {
   chainId: ChainId
   market: OneWayMarketTemplate | null | undefined
   marketId: string
 }
+
+const averageMultiplier = 30
+const averageMultiplierString = `${averageMultiplier}D`
 
 export const useBorrowPositionDetails = ({
   chainId,
@@ -60,20 +63,18 @@ export const useBorrowPositionDetails = ({
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
+    agg: 'day',
+    limit: 30, // fetch last 30 days for 30 day average calcs
   })
 
-  const thirtyDayAvgRate = useMemo(() => {
-    if (!lendSnapshots) return null
-
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-
-    const recentSnapshots = lendSnapshots.filter((snapshot) => snapshot.timestamp > thirtyDaysAgo)
-
-    if (recentSnapshots.length === 0) return null
-
-    return meanBy(recentSnapshots, ({ borrowApy }) => borrowApy) * 100
-  }, [lendSnapshots])
+  const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
+    () =>
+      calculateAverageRates(lendSnapshots, averageMultiplier, {
+        rate: ({ borrowApy }) => borrowApy * 100,
+        rebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
+      }) ?? { rate: null, rebasingYield: null },
+    [lendSnapshots],
+  )
 
   const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy ?? null
   const collateralTotalValue = useMemo(() => {
@@ -85,7 +86,7 @@ export const useBorrowPositionDetails = ({
     return [...(campaigns[controller.toLowerCase()] ?? [])]
   }, [campaigns, controller])
 
-  const rebasingYield = lendSnapshots?.[0]?.collateralToken?.rebasingYield // take most recent rebasing yield
+  const rebasingYield = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
     marketType: LlamaMarketType.Lend,
     liquidationAlert: {
@@ -98,10 +99,12 @@ export const useBorrowPositionDetails = ({
     },
     borrowAPY: {
       rate: borrowApy == null ? null : Number(borrowApy),
-      averageRate: thirtyDayAvgRate,
-      averageRateLabel: '30D',
+      averageRate: averageRate,
+      averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
+      averageRebasingYield: averageRebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
+      totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
       extraRewards: campaignRewards,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
