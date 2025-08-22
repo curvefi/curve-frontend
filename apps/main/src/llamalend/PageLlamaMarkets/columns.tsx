@@ -1,18 +1,11 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { HealthCell } from '@/llamalend/PageLlamaMarkets/cells/HealthCell'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { ColumnDef, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
-import {
-  CompactUsdCell,
-  LineGraphCell,
-  MarketTitleCell,
-  PercentageCell,
-  PriceCell,
-  RateCell,
-  UtilizationCell,
-} from './cells'
+import { CompactUsdCell, LineGraphCell, MarketTitleCell, PriceCell, RateCell, UtilizationCell } from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -37,8 +30,8 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
     header: t`Health`,
-    cell: PercentageCell,
-    meta: { type: 'numeric', hideZero: true },
+    cell: HealthCell,
+    meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({

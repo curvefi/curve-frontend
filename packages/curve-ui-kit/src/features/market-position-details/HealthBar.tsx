@@ -4,6 +4,7 @@ import { Reds, Blues } from '@ui-kit/themes/design/0_primitives'
 
 type HealthBarProps = {
   health: number | undefined | null
+  small?: boolean
 }
 
 const BAR_HEIGHT = '1.4375rem' // 23px
@@ -58,7 +59,7 @@ const Label = ({
   </Stack>
 )
 
-export const HealthBar = ({ health }: HealthBarProps) => {
+export const HealthBar = ({ health, small }: HealthBarProps) => {
   // Clamps health percentage between 0 and 100
   const healthPercentage = Math.max(0, Math.min(health ?? 0, 100))
   const trackColor = health != null && health < 5 ? Reds[500] : Blues[500]

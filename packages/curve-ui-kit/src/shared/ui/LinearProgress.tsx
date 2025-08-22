@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import MuiLinearProgress from '@mui/material/LinearProgress'
+import { type Theme } from '@mui/material/styles'
 
 const SIZE_MAPPING = {
   small: 4,
@@ -7,16 +8,24 @@ const SIZE_MAPPING = {
   large: 16,
 }
 
-export const LinearProgress = ({ percent, size }: { percent: number; size: keyof typeof SIZE_MAPPING }) => {
+export const LinearProgress = ({
+  percent,
+  size,
+  barColor,
+}: {
+  percent: number
+  size: keyof typeof SIZE_MAPPING
+  barColor?: (t: Theme) => string
+}) => {
   const [value, setValue] = useState(0)
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
   return (
     <MuiLinearProgress
       sx={{
         height: SIZE_MAPPING[size],
-        ...(value < 0 && { '& .MuiLinearProgress-bar': { backgroundColor: 'error.main' } }),
+        '& .MuiLinearProgress-bar': { backgroundColor: barColor },
       }}
-      value={value < 0 ? 100 : Math.min(100, value)}
+      value={value}
       variant="determinate"
     />
   )
