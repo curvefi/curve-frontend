@@ -34,7 +34,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-          <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />
+          <TokenIcon blockchainId={chain} address={address} size="mui-md" />
         </Stack>
       </Tooltip>
       <Tooltip title={usdTooltip}>
