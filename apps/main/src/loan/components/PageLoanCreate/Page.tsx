@@ -1,12 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
-import LoanInfoLlamma from '@/loan/components/LoanInfoLlamma'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
-import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -18,14 +16,7 @@ import {
   useChainId,
 } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
-import {
-  AppPageFormContainer,
-  AppPageFormsWrapper,
-  AppPageFormTitleWrapper,
-  AppPageInfoContentHeader,
-  AppPageInfoContentWrapper,
-  AppPageInfoWrapper,
-} from '@ui/AppPage'
+import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
@@ -37,7 +28,6 @@ import { MarketDetails } from '@ui-kit/features/market-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -51,7 +41,6 @@ const Page = () => {
   const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()
   const rChainId = useChainId(params)
-  const titleMapper = useTitleMapper()
   const { connect: connectWallet, provider } = useWallet()
   const [loaded, setLoaded] = useState(false)
 
@@ -70,14 +59,11 @@ const Page = () => {
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
   const isReady = !!collateralDatasMapper
-  const isValidRouterParams = !!rChainId && !!rCollateralId
   const isLeverage = rFormType === 'leverage'
 
-  const [isBeta] = useBetaFlag()
   const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
 
   const fetchInitial = useCallback(
@@ -167,13 +153,6 @@ const Page = () => {
     </AppPageFormTitleWrapper>
   )
 
-  const formProps = {
-    curve,
-    isReady,
-    llamma,
-    llammaId,
-  }
-
   return provider ? (
     <>
       {chartExpanded && (
@@ -195,88 +174,55 @@ const Page = () => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      {!isBeta ? (
-        <Wrapper isAdvanceMode={isAdvancedMode} chartExpanded={chartExpanded}>
-          <AppPageFormsWrapper>
-            {!isMdUp && !chartExpanded && <TitleComp />}
-            {rChainId && rCollateralId && (
-              <LoanCreate
-                curve={curve}
-                isReady={isReady}
-                isLeverage={isLeverage}
-                loanExists={loanExists}
-                llamma={llamma}
-                llammaId={llammaId}
-                params={params}
-                rChainId={rChainId}
-                rCollateralId={rCollateralId}
-                rFormType={rFormType}
-                fetchInitial={fetchInitial}
-              />
-            )}
-          </AppPageFormsWrapper>
-
-          <AppPageInfoWrapper>
-            {isMdUp && !chartExpanded && <TitleComp />}
-            <AppPageInfoContentWrapper variant="secondary">
-              <AppPageInfoContentHeader>LLAMMA Details</AppPageInfoContentHeader>
-              {isValidRouterParams && rChainId && (
-                <LoanInfoLlamma {...formProps} rChainId={rChainId} titleMapper={titleMapper} />
-              )}
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        </Wrapper>
-      ) : (
-        <Stack
-          sx={(theme) => ({
-            marginRight: Spacing.md,
-            marginLeft: Spacing.md,
-            marginTop: Spacing.xl,
-            marginBottom: Spacing.xxl,
-            gap: Spacing.xl,
-            flexDirection: 'column',
-            // 961px, matches old Action card breakpoint
-            [theme.breakpoints.up(961)]: {
-              flexDirection: 'row', // 1100px
-            },
-          })}
-        >
-          <AppPageFormsWrapper>
-            {rChainId && rCollateralId && (
-              <LoanCreate
-                curve={curve}
-                isReady={isReady}
-                isLeverage={isLeverage}
-                loanExists={loanExists}
-                llamma={llamma}
-                llammaId={llammaId}
-                params={params}
-                rChainId={rChainId}
-                rCollateralId={rCollateralId}
-                rFormType={rFormType}
-                fetchInitial={fetchInitial}
-              />
-            )}
-          </AppPageFormsWrapper>
-          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-            {!loanExists && (
-              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-                <NoPosition type="borrow" />
-              </Stack>
-            )}
-            <Stack>
-              <MarketDetails {...marketDetails} />
-              <MarketInformationComp
-                llamma={llamma}
-                llammaId={llammaId}
-                chainId={rChainId}
-                chartExpanded={chartExpanded}
-                page="create"
-              />
+      <Stack
+        sx={(theme) => ({
+          marginRight: Spacing.md,
+          marginLeft: Spacing.md,
+          marginTop: Spacing.xl,
+          marginBottom: Spacing.xxl,
+          gap: Spacing.xl,
+          flexDirection: 'column',
+          // 961px, matches old Action card breakpoint
+          [theme.breakpoints.up(961)]: {
+            flexDirection: 'row', // 1100px
+          },
+        })}
+      >
+        <AppPageFormsWrapper>
+          {rChainId && rCollateralId && (
+            <LoanCreate
+              curve={curve}
+              isReady={isReady}
+              isLeverage={isLeverage}
+              loanExists={loanExists}
+              llamma={llamma}
+              llammaId={llammaId}
+              params={params}
+              rChainId={rChainId}
+              rCollateralId={rCollateralId}
+              rFormType={rFormType}
+              fetchInitial={fetchInitial}
+            />
+          )}
+        </AppPageFormsWrapper>
+        <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+          {!loanExists && (
+            <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <NoPosition type="borrow" />
             </Stack>
+          )}
+          <Stack>
+            <MarketDetails {...marketDetails} />
+            <MarketInformationComp
+              llamma={llamma}
+              llammaId={llammaId}
+              chainId={rChainId}
+              chartExpanded={chartExpanded}
+              page="create"
+            />
           </Stack>
         </Stack>
-      )}
+      </Stack>
     </>
   ) : (
     <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
@@ -290,12 +236,6 @@ const Page = () => {
     </Box>
   )
 }
-
-const Wrapper = styled(AppPageFormContainer)<{ isAdvanceMode: boolean; chartExpanded: boolean }>`
-  @media (min-width: ${breakpoints.md}rem) {
-    ${({ chartExpanded }) => chartExpanded && `margin-top: 1.5rem;`};
-  }
-`
 
 const Title = styled(TextEllipsis)`
   color: var(--page--text-color);
