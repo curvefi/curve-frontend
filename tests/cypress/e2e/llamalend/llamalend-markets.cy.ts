@@ -59,7 +59,7 @@ describe(`LlamaLend Markets`, () => {
       // on tablet, we expect 3 rows until 900px, then 2 rows
       tablet: [208, 164],
       // on desktop, we expect 2 rows always
-      desktop: [172],
+      desktop: [164],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)

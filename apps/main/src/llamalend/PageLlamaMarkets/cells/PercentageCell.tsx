@@ -1,10 +1,10 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LlamaMarketColumnId } from '../columns.enum'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
