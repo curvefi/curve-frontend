@@ -6,11 +6,12 @@ import type { Theme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../../columns.enum'
 
-const { IconSize } = SizesAndSpaces
+const { IconSize, Spacing } = SizesAndSpaces
 
 type BackgroundColor = (theme: Theme) => string
 const info: BackgroundColor = (t) => t.design.Layer.Feedback.Info
@@ -48,7 +49,15 @@ export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
           : t`You have a position in this market`
       }
     >
-      <Stack sx={{ backgroundColor, alignSelf: 'stretch', justifyContent: 'center' }}>
+      <Stack
+        sx={{
+          backgroundColor,
+          alignSelf: 'stretch',
+          justifyContent: 'center',
+          paddingInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
+          paddingInlineEnd: Spacing.sm,
+        }}
+      >
         <LlamaIcon sx={{ color: (t) => t.design.Layer[1].Outline, width: IconSize.md, height: IconSize.md }} />
       </Stack>
     </Tooltip>

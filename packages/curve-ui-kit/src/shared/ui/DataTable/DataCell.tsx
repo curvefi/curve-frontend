@@ -19,15 +19,15 @@ export function getCellSx<T extends TableItem>({
   showCollapseIcon?: boolean
   isSticky: boolean
 }) {
-  const { borderRight, noPadding } = column.columnDef.meta ?? {}
+  const { borderRight } = column.columnDef.meta ?? {}
   // with the collapse icon there is an extra wrapper, so keep the sx separate
   const wrapperSx = {
     textAlign: getAlignment(column),
-    ...(!noPadding && { paddingInline: Spacing.sm }),
+    paddingInline: Spacing.sm,
   }
   const sx = {
     ...(!showCollapseIcon && wrapperSx),
-    ...(!noPadding && getExtraColumnPadding(column)),
+    ...getExtraColumnPadding(column),
     ...((borderRight || isSticky) && { borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}` }),
     ...(isSticky && {
       position: 'sticky',

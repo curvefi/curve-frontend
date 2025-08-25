@@ -33,7 +33,6 @@ export const LLAMA_MARKET_COLUMNS = [
     header: t`Collateral • Borrow`,
     cell: MarketTitleCell,
     filterFn: filterByText,
-    meta: { noPadding: true },
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
