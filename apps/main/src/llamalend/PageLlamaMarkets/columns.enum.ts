@@ -15,5 +15,6 @@ export enum LlamaMarketColumnId {
   BorrowedSymbol = 'assets_borrowed_symbol',
   IsFavorite = 'isFavorite',
   Rewards = 'rewards',
+  TVL = 'tvl',
   Type = 'type',
 }

@@ -48,7 +48,7 @@ const useVisibility = (sorting: SortingState, hasPositions: boolean | undefined)
 }
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, null] }], [minLiquidity])
+  useMemo(() => [{ id: LlamaMarketColumnId.TVL, value: [minLiquidity, null] }], [minLiquidity])
 
 const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: (id: string, value: unknown) => void) =>
   [

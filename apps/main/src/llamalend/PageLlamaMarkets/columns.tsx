@@ -92,6 +92,11 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: CompactUsdCell,
     meta: { type: 'numeric' },
   }),
+  columnHelper.accessor(LlamaMarketColumnId.TVL, {
+    header: t`TVL`,
+    cell: CompactUsdCell,
+    meta: { type: 'numeric' },
+  }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
   hidden('assets.collateral.symbol', LlamaMarketColumnId.CollateralSymbol, multiFilterFn),
