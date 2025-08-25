@@ -15,7 +15,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
     error && <ErrorCell error={error} />
   ) : (
     <Tooltip title={<HealthTooltip softLiquidation={softLiquidation} />} placement="top">
-      <HealthBar small health={health} />
+      <HealthBar small health={health} softLiquidation={softLiquidation} />
     </Tooltip>
   )
 }

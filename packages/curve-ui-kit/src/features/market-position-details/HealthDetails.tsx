@@ -4,13 +4,19 @@ import { Button, Stack, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Health } from './BorrowPositionDetails'
+import type { Health, LiquidationAlert } from './BorrowPositionDetails'
 import { HealthBar } from './HealthBar'
 import { getHealthValueColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-export const HealthDetails = ({ health }: { health: Health }) => {
+export const HealthDetails = ({
+  health: { loading, value },
+  liquidationAlert: { softLiquidation },
+}: {
+  health: Health
+  liquidationAlert: LiquidationAlert
+}) => {
   const theme = useTheme()
   return (
     <Stack sx={{ padding: Spacing.md }}>
@@ -18,12 +24,12 @@ export const HealthDetails = ({ health }: { health: Health }) => {
         <Stack display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
           <Metric
             label={t`Health`}
-            value={Number(health?.value)}
-            loading={health?.loading}
-            valueOptions={{ unit: 'none', decimals: 2, color: getHealthValueColor(health?.value ?? 0, theme) }}
+            value={Number(value)}
+            loading={loading}
+            valueOptions={{ unit: 'none', decimals: 2, color: getHealthValueColor(value ?? 0, theme) }}
             size="large"
           />
-          <HealthBar health={Number(health?.value)} />
+          <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
         </Stack>
         <Stack flexDirection="row" gap={1} alignItems="center" justifyContent="space-between">
           <Stack display="flex" flexDirection="column">

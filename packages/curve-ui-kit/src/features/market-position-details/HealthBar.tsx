@@ -9,6 +9,7 @@ const { Spacing } = SizesAndSpaces
 type HealthBarProps = {
   health: number | undefined | null
   small?: boolean
+  softLiquidation: boolean | undefined | null
 }
 
 const BAR_HEIGHT = '1.4375rem' // 23px
@@ -66,13 +67,17 @@ const Label = ({
 
 const clampPercentage = (health: number | undefined | null) => Math.max(0, Math.min(health ?? 0, 100))
 
-export const HealthBar = ({ health, small }: HealthBarProps) =>
+export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
   // Clamps health percentage between 0 and 100
   small ? (
     health != null && (
       <Stack gap={Spacing.xs}>
         {health.toFixed(2)}
-        <LinearProgress percent={clampPercentage(health)} size="medium" barColor={getHealthTrackColor(health)} />
+        <LinearProgress
+          percent={clampPercentage(health)}
+          size="medium"
+          barColor={getHealthTrackColor(health, softLiquidation)}
+        />
       </Stack>
     )
   ) : (
@@ -96,7 +101,7 @@ export const HealthBar = ({ health, small }: HealthBarProps) =>
           sx={{
             width: `${clampPercentage(health)}%`,
             height: '100%',
-            backgroundColor: getHealthTrackColor(health),
+            backgroundColor: getHealthTrackColor(health, softLiquidation),
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
