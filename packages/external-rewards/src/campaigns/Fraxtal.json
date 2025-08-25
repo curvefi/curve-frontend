@@ -316,6 +316,18 @@
       "multiplier": "1.3838x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x15d1ed4418dA1F268bCAd5BA7c8d06BB3c3081eD",
+      "network": "fraxtal",
+      "multiplier": "26.3675x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
