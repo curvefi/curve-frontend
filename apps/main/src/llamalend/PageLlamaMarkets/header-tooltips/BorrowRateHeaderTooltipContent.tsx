@@ -1,4 +1,4 @@
-import { t } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 
 export const BorrowRateHeaderTooltipContent = () => (
@@ -8,17 +8,16 @@ export const BorrowRateHeaderTooltipContent = () => (
     />
     <TooltipDescription
       text={
-        <>
-          {t`For`} <strong>{t`lending markets`}</strong> {t`it varies according to the market utilization.`}
-        </>
+        <Trans>
+          For <strong>lending markets</strong> it varies according to the market utilization.{' '}
+        </Trans>
       }
     />
     <TooltipDescription
       text={
-        <>
-          {t`For`} <strong>{t`minting markets`}</strong> {t`it varies according to the the peg of`}{' '}
-          <em>{t`crvUSD`}.</em>
-        </>
+        <Trans>
+          For <strong>minting markets</strong> it varies according to the the peg of <em>crvUSD</em>.
+        </Trans>
       }
     />
     <TooltipDescription
