@@ -84,7 +84,6 @@ export const LendingMarketsFilters = ({
       <RangeSliderFilter
         id={LlamaMarketColumnId.LiquidityUsd}
         field={LlamaMarketColumnId.LiquidityUsd}
-        defaultMinimum={minLiquidity}
         title={t`Liquidity`}
         format={formatUsd}
         {...props}
