@@ -1,5 +1,5 @@
 import type { ContractTransactionResponse } from 'ethers'
-import produce from 'immer'
+import { produce } from 'immer'
 import type { GetState, SetState } from 'zustand'
 import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { State } from '@/dex/store/useStore'

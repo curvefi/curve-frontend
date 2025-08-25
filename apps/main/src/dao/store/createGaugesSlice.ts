@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js'
-import produce from 'immer'
+import { produce } from 'immer'
 import type { GetState, SetState } from 'zustand'
 import { invalidateUserGaugeVoteNextTimeQuery } from '@/dao/entities/user-gauge-vote-next-time'
 import { invalidateUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-votes'

@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
 import lodash from 'lodash'
 import { zeroAddress } from 'viem'
