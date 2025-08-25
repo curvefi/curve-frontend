@@ -1,12 +1,12 @@
 import { ReactElement } from 'react'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { PercentageCell } from '@/llamalend/PageLlamaMarkets/cells/PercentageCell'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { TooltipItem, TooltipItems } from '@ui-kit/shared/ui/TooltipComponents'
@@ -96,11 +96,11 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
   </Tooltip>
 )
 
-export const UtilizationCell = (context: CellContext<LlamaMarket, number>) => (
-  <UtilizationTooltip market={context.row.original}>
-    {/* Tooltip won't open without an extra stack. Don't ask me why 😭 */}
-    <Stack>
-      <PercentageCell {...context} />
+export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
+  <UtilizationTooltip market={row.original}>
+    <Stack gap={Spacing.xs}>
+      {getValue().toFixed(2) + '%'}
+      <LinearProgress percent={getValue()} size="medium" />
     </Stack>
   </UtilizationTooltip>
 )
