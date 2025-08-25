@@ -35,6 +35,7 @@ const headers = {
   [LlamaMarketColumnId.BorrowChart]: t`7D Rate Chart`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
+  [LlamaMarketColumnId.TVL]: t`TVL`,
 } as const
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
@@ -129,17 +130,11 @@ export const LLAMA_MARKET_COLUMNS = [
     },
   }),
   columnHelper.accessor(LlamaMarketColumnId.TVL, {
-    header: t`TVL`,
+    header: headers[LlamaMarketColumnId.TVL],
     cell: CompactUsdCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
     },
-  }),
-  columnHelper.accessor(LlamaMarketColumnId.TVL, {
-    header: t`TVL`,
-    cell: CompactUsdCell,
-    meta: { type: 'numeric' },
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
