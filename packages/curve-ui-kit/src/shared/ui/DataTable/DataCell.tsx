@@ -19,6 +19,7 @@ export function getCellSx<T extends TableItem>({
   showCollapseIcon?: boolean
   isSticky: boolean
 }) {
+  const { borderRight } = column.columnDef.meta ?? {}
   // with the collapse icon there is an extra wrapper, so keep the sx separate
   const wrapperSx = {
     textAlign: getAlignment(column),

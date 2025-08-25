@@ -1,4 +1,5 @@
 /// <reference path="./basic-theme.d.ts" />
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { Breakpoint } from '@mui/material'
 import { createTheme as createMuiTheme } from '@mui/material/styles'
 import { CSSObject } from '@mui/styled-engine'
@@ -61,8 +62,6 @@ export const handleBreakpoints = (values: Record<keyof CSSObject, number | strin
 
 export const mapBreakpoints = (
   values: Responsive,
-  callback: (value: string, breakpoint: Breakpoint) => CSSObject,
+  callback: (value: string, breakpoint: Breakpoint) => string,
 ): CSSObject =>
-  Object.fromEntries(
-    Object.entries(values).map(([breakpoint, value]) => [breakpoint, callback(value, breakpoint as Breakpoint)]),
-  )
+  Object.fromEntries(recordEntries(values).map(([breakpoint, value]) => [breakpoint, callback(value, breakpoint)]))
