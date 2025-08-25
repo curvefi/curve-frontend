@@ -54,8 +54,8 @@ export const UserPositionIndicator = ({ market }: { market: LlamaMarket }) => {
           backgroundColor,
           alignSelf: 'stretch',
           justifyContent: 'center',
-          paddingInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
-          paddingInlineEnd: Spacing.sm,
+          marginInlineStart: mapBreakpoints(Spacing.md, (v) => `-${v}`), // negative padding to offset the padding of the cell
+          marginInlineEnd: Spacing.sm,
         }}
       >
         <LlamaIcon sx={{ color: (t) => t.design.Layer[1].Outline, width: IconSize.md, height: IconSize.md }} />
