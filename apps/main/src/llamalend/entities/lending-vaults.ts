@@ -21,12 +21,7 @@ import { type Address } from '@ui-kit/utils'
 
 export type LendingVault = Market & { chain: ChainName }
 
-export const {
-  getQueryOptions: getLendingVaultsOptions,
-  invalidate: invalidateLendingVaults,
-  fetchQuery: fetchLendingVaults,
-  setQueryData: setLendingVaults,
-} = queryFactory({
+export const { getQueryOptions: getLendingVaultsOptions, invalidate: invalidateLendingVaults } = queryFactory({
   queryKey: () => ['lending-vaults', 'v2'] as const,
   queryFn: async (): Promise<LendingVault[]> =>
     Object.entries(await getAllMarkets()).flatMap(([chain, markets]) =>
@@ -87,7 +82,6 @@ const {
   getQueryOptions: getUserLendingSuppliesQueryOptions,
   getQueryData: getCurrentUserLendingSupplies,
   invalidate: invalidateUserLendingSupplies,
-  useQuery: useUserLendingSuppliesQuery,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-lending-supplies', { userAddress }, 'v4'] as const,
   queryFn: async ({ userAddress }: UserQuery): Promise<Record<ChainName, Address[]>> => {

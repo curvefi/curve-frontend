@@ -2,7 +2,6 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
-import { logSuccess } from '@ui-kit/lib'
 
 export type SwapFormValuesCache = {
   fromAddress: string
@@ -27,11 +26,6 @@ const sliceKey = 'storeCache'
 export type CacheSlice = {
   [sliceKey]: SliceState & {
     setTvlVolumeMapper(type: 'tvlMapper' | 'volumeMapper', chainId: ChainId, mapper: ValueMapperCached): void
-    setServerPreloadData(
-      chainId: ChainId,
-      data: { pools?: PoolDataCacheMapper; tvl?: ValueMapperCached; volume?: ValueMapperCached },
-    ): void
-
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): Promise<void>
     setStateByKeys(SliceState: Partial<SliceState>): Promise<void>
@@ -50,7 +44,7 @@ const DEFAULT_STATE: SliceState = {
 
 const TIMEOUT_MS = 4000
 
-const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlice => ({
+const createCacheSlice = (_: SetState<State>, get: GetState<State>): CacheSlice => ({
   storeCache: {
     ...DEFAULT_STATE,
 
@@ -65,18 +59,6 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
       void sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
     },
 
-    setServerPreloadData: (chainId, { tvl, volume, pools }) => {
-      const setState = get().setAppStateByActiveKey
-      pools && setState(sliceKey, 'poolsMapper', chainId.toString(), pools)
-      tvl && setState(sliceKey, 'tvlMapper', chainId.toString(), tvl)
-      volume && setState(sliceKey, 'volumeMapper', chainId.toString(), volume)
-      logSuccess('setServerPreloadData', {
-        pools: pools && Object.keys(pools).length,
-        tvl: tvl && Object.keys(tvl).length,
-        volume: volume && Object.keys(volume).length,
-      })
-    },
-
     // slice helpers
     setStateByActiveKey: async <T>(key: StateKey, activeKey: string, value: T) => {
       await sleep(TIMEOUT_MS)
@@ -86,7 +68,7 @@ const createCacheSlice = (set: SetState<State>, get: GetState<State>): CacheSlic
       await sleep(TIMEOUT_MS)
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: async <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: async (sliceState: Partial<SliceState>) => {
       await sleep(TIMEOUT_MS)
       get().setAppStateByKeys(sliceKey, sliceState)
     },

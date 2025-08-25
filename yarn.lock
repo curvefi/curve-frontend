@@ -9223,7 +9223,6 @@ __metadata:
     react-dom: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
-    vite-plugin-vercel: "npm:9.0.7"
   languageName: unknown
   linkType: soft
 
@@ -13502,6 +13501,7 @@ __metadata:
     vest: "npm:^5.4.6"
     vite: "npm:*"
     vite-plugin-svgr: "npm:^4.3.0"
+    vite-plugin-vercel: "npm:9.0.7"
     zustand: "npm:^4.5.7"
   languageName: unknown
   linkType: soft

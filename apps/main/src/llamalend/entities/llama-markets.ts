@@ -1,12 +1,4 @@
 import { ethAddress } from 'viem'
-import { getFavoriteMarketOptions } from '@/llamalend/entities/favorite-markets'
-import {
-  getLendingVaultsOptions,
-  getUserLendingSuppliesOptions,
-  getUserLendingVaultsOptions,
-  LendingVault,
-} from '@/llamalend/entities/lending-vaults'
-import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from '@/llamalend/entities/mint-markets'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
@@ -15,8 +7,16 @@ import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
-import { type ExtraIncentive, LlamaMarketType } from '@ui-kit/types/market'
+import { type ExtraIncentive, LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { type Address } from '@ui-kit/utils'
+import { getFavoriteMarketOptions } from './favorite-markets'
+import {
+  getLendingVaultsOptions,
+  getUserLendingSuppliesOptions,
+  getUserLendingVaultsOptions,
+  LendingVault,
+} from './lending-vaults'
+import { getMintMarketOptions, getUserMintMarketsOptions, MintMarket } from './mint-markets'
 
 export type Assets = {
   borrowed: AssetDetails
@@ -58,7 +58,13 @@ export type LlamaMarket = {
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
-  userHasPosition: { lend: boolean; borrow: boolean } | null // null means no positions in either market and makes easy to filter
+  userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
+}
+
+export type LlamaMarketsResult = {
+  markets: LlamaMarket[]
+  userHasPositions: Record<LlamaMarketType, Record<MarketRateType, boolean>> | null
+  hasFavorites: boolean
 }
 
 export type LlamaMarketKey = DeepKeys<LlamaMarket>
@@ -91,9 +97,8 @@ const convertLendingVault = (
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
-  const hasBorrow = userBorrows.has(controller)
-  const hasLend = userSupplied.has(vault)
-  const hasPosition = hasBorrow || hasLend
+  const hasBorrowed = userBorrows.has(controller)
+  const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
   const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
@@ -142,12 +147,18 @@ const convertLendingVault = (
     url: getInternalUrl(
       'lend',
       chain,
-      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasPosition ? 'manage' : 'create'}`,
+      `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasBorrowed || hasSupplied ? 'manage' : 'create'}`,
     ),
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage,
-    userHasPosition: hasPosition ? { borrow: hasBorrow, lend: hasLend } : null,
+    userHasPositions:
+      hasBorrowed || hasSupplied
+        ? {
+            [MarketRateType.Borrow]: hasBorrowed,
+            [MarketRateType.Supply]: hasSupplied,
+          }
+        : null,
   }
 }
 
@@ -225,14 +236,8 @@ const convertMintMarket = (
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage: 0,
-    userHasPosition: hasBorrow ? { borrow: hasBorrow, lend: false } : null, // mint markets do not have lend positions
+    userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
   }
-}
-
-export type LlamaMarketsResult = {
-  markets: LlamaMarket[]
-  hasPositions: boolean
-  hasFavorites: boolean
 }
 
 /**
@@ -293,10 +298,23 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
         userLendingVaults.isError ||
         userSuppliedMarkets.isError ||
         userMintMarkets.isError
-      const data =
+
+      const data: LlamaMarketsResult | undefined =
         showData && showUserData
           ? {
-              hasPositions: userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0,
+              userHasPositions:
+                userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
+                  ? {
+                      [LlamaMarketType.Mint]: {
+                        [MarketRateType.Borrow]: userMints.size > 0,
+                        [MarketRateType.Supply]: false,
+                      },
+                      [LlamaMarketType.Lend]: {
+                        [MarketRateType.Borrow]: userBorrows.size > 0,
+                        [MarketRateType.Supply]: userSupplied.size > 0,
+                      },
+                    }
+                  : null,
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? []).map((vault) =>

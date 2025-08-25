@@ -11,7 +11,6 @@ declare module '@tanstack/react-table' {
     type?: 'numeric'
     hidden?: boolean // todo: get rid of this property, use column visibility, it breaks e.g. column.getIsLastColumn()
     variant?: TypographyVariantKey
-    borderRight?: boolean
     hideZero?: boolean
     tooltip?: Omit<TooltipProps, 'children'>
   }

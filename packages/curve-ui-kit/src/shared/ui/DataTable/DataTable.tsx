@@ -9,7 +9,6 @@ import { SkeletonRows } from '@ui-kit/shared/ui/DataTable/SkeletonRows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
-import { EmptyStateRow } from './EmptyStateRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 
@@ -29,13 +28,13 @@ const { Sizing } = SizesAndSpaces
  */
 export const DataTable = <T extends TableItem>({
   table,
-  emptyText,
+  emptyState,
   children,
   loading,
   ...rowProps
 }: {
   table: TanstackTable<T>
-  emptyText: string
+  emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
   minRowHeight?: number
   loading: boolean
@@ -84,7 +83,7 @@ export const DataTable = <T extends TableItem>({
         {loading ? (
           <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
         ) : rows.length === 0 ? (
-          <EmptyStateRow table={table}>{emptyText}</EmptyStateRow>
+          emptyState
         ) : (
           <>
             {rows.map((row, index) => (

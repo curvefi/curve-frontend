@@ -1,22 +1,20 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
-import type { LlamalendServerData } from '@/app/api/llamalend/types'
 import {
+  invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
-  setLendingVaults,
 } from '@/llamalend/entities/lending-vaults'
-import { invalidateAllUserLendingSupplies } from '@/llamalend/entities/lending-vaults'
 import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets, setMintMarkets } from '@/llamalend/entities/mint-markets'
-import { LendTableFooter } from '@/llamalend/PageLlamaMarkets/LendTableFooter'
-import { LlamaMarketsTable } from '@/llamalend/PageLlamaMarkets/LlamaMarketsTable'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/entities/mint-markets'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
-import { logSuccess } from '@ui-kit/lib'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Address } from '@ui-kit/utils'
+import { LendTableFooter } from './LendTableFooter'
+import { LlamaMarketsTable } from './LlamaMarketsTable'
+import { UserPositionsTabs } from './UserPositionTabs'
 
 /**
  * Creates a callback to reload the markets and user data.
@@ -49,34 +47,15 @@ const useOnReload = ({ address: userAddress, isFetching }: { address?: Address; 
 
 const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 
-function useInjectServerData(props: LlamalendServerData) {
-  useEffect(() => {
-    const { lendingVaults, mintMarkets } = props
-    lendingVaults && setLendingVaults({}, lendingVaults)
-    mintMarkets && setMintMarkets({}, mintMarkets)
-
-    logSuccess('useInjectServerData', {
-      lendingVaults: lendingVaults?.length,
-      mintMarkets: mintMarkets?.length,
-    })
-  }, [props])
-}
-
 /**
  * Page for displaying the lending markets table.
  */
-export const LlamaMarketsPage = (props: LlamalendServerData) => {
-  useInjectServerData(props)
+export const LlamaMarketsPage = () => {
   const { address } = useAccount()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })
 
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
-  const forceLoading = useMemo(
-    // todo: remove after testing
-    () => typeof window !== 'undefined' && window.localStorage.getItem('llamalend-force-loading') !== null,
-    [],
-  )
   return (
     <Box sx={{ marginBlockEnd: Spacing.xxl, ...(!useIsTiny() && { marginInline: Spacing.md }) }}>
       <Stack
@@ -86,8 +65,10 @@ export const LlamaMarketsPage = (props: LlamalendServerData) => {
           maxWidth: MaxWidth.table,
           minHeight: MinHeight.pageContent,
         }}
+        gap={Spacing.xxl}
       >
-        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading || forceLoading} />
+        {data?.userHasPositions && <UserPositionsTabs result={data} loading={loading} />}
+        <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
       </Stack>
 
       <LendTableFooter />

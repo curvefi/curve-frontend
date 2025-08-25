@@ -3,10 +3,10 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TabsSwitcher } from '../../shared/ui/TabsSwitcher'
 
 const TABS = [
-  { value: '1', label: 'Tab One', href: '' },
-  { value: '2', label: 'Tab Two', href: '' },
-  { value: '3', label: 'Tab Three', href: '' },
-  { value: '4', label: 'Tab Four', href: '' },
+  { value: '1', label: 'Tab One' },
+  { value: '2', label: 'Tab Two' },
+  { value: '3', label: 'Tab Three' },
+  { value: '4', label: 'Tab Four' },
 ] as const
 type Tab = (typeof TABS)[number]['value']
 

@@ -1,6 +1,5 @@
 import { MouseEvent } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { MarketBadges } from '@/llamalend/PageLlamaMarkets/cells/MarketTitleCell/MarketBadges'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
@@ -12,6 +11,7 @@ import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketBadges } from './MarketBadges'
 
 const { Spacing } = SizesAndSpaces
 

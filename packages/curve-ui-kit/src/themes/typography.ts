@@ -74,7 +74,7 @@ export const TYPOGRAPHY_VARIANTS = {
   headingXxl: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xxl', letterSpacing: '-2.56px' },
   headingMBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' },
   headingMLight: { fontFamily: 'Heading', fontWeight: 'Normal', fontSize: 'xl', lineHeight: Sizing[450], letterSpacing: '-1.28px', textCase: 'uppercase' },
-  headingSBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', letterSpacing: '-0.48px', textCase: 'uppercase' },
+  headingSBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'lg', lineHeight: 'md', letterSpacing: '-0.48px', textCase: 'uppercase' },
   headingXsBold: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'sm', textCase: 'uppercase' },
   headingXsMedium: { fontFamily: 'Heading', fontSize: 'sm', textCase: 'capitalize' },
 

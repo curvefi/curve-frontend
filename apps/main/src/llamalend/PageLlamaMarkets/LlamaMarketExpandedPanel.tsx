@@ -1,10 +1,5 @@
 import { useMemo } from 'react'
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LineGraphCell } from '@/llamalend/PageLlamaMarkets/cells'
-import { BorrowRateTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/BorrowRateTooltip'
-import { SupplyRateLendTooltip } from '@/llamalend/PageLlamaMarkets/cells/RateCell/SupplyRateLendTooltip'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
-import { FavoriteMarketButton } from '@/llamalend/PageLlamaMarkets/FavoriteMarketButton'
 import { ArrowRight } from '@carbon/icons-react'
 import Button from '@mui/material/Button'
 import CardHeader from '@mui/material/CardHeader'
@@ -21,7 +16,12 @@ import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import type { LlamaMarket } from '../entities/llama-markets'
+import { LineGraphCell } from './cells'
+import { BorrowRateTooltip } from './cells/RateCell/BorrowRateTooltip'
 import { RewardsIcons } from './cells/RateCell/RewardsIcons'
+import { SupplyRateLendTooltip } from './cells/RateCell/SupplyRateLendTooltip'
+import { FavoriteMarketButton } from './chips/FavoriteMarketButton'
+import { LlamaMarketColumnId } from './columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,9 +60,10 @@ const RateItem = ({ market, title, type }: { market: LlamaMarket; title: string;
 }
 
 export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { original: market } }) => {
+  // todo: update metric component(?) to show the errors when appropriate
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
-  const { address, assets, leverage, liquidityUsd, type, url, userHasPosition, utilizationPercent } = market
+  const { address, assets, leverage, liquidityUsd, type, url, userHasPositions, utilizationPercent } = market
   const graphSize = useMobileGraphSize()
 
   const UnitMapping = {
@@ -120,7 +121,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           </Stack>
         </Grid>
       </Grid>
-      {userHasPosition && (
+      {userHasPositions && (
         <Grid container spacing={Spacing.md}>
           <Grid size={12}>
             <CardHeader title={t`Your Position`} sx={{ paddingInline: 0 }}></CardHeader>
