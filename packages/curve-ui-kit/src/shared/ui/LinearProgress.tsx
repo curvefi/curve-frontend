@@ -15,7 +15,7 @@ export const LinearProgress = ({
 }: {
   percent: number
   size: keyof typeof SIZE_MAPPING
-  barColor?: (t: Theme) => string
+  barColor?: string | ((t: Theme) => string)
 }) => {
   const [value, setValue] = useState(0)
   useEffect(() => setValue(percent), [percent]) // set value via effect so it animates on load
