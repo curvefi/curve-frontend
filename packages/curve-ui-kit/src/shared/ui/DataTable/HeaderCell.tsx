@@ -21,7 +21,7 @@ export const HeaderCell = <T extends TableItem>({
   const { column } = header
   const isSorted = column.getIsSorted()
   const canSort = column.getCanSort()
-  const { borderRight, tooltip } = column.columnDef.meta ?? {}
+  const { tooltip } = column.columnDef.meta ?? {}
 
   const cellContent = (
     <Stack direction="row" justifyContent={getFlexAlignment(column)} alignItems="end">
@@ -51,12 +51,12 @@ export const HeaderCell = <T extends TableItem>({
             color: `text.highlight`,
           },
         }),
-        ...((borderRight || isSticky) && { borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}` }),
         ...(isSticky && {
           position: 'sticky',
           left: 0,
           zIndex: (t) => t.zIndex.tableHeaderStickyColumn,
           backgroundColor: (t) => t.design.Table.Header.Fill,
+          borderRight: (t) => `1px solid ${t.design.Layer[1].Outline}`,
         }),
         width,
         minWidth: Sizing['3xl'],

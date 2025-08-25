@@ -10,11 +10,11 @@ import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveH
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
-const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation`, href: '' }] as const
+const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation` }] as const
 
 const TABS_SUB = [
-  { value: 'improve-health', label: t`Improve health`, href: '' },
-  { value: 'close-position', label: t`Close position`, href: '' },
+  { value: 'improve-health', label: t`Improve health` },
+  { value: 'close-position', label: t`Close position` },
 ] as const
 type SubTab = (typeof TABS_SUB)[number]['value']
 

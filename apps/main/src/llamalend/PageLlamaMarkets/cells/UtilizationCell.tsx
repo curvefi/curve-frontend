@@ -12,6 +12,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { TooltipItem, TooltipItems } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { PercentageCell } from './PercentageCell'
 
 const { Spacing } = SizesAndSpaces
 

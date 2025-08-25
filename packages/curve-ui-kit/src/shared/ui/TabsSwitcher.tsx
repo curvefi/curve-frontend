@@ -19,7 +19,7 @@ const defaultTextVariants = {
 
 export type TabOption<T> = Pick<TabProps, 'label' | 'disabled' | 'icon' | 'sx'> & {
   value: T
-  href: string | UrlObject
+  href?: string | UrlObject
 }
 
 export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {

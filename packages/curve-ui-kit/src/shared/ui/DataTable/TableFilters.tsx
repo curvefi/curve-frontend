@@ -67,13 +67,13 @@ export const TableFilters = <ColumnIds extends string>({
   onSearch,
 }: {
   title: string
-  subtitle: string
+  subtitle?: string
   loading: boolean
-  onReload: () => void
+  onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
-  toggleVisibility: (columns: string[]) => void
-  collapsible: ReactNode // filters that may be collapsed
-  chips: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
+  toggleVisibility?: (columns: string[]) => void
+  collapsible?: ReactNode // filters that may be collapsed
+  chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
@@ -83,15 +83,16 @@ export const TableFilters = <ColumnIds extends string>({
   const settingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
+  const isCollapsible = collapsible || (isMobile && chips)
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
-          <Typography variant="bodySRegular">{subtitle}</Typography>
+          {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
         </Grid>
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
-          {!isMobile && (
+          {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
               onClick={openVisibilitySettings}
@@ -100,13 +101,15 @@ export const TableFilters = <ColumnIds extends string>({
               active={visibilitySettingsOpen}
             />
           )}
-          <TableButton
-            onClick={() => setFilterExpanded((prev) => !prev)}
-            active={filterExpanded}
-            icon={FilterIcon}
-            testId="btn-expand-filters"
-          />
-          <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />
+          {isCollapsible && (
+            <TableButton
+              onClick={() => setFilterExpanded((prev) => !prev)}
+              active={filterExpanded}
+              icon={FilterIcon}
+              testId="btn-expand-filters"
+            />
+          )}
+          {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
         </Grid>
         {isMobile ? (
           <>
@@ -118,21 +121,25 @@ export const TableFilters = <ColumnIds extends string>({
             </Grid>
           </>
         ) : (
-          <Grid size={12} gap={0} justifyContent="flex-end">
-            {chips}
-          </Grid>
+          chips && (
+            <Grid size={12} gap={0} justifyContent="flex-end">
+              {chips}
+            </Grid>
+          )
         )}
       </Grid>
-      <Collapse in={filterExpanded}>
-        {collapsible}
-        {isMobile && (
-          <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-            {chips}
-          </Box>
-        )}
-      </Collapse>
+      {isCollapsible && (
+        <Collapse in={filterExpanded}>
+          {collapsible}
+          {isMobile && chips && (
+            <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
+              {chips}
+            </Box>
+          )}
+        </Collapse>
+      )}
 
-      {visibilitySettingsOpen != null && settingsRef.current && (
+      {visibilitySettingsOpen != null && settingsRef.current && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>
           anchorEl={settingsRef.current}
           visibilityGroups={visibilityGroups}
@@ -145,10 +152,12 @@ export const TableFilters = <ColumnIds extends string>({
   )
 }
 
+const DEFAULT: ColumnFiltersState = []
+
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  */
-export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = []) {
+export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = DEFAULT) {
   const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>

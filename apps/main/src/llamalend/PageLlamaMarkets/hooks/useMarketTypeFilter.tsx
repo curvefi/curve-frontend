@@ -1,8 +1,8 @@
 import { useCallback } from 'react'
 import { type LlamaMarketKey } from '@/llamalend/entities/llama-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketColumnId } from '../columns.enum'
 
 /**
  * Hook for managing market type filter (Mint/Lend) in the Llama Markets table.
