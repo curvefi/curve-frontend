@@ -1,6 +1,11 @@
 import { Stack, Typography, type Theme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
+import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { Reds, Blues } from '@ui-kit/themes/design/0_primitives'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getHealthValueColor } from './utils'
+
+const { Spacing } = SizesAndSpaces
 
 type HealthBarProps = {
   health: number | undefined | null
@@ -64,7 +69,18 @@ export const HealthBar = ({ health, small }: HealthBarProps) => {
   const healthPercentage = Math.max(0, Math.min(health ?? 0, 100))
   const trackColor = health != null && health < 5 ? Reds[500] : Blues[500]
 
-  return (
+  return small ? (
+    health != null && (
+      <Stack gap={Spacing.xs}>
+        {healthPercentage.toFixed(2)}
+        <LinearProgress
+          percent={healthPercentage}
+          size="medium"
+          barColor={(t) => getHealthValueColor(healthPercentage, t)}
+        />
+      </Stack>
+    )
+  ) : (
     <Stack sx={{ gap: LABEL_GAP }} paddingBottom="0.3125rem">
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
         <Label first position="0%" text={t`liquidation`} />
