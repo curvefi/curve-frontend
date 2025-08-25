@@ -26,7 +26,7 @@ const { isEqual } = lodash
 const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.LiquidityUsd, value: [minLiquidity, null] }], [minLiquidity])
+  useMemo(() => [{ id: LlamaMarketColumnId.TVL, value: [minLiquidity, null] }], [minLiquidity])
 
 export const LlamaMarketsTable = ({
   onReload,
