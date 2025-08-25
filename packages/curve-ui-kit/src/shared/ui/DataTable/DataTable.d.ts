@@ -12,7 +12,6 @@ declare module '@tanstack/react-table' {
     variant?: TypographyVariantKey
     borderRight?: boolean
     hideZero?: boolean
-    noPadding?: boolean
   }
 
   interface TableMeta<TData extends RowData> {}
