@@ -1,24 +1,45 @@
 {
-  "extends": "tsconfig/nextjs.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "target": "ES2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
     "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "esModuleInterop": true,
     "strictNullChecks": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "module": "esnext",
+    "moduleResolution": "node",
     "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
     "baseUrl": "./src",
     "paths": {
-      "@ui": ["../../../packages/ui/src/index.ts"],
-      "@ui/*": ["../../../packages/ui/src/*"],
-      "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
-      "@external-rewards/*": ["../../../packages/external-rewards/src/*"],
-      "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"],
+      "@ui": ["../../ui/src/index.ts"],
+      "@ui/*": ["../../ui/src/*"],
+      "@external-rewards": ["../../external-rewards/src/index.ts"],
+      "@external-rewards/*": ["../../external-rewards/src/*"],
+      "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../prices-api/src/*"],
       "@ui-kit/*": ["./*"]
-    }
+    },
   },
   "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "vite.config.mts", "**/*.d.ts", "../ui/src/globals.d.ts"]
+  "include": [
+    "src/**/*.ts", 
+    "src/**/*.tsx", 
+    "src/**/*.d.ts", 
+    "vite.config.mts", 
+    "tailwind.config.js", 
+    ".storybook/**/*.ts", 
+    ".storybook/**/*.tsx"
+  ]
 }
