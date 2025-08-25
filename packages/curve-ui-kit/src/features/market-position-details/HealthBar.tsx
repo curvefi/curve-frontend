@@ -72,12 +72,8 @@ export const HealthBar = ({ health, small }: HealthBarProps) => {
   return small ? (
     health != null && (
       <Stack gap={Spacing.xs}>
-        {healthPercentage.toFixed(2)}
-        <LinearProgress
-          percent={healthPercentage}
-          size="medium"
-          barColor={(t) => getHealthValueColor(healthPercentage, t)}
-        />
+        {health.toFixed(2)}
+        <LinearProgress percent={healthPercentage} size="medium" barColor={(t) => getHealthValueColor(health, t)} />
       </Stack>
     )
   ) : (
