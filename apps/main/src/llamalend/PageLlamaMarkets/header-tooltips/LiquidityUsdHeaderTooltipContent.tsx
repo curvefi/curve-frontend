@@ -1,7 +1,7 @@
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 
-export default (
+export const LiquidityUsdHeaderTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`Total unborrowed supply in the market.`} />
     <TooltipDescription

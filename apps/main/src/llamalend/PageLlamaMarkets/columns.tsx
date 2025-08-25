@@ -59,7 +59,7 @@ export const LLAMA_MARKET_COLUMNS = [
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
     filterFn: filterByText,
-    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, CollateralBorrowHeaderTooltipContent) },
+    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
@@ -94,14 +94,17 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, BorrowRateHeaderTooltipContent) },
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, <BorrowRateHeaderTooltipContent />),
+    },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lend', {
     id: LlamaMarketColumnId.LendRate,
     header: headers[LlamaMarketColumnId.LendRate],
     cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, LendRateHeaderTooltipContent) },
+    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrow', {
@@ -114,7 +117,7 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: UtilizationCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, UtilizationHeaderTooltipContent),
+      tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, <UtilizationHeaderTooltipContent />),
     },
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
@@ -122,7 +125,7 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: CompactUsdCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, LiquidityUsdHeaderTooltipContent),
+      tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, <LiquidityUsdHeaderTooltipContent />),
     },
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell

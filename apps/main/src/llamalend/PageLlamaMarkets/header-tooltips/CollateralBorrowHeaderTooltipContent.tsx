@@ -1,7 +1,7 @@
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 
-export default (
+export const CollateralBorrowHeaderTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription text={t`The pair of assets in this market.`} />
     <TooltipDescription

@@ -1,7 +1,7 @@
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
 
-export default (
+export const BorrowRateHeaderTooltipContent = () => (
   <TooltipWrapper>
     <TooltipDescription
       text={t`The borrow rate is the cost related to your borrow. Depending on the market type it is correlated to different variables.`}
