@@ -53,9 +53,6 @@ src/sdk/types/ethers-contracts
 # crash report
 report.*.json
 
-# turbo
-.turbo
-
 # hardhat
 cache/
 downloads/

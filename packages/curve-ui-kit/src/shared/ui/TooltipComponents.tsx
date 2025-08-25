@@ -97,4 +97,6 @@ export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
   </Stack>
 )
 
-export const TooltipDescription = ({ text }: { text: string }) => <Typography variant="bodySRegular">{text}</Typography>
+export const TooltipDescription = ({ text }: { text: string | React.ReactNode }) => (
+  <Typography variant="bodySRegular">{text}</Typography>
+)

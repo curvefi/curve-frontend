@@ -2,8 +2,8 @@ import { useAccount } from 'wagmi'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/entities/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/entities/mint-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { LlamaMarketColumnId } from '../PageLlamaMarkets/columns.enum'
 
 const statsColumns = [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed]
 const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited]
@@ -17,11 +17,11 @@ const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.U
  * @returns The stats data and an error if any
  */
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
-  const { type, userHasPosition, address: marketAddress, controllerAddress, chain } = market
+  const { type, userHasPositions, address: marketAddress, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
 
-  const enableStats = !!userHasPosition?.borrow && (!column || statsColumns.includes(column))
-  const enableEarnings = !!userHasPosition?.lend && column != null && earningsColumns.includes(column)
+  const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
+  const enableEarnings = !!userHasPositions?.Supply && column != null && earningsColumns.includes(column)
 
   const enableLendingStats = enableStats && type === LlamaMarketType.Lend
   const enableMintStats = enableStats && type === LlamaMarketType.Mint

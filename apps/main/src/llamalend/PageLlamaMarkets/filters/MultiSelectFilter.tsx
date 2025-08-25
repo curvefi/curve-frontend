@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
-import type { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
@@ -13,6 +12,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { LlamaMarketColumnId } from '../columns.enum'
 
 const { Spacing } = SizesAndSpaces
 const { get, sortBy, sortedUniq } = lodash
