@@ -20,6 +20,7 @@ import {
   LendRateHeaderTooltipContent,
   UtilizationHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
+  TvlHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -134,6 +135,7 @@ export const LLAMA_MARKET_COLUMNS = [
     cell: CompactUsdCell,
     meta: {
       type: 'numeric',
+      tooltip: createTooltip(LlamaMarketColumnId.TVL, <TvlHeaderTooltipContent />),
     },
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell

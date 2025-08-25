@@ -43,6 +43,12 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`TVL`,
+        columns: [LlamaMarketColumnId.TVL],
+        active: !onlyPositions,
+        enabled: true,
+      },
+      {
         label: t`Chart`,
         columns: [LlamaMarketColumnId.BorrowChart],
         active: false,
