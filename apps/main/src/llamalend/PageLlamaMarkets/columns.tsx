@@ -15,11 +15,11 @@ import {
 } from './cells'
 import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 import {
-  CollateralBorrowHeaderTooltip,
-  BorrowRateHeaderTooltip,
-  LendRateHeaderTooltip,
-  UtilizationHeaderTooltip,
-  LiquidityUsdHeaderTooltip,
+  CollateralBorrowHeaderTooltipContent,
+  BorrowRateHeaderTooltipContent,
+  LendRateHeaderTooltipContent,
+  UtilizationHeaderTooltipContent,
+  LiquidityUsdHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -59,7 +59,7 @@ export const LLAMA_MARKET_COLUMNS = [
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
     filterFn: filterByText,
-    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, CollateralBorrowHeaderTooltip) },
+    meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, CollateralBorrowHeaderTooltipContent) },
   }),
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
@@ -94,14 +94,14 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
     cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, BorrowRateHeaderTooltip) },
+    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, BorrowRateHeaderTooltipContent) },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lend', {
     id: LlamaMarketColumnId.LendRate,
     header: headers[LlamaMarketColumnId.LendRate],
     cell: RateCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, LendRateHeaderTooltip) },
+    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, LendRateHeaderTooltipContent) },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.borrow', {
@@ -112,12 +112,18 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: headers[LlamaMarketColumnId.UtilizationPercent],
     cell: UtilizationCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, UtilizationHeaderTooltip) },
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(LlamaMarketColumnId.UtilizationPercent, UtilizationHeaderTooltipContent),
+    },
   }),
   columnHelper.accessor(LlamaMarketColumnId.LiquidityUsd, {
     header: headers[LlamaMarketColumnId.LiquidityUsd],
     cell: CompactUsdCell,
-    meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, LiquidityUsdHeaderTooltip) },
+    meta: {
+      type: 'numeric',
+      tooltip: createTooltip(LlamaMarketColumnId.LiquidityUsd, LiquidityUsdHeaderTooltipContent),
+    },
   }),
   // Following columns are used in tanstack filter, but they are displayed together in MarketTitleCell
   hidden(LlamaMarketColumnId.Chain, LlamaMarketColumnId.Chain, multiFilterFn),
