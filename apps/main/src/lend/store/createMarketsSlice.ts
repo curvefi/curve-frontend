@@ -6,7 +6,6 @@ import {
   Api,
   ChainId,
   MarketDetailsView,
-  MarketsMaxLeverageMapper,
   MarketsPricesMapper,
   MarketsRatesMapper,
   MarketsRewardsMapper,
@@ -19,8 +18,9 @@ import {
   MarketsTotalLiquidityMapper,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
-import { getErrorMessage } from '@/lend/utils/helpers'
+import { type CustomError, getErrorMessage } from '@/lend/utils/helpers'
 import { getLib } from '@ui-kit/features/connect-wallet'
+import type { MarketsMaxLeverageMapper } from '@ui-kit/types/leverage'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -78,7 +78,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 }
 
-const createMarketsSlice = (set: SetState<State>, get: GetState<State>): MarketsSlice => ({
+const createMarketsSlice = (_: SetState<State>, get: GetState<State>): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDatas: async (key, api, markets, shouldRefetch) => {
@@ -151,7 +151,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
           resp.pricePerShare = await owm.vault.previewRedeem(1)
         } catch (error) {
           console.error(error)
-          resp.error = getErrorMessage(error, 'error-api')
+          resp.error = getErrorMessage(error as CustomError, 'error-api')
         }
 
         sliceState.setStateByActiveKey('vaultPricePerShare', chainId.toString(), {
@@ -183,7 +183,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

@@ -1,19 +1,19 @@
-import useStore from '@/lend/store/useStore'
-import { ChainId } from '@/lend/types/lend.types'
+import useStore from '@/loan/store/useStore'
+import { ChainId } from '@/loan/types/loan.types'
 import CellMaxLeverage from '@ui-kit/shared/ui/CellMaxLeverage'
 
 const TableCellMaxLeverage = ({
   className = '',
   rChainId,
-  rOwmId,
+  collateralId,
   showTitle,
 }: {
   className?: string
   rChainId: ChainId
-  rOwmId: string
+  collateralId: string
   showTitle?: boolean
 }) => {
-  const maxLeverageResp = useStore((state) => state.markets.maxLeverageMapper[rChainId]?.[rOwmId])
+  const maxLeverageResp = useStore((state) => state.loans.maxLeverageMapper[collateralId])
 
   const { maxLeverage, error } = maxLeverageResp ?? {}
 

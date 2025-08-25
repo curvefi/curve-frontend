@@ -1,6 +1,7 @@
 import { Fragment, ReactNode, useRef } from 'react'
 import { styled } from 'styled-components'
 import type { TableRowProps } from '@/loan/components/PageMarketList/types'
+import TableCellMaxLeverage from '@/loan/components/SharedCells/TableCellMaxLeverage'
 import TableCellRate from '@/loan/components/SharedCells/TableCellRate'
 import TableCellTotalCollateral from '@/loan/components/SharedCells/TableCellTotalCollateral'
 import TableCellUser from '@/loan/components/SharedCells/TableCellUser'
@@ -43,6 +44,7 @@ const TableRow = ({
     { titleKey: TITLE.myHealth, content: <TableCellUser {...props} type='health' />, show: someLoanExists, className: 'right' },
     { titleKey: TITLE.myDebt, content: <TableCellUser {...props} type='debt' />, show: someLoanExists, className: 'right border-right' },
     { titleKey: TITLE.rate, content: <TableCellRate {...props} />, className: 'right' },
+    { titleKey: TITLE.leverage, content: <TableCellMaxLeverage {...props} />, className: 'right' },
     { titleKey: TITLE.totalBorrowed, content: <TableCellUtilization {...props} type='borrowed' />, className: 'right' },
     { titleKey: TITLE.cap, content: <TableCellUtilization {...props} type='cap' />, className: 'right' },
     { titleKey: TITLE.available, content: <TableCellUtilization {...props} type='available' />, className: 'right' },

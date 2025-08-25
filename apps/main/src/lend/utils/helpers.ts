@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 export * from './utilsRouter'
 
-interface CustomError extends Error {
+export interface CustomError extends Error {
   data?: { message: string }
 }
 

@@ -15,12 +15,14 @@ import {
 } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
+import type { MarketsMaxLeverageMapper } from '@ui-kit/types/leverage'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   detailsMapper: { [collateralId: string]: Partial<LoanDetails> }
   existsMapper: { [collateralId: string]: LoanExists }
+  maxLeverageMapper: MarketsMaxLeverageMapper
   priceInfoMapper: { [collateralId: string]: LoanPriceInfo }
   userDetailsMapper: { [collateralId: string]: UserLoanDetails }
   userWalletBalancesMapper: { [collateralId: string]: UserWalletBalances }
@@ -33,6 +35,7 @@ export type LoansSlice = {
   [sliceKey]: SliceState & {
     fetchLoansDetails(curve: LlamaApi, collateralDatas: CollateralData[]): Promise<void>
     fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: LoanExists }>
+    fetchMarketsMaxLeverage(curve: LlamaApi, collateralDatas: CollateralData[]): Promise<void>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
     fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
     fetchUserLoanPartialDetails(curve: LlamaApi, llamma: Llamma): Promise<Partial<UserLoanDetails>>
@@ -49,13 +52,14 @@ export type LoansSlice = {
 const DEFAULT_STATE: SliceState = {
   detailsMapper: {},
   existsMapper: {},
+  maxLeverageMapper: {},
   priceInfoMapper: {},
   userDetailsMapper: {},
   userWalletBalancesMapper: {},
   userWalletBalancesLoading: false,
 }
 
-const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createLoansSlice = (_: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -87,6 +91,29 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
 
       get()[sliceKey].setStateByKey('detailsMapper', loansDetailsMapper)
       get()[sliceKey].setStateByKey('existsMapper', loansExistsMapper)
+    },
+    fetchMarketsMaxLeverage: async (curve: LlamaApi, collateralDatas: CollateralData[]) => {
+      const chainId = curve.chainId as ChainId
+      log('fetchMarketsMaxLeverage', chainId, collateralDatas.map(({ llamma }) => llamma.id).join(','))
+
+      const { results } = await PromisePool.for(collateralDatas)
+        .handleError((error, { llamma }) => {
+          log(`Unable to get max leverage for ${llamma.id}, ${error}`)
+        })
+        .process(async ({ llamma }) => {
+          const market = curve.getMintMarket(llamma.id)
+          const maxLeverage = market.leverageV2.hasLeverage()
+            ? await market.leverageV2.maxLeverage(market?.minBands)
+            : ''
+          return { collateralId: llamma.id, maxLeverage, error: '' }
+        })
+
+      get()[sliceKey].setStateByKey(
+        'maxLeverageMapper',
+        Object.fromEntries(
+          results.filter(Boolean).map(({ collateralId, error, maxLeverage }) => [collateralId, { maxLeverage, error }]),
+        ),
+      )
     },
     fetchLoanDetails: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId as ChainId
@@ -164,7 +191,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
     setStateByKey: <T>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

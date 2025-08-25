@@ -15,6 +15,10 @@ const useTitleMapper = (): TitleMapper => ({
     tooltip: t`The borrow rate changes with supply and demand for crvUSD, reflected in the price and total debt versus PegKeeper debt.  Rates increase to encourage debt reduction, and decrease to encourage borrowing.`,
     tooltipProps: { minWidth: '200px', textAlign: 'left' },
   },
+  leverage: {
+    title: t`Max leverage`,
+    tooltip: t`Maximum leverage available for this market. Leverage allows you to borrow more crvUSD to purchase additional collateral.`,
+  },
   available: { title: t`Available` },
   totalBorrowed: { title: t`Borrowed` },
   cap: { title: t`Cap` },

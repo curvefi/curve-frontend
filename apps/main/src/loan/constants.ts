@@ -25,6 +25,7 @@ export enum TITLE {
   tokenCollateral = 'tokenCollateral',
   tokenBorrow = 'tokenBorrow',
   rate = 'rate',
+  leverage = 'leverage',
   available = 'available',
   totalBorrowed = 'totalBorrowed',
   cap = 'cap',

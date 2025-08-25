@@ -62,21 +62,6 @@ export type DetailInfoLeverageResp = DetailInfoResp & {
   priceImpact: string
   isHighPriceImpact: boolean
 }
-export type ExpectedCollateral = {
-  totalCollateral: string
-  userCollateral: string
-  collateralFromUserBorrowed: string
-  collateralFromDebt: string
-  leverage: string
-  avgPrice: string
-}
-export type ExpectedBorrowed = {
-  totalBorrowed: string
-  borrowedFromStateCollateral: string
-  borrowedFromUserCollateral: string
-  userBorrowed: string
-  avgPrice: string
-}
 export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
 
 export type PageContentProps = {
@@ -148,8 +133,6 @@ export type MarketStatAmmBalances = { borrowed: string; collateral: string; erro
 export type MarketsStatsAMMBalancesMapper = { [owmId: string]: MarketStatAmmBalances }
 export type MarketStatCapAndAvailable = { cap: string; available: string; error: string }
 export type MarketsStatsCapAndAvailableMapper = { [owmId: string]: MarketStatCapAndAvailable }
-export type MarketMaxLeverage = { maxLeverage: string; error: string }
-export type MarketsMaxLeverageMapper = { [owmId: string]: MarketMaxLeverage }
 export type MarketPrices = {
   prices: {
     oraclePrice: string
