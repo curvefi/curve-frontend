@@ -25,9 +25,8 @@ export type Assets = {
 
 export type AssetDetails = {
   symbol: string
-  address: string
+  address: Address
   chain: Chain
-  usdPrice: number | null
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
@@ -103,7 +102,6 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
-        usdPrice: totalDebt && totalDebtUsd / totalDebt,
         chain,
         balance: totalDebt,
         balanceUsd: totalDebtUsd,
@@ -111,7 +109,6 @@ const convertLendingVault = (
       collateral: {
         ...collateralToken,
         chain,
-        usdPrice: totalAssets && totalAssetsUsd / totalAssets,
         balance: totalAssets,
         balanceUsd: totalAssetsUsd,
       },
@@ -152,7 +149,7 @@ const convertLendingVault = (
 }
 
 /** We show WETH as ETH in the UI and market URL. Also change address so the symbol is correct */
-const getCollateral = ({ address, symbol }: { address: Address; symbol: string }) =>
+const getCollateral = ({ address, symbol }: { address: Address; symbol: string }): [string, Address] =>
   symbol == 'WETH' ? ['ETH', ethAddress] : [symbol, address]
 
 const convertMintMarket = (
@@ -165,9 +162,9 @@ const convertMintMarket = (
     llamma,
     rate,
     borrowed,
+    borrowedUsd,
     borrowable,
     debtCeiling,
-    stablecoin_price,
     chain,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
@@ -186,16 +183,14 @@ const convertMintMarket = (
       borrowed: {
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
-        usdPrice: stablecoin_price,
         chain,
         balance: borrowed,
-        balanceUsd: borrowed * stablecoin_price,
+        balanceUsd: borrowedUsd,
         rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
       },
       collateral: {
         symbol: collateralSymbol,
         address: collateralAddress,
-        usdPrice: collateralAmountUsd / collateralAmount,
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
