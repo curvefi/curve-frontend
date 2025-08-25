@@ -107,4 +107,4 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
 
-export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.LiquidityUsd, desc: true }]
+export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.TVL, desc: true }]
