@@ -14,14 +14,14 @@ export const TvlHeaderTooltipContent = () => (
     <TooltipDescription
       text={
         <Trans>
-          For mint markets it is calculated as: <strong>(collateral + total accumulated debt in crvUSD)</strong>
+          For mint markets it is calculated as: <strong>(total collateral value)</strong>
         </Trans>
       }
     />
     <TooltipDescription
       text={
         <Trans>
-          For lending markets it is calculated as: <strong>(collateral + debt token deposits)</strong>
+          For lending markets it is calculated as: <strong>(total collateral value + supplied assets)</strong>
         </Trans>
       }
     />
