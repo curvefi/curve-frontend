@@ -1,5 +1,6 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices.ts'
 import { ErrorCell } from '@/llamalend/PageLlamaMarkets/cells/ErrorCell'
 import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import Stack from '@mui/material/Stack'
@@ -12,8 +13,10 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets } = market
+  const { chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
   const columnId = column.id as LlamaMarketColumnId
   const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
+  const { data: usdPrice } = useTokenUsdPrice({ blockchainId: chain, contractAddress: address })
   const { borrowed, earnings: earningsData } = stats ?? {}
   const value =
     {
@@ -24,7 +27,8 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   if (!value) {
     return statsError && <ErrorCell error={statsError} />
   }
-  const { balanceUsd, chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
+
+  const usdValue = usdPrice && usdPrice * value
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
@@ -33,9 +37,9 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
           <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />
         </Stack>
       </Tooltip>
-      <Tooltip title={formatNumber(balanceUsd, { currency: 'USD', showAllFractionDigits: true })}>
+      <Tooltip title={formatNumber(usdValue, { currency: 'USD', showAllFractionDigits: true })}>
         <Typography variant="bodySRegular" color="text.secondary">
-          {formatNumber(balanceUsd, { currency: 'USD', notation: 'compact' })}
+          {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
         </Typography>
       </Tooltip>
     </Stack>

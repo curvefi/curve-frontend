@@ -7,6 +7,7 @@ export type Market = {
   llamma: Address
   rate: number
   borrowed: number
+  borrowedUsd: number
   borrowable: number
   collateralAmount: number
   collateralAmountUsd: number

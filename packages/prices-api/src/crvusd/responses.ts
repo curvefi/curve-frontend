@@ -7,6 +7,7 @@ export type GetMarketsResponse = {
     llamma: Address
     rate: number
     total_debt: number
+    total_debt_usd: number
     n_loans: number
     debt_ceiling: number
     borrowable: number
