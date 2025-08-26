@@ -5,7 +5,7 @@ import {
   getUserMarketStats,
   Market as MintMarketFromApi,
 } from '@curvefi/prices-api/crvusd'
-import { recordEntries } from '@curvefi/prices-api/objects.util'
+import { mapRecord, recordEntries } from '@curvefi/prices-api/objects.util'
 import { queryFactory, type UserParams, type UserQuery } from '@ui-kit/lib/model/query'
 import { userAddressValidationSuite } from '@ui-kit/lib/model/query/user-address-validation'
 import {
@@ -23,9 +23,7 @@ export type MintMarket = MintMarketFromApi & {
 export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v2'] as const,
   queryFn: async (): Promise<MintMarket[]> =>
-    recordEntries(await getAllMarkets())
-      .flatMap(([chain, data]) => data.map((market) => ({ ...market, chain })))
-      .flat(),
+    recordEntries(await getAllMarkets()).flatMap(([chain, markets]) => markets.map((market) => ({ ...market, chain }))),
   validationSuite: EmptyValidationSuite,
 })
 
@@ -35,13 +33,8 @@ const {
   invalidate: invalidateUserMintMarkets,
 } = queryFactory({
   queryKey: ({ userAddress }: UserParams) => ['user-mint-markets', { userAddress }, 'v1'] as const,
-  queryFn: async ({ userAddress }: UserQuery) =>
-    Object.fromEntries(
-      Object.entries(await getAllUserMarkets(userAddress)).map(([chain, userMarkets]) => [
-        chain,
-        userMarkets.map((market) => market.controller),
-      ]),
-    ) as Record<Chain, Address[]>,
+  queryFn: async ({ userAddress }: UserQuery): Promise<Record<Chain, Address[]>> =>
+    mapRecord(await getAllUserMarkets(userAddress), (_, userMarkets) => userMarkets.map((market) => market.controller)),
   validationSuite: userAddressValidationSuite,
 })
 

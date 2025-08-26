@@ -96,7 +96,7 @@ export type Keeper = {
 /** More specifically, the markets where a user holds a position */
 export type UserMarkets = {
   collateral: string
-  controller: string
+  controller: Address
   snapshotFirst: Date
   snapshotLast: Date
 }[]
