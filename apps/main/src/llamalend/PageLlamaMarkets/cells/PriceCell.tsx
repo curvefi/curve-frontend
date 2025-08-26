@@ -7,6 +7,7 @@ import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { ErrorCell } from './ErrorCell'
 
@@ -15,8 +16,11 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const { assets } = market
   const { chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
   const columnId = column.id as LlamaMarketColumnId
-  const { data: stats, error: statsError } = useUserMarketStats(market, columnId)
-  const { data: usdPrice } = useTokenUsdPrice({ blockchainId: chain, contractAddress: address })
+  const { data: stats, error: statsError, loading: isLoading } = useUserMarketStats(market, columnId)
+  const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
+    blockchainId: chain,
+    contractAddress: address,
+  })
   const { borrowed, earnings: earningsData } = stats ?? {}
   const value =
     {
@@ -32,15 +36,19 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
-        <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
-          <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-          <TokenIcon blockchainId={chain} address={address} size="mui-md" />
-        </Stack>
+        <WithSkeleton loading={isLoading}>
+          <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
+            <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
+            <TokenIcon blockchainId={chain} address={address} size="mui-md" />
+          </Stack>
+        </WithSkeleton>
       </Tooltip>
       <Tooltip title={formatNumber(usdValue, { currency: 'USD', showAllFractionDigits: true })}>
-        <Typography variant="bodySRegular" color="text.secondary">
-          {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
-        </Typography>
+        <WithSkeleton loading={isLoading || isUsdRateLoading}>
+          <Typography variant="bodySRegular" color="text.secondary">
+            {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
+          </Typography>
+        </WithSkeleton>
       </Tooltip>
     </Stack>
   )
