@@ -3,7 +3,7 @@ import { redirectTo } from '@/routes/util'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute, createRouter } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
-import { PageNotFound } from '@ui-kit/pages/PageNotFound'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { crvusdRoutes } from './crvusd.routes'
 import { daoRoutes } from './dao.routes'
@@ -41,12 +41,20 @@ export const router = createRouter({
   ]),
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
+  defaultErrorComponent: ({ error }) => (
+    <>
+      <head>
+        <title>{t`Error` + ' - Curve'}</title>
+      </head>
+      <ErrorPage title={t`Unexpected Error`} subtitle={error.message || t`An unexpected error occurred`} />
+    </>
+  ),
   defaultNotFoundComponent: () => (
     <>
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <PageNotFound />
+      <ErrorPage title="404" subtitle={t`Page Not Found`} />
     </>
   ),
 })

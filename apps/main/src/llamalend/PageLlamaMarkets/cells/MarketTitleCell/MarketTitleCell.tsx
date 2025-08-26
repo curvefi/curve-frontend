@@ -12,6 +12,7 @@ import { TokenPair } from '@ui-kit/shared/ui/TokenPair'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketBadges } from './MarketBadges'
+import { UserPositionIndicator } from './UserPositionIndicator'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,6 +20,7 @@ export const MarketTitleCell = ({ row: { original: market } }: CellContext<Llama
   const isMobile = useIsMobile()
   return (
     <Stack direction="row" gap={Spacing.sm} alignItems="center" sx={{ height: Sizing[700] }}>
+      {market.userHasPositions && <UserPositionIndicator market={market} />}
       <TokenPair
         chain={market.chain}
         assets={{ primary: market.assets.collateral, secondary: market.assets.borrowed }}
