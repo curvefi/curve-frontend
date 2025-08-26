@@ -2,6 +2,7 @@ import { styled } from 'styled-components'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
+import DetailInfoLeverageExpected from '@/loan/components/DetailInfoLeverageExpected'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DetailInfoN from '@/loan/components/DetailInfoN'
 import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTolerance'
@@ -15,6 +16,7 @@ import DetailInfo from '@ui/DetailInfo'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import DetailInfoLeverageX from '@ui-kit/shared/ui/DetailInfoLeverageX'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
 const DetailInfoLeverage = ({
@@ -43,18 +45,12 @@ const DetailInfoLeverage = ({
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
+  const maxLeverage = useStore((state) => state.loanCreate.maxLeverage[formValues.n || ''])
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
+  const { expectedCollateral, routeImage } = detailInfo ?? {}
 
-  const LeverageDetail = () => (
-    <DetailInfo label={t`Leverage:`} loading={!isReady || detailInfo.loading} loadingSkeleton={[50, 20]}>
-      {isValidFormValues && detailInfo.leverage ? (
-        <strong>{formatNumber(detailInfo.leverage, { maximumFractionDigits: 2 })}x</strong>
-      ) : (
-        '-'
-      )}
-    </DetailInfo>
-  )
+  const leverageValue = expectedCollateral?.leverage || detailInfo.leverage
 
   const LeveragePriceImpactDetail = () => (
     <DetailInfo
@@ -74,16 +70,21 @@ const DetailInfoLeverage = ({
 
   const advanceModeLeverageDetail = (
     <DetailInfoLeverageWrapper>
-      <LeverageDetail />
+      <DetailInfoLeverageX
+        loading={!isReady || detailInfo.loading}
+        leverage={leverageValue}
+        maxLeverage={maxLeverage}
+      />
       <LeveragePriceImpactDetail />
       <DetailInfoTradeRoutes
         isValidFormValues={isValidFormValues}
         loading={!isReady || detailInfo.loading}
-        routes={detailInfo.routeName}
+        routes={routeImage || detailInfo.routeName}
         input={formValues.debt}
         inputSymbol={getTokenName(llamma).stablecoin}
         output={
-          !!detailInfo.collateral && !!formValues.collateral ? +detailInfo.collateral - +formValues.collateral : ''
+          expectedCollateral?.collateralFromDebt ||
+          (!!detailInfo.collateral && !!formValues.collateral ? +detailInfo.collateral - +formValues.collateral : '')
         }
         outputSymbol={llamma?.collateralSymbol ?? ''}
       />
@@ -120,7 +121,16 @@ const DetailInfoLeverage = ({
         </>
       ) : (
         <>
-          <LeverageDetail />
+          <DetailInfoLeverageX
+            loading={!isReady || detailInfo.loading}
+            leverage={leverageValue}
+            maxLeverage={maxLeverage}
+          />
+          <DetailInfoLeverageExpected
+            loading={!isReady || detailInfo.loading}
+            total={expectedCollateral?.totalCollateral || detailInfo.collateral}
+            swapToSymbol={llamma?.collateralSymbol ?? ''}
+          />
           <LeveragePriceImpactDetail />
         </>
       )}
@@ -146,9 +156,9 @@ const DetailInfoLeverage = ({
         loading={!isReady || detailInfo.loading}
         loadingSkeleton={[90, 20]}
       >
-        {isValidFormValues && detailInfo.collateral ? (
+        {isValidFormValues && (expectedCollateral?.totalCollateral || detailInfo.collateral) ? (
           <strong>
-            {formatNumber(detailInfo.collateral)} {llamma?.collateralSymbol}
+            {formatNumber(expectedCollateral?.totalCollateral || detailInfo.collateral)} {llamma?.collateralSymbol}
           </strong>
         ) : (
           '-'

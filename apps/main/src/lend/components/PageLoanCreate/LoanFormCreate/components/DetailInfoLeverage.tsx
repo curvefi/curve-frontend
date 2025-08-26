@@ -4,7 +4,6 @@ import DetailInfoLeverageAdvancedExpected from '@/lend/components/DetailInfoLeve
 import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
-import DetailInfoLeverageX from '@ui-kit/shared/ui/DetailInfoLeverageX'
 import DetailInfoLTV from '@/lend/components/DetailInfoLTV'
 import DetailInfoN from '@/lend/components/DetailInfoN'
 import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
@@ -16,6 +15,7 @@ import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import DetailInfoLeverageX from '@ui-kit/shared/ui/DetailInfoLeverageX'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
 const DetailInfoLeverage = ({

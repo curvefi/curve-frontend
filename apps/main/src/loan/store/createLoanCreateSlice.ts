@@ -36,6 +36,7 @@ type SliceState = {
   liqRangesMapper: { [activeKey: string]: LiqRangesMapper }
   maxRecv: { [activeKey: string]: string }
   maxRecvLeverage: { [activeKey: string]: MaxRecvLeverage }
+  maxLeverage: { [n: string]: string }
   isEditLiqRange: boolean
 }
 
@@ -118,6 +119,7 @@ const DEFAULT_STATE: SliceState = {
   liqRangesMapper: {},
   maxRecv: {},
   maxRecvLeverage: {},
+  maxLeverage: {},
   isEditLiqRange: false,
 }
 
@@ -159,16 +161,29 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       address: string | undefined,
       maxSlippage: string,
     ) => {
-      const { collateral, debt, n } = formValues
+      const { collateral, userBorrowed, debt, n } = formValues
       if (n !== null) {
         const detailInfoFn = networks[chainId].api.loanCreate.detailInfo
+        const detailInfoLeverageV2Fn = networks[chainId].api.loanCreate.detailInfoLeverageV2
         const detailInfoLeverageFn = networks[chainId].api.loanCreate.detailInfoLeverage
+
+        // Try leverageV2 first, fall back to old leverage if needed
         const resp = isLeverage
-          ? await detailInfoLeverageFn(activeKey, llamma, collateral, debt, n, maxSlippage)
+          ? detailInfoLeverageV2Fn
+            ? await detailInfoLeverageV2Fn(activeKey, llamma, collateral, userBorrowed || '0', debt, n, maxSlippage)
+            : await detailInfoLeverageFn(activeKey, llamma, collateral, debt, n, maxSlippage)
           : await detailInfoFn(activeKey, llamma, collateral, debt, n, address)
 
         const key = isLeverage ? 'detailInfoLeverage' : 'detailInfo'
         get()[sliceKey].setStateByActiveKey(key, resp.activeKey, { ...resp.resp, loading: false })
+
+        // Fetch max leverage if using leverage
+        if (isLeverage && n !== null) {
+          const maxLeverageResp = await networks[chainId].api.loanCreate.maxLeverage(llamma, n)
+          if (maxLeverageResp && !maxLeverageResp.error) {
+            get()[sliceKey].setStateByKey('maxLeverage', { [n]: maxLeverageResp.maxLeverage })
+          }
+        }
       }
     },
     fetchLiqRanges: async (

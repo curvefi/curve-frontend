@@ -58,6 +58,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
         <UserInfos
           llammaId={llammaId}
           llamma={llamma}
+          rChainId={rChainId}
           isSoftLiquidation={isSoftLiquidation}
           healthMode={healthMode}
           titleMapper={titleMapper}

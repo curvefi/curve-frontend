@@ -109,6 +109,15 @@ const createCollateralListSlice = (set: SetState<State>, get: GetState<State>): 
           },
           [order],
         )
+      } else if (sortKey === 'leverage') {
+        return orderBy(
+          collateralDatas,
+          ({ llamma }) => {
+            const maxLeverage = get().loans.maxLeverageMapper[llamma.id]?.maxLeverage
+            return maxLeverage ? parseFloat(maxLeverage) : 0
+          },
+          [order],
+        )
       }
 
       return collateralDatas

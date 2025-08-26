@@ -91,6 +91,9 @@ const createLoansSlice = (_: SetState<State>, get: GetState<State>) => ({
 
       get()[sliceKey].setStateByKey('detailsMapper', loansDetailsMapper)
       get()[sliceKey].setStateByKey('existsMapper', loansExistsMapper)
+
+      // Fetch max leverage for all markets
+      void get()[sliceKey].fetchMarketsMaxLeverage(curve, collateralDatas)
     },
     fetchMarketsMaxLeverage: async (curve: LlamaApi, collateralDatas: CollateralData[]) => {
       const chainId = curve.chainId as ChainId

@@ -7,21 +7,26 @@ import UserInfoLlammaBalances from '@/loan/components/LoanInfoUser/components/Us
 import UserInfoLoss from '@/loan/components/LoanInfoUser/components/UserInfoLoss'
 import { HealthColorText } from '@/loan/components/LoanInfoUser/styles'
 import { TITLE } from '@/loan/constants'
+import { useMintMarketUserLeverage } from '@/loan/entities/mint-market-user-leverage'
 import { useUserLoanDetails, useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
-import { Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
+import { ChainId, Llamma, HealthMode, TitleKey, TitleMapper } from '@/loan/types/loan.types'
 import ListInfoItem, { ListInfoItems, ListInfoItemsWrapper } from '@ui/ListInfo'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import UserInfoLeverage from '@ui-kit/shared/ui/UserInfoLeverage'
 
 const UserInfos = ({
   llammaId,
   llamma,
+  rChainId,
   isSoftLiquidation,
   healthMode,
   titleMapper,
 }: {
   llammaId: string
   llamma: Llamma | null
+  rChainId: ChainId
   isSoftLiquidation: boolean
   healthMode: HealthMode
   titleMapper: TitleMapper
@@ -29,6 +34,12 @@ const UserInfos = ({
   const { userBandsPct, userStatus } = useUserLoanDetails(llammaId) ?? {}
   const colorKey = useUserLoanStatus(llammaId)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const { llamaApi: curve } = useConnection()
+  const { data: userLeverage, isLoading: isLeverageLoading } = useMintMarketUserLeverage({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress: curve?.signerAddress,
+  })
 
   const {
     coins: [stablecoin],
@@ -55,6 +66,9 @@ const UserInfos = ({
     ],
     [
       { titleKey: TITLE.llammaBalances, content: <UserInfoLlammaBalances {...props} /> }
+    ],
+    [
+      { titleKey: TITLE.leverage, content: <UserInfoLeverage currentLeverage={userLeverage?.value} loading={isLeverageLoading} />, show: !!userLeverage?.value }
     ]
   ]
 

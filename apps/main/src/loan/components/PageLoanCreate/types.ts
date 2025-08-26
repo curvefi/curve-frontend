@@ -3,12 +3,14 @@ import type { FormEstGas, FormStatus as Fs } from '@/loan/components/PageLoanMan
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { ChainId, type CollateralUrlParams, LlamaApi, HealthMode, Llamma } from '@/loan/types/loan.types'
 import type { Step } from '@ui/Stepper/types'
+import { ExpectedCollateral } from '@ui-kit/types/leverage'
 
 export type FormType = 'create' | 'leverage'
 
 export type FormValues = {
   collateral: string
   collateralError: 'too-much' | string
+  userBorrowed: string
   debt: string
   debtError: 'too-much' | string
   liqRange: string
@@ -58,6 +60,8 @@ export type FormDetailInfoLeverage = {
   collateral: string
   leverage: string
   routeName: string
+  routeImage?: string | null
+  expectedCollateral?: ExpectedCollateral | null
   maxRange: number | null
   healthFull: string
   healthNotFull: string

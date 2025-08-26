@@ -1,15 +1,12 @@
 import useStore from '@/loan/store/useStore'
-import { ChainId } from '@/loan/types/loan.types'
 import CellMaxLeverage from '@ui-kit/shared/ui/CellMaxLeverage'
 
 const TableCellMaxLeverage = ({
   className = '',
-  rChainId,
   collateralId,
   showTitle,
 }: {
   className?: string
-  rChainId: ChainId
   collateralId: string
   showTitle?: boolean
 }) => {

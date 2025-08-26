@@ -377,6 +377,78 @@ const loanCreate = {
       },
     }
   },
+  detailInfoLeverageV2: async (
+    activeKey: string,
+    llamma: Llamma,
+    userCollateral: string,
+    userBorrowed: string,
+    debt: string,
+    n: number,
+    maxSlippage: string,
+  ) => {
+    log('detailInfoLeverageV2', llamma.collateralSymbol, userCollateral, userBorrowed, debt, n, maxSlippage)
+
+    const resp: {
+      activeKey: string
+      resp: any
+      error: string
+    } = { activeKey, resp: null, error: '' }
+
+    try {
+      // Check if leverageV2 is available
+      if (!llamma.leverageV2?.hasLeverage()) {
+        // Fall back to old leverage API
+        return loanCreate.detailInfoLeverage(activeKey, llamma, userCollateral, debt, n, maxSlippage)
+      }
+
+      const [expectedCollateralResult] = await Promise.allSettled([
+        llamma.leverageV2.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +maxSlippage),
+      ])
+
+      const expectedCollateral = fulfilledValue(expectedCollateralResult) ?? null
+
+      const [
+        healthFullResult,
+        healthNotFullResult,
+        bandsResult,
+        pricesResult,
+        routeImageResult,
+        priceImpactResult,
+        maxRangeResult,
+      ] = await Promise.allSettled([
+        llamma.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, n),
+        llamma.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, n, false),
+        llamma.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, n),
+        llamma.leverageV2.createLoanPrices(userCollateral, userBorrowed, debt, n),
+        llamma.leverageV2.createLoanRouteImage(userBorrowed, debt),
+        llamma.leverageV2.createLoanPriceImpact(userBorrowed, debt),
+        llamma.leverageV2.getMaxRange(userCollateral, userBorrowed, debt),
+      ])
+
+      const priceImpact = fulfilledValue(priceImpactResult) ?? ''
+
+      resp.resp = {
+        expectedCollateral,
+        routeImage: fulfilledValue(routeImageResult) ?? null,
+        maxRange: fulfilledValue(maxRangeResult) ?? null,
+        bands: reverseBands(fulfilledValue(bandsResult) ?? [0, 0]),
+        prices: fulfilledValue(pricesResult) ?? [],
+        healthFull: fulfilledValue(healthFullResult) ?? '',
+        healthNotFull: fulfilledValue(healthNotFullResult) ?? '',
+        priceImpact,
+        isHighImpact: +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false,
+        collateral: expectedCollateral?.totalCollateral ?? '',
+        leverage: expectedCollateral?.leverage ?? '',
+        error: '',
+      }
+
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, '')
+      return resp
+    }
+  },
   detailInfoLeverage: async (
     activeKey: string,
     llamma: Llamma,
@@ -516,11 +588,34 @@ const loanCreate = {
       return resp
     }
   },
+  maxLeverage: async (llamma: Llamma, n: number) => {
+    log('maxLeverage', llamma.collateralSymbol, n)
+    const resp = { n, maxLeverage: '', error: '' }
+    try {
+      if (llamma.leverageV2?.hasLeverage()) {
+        resp.maxLeverage = await llamma.leverageV2.maxLeverage(n)
+      } else if (llamma.leverage) {
+        // Fall back to old API if available
+        const maxRecv = await llamma.leverage.createLoanMaxRecv('1', n)
+        resp.maxLeverage = maxRecv.leverage
+      }
+      return resp
+    } catch (error) {
+      console.error(error)
+      resp.error = getErrorMessage(error, 'error-max-leverage')
+      return resp
+    }
+  },
   maxRecvLeverage: async (activeKey: string, llamma: Llamma, collateral: string, n: number) => {
     log('maxRecvLeverage', llamma.collateralSymbol, collateral, n)
     let resp: MaxRecvLeverageForm = { maxBorrowable: '', maxCollateral: '', leverage: '', routeIdx: null }
     try {
-      resp = await llamma.leverage.createLoanMaxRecv(collateral, n)
+      if (llamma.leverageV2?.hasLeverage()) {
+        const maxRecv = await llamma.leverageV2.createLoanMaxRecv(collateral, n)
+        resp = { ...maxRecv, routeIdx: null }
+      } else if (llamma.leverage) {
+        resp = await llamma.leverage.createLoanMaxRecv(collateral, n)
+      }
       return { activeKey, resp, error: '' }
     } catch (error) {
       console.error(error)

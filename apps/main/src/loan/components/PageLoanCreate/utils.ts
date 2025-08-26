@@ -26,6 +26,7 @@ export const DEFAULT_FORM_STATUS: FormStatus = {
 export const DEFAULT_FORM_VALUES: FormValues = {
   collateral: '',
   collateralError: '',
+  userBorrowed: '',
   debt: '',
   debtError: '',
   liqRange: '',
@@ -33,5 +34,10 @@ export const DEFAULT_FORM_VALUES: FormValues = {
 }
 
 export function hasLeverage(llamma: Llamma | null) {
-  return !!llamma && llamma?.leverageZap !== '0x0000000000000000000000000000000000000000'
+  if (!llamma) return false
+  // Check for leverageV2 first, then fall back to old leverage
+  return (
+    (llamma?.leverageV2?.hasLeverage && llamma.leverageV2.hasLeverage()) ||
+    llamma?.leverageZap !== '0x0000000000000000000000000000000000000000'
+  )
 }
