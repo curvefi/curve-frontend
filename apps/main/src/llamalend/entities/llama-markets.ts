@@ -130,7 +130,8 @@ const convertLendingVault = (
     tvl:
       borrowedBalanceUsd + // collateral converted to crvusd
       collateralBalanceUsd + // collateral
-      totalAssetsUsd, // supplied assets
+      totalAssetsUsd - // supplied assets
+      totalDebtUsd,
     rates: {
       lend, // this is the total yield, including incentive and collateral yield, and is displayed in the table
       lendApr,
