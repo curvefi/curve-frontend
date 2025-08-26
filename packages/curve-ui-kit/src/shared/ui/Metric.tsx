@@ -11,6 +11,7 @@ import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { abbreviateNumber, copyToClipboard, scaleSuffix, type SxProps } from '@ui-kit/utils'
+import { getUnitOptions, type Unit } from '@ui-kit/utils/units'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -42,22 +43,6 @@ const MetricChangeSize = {
 } as const satisfies Record<string, TypographyVariantKey>
 
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
-
-export type UnitOptions = {
-  symbol: string
-  position: 'prefix' | 'suffix'
-}
-
-const none: UnitOptions = { symbol: '', position: 'suffix' }
-const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
-const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
-const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
-const UNIT_MAP = { none, dollar, percentage, multiplier } as const
-
-type Unit = keyof typeof UNIT_MAP | UnitOptions
-
-/** Helper function to get UnitOptions from the more liberal Unit type. */
-const getUnit = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
 
 /** Options for any value being used, whether it's the main value or a notional it doesn't matter */
 type Formatting = {
@@ -141,7 +126,7 @@ function notionalsToString(notionals: Props['notional']) {
     .map((notional) => {
       const { value } = notional
       const { abbreviate, formatter } = getFormattingDefaults(notional)
-      const { symbol, position } = getUnit(notional.unit) ?? {}
+      const { symbol, position } = getUnitOptions(notional.unit) ?? {}
 
       return [
         position === 'prefix' ? symbol : '',
@@ -165,7 +150,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
   const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
   const { color = 'textPrimary', unit } = valueOptions
   const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
-  const { symbol, position } = getUnit(unit) ?? {}
+  const { symbol, position } = getUnitOptions(unit) ?? {}
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
 
