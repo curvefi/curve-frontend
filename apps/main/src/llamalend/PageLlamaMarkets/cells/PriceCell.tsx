@@ -1,14 +1,14 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices.ts'
-import { ErrorCell } from '@/llamalend/PageLlamaMarkets/cells/ErrorCell'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
+import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { LlamaMarketColumnId } from '../columns.enum'
+import { ErrorCell } from './ErrorCell'
 
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
@@ -34,7 +34,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
       <Tooltip title={`${formatNumber(value)} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
-          <TokenIcon blockchainId={chain} address={address} tooltip={symbol} size="mui-md" />
+          <TokenIcon blockchainId={chain} address={address} size="mui-md" />
         </Stack>
       </Tooltip>
       <Tooltip title={formatNumber(usdValue, { currency: 'USD', showAllFractionDigits: true })}>

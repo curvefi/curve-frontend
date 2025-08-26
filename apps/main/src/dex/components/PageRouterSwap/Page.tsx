@@ -25,14 +25,9 @@ export const PageRouterSwap = () => {
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const activeKey = useStore((state) => state.quickSwap.activeKey)
-  const routesAndOutput = useStore((state) => state.quickSwap.routesAndOutput[activeKey])
   const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
-  const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
-  const isStableswapRoute = routesAndOutput?.isStableswapRoute
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)

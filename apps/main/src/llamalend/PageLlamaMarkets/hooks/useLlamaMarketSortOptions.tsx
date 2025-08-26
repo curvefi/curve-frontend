@@ -1,7 +1,7 @@
 import { useAccount } from 'wagmi'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { t } from '@ui-kit/lib/i18n'
 import type { Option } from '@ui-kit/shared/ui/DataTable/SelectFilter'
+import { LlamaMarketColumnId } from '../columns.enum'
 
 /**
  * Creates a list of select options for sorting the Llama Market table (used for mobile only)

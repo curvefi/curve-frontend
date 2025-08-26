@@ -6,14 +6,18 @@ import type { TableItem, TanstackTable } from './data-table.utils'
 
 const { MinHeight } = SizesAndSpaces
 
+type Size = keyof typeof MinHeight.tableNoResults
+
 export const EmptyStateRow = <T extends TableItem>({
   table,
+  size = 'lg',
   children,
 }: {
   children: ReactNode
+  size?: Size
   table: TanstackTable<T>
 }) => (
-  <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults }}>
+  <TableRow data-testid="table-empty-row" sx={{ height: MinHeight.tableNoResults[size] }}>
     <Typography
       variant="tableCellL"
       colSpan={table.getHeaderGroups().reduce((count, { headers }) => count + headers.length, 0)}

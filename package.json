@@ -40,8 +40,7 @@
     "react": "*",
     "react-dom": "*",
     "typescript": "*",
-    "vite": "*",
-    "vite-plugin-vercel": "9.0.7"
+    "vite": "*"
   },
   "packageManager": "yarn@4.6.0",
   "lint-staged": {
@@ -60,6 +59,6 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "typescript": "5.8.3",
-    "vite": "6.3.5"
+    "vite": "7.1.3"
   }
 }
