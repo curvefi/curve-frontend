@@ -3,3 +3,4 @@ export { BorrowRateHeaderTooltipContent } from './BorrowRateHeaderTooltipContent
 export { LendRateHeaderTooltipContent } from './LendRateHeaderTooltipContent'
 export { UtilizationHeaderTooltipContent } from './UtilizationHeaderTooltipContent'
 export { LiquidityUsdHeaderTooltipContent } from './LiquidityUsdHeaderTooltipContent'
+export { TvlHeaderTooltipContent } from './TvlHeaderTooltipContent'
