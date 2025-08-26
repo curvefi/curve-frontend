@@ -101,7 +101,7 @@ export type GetUserMarketsResponse = {
   count: number
   markets: {
     collateral: string
-    controller: string
+    controller: Address
     first_snapshot: string
     last_snapshot: string
   }[]
