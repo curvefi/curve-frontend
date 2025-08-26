@@ -21,7 +21,8 @@ export const TvlHeaderTooltipContent = () => (
     <TooltipDescription
       text={
         <Trans>
-          For lending markets it is calculated as: <strong>(total collateral value + supplied assets)</strong>
+          For lending markets it is calculated as:{' '}
+          <strong>(total collateral value + supplied assets - total debt)</strong>
         </Trans>
       }
     />
