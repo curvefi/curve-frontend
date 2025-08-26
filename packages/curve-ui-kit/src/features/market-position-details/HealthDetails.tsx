@@ -1,23 +1,22 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import NotificationsIcon from '@mui/icons-material/Notifications'
-import { Stack, Typography, type Theme, useTheme, Button } from '@mui/material'
-import type { Health } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { HealthBar } from '@ui-kit/features/market-position-details/HealthBar'
+import { Button, Stack, Typography, useTheme } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Health, LiquidationAlert } from './BorrowPositionDetails'
+import { HealthBar } from './HealthBar'
+import { getHealthValueColor } from './utils'
 
 const { Spacing } = SizesAndSpaces
 
-const getHealthValueColor = (value: number, theme: Theme) => {
-  if (value < 5) return 'error'
-  if (value < 15) return 'warning'
-  if (value < 50) return theme.design.Color.Secondary[500]
-  if (value >= 100) return theme.design.Color.Secondary[600]
-  return 'textPrimary'
-}
-
-export const HealthDetails = ({ health }: { health: Health }) => {
+export const HealthDetails = ({
+  health: { loading, value },
+  liquidationAlert: { softLiquidation },
+}: {
+  health: Health
+  liquidationAlert: LiquidationAlert
+}) => {
   const theme = useTheme()
   return (
     <Stack sx={{ padding: Spacing.md }}>
@@ -25,12 +24,12 @@ export const HealthDetails = ({ health }: { health: Health }) => {
         <Stack display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
           <Metric
             label={t`Health`}
-            value={Number(health?.value)}
-            loading={health?.loading}
-            valueOptions={{ unit: 'none', decimals: 2, color: getHealthValueColor(health?.value ?? 0, theme) }}
+            value={Number(value)}
+            loading={loading}
+            valueOptions={{ unit: 'none', decimals: 2, color: getHealthValueColor(value ?? 0, theme) }}
             size="large"
           />
-          <HealthBar health={Number(health?.value)} />
+          <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
         </Stack>
         <Stack flexDirection="row" gap={1} alignItems="center" justifyContent="space-between">
           <Stack display="flex" flexDirection="column">

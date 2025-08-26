@@ -117,7 +117,7 @@ export const BorrowPositionDetails = ({
   <Stack>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
     {liquidationAlert.hardLiquidation && <LiquidationAlert type="hard" />}
-    <HealthDetails health={health} />
+    <HealthDetails health={health} liquidationAlert={liquidationAlert} />
     <BorrowInformation
       marketType={marketType}
       borrowAPY={borrowAPY}
