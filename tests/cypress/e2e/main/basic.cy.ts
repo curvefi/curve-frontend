@@ -21,4 +21,17 @@ describe('Basic Access Test', () => {
       cy.url().should('match', /http:\/\/localhost:\d+\/dex\/ethereum\/integrations\/?$/)
     })
   })
+
+  it('should show an error page on 404', () => {
+    cy.visit('/non-existing-page', { failOnStatusCode: false })
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Page Not Found')
+  })
+
+  it('should show an error page on 500', () => {
+    // note: app should work without lite networks, but that's not the case, so test error boundary with it
+    cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { statusCode: 500 }).as('error')
+    cy.visit('/dex/ethereum/pools', { failOnStatusCode: false })
+    cy.wait('@error')
+    cy.get('[data-testid="error-title"]').should('contain.text', 'Unexpected Error')
+  })
 })

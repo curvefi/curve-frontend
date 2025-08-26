@@ -71,14 +71,11 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
   // Clamps health percentage between 0 and 100
   small ? (
     health != null && (
-      <Stack gap={Spacing.xs}>
-        {health.toFixed(2)}
-        <LinearProgress
-          percent={clampPercentage(health)}
-          size="medium"
-          barColor={getHealthTrackColor(health, softLiquidation)}
-        />
-      </Stack>
+      <LinearProgress
+        percent={clampPercentage(health)}
+        size="medium"
+        barColor={getHealthTrackColor(health, softLiquidation)}
+      />
     )
   ) : (
     <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
