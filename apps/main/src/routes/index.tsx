@@ -46,7 +46,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error` + ' - Curve'}</title>
       </head>
-      <ErrorPage title={t`Unexpected error`} subtitle={error.message || t`An unexpected error occurred`} />
+      <ErrorPage title={t`Unexpected Error`} subtitle={error.message || t`An unexpected error occurred`} />
     </>
   ),
   defaultNotFoundComponent: () => (
@@ -54,7 +54,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <ErrorPage title="404" subtitle={t`Page not found`} />
+      <ErrorPage title="404" subtitle={t`Page Not Found`} />
     </>
   ),
 })

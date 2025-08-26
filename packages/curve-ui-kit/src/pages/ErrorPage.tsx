@@ -39,8 +39,12 @@ export const ErrorPage = ({
       justifyContent="center"
       spacing={2}
     >
-      <Typography variant="headingXxl">{title}</Typography>
-      <Typography variant="headingXsMedium">{subtitle}</Typography>
+      <Typography component="h1" variant="headingXxl" data-testid="error-title">
+        {title}
+      </Typography>
+      <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle">
+        {subtitle}
+      </Typography>
       <Stack direction="row" spacing={2} margin={2}>
         <Button onClick={resetError} variant="contained">{t`Try again`}</Button>
         <Button component={RouterLink} href="/" variant="contained">
