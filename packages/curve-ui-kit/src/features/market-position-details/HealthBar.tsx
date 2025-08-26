@@ -1,14 +1,21 @@
-import { Stack, Typography, type Theme } from '@mui/material'
+import { Stack, type Theme, Typography } from '@mui/material'
+import { getHealthTrackColor } from '@ui-kit/features/market-position-details/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { Reds, Blues } from '@ui-kit/themes/design/0_primitives'
+import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 type HealthBarProps = {
   health: number | undefined | null
+  small?: boolean
+  softLiquidation: boolean | undefined | null
 }
 
 const BAR_HEIGHT = '1.4375rem' // 23px
 const LINE_WIDTH = '0.25rem' // 4px
 const LABEL_GAP = '0.125rem' // 2px
+const TRACK_BOTTOM_PADDING = '0.3125rem' // 5px
 
 type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
 
@@ -58,13 +65,23 @@ const Label = ({
   </Stack>
 )
 
-export const HealthBar = ({ health }: HealthBarProps) => {
-  // Clamps health percentage between 0 and 100
-  const healthPercentage = Math.max(0, Math.min(health ?? 0, 100))
-  const trackColor = health != null && health < 5 ? Reds[500] : Blues[500]
+const clampPercentage = (health: number | undefined | null) => Math.max(0, Math.min(health ?? 0, 100))
 
-  return (
-    <Stack sx={{ gap: LABEL_GAP }} paddingBottom="0.3125rem">
+export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
+  // Clamps health percentage between 0 and 100
+  small ? (
+    health != null && (
+      <Stack gap={Spacing.xs}>
+        {health.toFixed(2)}
+        <LinearProgress
+          percent={clampPercentage(health)}
+          size="medium"
+          barColor={getHealthTrackColor(health, softLiquidation)}
+        />
+      </Stack>
+    )
+  ) : (
+    <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
         <Label first position="0%" text={t`liquidation`} />
         <Label position="15%" text={t`risky`} />
@@ -82,9 +99,9 @@ export const HealthBar = ({ health }: HealthBarProps) => {
       >
         <Stack
           sx={{
-            width: `${healthPercentage}%`,
+            width: `${clampPercentage(health)}%`,
             height: '100%',
-            backgroundColor: trackColor,
+            backgroundColor: getHealthTrackColor(health, softLiquidation),
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
@@ -95,4 +112,3 @@ export const HealthBar = ({ health }: HealthBarProps) => {
       </Stack>
     </Stack>
   )
-}

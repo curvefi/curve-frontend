@@ -1,0 +1,39 @@
+import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
+import { CellContext } from '@tanstack/react-table'
+import { HealthBar } from '@ui-kit/features/market-position-details'
+import { t } from '@ui-kit/lib/i18n.ts'
+import { Tooltip, TooltipContent } from '@ui-kit/shared/ui/Tooltip'
+import { TooltipDescription, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents.tsx'
+import { ErrorCell } from './ErrorCell'
+
+export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
+  const { data, error } = useUserMarketStats(row.original, LlamaMarketColumnId.UserHealth)
+  const { health, softLiquidation } = data ?? {}
+  return health == null ? (
+    error && <ErrorCell error={error} />
+  ) : (
+    <Tooltip title={<HealthTooltip softLiquidation={softLiquidation} />} placement="top">
+      <HealthBar small health={health} softLiquidation={softLiquidation} />
+    </Tooltip>
+  )
+}
+
+const HealthTooltip = ({ softLiquidation }: { softLiquidation: boolean }) => (
+  <TooltipContent title={softLiquidation ? 'Liquidation Protection On' : 'Position active'}>
+    {softLiquidation ? (
+      <TooltipWrapper>
+        <TooltipDescription text={t`Liquidation protection enabled.`} />
+        <TooltipDescription
+          text={[
+            t`This position is protected against full liquidation.`,
+            t`Soft-liquidation still applies, and collateral may still be partially converted within the liquidation band.`,
+          ].join(' ')}
+        />
+      </TooltipWrapper>
+    ) : (
+      <TooltipDescription text={t`You have an active position in this market.`} />
+    )}
+  </TooltipContent>
+)

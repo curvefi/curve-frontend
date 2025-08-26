@@ -5,9 +5,9 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarket } from '../entities/llama-markets'
 import {
   CompactUsdCell,
+  HealthCell,
   LineGraphCell,
   MarketTitleCell,
-  PercentageCell,
   PriceCell,
   RateCell,
   UtilizationCell,
@@ -64,8 +64,8 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.display({
     id: LlamaMarketColumnId.UserHealth,
     header: headers[LlamaMarketColumnId.UserHealth],
-    cell: PercentageCell,
-    meta: { type: 'numeric', hideZero: true },
+    cell: HealthCell,
+    meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
