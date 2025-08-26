@@ -1,15 +1,25 @@
-import { NOT_FOUND_IMAGE_URL } from 'ui/src/utils'
+import { ERROR_IMAGE_URL } from 'ui/src/utils'
+import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { MinHeight, MaxWidth } = SizesAndSpaces
 
 const [imageWidth, imageHeight] = [1280, 720]
 
-export const PageNotFound = () => {
+export const ErrorPage = ({
+  title,
+  subtitle,
+  resetError,
+}: {
+  title: string
+  subtitle: string
+  resetError?: () => void
+}) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
   return (
     <Stack
@@ -27,10 +37,17 @@ export const PageNotFound = () => {
       }}
       alignItems="center"
       justifyContent="center"
+      spacing={2}
     >
-      <Typography variant="headingXxl">404</Typography>
-      <Typography variant="headingMLight">{t`Page not found`}</Typography>
-      <img src={NOT_FOUND_IMAGE_URL} alt="404" width={imageWidth} height={imageHeight} />
+      <Typography variant="headingXxl">{title}</Typography>
+      <Typography variant="headingXsMedium">{subtitle}</Typography>
+      <Stack direction="row" spacing={2} margin={2}>
+        <Button onClick={resetError} variant="contained">{t`Try again`}</Button>
+        <Button component={RouterLink} href="/" variant="contained">
+          {t`Go to homepage`}
+        </Button>
+      </Stack>
+      <img src={ERROR_IMAGE_URL} alt={title} width={imageWidth} height={imageHeight} />
     </Stack>
   )
 }
