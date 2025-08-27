@@ -1,3 +1,4 @@
+import { countBy } from 'lodash'
 import { ethAddress } from 'viem'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
@@ -257,19 +258,13 @@ const convertMintMarket = (
 
 /**
  * Creates a function that counts the number of markets for each collateral token.
- * This is used to create unique names for markets with the same collateral token, used in the URL.
- * The order is expected to be by market creation date, so the first market will have count 1, the second 2, etc.
- * The backend is hardcoded to return markets in the order of creation, so this should work correctly.
+ * Numbers are added to the first items (e.g., first ETH gets 3, second gets 2, last gets 1).
  * @returns A function that takes a MintMarket and returns the count of markets for the collateral token.
  */
-function createCountMarket() {
-  const marketCountByCollateral = new Map<string, number>()
-  return ({ collateralToken }: MintMarket) => {
-    const [symbol] = getCollateral(collateralToken)
-    const count = (marketCountByCollateral.get(symbol) ?? 0) + 1
-    marketCountByCollateral.set(symbol, count)
-    return count
-  }
+function createCountMarket(data: MintMarket[] | undefined = []) {
+  const getName = ({ collateralToken }: MintMarket) => getCollateral(collateralToken)[0]
+  const marketCountByCollateral = countBy(data, getName)
+  return (m: MintMarket) => marketCountByCollateral[getName(m)]--
 }
 
 /**
@@ -303,7 +298,7 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
       const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
-      const countMarket = createCountMarket()
+      const countMarket = createCountMarket(mintMarkets.data)
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError

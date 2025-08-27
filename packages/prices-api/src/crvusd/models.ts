@@ -26,6 +26,7 @@ export type Market = {
     pending: number
     collected: number
   }
+  created_at: Date
 }
 
 export type Snapshot = {
