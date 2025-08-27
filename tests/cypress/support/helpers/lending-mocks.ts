@@ -75,7 +75,7 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
             vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
           },
           {
-            // above 10k TVL to test the sorting and slider filter
+            // largest TVL to test the sorting
             ...oneLendingPool(chain, oneFloat()),
             total_assets_usd: 60_000_000,
             total_debt_usd: 50_000_000,
