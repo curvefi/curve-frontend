@@ -36,9 +36,11 @@ const GaugesList = () => {
   }, [isSuccess, searchValue, setGauges, gaugeListSortBy])
 
   const handleSortChange = useCallback(
-    (key: Key) => {
-      setGaugeListSortBy(key as SortByFilterGaugesKeys)
-      setGauges(searchValue)
+    (key: Key | null) => {
+      if (key != null) {
+        setGaugeListSortBy(key as SortByFilterGaugesKeys)
+        setGauges(searchValue)
+      }
     },
     [setGaugeListSortBy, setGauges, searchValue],
   )
