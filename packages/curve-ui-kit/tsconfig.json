@@ -1,24 +1,16 @@
 {
-  "extends": "tsconfig/nextjs.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "strict": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "esModuleInterop": true,
-    "strictNullChecks": true,
-    "allowSyntheticDefaultImports": true,
-    "resolveJsonModule": true,
     "baseUrl": "./src",
     "paths": {
-      "@ui": ["../../../packages/ui/src/index.ts"],
-      "@ui/*": ["../../../packages/ui/src/*"],
-      "@external-rewards": ["../../../packages/external-rewards/src/index.ts"],
-      "@external-rewards/*": ["../../../packages/external-rewards/src/*"],
-      "@curvefi/prices-api": ["../../../packages/prices-api/src/index.ts"],
-      "@curvefi/prices-api/*": ["../../../packages/prices-api/src/*"],
-      "@ui-kit/*": ["./*"]
+      "@ui": ["../../ui/src/index.ts"],
+      "@ui/*": ["../../ui/src/*"],
+      "@ui-kit/*": ["./*"],
+      "@external-rewards": ["../../external-rewards/src/index.ts"],
+      "@external-rewards/*": ["../../external-rewards/src/*"],
+      "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
+      "@curvefi/prices-api/*": ["../../prices-api/src/*"]
     }
   },
-  "exclude": ["node_modules"],
-  "include": ["**/*.ts", "**/*.tsx", "vite.config.mts", "**/*.d.ts", "../ui/src/globals.d.ts"]
+  "include": ["src", "vite.config.mts", "../ui/src/globals.d.ts"]
 }

@@ -77,10 +77,10 @@ module.exports = {
       typescript: {
         alwaysTryTypes: true,
         project: [
-          './tsconfig.json',
           './apps/*/tsconfig.json',
-          './apps/*/tsconfig.app.json',
           './packages/*/tsconfig.json',
+          './tests/tsconfig.json',
+          './tests/cypress/tsconfig.json',
         ],
       },
     },

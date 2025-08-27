@@ -12,7 +12,8 @@
   "devDependencies": {
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsconfig": "*"
+    "tsconfig": "*",
+    "typescript": "*"
   },
   "peerDependencies": {
     "eslint": "*",

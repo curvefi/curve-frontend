@@ -3,16 +3,16 @@ import { styled } from 'styled-components'
 import Select from 'ui/src/Select'
 import type { SelectProps } from 'ui/src/Select/Select'
 
-interface SelectSortingMethodProps<T extends object> extends Omit<SelectProps<T>, 'children'> {
-  description?: string
-}
-
 type ItemObj = {
   label: string
   key: string
 }
 
-export function SelectSortingMethod<T extends object>({ description, ...props }: SelectSortingMethodProps<T>) {
+interface SelectSortingMethodProps extends Omit<SelectProps<ItemObj>, 'children'> {
+  description?: string
+}
+
+export function SelectSortingMethod({ description, ...props }: SelectSortingMethodProps) {
   return (
     <Select {...props} aria-label="Sort By">
       {({ label, key }: ItemObj) => (

@@ -1,8 +1,8 @@
-import { Key, useCallback } from 'react'
+import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
-import { SortByFilterProposals } from '@/dao/types/dao.types'
+import { SortByFilterProposals, type ProposalListFilter } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
@@ -30,13 +30,6 @@ const Proposals = () => {
   const push = useNavigate()
 
   const { data: proposalsList, isLoading, isError, isSuccess } = useProposalsList()
-
-  const handleSortingMethodChange = useCallback(
-    (key: Key) => {
-      setActiveSortBy(key as SortByFilterProposals)
-    },
-    [setActiveSortBy],
-  )
 
   const handleChangeSortingDirection = useCallback(() => {
     setActiveSortDirection(activeSortDirection === 'asc' ? 'desc' : 'asc')
@@ -69,7 +62,7 @@ const Proposals = () => {
               items={PROPOSAL_FILTERS}
               selectedKey={activeFilter}
               minWidth="9rem"
-              onSelectionChange={setActiveFilter}
+              onSelectionChange={(key) => key != null && setActiveFilter(key as ProposalListFilter)}
             />
             <StyledProposalsFilters
               filters={PROPOSAL_FILTERS}
@@ -84,7 +77,7 @@ const Proposals = () => {
               selectedKey={activeSortBy}
               minWidth="9rem"
               items={PROPOSAL_SORTING_METHODS}
-              onSelectionChange={handleSortingMethodChange}
+              onSelectionChange={(key) => key != null && setActiveSortBy(key as SortByFilterProposals)}
               description={t`Sort by`}
             />
             <ToggleDirectionIcon
