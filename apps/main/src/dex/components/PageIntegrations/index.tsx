@@ -113,7 +113,6 @@ const IntegrationsComp = ({
             updatePath={updatePath}
           />
           <SelectNetwork
-            hideIcon
             items={visibleNetworksList}
             minWidth="8.5em"
             selectedKey={filterNetworkId}
