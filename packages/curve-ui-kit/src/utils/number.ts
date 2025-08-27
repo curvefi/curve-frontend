@@ -69,22 +69,71 @@ export type NumberFormatOptions = {
   abbreviate?: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
-}
+} & Pick<Intl.NumberFormatOptions, 'useGrouping' | 'trailingZeroDisplay'>
 
-/** Default formatter for numeric values */
-export const defaultNumberFormatter = (value: number, decimals = 2): string =>
-  value === 0
-    ? '0'
-    : value.toLocaleString(undefined, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })
+/**
+ * Default formatter for numeric values with comprehensive edge case handling.
+ *
+ * Formats numbers to a readable string representation with proper handling of:
+ * - Invalid inputs (NaN, Infinity)
+ * - Zero values and extremely small (negative) numbers that would display misleadingly as zero
+ * - Extremely small numbers that would display misleadingly as zero
+ * - Numbers requiring significant digits for proper precision display
+ *
+ * @param value - The numeric value to format
+ * @param options - Optional formatting configuration
+ *
+ * @returns Formatted number string or special indicators for edge cases
+ *
+ * @remarks
+ * - Returns "NaN" for invalid numeric inputs (NaN, but not Infinity)
+ * - Returns "0" for exactly zero values regardless of decimal configuration
+ * - For positive values smaller than 0.000000001, returns "<0.000000001"
+ * - For negative values between -0.000000001 and 0, returns ">-0.000000001"
+ * - For values <= 0.0009 (absolute), uses 4 significant digits for better precision
+ * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
+ * - Uses browser's locale for number formatting
+ */
+export const defaultNumberFormatter = (
+  value: number,
+  {
+    decimals,
+    useGrouping,
+    trailingZeroDisplay,
+  }: Pick<NumberFormatOptions, 'decimals' | 'useGrouping' | 'trailingZeroDisplay'> = {},
+): string => {
+  if (isNaN(value)) return 'NaN'
+  if (value === 0) return '0'
+
+  const absValue = Math.abs(value)
+  if (absValue > 0 && absValue < 0.000000001) return value > 0 ? '<0.000000001' : '>-0.000000001'
+  const maximumSignificantDigits = absValue <= 0.0009 ? 4 : undefined
+
+  const formatted = value.toLocaleString(undefined, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+    maximumSignificantDigits,
+    useGrouping,
+    trailingZeroDisplay,
+  })
+
+  // If the formatted result is "0" or "0.00" but value isn't actually zero
+  if (value !== 0 && (formatted === '0' || /^-?0\.0+$/.test(formatted))) {
+    // Use significant digits instead
+    return value.toLocaleString(undefined, {
+      maximumSignificantDigits: 4,
+      useGrouping,
+    })
+  }
+
+  return formatted
+}
 
 /** Merges default formatting options with user-provided formatting options */
 const getFormattingOptions = (options: NumberFormatOptions) => ({
   abbreviate: true,
   decimals: 2,
-  formatter: (value: number) => defaultNumberFormatter(value, options.decimals ?? 2),
+  formatter: (value: number) => defaultNumberFormatter(value, { decimals: options.decimals ?? 2, ...options }),
   unit: undefined,
   ...options,
 })
@@ -161,7 +210,6 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions = {}
  * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined
  *
  * @example
- * ```typescript
  * formatNumber(1234.56)
  * // Returns "1.23K" (default abbreviation enabled)
  *
@@ -173,7 +221,15 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions = {}
  *
  * formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
  * // Returns "2.5B%"
- * ```
+ *
+ * formatNumber(1234567.89, { useGrouping: true, abbreviate: false })
+ * // Returns "1,234,567.89"
+ *
+ * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
+ * // Returns "12.5"
+ *
+ * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
+ * // Returns "12.5000"
  */
 export const formatNumber = (value: number, options: NumberFormatOptions = {}) => {
   const decomposed = decomposeNumber(value, options)

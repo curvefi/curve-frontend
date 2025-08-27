@@ -84,7 +84,7 @@ function notionalsToString(notionals: Props['notional']) {
 }
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
-export const formatChange = (value: number): string => defaultNumberFormatter(value, 2)
+export const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
 type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testId'> & {
   size: NonNullable<Props['size']>
