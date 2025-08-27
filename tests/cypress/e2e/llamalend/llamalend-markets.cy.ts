@@ -4,6 +4,7 @@ import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@cy/support
 import {
   Chain,
   createLendingVaultChainsResponse,
+  HighTVLAddress,
   HighUtilizationAddress,
   mockLendingSnapshots,
   mockLendingVaults,
@@ -66,8 +67,16 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should sort', () => {
+    cy.get(`[data-testid^="data-table-row"]`)
+      .first()
+      .find(`[data-testid="market-link-${HighTVLAddress}"]`)
+      .should('exist')
+    withFilterChips(() => {
+      cy.get(`[data-testid="chip-lend"]`).click()
+      cy.get(`[data-testid="pool-type-mint"]`).should('not.exist')
+    })
     if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="data-table-cell-liquidityUsd"]`).first().contains('$')
+      cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
       cy.get('[data-testid="select-filter-sort"]').click()
       cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
       cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
@@ -77,11 +86,11 @@ describe(`LlamaLend Markets`, () => {
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="metric-utilizationPercent"]').contains('99.00%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.99%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.00%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
       cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
     }
@@ -128,7 +137,8 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Liquidity: $10,000 -'],
+      ['liquidityUsd', 'Liquidity: $0 -'],
+      ['tvl', 'TVL: $10,000 -'],
       ['utilizationPercent', 'Utilization: 0.00% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width

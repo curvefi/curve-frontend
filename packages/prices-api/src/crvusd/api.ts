@@ -18,7 +18,7 @@ export async function getMarkets(
   return resp.data.map(Parsers.parseMarket)
 }
 
-/** Retrieve all markets across all chains, sorted by date of creation. */
+/** Retrieve all markets across all chains, sorted by date of creation descending. */
 export async function getAllMarkets(
   params: {
     page?: number

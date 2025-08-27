@@ -80,23 +80,32 @@ export const LendingMarketsFilters = ({
       />
     </Grid>
 
-    <Grid size={{ mobile: 12, tablet: 6 }}>
+    <Grid size={{ mobile: 12, tablet: 4 }}>
       <RangeSliderFilter
         id={LlamaMarketColumnId.LiquidityUsd}
         field={LlamaMarketColumnId.LiquidityUsd}
-        defaultMinimum={minLiquidity}
         title={t`Liquidity`}
         format={formatUsd}
         {...props}
       />
     </Grid>
 
-    <Grid size={{ mobile: 12, tablet: 6 }}>
+    <Grid size={{ mobile: 12, tablet: 4 }}>
       <RangeSliderFilter
         id={LlamaMarketColumnId.UtilizationPercent}
         field={LlamaMarketColumnId.UtilizationPercent}
         title={t`Utilization`}
         format={formatPercent}
+        {...props}
+      />
+    </Grid>
+
+    <Grid size={{ mobile: 12, tablet: 4 }}>
+      <RangeSliderFilter
+        id={LlamaMarketColumnId.TVL}
+        field={LlamaMarketColumnId.TVL}
+        title={t`TVL`}
+        format={formatUsd}
         {...props}
       />
     </Grid>

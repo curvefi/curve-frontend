@@ -60,7 +60,8 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
   }
 }
 
-export const HighUtilizationAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const HighTVLAddress = '0xAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
+export const HighUtilizationAddress = '0xBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' as const
 
 function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
   const count = oneInt(2, 20)
@@ -74,19 +75,32 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
             vault: '0xc28c2fd809fc1795f90de1c9da2131434a77721d',
           },
           {
-            // 99.99 utilization and 10k liquidity to test the sorting and slider filter
-            // (100% would result in 0 liquidity and be hidden)
+            // largest TVL to test the sorting
+            ...oneLendingPool(chain, oneFloat()),
+            total_assets_usd: 60_000_000,
+            total_debt_usd: 50_000_000,
+            collateral_balance_usd: 50_000_000,
+            borrowed_balance_usd: 50_000_000,
+            address: HighTVLAddress,
+            vault: HighTVLAddress,
+            controller: HighTVLAddress,
+          },
+          {
+            // 99% utilization to test the sorting and slider filter
             ...oneLendingPool(chain, oneFloat()),
             total_assets_usd: 100_000_000,
-            total_debt_usd: 99_990_000,
+            total_debt_usd: 99_000_000,
             address: HighUtilizationAddress,
             vault: HighUtilizationAddress,
             controller: HighUtilizationAddress,
           },
           {
-            // 0 utilization to test the slider filter
+            // 0 TVL (below 10k) to test the slider filter
             ...oneLendingPool(chain, oneFloat()),
+            total_assets_usd: 0,
             total_debt_usd: 0,
+            collateral_balance_usd: 0,
+            borrowed_balance_usd: 0,
           },
         ] as GetMarketsResponse['data'])
       : []),

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -61,27 +61,6 @@ const Page = () => {
     llammaId: rOwmId,
   })
 
-  const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
-      const { signerAddress } = api
-
-      if (signerAddress) {
-        await fetchUserLoanExists(api, market, true)
-      }
-      setLoaded(true)
-
-      // delay fetch rest after form details are fetch first
-      setTimeout(() => {
-        void fetchAllMarketDetails(api, market, true)
-
-        if (signerAddress) {
-          void fetchUserMarketBalances(api, market, true)
-        }
-      }, REFRESH_INTERVAL['3s'])
-    },
-    [fetchUserLoanExists, fetchAllMarketDetails, fetchUserMarketBalances],
-  )
-
   useEffect(() => {
     if (isSuccess && !market) {
       console.warn(`Market ${rMarket} not found. Redirecting to market list.`)
@@ -90,8 +69,26 @@ const Page = () => {
   }, [isSuccess, market, params, push, rMarket])
 
   useEffect(() => {
+    const fetchInitial = async (api: Api, market: OneWayMarketTemplate) => {
+      if (api.signerAddress) {
+        await fetchUserLoanExists(api, market, true).catch(console.error)
+      }
+      setLoaded(true)
+    }
     if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchInitial, isPageVisible, market])
+  }, [api, fetchUserLoanExists, isPageVisible, market])
+
+  useEffect(() => {
+    // delay fetch rest after form details are fetched first
+    const timer = setTimeout(async () => {
+      if (!api || !market || !isPageVisible || !isLoaded) return
+      await fetchAllMarketDetails(api, market, true)
+      if (api.signerAddress) {
+        await fetchUserMarketBalances(api, market, true)
+      }
+    }, REFRESH_INTERVAL['3s'])
+    return () => clearTimeout(timer)
+  }, [api, fetchAllMarketDetails, fetchUserMarketBalances, isLoaded, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
