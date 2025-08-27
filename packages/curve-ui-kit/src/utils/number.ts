@@ -40,7 +40,12 @@ export function log10Exp(value: number): number {
  */
 export function scaleSuffix(value: number): string {
   const units = ['', 'k', 'm', 'b', 't']
-  const index = Math.max(0, Math.min(units.length - 1, log10Exp(value)))
+  const exp = log10Exp(value)
+
+  // Handle NaN case
+  if (isNaN(exp)) return ''
+
+  const index = Math.max(0, Math.min(units.length - 1, exp))
 
   return units[index]
 }
