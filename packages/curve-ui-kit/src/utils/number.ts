@@ -1,6 +1,9 @@
 import { MAX_USD_VALUE } from '@ui/utils'
 import { getUnitOptions, type Unit } from './units'
 
+/** Locale used for consistent number formatting across the application */
+const LOCALE = 'en-US'
+
 /**
  * Calculates the exponent (in base 10) divided by 3 for a given number.
  * Used to determine the scale/magnitude of a number in terms of thousands.
@@ -92,7 +95,7 @@ export type NumberFormatOptions = {
  * - For negative values between -0.000000001 and 0, returns ">-0.000000001"
  * - For values <= 0.0009 (absolute), uses 4 significant digits for better precision
  * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
- * - Uses browser's locale for number formatting
+ * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
   value: number,
@@ -109,7 +112,7 @@ export const defaultNumberFormatter = (
   if (absValue > 0 && absValue < 0.000000001) return value > 0 ? '<0.000000001' : '>-0.000000001'
   const maximumSignificantDigits = absValue <= 0.0009 ? 4 : undefined
 
-  const formatted = value.toLocaleString(undefined, {
+  const formatted = value.toLocaleString(LOCALE, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
     maximumSignificantDigits,
@@ -120,7 +123,7 @@ export const defaultNumberFormatter = (
   // If the formatted result is "0" or "0.00" but value isn't actually zero
   if (value !== 0 && (formatted === '0' || /^-?0\.0+$/.test(formatted))) {
     // Use significant digits instead
-    return value.toLocaleString(undefined, {
+    return value.toLocaleString(LOCALE, {
       maximumSignificantDigits: 4,
       useGrouping,
     })
