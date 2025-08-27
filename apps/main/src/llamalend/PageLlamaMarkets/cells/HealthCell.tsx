@@ -20,7 +20,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
   ) : (
     <Tooltip
       title={softLiquidation ? 'Liquidation Protection On' : 'Position active'}
-      body={<HealthTooltipContent softLiquidation={softLiquidation} />}
+      body={<HealthTooltipContent softLiquidation={!!softLiquidation} />}
       placement="top"
     >
       <Stack gap={Spacing.xs}>
