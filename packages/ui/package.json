@@ -13,11 +13,8 @@
     "@carbon/icons-react": "^11.62.0",
     "@lingui/detect-locale": "^5.3.2",
     "bignumber.js": "^9.3.0",
-    "ethers": "*",
     "lodash": "4.17.21",
-    "react": "*",
     "react-aria": "3.41.1",
-    "react-dom": "*",
     "react-stately": "3.39.0"
   },
   "devDependencies": {
@@ -25,11 +22,10 @@
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsconfig": "*",
     "typescript": "*"
   },
   "peerDependencies": {
-    "eslint": "*",
+    "ethers": "*",
     "react": "*",
     "react-dom": "*",
     "styled-components": "*"

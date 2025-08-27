@@ -9269,13 +9269,9 @@ __metadata:
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     eslint-plugin-storybook: "npm:9.1.1"
-    ethers: "npm:*"
     immer: "npm:^9.0.21"
     pino-pretty: "npm:^13.0.0"
-    react: "npm:*"
-    react-dom: "npm:*"
     storybook: "npm:9.1.1"
-    tsconfig: "npm:*"
     type-fest: "npm:4.41.0"
     typescript: "npm:*"
     viem: "npm:^2.30.0"
@@ -9283,11 +9279,9 @@ __metadata:
     wagmi: "npm:^2.15.4"
     zustand: "npm:^4.5.7"
   peerDependencies:
-    eslint-config-custom: "*"
+    ethers: "*"
     react: "*"
     react-dom: "*"
-    tsconfig: "*"
-    typescript: "*"
   languageName: unknown
   linkType: soft
 
@@ -11184,12 +11178,7 @@ __metadata:
   dependencies:
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    tsconfig: "npm:*"
     typescript: "npm:*"
-  peerDependencies:
-    eslint: "*"
-    eslint-config-custom: "*"
-    tsconfig: "*"
   languageName: unknown
   linkType: soft
 
@@ -16735,7 +16724,6 @@ __metadata:
     dotenv-flow: "npm:^4.1.0"
     ethers: "npm:*"
     hardhat: "npm:^2.25.0"
-    tsconfig: "npm:*"
     typescript: "npm:*"
     vite: "npm:*"
     vite-tsconfig-paths: "npm:^5.1.4"
@@ -17231,16 +17219,12 @@ __metadata:
     bignumber.js: "npm:^9.3.0"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
-    ethers: "npm:*"
     lodash: "npm:4.17.21"
-    react: "npm:*"
     react-aria: "npm:3.41.1"
-    react-dom: "npm:*"
     react-stately: "npm:3.39.0"
-    tsconfig: "npm:*"
     typescript: "npm:*"
   peerDependencies:
-    eslint: "*"
+    ethers: "*"
     react: "*"
     react-dom: "*"
     styled-components: "*"

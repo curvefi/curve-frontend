@@ -26,7 +26,6 @@
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
     "hardhat": "^2.25.0",
-    "tsconfig": "*",
     "typescript": "*",
     "vite": "*",
     "vite-tsconfig-paths": "^5.1.4",
