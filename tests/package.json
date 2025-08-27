@@ -8,13 +8,16 @@
     "hoistingLimits": "dependencies"
   },
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "run:nodes": "node runHardhatNodes.js",
     "kill:nodes": "node killHardhatNodes.js",
+    "vitest:ui": "vitest --ui",
+    "vitest:run": "vitest run",
+    "vitest:watch": "vitest --watch",
     "cy:open:e2e": "cypress open --e2e",
     "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --e2e",
     "cy:open:component": "cypress open --component",
-    "cy:run:component": "cypress run --component",
-    "typecheck": "tsc --noEmit"
+    "cy:run:component": "cypress run --component"
   },
   "devDependencies": {
     "@cypress/react": "^9.0.1",
@@ -22,6 +25,7 @@
     "@types/cypress": "^1.1.6",
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "^4.6.0",
+    "@vitest/ui": "^3.2.4",
     "cypress": "^14.5.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
@@ -30,6 +34,7 @@
     "typescript": "*",
     "vite": "*",
     "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "*",
     "wait-on": "^8.0.3"
   }
 }

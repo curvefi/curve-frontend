@@ -59,6 +59,7 @@
     "tsconfig": "*",
     "type-fest": "4.41.0",
     "typescript": "*",
-    "vite": "*"
+    "vite": "*",
+    "vitest": "*"
   }
 }

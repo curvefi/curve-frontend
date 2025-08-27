@@ -43,6 +43,10 @@ jobs:
       - run: yarn install --immutable
       - run: yarn build
 
+      - name: Unit tests
+        run: yarn run vitest:run
+        working-directory: tests
+
       - name: Start dev server
         run: yarn start 2>&1 | tee dev-server.log &
         working-directory: apps/main
