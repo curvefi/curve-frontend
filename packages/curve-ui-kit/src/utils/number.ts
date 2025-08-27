@@ -238,7 +238,10 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions = {}
  * // Returns "1,234,567.89"
  *
  * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
- * // Returns "12.5"
+ * // Returns "12.5000" (trailing zeros kept because 12.5 is not an integer)
+ *
+ * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
+ * // Returns "12" (trailing zeros stripped because 12.0 is effectively an integer)
  *
  * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.5000"
