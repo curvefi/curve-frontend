@@ -1,6 +1,6 @@
 import type { Address } from '@curvefi/prices-api'
 
-export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
+export const MAX_USD_VALUE = 40_000_000 // $ 40m 🤑
 
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
