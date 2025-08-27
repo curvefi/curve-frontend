@@ -1,3 +1,6 @@
+import { MAX_USD_VALUE } from '@ui/utils'
+import { getUnitOptions, type Unit } from './units'
+
 /**
  * Calculates the exponent (in base 10) divided by 3 for a given number.
  * Used to determine the scale/magnitude of a number in terms of thousands.
@@ -18,11 +21,10 @@ export function log10Exp(value: number): number {
 }
 
 /**
- * Returns the appropriate scale suffix for a given number value.
- * Uses log10Exp to determine the magnitude and returns the corresponding suffix.
+ * Returns the appropriate unit suffix for a given number value.
  *
- * @param value - The number to determine the scale suffix for.
- * @returns The scale suffix as a string ('t' for trillion, 'b' for billion, 'm' for million, 'k' for thousand, or '' for smaller values).
+ * @param value - The number to determine the unit for.
+ * @returns The unit suffix as a string ('t' for trillion, 'b' for billion, 'm' for million, 'k' for thousand, or '' for smaller values).
  *
  * @example
  * scaleSuffix(1500000000000) // Returns 't'
@@ -55,4 +57,126 @@ export function abbreviateNumber(value: number): number {
   value /= exp > 0 ? 10 ** exp : 1
 
   return value
+}
+
+/** Options for formatting any numeric value */
+export type NumberFormatOptions = {
+  /** A unit can be a currency symbol or percentage, prefix or suffix */
+  unit?: Unit | undefined
+  /** The number of decimals the value should contain (when no custom formatter is given) */
+  decimals?: number
+  /** If the value should be abbreviated to 1.23k or 3.45m */
+  abbreviate?: boolean
+  /** Optional formatter for value */
+  formatter?: (value: number) => string
+}
+
+/** Default formatter for numeric values */
+export const defaultNumberFormatter = (value: number, decimals = 2): string =>
+  value === 0
+    ? '0'
+    : value.toLocaleString(undefined, {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+      })
+
+/** Merges default formatting options with user-provided formatting options */
+const getFormattingOptions = (options: NumberFormatOptions) => ({
+  abbreviate: true,
+  decimals: 2,
+  formatter: (value: number) => defaultNumberFormatter(value, options.decimals ?? 2),
+  unit: undefined,
+  ...options,
+})
+
+/** Parsed components of a decomposed number */
+type DecomposedNumber = {
+  /** Symbol to display before the number */
+  prefix: string
+  /** The formatted numeric value */
+  mainValue: string
+  /** Symbol to display after the number */
+  suffix: string
+  /** Scale indicator for abbreviated numbers (e.g., 'K', 'M', 'B') */
+  scaleSuffix: string
+}
+
+/**
+ * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
+ *
+ * This function takes a numeric value and formatting options to break down the number into
+ * separate components that can be styled or displayed independently. It handles unit symbols,
+ * abbreviation, and custom formatting while checking for USD overflow conditions.
+ *
+ * @param value - The numeric value to decompose
+ * @param options - Optional formatting configuration object
+ * @param options.abbreviate - Whether to abbreviate large numbers (e.g., 1000 → 1K)
+ * @param options.formatter - Custom formatting function for the numeric value
+ * @param options.unit - Unit configuration for symbol and position
+ *
+ * @returns A DecomposedNumber object containing the formatted number parts
+ *
+ * @example
+ * ```typescript
+ * decomposeNumber(1500, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
+ * // Returns: { prefix: '$', mainValue: '1.5', suffix: '', scaleSuffix: 'K' }
+ * ```
+ *
+ * @remarks
+ * - If the value exceeds MAX_USD_VALUE for USD currency, returns an error state with '?' as mainValue
+ * - Logs a warning to console when USD overflow occurs
+ * - Uses default formatting options when not specified
+ */
+export const decomposeNumber = (value: number, options: NumberFormatOptions = {}): DecomposedNumber => {
+  const { abbreviate, formatter, unit } = getFormattingOptions(options)
+  const { symbol = '', position = 'suffix' } = getUnitOptions(unit) ?? {}
+
+  // Check for USD overflow
+  const hasOverflowError = symbol === '$' && value > MAX_USD_VALUE
+  if (hasOverflowError) {
+    console.warn(`USD value is too large: ${value}`)
+
+    return {
+      prefix: '',
+      mainValue: '?',
+      suffix: '',
+      scaleSuffix: '',
+    }
+  }
+
+  return {
+    prefix: position === 'prefix' ? symbol : '',
+    mainValue: formatter(abbreviate ? abbreviateNumber(value) : value),
+    suffix: position === 'suffix' ? symbol : '',
+    scaleSuffix: abbreviate ? scaleSuffix(value) : '',
+  }
+}
+
+/**
+ * Formats a number according to the specified options by decomposing it into components
+ * and reassembling them into a formatted string.
+ *
+ * @param value - The number to format
+ * @param options - Optional formatting configuration options
+ * @returns The formatted number as a string with prefix, main value, scale suffix, and suffix combined
+ *
+ * @example
+ * ```typescript
+ * formatNumber(1234.56)
+ * // Returns "1.23K" (default abbreviation enabled)
+ *
+ * formatNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })
+ * // Returns "$1M"
+ *
+ * formatNumber(500, { abbreviate: false })
+ * // Returns "500.00"
+ *
+ * formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })
+ * // Returns "2.5B%"
+ * ```
+ */
+export const formatNumber = (value: number, options: NumberFormatOptions = {}) => {
+  const decomposed = decomposeNumber(value, options)
+
+  return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
