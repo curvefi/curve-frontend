@@ -25,7 +25,8 @@
     "@types/react-dom": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsconfig": "*"
+    "tsconfig": "*",
+    "typescript": "*"
   },
   "peerDependencies": {
     "eslint": "*",

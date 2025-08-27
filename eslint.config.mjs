@@ -1,5 +1,5 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+import storybook from 'eslint-plugin-storybook'
 
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -21,10 +21,9 @@ const config = [
       parserOptions: {
         project: [
           './apps/*/tsconfig.json',
-          './apps/*/tsconfig.app.json',
-          './apps/*/tsconfig.node.json',
           './packages/*/tsconfig.json',
-          './tests/*/tsconfig.json',
+          './tests/tsconfig.json',
+          './tests/cypress/tsconfig.json',
         ],
         tsconfigRootDir: __dirname,
       },

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Base Configuration for all packages",
+  "compilerOptions": {
+    // === Language & Output ===
+    "target": "ES2023",
+    "module": "ESNext",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+
+    // === Module Resolution ===
+    // You'd expect 'bundler' here, but it for unknown reasons that gives type definitions errors for dependencie such as ethers, viem and zustand
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+
+    // === Type Checking ===
+    "strict": true,
+    "isolatedModules": true,
+    "useUnknownInCatchVariables": false,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // === Code Quality ===
+    "noFallthroughCasesInSwitch": true,
+    "allowUnreachableCode": false,
+    "noImplicitOverride": true,
+
+    // === Performance ===
+    "skipLibCheck": true,
+    "incremental": true,
+
+    // === Output ===
+    "noEmit": true,
+    "declaration": true,
+    "declarationMap": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

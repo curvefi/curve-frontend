@@ -1,20 +1,12 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2020",
-    "lib": ["esnext"],
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "outDir": "dist",
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "outDir": "dist",
-    "declaration": true,
-    "declarationMap": true
+    "noUnusedParameters": true
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["src/**/*.ts"]
+  "include": ["src"]
 }

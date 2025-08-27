@@ -1,15 +1,15 @@
 {
-  "extends": "tsconfig/cypress.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react",
     "baseUrl": "./",
     "paths": {
       "@/*": ["../../apps/main/src/*"],
       "@cy/*": ["*"],
+      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"],
       "@curvefi/prices-api": ["../../packages/prices-api/src"],
-      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"],
-      "@ui-kit/*": ["../../packages/curve-ui-kit/src/*"]
-    }
+      "@curvefi/prices-api/*": ["../../packages/prices-api/src/*"]
+    },
+    "types": ["cypress", "node"]
   },
-  "include": ["./**/*.ts", "**/*.tsx", "types/**/*.d.ts", "../cypress.config.ts"]
+  "include": [".", "types", "../cypress.config.ts"]
 }
