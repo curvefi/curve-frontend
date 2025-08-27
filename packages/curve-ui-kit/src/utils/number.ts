@@ -95,6 +95,8 @@ export type NumberFormatOptions = {
  *
  * @remarks
  * - Returns "NaN" for invalid numeric inputs (NaN, but not Infinity)
+ * - Returns "∞" for positive infinity values
+ * - Returns "-∞" for negative infinity values
  * - Returns "0" for exactly zero values regardless of decimal configuration
  * - For positive values smaller than 0.000000001, returns "<0.000000001"
  * - For negative values between -0.000000001 and 0, returns ">-0.000000001"
@@ -111,6 +113,8 @@ export const defaultNumberFormatter = (
   }: Pick<NumberFormatOptions, 'decimals' | 'useGrouping' | 'trailingZeroDisplay'> = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
+  if (value === Infinity) return '∞'
+  if (value === -Infinity) return '-∞'
   if (value === 0) return '0'
 
   const absValue = Math.abs(value)
