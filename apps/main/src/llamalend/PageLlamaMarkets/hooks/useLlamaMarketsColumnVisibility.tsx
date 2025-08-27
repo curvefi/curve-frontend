@@ -43,6 +43,24 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`Total Debt`,
+        columns: [LlamaMarketColumnId.TotalDebt],
+        active: false,
+        enabled: true,
+      },
+      {
+        label: t`Total Collateral`,
+        columns: [LlamaMarketColumnId.TotalCollateralUsd],
+        active: false,
+        enabled: true,
+      },
+      {
+        label: t`TVL`,
+        columns: [LlamaMarketColumnId.TVL],
+        active: !onlyPositions,
+        enabled: true,
+      },
+      {
         label: t`Chart`,
         columns: [LlamaMarketColumnId.BorrowChart],
         active: false,

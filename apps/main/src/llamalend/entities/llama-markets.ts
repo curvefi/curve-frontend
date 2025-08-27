@@ -39,6 +39,9 @@ export type LlamaMarket = {
   assets: Assets
   utilizationPercent: number
   liquidityUsd: number
+  tvl: number
+  totalDebtUsd: number
+  totalCollateralUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lend: number | null // lendApr + CRV unboosted + yield from collateral
@@ -84,6 +87,8 @@ const convertLendingVault = (
     vault,
     collateralToken,
     borrowedToken,
+    borrowedBalanceUsd,
+    collateralBalanceUsd,
     apyBorrow,
     aprLend: lendApr,
     aprLendCrv0Boost: lendCrvAprUnboosted,
@@ -121,6 +126,13 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
+    totalDebtUsd: totalDebtUsd,
+    totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
+    tvl:
+      borrowedBalanceUsd + // collateral converted to crvusd
+      collateralBalanceUsd + // collateral
+      totalAssetsUsd - // supplied assets
+      totalDebtUsd,
     rates: {
       lend, // this is the total yield, including incentive and collateral yield, and is displayed in the table
       lendApr,
@@ -211,6 +223,9 @@ const convertMintMarket = (
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     debtCeiling,
     liquidityUsd: borrowable,
+    tvl: collateralAmountUsd,
+    totalDebtUsd: borrowed * stablecoin_price,
+    totalCollateralUsd: collateralAmountUsd,
     rates: {
       borrow: rate * 100,
       lend: null,

@@ -55,7 +55,7 @@ const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
 const UNIT_MAP = { none, dollar, percentage, multiplier } as const
 
 type Unit = keyof typeof UNIT_MAP | UnitOptions
-export const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
+const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
 
 /** Helper function to get UnitOptions from the more liberal Unit type. */
 const getUnit = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
