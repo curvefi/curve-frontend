@@ -141,14 +141,6 @@ export const defaultNumberFormatter = (
   return formatted
 }
 
-/** Merges default formatting options with user-provided formatting options */
-const getFormattingOptions = (options: NumberFormatOptions) => ({
-  decimals: 2,
-  formatter: (value: number) => defaultNumberFormatter(value, { decimals: options.decimals ?? 2, ...options }),
-  unit: undefined,
-  ...options,
-})
-
 /** Parsed components of a decomposed number */
 type DecomposedNumber = {
   /** Symbol to display before the number */
@@ -188,7 +180,7 @@ type DecomposedNumber = {
  * - Uses default formatting options when not specified
  */
 export const decomposeNumber = (value: number, options: NumberFormatOptions): DecomposedNumber => {
-  const { abbreviate, formatter, unit } = getFormattingOptions(options)
+  const { abbreviate, formatter, unit } = options
   const { symbol = '', position = 'suffix' } = getUnitOptions(unit) ?? {}
 
   // Check for USD overflow
@@ -204,9 +196,14 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
     }
   }
 
+  const abbreviatedValue = abbreviate ? abbreviateNumber(value) : value
+  const mainValue = formatter
+    ? formatter(abbreviatedValue)
+    : defaultNumberFormatter(abbreviatedValue, { ...options, decimals: options.decimals ?? 2 })
+
   return {
     prefix: position === 'prefix' ? symbol : '',
-    mainValue: formatter(abbreviate ? abbreviateNumber(value) : value),
+    mainValue,
     suffix: position === 'suffix' ? symbol : '',
     scaleSuffix: abbreviate ? scaleSuffix(value) : '',
   }
