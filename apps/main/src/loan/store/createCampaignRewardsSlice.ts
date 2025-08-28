@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/loan/networks'
