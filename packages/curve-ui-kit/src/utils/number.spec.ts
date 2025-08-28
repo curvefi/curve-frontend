@@ -298,7 +298,7 @@ describe('decomposeNumber', () => {
 
   describe('basic functionality', () => {
     it('decomposes number with default options', () => {
-      const result = decomposeNumber(1500)
+      const result = decomposeNumber(1500, { abbreviate: true })
       expect(result).toEqual({
         prefix: '',
         mainValue: '1.50',
@@ -318,7 +318,7 @@ describe('decomposeNumber', () => {
     })
 
     it('decomposes number with prefix unit', () => {
-      const result = decomposeNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })
+      const result = decomposeNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
       expect(result).toEqual({
         prefix: '$',
         mainValue: '1.00',
@@ -338,11 +338,11 @@ describe('decomposeNumber', () => {
     })
 
     it('decomposes number with string unit types', () => {
-      const dollarResult = decomposeNumber(1000, { unit: 'dollar' })
+      const dollarResult = decomposeNumber(1000, { abbreviate: true, unit: 'dollar' })
       expect(dollarResult.prefix).toBe('$')
       expect(dollarResult.suffix).toBe('')
 
-      const percentResult = decomposeNumber(50, { unit: 'percentage' })
+      const percentResult = decomposeNumber(50, { abbreviate: false, unit: 'percentage' })
       expect(percentResult.prefix).toBe('')
       expect(percentResult.suffix).toBe('%')
     })
@@ -351,7 +351,7 @@ describe('decomposeNumber', () => {
   describe('custom formatting', () => {
     it('applies custom formatter', () => {
       const customFormatter = (value: number) => `custom-${value}`
-      const result = decomposeNumber(1500, { formatter: customFormatter })
+      const result = decomposeNumber(1500, { abbreviate: true, formatter: customFormatter })
       expect(result.mainValue).toBe('custom-1.5')
     })
 
@@ -370,7 +370,7 @@ describe('decomposeNumber', () => {
     // MAX_USD_VALUE is 100_000_000_000_000 (100T)
     it('handles USD values over MAX_USD_VALUE', () => {
       const overflowValue = 200_000_000_000_000 // 200T
-      const result = decomposeNumber(overflowValue, { unit: { symbol: '$', position: 'prefix' } })
+      const result = decomposeNumber(overflowValue, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
 
       expect(result).toEqual({
         prefix: '',
@@ -383,7 +383,7 @@ describe('decomposeNumber', () => {
 
     it('handles USD values exactly at MAX_USD_VALUE', () => {
       const maxValue = 100_000_000_000_000 // Exactly 100T
-      const result = decomposeNumber(maxValue, { unit: { symbol: '$', position: 'prefix' } })
+      const result = decomposeNumber(maxValue, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
 
       expect(result.mainValue).not.toBe('?')
       expect(result.prefix).toBe('$')
@@ -392,7 +392,7 @@ describe('decomposeNumber', () => {
 
     it('does not trigger overflow for non-USD currencies', () => {
       const overflowValue = 200_000_000_000_000 // 200T
-      const result = decomposeNumber(overflowValue, { unit: { symbol: '€', position: 'prefix' } })
+      const result = decomposeNumber(overflowValue, { abbreviate: true, unit: { symbol: '€', position: 'prefix' } })
 
       expect(result.mainValue).not.toBe('?')
       expect(consoleSpy).not.toHaveBeenCalled()
@@ -400,7 +400,7 @@ describe('decomposeNumber', () => {
 
     it('only triggers overflow for exact "$" symbol', () => {
       const overflowValue = 200_000_000_000_000 // 200T
-      const result = decomposeNumber(overflowValue, { unit: { symbol: 'USD', position: 'prefix' } })
+      const result = decomposeNumber(overflowValue, { abbreviate: true, unit: { symbol: 'USD', position: 'prefix' } })
 
       expect(result.mainValue).not.toBe('?')
       expect(consoleSpy).not.toHaveBeenCalled()
@@ -409,29 +409,29 @@ describe('decomposeNumber', () => {
 
   describe('edge cases', () => {
     it('handles zero value', () => {
-      const result = decomposeNumber(0)
+      const result = decomposeNumber(0, { abbreviate: true })
       expect(result.mainValue).toBe('0')
       expect(result.scaleSuffix).toBe('')
     })
 
     it('handles negative values', () => {
-      const result = decomposeNumber(-1500)
+      const result = decomposeNumber(-1500, { abbreviate: true })
       expect(result.mainValue).toBe('-1.50')
       expect(result.scaleSuffix).toBe('k')
     })
 
     it('handles NaN', () => {
-      const result = decomposeNumber(NaN)
+      const result = decomposeNumber(NaN, { abbreviate: true })
       expect(result.mainValue).toBe('NaN')
     })
 
     it('handles Infinity', () => {
-      const result = decomposeNumber(Infinity)
+      const result = decomposeNumber(Infinity, { abbreviate: true })
       expect(result.mainValue).toBe('NaN') // defaultNumberFormatter returns 'NaN' for Infinity
     })
 
     it('handles undefined unit gracefully', () => {
-      const result = decomposeNumber(1500, { unit: undefined })
+      const result = decomposeNumber(1500, { abbreviate: true, unit: undefined })
       expect(result.prefix).toBe('')
       expect(result.suffix).toBe('')
     })
@@ -441,9 +441,9 @@ describe('decomposeNumber', () => {
 describe('formatNumber', () => {
   describe('basic functionality', () => {
     it('formats with default options (abbreviation enabled)', () => {
-      expect(formatNumber(1234.56)).toBe('1.23k')
-      expect(formatNumber(1000000)).toBe('1.00m')
-      expect(formatNumber(2500000000)).toBe('2.50b')
+      expect(formatNumber(1234.56, { abbreviate: true })).toBe('1.23k')
+      expect(formatNumber(1000000, { abbreviate: true })).toBe('1.00m')
+      expect(formatNumber(2500000000, { abbreviate: true })).toBe('2.50b')
     })
 
     it('formats without abbreviation', () => {
@@ -452,8 +452,8 @@ describe('formatNumber', () => {
     })
 
     it('formats with currency prefix', () => {
-      expect(formatNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
-      expect(formatNumber(1000, { unit: 'dollar' })).toBe('$1.00k')
+      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1.00k')
     })
 
     it('formats with percentage suffix', () => {
@@ -462,8 +462,10 @@ describe('formatNumber', () => {
     })
 
     it('combines all components correctly', () => {
-      expect(formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })).toBe('2.5b%')
-      expect(formatNumber(1500000, { unit: 'dollar', decimals: 0 })).toBe('$2m')
+      expect(
+        formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 }),
+      ).toBe('2.5b%')
+      expect(formatNumber(1500000, { abbreviate: true, unit: 'dollar', decimals: 0 })).toBe('$2m')
     })
   })
 
@@ -487,41 +489,41 @@ describe('formatNumber', () => {
 
     it('handles custom formatter', () => {
       const customFormatter = (value: number) => `[${value}]`
-      expect(formatNumber(1500, { formatter: customFormatter })).toBe('[1.5]k')
+      expect(formatNumber(1500, { abbreviate: true, formatter: customFormatter })).toBe('[1.5]k')
     })
   })
 
   describe('edge cases', () => {
     it('handles zero', () => {
-      expect(formatNumber(0)).toBe('0')
-      expect(formatNumber(0, { unit: 'dollar' })).toBe('$0') // Implementation adds unit prefix even for zero
+      expect(formatNumber(0, { abbreviate: true })).toBe('0')
+      expect(formatNumber(0, { abbreviate: true, unit: 'dollar' })).toBe('$0') // Implementation adds unit prefix even for zero
     })
 
     it('handles negative numbers', () => {
-      expect(formatNumber(-1500)).toBe('-1.50k')
-      expect(formatNumber(-1000000, { unit: 'dollar' })).toBe('$-1.00m')
+      expect(formatNumber(-1500, { abbreviate: true })).toBe('-1.50k')
+      expect(formatNumber(-1000000, { abbreviate: true, unit: 'dollar' })).toBe('$-1.00m')
     })
 
     it('handles very small numbers', () => {
-      expect(formatNumber(0.0000000001)).toBe('<0.000000001')
-      expect(formatNumber(-0.0000000001)).toBe('>-0.000000001')
+      expect(formatNumber(0.0000000001, { abbreviate: true })).toBe('<0.000000001')
+      expect(formatNumber(-0.0000000001, { abbreviate: true })).toBe('>-0.000000001')
     })
 
     it('handles NaN', () => {
-      expect(formatNumber(NaN)).toBe('NaN')
-      expect(formatNumber(NaN, { unit: 'dollar' })).toBe('$NaN') // Implementation adds unit prefix even for NaN
+      expect(formatNumber(NaN, { abbreviate: true })).toBe('NaN')
+      expect(formatNumber(NaN, { abbreviate: true, unit: 'dollar' })).toBe('$NaN') // Implementation adds unit prefix even for NaN
     })
 
     it('handles Infinity', () => {
-      expect(formatNumber(Infinity)).toBe('NaNt') // Implementation returns 'NaNt' for Infinity due to trillions suffix
-      expect(formatNumber(-Infinity)).toBe('NaNt') // Negative Infinity also returns 'NaNt' (sign gets lost)
+      expect(formatNumber(Infinity, { abbreviate: true })).toBe('NaNt') // Implementation returns 'NaNt' for Infinity due to trillions suffix
+      expect(formatNumber(-Infinity, { abbreviate: true })).toBe('NaNt') // Negative Infinity also returns 'NaNt' (sign gets lost)
     })
 
     it('handles USD overflow', () => {
       const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
       const overflowValue = 200_000_000_000_000 // 200T
 
-      expect(formatNumber(overflowValue, { unit: 'dollar' })).toBe('?')
+      expect(formatNumber(overflowValue, { abbreviate: true, unit: 'dollar' })).toBe('?')
       expect(consoleSpy).toHaveBeenCalledWith(`USD value is too large: ${overflowValue}`)
 
       consoleSpy.mockRestore()
@@ -530,24 +532,26 @@ describe('formatNumber', () => {
 
   describe('unit types', () => {
     it('handles all predefined unit types', () => {
-      expect(formatNumber(1000, { unit: 'none' })).toBe('1.00k')
-      expect(formatNumber(1000, { unit: 'dollar' })).toBe('$1.00k')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'none' })).toBe('1.00k')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1.00k')
       expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50.00%')
       expect(formatNumber(20000, { unit: 'multiplier', abbreviate: false })).toBe('20,000.00x')
     })
 
     it('handles custom unit objects', () => {
-      expect(formatNumber(1000, { unit: { symbol: 'ETH', position: 'suffix' } })).toBe('1.00kETH')
-      expect(formatNumber(1000, { unit: { symbol: '£', position: 'prefix' } })).toBe('£1.00k')
+      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: 'ETH', position: 'suffix' } })).toBe('1.00kETH')
+      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: '£', position: 'prefix' } })).toBe('£1.00k')
     })
   })
 
   describe('real-world examples from JSDoc', () => {
     it('matches JSDoc examples exactly', () => {
-      expect(formatNumber(1234.56)).toBe('1.23k')
-      expect(formatNumber(1000000, { unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
+      expect(formatNumber(1234.56, { abbreviate: true })).toBe('1.23k')
+      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
       expect(formatNumber(500, { abbreviate: false })).toBe('500.00')
-      expect(formatNumber(2500000000, { unit: { symbol: '%', position: 'suffix' }, decimals: 1 })).toBe('2.5b%')
+      expect(
+        formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 }),
+      ).toBe('2.5b%')
       expect(formatNumber(1234567.89, { useGrouping: true, abbreviate: false })).toBe('1,234,567.89')
       expect(formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger', abbreviate: false })).toBe(
         '12.5000',
@@ -558,7 +562,7 @@ describe('formatNumber', () => {
 
     it('handles JSDoc examples with custom formatter', () => {
       const customFormatter = (value: number) => `[${value}]`
-      expect(formatNumber(1500, { formatter: customFormatter })).toBe('[1.5]k')
+      expect(formatNumber(1500, { abbreviate: true, formatter: customFormatter })).toBe('[1.5]k')
     })
   })
 })

@@ -49,8 +49,9 @@ const MetricChangeSize = {
 
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
-type Notional = NumberFormatOptions & {
+type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: number
+  abbreviate?: boolean // Defaults to true
 }
 
 /**
@@ -75,12 +76,14 @@ function notionalsToString(notionals: Props['notional']) {
 
   const ns =
     typeof notionals === 'number'
-      ? [{ value: notionals }]
+      ? [{ value: notionals, abbreviate: true }]
       : notionals && !Array.isArray(notionals)
         ? [notionals]
         : (notionals ?? [])
 
-  return ns.map((notional) => formatNumber(notional.value, notional)).join(' + ')
+  return ns
+    .map((notional) => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
+    .join(' + ')
 }
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
@@ -94,9 +97,9 @@ type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testI
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
-  const { color = 'textPrimary', ...formattingOptions } = valueOptions
+  const { color = 'textPrimary', abbreviate = true, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
-    numberValue === null ? {} : decomposeNumber(numberValue, formattingOptions)
+    numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
@@ -152,7 +155,10 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: NumberFormatOptions & { color?: TypographyProps['color'] }
+  valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
+    color?: TypographyProps['color']
+    abbreviate?: boolean // Default to true
+  }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number

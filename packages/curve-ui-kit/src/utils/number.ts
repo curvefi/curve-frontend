@@ -74,7 +74,7 @@ export type NumberFormatOptions = {
   /** The number of decimals the value should contain (when no custom formatter is given) */
   decimals?: number
   /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate?: boolean
+  abbreviate: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
 } & Pick<Intl.NumberFormatOptions, 'useGrouping' | 'trailingZeroDisplay'>
@@ -143,7 +143,6 @@ export const defaultNumberFormatter = (
 
 /** Merges default formatting options with user-provided formatting options */
 const getFormattingOptions = (options: NumberFormatOptions) => ({
-  abbreviate: true,
   decimals: 2,
   formatter: (value: number) => defaultNumberFormatter(value, { decimals: options.decimals ?? 2, ...options }),
   unit: undefined,
@@ -188,7 +187,7 @@ type DecomposedNumber = {
  * - Logs a warning to console when USD overflow occurs
  * - Uses default formatting options when not specified
  */
-export const decomposeNumber = (value: number, options: NumberFormatOptions = {}): DecomposedNumber => {
+export const decomposeNumber = (value: number, options: NumberFormatOptions): DecomposedNumber => {
   const { abbreviate, formatter, unit } = getFormattingOptions(options)
   const { symbol = '', position = 'suffix' } = getUnitOptions(unit) ?? {}
 
@@ -246,7 +245,7 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions = {}
  * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.5000"
  */
-export const formatNumber = (value: number, options: NumberFormatOptions = {}) => {
+export const formatNumber = (value: number, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
 
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
