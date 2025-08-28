@@ -38,6 +38,8 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -817,6 +819,8 @@ const loanCreate = {
     n: number,
     maxSlippage: string,
     isLeverage: boolean,
+    walletAddress: string,
+    network: Chain,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -826,7 +830,7 @@ const loanCreate = {
       isLeverage
         ? await market.leverage.createLoan(userCollateral, userBorrowed, debt, n, +maxSlippage)
         : await market.createLoan(userCollateral, debt, n)
-    return await submit(activeKey, fn, provider)
+    return await submit(activeKey, fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1033,6 +1037,8 @@ const loanBorrowMore = {
     debt: string,
     maxSlippage: string,
     isLeverage: boolean,
+    walletAddress: string,
+    network: Chain,
   ) => {
     userCollateral = userCollateral || '0'
     userBorrowed = userBorrowed || '0'
@@ -1042,7 +1048,7 @@ const loanBorrowMore = {
       isLeverage
         ? await market.leverage.borrowMore(userCollateral, userBorrowed, debt, +maxSlippage)
         : await market.borrowMore(userCollateral, debt)
-    return await submit(activeKey, fn, provider)
+    return await submit(activeKey, fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1283,6 +1289,8 @@ const loanRepay = {
     isFullRepay: boolean,
     maxSlippage: string,
     isLeverage: boolean,
+    walletAddress: string,
+    network: Chain,
   ) => {
     stateCollateral = stateCollateral || '0'
     userCollateral = userCollateral || '0'
@@ -1294,7 +1302,7 @@ const loanRepay = {
         : isFullRepay
           ? await market.fullRepay()
           : await market.repay(userBorrowed)
-    return await submit(activeKey, fn, provider)
+    return await submit(activeKey, fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1345,10 +1353,16 @@ const loanSelfLiquidation = {
     const fn = async () => await market.selfLiquidateApprove()
     return await approve('', fn, provider)
   },
-  selfLiquidate: async (provider: Provider, market: OneWayMarketTemplate, slippage: string) => {
+  selfLiquidate: async (
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    slippage: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('selfLiquidate', slippage)
     const fn = async () => await market.selfLiquidate(+slippage)
-    return await submit('', fn, provider)
+    return await submit('', fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1414,10 +1428,12 @@ const loanCollateralAdd = {
     provider: Provider,
     market: OneWayMarketTemplate,
     userCollateral: string,
+    walletAddress: string,
+    network: Chain,
   ) => {
     log('addCollateral', userCollateral)
     const fn = async () => await market.addCollateral(userCollateral)
-    return await submit(activeKey, fn, provider)
+    return await submit(activeKey, fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1489,10 +1505,12 @@ const loanCollateralRemove = {
     provider: Provider,
     market: OneWayMarketTemplate,
     userCollateral: string,
+    walletAddress: string,
+    network: Chain,
   ) => {
     log('removeCollateral', userCollateral)
     const fn = async () => await market.removeCollateral(userCollateral)
-    return await submit(activeKey, fn, provider)
+    return await submit(activeKey, fn, provider, market.addresses.controller, network, walletAddress)
   },
 }
 
@@ -1563,12 +1581,22 @@ const vaultDeposit = {
       return resp
     }
   },
-  deposit: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  deposit: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    amount: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('vaultDeposit', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await market.vault.deposit(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -1644,12 +1672,22 @@ const vaultMint = {
       return resp
     }
   },
-  mint: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  mint: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    amount: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('vaultMint', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await market.vault.mint(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -1689,12 +1727,22 @@ const vaultStake = {
       return resp
     }
   },
-  stake: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  stake: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    amount: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('vaultStake', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await market.vault.stake(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -1761,6 +1809,8 @@ const vaultWithdraw = {
     isFullWithdraw: boolean,
     amount: string,
     vaultShares: string,
+    walletAddress: string,
+    network: Chain,
   ) => {
     log('vaultWithdraw', market.id, amount, 'isFullWithdraw', isFullWithdraw, 'vaultShares', vaultShares)
 
@@ -1770,6 +1820,9 @@ const vaultWithdraw = {
       // else use withdraw(amount)
       resp.hash = isFullWithdraw ? await market.vault.redeem(vaultShares) : await market.vault.withdraw(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -1826,12 +1879,22 @@ const vaultRedeem = {
       return resp
     }
   },
-  redeem: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  redeem: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    amount: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('vaultRedeem', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await market.vault.redeem(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -1855,12 +1918,22 @@ const vaultUnstake = {
       return resp
     }
   },
-  unstake: async (activeKey: string, provider: Provider, market: OneWayMarketTemplate, amount: string) => {
+  unstake: async (
+    activeKey: string,
+    provider: Provider,
+    market: OneWayMarketTemplate,
+    amount: string,
+    walletAddress: string,
+    network: Chain,
+  ) => {
     log('vaultUnstake', market.id, amount)
     const resp = { activeKey, hash: '', error: '' }
     try {
       resp.hash = await market.vault.unstake(amount)
       await helpers.waitForTransaction(resp.hash, provider)
+      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
+        console.error(error)
+      })
       return resp
     } catch (error) {
       console.error(error)
@@ -2058,11 +2131,21 @@ async function approve(activeKey: string, approveFn: () => Promise<string[]>, pr
   }
 }
 
-async function submit(activeKey: string, submitFn: () => Promise<string>, provider: Provider) {
+async function submit(
+  activeKey: string,
+  submitFn: () => Promise<string>,
+  provider: Provider,
+  controller: string,
+  chain: Chain,
+  userAddress: string,
+) {
   const resp = { activeKey, hash: '', error: '' }
   try {
     resp.hash = await submitFn()
     await helpers.waitForTransaction(resp.hash, provider)
+    _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch((error) => {
+      console.error(error)
+    })
     return resp
   } catch (error) {
     console.error(error)
@@ -2088,4 +2171,11 @@ function _getPriceImpactResp(priceImpactResp: PromiseSettledResult<string | unde
 
 function _detailInfoRespErrorMessage(...args: PromiseSettledResult<unknown>[]) {
   return (args.find((a) => a.status == 'rejected') as PromiseRejectedResult)?.reason.message
+}
+
+/**
+ * Prompt the API to update using the tx hash after a user action
+ */
+async function _updateUserEventsApi(hash: string, controller: string, chain: Chain, userAddress: string) {
+  await getUserMarketCollateralEvents(userAddress, chain, controller, hash)
 }

@@ -12,9 +12,11 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { Chain } from '@curvefi/prices-api'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -230,7 +232,8 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
     fetchStepRepay: async (activeKey, api, market, formValues, maxSlippage) => {
       const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -255,6 +258,8 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
         isFullRepay,
         maxSlippage,
         swapRequired,
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
