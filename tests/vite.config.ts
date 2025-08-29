@@ -7,7 +7,6 @@ export default defineConfig({
   plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: [
-      { find: 'next/font/local', replacement: resolve(__dirname, 'cypress/fixtures/next-font-local.ts') },
       { find: '@cy', replacement: resolve(__dirname, './cypress') },
       { find: '@', replacement: resolve(__dirname, '../apps/main/src/') },
       { find: '@ui', replacement: resolve(__dirname, '../packages/ui/src/') },
