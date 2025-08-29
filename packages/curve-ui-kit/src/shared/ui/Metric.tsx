@@ -5,12 +5,18 @@ import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { MAX_USD_VALUE } from '@ui/utils/utilsConstants'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { abbreviateNumber, copyToClipboard, scaleSuffix, type SxProps } from '@ui-kit/utils'
+import {
+  copyToClipboard,
+  defaultNumberFormatter,
+  formatNumber,
+  decomposeNumber,
+  type NumberFormatOptions,
+  type SxProps,
+} from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -43,72 +49,9 @@ const MetricChangeSize = {
 
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
-export type UnitOptions = {
-  symbol: string
-  position: 'prefix' | 'suffix'
-}
-
-const none: UnitOptions = { symbol: '', position: 'suffix' }
-const dollar: UnitOptions = { symbol: '$', position: 'prefix' }
-const percentage: UnitOptions = { symbol: '%', position: 'suffix' }
-const multiplier: UnitOptions = { symbol: 'x', position: 'suffix' }
-const UNIT_MAP = { none, dollar, percentage, multiplier } as const
-
-type Unit = keyof typeof UNIT_MAP | UnitOptions
-const UNITS = Object.keys(UNIT_MAP) as unknown as keyof typeof UNIT_MAP
-
-/** Helper function to get UnitOptions from the more liberal Unit type. */
-const getUnit = (unit?: Unit) => (typeof unit === 'string' ? UNIT_MAP[unit] : unit)
-
-/** Options for any value being used, whether it's the main value or a notional it doesn't matter */
-type Formatting = {
-  /** A unit can be a currency symbol or percentage, prefix or suffix */
-  unit?: Unit | undefined
-  /** The number of decimals the value should contain */
-  decimals?: number
-  /** If the value should be abbreviated to 1.23k or 3.45m */
-  abbreviate?: boolean
-  /** Optional formatter for value */
-  formatter?: (value: number) => string
-}
-
-type Notional = Formatting & {
+type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
   value: number
-}
-
-/** Merges default formatting options with user-provided formatting options. */
-const getFormattingDefaults = (formatting: Formatting) => ({
-  abbreviate: true,
-  decimals: 2,
-  formatter: (value: number) => formatValue(value, formatting.decimals ?? 2),
-  ...formatting,
-})
-
-/** Default formatter for values and notionals. */
-const formatValue = (value: number, decimals?: number): string =>
-  value === 0
-    ? '0'
-    : value.toLocaleString(undefined, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-      })
-
-const formatChange = (value: number) => {
-  // Looks aesthetically more pleasing without decimals.
-  if (value === 0) return '0'
-
-  return value.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
-}
-
-function runFormatter(value: number, formatter: (value: number) => string, abbreviate: boolean, symbol?: string) {
-  if (symbol === '$' && value > MAX_USD_VALUE) {
-    console.warn(`USD value is too large: ${value}`)
-    return `?`
-  }
-  return formatter(abbreviate ? abbreviateNumber(value) : value)
+  abbreviate?: boolean // Defaults to true
 }
 
 /**
@@ -133,28 +76,18 @@ function notionalsToString(notionals: Props['notional']) {
 
   const ns =
     typeof notionals === 'number'
-      ? [{ value: notionals }]
+      ? [{ value: notionals, abbreviate: true }]
       : notionals && !Array.isArray(notionals)
         ? [notionals]
         : (notionals ?? [])
 
   return ns
-    .map((notional) => {
-      const { value } = notional
-      const { abbreviate, formatter } = getFormattingDefaults(notional)
-      const { symbol, position } = getUnit(notional.unit) ?? {}
-
-      return [
-        position === 'prefix' ? symbol : '',
-        formatter(abbreviate ? abbreviateNumber(value) : value),
-        abbreviate ? scaleSuffix(value) : '',
-        position === 'suffix' ? symbol : '',
-      ]
-        .filter(Boolean)
-        .join('')
-    })
+    .map((notional) => formatNumber(notional.value, { ...notional, abbreviate: notional.abbreviate ?? true }))
     .join(' + ')
 }
+
+/** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
+export const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
 type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testId'> & {
   size: NonNullable<Props['size']>
@@ -164,9 +97,10 @@ type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testI
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
   const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
-  const { color = 'textPrimary', unit } = valueOptions
-  const { abbreviate, formatter } = getFormattingDefaults(valueOptions)
-  const { symbol, position } = getUnit(unit) ?? {}
+  const { color = 'textPrimary', abbreviate = true, ...formattingOptions } = valueOptions
+  const { prefix, mainValue, scaleSuffix, suffix } =
+    numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
+
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
 
@@ -182,28 +116,25 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         data-testid={`${testId}-value`}
       >
         <Stack direction="row" alignItems="baseline">
-          {position === 'prefix' && numberValue !== null && (
+          {prefix && (
             <Typography variant={fontVariantUnit} color="textSecondary">
-              {symbol}
+              {prefix}
             </Typography>
           )}
 
           <Typography variant={fontVariant} color={color}>
-            {useMemo(
-              () => (numberValue === null ? t`N/A` : runFormatter(numberValue, formatter, abbreviate, symbol)),
-              [numberValue, formatter, abbreviate, symbol],
-            )}
+            {mainValue ?? t`N/A`}
           </Typography>
 
-          {numberValue !== null && abbreviate && (
+          {scaleSuffix && (
             <Typography variant={fontVariant} color="textPrimary" textTransform="capitalize">
-              {scaleSuffix(numberValue)}
+              {scaleSuffix}
             </Typography>
           )}
 
-          {position === 'suffix' && numberValue !== null && (
+          {suffix && (
             <Typography variant={fontVariantUnit} color="textSecondary">
-              {symbol}
+              {suffix}
             </Typography>
           )}
         </Stack>
@@ -224,7 +155,10 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 type Props = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
-  valueOptions: Formatting & { color?: TypographyProps['color'] }
+  valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
+    color?: TypographyProps['color']
+    abbreviate?: boolean // Default to true
+  }
 
   /** Optional value that denotes a change in metric value since 'last' time */
   change?: number
