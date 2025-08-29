@@ -160,8 +160,8 @@ const DEFAULT: ColumnFiltersState = []
  */
 export function useColumnFilters(
   tableTitle: string,
+  migration: MigrationOptions<ColumnFiltersState>,
   defaultFilters: ColumnFiltersState = DEFAULT,
-  migration?: MigrationOptions<ColumnFiltersState>,
 ) {
   const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters, migration)
   const setColumnFilter = useCallback(

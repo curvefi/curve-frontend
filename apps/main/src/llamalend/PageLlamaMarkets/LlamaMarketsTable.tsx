@@ -55,8 +55,8 @@ export const LlamaMarketsTable = ({
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
     TITLE,
-    defaultFilters,
     migration,
+    defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
