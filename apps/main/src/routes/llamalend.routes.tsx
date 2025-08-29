@@ -1,5 +1,5 @@
 import Integrations from '@/lend/components/PageIntegrations/Page'
-import { LlamaMarketsPage } from '@/llamalend/PageLlamaMarkets/Page'
+import { LlamaMarketsPage } from '@/llamalend/LlamaMarketsPage/LlamaMarketsPage'
 import { createRoute, Outlet } from '@tanstack/react-router'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import { rootRoute } from './root.routes'
