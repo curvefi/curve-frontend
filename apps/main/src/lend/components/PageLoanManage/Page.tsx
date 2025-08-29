@@ -1,14 +1,10 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
-import DetailsMarket from '@/lend/components/DetailsMarket'
-import DetailsUserLoan from '@/lend/components/DetailsUser/components/DetailsUserLoan'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanMange from '@/lend/components/PageLoanManage/index'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
-import { _getSelectedTab } from '@/lend/components/PageLoanManage/utils'
-import PageTitleBorrowSupplyLinks from '@/lend/components/SharedPageStyles/PageTitleBorrowSupplyLinks'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -19,14 +15,7 @@ import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import Stack from '@mui/material/Stack'
-import {
-  AppPageFormContainer,
-  AppPageFormsWrapper,
-  AppPageFormTitleWrapper,
-  AppPageInfoContentWrapper,
-  AppPageInfoTabsWrapper,
-  AppPageInfoWrapper,
-} from '@ui/AppPage'
+import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
 import {
   ExpandButton,
@@ -34,15 +23,12 @@ import {
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
 } from '@ui/Chart/styles'
-import Tabs, { Tab } from '@ui/Tab'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { MarketDetails } from '@ui-kit/features/market-details'
 import { BorrowPositionDetails } from '@ui-kit/features/market-position-details'
 import { NoPosition } from '@ui-kit/features/market-position-details/NoPosition'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useParams } from '@ui-kit/hooks/router'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -59,7 +45,6 @@ const Page = () => {
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const marketDetailsView = useStore((state) => state.markets.marketDetailsView)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey])?.loanExists
@@ -68,12 +53,9 @@ const Page = () => {
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const { provider, connect } = useWallet()
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-
   const { signerAddress } = api ?? {}
 
   const [isLoaded, setLoaded] = useState(false)
-  const [isBeta] = useBetaFlag()
 
   const borrowPositionDetails = useBorrowPositionDetails({
     chainId: rChainId,
@@ -91,31 +73,27 @@ const Page = () => {
   if (signerAddress) {
     DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
   }
-  const selectedTab = _getSelectedTab(marketDetailsView, signerAddress)
-
-  const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
-      const { signerAddress } = api
-      // check for an existing loan
-      const loanExists = signerAddress ? (await fetchUserLoanExists(api, market, true))?.loanExists : false
-      if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
-      setLoaded(true)
-
-      // delay fetch rest after form details are fetch first
-      setTimeout(() => {
-        void fetchAllMarketDetails(api, market, true)
-
-        if (signerAddress && loanExists) {
-          void fetchAllUserMarketDetails(api, market, true)
-        }
-      }, REFRESH_INTERVAL['3s'])
-    },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, setMarketsStateKey],
-  )
 
   useEffect(() => {
+    const fetchInitial = async (api: Api, market: OneWayMarketTemplate) => {
+      const loanExists = api.signerAddress ? (await fetchUserLoanExists(api, market, true))?.loanExists : false
+      if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
+      setLoaded(true)
+    }
     if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchInitial, isPageVisible, market])
+  }, [api, fetchUserLoanExists, isPageVisible, market, setMarketsStateKey])
+
+  useEffect(() => {
+    // delay fetch rest after form details are fetched first
+    const timer = setTimeout(async () => {
+      if (!api || !market || !isPageVisible || !isLoaded) return
+      void fetchAllMarketDetails(api, market, true)
+      if (api.signerAddress && loanExists) {
+        void fetchAllUserMarketDetails(api, market, true)
+      }
+    }, REFRESH_INTERVAL['3s'])
+    return () => clearTimeout(timer)
+  }, [api, fetchAllMarketDetails, fetchAllUserMarketDetails, isLoaded, isPageVisible, loanExists, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
@@ -128,13 +106,6 @@ const Page = () => {
       scrollToTop()
     }
   }, [chartExpanded])
-
-  const TitleComp = () =>
-    market && (
-      <AppPageFormTitleWrapper>
-        <PageTitleBorrowSupplyLinks params={params} activeKey="borrow" market={market} />
-      </AppPageFormTitleWrapper>
-    )
 
   const pageProps = {
     params,
@@ -188,90 +159,46 @@ const Page = () => {
         </PriceAndTradesExpandedContainer>
       )}
 
-      {!isBeta ? (
-        <AppPageFormContainer isAdvanceMode={isAdvancedMode}>
-          <AppPageFormsWrapper>
-            {!isMdUp && <TitleComp />}
-            {rChainId && rOwmId && <LoanMange {...pageProps} />}
-          </AppPageFormsWrapper>
-
-          <AppPageInfoWrapper>
-            {isMdUp && <TitleComp />}
-            <Box margin="0 0 var(--spacing-2)">
-              <CampaignRewardsBanner
-                borrowAddress={market?.addresses?.controller || ''}
-                supplyAddress={market?.addresses?.vault || ''}
-              />
-            </Box>
-            <AppPageInfoTabsWrapper>
-              <Tabs>
-                {DETAIL_INFO_TYPES.map(({ key, label }) => (
-                  <Tab
-                    key={key}
-                    className={selectedTab === key ? 'active' : ''}
-                    variant="secondary"
-                    disabled={selectedTab === key}
-                    onClick={() => setMarketsStateKey('marketDetailsView', key)}
-                  >
-                    {label}
-                  </Tab>
-                ))}
-              </Tabs>
-            </AppPageInfoTabsWrapper>
-
-            <AppPageInfoContentWrapper variant="secondary">
-              {rChainId && rOwmId && (
-                <>
-                  {selectedTab === 'user' && <DetailsUserLoan {...pageProps} />}
-                  {selectedTab === 'market' && <DetailsMarket {...pageProps} type="borrow" />}
-                </>
-              )}
-            </AppPageInfoContentWrapper>
-          </AppPageInfoWrapper>
-        </AppPageFormContainer>
-      ) : (
-        // New design layout, only in beta for now
-        <Stack
-          sx={(theme) => ({
-            marginRight: Spacing.md,
-            marginLeft: Spacing.md,
-            marginTop: Spacing.xl,
-            marginBottom: Spacing.xxl,
-            gap: Spacing.xl,
-            // 961px, matches old Action card breakpoint
-            [theme.breakpoints.up(961)]: {
-              flexDirection: 'row', // 1100px
-            },
-          })}
-        >
-          <AppPageFormsWrapper>{rChainId && rOwmId && <LoanMange {...pageProps} />}</AppPageFormsWrapper>
-          <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-            <CampaignRewardsBanner
-              borrowAddress={market?.addresses?.controller || ''}
-              supplyAddress={market?.addresses?.vault || ''}
+      <Stack
+        sx={(theme) => ({
+          marginRight: Spacing.md,
+          marginLeft: Spacing.md,
+          marginTop: Spacing.xl,
+          marginBottom: Spacing.xxl,
+          gap: Spacing.xl,
+          // 961px, matches old Action card breakpoint
+          [theme.breakpoints.up(961)]: {
+            flexDirection: 'row', // 1100px
+          },
+        })}
+      >
+        <AppPageFormsWrapper>{rChainId && rOwmId && <LoanMange {...pageProps} />}</AppPageFormsWrapper>
+        <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
+          <CampaignRewardsBanner
+            borrowAddress={market?.addresses?.controller || ''}
+            supplyAddress={market?.addresses?.vault || ''}
+          />
+          <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
+            {loanExists ? (
+              <BorrowPositionDetails {...borrowPositionDetails} />
+            ) : (
+              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+                <NoPosition type="borrow" />
+              </Stack>
+            )}
+          </MarketInformationTabs>
+          <Stack>
+            <MarketDetails {...marketDetails} />
+            <MarketInformationComp
+              pageProps={pageProps}
+              chartExpanded={chartExpanded}
+              userActiveKey={userActiveKey}
+              type="borrow"
+              loanExists={loanExists}
             />
-            <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
-              {loanExists ? (
-                <BorrowPositionDetails {...borrowPositionDetails} />
-              ) : (
-                <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-                  <NoPosition type="borrow" />
-                </Stack>
-              )}
-            </MarketInformationTabs>
-            <Stack>
-              <MarketDetails {...marketDetails} />
-              <MarketInformationComp
-                pageProps={pageProps}
-                chartExpanded={chartExpanded}
-                userActiveKey={userActiveKey}
-                type="borrow"
-                loanExists={loanExists}
-              />
-            </Stack>
           </Stack>
         </Stack>
-      )}
+      </Stack>
     </>
   )
 }

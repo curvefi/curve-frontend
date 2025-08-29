@@ -39,12 +39,24 @@ export const useLlamaMarketSortOptions = () => {
       label: t`Supply Yield`,
     },
     {
+      id: LlamaMarketColumnId.TVL,
+      label: t`Total Value Locked`,
+    },
+    {
       id: LlamaMarketColumnId.UtilizationPercent,
       label: t`Utilization`,
     },
     {
       id: LlamaMarketColumnId.LiquidityUsd,
       label: t`Available Liquidity`,
+    },
+    {
+      id: LlamaMarketColumnId.TotalCollateralUsd,
+      label: t`Total Collateral`,
+    },
+    {
+      id: LlamaMarketColumnId.TotalDebt,
+      label: t`Total Debt`,
     },
   ] satisfies Option<LlamaMarketColumnId>[]
 }

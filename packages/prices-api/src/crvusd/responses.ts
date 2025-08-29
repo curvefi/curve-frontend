@@ -26,6 +26,7 @@ export type GetMarketsResponse = {
       address: Address
       rebasing_yield: number | null
     }
+    created_at: string
   }[]
   count: number
 }

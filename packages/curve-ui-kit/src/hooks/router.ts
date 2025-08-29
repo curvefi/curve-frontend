@@ -18,6 +18,9 @@ export function useSearchParams(): URLSearchParams {
   return useMemo(() => new URLSearchParams(search), [search])
 }
 
-export const useParams = <T>() => useTanstackParams({ strict: false }) as T
+export const useParams = <T>(): T => {
+  const params = useTanstackParams({ strict: false })
+  return params as unknown as T
+}
 
 export const usePathname = () => useTanstackLocation().pathname

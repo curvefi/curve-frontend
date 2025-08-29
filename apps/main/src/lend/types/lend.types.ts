@@ -77,7 +77,12 @@ export type ExpectedBorrowed = {
   userBorrowed: string
   avgPrice: string
 }
-export type RFormType = 'loan' | 'collateral' | 'deposit' | 'mint' | 'redeem' | 'withdraw' | ''
+
+export type VaultCreateFormType = 'create' | 'leverage'
+export type VaultDepositFormType = 'deposit' | 'stake'
+export type VaultWithdrawFormType = 'withdraw' | 'unstake' | 'claim'
+export type VaultManageFormType = 'loan' | 'collateral'
+export type RFormType = VaultCreateFormType | VaultDepositFormType | VaultWithdrawFormType | VaultManageFormType | ''
 
 export type PageContentProps = {
   params: UrlParams

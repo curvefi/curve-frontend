@@ -5,6 +5,7 @@ import { TOP_HOLDERS_FILTERS } from '@/dao/components/PageAnalytics/constants'
 import TopHoldersBarChartComponent from '@/dao/components/PageAnalytics/TopHoldersChart/TopHoldersBarChartComponent'
 import { useStatsVecrvQuery } from '@/dao/entities/stats-vecrv'
 import useStore from '@/dao/store/useStore'
+import type { TopHoldersSortBy } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
 import SelectSortingMethod from '@ui/Select/SelectSortingMethod'
@@ -62,7 +63,7 @@ const TopLockers = () => {
             selectedKey={topHoldersSortBy}
             minWidth="9rem"
             items={TOP_HOLDERS_FILTERS}
-            onSelectionChange={setTopHoldersSortBy}
+            onSelectionChange={(key) => key != null && setTopHoldersSortBy(key as TopHoldersSortBy)}
           />
         </Box>
       </TitleRow>

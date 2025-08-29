@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import type { GetState, SetState } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'

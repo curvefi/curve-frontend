@@ -4,10 +4,10 @@ import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
 import { Stack } from '@mui/material'
 import { CellContext } from '@tanstack/react-table'
 import { HealthBar } from '@ui-kit/features/market-position-details'
-import { t } from '@ui-kit/lib/i18n.ts'
+import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
-import { TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents.tsx'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces.ts'
+import { TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -20,7 +20,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
   ) : (
     <Tooltip
       title={softLiquidation ? 'Liquidation Protection On' : 'Position active'}
-      body={<HealthTooltipContent softLiquidation={softLiquidation} />}
+      body={<HealthTooltipContent softLiquidation={!!softLiquidation} />}
       placement="top"
     >
       <Stack gap={Spacing.xs}>

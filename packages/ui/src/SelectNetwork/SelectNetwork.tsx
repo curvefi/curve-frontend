@@ -1,36 +1,31 @@
 import { Item } from 'react-stately'
+import styled from 'styled-components'
 import Select from 'ui/src/Select'
 import type { SelectProps } from 'ui/src/Select/Select'
-import SelectNetworkItem from 'ui/src/SelectNetwork/SelectNetworkItem'
 
 export type SelectNetworkItem = {
-  label: string
+  networkId: string
   chainId: number
-  src: string
-  srcDark: string
 }
 
 type SelectNetworkProps = Omit<SelectProps<SelectNetworkItem>, 'children'> & {
-  hideIcon?: boolean
   isDarkTheme?: boolean
 }
 
-/*
- * If an image is not displaying, ensure it has been added to the repository at:
- * https://github.com/curvefi/curve-assets/tree/main/chains.
- */
-export const SelectNetwork = (
-  { className = '', hideIcon, isDarkTheme, items, ...props }: SelectNetworkProps, // TODO: add darkTheme icon or make sure icon work for both dark and light theme
-) => (
+export const SelectNetwork = ({ className = '', isDarkTheme, items, ...props }: SelectNetworkProps) => (
   <Select {...props} className={className} items={items} aria-label="Select network" label="">
-    {({ chainId, src, label }: SelectNetworkItem) => (
+    {({ chainId, networkId }: SelectNetworkItem) => (
       <Item key={chainId} textValue={chainId.toString()}>
-        {!hideIcon && <SelectNetworkItem label={label} src={src} fallbackSrc={src} />}
-        <strong>{label}</strong>
+        <Label>{networkId}</Label>
       </Item>
     )}
   </Select>
 )
+
+const Label = styled.span`
+  font-weight: bold;
+  text-transform: capitalize;
+`
 
 SelectNetwork.displayName = 'SelectNetwork'
 export default SelectNetwork
