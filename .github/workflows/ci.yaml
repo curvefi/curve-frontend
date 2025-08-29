@@ -19,6 +19,19 @@ jobs:
       - run: yarn lint
       - run: yarn format:check
       - run: yarn typecheck
+  test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn test
+        working-directory: tests
   cypress:
     strategy:
       fail-fast: false
@@ -42,10 +55,6 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
       - run: yarn build
-
-      - name: Unit tests
-        run: yarn run vitest:run
-        working-directory: tests
 
       - name: Start dev server
         run: yarn start 2>&1 | tee dev-server.log &
