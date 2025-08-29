@@ -1,16 +1,20 @@
+import { isEqual } from 'lodash'
 import { useMemo } from 'react'
 import type { LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useVisibilitySettings } from '@ui-kit/shared/ui/DataTable'
+import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
+import { useVisibilitySettings, type VisibilityGroup } from '@ui-kit/shared/ui/DataTable'
 import { MarketRateType } from '@ui-kit/types/market'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from '../columns'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { createLlamaMarketsMobileColumns, LLAMA_MARKETS_COLUMN_OPTIONS } from './useLlamaMarketsColumnVisibility'
 
+type LlamaColumnVariant = keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS
+
 const getVariant = (
   userHasPositions: LlamaMarketsResult['userHasPositions'] | MarketRateType | undefined,
-): keyof typeof LLAMA_MARKETS_COLUMN_OPTIONS =>
+): LlamaColumnVariant =>
   userHasPositions === undefined // undefined means its loading
     ? 'unknown'
     : userHasPositions === null // null means no positions at all
@@ -18,6 +22,19 @@ const getVariant = (
       : typeof userHasPositions == 'string'
         ? userHasPositions // show variant for a specific market rate type
         : 'hasPositions' // show the general market table, for users with positions
+
+const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<LlamaMarketColumnId>[]>> = {
+  version: 1,
+  migrate: (oldValue) =>
+    // when we initially created v1 we didn't have migrations. Use the stored value if users already had the right keys
+    isEqual(
+      Object.keys(LLAMA_MARKETS_COLUMN_OPTIONS),
+      // double check if we have the TVL column, as that was added later (in that case no migration needed)
+      oldValue && oldValue.noPositions?.[0].options.find((o) => o.label === 'TVL'),
+    )
+      ? oldValue
+      : null, // use default value
+}
 
 /**
  * Hook to manage the visibility of columns in the Llama Markets table.
@@ -31,7 +48,13 @@ export const useLlamaTableVisibility = (
 ) => {
   const variant = getVariant(userHasPositions)
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as LlamaMarketColumnId
-  const visibilitySettings = useVisibilitySettings(title, LLAMA_MARKETS_COLUMN_OPTIONS, variant, LLAMA_MARKET_COLUMNS)
+  const visibilitySettings = useVisibilitySettings(
+    title,
+    LLAMA_MARKETS_COLUMN_OPTIONS,
+    variant,
+    LLAMA_MARKET_COLUMNS,
+    migration,
+  )
   const columnVisibility = useMemo(() => createLlamaMarketsMobileColumns(sortField), [sortField])
   return { sortField, ...visibilitySettings, ...(useIsMobile() && { columnVisibility }) }
 }

@@ -1,8 +1,9 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
-import { ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -39,11 +40,17 @@ export type UserPositionsTableProps = {
   tab: MarketRateType
 }
 
+const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
+
 export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
   const title = TITLES[tab]
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(title, defaultFilters)
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
+    title,
+    migration,
+    defaultFilters,
+  )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], 'userSort')
   const { columnSettings, columnVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})

@@ -7,6 +7,7 @@ import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import { ColumnDef } from '@tanstack/react-table'
 import { useTableColumnVisibility } from '@ui-kit/hooks/useLocalStorage'
+import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { VisibilityGroup } from './visibility.types'
 
@@ -104,15 +105,19 @@ const flatten = <ColumnIds extends string>(visibilitySettings: VisibilityGroup<C
  * @param groups - The visibility groups for all the different variants (visibility might be e.g. different in mobile).
  * @param variant - The current variant for which visibility settings are applied.
  * @param columns - The column definitions for the table.
+ * @param migration - Migration options for stored visibility settings.
+ * @returns An object containing the current column settings, column visibility state, and a function to
+ * toggle visibility of columns.
  */
 export const useVisibilitySettings = <TData, TVariant extends string, ColumnIds extends string>(
   tableTitle: string,
   groups: Record<TVariant, VisibilityGroup<ColumnIds>[]>,
   variant: TVariant,
   columns: ColumnDef<TData, any>[],
+  migration: MigrationOptions<Record<TVariant, VisibilityGroup<ColumnIds>[]>>,
 ) => {
   /** current visibility settings in grouped format */
-  const [visibilitySettings, setVisibilitySettings] = useTableColumnVisibility(tableTitle, groups)
+  const [visibilitySettings, setVisibilitySettings] = useTableColumnVisibility(tableTitle, groups, migration)
 
   /** toggle visibility of a column by its id */
   const toggleVisibility = useCallback(
