@@ -151,7 +151,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
 
     // steps
     fetchStepDecrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -161,7 +161,15 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       })
       const chainId = curve.chainId as ChainId
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
-      const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      const resp = await removeCollateralFn(
+        activeKey,
+        provider,
+        llamma,
+        formValues.collateral,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists.loanExists) {

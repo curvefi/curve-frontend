@@ -7,8 +7,10 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/Page
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Chain } from '@curvefi/prices-api'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -159,7 +161,8 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       }
     },
     fetchStepDepositMint: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -169,7 +172,14 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       // api calls
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.deposit : apiLending.vaultMint.mint
       const { amount } = formValues
-      const resp = await fn(activeKey, provider, market, amount)
+      const resp = await fn(
+        activeKey,
+        provider,
+        market,
+        amount,
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
+      )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api

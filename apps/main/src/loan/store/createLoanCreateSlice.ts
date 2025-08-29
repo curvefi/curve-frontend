@@ -406,7 +406,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       maxSlippage: string,
     ) => {
       const chainId = curve.chainId as ChainId
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -417,7 +417,19 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       const { collateral, debt, n } = formValues
       if (n !== null) {
         const createFn = networks[chainId].api.loanCreate.create
-        const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
+        const resp = await createFn(
+          activeKey,
+          provider,
+          llamma,
+          isLeverage,
+          collateral,
+          debt,
+          n,
+          maxSlippage,
+          llamma.controller,
+          networks[chainId].id,
+          wallet?.account.address ?? '',
+        )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({

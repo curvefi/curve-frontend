@@ -143,7 +143,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
     },
     fetchStepRepay: async (activeKey, curve, llamma, formValues, maxSlippage) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -153,7 +153,16 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       })
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
-      const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
+      const resp = await repayFn(
+        activeKey,
+        provider,
+        llamma,
+        formValues.collateral,
+        maxSlippage,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
         const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)

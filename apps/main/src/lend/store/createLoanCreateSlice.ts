@@ -12,10 +12,12 @@ import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { Chain } from '@curvefi/prices-api'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -291,7 +293,8 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { userCollateral, userBorrowed, debt, n } = formValues
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
 
       if (!provider) return setMissingProvider(get()[sliceKey])
       if (n === null) return
@@ -315,6 +318,8 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
         n,
         maxSlippage,
         isLeverage,
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

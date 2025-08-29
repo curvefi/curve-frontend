@@ -6,9 +6,11 @@ import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultWi
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageVault/VaultWithdrawRedeem/utils'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import { _getMaxActiveKey } from '@/lend/store/createVaultDepositMintSlice'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Chain } from '@curvefi/prices-api'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -128,7 +130,8 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
 
     // steps
     fetchStepWithdrawRedeem: async (activeKey, formType: FormType, api, market, formValues, vaultShares) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -144,6 +147,8 @@ const createVaultWithdrawRedeem = (set: SetState<State>, get: GetState<State>): 
         isFullWithdraw,
         amount,
         vaultShares,
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

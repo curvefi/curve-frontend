@@ -51,11 +51,12 @@ export async function getUserMarketCollateralEvents(
   userAddr: string,
   chain: Chain,
   marketController: string,
+  txHash?: string,
   options?: Options,
 ) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserCollateralEventsResponse>(
-    `${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}`,
+    `${host}/v1/lending/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
   )
 
   return Parsers.parseUserCollateralEvents(resp)

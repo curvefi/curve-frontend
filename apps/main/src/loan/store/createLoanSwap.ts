@@ -269,7 +269,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -279,7 +279,16 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       })
       const chainId = curve.chainId as ChainId
       const swapFn = networks[chainId].api.swap.swap
-      const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)
+      const resp = await swapFn(
+        activeKey,
+        provider,
+        llamma,
+        formValues,
+        maxSlippage,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         void get().loans.fetchLoanDetails(curve, llamma)

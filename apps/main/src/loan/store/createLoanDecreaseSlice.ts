@@ -196,7 +196,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchStepDecrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -206,7 +206,16 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
       })
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDecrease.repay
-      const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
+      const resp = await repayFn(
+        activeKey,
+        provider,
+        llamma,
+        formValues.debt,
+        formValues.isFullRepay,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
