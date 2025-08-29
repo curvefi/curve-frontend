@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { BorrowTabContents } from '@/llamalend/components/borrow/BorrowTabContents'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
@@ -7,7 +8,9 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
 const LoanCreate = ({
   fetchInitial,
@@ -45,6 +48,8 @@ const LoanCreate = ({
     [curve, fetchInitial, llamma, loanExists, push, params, rCollateralId],
   )
 
+  const [isBeta] = useBetaFlag()
+
   return (
     <AppFormContent variant="primary" shadowed>
       <AppFormHeader
@@ -54,7 +59,13 @@ const LoanCreate = ({
       />
 
       <AppFormContentWrapper>
-        <LoanFormCreate {...props} collateralAlert={collateralAlert} />
+        {isBeta && rFormType !== 'leverage' ? (
+          <WithSkeleton loading={!llamma}>
+            {llamma && <BorrowTabContents chainId={props.rChainId} network={props.params.network} market={llamma} />}
+          </WithSkeleton>
+        ) : (
+          <LoanFormCreate {...props} collateralAlert={collateralAlert} />
+        )}
       </AppFormContentWrapper>
     </AppFormContent>
   )
