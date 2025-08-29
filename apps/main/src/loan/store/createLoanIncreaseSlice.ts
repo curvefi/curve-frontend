@@ -203,7 +203,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -216,7 +216,16 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
 
       // re-fetch max
-      const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
+      const resp = await borrowMoreFn(
+        activeKey,
+        provider,
+        llamma,
+        collateral,
+        debt,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
       // re-fetch loan info

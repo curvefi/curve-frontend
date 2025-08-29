@@ -1594,9 +1594,7 @@ const vaultDeposit = {
     try {
       resp.hash = await market.vault.deposit(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1685,9 +1683,7 @@ const vaultMint = {
     try {
       resp.hash = await market.vault.mint(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1740,9 +1736,7 @@ const vaultStake = {
     try {
       resp.hash = await market.vault.stake(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1820,9 +1814,7 @@ const vaultWithdraw = {
       // else use withdraw(amount)
       resp.hash = isFullWithdraw ? await market.vault.redeem(vaultShares) : await market.vault.withdraw(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1892,9 +1884,7 @@ const vaultRedeem = {
     try {
       resp.hash = await market.vault.redeem(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1931,9 +1921,7 @@ const vaultUnstake = {
     try {
       resp.hash = await market.vault.unstake(amount)
       await helpers.waitForTransaction(resp.hash, provider)
-      _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch((error) => {
-        console.error(error)
-      })
+      void _updateUserEventsApi(resp.hash, market.addresses.controller, network, walletAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -2143,9 +2131,7 @@ async function submit(
   try {
     resp.hash = await submitFn()
     await helpers.waitForTransaction(resp.hash, provider)
-    _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch((error) => {
-      console.error(error)
-    })
+    void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
     return resp
   } catch (error) {
     console.error(error)

@@ -125,7 +125,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       return resp
     },
     fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -135,7 +135,14 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       })
       const chainId = curve.chainId as ChainId
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
-      const resp = await liquidateFn(provider, llamma, maxSlippage)
+      const resp = await liquidateFn(
+        provider,
+        llamma,
+        maxSlippage,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists.loanExists) {
         get().loans.resetUserDetailsState(llamma)

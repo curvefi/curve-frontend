@@ -169,7 +169,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
       }
     },
     fetchStepIncrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -179,7 +179,15 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
       })
       const chainId = curve.chainId as ChainId
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
-      const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      const resp = await addCollateralFn(
+        activeKey,
+        provider,
+        llamma,
+        formValues.collateral,
+        llamma.controller,
+        networks[chainId].id,
+        wallet?.account.address ?? '',
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
