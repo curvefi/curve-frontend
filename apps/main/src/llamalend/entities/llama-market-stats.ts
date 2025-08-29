@@ -30,12 +30,24 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   // todo: api will be updated to use controller address for earnings too
   const earningsParams = { ...params, contractAddress: marketAddress }
 
-  const { data: lendData, error: lendError } = useUserLendingVaultStats(params, enableLendingStats)
-  const { data: earnData, error: earnError } = useUserLendingVaultEarnings(earningsParams, enableEarnings)
-  const { data: mintData, error: mintError } = useUserMintMarketStats(params, enableMintStats)
+  const {
+    data: lendData,
+    error: lendError,
+    isLoading: loadingLend,
+  } = useUserLendingVaultStats(params, enableLendingStats)
+
+  const {
+    data: earnData,
+    error: earnError,
+    isLoading: loadingEarn,
+  } = useUserLendingVaultEarnings(earningsParams, enableEarnings)
+
+  const { data: mintData, error: mintError, isLoading: loadingMint } = useUserMintMarketStats(params, enableMintStats)
 
   const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
+  const isLoading = loadingLend || loadingEarn || loadingMint
+
   return {
     ...(stats && {
       data: {
@@ -47,5 +59,6 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),
     ...(error && { error }),
+    isLoading,
   }
 }
