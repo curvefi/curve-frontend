@@ -32,7 +32,7 @@
     "lightweight-charts": "^5.0.8",
     "memoizee": "^0.4.17",
     "react-hook-form": "7.62.0",
-    "recharts": "2.15.4",
+    "recharts": "3.1.2",
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "^4.5.0",
