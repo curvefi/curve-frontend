@@ -16,7 +16,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const { assets } = market
   const { chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
   const columnId = column.id as LlamaMarketColumnId
-  const { data: stats, error: statsError, loading: isLoading } = useUserMarketStats(market, columnId)
+  const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
   const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
     blockchainId: chain,
     contractAddress: address,
