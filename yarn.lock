@@ -678,7 +678,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carbon/icons-react@npm:^11.66.0":
+"@carbon/icons-react@npm:^11.65.0":
   version: 11.66.0
   resolution: "@carbon/icons-react@npm:11.66.0"
   dependencies:
@@ -16441,7 +16441,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "ui@workspace:packages/ui"
   dependencies:
-    "@carbon/icons-react": "npm:^11.66.0"
+    "@carbon/icons-react": "npm:^11.65.0"
     "@lingui/detect-locale": "npm:^5.4.1"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
