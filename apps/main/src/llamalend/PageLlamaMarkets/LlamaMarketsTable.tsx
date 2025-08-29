@@ -1,11 +1,12 @@
 import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
-import { ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
+import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -28,6 +29,15 @@ const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(() => [{ id: LlamaMarketColumnId.TVL, value: [minLiquidity, null] }], [minLiquidity])
 
+const migration: MigrationOptions<ColumnFiltersState> = {
+  version: 1,
+  // migration from v0 to v1: remove default liquidity filter
+  migrate: (oldValue, initialValue) => [
+    ...initialValue.filter((i) => oldValue.find((o) => o.id === i.id)),
+    ...oldValue.filter((o) => !isEqual(o, { id: LlamaMarketColumnId.LiquidityUsd, value: [10000, null] })),
+  ],
+}
+
 export const LlamaMarketsTable = ({
   onReload,
   result,
@@ -43,7 +53,11 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(TITLE, defaultFilters)
+  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
+    TITLE,
+    defaultFilters,
+    migration,
+  )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     TITLE,

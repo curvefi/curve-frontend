@@ -1,3 +1,4 @@
+import * as Cypress from 'cypress'
 import lodash from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@cy/support/generators'
@@ -9,6 +10,7 @@ import {
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@cy/support/helpers/lending-mocks'
+import { LLAMA_FILTERS_V0, LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
@@ -21,7 +23,7 @@ import {
   RETRY_IN_CI,
 } from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
@@ -30,20 +32,8 @@ describe(`LlamaLend Markets`, () => {
 
   beforeEach(() => {
     ;[width, height, breakpoint] = oneViewport()
-    vaultData = createLendingVaultChainsResponse()
-    mockTokenPrices()
-    mockLendingVaults(vaultData)
-    mockLendingSnapshots().as('lend-snapshots')
-    mockMintMarkets()
-    mockMintSnapshots()
-
-    cy.viewport(width, height)
-    cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
-    cy.visit('/llamalend/ethereum/markets/', {
-      onBeforeLoad: (window) => window.localStorage.clear(),
-      ...LOAD_TIMEOUT,
-    })
-    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+    vaultData = setupMocks()
+    visitAndWait([width, height, breakpoint])
   })
 
   const firstRow = () => cy.get(`[data-testid^="data-table-row-"]`).first()
@@ -268,6 +258,7 @@ describe(`LlamaLend Markets`, () => {
       cy.viewport(...oneDesktopViewport())
     }
     const { toggle, element } = oneOf(
+      { toggle: 'tvl', element: 'data-table-header-tvl' },
       { toggle: 'liquidityUsd', element: 'data-table-header-liquidityUsd' },
       { toggle: 'utilizationPercent', element: 'data-table-header-utilizationPercent' },
     )
@@ -314,6 +305,52 @@ describe(`LlamaLend Markets`, () => {
   }
 })
 
+describe(`LlamaLend Storage Migration`, () => {
+  beforeEach(() => {
+    setupMocks()
+  })
+
+  it('migrates old liquidity filter to TVL', () => {
+    const otherFilter = { id: 'type', value: oneOf(LlamaMarketType.Lend, LlamaMarketType.Mint) }
+    visitAndWait(oneViewport(), {
+      onBeforeLoad({ localStorage }) {
+        localStorage.clear()
+        localStorage.setItem('table-filters-llamalend-markets', JSON.stringify([...LLAMA_FILTERS_V0, otherFilter]))
+      },
+    })
+    cy.window().then(({ localStorage }) => {
+      expect(localStorage.getItem('table-filters-llamalend-markets')).to.be.null
+      const newValue = JSON.parse(localStorage.getItem('table-filters-llamalend-markets-v1')!)
+      expect(newValue).to.deep.equal([{ id: 'tvl', value: [10000, null] }, otherFilter])
+    })
+  })
+
+  it('migrates old visibility settings', () => {
+    visitAndWait(oneViewport(), {
+      onBeforeLoad({ localStorage }) {
+        localStorage.clear()
+        localStorage.setItem('table-column-visibility-llamalend-markets', JSON.stringify(LLAMA_VISIBILITY_SETTINGS_V0))
+      },
+    })
+    cy.window().then(({ localStorage }) => {
+      expect(localStorage.getItem('table-column-visibility-llamalend-markets')).to.be.null
+      const migrated = JSON.parse(localStorage.getItem('table-column-visibility-llamalend-markets-v1')!)
+      expect(Object.keys(migrated)).to.deep.equal(['Borrow', 'Supply', 'hasPositions', 'noPositions', 'unknown'])
+    })
+  })
+})
+
+function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {
+  cy.viewport(width, height)
+  cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
+  cy.visit('/llamalend/ethereum/markets/', {
+    onBeforeLoad: ({ localStorage }) => localStorage.clear(),
+    ...LOAD_TIMEOUT,
+    ...options,
+  })
+  cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+}
+
 function selectChain(chain: string) {
   cy.get('[data-testid="multi-select-filter-chain"]').click()
   cy.get(`[data-testid="menu-chain"] [value="${chain}"]`).click()
@@ -336,4 +373,14 @@ function enableGraphColumn() {
   cy.get(`[data-testid="btn-visibility-settings"]`).click()
   cy.get(`[data-testid="visibility-toggle-borrowChart"]`).click()
   cy.get(`[data-testid="line-graph-${MarketRateType.Borrow}"]`).first().scrollIntoView()
+}
+
+function setupMocks() {
+  const vaultData = createLendingVaultChainsResponse()
+  mockTokenPrices()
+  mockLendingVaults(vaultData)
+  mockLendingSnapshots().as('lend-snapshots')
+  mockMintMarkets()
+  mockMintSnapshots()
+  return vaultData
 }

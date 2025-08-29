@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import { ColumnFiltersState } from '@tanstack/react-table'
 import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useFilterExpanded, useTableFilters } from '@ui-kit/hooks/useLocalStorage'
+import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
@@ -157,8 +158,12 @@ const DEFAULT: ColumnFiltersState = []
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  */
-export function useColumnFilters(tableTitle: string, defaultFilters: ColumnFiltersState = DEFAULT) {
-  const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters)
+export function useColumnFilters(
+  tableTitle: string,
+  defaultFilters: ColumnFiltersState = DEFAULT,
+  migration?: MigrationOptions<ColumnFiltersState>,
+) {
+  const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters, migration)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
       setColumnFilters((filters) => [
