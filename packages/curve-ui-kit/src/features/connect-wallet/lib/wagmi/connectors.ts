@@ -15,7 +15,7 @@ export type ConnectorType =
 export const connectors: Record<ConnectorType, CreateConnectorFn> = {
   [injected.type]: injected(),
   binance: getBinanceConnector()(),
-  [coinbaseWallet.type]: coinbaseWallet(),
+  [coinbaseWallet.type]: coinbaseWallet({ preference: { options: 'all', telemetry: false } }),
   [safe.type]: safe(),
   [walletConnect.type]: walletConnect({
     projectId: WALLET_CONNECT_PROJECT_ID,
