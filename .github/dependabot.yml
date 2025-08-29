@@ -6,7 +6,6 @@ updates:
       - /
       - /apps/main/
       - /packages/curve-ui-kit/
-      - /packages/tsconfig/
       - /packages/prices-api/
       - /packages/eslint-config-custom/
       - /packages/ui/
