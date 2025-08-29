@@ -15,10 +15,6 @@ updates:
     schedule:
       interval: 'monthly'
     ignore:
-      - dependency-name: immer
-        update-types: ['version-update:semver-major']
-      - dependency-name: lightweight-charts
-        update-types: ['version-update:semver-major']
       - dependency-name: zustand
         update-types: ['version-update:semver-major']
       - dependency-name: '@curvefi/*' # curve updates done manually
