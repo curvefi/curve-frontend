@@ -19,12 +19,7 @@ const config = [
   {
     languageOptions: {
       parserOptions: {
-        project: [
-          './apps/*/tsconfig.json',
-          './packages/*/tsconfig.json',
-          './tests/tsconfig.json',
-          './tests/cypress/tsconfig.json',
-        ],
+        project: ['./apps/*/tsconfig.json', './packages/*/tsconfig.json', './tests/tsconfig.json'],
         tsconfigRootDir: __dirname,
       },
     },
