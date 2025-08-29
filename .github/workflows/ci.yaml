@@ -3,7 +3,8 @@ on: [push]
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
-
+permissions:
+    contents: read
 jobs:
   lint:
     timeout-minutes: 6
