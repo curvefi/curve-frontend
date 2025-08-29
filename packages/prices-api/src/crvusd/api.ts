@@ -116,7 +116,7 @@ export async function getUserMarketCollateralEvents(
 ) {
   const host = getHost(options)
   const resp = await fetch<Responses.GetUserCollateralEventsResponse>(
-    `${host}/v1/crvusd/collateral_events/${chain}/${marketController}/${userAddr}${txHash ? `?new_hash=${txHash}` : ''}`,
+    `${host}/v1/crvusd/collateral_events/${chain}/${marketController}/${userAddr}${addQueryString({ txHash })}`,
   )
 
   return Parsers.parseUserCollateralEvents(resp)
