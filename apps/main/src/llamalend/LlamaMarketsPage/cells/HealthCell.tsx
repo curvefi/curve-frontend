@@ -1,6 +1,6 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { LlamaMarketColumnId } from '@/llamalend/PageLlamaMarkets/columns.enum'
+import { LlamaMarketColumnId } from '@/llamalend/LlamaMarketsPage/columns.enum'
 import { Stack } from '@mui/material'
 import { CellContext } from '@tanstack/react-table'
 import { HealthBar } from '@ui-kit/features/market-position-details'
