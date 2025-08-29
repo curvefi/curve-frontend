@@ -1,6 +1,6 @@
 import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
-import produce from 'immer'
+import { produce } from 'immer'
 import { zeroAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
 import {

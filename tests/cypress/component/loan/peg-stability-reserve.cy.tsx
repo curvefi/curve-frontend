@@ -1,4 +1,3 @@
-import React from 'react'
 import { PegKeeper } from '@/loan/components/PagePegKeepers/components/PegKeeper'
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ClientWrapper, type Config } from '@cy/support/helpers/ClientWrapper'

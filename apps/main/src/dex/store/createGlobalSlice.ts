@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'

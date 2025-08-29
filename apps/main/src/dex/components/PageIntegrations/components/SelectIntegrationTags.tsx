@@ -24,7 +24,7 @@ const SelectIntegrationTags = ({
     loading={formStatus.isLoading}
     minWidth="200px"
     selectedKey={filterKey}
-    onSelectionChange={(filterKey: string) => updatePath({ filterKey })}
+    onSelectionChange={(filterKey) => updatePath({ filterKey: filterKey || undefined })}
     onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: 'all' }) : undefined}
   >
     {({ id, displayName, color = 'transparent' }: IntegrationTag) => {

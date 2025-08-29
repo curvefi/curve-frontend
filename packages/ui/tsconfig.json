@@ -1,13 +1,14 @@
 {
-  "extends": "tsconfig/ui.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
       "@/*": ["*"],
+      "@external-rewards": ["../../external-rewards/src/index.ts"],
+      "@curvefi/prices-api": ["../../prices-api/src/index.ts"],
       "@curvefi/prices-api/*": ["../../prices-api/src/*"],
       "@ui-kit/*": ["../../curve-ui-kit/src/*"]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts", "src/**/*.d.ts", "../curve-ui-kit/**/*.d.ts"],
-  "exclude": ["dist", "build", "node_modules"]
+  "include": ["src"]
 }

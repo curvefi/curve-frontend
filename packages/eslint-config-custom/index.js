@@ -76,12 +76,7 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: [
-          './tsconfig.json',
-          './apps/*/tsconfig.json',
-          './apps/*/tsconfig.app.json',
-          './packages/*/tsconfig.json',
-        ],
+        project: ['./apps/*/tsconfig.json', './packages/*/tsconfig.json', './tests/tsconfig.json'],
       },
     },
     'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',

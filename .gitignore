@@ -52,6 +52,7 @@ src/locales/**/*.js
 
 # TypeChain generated files
 src/sdk/types/ethers-contracts
+dist
 
 # crash report
 report.*.json

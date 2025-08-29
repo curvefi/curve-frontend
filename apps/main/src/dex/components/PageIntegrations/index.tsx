@@ -113,11 +113,10 @@ const IntegrationsComp = ({
             updatePath={updatePath}
           />
           <SelectNetwork
-            hideIcon
             items={visibleNetworksList}
             minWidth="8.5em"
             selectedKey={filterNetworkId}
-            onSelectionChange={(filterNetworkId: Key) => updatePath({ filterNetworkId })}
+            onSelectionChange={(filterNetworkId) => updatePath({ filterNetworkId: filterNetworkId || undefined })}
             onSelectionDelete={
               filterNetworkId && +filterNetworkId !== rChainId
                 ? () => updatePath({ filterNetworkId: rChainId })

@@ -1,5 +1,5 @@
 import { Item } from 'react-stately'
-import type { SearchParams } from '@/lend/components/PageMarketList/types'
+import type { FilterKey, SearchParams } from '@/lend/components/PageMarketList/types'
 import { Filter } from '@/lend/components/PageMarketList/utils'
 import Select from '@ui/Select'
 import { t } from '@ui-kit/lib/i18n'
@@ -21,7 +21,7 @@ const SelectFilter = ({
     loading={false}
     minWidth="200px"
     selectedKey={filterKey}
-    onSelectionChange={(filterKey: Filter) => updatePath({ filterKey })}
+    onSelectionChange={(filterKey) => updatePath({ filterKey: (filterKey as FilterKey) || undefined })}
     onSelectionDelete={filterKey !== 'all' ? () => updatePath({ filterKey: Filter.all }) : undefined}
   >
     {({ id, displayName }: ListItem) => (
