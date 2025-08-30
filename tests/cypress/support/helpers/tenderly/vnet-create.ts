@@ -1,4 +1,4 @@
-import type { TenderlyAccount } from './types'
+import type { TenderlyAccount } from './account'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/createVnet */
 export type CreateVirtualTestnetOptions = {

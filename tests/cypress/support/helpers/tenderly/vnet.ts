@@ -1,13 +1,12 @@
 import { generatePrivateKey } from 'viem/accounts'
 import { createTestWagmiConfig } from '../wagmi'
+import { tenderlyAccount } from './account'
 import {
-  createVirtualTestnet,
-  deleteVirtualTestnet,
-  tenderlyAccount,
+  createVirtualTestnet as createVirtualTestnetRequest,
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
-  type DeleteVirtualTestnetOptions,
-} from './'
+} from './vnet-create'
+import { deleteVirtualTestnet as deleteVirtualTestnetRequest, type DeleteVirtualTestnetOptions } from './vnet-delete'
 
 export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
@@ -51,7 +50,7 @@ type DeepPartial<T> = {
  * })
  * ```
  */
-export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions>) {
+export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions>) {
   let vnet: CreateVirtualTestnetResponse
 
   before(() => {
@@ -76,7 +75,7 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
 
     const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
 
-    createVirtualTestnet({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
+    createVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
   })
 
   after(() => {
@@ -86,7 +85,7 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
       vnetId: vnet.id,
     }
 
-    deleteVirtualTestnet({ ...tenderlyAccount!, ...deleteOpts })
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, ...deleteOpts })
   })
 
   return () => vnet
