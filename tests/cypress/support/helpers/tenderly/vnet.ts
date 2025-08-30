@@ -1,14 +1,20 @@
 import { generatePrivateKey } from 'viem/accounts'
 import { createTestWagmiConfig } from '../wagmi'
 import { tenderlyAccount } from './account'
+import type { DeepPartial } from './types'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
 } from './vnet-create'
 import { deleteVirtualTestnet as deleteVirtualTestnetRequest, type DeleteVirtualTestnetOptions } from './vnet-delete'
+import {
+  getVirtualTestnet as getVirtualTestnetRequest,
+  type GetVirtualTestnetOptions,
+  type GetVirtualTestnetResponse,
+} from './vnet-get'
 
-export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse) {
+export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
   const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
 
@@ -22,17 +28,38 @@ export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse
 }
 
 /**
- * Creates a deep partial type that makes all properties optional recursively,
- * while preserving function types as-is
+ * Creates a Cypress test helper for getting virtual testnets using Tenderly.
  *
- * @template T - The type to make deeply partial
+ * @param opts - A function that returns configuration options for the virtual testnet
+ * @returns A function that returns the fetched virtual testnet response data
+ *
+ * @example
+ * ```typescript
+ * const getVirtualNetwork = withVirtualTestnet(() => ({ vnetid: 'your-vnet-id' }));
+ *
+ * it('should work with virtual testnet', () => {
+ *   const virtualNetwork = getVirtualNetwork()
+ *   // Use vnet in your test
+ * })
+ * ```
  */
-type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? (T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>) : T[P]
+export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
+  let vnet: GetVirtualTestnetResponse
+
+  before(() => {
+    if (!tenderlyAccount) {
+      cy.log('Tenderly credentials not configured, skipping virtual testnet fetching')
+      return
+    }
+
+    getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched))
+  })
+
+  return () => vnet
 }
 
 /**
- * Creates a Cypress test helper that manages a Tenderly virtual testnet lifecycle
+ * Creates a Cypress test helper that created and manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns testnet configuration options based on UUID
  * @returns Function that returns the created virtual testnet instance

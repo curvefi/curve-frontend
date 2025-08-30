@@ -1,12 +1,10 @@
 import type { TenderlyAccount } from './account'
+import type { TestnetProps } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/deleteVnets */
 export type DeleteVirtualTestnetOptions = {
-  /**
-   * Virtual TestNet ID obtained in creation (not the RPC link key)
-   * @example 50115ccc-c9ee-452d-986b-56af1b417b3f
-   * */
-  vnetId: string
+  /** @see {@link TestnetProps.id} for complete documentation */
+  vnetId: TestnetProps['id']
 }
 
 export function deleteVirtualTestnet({
