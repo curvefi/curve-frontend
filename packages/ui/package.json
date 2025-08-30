@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@carbon/icons-react": "^11.65.0",
-    "@lingui/detect-locale": "^5.4.1",
     "react-aria": "3.43.0",
     "react-stately": "3.41.0"
   },

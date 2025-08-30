@@ -5,7 +5,7 @@ import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/P
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { Paper, Stack, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatDate } from '@ui/utils/utilsFormat'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

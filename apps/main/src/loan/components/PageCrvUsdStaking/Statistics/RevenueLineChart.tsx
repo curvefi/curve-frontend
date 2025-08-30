@@ -4,7 +4,7 @@ import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatDate } from '@ui/utils/utilsFormat'
+import { formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { FontSize } = SizesAndSpaces

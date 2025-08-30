@@ -1,5 +1,7 @@
-import { MAX_USD_VALUE } from '@ui/utils'
 import { getUnitOptions, type Unit } from './units'
+
+// Sometimes API returns overflowed USD values. Don't show them!
+export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
 
 /** Locale used for consistent number formatting across the application */
 const LOCALE = 'en-US'
