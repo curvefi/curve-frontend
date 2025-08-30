@@ -27,11 +27,10 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const { usdPrice, chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
 
   const usdValue = usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
-  const usdTooltip =
-    usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD', showAllFractionDigits: true })
+  const usdTooltip = usdPrice != null && formatNumber(value * usdPrice, { currency: 'USD' })
   return (
     <Stack direction="column" spacing={1} alignItems="end">
-      <Tooltip title={`${formatNumber(value)} ${symbol}`}>
+      <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
         <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
           <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
           <TokenIcon blockchainId={chain} address={address} size="mui-md" />

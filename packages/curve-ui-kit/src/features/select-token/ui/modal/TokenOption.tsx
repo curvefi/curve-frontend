@@ -83,7 +83,7 @@ export const TokenOption = ({
           <Stack direction="column" alignItems="end">
             {hasBalance && (
               <Typography variant="bodyMBold" color={disabled ? 'textDisabled' : 'textPrimary'}>
-                {formatNumber(balance)}
+                {formatNumber(balance, { decimals: 5, trailingZeroDisplay: 'stripIfInteger' })}
               </Typography>
             )}
 

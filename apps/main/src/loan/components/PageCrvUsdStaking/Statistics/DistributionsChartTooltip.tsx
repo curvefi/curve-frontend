@@ -3,7 +3,7 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { Paper, Stack, Typography } from '@mui/material'
-import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
