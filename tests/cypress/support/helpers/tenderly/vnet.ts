@@ -2,11 +2,11 @@ import { generatePrivateKey } from 'viem/accounts'
 import { createTestWagmiConfig } from '../wagmi'
 import {
   createVirtualTestnet,
-  deleteVirtualTestnets,
+  deleteVirtualTestnet,
   tenderlyAccount,
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
-  type DeleteVirtualTestnetsOptions,
+  type DeleteVirtualTestnetOptions,
 } from './'
 
 export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse) {
@@ -82,11 +82,11 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
   after(() => {
     if (!vnet) return
 
-    const deleteOpts: DeleteVirtualTestnetsOptions = {
-      vnet_ids: [vnet.id],
+    const deleteOpts: DeleteVirtualTestnetOptions = {
+      vnetId: vnet.id,
     }
 
-    deleteVirtualTestnets({ ...tenderlyAccount!, ...deleteOpts })
+    deleteVirtualTestnet({ ...tenderlyAccount!, ...deleteOpts })
   })
 
   return () => vnet

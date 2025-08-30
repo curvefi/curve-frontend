@@ -4,7 +4,7 @@ export {
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
 } from './vnet-create'
-export { deleteVirtualTestnets, type DeleteVirtualTestnetsOptions } from './vnet-delete'
+export { deleteVirtualTestnet, type DeleteVirtualTestnetOptions } from './vnet-delete'
 export { withVirtualTestnet, createTestWagmiConfigFromVNet } from './vnet'
 
 const accountSlug = Cypress.env('TENDERLY_ACCOUNT_SLUG')

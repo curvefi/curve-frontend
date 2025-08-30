@@ -1,31 +1,34 @@
 import type { TenderlyAccount } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/deleteVnets */
-export type DeleteVirtualTestnetsOptions = {
-  vnet_ids: string[]
+export type DeleteVirtualTestnetOptions = {
+  /**
+   * Virtual TestNet ID obtained in creation (not the RPC link key)
+   * @example 50115ccc-c9ee-452d-986b-56af1b417b3f
+   * */
+  vnetId: string
 }
 
-export function deleteVirtualTestnets({
+export function deleteVirtualTestnet({
   accountSlug,
   projectSlug,
   accessKey,
-  ...deleteOptions
-}: TenderlyAccount & DeleteVirtualTestnetsOptions) {
+  vnetId,
+}: TenderlyAccount & DeleteVirtualTestnetOptions) {
   return cy
     .request({
       method: 'DELETE',
-      url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets`,
+      url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
       headers: {
         'Content-Type': 'application/json',
         'X-Access-Key': accessKey,
       },
-      body: deleteOptions,
       failOnStatusCode: false,
     })
     .then((response) => {
       if (!response.isOkStatusCode) {
         throw new Error(
-          `Failed to delete virtual testnets '${JSON.stringify(deleteOptions.vnet_ids)}': ${response.status} ${response.statusText}`,
+          `Failed to delete virtual testnet '${JSON.stringify(vnetId)}': ${response.status} ${response.statusText}`,
         )
       }
       return response
