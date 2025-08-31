@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { useMintMarketMaxLeverage } from '@/loan/entities/mint-market-max-leverage'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -37,7 +38,10 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs
   })
-
+  const { data: maxLeverage, isLoading: isMarketMaxLeverageLoading } = useMintMarketMaxLeverage({
+    chainId,
+    marketId: llammaId,
+  })
   const { rate: averageRate, rebasingYield: averageRebasingYield } = useMemo(
     () =>
       calculateAverageRates(crvUsdSnapshots, averageMultiplier, {
@@ -86,6 +90,10 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
           (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
         : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
+    },
+    maxLeverage: {
+      value: maxLeverage ? Number(maxLeverage?.value) : null,
+      loading: isMarketMaxLeverageLoading,
     },
     availableLiquidity: {
       value: loanDetails?.capAndAvailable?.available ? Number(loanDetails.capAndAvailable.available) : null,

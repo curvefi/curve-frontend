@@ -15,8 +15,15 @@ type MarketParams = FieldsOf<MarketQuery>
 const _getMintMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<{ value: string }> => {
   const api = requireLib('llamaApi')
   const market = api.getMintMarket(marketId)
-  const maxLeverage = market.leverageV2.hasLeverage() ? await market.leverageV2.maxLeverage(market?.minBands) : ''
-  return { value: maxLeverage }
+  const hasMaxLeverage = market.leverageV2.hasLeverage()
+
+  if (hasMaxLeverage) {
+    const v2MaxLeverage = await market.leverageV2.maxLeverage(market?.minBands)
+    return { value: v2MaxLeverage }
+  }
+
+  const v1MaxLeverage = await market.leverage.maxLeverage(market?.minBands)
+  return { value: v1MaxLeverage }
 }
 
 export const { useQuery: useMintMarketMaxLeverage } = queryFactory({
