@@ -11,6 +11,7 @@ import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -153,15 +154,13 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       })
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
-      const resp = await repayFn(
-        activeKey,
-        provider,
-        llamma,
-        formValues.collateral,
-        maxSlippage,
-        llamma.controller,
-        networks[chainId].id,
+      const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
+        networks[chainId].id,
+        llamma.controller,
+        resp.hash,
       )
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true

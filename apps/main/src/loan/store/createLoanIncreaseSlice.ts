@@ -11,6 +11,7 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -216,15 +217,13 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
       const borrowMoreFn = networks[chainId].api.loanIncrease.borrowMore
 
       // re-fetch max
-      const resp = await borrowMoreFn(
-        activeKey,
-        provider,
-        llamma,
-        collateral,
-        debt,
-        llamma.controller,
-        networks[chainId].id,
+      const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
+        networks[chainId].id,
+        llamma.controller,
+        resp.hash,
       )
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 

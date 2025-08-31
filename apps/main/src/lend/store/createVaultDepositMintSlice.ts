@@ -11,6 +11,7 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -172,13 +173,13 @@ const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepos
       // api calls
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.deposit : apiLending.vaultMint.mint
       const { amount } = formValues
-      const resp = await fn(
-        activeKey,
-        provider,
-        market,
-        amount,
+      const resp = await fn(activeKey, provider, market, amount)
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
         networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

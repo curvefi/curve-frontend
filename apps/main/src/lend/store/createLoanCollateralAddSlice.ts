@@ -11,6 +11,7 @@ import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -170,8 +171,14 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
         provider,
         market,
         formValues.collateral,
+      )
+
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
         networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

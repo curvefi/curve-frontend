@@ -14,8 +14,6 @@ import {
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const network = {
@@ -553,9 +551,6 @@ const loanCreate = {
     debt: string,
     n: number,
     maxSlippage: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
   ) => {
     log('loanCreate', llamma.collateralSymbol, isLeverage ? 'isLeverage' : '', collateral, debt, n, maxSlippage)
     const resp = { activeKey, hash: '', error: '' }
@@ -564,7 +559,6 @@ const loanCreate = {
         ? await llamma.leverage.createLoan(collateral, debt, n, +maxSlippage)
         : await llamma.createLoan(collateral, debt, n)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -666,16 +660,7 @@ const loanIncrease = {
       return resp
     }
   },
-  borrowMore: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    collateral: string,
-    debt: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  borrowMore: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string, debt: string) => {
     const parsedCollateral = collateral || '0'
     const parsedDebt = debt || '0'
     log('borrowMore', llamma.collateralSymbol, parsedCollateral, parsedDebt)
@@ -684,7 +669,6 @@ const loanIncrease = {
     try {
       resp.hash = await llamma.borrowMore(parsedCollateral, parsedDebt)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -753,23 +737,13 @@ const loanDecrease = {
       return resp
     }
   },
-  repay: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    debt: string,
-    isFullRepay: boolean,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  repay: async (activeKey: string, provider: Provider, llamma: Llamma, debt: string, isFullRepay: boolean) => {
     log('repay', llamma.collateralSymbol, isFullRepay, debt)
     const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = isFullRepay ? await llamma.fullRepay() : await llamma.repay(debt)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -840,20 +814,12 @@ const loanLiquidate = {
       return resp
     }
   },
-  liquidate: async (
-    provider: Provider,
-    llamma: Llamma,
-    slippage: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  liquidate: async (provider: Provider, llamma: Llamma, slippage: string) => {
     log('selfLiquidate', llamma.collateralSymbol, slippage)
     const resp = { hash: '', error: '' }
     try {
       resp.hash = await llamma.selfLiquidate(+slippage)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -922,22 +888,13 @@ const collateralIncrease = {
       return resp
     }
   },
-  addCollateral: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    collateral: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  addCollateral: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     log('addCollateral', llamma.collateralSymbol, collateral)
     const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.addCollateral(collateral)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1008,22 +965,13 @@ const collateralDecrease = {
       },
     }
   },
-  removeCollateral: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    collateral: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  removeCollateral: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string) => {
     log('removeCollateral', llamma.collateralSymbol, collateral)
     const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.removeCollateral(collateral)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1121,9 +1069,6 @@ const swap = {
     llamma: Llamma,
     formValues: SwapFormValues,
     maxSlippage: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
   ) => {
     const { item1Key, item2Key, item1 } = formValues
     log('swap', llamma.collateralSymbol, item1Key, item2Key, item1, maxSlippage)
@@ -1132,7 +1077,6 @@ const swap = {
     try {
       resp.hash = await llamma.swap(+item1Key, +item2Key, item1, +maxSlippage)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1222,23 +1166,13 @@ const loanDeleverage = {
       return { activeKey, resp }
     }
   },
-  repay: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    collateral: string,
-    maxSlippage: string,
-    controller: string,
-    chain: Chain,
-    userAddress: string,
-  ) => {
+  repay: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('deleverageRepay', llamma.collateralSymbol, collateral, maxSlippage)
     const resp = { activeKey, hash: '', error: '' }
 
     try {
       resp.hash = await llamma.deleverage.repay(collateral, +maxSlippage)
       await helpers.waitForTransaction(resp.hash, provider)
-      void _updateUserEventsApi(resp.hash, controller, chain, userAddress).catch(console.error)
       return resp
     } catch (error) {
       console.error(error)
@@ -1265,10 +1199,3 @@ const crvusdjsApi = {
 }
 
 export default crvusdjsApi
-
-/**
- * Prompt the API to update using the tx hash after a user action
- */
-async function _updateUserEventsApi(hash: string, controller: string, chain: Chain, userAddress: string) {
-  await getUserMarketCollateralEvents(userAddress, chain, controller, hash)
-}

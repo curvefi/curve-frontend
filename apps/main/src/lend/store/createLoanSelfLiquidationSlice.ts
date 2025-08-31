@@ -11,6 +11,7 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 
@@ -168,12 +169,13 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       })
 
       // api calls
-      const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(
-        provider,
-        market,
-        maxSlippage,
+      const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
         networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
       )
 
       if (resp) {

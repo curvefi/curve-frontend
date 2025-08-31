@@ -11,6 +11,7 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -179,14 +180,13 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
       })
       const chainId = curve.chainId as ChainId
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
-      const resp = await addCollateralFn(
-        activeKey,
-        provider,
-        llamma,
-        formValues.collateral,
-        llamma.controller,
-        networks[chainId].id,
+      const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      // update user events api
+      void getUserMarketCollateralEvents(
         wallet?.account.address ?? '',
+        networks[chainId].id,
+        llamma.controller,
+        resp.hash,
       )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
