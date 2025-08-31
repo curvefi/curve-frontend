@@ -18,7 +18,7 @@ const titleVariants = {
 const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
-type Props = {
+type AccordionProps = {
   /** The title displayed in the accordion header */
   title: ReactNode
   /** Optional icon to display before the title */
@@ -35,6 +35,8 @@ type Props = {
   children?: ReactNode
 }
 
+type ControlledAccordionProps = Omit<AccordionProps, 'defaultExpanded'> & { isOpen: boolean; toggle: () => void }
+
 /**
  * A customized accordion component that provides a collapsible content section.
  *
@@ -45,16 +47,24 @@ type Props = {
  * particularly for features like the ghost variant and responsive sizing with
  * appropriate effects on children elements.
  */
-export const Accordion = ({
+export const Accordion = (props: AccordionProps) => {
+  const [isOpen, , , toggle] = useSwitch(props.defaultExpanded)
+  return <ControlledAccordion isOpen={isOpen} toggle={toggle} {...props} />
+}
+
+/**
+ * A controlled version of the Accordion component where the open state is managed externally.
+ */
+export const ControlledAccordion = ({
   title,
   icon,
   ghost = false,
   size = 'small',
   info,
-  defaultExpanded = false,
   children,
-}: Props) => {
-  const [isOpen, , , toggle] = useSwitch(defaultExpanded)
+  toggle,
+  isOpen,
+}: ControlledAccordionProps) => {
   const id = `accordion-${useId()}`
 
   return (

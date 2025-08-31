@@ -55,6 +55,8 @@ export type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  /** Error state; Unused for now, but kept for future use */
+  error?: boolean | Error | null
   testId?: string
   sx?: SxProps
 }
