@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useMarketOnChainRates, useMarketPricePerShare } from '@/lend/entities/market-details'
 import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
+import { useUserSupplyBoost } from '@/lend/entities/user-supply-boost'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -30,6 +31,10 @@ export const useSupplyPositionDetails = ({
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
     chainId: chainId,
+    marketId,
+  })
+  const { data: userSupplyBoost, isLoading: isUserSupplyBoostLoading } = useUserSupplyBoost({
+    chainId,
     marketId,
   })
   const { data: onChainRates, isLoading: isOnChainRatesLoading } = useMarketOnChainRates({
@@ -130,6 +135,10 @@ export const useSupplyPositionDetails = ({
       averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
       extraRewards: campaignRewards,
       loading: islendingSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
+    },
+    boost: {
+      value: userSupplyBoost?.boost ? Number(userSupplyBoost.boost) : null,
+      loading: isUserSupplyBoostLoading,
     },
     shares: {
       value: userBalances?.vaultShares ? Number(userBalances.vaultShares) + Number(userBalances.gauge) : null,

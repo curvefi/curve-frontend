@@ -35,8 +35,6 @@ type Shares = {
   staked: number | undefined | null
   loading: boolean
 }
-
-// TODO: add when we have boost in llamalend-js
 type Boost = {
   value: number | undefined | null
   loading: boolean
@@ -54,9 +52,10 @@ export type SupplyPositionDetailsProps = {
   supplyAPY: SupplyAPY
   shares: Shares
   supplyAsset: SupplyAsset
+  boost: Boost
 }
 
-export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const maxApy =
     (supplyAPY?.rate ?? 0) + (supplyAPY?.supplyAprCrvMinBoost ?? 0) + (supplyAPY?.supplyAprCrvMaxBoost ?? 0)
 
@@ -151,6 +150,13 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset }: Supply
             arrow: false,
             clickable: true,
           }}
+        />
+        <Metric
+          size="medium"
+          label={t`veCRV Boost`}
+          value={boost?.value}
+          loading={boost?.value == null && boost?.loading}
+          valueOptions={{ unit: 'multiplier' }}
         />
       </Box>
     </Box>
