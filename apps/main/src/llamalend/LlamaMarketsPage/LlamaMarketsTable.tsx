@@ -33,7 +33,7 @@ const migration: MigrationOptions<ColumnFiltersState> = {
   version: 1,
   // migration from v0 to v1: remove default liquidity filter
   migrate: (oldValue, initialValue) => [
-    ...initialValue.filter((i) => oldValue.find((o) => o.id === i.id)),
+    ...initialValue.filter((i) => !oldValue.some((o) => o.id === i.id)),
     ...oldValue.filter((o) => !isEqual(o, { id: LlamaMarketColumnId.LiquidityUsd, value: [10000, null] })),
   ],
 }
