@@ -225,7 +225,7 @@ const convertMintMarket = (
     debtCeiling,
     liquidityUsd: borrowable,
     tvl: collateralAmountUsd,
-    totalDebtUsd: borrowed * stablecoin_price,
+    totalDebtUsd: borrowedUsd,
     totalCollateralUsd: collateralAmountUsd,
     rates: {
       borrow: rate * 100,
