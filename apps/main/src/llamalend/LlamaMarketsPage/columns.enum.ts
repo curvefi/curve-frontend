@@ -16,7 +16,7 @@ export enum LlamaMarketColumnId {
   IsFavorite = 'isFavorite',
   Rewards = 'rewards',
   TVL = 'tvl',
-  TotalDebt = 'totalDebtUsd',
-  TotalCollateralUsd = 'totalCollateralUsd',
+  TotalDebt = 'assets.borrowed.balanceUsd',
+  TotalCollateralUsd = 'assets.collateral.balanceUsd',
   Type = 'type',
 }

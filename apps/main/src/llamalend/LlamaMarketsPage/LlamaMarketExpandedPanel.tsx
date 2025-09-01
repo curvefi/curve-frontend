@@ -63,19 +63,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
   // todo: update metric component(?) to show the errors when appropriate
   const { data: earnings, error: earningsError } = useUserMarketStats(market, LlamaMarketColumnId.UserEarnings)
   const { data: deposited, error: depositedError } = useUserMarketStats(market, LlamaMarketColumnId.UserDeposited)
-  const {
-    address,
-    assets,
-    leverage,
-    liquidityUsd,
-    type,
-    url,
-    userHasPositions,
-    utilizationPercent,
-    tvl,
-    totalCollateralUsd,
-    totalDebtUsd,
-  } = market
+  const { address, assets, leverage, liquidityUsd, type, url, userHasPositions, utilizationPercent, tvl } = market
   const graphSize = useMobileGraphSize()
 
   const UnitMapping = {
@@ -124,10 +112,10 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric label={t`Available Liquidity`} value={liquidityUsd} valueOptions={{ unit: 'dollar' }} />
         </Grid>
         <Grid size={6}>
-          <Metric label={t`Total Debt`} value={totalDebtUsd} valueOptions={{ unit: 'dollar' }} />
+          <Metric label={t`Total Debt`} value={assets.borrowed.balanceUsd} valueOptions={{ unit: 'dollar' }} />
         </Grid>
         <Grid size={6}>
-          <Metric label={t`Total Collateral`} value={totalCollateralUsd} valueOptions={{ unit: 'dollar' }} />
+          <Metric label={t`Total Collateral`} value={assets.collateral.balanceUsd} valueOptions={{ unit: 'dollar' }} />
         </Grid>
         <Grid size={6}>
           <Metric label={t`TVL`} value={tvl} valueOptions={{ unit: 'dollar' }} />

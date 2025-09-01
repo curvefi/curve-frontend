@@ -42,8 +42,6 @@ export type LlamaMarket = {
   utilizationPercent: number
   liquidityUsd: number
   tvl: number
-  totalDebtUsd: number
-  totalCollateralUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
     lend: number | null // lendApr + CRV unboosted + yield from collateral
@@ -130,8 +128,6 @@ const convertLendingVault = (
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
-    totalDebtUsd: totalDebtUsd,
-    totalCollateralUsd: collateralBalanceUsd + borrowedBalanceUsd,
     tvl:
       borrowedBalanceUsd + // collateral converted to crvusd
       collateralBalanceUsd + // collateral
@@ -230,8 +226,6 @@ const convertMintMarket = (
     debtCeiling,
     liquidityUsd: borrowable,
     tvl: collateralAmountUsd,
-    totalDebtUsd: borrowed * stablecoin_price,
-    totalCollateralUsd: collateralAmountUsd,
     rates: {
       borrow: rate * 100,
       lend: null,
