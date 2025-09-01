@@ -5,13 +5,14 @@ import { getLlamaMarket } from '../llama.util'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 export const { useQuery: useBorrowHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, range }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverage, range }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'max-borrow-receive',
       { userCollateral },
       { userBorrowed },
       { debt },
+      { leverage },
       { range },
     ] as const,
   queryFn: async ({
@@ -19,9 +20,11 @@ export const { useQuery: useBorrowHealth } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
+    leverage,
     range,
   }: BorrowFormQuery): Promise<number> => {
     const [market, type] = getLlamaMarket(poolId)
+    if (!leverage) return +(await market.createLoanHealth(userCollateral, debt, range))
     if (type === LlamaMarketType.Lend) {
       return +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
     }

@@ -7,21 +7,24 @@ import { getLlamaMarket } from '../llama.util'
 type BorrowPriceImpactResult = number // percentage
 
 export const { useQuery: useBorrowPriceImpact } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0, leverage }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-price-impact',
       { userCollateral },
       { userBorrowed },
       { debt },
+      { leverage },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
+    leverage,
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
     const [market, type] = getLlamaMarket(poolId)
+    if (!leverage) return 0 // todo: do we have price impact without leverage?
     // todo: check if it's correct to pass userCollateral to the old markets and userBorrowed to the new ones
     return type === LlamaMarketType.Lend
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))

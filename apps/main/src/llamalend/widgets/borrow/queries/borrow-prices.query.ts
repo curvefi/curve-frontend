@@ -13,7 +13,7 @@ type BorrowPricesResult = [number, number]
 const convertNumbers = (prices: string[]): BorrowPricesResult => [+prices[0], +prices[1]]
 
 export const { useQuery: useBorrowPrices } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, range }: BorrowPricesReceiveParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0, range }: BorrowPricesReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-prices',

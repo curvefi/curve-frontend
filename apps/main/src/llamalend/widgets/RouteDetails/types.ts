@@ -1,4 +1,4 @@
-import { ChainId } from '@/lend/types/lend.types'
+import type { NetworkEnum } from '@/llamalend/llamalend.types'
 
 export type Hop = {
   hops: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[][]
@@ -13,16 +13,16 @@ export type Route = {
 
 export type BreakdownItem = { $opacity?: boolean; $isTotal?: boolean; $minWidth?: string }
 
-export type DetailInfoLeverageExpectedProps = BreakdownItem & {
-  rChainId: ChainId
+export type RouteDetailsProps = BreakdownItem & {
+  network: NetworkEnum
   loading: boolean
   swapFrom: { address: string; symbol: string } | undefined
-  swapFromAmounts: { value: string; label: string }[]
+  swapFromAmounts: { value: string | number; label: string }[]
   swapTo: { address: string; symbol: string } | undefined
-  swapToAmounts: (string | undefined)[]
-  nonSwapAmount: { value: string | undefined; label: string }
-  total: string | undefined
-  avgPrice: string | undefined
-  routeImage: string | null
+  swapToAmounts: (string | number | undefined)[]
+  nonSwapAmount: { value: number | string | undefined; label: string }
+  total: number | string | undefined
+  avgPrice: number | string | undefined
+  routeImage: string | null | undefined
   type: 'collateral' | 'borrowed'
 }

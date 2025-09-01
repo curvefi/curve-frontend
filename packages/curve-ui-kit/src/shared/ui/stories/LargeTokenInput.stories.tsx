@@ -73,6 +73,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
     <LargeTokenInput
       {...props}
       ref={inputRef}
+      name="amount"
       maxBalance={maxBalance}
       tokenSelector={
         <TokenSelector

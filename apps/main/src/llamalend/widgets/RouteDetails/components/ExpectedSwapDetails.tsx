@@ -1,17 +1,19 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { sum } from 'lodash'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import RouteLine from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteLine'
-import RouteToken from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/RouteToken'
-import type { DetailInfoLeverageExpectedProps, Hop } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import type { RouteDetailsProps, Hop } from '../types'
+import RouteLine from './RouteLine'
+import RouteToken from './RouteToken'
 
 const stateDefault = { height: '34px', data: [] as Hop[] }
 
+const _getTotal = (amounts: (string | number | undefined)[]) => sum(amounts.map((val) => +(val ?? '0')))
+
 const ExpectedSwapDetails = ({
-  rChainId,
+  network: networkId,
   label,
   loading,
   swapFromSymbol,
@@ -22,10 +24,7 @@ const ExpectedSwapDetails = ({
   swapToAmounts,
   routeImage,
   avgPrice,
-}: Pick<
-  DetailInfoLeverageExpectedProps,
-  'rChainId' | 'swapFromAmounts' | 'swapToAmounts' | 'routeImage' | 'avgPrice'
-> & {
+}: Pick<RouteDetailsProps, 'network' | 'swapFromAmounts' | 'swapToAmounts' | 'routeImage' | 'avgPrice'> & {
   label: ReactNode
   loading: boolean
   swapFromSymbol: string
@@ -35,8 +34,6 @@ const ExpectedSwapDetails = ({
 }) => {
   const routesRef = useRef<HTMLDivElement>(null)
   const [{ height, data }, setData] = useState<{ height: string; data: Hop[] }>(stateDefault)
-
-  const networkId = networks[rChainId].id
 
   useEffect(() => {
     setData((prev) => ({ ...stateDefault, height: prev.height }))
@@ -138,10 +135,3 @@ const Footer = styled.footer`
 `
 
 export default ExpectedSwapDetails
-
-function _getTotal(amounts: (string | undefined)[]) {
-  return amounts.reduce((prev, curr) => {
-    prev += +(curr ?? '0')
-    return prev
-  }, 0)
-}

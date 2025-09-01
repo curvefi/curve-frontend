@@ -1,22 +1,14 @@
 import { CB } from 'vest-utils'
 import type { UseQueryOptions } from '@tanstack/react-query'
-import { QueryKey, useQuery } from '@tanstack/react-query'
-import { QueryFunctionContext, queryOptions } from '@tanstack/react-query'
+import { QueryFunctionContext, QueryKey, queryOptions, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { QueryFactoryInput, QueryFactoryOutput } from '@ui-kit/lib/types'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
-export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(
-  queryKey: TKey,
-  assertValidity: (data: TParams, fields?: TField[]) => TQuery,
-) {
-  const queryParams = Object.fromEntries(
-    queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : [])),
-  ) as TParams
-  return assertValidity(queryParams)
-}
+export const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey) =>
+  Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
 export const createQueryHook =
   <TParams, TData, TQueryKey extends QueryKey>(
@@ -58,8 +50,7 @@ export function queryFactory<
 
   const queryFn = ({ queryKey }: QueryFunctionContext<TKey>) => {
     logQuery(queryKey)
-    const params = getParamsFromQueryKey(queryKey, assertValidity)
-    return runQuery(params)
+    return runQuery(getParamsFromQueryKey(queryKey))
   }
 
   const getQueryOptions = (params: TParams, enabled = true) =>

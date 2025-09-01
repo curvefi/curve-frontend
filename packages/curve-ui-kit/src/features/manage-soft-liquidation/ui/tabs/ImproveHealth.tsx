@@ -76,6 +76,7 @@ export const ImproveHealth = ({
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
         label={t`Debt to repay`}
+        name="debtBalance"
         tokenSelector={
           <TokenLabel
             blockchainId={debtToken?.chain}

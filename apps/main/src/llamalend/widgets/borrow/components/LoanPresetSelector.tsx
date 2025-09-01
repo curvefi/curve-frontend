@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Button from '@mui/material/Button'
@@ -10,12 +11,6 @@ export enum LoanPreset {
   MaxSafety = 'MaxSafety',
   MaxBorrow = 'MaxBorrow',
   Advanced = 'Advanced',
-}
-
-interface LoanPresetSelectorProps {
-  preset: LoanPreset | undefined
-  setPreset: (value: LoanPreset) => void
-  setRange: (value: number) => void
 }
 
 const PRESETS = {
@@ -42,18 +37,22 @@ const PRESETS = {
   },
 }
 
-const titles = {
-  [LoanPreset.MaxSafety]: t`Max Safety`,
-  [LoanPreset.MaxBorrow]: t`Max Borrow`,
-  [LoanPreset.Advanced]: t`Advanced`,
-}
-
 const { Spacing } = SizesAndSpaces
 
-export const LoanPresetSelector = ({ preset, setPreset, setRange }: LoanPresetSelectorProps) => (
+export const LoanPresetSelector = ({
+  preset,
+  setPreset,
+  setRange,
+  children,
+}: {
+  preset: LoanPreset | undefined
+  setPreset: (value: LoanPreset) => void
+  setRange: (value: number) => void
+  children: ReactNode
+}) => (
   <Stack gap={Spacing.sm}>
     <Stack direction="row">
-      {Object.values(LoanPreset).map((p) => (
+      {Object.values(LoanPreset).map((p, _, all) => (
         <Button
           key={p}
           // todo: we need to implement button toggle colors & actual toggle component
@@ -62,12 +61,13 @@ export const LoanPresetSelector = ({ preset, setPreset, setRange }: LoanPresetSe
             setPreset(p)
             setRange(PRESETS[p].range)
           }}
-          sx={{ flexGrow: 1 }}
+          sx={{ flexGrow: 1, '&': { lineHeight: '1rem' } }} // force lineHeight, otherwise when the text wraps it looks bad
         >
           {PRESETS[p].title}
         </Button>
       ))}
     </Stack>
+    {children}
     {preset && (
       <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
         <AlertTitle>{PRESETS[preset].title}</AlertTitle>

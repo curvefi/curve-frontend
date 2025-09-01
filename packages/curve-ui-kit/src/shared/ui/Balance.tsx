@@ -2,6 +2,7 @@ import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalance
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { SxProps } from '@ui-kit/utils'
 
@@ -54,18 +55,21 @@ const MaxButton = ({ children, underline, sx, onClick }: MaxButtonProps) => (
 type BalanceTextProps = {
   symbol: string
   balance?: number
+  loading?: boolean
 }
 
-const BalanceText = ({ symbol, balance }: BalanceTextProps) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center">
-    <Typography className="balance" variant="highlightS" color={balance != null ? 'textPrimary' : 'textTertiary'}>
-      {formatNumber(balance)}
-    </Typography>
+const BalanceText = ({ symbol, balance, loading = false }: BalanceTextProps) => (
+  <WithSkeleton loading={loading}>
+    <Stack direction="row" gap={Spacing.xs} alignItems="center">
+      <Typography className="balance" variant="highlightS" color={balance != null ? 'textPrimary' : 'textTertiary'}>
+        {formatNumber(balance)}
+      </Typography>
 
-    <Typography variant="highlightS" color="textPrimary">
-      {symbol}
-    </Typography>
-  </Stack>
+      <Typography variant="highlightS" color="textPrimary">
+        {symbol}
+      </Typography>
+    </Stack>
+  </WithSkeleton>
 )
 
 /**
@@ -89,18 +93,20 @@ export type Props = {
   sx?: SxProps
   /** Callback function when max button/balance is clicked */
   onMax?: (maxValue: number) => void
+  /** Whether the balance is loading */
+  loading?: boolean
 }
 
-export const Balance = ({ symbol, max, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
+export const Balance = ({ symbol, max, loading, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline={true} onClick={() => onMax?.(balance)}>
-        <BalanceText symbol={symbol} balance={balance} />
+        <BalanceText symbol={symbol} balance={balance} loading={loading} />
       </MaxButton>
     ) : (
-      <BalanceText symbol={symbol} balance={balance} />
+      <BalanceText symbol={symbol} balance={balance} loading={loading} />
     )}
 
     {notionalValue && (

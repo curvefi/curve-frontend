@@ -1,4 +1,4 @@
-import { type BorrowForm, type BorrowFormQueryParams, DEFAULT_SLIPPAGE } from '@/llamalend/widgets/borrow/borrow.types'
+import { type BorrowForm, type BorrowFormQueryParams, type Token } from '@/llamalend/widgets/borrow/borrow.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
@@ -16,12 +16,12 @@ import { useBorrowPrices } from '../queries/borrow-prices.query'
 
 export const BorrowActionInfoAccordion = ({
   params,
-  values: { range, slippage },
+  values: { range, slippage, leverage },
   collateralToken,
 }: {
   params: BorrowFormQueryParams
   values: BorrowForm
-  collateralToken: { symbol: string; address: string } | undefined
+  collateralToken: Token | undefined
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const {
@@ -43,14 +43,18 @@ export const BorrowActionInfoAccordion = ({
   } = useMaxBorrowReceive(params, isOpen)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params)
 
-  const { totalCollateral, leverage } = expectedCollateral ?? {}
+  const { totalCollateral } = expectedCollateral ?? {}
   const { avgPrice, maxLeverage } = maxBorrowReceive ?? {}
+  const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
 
   return (
     <ControlledAccordion
       title={t`Health`}
       info={
-        <Typography sx={{ ...(health && { color: (t) => getHealthValueColor(health, t) }) }}>
+        <Typography
+          sx={{ ...(health && { color: (t) => getHealthValueColor(health, t) }) }}
+          data-testid={JSON.stringify(params)}
+        >
           {healthLoading ? '...' : healthError ? '!' : health ? formatNumber(health) : '∞'}
         </Typography>
       }
@@ -60,22 +64,31 @@ export const BorrowActionInfoAccordion = ({
       <Stack>
         <ActionInfo
           label={t`Leverage`}
-          value={formatNumber(leverage)}
-          valueRight={maxLeverage && `max ${maxLeverage}`}
+          value={formatNumber(leverage, { defaultValue: '-', maximumFractionDigits: 0 })}
+          valueRight={
+            leverage != null && maxLeverage && ` (max ${formatNumber(maxLeverage, { maximumFractionDigits: 0 })})`
+          }
+          error={expectedCollateralError || maxBorrowReceiveError}
+          loading={expectedCollateralLoading || maxBorrowReceiveLoading}
+        />
+        <ActionInfo
+          label={t`Expected`}
+          value={formatNumber(totalCollateral, { showDecimalIfSmallNumberOnly: true })}
+          valueRight={collateralToken?.symbol}
           error={expectedCollateralError}
           loading={expectedCollateralLoading}
         />
-        <ActionInfo label={t`Expected`} value={formatNumber(totalCollateral)} valueRight={collateralToken?.symbol} />
         <ActionInfo
           label={t`Expected avg. price`}
-          value={formatNumber(avgPrice)}
+          value={formatNumber(avgPrice, { defaultValue: '-' })}
           error={maxBorrowReceiveError}
           loading={maxBorrowReceiveLoading}
         />
         <ActionInfo
-          label={t`Price Impact`}
-          value={formatNumber(priceImpactPercent)}
-          valueRight="%"
+          label={isHighImpact ? t`High price impact` : t`Price impact`}
+          value={formatNumber(priceImpactPercent, { defaultValue: '-' })}
+          valueRight={priceImpactPercent != null && '%'}
+          {...(isHighImpact && { valueColor: 'error' })}
           error={priceImpactPercentError}
           loading={priceImpactPercentLoading}
         />
@@ -97,7 +110,7 @@ export const BorrowActionInfoAccordion = ({
         {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
         <ActionInfo
           label={t`Slippage tolerance`}
-          value={formatNumber(slippage ?? DEFAULT_SLIPPAGE)}
+          value={formatNumber(slippage)}
           // todo: valueRight={<SettingsIcon />}
         />
       </Stack>

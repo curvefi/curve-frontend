@@ -37,7 +37,15 @@ const convertNumbers = ({
 })
 
 export const { useQuery: useBorrowExpectedCollateral } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, slippage }: BorrowFormQueryParams) =>
+  queryKey: ({
+    chainId,
+    poolId,
+    userBorrowed = 0,
+    userCollateral = 0,
+    debt,
+    leverage,
+    slippage,
+  }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-expected-collateral',
@@ -51,9 +59,20 @@ export const { useQuery: useBorrowExpectedCollateral } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt,
+    leverage: requestedLeverage,
     slippage,
   }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
     const [market, type] = getLlamaMarket(poolId)
+    if (!requestedLeverage) {
+      return {
+        totalCollateral: userCollateral,
+        leverage: 1,
+        userCollateral,
+        collateralFromUserBorrowed: 0,
+        collateralFromDebt: 0,
+        avgPrice: debt / userCollateral, // todo: is this even applicable without leverage?
+      }
+    }
     if (type === LlamaMarketType.Lend) {
       return convertNumbers(
         await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, slippage),

@@ -1,5 +1,6 @@
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery } from '../borrow.types'
@@ -11,8 +12,8 @@ type BorrowMaxReceiveParams = FieldsOf<BorrowMaxReceiveQuery>
 
 type BorrowMaxReceiveResult = {
   maxDebt: number
-  maxTotalCollateral: number
-  maxLeverage: number
+  maxTotalCollateral?: number
+  maxLeverage?: number
   userCollateral?: number
   collateralFromUserBorrowed?: number
   collateralFromMaxDebt?: number
@@ -28,8 +29,8 @@ const convertNumbers = ({
   collateralFromMaxDebt,
 }: { [K in keyof BorrowMaxReceiveResult]: string }): BorrowMaxReceiveResult => ({
   maxDebt: +maxDebt,
-  maxLeverage: +maxLeverage,
-  maxTotalCollateral: +maxTotalCollateral,
+  maxLeverage: maxLeverage == null ? undefined : +maxLeverage,
+  maxTotalCollateral: maxTotalCollateral == null ? undefined : +maxTotalCollateral,
   avgPrice: avgPrice == null ? undefined : +avgPrice,
   userCollateral: userCollateral == null ? undefined : +userCollateral,
   collateralFromUserBorrowed: collateralFromUserBorrowed == null ? undefined : +collateralFromUserBorrowed,
@@ -37,28 +38,37 @@ const convertNumbers = ({
 })
 
 export const maxReceiveValidation = createValidationSuite(
-  ({ chainId, userBorrowed, userCollateral, range }: BorrowMaxReceiveParams) => {
+  ({ chainId, userBorrowed, userCollateral, leverage, range, slippage }: BorrowMaxReceiveParams) => {
+    chainValidationGroup({ chainId })
     llamaApiValidationGroup({ chainId })
-    borrowFormValidationGroup({ userBorrowed, userCollateral, debt: undefined, range }, { debtRequired: false })
+    borrowFormValidationGroup(
+      { userBorrowed, userCollateral, debt: undefined, leverage, range, slippage },
+      { debtRequired: false },
+    )
   },
 )
 
 export const { useQuery: useMaxBorrowReceive } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, range }: BorrowMaxReceiveParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage, range }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'max-borrow-receive',
       { userBorrowed },
       { userCollateral },
+      { leverage },
       { range },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
+    leverage,
     range,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
     const [market, type] = getLlamaMarket(poolId)
+    if (!leverage) {
+      return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
+    }
     if (type === LlamaMarketType.Lend) {
       return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
@@ -67,11 +77,9 @@ export const { useQuery: useMaxBorrowReceive } = queryFactory({
     }
 
     console.assert(userBorrowed == 0, `userBorrowed must be 0 for non-leverage mint markets`)
-    const { maxBorrowable, maxCollateral, leverage, routeIdx } = await market.leverage.createLoanMaxRecv(
-      userCollateral,
-      range,
-    )
-    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage: leverage })
+    const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
+    const { maxBorrowable, maxCollateral, leverage: maxLeverage, routeIdx } = result
+    return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage })
   },
   staleTime: '1m',
   validationSuite: maxReceiveValidation,

@@ -1,16 +1,17 @@
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { useAccount, useBalance } from 'wagmi'
+import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { formDefaultOptions } from '@ui-kit/lib/model'
-import { type Address, CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { type BorrowForm, type BorrowFormQueryParams, DEFAULT_RANGE_SIMPLE_MODE } from './borrow.types'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { type BorrowForm, DEFAULT_RANGE_SIMPLE_MODE, DEFAULT_SLIPPAGE } from './borrow.types'
 import { useMaxBorrowReceive } from './queries/borrow-max-receive.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
+import { useUserBalances } from './queries/user-balances.query'
 
 type UseBorrowFormParams = {
   chainId: IChainId
@@ -50,14 +51,16 @@ const getTokens = (market: MintMarketTemplate | LendMarketTemplate, chain: Netwo
       }
 
 export function useBorrowForm({ market, chainId, network: chain }: UseBorrowFormParams) {
-  const { address: address } = useAccount()
+  const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
     resolver: vestResolver(borrowFormValidationSuite),
     defaultValues: {
-      userBorrowed: 0,
       userCollateral: undefined,
+      userBorrowed: 0,
       debt: undefined,
+      leverage: undefined,
+      slippage: DEFAULT_SLIPPAGE,
       range: DEFAULT_RANGE_SIMPLE_MODE,
     },
   })
@@ -67,15 +70,10 @@ export function useBorrowForm({ market, chainId, network: chain }: UseBorrowForm
   }, [])
 
   const isPending = form.formState.isSubmitting
-  const values = form.getValues()
-  const params: BorrowFormQueryParams = { chainId, poolId: market.id, ...values }
-  if (!params.range) console.trace('no range set', { params, values })
-  const tokens = getTokens(market, chain)
-  const collateralBalance = useBalance({
-    address,
-    token: tokens.collateralToken.address as Address,
-    chainId,
-  })
+  const values = form.watch()
+
+  const params = { chainId, poolId: market.id, userAddress, ...values }
+  const { borrowToken, collateralToken } = getTokens(market, chain)
   return {
     form,
     values,
@@ -83,7 +81,8 @@ export function useBorrowForm({ market, chainId, network: chain }: UseBorrowForm
     isPending: isPending,
     onSubmit: form.handleSubmit(onSubmit),
     maxBorrow: useMaxBorrowReceive(params),
-    collateralBalance: collateralBalance?.data ? +collateralBalance.data.formatted : undefined,
-    ...tokens,
+    balances: useUserBalances(params),
+    borrowToken,
+    collateralToken,
   }
 }

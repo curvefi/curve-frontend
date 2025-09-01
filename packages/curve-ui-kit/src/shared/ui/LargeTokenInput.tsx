@@ -38,13 +38,15 @@ type BalanceTextFieldProps = {
   maxBalance?: number
   isError: boolean
   onCommit: (balance: number | undefined) => void
+  name: string
 }
 
-const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, name, isError, onCommit }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
     value={balance}
+    name={name}
     fullWidth
     slotProps={{
       input: {
@@ -80,7 +82,7 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol'>> & {
+type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol' | 'loading'>> & {
   showBalance?: boolean
   showSlider?: boolean
 }
@@ -122,11 +124,19 @@ type Props = {
   /** Optional label explaining what the input is all about. */
   label?: string
 
+  /** Name attribute for the input element, useful for form handling and identification. */
+  name: string
+
   /**
    * Whether the input is in an error state.
    * @default false
    */
   isError?: boolean
+
+  /**
+   * WHether
+   */
+  isLoading?: boolean
 
   /**
    * Number of decimal places to round balance values to when calculating from percentage.
@@ -147,6 +157,7 @@ export const LargeTokenInput = ({
   maxBalance,
   message,
   label,
+  name,
   isError = false,
   balanceDecimals = 4,
   onBalance,
@@ -244,6 +255,7 @@ export const LargeTokenInput = ({
         <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
+            name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onCommit={handleBalanceChange}

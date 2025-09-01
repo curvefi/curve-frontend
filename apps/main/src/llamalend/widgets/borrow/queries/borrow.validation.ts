@@ -1,10 +1,11 @@
 import { enforce, group, test } from 'vest'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { type BorrowForm, RANGE_MAX_SAFETY, RANGE_MAX_BORROW, type BorrowFormQueryParams } from '../borrow.types'
 
 export const borrowFormValidationGroup = (
-  { userBorrowed, userCollateral, debt, range }: FieldsOf<BorrowForm>,
+  { userBorrowed, userCollateral, debt, leverage, range, slippage }: FieldsOf<BorrowForm>,
   { debtRequired = true }: { debtRequired?: boolean } = {},
 ) =>
   group('borrowFormValidationGroup', () => {
@@ -19,6 +20,14 @@ export const borrowFormValidationGroup = (
         enforce(debt).isNumeric().gte(0)
       }
     })
+    test('leverage', 'Leverage should be a number greater than or equal to 1', () => {
+      if (leverage != null) {
+        enforce(leverage).isNumeric().gte(1)
+      }
+    })
+    test('slippage', 'Slippage should be a number between 0 and 100', () => {
+      enforce(slippage).isNumeric().gte(0).lte(100)
+    })
     test('range', `Range should be number between ${RANGE_MAX_BORROW} and ${RANGE_MAX_SAFETY}`, () => {
       if (!range) console.trace('range is', range)
       enforce(range).isNumeric().gte(RANGE_MAX_BORROW).lte(RANGE_MAX_SAFETY)
@@ -28,8 +37,9 @@ export const borrowFormValidationGroup = (
 export const borrowFormValidationSuite = createValidationSuite(borrowFormValidationGroup)
 
 export const borrowQueryValidationSuite = createValidationSuite(
-  ({ chainId, userBorrowed, userCollateral, debt, range }: BorrowFormQueryParams) => {
+  ({ chainId, userBorrowed, userCollateral, debt, range, slippage }: BorrowFormQueryParams) => {
+    chainValidationGroup({ chainId })
     llamaApiValidationGroup({ chainId })
-    borrowFormValidationGroup({ userBorrowed, userCollateral, debt, range }, { debtRequired: true })
+    borrowFormValidationGroup({ userBorrowed, userCollateral, debt, range, slippage }, { debtRequired: true })
   },
 )
