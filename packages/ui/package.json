@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@carbon/icons-react": "^11.65.0",
-    "react-aria": "3.43.0",
+    "react-aria": "3.43.1",
     "react-stately": "3.41.0"
   },
   "devDependencies": {
