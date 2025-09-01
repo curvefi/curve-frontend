@@ -67,7 +67,7 @@ export function useBorrowForm({ market, chainId, network: chain, preset }: UseBo
   })
 
   const onSubmit = useCallback((data: BorrowForm) => {
-    console.log('TODO: create mutation query', data)
+    console.error('mutation query not implemented', data)
   }, [])
 
   const isPending = form.formState.isSubmitting

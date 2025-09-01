@@ -521,7 +521,6 @@ const loanCreate = {
     let resp: MaxRecvLeverageForm = { maxBorrowable: '', maxCollateral: '', leverage: '', routeIdx: null }
     try {
       resp = await llamma.leverage.createLoanMaxRecv(collateral, n)
-      console.log(resp)
       return { activeKey, resp, error: '' }
     } catch (error) {
       console.error(error)
