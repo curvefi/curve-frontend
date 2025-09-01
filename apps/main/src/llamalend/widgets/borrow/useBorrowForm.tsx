@@ -8,7 +8,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { type BorrowForm, DEFAULT_RANGE_SIMPLE_MODE, DEFAULT_SLIPPAGE } from './borrow.types'
+import { BORROW_PRESET_RANGES, type BorrowForm, BorrowPreset, DEFAULT_SLIPPAGE } from './borrow.types'
 import { useMaxBorrowReceive } from './queries/borrow-max-receive.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { useUserBalances } from './queries/user-balances.query'
@@ -17,6 +17,7 @@ type UseBorrowFormParams = {
   chainId: IChainId
   market: MintMarketTemplate | LendMarketTemplate
   network: NetworkEnum
+  preset: BorrowPreset
 }
 
 const getTokens = (market: MintMarketTemplate | LendMarketTemplate, chain: NetworkEnum) =>
@@ -50,7 +51,7 @@ const getTokens = (market: MintMarketTemplate | LendMarketTemplate, chain: Netwo
         },
       }
 
-export function useBorrowForm({ market, chainId, network: chain }: UseBorrowFormParams) {
+export function useBorrowForm({ market, chainId, network: chain, preset }: UseBorrowFormParams) {
   const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
@@ -61,7 +62,7 @@ export function useBorrowForm({ market, chainId, network: chain }: UseBorrowForm
       debt: undefined,
       leverage: undefined,
       slippage: DEFAULT_SLIPPAGE,
-      range: DEFAULT_RANGE_SIMPLE_MODE,
+      range: BORROW_PRESET_RANGES[preset],
     },
   })
 

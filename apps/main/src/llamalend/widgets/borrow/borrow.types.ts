@@ -17,10 +17,21 @@ export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
   debt: number | undefined
 }
 
-export const [RANGE_MAX_BORROW, DEFAULT_RANGE_SIMPLE_MODE, RANGE_MAX_SAFETY] = [4, 10, 50] as const
 export const DEFAULT_SLIPPAGE = 0.1 as const
 
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
 export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
 
 export type Token = { symbol: string; address: string; chain: NetworkEnum }
+
+export enum BorrowPreset {
+  Safe = 'Safe',
+  MaxLtv = 'MaxLtv',
+  Custom = 'Custom',
+}
+
+export const BORROW_PRESET_RANGES = {
+  [BorrowPreset.Safe]: 50,
+  [BorrowPreset.MaxLtv]: 4,
+  [BorrowPreset.Custom]: 10,
+}

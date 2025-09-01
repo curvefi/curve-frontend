@@ -2,7 +2,7 @@ import { enforce, group, test } from 'vest'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { type BorrowForm, RANGE_MAX_SAFETY, RANGE_MAX_BORROW, type BorrowFormQueryParams } from '../borrow.types'
+import { BORROW_PRESET_RANGES, type BorrowForm, type BorrowFormQueryParams } from '../borrow.types'
 
 export const borrowFormValidationGroup = (
   { userBorrowed, userCollateral, debt, leverage, range, slippage }: FieldsOf<BorrowForm>,
@@ -28,9 +28,9 @@ export const borrowFormValidationGroup = (
     test('slippage', 'Slippage should be a number between 0 and 100', () => {
       enforce(slippage).isNumeric().gte(0).lte(100)
     })
-    test('range', `Range should be number between ${RANGE_MAX_BORROW} and ${RANGE_MAX_SAFETY}`, () => {
-      if (!range) console.trace('range is', range)
-      enforce(range).isNumeric().gte(RANGE_MAX_BORROW).lte(RANGE_MAX_SAFETY)
+    const { MaxLtv, Safe } = BORROW_PRESET_RANGES
+    test('range', `Range should be number between ${MaxLtv} and ${Safe}`, () => {
+      enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
     })
   })
 
