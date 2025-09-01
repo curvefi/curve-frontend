@@ -3,7 +3,8 @@ on: [push]
 env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
-
+permissions:
+    contents: read
 jobs:
   lint:
     timeout-minutes: 6
@@ -19,6 +20,19 @@ jobs:
       - run: yarn lint
       - run: yarn format:check
       - run: yarn typecheck
+  test:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn test
+        working-directory: tests
   cypress:
     strategy:
       fail-fast: false

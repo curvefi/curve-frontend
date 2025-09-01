@@ -68,14 +68,16 @@ export const MarketBorrowRateTooltipContent = ({
         </TooltipItems>
       )}
 
-      <TooltipItems>
-        <TooltipItem variant="primary" title={t`Total borrow rate`}>
-          {formatPercent(totalBorrowRate ?? 0)}
-        </TooltipItem>
-        <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-          {totalAverageBorrowRate ? formatPercent(totalAverageBorrowRate) : 'N/A'}
-        </TooltipItem>
-      </TooltipItems>
+      {(rebasingYield || extraRewards.length > 0) && (
+        <TooltipItems>
+          <TooltipItem variant="primary" title={t`Total borrow rate`}>
+            {formatPercent(totalBorrowRate ?? 0)}
+          </TooltipItem>
+          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+            {totalAverageBorrowRate ? formatPercent(totalAverageBorrowRate) : 'N/A'}
+          </TooltipItem>
+        </TooltipItems>
+      )}
     </Stack>
   </TooltipWrapper>
 )
