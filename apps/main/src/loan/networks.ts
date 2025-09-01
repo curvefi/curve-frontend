@@ -43,7 +43,7 @@ export const { networks, networksIdMapper } = Object.entries(networksConfig).red
       chainId,
     }
     mapper.networks[chainId] = networkConfig
-    mapper.networksIdMapper[networkConfig.networkId as NetworkEnum] = chainId
+    mapper.networksIdMapper[networkConfig.id] = chainId
     return mapper
   },
   {

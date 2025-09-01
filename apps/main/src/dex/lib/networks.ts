@@ -407,9 +407,9 @@ const createNetworkDef = ({
   logoSrcDark,
   showRouterSwap,
 }: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
-  id: id as NetworkEnum,
+  id,
   name,
-  chainId: chainId as ChainId,
+  chainId,
   explorerUrl,
   isTestnet,
   symbol,
