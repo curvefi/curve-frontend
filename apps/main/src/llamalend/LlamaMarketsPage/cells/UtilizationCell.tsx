@@ -99,7 +99,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
 export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
   <UtilizationTooltip market={row.original}>
     <Stack gap={Spacing.xs}>
-      {getValue().toFixed(2) + '%'}
+      {formatNumber(getValue(), { style: 'percent' })}
       <LinearProgress percent={getValue()} size="medium" />
     </Stack>
   </UtilizationTooltip>

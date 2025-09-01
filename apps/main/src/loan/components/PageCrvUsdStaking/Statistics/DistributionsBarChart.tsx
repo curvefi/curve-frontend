@@ -2,7 +2,7 @@ import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveCo
 import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatNumber, formatDate } from '@ui/utils/utilsFormat'
+import { formatNumber, formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import DistributionsChartTooltip from './DistributionsChartTooltip'
 const { FontSize } = SizesAndSpaces

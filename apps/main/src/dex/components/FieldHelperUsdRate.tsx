@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import Chip from '@ui/Typography/Chip'
-import { BN, formatNumber, formatNumberUsdRate } from '@ui/utils'
+import { BN, formatNumber } from '@ui/utils'
 
 const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: number | undefined }) => {
   const usdRateTotal = useMemo(() => {
@@ -16,7 +16,7 @@ const FieldHelperUsdRate = ({ amount, usdRate }: { amount: string; usdRate: numb
 
   return (
     <StyledChip size="xs">
-      x {usdRate && formatNumberUsdRate(usdRate, true)} ≈
+      x {usdRate && formatNumber(usdRate, { currency: 'USD', defaultValue: '-' })} ≈
       {formatNumber(usdRateTotal, { currency: 'USD', defaultValue: '-' })}
     </StyledChip>
   )
