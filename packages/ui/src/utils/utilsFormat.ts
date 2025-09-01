@@ -35,7 +35,7 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
 
 /** Wrapper function to keep the PR small. In the future all calls to this function should be replaced with a direct call to the new number formatter. */
 export function formatNumber(val: number | string | undefined | null, options?: NumberFormatOptions | undefined) {
-  if (val === undefined) return options?.defaultValue ?? '-'
+  if (val == null) return options?.defaultValue ?? '-'
 
   const unit =
     options?.style === 'currency' || options?.currency === 'USD'
