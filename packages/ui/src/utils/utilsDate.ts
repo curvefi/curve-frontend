@@ -50,31 +50,26 @@ export const convertTimeAgo = (input: Date | number | string) => {
  *
  * @returns A formatted date string adjusted for the local timezone.
  */
-export const formatDate = (date: Date | string, variant: 'short' | 'long' = 'short') => {
-  if (typeof date === 'string') {
-    // `date` is a string when coming from query cache
-    date = new Date(date)
-  }
-  if (variant === 'short') {
-    // example: 31/01/25 adjusted for local timezone
-    return new Intl.DateTimeFormat(undefined, {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric',
-    }).format(date)
-    // long
-  } else {
-    // example: 31 January, 12:00 AM adjusted for local timezone
-    return new Intl.DateTimeFormat(undefined, {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true,
-    }).format(date)
-  }
-}
+export const formatDate = (date: Date | string, variant: 'short' | 'long' = 'short') =>
+  new Intl.DateTimeFormat(
+    undefined,
+    variant === 'short'
+      ? {
+          // short - example: 31/01/25 adjusted for local timezone
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+        }
+      : {
+          // long - example: 31 January, 12:00 AM adjusted for local timezone
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        },
+  ).format(typeof date === 'string' ? new Date(date) : date)
 
 /**
  * Converts a Unix timestamp to a formatted date string.
@@ -84,10 +79,7 @@ export const formatDate = (date: Date | string, variant: 'short' | 'long' = 'sho
  *
  * @see {@link formatDate} for formatting the resulting timestamp into human-readable strings
  */
-export const formatDateFromTimestamp = (unixTime: number) => {
-  const date = new Date(unixTime * 1000)
-  return formatDate(date)
-}
+export const formatDateFromTimestamp = (unixTime: number) => formatDate(new Date(unixTime * 1000))
 
 /**
  * Converts a Unix timestamp to a locale-adjusted timestamp by accounting for the local timezone offset.
