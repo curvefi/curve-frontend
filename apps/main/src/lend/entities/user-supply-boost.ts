@@ -10,19 +10,14 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 type UserBoostQuery = ChainQuery<ChainId> & { marketId: string }
 type UserBoostParams = FieldsOf<UserBoostQuery>
 
-const _fetchUserSupplyBoost = async ({ marketId }: UserBoostQuery): Promise<{ boost: string | null }> => {
+const _fetchUserSupplyBoost = async ({ marketId }: UserBoostQuery): Promise<number | null> => {
   const api = requireLib('llamaApi')
   if (!api.signerAddress) {
-    return {
-      boost: null,
-    }
+    return null
   }
   const market = api.getLendMarket(marketId)
-  const boost = await market.userBoost(api.signerAddress)
 
-  return {
-    boost,
-  }
+  return +market.userBoost(api.signerAddress)
 }
 
 export const { useQuery: useUserSupplyBoost, invalidate: invalidateUserSupplyBoost } = queryFactory({

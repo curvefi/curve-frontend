@@ -137,7 +137,7 @@ export const useSupplyPositionDetails = ({
       loading: islendingSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
     },
     boost: {
-      value: userSupplyBoost?.boost ? Number(userSupplyBoost.boost) : null,
+      value: userSupplyBoost,
       loading: isUserSupplyBoostLoading,
     },
     shares: {
