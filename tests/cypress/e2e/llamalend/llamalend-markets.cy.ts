@@ -92,7 +92,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
       cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.00%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0.00%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0%', LOAD_TIMEOUT)
     }
   })
 
@@ -139,7 +139,7 @@ describe(`LlamaLend Markets`, () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', 'Liquidity: $0 -'],
       ['tvl', 'TVL: $10,000 -'],
-      ['utilizationPercent', 'Utilization: 0.00% -'],
+      ['utilizationPercent', 'Utilization: 0% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
