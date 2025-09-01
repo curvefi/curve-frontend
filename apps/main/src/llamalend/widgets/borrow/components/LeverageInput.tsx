@@ -24,7 +24,7 @@ export const LeverageInput = ({
 }) => (
   <Stack direction="row" justifyContent="space-between" gap={Spacing.sm}>
     <FormControlLabel
-      sx={{ minWidth: 180, '& p': { textTransform: 'none' } }}
+      sx={{ minWidth: 180 }}
       label={
         <Stack gap={Spacing.sm}>
           <Typography variant="bodySBold">{t`Enable leverage`}</Typography>
