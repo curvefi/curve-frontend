@@ -49,26 +49,24 @@ export const maxReceiveValidation = createValidationSuite(
 )
 
 export const { useQuery: useMaxBorrowReceive } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage, range }: BorrowMaxReceiveParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, range }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'max-borrow-receive',
+      'max-borrow-receive-v1',
       { userBorrowed },
       { userCollateral },
-      { leverage },
       { range },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
-    leverage,
     range,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
     const [market, type] = getLlamaMarket(poolId)
-    if (!leverage) {
-      return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
-    }
+    // if (!leverage) {
+    //   return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
+    // }
     if (type === LlamaMarketType.Lend) {
       return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }

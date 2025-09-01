@@ -8,28 +8,28 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { DEFAULT_RANGE_SIMPLE_MODE, RANGE_MAX_BORROW, RANGE_MAX_SAFETY } from '../borrow.types'
 
 export enum LoanPreset {
-  MaxSafety = 'MaxSafety',
-  MaxBorrow = 'MaxBorrow',
-  Advanced = 'Advanced',
+  Safe = 'Safe',
+  MaxLtv = 'MaxLtv',
+  Custom = 'Custom',
 }
 
 const PRESETS = {
-  [LoanPreset.MaxSafety]: {
-    title: t`Max Safety`,
+  [LoanPreset.Safe]: {
+    title: t`Safe`,
     range: RANGE_MAX_SAFETY,
     description:
       t`Sets up your Llamalend loan to offer the maximum safety by spreading your liquidity across fewer bands. ` +
       `This does not protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
   },
-  [LoanPreset.MaxBorrow]: {
-    title: t`Max Borrow`,
+  [LoanPreset.MaxLtv]: {
+    title: t`Max LTV`,
     range: RANGE_MAX_BORROW,
     description:
       t`Sets up your Llamalend loan to offer the maximum borrowing power by spreading your liquidity across more bands. ` +
       `This does not protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
   },
-  [LoanPreset.Advanced]: {
-    title: t`Advanced`,
+  [LoanPreset.Custom]: {
+    title: t`Custom`,
     range: DEFAULT_RANGE_SIMPLE_MODE,
     description:
       t`Allows you to manually set the range for your Llamalend loan. ` +

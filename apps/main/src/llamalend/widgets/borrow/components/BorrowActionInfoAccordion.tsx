@@ -1,4 +1,3 @@
-import { type BorrowForm, type BorrowFormQueryParams, type Token } from '@/llamalend/widgets/borrow/borrow.types'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
@@ -7,6 +6,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ControlledAccordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
@@ -28,7 +28,7 @@ export const BorrowActionInfoAccordion = ({
     data: expectedCollateral,
     isLoading: expectedCollateralLoading,
     error: expectedCollateralError,
-  } = useBorrowExpectedCollateral(params, isOpen)
+  } = useBorrowExpectedCollateral(params, isOpen && !!leverage)
   const {
     data: priceImpactPercent,
     isLoading: priceImpactPercentLoading,
@@ -64,7 +64,7 @@ export const BorrowActionInfoAccordion = ({
       <Stack>
         <ActionInfo
           label={t`Leverage`}
-          value={formatNumber(leverage, { defaultValue: '-', maximumFractionDigits: 0 })}
+          value={formatNumber(leverage, { defaultValue: '1', maximumFractionDigits: 0 })}
           valueRight={
             leverage != null && maxLeverage && ` (max ${formatNumber(maxLeverage, { maximumFractionDigits: 0 })})`
           }
@@ -100,7 +100,7 @@ export const BorrowActionInfoAccordion = ({
         />
         <ActionInfo
           label={t`Price range`}
-          value={prices ? `${formatNumber(prices[0])} - ${formatNumber(prices[1])}` : '?'}
+          value={prices?.map((p) => formatNumber(p, { maximumSignificantDigits: 3 })).join(' - ') ?? '?'}
           error={pricesError}
           loading={pricesLoading}
         />

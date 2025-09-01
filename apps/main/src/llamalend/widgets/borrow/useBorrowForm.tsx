@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
@@ -73,7 +73,7 @@ export function useBorrowForm({ market, chainId, network: chain }: UseBorrowForm
   const values = form.watch()
 
   const params = { chainId, poolId: market.id, userAddress, ...values }
-  const { borrowToken, collateralToken } = getTokens(market, chain)
+  const { borrowToken, collateralToken } = useMemo(() => getTokens(market, chain), [market, chain])
   return {
     form,
     values,

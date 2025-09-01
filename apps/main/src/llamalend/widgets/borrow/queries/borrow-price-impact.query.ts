@@ -1,8 +1,8 @@
-import { borrowQueryValidationSuite } from '@/llamalend/widgets/borrow/queries/borrow.validation'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowPriceImpactResult = number // percentage
 

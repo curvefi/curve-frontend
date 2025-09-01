@@ -13,13 +13,22 @@ type BorrowPricesResult = [number, number]
 const convertNumbers = (prices: string[]): BorrowPricesResult => [+prices[0], +prices[1]]
 
 export const { useQuery: useBorrowPrices } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0, range }: BorrowPricesReceiveParams) =>
+  queryKey: ({
+    chainId,
+    poolId,
+    userBorrowed = 0,
+    userCollateral = 0,
+    debt = 0,
+    leverage,
+    range,
+  }: BorrowPricesReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-prices',
       { userCollateral },
       { userBorrowed },
       { debt },
+      { leverage },
       { range },
     ] as const,
   queryFn: async ({
@@ -27,14 +36,17 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
+    leverage,
     range,
   }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
     const [market, type] = getLlamaMarket(poolId)
-    return type === LlamaMarketType.Lend
-      ? convertNumbers(await market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, range))
-      : market.leverageV2.hasLeverage()
-        ? convertNumbers(await market.leverageV2.createLoanPrices(userCollateral, userBorrowed, debt, range))
-        : convertNumbers(await market.leverage.createLoanPrices(userCollateral, debt, range))
+    return !leverage
+      ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
+      : type === LlamaMarketType.Lend
+        ? convertNumbers(await market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, range))
+        : market.leverageV2.hasLeverage()
+          ? convertNumbers(await market.leverageV2.createLoanPrices(userCollateral, userBorrowed, debt, range))
+          : convertNumbers(await market.leverage.createLoanPrices(userCollateral, debt, range))
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

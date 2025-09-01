@@ -52,6 +52,7 @@ export const { useQuery: useBorrowExpectedCollateral } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { debt },
+      { leverage },
       { slippage },
     ] as const,
   queryFn: async ({
@@ -64,14 +65,7 @@ export const { useQuery: useBorrowExpectedCollateral } = queryFactory({
   }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
     const [market, type] = getLlamaMarket(poolId)
     if (!requestedLeverage) {
-      return {
-        totalCollateral: userCollateral,
-        leverage: 1,
-        userCollateral,
-        collateralFromUserBorrowed: 0,
-        collateralFromDebt: 0,
-        avgPrice: debt / userCollateral, // todo: is this even applicable without leverage?
-      }
+      throw new Error(`Leverage is required to calculate expected collateral`)
     }
     if (type === LlamaMarketType.Lend) {
       return convertNumbers(
