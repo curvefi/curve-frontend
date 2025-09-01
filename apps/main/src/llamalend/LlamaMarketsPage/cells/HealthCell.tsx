@@ -8,6 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
@@ -24,7 +25,7 @@ export const HealthCell = ({ row }: CellContext<LlamaMarket, number>) => {
       placement="top"
     >
       <Stack gap={Spacing.xs}>
-        {health.toFixed(2)}
+        {formatNumber(health, { unit: 'percentage', abbreviate: false })}
         <HealthBar small health={health} softLiquidation={softLiquidation} />
       </Stack>
     </Tooltip>
