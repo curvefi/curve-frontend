@@ -72,14 +72,19 @@ export const MarketSupplyRateTooltipContent = ({
             />
           </TooltipItems>
         )}
-        <TooltipItems>
-          <TooltipItem variant="primary" title={t`Total APR`}>
-            {formatPercent(totalSupplyRateMinBoost)}
-          </TooltipItem>
-          <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
-            {totalAverageSupplyRateMinBoost ? formatPercent(totalAverageSupplyRateMinBoost) : 'N/A'}
-          </TooltipItem>
-        </TooltipItems>
+        {(rebasingYield ||
+          extraRewards.length + extraIncentivesFormatted.length > 0 ||
+          !!minBoostApr ||
+          !!maxBoostApr) && (
+          <TooltipItems>
+            <TooltipItem variant="primary" title={t`Total APR`}>
+              {formatPercent(totalSupplyRateMinBoost)}
+            </TooltipItem>
+            <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+              {totalAverageSupplyRateMinBoost ? formatPercent(totalAverageSupplyRateMinBoost) : 'N/A'}
+            </TooltipItem>
+          </TooltipItems>
+        )}
         {(minBoostApr ?? 0) > 0 && (
           <TooltipItems secondary>
             <TooltipItem variant="subItem" title={t`Extra CRV (veCRV Boost)`}>
