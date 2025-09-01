@@ -5,9 +5,10 @@ import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/P
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { Paper, Stack, Typography } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatDate } from '@ui/utils/utilsFormat'
+import { formatDate } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -30,6 +31,8 @@ const DataSet = ({
     <Typography variant="bodySBold">{value}</Typography>
   </Stack>
 )
+
+const format = (value: number) => formatNumber(value, { unit: 'percentage', abbreviate: false })
 
 const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {
   const {
@@ -57,19 +60,9 @@ const CustomTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) =
         direction="column"
         sx={{ marginTop: Spacing.sm, padding: Spacing.sm, gap: 1, backgroundColor: Layer[2].Fill }}
       >
-        <DataSet label={t`APY`} value={apyProjected.toFixed(2) + '%'} lineColor={Color.Primary[500]} />
-        <DataSet
-          label={t`7-day MA APY`}
-          value={proj_apy_7d_avg.toFixed(2) + '%'}
-          lineColor={Color.Secondary[500]}
-          dash="2 2"
-        />
-        <DataSet
-          label={t`Average APY`}
-          value={proj_apy_total_avg.toFixed(2) + '%'}
-          lineColor={Color.Tertiary[400]}
-          dash="4 4"
-        />
+        <DataSet label={t`APY`} value={format(apyProjected)} lineColor={Color.Primary[500]} />
+        <DataSet label={t`7-day MA APY`} value={format(proj_apy_7d_avg)} lineColor={Color.Secondary[500]} dash="2 2" />
+        <DataSet label={t`Average APY`} value={format(proj_apy_total_avg)} lineColor={Color.Tertiary[400]} dash="4 4" />
       </Stack>
     </Paper>
   )
