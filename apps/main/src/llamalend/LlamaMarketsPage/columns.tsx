@@ -94,7 +94,7 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.borrow', {
+  columnHelper.accessor('rates.borrowTotalApy', {
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
     cell: RateCell,
@@ -104,7 +104,7 @@ export const LLAMA_MARKET_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lend', {
+  columnHelper.accessor('rates.lendCrvAprUnboosted', {
     id: LlamaMarketColumnId.LendRate,
     header: headers[LlamaMarketColumnId.LendRate],
     cell: RateCell,
