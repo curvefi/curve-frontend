@@ -14,7 +14,7 @@ const BorrowRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const {
     rewards,
     type: marketType,
-    rates: { borrow: borrowRate, borrowTotalApy },
+    rates: { borrowApy: borrowRate, borrowTotalApy },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },

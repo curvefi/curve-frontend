@@ -8,7 +8,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import TooltipButton from '@ui/Tooltip'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Chip from '@ui/Typography/Chip'
-import { breakpoints, formatNumber, formatNumberUsdRate } from '@ui/utils'
+import { breakpoints, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -44,7 +44,7 @@ const CurrencyReservesContent = ({
         </TokenLabelLink>
 
         <Box flex flexAlignItems="center" gridGap={2}>
-          <Chip opacity={0.7}>{formatNumberUsdRate(cr?.usdRate)}</Chip>
+          <Chip opacity={0.7}>{formatNumber(cr?.usdRate, { currency: 'USD' })}</Chip>
           <TooltipButton clickable onClick={() => handleCopyClick(tokenAddress)} noWrap tooltip={t`Copy address`}>
             <Icon name="Copy" size={16} />
           </TooltipButton>

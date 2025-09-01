@@ -6,9 +6,12 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 const { cloneDeep } = lodash
@@ -140,7 +143,8 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
     fetchStepDecrease: async (activeKey, api, market) => {
       const { markets, user } = get()
       const { formStatus, formValues, ...sliceState } = get()[sliceKey]
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
 
       if (!provider) return setMissingProvider(get()[sliceKey])
 
@@ -157,6 +161,13 @@ const createLoanCollateralRemove = (_: SetState<State>, get: GetState<State>): L
         provider,
         market,
         formValues.collateral,
+      )
+      // update user events api
+      void getUserMarketCollateralEvents(
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
       )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {

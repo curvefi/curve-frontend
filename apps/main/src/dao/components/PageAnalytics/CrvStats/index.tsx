@@ -9,6 +9,7 @@ import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Metric } from '@ui-kit/shared/ui/Metric'
+import { formatNumber } from '@ui-kit/utils'
 import { Chain } from '@ui-kit/utils/network'
 
 const CrvStats = () => {
@@ -92,7 +93,9 @@ const CrvStats = () => {
             value={noProvider || !statsSuccess ? null : veCrvApr.current}
             valueOptions={{ unit: 'percentage', decimals: 2 }}
             notional={
-              loading || veCrvFeesLoading || aprLoading ? undefined : `${veCrvApr.fourDayAverage.toFixed(2)}% 4w avg`
+              loading || veCrvFeesLoading || aprLoading
+                ? undefined
+                : `${formatNumber(veCrvApr.fourDayAverage, { unit: 'percentage', abbreviate: false })} 4w avg`
             }
           />
         </MetricsContainer>

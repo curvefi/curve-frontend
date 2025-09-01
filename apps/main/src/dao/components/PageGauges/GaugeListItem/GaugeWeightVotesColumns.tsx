@@ -42,7 +42,7 @@ const GaugeWeightVotesColumns = ({ userGaugeWeightVoteData }: GaugeWeightVotesCo
                     maximumFractionDigits: 2,
                   })}
                 </strong>
-                {` (${calculateStaleVeCrvPercentage(userVeCrv, userFutureVeCrv).toFixed(2)}% increase)`}
+                {` (${formatNumber(calculateStaleVeCrvPercentage(userVeCrv, userFutureVeCrv), { style: 'percent' })} increase)`}
               </p>
             }
           >

@@ -13,7 +13,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
   const { averageRate, period, minBoostedAprAverage, maxBoostedAprAverage, isLoading } = useSnapshots(market, rateType) // important: only call this one tooltip is open!
   const {
     rates,
-    rates: { lend, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
+    rates: { lendTotalApyMinBoosted, lendApr, lendCrvAprUnboosted, lendCrvAprBoosted, lendTotalApyMaxBoosted },
     assets: { borrowed },
     rewards,
     type: marketType,
@@ -30,7 +30,7 @@ const LendRateTooltipContent = ({ market }: { market: LlamaMarket }) => {
       extraIncentives={rates.incentives}
       minBoostApr={lendCrvAprUnboosted}
       maxBoostApr={lendCrvAprBoosted}
-      totalSupplyRateMinBoost={lend}
+      totalSupplyRateMinBoost={lendTotalApyMinBoosted}
       totalSupplyRateMaxBoost={lendTotalApyMaxBoosted}
       totalAverageSupplyRateMinBoost={minBoostedAprAverage}
       totalAverageSupplyRateMaxBoost={maxBoostedAprAverage}

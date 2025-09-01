@@ -13,7 +13,7 @@ import { getEthPath } from '@/dao/utils'
 import { formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
-import { shortenAddress } from '@ui-kit/utils'
+import { formatNumber, shortenAddress } from '@ui-kit/utils'
 import { GAUGE_VOTES_LABELS } from '../constants'
 
 interface UserGaugeVotesTableProps {
@@ -64,7 +64,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
           <TableData
             className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {(gaugeVote.weight / 100).toFixed(2)}%
+            {formatNumber(gaugeVote.weight / 100, { unit: 'percentage', abbreviate: false })}
           </TableData>
           <TableDataLink href={getEthPath(`${DAO_ROUTES.PAGE_GAUGES}/${gaugeVote.gauge}`)} className="right-padding">
             {shortenAddress(gaugeVote.gauge)}

@@ -31,8 +31,8 @@ const TooltipComponents = {
 } as const
 
 const RateMapping = {
-  [MarketRateType.Supply]: 'lend',
-  [MarketRateType.Borrow]: 'borrow',
+  [MarketRateType.Supply]: 'lendTotalApyMinBoosted',
+  [MarketRateType.Borrow]: 'borrowTotalApy',
 } as const
 
 function useMobileGraphSize() {

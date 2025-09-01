@@ -3,7 +3,7 @@ import type { NameType, ValueType } from 'recharts/types/component/DefaultToolti
 import { styled } from 'styled-components'
 import type { Distribution } from '@curvefi/prices-api/revenue'
 import Box from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils/utilsFormat'
+import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 const FeesBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, NameType>) => {

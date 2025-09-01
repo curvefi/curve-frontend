@@ -11,6 +11,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { formatNumber } from '@ui-kit/utils'
 import VoteGaugeField from '../GaugeVoting/VoteGaugeField'
 import GaugeDetailsSm from './GaugeDetailsSm'
 import TitleComp from './TitleComp'
@@ -50,20 +51,23 @@ const SmallScreenCard = ({
 
   const getGaugeListSortingData = (key: string) => {
     if (key === 'gauge_relative_weight') {
-      return { title: t`Weight`, value: `${gaugeData.gauge_relative_weight.toFixed(2)}%` }
+      return {
+        title: t`Weight`,
+        value: formatNumber(gaugeData.gauge_relative_weight, { unit: 'percentage', abbreviate: false }),
+      }
     }
     if (key === 'gauge_relative_weight_7d_delta') {
       return {
         title: t`7d Delta`,
         value: gaugeData.gauge_relative_weight_7d_delta
-          ? `${gaugeData.gauge_relative_weight_7d_delta?.toFixed(2)}%`
+          ? formatNumber(gaugeData.gauge_relative_weight_7d_delta, { unit: 'percentage', abbreviate: false })
           : 'N/A',
       }
     }
     return {
       title: t`60d Delta`,
       value: gaugeData.gauge_relative_weight_60d_delta
-        ? `${gaugeData.gauge_relative_weight_60d_delta?.toFixed(2)}%`
+        ? formatNumber(gaugeData.gauge_relative_weight_60d_delta, { unit: 'percentage', abbreviate: false })
         : 'N/A',
     }
   }

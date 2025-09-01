@@ -23,7 +23,7 @@ type Props = {
   className?: string
 }
 
-const votePercentage = (vote: number, total: number) => `(${((vote / total) * 100).toFixed(2)}%)`
+const votePercentage = (vote: number, total: number) => `(${formatNumber((vote / total) * 100, { style: 'percent' })})`
 
 const VoteDialog = ({ userAddress, activeProposal, className, votingPower, proposalId, proposalType }: Props) => {
   const { data: proposalsMapper } = useProposalsMapperQuery({})

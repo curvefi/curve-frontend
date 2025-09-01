@@ -5,6 +5,7 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { MarketSupplyRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketSupplyRateTooltipContent'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
+import { formatNumber } from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
 import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
@@ -80,7 +81,9 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
           value={supplyAPY?.rate}
           loading={supplyAPY?.rate == null && supplyAPY?.loading}
           valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
-          notional={maxApy ? t`max Boost ${maxApy.toFixed(2)}%` : undefined}
+          notional={
+            maxApy ? t`max Boost ${formatNumber(maxApy, { unit: 'percentage', abbreviate: false })}` : undefined
+          }
           valueTooltip={{
             title: t`Supply Rate`,
             body: (

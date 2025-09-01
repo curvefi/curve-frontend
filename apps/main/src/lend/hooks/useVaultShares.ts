@@ -2,8 +2,14 @@ import { useEffect, useMemo } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import { FORMAT_OPTIONS, formatNumber, formatNumberWithPrecision } from '@ui/utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { formatNumber } from '@ui-kit/utils'
+
+function formatNumberWithPrecision(value: number, precisionDigits: number) {
+  const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
+  const decimals = precisionDigits - Math.min(precisionDigits, valueDigits)
+  return formatNumber(value, { abbreviate: false, decimals })
+}
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data
@@ -25,7 +31,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
 
       return {
         borrowedAmount: `${formatNumberWithPrecision(borrowedAmt, 6)} ${symbol}`,
-        borrowedAmountUsd: formatNumber(borrowedAmtUsd, FORMAT_OPTIONS.USD),
+        borrowedAmountUsd: formatNumber(borrowedAmtUsd, { unit: 'dollar', abbreviate: false }),
       }
     }
 

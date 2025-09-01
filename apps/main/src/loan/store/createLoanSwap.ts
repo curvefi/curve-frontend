@@ -6,6 +6,7 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -269,7 +270,7 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       formValues: FormValues,
       maxSlippage: string,
     ) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -280,6 +281,13 @@ const createLoanSwap = (set: SetState<State>, get: GetState<State>) => ({
       const chainId = curve.chainId as ChainId
       const swapFn = networks[chainId].api.swap.swap
       const resp = await swapFn(activeKey, provider, llamma, formValues, maxSlippage)
+      // update user events api
+      void getUserMarketCollateralEvents(
+        wallet?.account.address ?? '',
+        networks[chainId].id,
+        llamma.controller,
+        resp.hash,
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         void get().loans.fetchLoanDetails(curve, llamma)
