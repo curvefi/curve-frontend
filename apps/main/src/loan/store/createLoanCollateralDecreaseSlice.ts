@@ -12,6 +12,7 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getTokenName } from '@/loan/utils/utilsLoan'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -151,7 +152,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
 
     // steps
     fetchStepDecrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -162,6 +163,13 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       const chainId = curve.chainId as ChainId
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
+      // update user events api
+      void getUserMarketCollateralEvents(
+        wallet?.account.address ?? '',
+        networks[chainId].id,
+        llamma.controller,
+        resp.hash,
+      )
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists.loanExists) {

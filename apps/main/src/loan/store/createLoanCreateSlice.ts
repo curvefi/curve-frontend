@@ -18,6 +18,7 @@ import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -406,7 +407,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       maxSlippage: string,
     ) => {
       const chainId = curve.chainId as ChainId
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
@@ -418,6 +419,13 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       if (n !== null) {
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
+        // update user events api
+        void getUserMarketCollateralEvents(
+          wallet?.account.address ?? '',
+          networks[chainId].id,
+          llamma.controller,
+          resp.hash,
+        )
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({
