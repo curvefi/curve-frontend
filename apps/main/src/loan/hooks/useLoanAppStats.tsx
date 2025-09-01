@@ -62,6 +62,6 @@ export function useLoanAppStats(chainId: ChainId | undefined) {
       label: t`Total Supply`,
       value: formatNumber(crvusdTotalSupply?.total, { currency: 'USD', notation: 'compact' }),
     },
-    { label: 'crvUSD', value: formatNumber(crvusdPrice) || '' },
+    { label: 'crvUSD', value: formatNumber(crvusdPrice, { decimals: 5 }) || '' },
   ]
 }

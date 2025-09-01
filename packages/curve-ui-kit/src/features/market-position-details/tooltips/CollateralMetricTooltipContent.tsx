@@ -21,7 +21,7 @@ const formatPercentage = (
   totalValue: number | undefined | null,
   usdRate: number | undefined | null,
 ) => {
-  if (value === 0) return '0.00%'
+  if (value === 0) return '0%'
   if (value && totalValue && usdRate) {
     return formatNumber(((value * usdRate) / totalValue) * 100, {
       ...FORMAT_OPTIONS.PERCENT,

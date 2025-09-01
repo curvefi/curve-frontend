@@ -32,10 +32,11 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     return statsError && <ErrorCell error={statsError} />
   }
 
-  const usdValue = usdPrice && usdPrice * value
+  const usdValue = usdPrice && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
+  const usdTooltip = usdPrice && formatNumber(value * usdPrice, { currency: 'USD' })
   return (
     <Stack direction="column" spacing={1} alignItems="end">
-      <Tooltip title={`${formatNumber(value)} ${symbol}`}>
+      <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
         <WithSkeleton loading={isLoading}>
           <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
             <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>

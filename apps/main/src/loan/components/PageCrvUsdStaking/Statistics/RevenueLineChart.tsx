@@ -4,8 +4,9 @@ import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/
 import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
-import { formatDate } from '@ui/utils/utilsFormat'
+import { formatDate } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 
 const { FontSize } = SizesAndSpaces
 
@@ -39,7 +40,9 @@ const LineChartComponent = ({ data, height = 400 }: Props) => {
             />
             <YAxis
               tick={{ fill: gridTextColor, fontSize: FontSize.xs.desktop }}
-              tickFormatter={(value) => `${value.toFixed(0)}%`}
+              tickFormatter={(value) =>
+                `${formatNumber(value, { unit: 'percentage', abbreviate: false, decimals: 0 })}`
+              }
               tickLine={false}
               axisLine={false}
               dataKey={'apyProjected'}

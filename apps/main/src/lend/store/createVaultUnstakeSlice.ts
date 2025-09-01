@@ -7,8 +7,11 @@ import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/Page
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -98,7 +101,8 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
 
     // steps
     fetchStepUnstake: async (activeKey, formType, api, market, formValues) => {
-      const { provider } = useWallet.getState()
+      const { provider, wallet } = useWallet.getState()
+      const { chainId } = api
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -108,6 +112,13 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       // api calls
       const { amount } = formValues
       const resp = await apiLending.vaultUnstake.unstake(activeKey, provider, market, amount)
+      // update user events api
+      void getUserMarketCollateralEvents(
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
+      )
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api

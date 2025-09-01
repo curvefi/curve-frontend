@@ -16,6 +16,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
         <GaugeData className={`${gaugeListSortBy.key === 'gauge_relative_weight' ? 'bold' : ''}`}>
           {formatNumber(gaugeData.gauge_relative_weight, {
             notation: 'compact',
+            decimals: 5,
           })}
           %
         </GaugeData>
@@ -33,6 +34,7 @@ const GaugeListColumns = ({ gaugeData }: GaugeListColumnsProps) => {
           {gaugeData.gauge_relative_weight_7d_delta
             ? `${formatNumber(gaugeData.gauge_relative_weight_7d_delta, {
                 notation: 'compact',
+                decimals: 5,
               })}%`
             : 'N/A'}
         </GaugeData>

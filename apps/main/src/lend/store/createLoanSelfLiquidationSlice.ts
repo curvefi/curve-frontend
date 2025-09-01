@@ -7,8 +7,11 @@ import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import apiLending from '@/lend/lib/apiLending'
+import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
 
@@ -153,8 +156,8 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
     fetchStepLiquidate: async (api, market, liquidationAmt, maxSlippage) => {
       const { markets, user } = get()
       const { formStatus, ...sliceState } = get()[sliceKey]
-
-      const { provider } = useWallet.getState()
+      const { chainId } = api
+      const { provider, wallet } = useWallet.getState()
       if (!provider) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
@@ -167,6 +170,13 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
 
       // api calls
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
+      // update user events api
+      void getUserMarketCollateralEvents(
+        wallet?.account.address ?? '',
+        networks[chainId].name as Chain,
+        market.addresses.controller,
+        resp.hash,
+      )
 
       if (resp) {
         const loanExists = (await user.fetchUserLoanExists(api, market, true))?.loanExists

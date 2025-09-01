@@ -2006,13 +2006,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lingui/detect-locale@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@lingui/detect-locale@npm:5.4.1"
-  checksum: 10c0/671c091b6ebf45928c3a5979fccb135257a58eb8cc97d7fa84bc9ba92caa826cd313483b9ed7abd859c87041b7b2ec4243bf1271c4ab85e1ad4a55ea2aaae525
-  languageName: node
-  linkType: hard
-
 "@lit-labs/ssr-dom-shim@npm:^1.4.0":
   version: 1.4.0
   resolution: "@lit-labs/ssr-dom-shim@npm:1.4.0"
@@ -15409,7 +15402,6 @@ __metadata:
   resolution: "ui@workspace:packages/ui"
   dependencies:
     "@carbon/icons-react": "npm:^11.65.0"
-    "@lingui/detect-locale": "npm:^5.4.1"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     eslint: "npm:*"
