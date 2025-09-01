@@ -26,7 +26,7 @@ const SnapshotKeys = {
 } as const
 
 const RateKeys = {
-  [MarketRateType.Borrow]: 'borrow',
+  [MarketRateType.Borrow]: 'borrowApy',
   [MarketRateType.Supply]: 'lendApr',
 } as const
 

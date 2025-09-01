@@ -104,14 +104,14 @@ export const LLAMA_MARKET_COLUMNS = [
     },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.lendCrvAprUnboosted', {
+  columnHelper.accessor('rates.lendTotalApyMinBoosted', {
     id: LlamaMarketColumnId.LendRate,
     header: headers[LlamaMarketColumnId.LendRate],
     cell: RateCell,
     meta: { type: 'numeric', tooltip: createTooltip(LlamaMarketColumnId.LendRate, <LendRateHeaderTooltipContent />) },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor('rates.borrow', {
+  columnHelper.accessor('rates.borrowApy', {
     id: LlamaMarketColumnId.BorrowChart,
     header: headers[LlamaMarketColumnId.BorrowChart],
     cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
