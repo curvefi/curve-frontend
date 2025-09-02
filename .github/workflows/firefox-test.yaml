@@ -1,0 +1,62 @@
+name: CI
+on:
+  push:
+    branches:
+      - fix/firefox-e2e
+env:
+  DO_NOT_TRACK: 1
+  IBM_TELEMETRY_DISABLED: true
+permissions:
+    contents: read
+jobs:
+  cypress:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [firefox]
+        count: [01,02,03,04,05,06,07,08,09,10]
+    name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: npm install -g wait-on &
+
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn build
+
+      - name: Start dev server
+        run: yarn start 2>&1 | tee dev-server.log &
+        working-directory: apps/main
+
+      - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
+        working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+
+      - run: yarn run cy:run:component --browser ${{ matrix.browser }}
+        working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-main-${{ matrix.browser }}-${{ matrix.count }}
+          path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
+          if-no-files-found: error
+          path: apps/main/dev-server.log
