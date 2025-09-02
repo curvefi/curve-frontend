@@ -1,5 +1,6 @@
+import type { MakeOptional } from '@ui-kit/types/util'
 import type { TenderlyAccount } from './account'
-import type { MakeOptional, TestnetProps } from './types'
+import type { TestnetProps } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/createVnet */
 export type CreateVirtualTestnetOptions = Pick<TestnetProps, 'slug' | 'virtual_network_config' | 'sync_state_config'> &

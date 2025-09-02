@@ -1,8 +1,8 @@
 import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import { DeepPartial } from '@ui-kit/types/util'
 import { createTestWagmiConfig } from '../wagmi'
 import { tenderlyAccount } from './account'
-import type { DeepPartial } from './types'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,
   type CreateVirtualTestnetOptions,
