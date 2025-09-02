@@ -112,9 +112,9 @@ export const POOL_PRESETS: PRESETS = {
     },
   },
   4: {
-    name: 'Forex',
-    descriptionName: t`Forex`,
-    description: t`Suitable for forex pairs with low relative volatility`,
+    name: 'Low volatility',
+    descriptionName: t`Low volatility`,
+    description: t`Suitable for pairs with low relative volatility`,
     defaultParams: {
       ...fillerParams,
       midFee: '0.05',
