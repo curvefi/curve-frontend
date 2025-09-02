@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -136,7 +137,17 @@ const ActionInfo = ({
 
             <WithSkeleton loading={!!loading}>
               <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '?' : value}
+                {loading ? (
+                  typeof loading === 'string' ? (
+                    loading
+                  ) : (
+                    MOCK_SKELETON
+                  )
+                ) : error ? (
+                  <ExclamationTriangleIcon fontSize="small" />
+                ) : (
+                  value
+                )}
               </Typography>
             </WithSkeleton>
 
