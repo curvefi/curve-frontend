@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { type Ref, type ReactNode, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -10,7 +10,7 @@ import { TradingSlider } from './TradingSlider'
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type HelperMessageProps = {
-  message: string | React.ReactNode
+  message: string | ReactNode
   isError: boolean
 }
 
@@ -38,13 +38,15 @@ type BalanceTextFieldProps = {
   maxBalance?: number
   isError: boolean
   onCommit: (balance: number | undefined) => void
+  name: string
 }
 
-const BalanceTextField = ({ balance, isError, onCommit }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, name, isError, onCommit }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
     value={balance}
+    name={name}
     fullWidth
     slotProps={{
       input: {
@@ -80,18 +82,18 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol'>> & {
+type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol' | 'loading'>> & {
   showBalance?: boolean
   showSlider?: boolean
 }
 
 type Props = {
-  ref?: React.Ref<LargeTokenInputRef>
+  ref?: Ref<LargeTokenInputRef>
 
   /**
    * The token selector UI element to be rendered.
    *
-   * We've chosen to use React.ReactNode here to prevent coupling the relatively simple
+   * We've chosen to use ReactNode here to prevent coupling the relatively simple
    * LargeTokenInput component with the more complex SelectToken feature. This approach provides better composability,
    * allowing you to:
    *
@@ -104,7 +106,7 @@ type Props = {
    * Note: We'll likely create a new 'feature' component that combines this LargeTokenInput component with
    * a token selector and other required app interactions.
    */
-  tokenSelector: React.ReactNode
+  tokenSelector: ReactNode
 
   /**
    * Maximum balance configuration for the input.
@@ -117,10 +119,16 @@ type Props = {
    * Can also be used for displaying an error message.
    * Can be a string or a ReactNode for greater message customization and styling.
    */
-  message?: string | React.ReactNode
+  message?: string | ReactNode
 
   /** Optional label explaining what the input is all about. */
   label?: string
+
+  /** Name attribute for the input element, useful for form handling and identification. */
+  name: string
+
+  /** Optional test ID for testing purposes. */
+  testId?: string
 
   /**
    * Whether the input is in an error state.
@@ -147,9 +155,11 @@ export const LargeTokenInput = ({
   maxBalance,
   message,
   label,
+  name,
   isError = false,
   balanceDecimals = 4,
   onBalance,
+  testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
   const [balance, setBalance] = useState<number | undefined>(undefined)
@@ -225,6 +235,7 @@ export const LargeTokenInput = ({
 
   return (
     <Stack
+      data-testid={testId}
       gap={Spacing.xs}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
@@ -244,6 +255,7 @@ export const LargeTokenInput = ({
         <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             balance={balance}
+            name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onCommit={handleBalanceChange}

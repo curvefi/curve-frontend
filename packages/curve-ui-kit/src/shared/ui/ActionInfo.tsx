@@ -55,6 +55,8 @@ export type ActionInfoProps = {
   size?: ComponentSize
   /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
   loading?: boolean | string
+  /** Error state; Unused for now, but kept for future use */
+  error?: boolean | Error | null
   testId?: string
   sx?: SxProps
 }
@@ -93,6 +95,7 @@ const ActionInfo = ({
   copyValue,
   copiedTitle,
   loading = false,
+  error = false,
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
@@ -126,14 +129,14 @@ const ActionInfo = ({
           />
         )}
 
-        <Tooltip title={valueTooltip} placement="top">
+        <Tooltip title={(typeof error === 'object' && error?.message) || valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
 
             <WithSkeleton loading={!!loading}>
-              <Typography variant={valueSize[size]} color={valueColor ?? 'textPrimary'}>
-                {!loading ? value : typeof loading === 'string' ? loading : MOCK_SKELETON}
+              <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '?' : value}
               </Typography>
             </WithSkeleton>
 
