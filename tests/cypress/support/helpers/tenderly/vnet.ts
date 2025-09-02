@@ -8,7 +8,7 @@ import {
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
 } from './vnet-create'
-import { deleteVirtualTestnet as deleteVirtualTestnetRequest, type DeleteVirtualTestnetOptions } from './vnet-delete'
+import { deleteVirtualTestnet as deleteVirtualTestnetRequest } from './vnet-delete'
 import {
   forkVirtualTestnet as forkVirtualTestnetRequest,
   type ForkVirtualTestnetOptions,
@@ -105,12 +105,7 @@ export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateV
 
   after(() => {
     if (!vnet) return
-
-    const deleteOpts: DeleteVirtualTestnetOptions = {
-      vnetId: vnet.id,
-    }
-
-    deleteVirtualTestnetRequest({ ...tenderlyAccount!, ...deleteOpts })
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
   })
 
   return () => vnet
@@ -154,12 +149,7 @@ export function forkVirtualTestnet(
 
   after(() => {
     if (!vnet) return
-
-    const deleteOpts: DeleteVirtualTestnetOptions = {
-      vnetId: vnet.id,
-    }
-
-    deleteVirtualTestnetRequest({ ...tenderlyAccount!, ...deleteOpts })
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
   })
 
   return () => vnet
