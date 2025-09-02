@@ -97,7 +97,7 @@ export type Props = {
   loading?: boolean
 }
 
-export const Balance = ({ symbol, max, loading, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
+export const Balance = ({ symbol, max, loading = false, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
@@ -110,9 +110,11 @@ export const Balance = ({ symbol, max, loading, balance, notionalValue, hideIcon
     )}
 
     {notionalValue && (
-      <Typography variant="bodySRegular" color="textTertiary">
-        ${formatNumber(notionalValue)}
-      </Typography>
+      <WithSkeleton loading={loading}>
+        <Typography variant="bodySRegular" color="textTertiary">
+          ${formatNumber(notionalValue)}
+        </Typography>
+      </WithSkeleton>
     )}
 
     {max === 'button' && balance != null && (

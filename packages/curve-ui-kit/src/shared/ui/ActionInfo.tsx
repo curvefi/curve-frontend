@@ -92,7 +92,7 @@ const ActionInfo = ({
   link,
   size = 'medium',
   copy = false,
-  copyValue,
+  copyValue = value,
   copiedTitle,
   loading = false,
   error = false,
@@ -102,7 +102,7 @@ const ActionInfo = ({
   const [isOpen, open, close] = useSwitch(false)
 
   const handleCopyValue = () => {
-    void copyToClipboard(copyValue ?? value)
+    void copyToClipboard(copyValue)
     open()
   }
 
@@ -144,8 +144,8 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {copy && (
-          <IconButton size="extraSmall" onClick={handleCopyValue} color="primary">
+        {copy && copyValue?.trim() && (
+          <IconButton size="extraSmall" title={copyValue} onClick={handleCopyValue} color="primary">
             <ContentCopy />
           </IconButton>
         )}
