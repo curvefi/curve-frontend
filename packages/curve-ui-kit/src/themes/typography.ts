@@ -60,7 +60,7 @@ const variant = ({
   ...(letterSpacing !== '0%' && {
     marginRight: `calc(${letterSpacing} * -1)`,
   }),
-  textTransform: textCase,
+  textTransform: textCase ?? 'none',
   transition: `color ${TransitionFunction}, border ${TransitionFunction}`, // border is used in the chip, for example
   ...(!(fontSize in FontSize) && { fontSize }),
   ...(!(lineHeight in LineHeight) && { lineHeight }),
