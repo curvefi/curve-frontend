@@ -4,7 +4,7 @@ env:
   DO_NOT_TRACK: 1
   IBM_TELEMETRY_DISABLED: true
 permissions:
-    contents: read
+  contents: read
 jobs:
   lint:
     timeout-minutes: 6
@@ -20,6 +20,7 @@ jobs:
       - run: yarn lint
       - run: yarn format:check
       - run: yarn typecheck
+
   test:
     timeout-minutes: 5
     runs-on: ubuntu-latest
@@ -33,7 +34,50 @@ jobs:
       - run: yarn install --immutable
       - run: yarn test
         working-directory: tests
-  cypress:
+
+  cypress-component:
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox, electron]
+        count: [1]
+    name: Cypress component tests in ${{ matrix.browser }} ${{ matrix.count }}
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+
+      - run: yarn run cy:run:component --browser ${{ matrix.browser }}
+        working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+
+  cypress-component-rpc:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+
+      - run: yarn run cy:run:rpc --browser electron # rpc test are expensive, so we stick to electron
+        working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+
+  cypress-e2e:
     strategy:
       fail-fast: false
       matrix:
@@ -62,12 +106,6 @@ jobs:
         working-directory: apps/main
 
       - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
-        working-directory: tests
-        env:
-          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
-          NODE_ENV: test
-
-      - run: yarn run cy:run:component --browser ${{ matrix.browser }}
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
