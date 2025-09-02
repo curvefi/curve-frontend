@@ -7,7 +7,6 @@ import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
-import { toDate } from '@curvefi/prices-api/timestamp'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import { Items } from '@ui/Items'
@@ -55,7 +54,7 @@ const FormVecrv = () => {
     (lookupAddressIsSameAsSignerAddress && getIsLockExpired(lockedAmount, unlockTime)) ||
     parsedFormStatus.formTypeCompleted
   const lockedAmountDisplay = <strong>{formatNumber(lockedAmount, { defaultValue: '-' })}</strong>
-  const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(toDate(unlockTime / 1000), 'long')}</strong> : '-' //
+  const lockedLocalUtcDate = unlockTime ? <strong>{formatDate(unlockTime, 'long')}</strong> : '-' //
 
   const handleBtnClickWithdraw = useCallback(
     async (activeKey: string, curve: CurveApi, lockedAmount: string) => {
