@@ -31,13 +31,13 @@ export type ForkVirtualTestnetResponse = Pick<
   | 'rpcs'
 >
 
-export function forkVirtualTestnet({
+export const forkVirtualTestnet = ({
   accountSlug,
   projectSlug,
   accessKey,
   ...forkOptions
-}: TenderlyAccount & ForkVirtualTestnetOptions) {
-  return cy
+}: TenderlyAccount & ForkVirtualTestnetOptions) =>
+  cy
     .request({
       method: 'POST',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/fork`,
@@ -57,4 +57,3 @@ export function forkVirtualTestnet({
       }
       return response.body as ForkVirtualTestnetResponse
     })
-}

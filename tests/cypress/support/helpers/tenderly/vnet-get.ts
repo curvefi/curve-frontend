@@ -22,13 +22,13 @@ export type GetVirtualTestnetResponse = Pick<
   | 'rpcs'
 >
 
-export function getVirtualTestnet({
+export const getVirtualTestnet = ({
   accountSlug,
   projectSlug,
   accessKey,
   vnetId,
-}: TenderlyAccount & GetVirtualTestnetOptions) {
-  return cy
+}: TenderlyAccount & GetVirtualTestnetOptions) =>
+  cy
     .request({
       method: 'GET',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
@@ -45,4 +45,3 @@ export function getVirtualTestnet({
       }
       return response.body as GetVirtualTestnetResponse
     })
-}

@@ -7,13 +7,13 @@ export type DeleteVirtualTestnetOptions = {
   vnetId: TestnetProps['id']
 }
 
-export function deleteVirtualTestnet({
+export const deleteVirtualTestnet = ({
   accountSlug,
   projectSlug,
   accessKey,
   vnetId,
-}: TenderlyAccount & DeleteVirtualTestnetOptions) {
-  return cy
+}: TenderlyAccount & DeleteVirtualTestnetOptions) =>
+  cy
     .request({
       method: 'DELETE',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets/${vnetId}`,
@@ -31,4 +31,3 @@ export function deleteVirtualTestnet({
       }
       return response
     })
-}
