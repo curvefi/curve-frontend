@@ -7,6 +7,7 @@ export type Market = {
   llamma: Address
   rate: number
   borrowed: number
+  borrowedUsd: number
   borrowable: number
   collateralAmount: number
   collateralAmountUsd: number
@@ -96,7 +97,7 @@ export type Keeper = {
 /** More specifically, the markets where a user holds a position */
 export type UserMarkets = {
   collateral: string
-  controller: string
+  controller: Address
   snapshotFirst: Date
   snapshotLast: Date
 }[]
