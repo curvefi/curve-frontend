@@ -1,6 +1,5 @@
 import { CB } from 'vest-utils'
-import type { UseQueryOptions } from '@tanstack/react-query'
-import { QueryFunctionContext, QueryKey, queryOptions, useQuery } from '@tanstack/react-query'
+import { QueryFunctionContext, queryOptions, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
@@ -9,13 +8,6 @@ import { assertValidity as sharedAssertValidity, checkValidity, FieldName, Field
 
 export const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
-
-export const createQueryHook =
-  <TParams, TData, TQueryKey extends QueryKey>(
-    getQueryOptions: (params: TParams, condition?: boolean) => UseQueryOptions<TData, Error, TData, TQueryKey>,
-  ) =>
-  (params: TParams, condition?: boolean) =>
-    useQuery<TData, Error, TData, TQueryKey>(getQueryOptions(params, condition))
 
 export function queryFactory<
   TQuery extends object,
@@ -73,7 +65,7 @@ export function queryFactory<
     prefetchQuery: (params, staleTime = 0) =>
       queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
     fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
-    useQuery: createQueryHook(getQueryOptions),
+    useQuery: (params, condition) => useQuery(getQueryOptions(params, condition)),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }
 }
