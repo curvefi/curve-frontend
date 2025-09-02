@@ -5,7 +5,7 @@ import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { BaseConfig, NetworkDef } from '@ui/utils'
+import type { BaseConfig } from '@ui/utils'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { type BorrowForm, BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
@@ -77,7 +77,6 @@ export function useBorrowForm({ market, chainId, network: { id: chain }, preset 
     txHash,
   } = useCreateLoan({ chainId, poolId: market.id, reset: form.reset })
   const { borrowToken, collateralToken } = useMemo(() => getTokens(market, chain), [market, chain])
-
   return {
     form,
     values,

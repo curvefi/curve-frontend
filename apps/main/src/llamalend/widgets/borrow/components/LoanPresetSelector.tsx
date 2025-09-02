@@ -1,8 +1,9 @@
-import { ReactNode } from 'react'
+import { type ReactNode, type MouseEvent, useCallback } from 'react'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
-import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import ToggleButton from '@mui/material/ToggleButton'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPreset } from '../borrow.types'
@@ -43,22 +44,29 @@ export const LoanPresetSelector = ({
   children: ReactNode
 }) => (
   <Stack gap={Spacing.sm}>
-    <Stack direction="row">
-      {Object.values(BorrowPreset).map((p, _, all) => (
-        <Button
+    <ToggleButtonGroup
+      exclusive
+      value={preset}
+      onChange={useCallback(
+        (_: MouseEvent<HTMLElement>, p: BorrowPreset) => {
+          setPreset(p)
+          setRange(BORROW_PRESET_RANGES[p])
+        },
+        [setPreset, setRange],
+      )}
+      aria-label={t`Loan Preset`}
+      sx={{ width: '100%' }}
+    >
+      {Object.values(BorrowPreset).map((p) => (
+        <ToggleButton
           key={p}
-          // todo: we need to implement button toggle colors & actual toggle component
-          color={preset === p ? 'secondary' : 'inherit'}
-          onClick={() => {
-            setPreset(p)
-            setRange(BORROW_PRESET_RANGES[p])
-          }}
+          value={p}
           sx={{ flexGrow: 1, '&': { lineHeight: '1rem' } }} // force lineHeight, otherwise when the text wraps it looks bad
         >
           {PRESETS[p].title}
-        </Button>
+        </ToggleButton>
       ))}
-    </Stack>
+    </ToggleButtonGroup>
     {children}
     {preset && (
       <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
