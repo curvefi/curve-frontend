@@ -41,10 +41,6 @@ export function queryFactory<
   TData,
   TParams
 > {
-  // todo: get rid of ValidatedData<T> use NonValidatedFields<T> instead
-  const assertValidity = (data: TParams, fields?: TField[]) =>
-    sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery
-
   const isEnabled = (params: TParams) =>
     checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
 
@@ -66,7 +62,8 @@ export function queryFactory<
     })
 
   return {
-    assertValidity,
+    assertValidity: (data: TParams, fields?: TField[]) =>
+      sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery,
     checkValidity: (data: TParams, fields?: TField[]) => checkValidity(validationSuite, data, fields),
     isEnabled,
     queryKey,
