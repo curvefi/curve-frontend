@@ -49,15 +49,15 @@ export const useBorrowPositionDetails = ({
 
   const { data: campaigns } = useCampaigns({})
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
-    chainId: chainId,
+    chainId,
     marketId,
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: market?.addresses?.collateral_token,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({

@@ -73,7 +73,7 @@ export const { networks, networksIdMapper } = Object.entries(networksConfig).red
     return mapper
   },
   {
-    networks: {} as Record<ChainId, NetworkConfig>,
+    networks: {} as Record<ChainId, NetworkConfig<NetworkEnum, ChainId>>,
     networksIdMapper: {} as Record<NetworkEnum, ChainId>,
   },
 )

@@ -3,7 +3,7 @@ import { CRVUSD_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
-import { Address, Chain } from '@curvefi/prices-api'
+import { Address } from '@curvefi/prices-api'
 import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { MarketDetailsProps } from '@ui-kit/features/market-details'
@@ -24,11 +24,11 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
   const { data: campaigns } = useCampaigns({})
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: llamma?.collateral,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: CRVUSD_ADDRESS,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
@@ -56,7 +56,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
 
   return {
     marketType: LlamaMarketType.Mint,
-    blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+    blockchainId: networks[chainId]?.id,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,
       tokenAddress: llamma?.collateral,

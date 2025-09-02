@@ -35,22 +35,19 @@ export const useMarketDetails = ({
   const {
     data: { rates, collateralAmount, borrowedAmount, cap, available, maxLeverage, crvRates, rewardsApr },
     isLoading: isMarketDetailsLoading,
-  } = useLendMarketDetails({
-    chainId,
-    marketId: llammaId,
-  })
+  } = useLendMarketDetails({ chainId, marketId: llammaId })
   const { data: lendingSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
-    blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+    blockchainId: networks[chainId]?.id as Chain,
     contractAddress: controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: collateral_token?.address,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: borrowed_token?.address,
   })
   const { data: campaigns } = useCampaigns({})
@@ -122,7 +119,7 @@ export const useMarketDetails = ({
 
   return {
     marketType: LlamaMarketType.Lend,
-    blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+    blockchainId: networks[chainId]?.id as Chain,
     collateral: {
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
@@ -169,7 +166,7 @@ export const useMarketDetails = ({
         ? rewardsApr.map((r) => ({
             title: r.symbol,
             percentage: r.apy,
-            blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+            blockchainId: networks[chainId]?.id,
             address: r.tokenAddress,
           }))
         : [],
