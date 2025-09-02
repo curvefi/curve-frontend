@@ -1,14 +1,14 @@
 import type { StoreApi } from 'zustand'
 import { defaultNetworks, getNetworks } from '@/dex/lib/networks'
 import type { State } from '@/dex/store/useStore'
-import { CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
+import { type ChainId, CurveApi, NativeToken, NetworkAliases, NetworkConfig, Networks } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  aliases: Record<number, NetworkAliases | undefined>
-  networks: Record<number, NetworkConfig>
-  nativeToken: Record<number, NativeToken | undefined>
+  aliases: Record<ChainId, NetworkAliases | undefined>
+  networks: Record<ChainId, NetworkConfig>
+  nativeToken: Record<ChainId, NativeToken | undefined>
   networksIdMapper: Record<string, number>
 }
 

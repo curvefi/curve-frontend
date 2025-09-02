@@ -36,14 +36,12 @@ async function addStableCoinPrices({ chain, data }: { chain: Chain; data: MintMa
 
 export const { getQueryOptions: getMintMarketOptions, invalidate: invalidateMintMarkets } = queryFactory({
   queryKey: () => ['mint-markets', 'v2'] as const,
-  queryFn: async (): Promise<MintMarket[]> => {
-    const results = await Promise.all(
-      Object.entries(await getAllMarkets()).flatMap(([blockchainId, data]) =>
-        addStableCoinPrices({ chain: blockchainId as Chain, data }),
-      ),
-    )
-    return results.flat()
-  },
+  queryFn: async (): Promise<MintMarket[]> =>
+    (
+      await Promise.all(
+        recordEntries(await getAllMarkets()).flatMap(([chain, data]) => addStableCoinPrices({ chain, data })),
+      )
+    ).flat(),
   validationSuite: EmptyValidationSuite,
 })
 

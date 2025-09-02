@@ -49,12 +49,10 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       // mapper
       const collateralDatasMapper: CollateralDatasMapper = {}
       const collateralDatasCacheMapper: CollateralDataCacheMapper = {}
-      const collateralAddresses: string[] = []
 
       for (const key in llammasMapper) {
         const llamma = llammasMapper[key]
         const { collateralData, collateralDataCache } = getCollateralData(llamma)
-        collateralAddresses.push(collateralData.llamma.collateral)
         collateralDatasMapper[key] = collateralData
         collateralDatasCacheMapper[key] = collateralDataCache
       }

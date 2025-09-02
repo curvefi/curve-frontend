@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import { ChainId, NetworkEnum, type UrlParams } from '@/dex/types/main.types'
+import { type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -27,8 +27,8 @@ const DetailInfoTradeRouteRoute = ({
   const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
   const networks = useStore((state) => state.networks.networks)
   const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
-  const networkId = params?.network ? networksIdMapper[params.network.toLowerCase() as NetworkEnum] : null
-  const network = networkId ? networks[networkId as ChainId] : null
+  const networkId = params?.network ? networksIdMapper[params.network] : null
+  const network = networkId ? networks[networkId] : null
   const { swapCustomRouteRedirect } = network || {}
 
   const path = useMemo(() => {
