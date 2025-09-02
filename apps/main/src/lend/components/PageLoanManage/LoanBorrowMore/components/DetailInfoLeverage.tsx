@@ -1,7 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
-import DetailInfoLeverageAdvancedExpected from '@/lend/components/DetailInfoLeverageAdvancedExpected'
 import DetailInfoLeverageAvgPrice from '@/lend/components/DetailInfoLeverageAvgPrice'
 import DetailInfoLeverageExpected from '@/lend/components/DetailInfoLeverageExpected'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
@@ -9,8 +8,10 @@ import DetailInfoPriceImpact from '@/lend/components/DetailInfoPriceImpact'
 import DetailInfoRate from '@/lend/components/DetailInfoRate'
 import DetailInfoSlippageTolerance from '@/lend/components/DetailInfoSlippageTolerance'
 import { _parseValues } from '@/lend/components/PageLoanManage/LoanBorrowMore/utils'
+import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps, HealthMode } from '@/lend/types/lend.types'
+import RouteDetails from '@/llamalend/widgets/RouteDetails'
 import type { Step } from '@ui/Stepper/types'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,8 +62,8 @@ const DetailInfoLeverage = ({
           loading={loading}
           detailInfoLeverage={
             <>
-              <DetailInfoLeverageAdvancedExpected
-                rChainId={rChainId}
+              <RouteDetails
+                network={networks[rChainId].id}
                 $minWidth="260px"
                 loading={expectedLoading}
                 swapFrom={borrowed_token}

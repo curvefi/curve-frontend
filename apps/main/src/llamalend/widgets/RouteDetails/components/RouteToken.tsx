@@ -1,8 +1,8 @@
 import { styled } from 'styled-components'
-import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Box from '@ui/Box'
 import { formatNumber } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
+import { format } from '../utils'
 
 const RouteToken = ({
   blockchainId,
@@ -15,7 +15,7 @@ const RouteToken = ({
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
   value: string | number
-  avgPrice?: string
+  avgPrice?: string | number
 }) => {
   const parsedAvgPrice = typeof avgPrice !== 'undefined' && avgPrice !== 'NaN' ? avgPrice : ''
 
