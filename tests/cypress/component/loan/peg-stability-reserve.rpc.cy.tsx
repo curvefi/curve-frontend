@@ -25,7 +25,7 @@ describe('Peg stability reserve', () => {
       return
     }
 
-    const config = createTestWagmiConfigFromVNet(vnet)
+    const config = createTestWagmiConfigFromVNet({ vnet })
     cy.mount(<TestComponent config={config} />)
 
     // Initial data when not connected

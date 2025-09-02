@@ -1,3 +1,4 @@
+import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { createTestWagmiConfig } from '../wagmi'
 import { tenderlyAccount } from './account'
@@ -19,16 +20,20 @@ import {
   type GetVirtualTestnetResponse,
 } from './vnet-get'
 
-export function createTestWagmiConfigFromVNet(
-  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse,
-) {
+export function createTestWagmiConfigFromVNet({
+  vnet,
+  privateKey,
+}: {
+  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
+  privateKey?: Hex
+}) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
   const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
 
   if (!rpcUrl) throw new Error('RPC URL is undefined')
 
   return createTestWagmiConfig({
-    privateKey: generatePrivateKey(),
+    privateKey: privateKey ?? generatePrivateKey(),
     rpcUrl,
     explorerUrl,
   })
