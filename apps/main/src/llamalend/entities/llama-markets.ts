@@ -26,9 +26,8 @@ export type Assets = {
 
 export type AssetDetails = {
   symbol: string
-  address: string
+  address: Address
   chain: Chain
-  usdPrice: number | null
   balance: number | null
   balanceUsd: number | null
   rebasingYield: number | null
@@ -46,12 +45,12 @@ export type LlamaMarket = {
   totalCollateralUsd: number
   debtCeiling: number | null // only for mint markets, null for lend markets
   rates: {
-    lend: number | null // lendApr + CRV unboosted + yield from collateral
     lendApr: number | null // base lend APR %
     lendCrvAprUnboosted: number | null
     lendCrvAprBoosted: number | null
+    lendTotalApyMinBoosted: number | null
     lendTotalApyMaxBoosted: number | null // supply rate + rebasing yield + total extra incentives + max boosted yield
-    borrow: number // base borrow APY %
+    borrowApy: number // base borrow APY %
     borrowTotalApy: number // borrow - yield from collateral
     // extra lending incentives, like OP rewards (so non CRV)
     incentives: ExtraIncentive[]
@@ -106,7 +105,6 @@ const convertLendingVault = (
   const hasBorrowed = userBorrows.has(controller)
   const hasSupplied = userSupplied.has(vault)
   const totalExtraRewardApr = (extraRewardApr ?? []).reduce((acc, x) => acc + x.rate, 0)
-  const lend = lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr
   return {
     chain,
     address: vault,
@@ -114,7 +112,6 @@ const convertLendingVault = (
     assets: {
       borrowed: {
         ...borrowedToken,
-        usdPrice: totalDebt && totalDebtUsd / totalDebt,
         chain,
         balance: totalDebt,
         balanceUsd: totalDebtUsd,
@@ -122,7 +119,6 @@ const convertLendingVault = (
       collateral: {
         ...collateralToken,
         chain,
-        usdPrice: totalAssets && totalAssetsUsd / totalAssets,
         balance: totalAssets,
         balanceUsd: totalAssetsUsd,
       },
@@ -138,13 +134,14 @@ const convertLendingVault = (
       totalAssetsUsd - // supplied assets
       totalDebtUsd,
     rates: {
-      lend, // this is the total yield, including incentive and collateral yield, and is displayed in the table
       lendApr,
       lendCrvAprUnboosted,
       lendCrvAprBoosted,
+      lendTotalApyMinBoosted:
+        lendApr + (lendCrvAprUnboosted ?? 0) + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr,
       lendTotalApyMaxBoosted:
         lendApr + (borrowedToken?.rebasingYield ?? 0) + totalExtraRewardApr + (lendCrvAprBoosted ?? 0),
-      borrow: apyBorrow,
+      borrowApy: apyBorrow,
       // as confusing as it may be, `borrow` is used in the table, but the total borrow is only in the tooltip
       borrowTotalApy: apyBorrow - (collateralToken?.rebasingYield ?? 0),
       incentives: extraRewardApr
@@ -176,7 +173,7 @@ const convertLendingVault = (
 }
 
 /** We show WETH as ETH in the UI and market URL. Also change address so the symbol is correct */
-const getCollateral = ({ address, symbol }: { address: Address; symbol: string }) =>
+const getCollateral = ({ address, symbol }: { address: Address; symbol: string }): [string, Address] =>
   symbol == 'WETH' ? ['ETH', ethAddress] : [symbol, address]
 
 const convertMintMarket = (
@@ -189,9 +186,9 @@ const convertMintMarket = (
     llamma,
     rate,
     borrowed,
+    borrowedUsd,
     borrowable,
     debtCeiling,
-    stablecoin_price,
     chain,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
@@ -210,16 +207,14 @@ const convertMintMarket = (
       borrowed: {
         symbol: stablecoinToken.symbol,
         address: stablecoinToken.address,
-        usdPrice: stablecoin_price,
         chain,
         balance: borrowed,
-        balanceUsd: borrowed * stablecoin_price,
+        balanceUsd: borrowedUsd,
         rebasingYield: stablecoinToken.rebasingYield ? Number(stablecoinToken.rebasingYield) : null,
       },
       collateral: {
         symbol: collateralSymbol,
         address: collateralAddress,
-        usdPrice: collateralAmountUsd / collateralAmount,
         chain,
         balance: collateralAmount,
         balanceUsd: collateralAmountUsd,
@@ -230,16 +225,16 @@ const convertMintMarket = (
     debtCeiling,
     liquidityUsd: borrowable,
     tvl: collateralAmountUsd,
-    totalDebtUsd: borrowed * stablecoin_price,
+    totalDebtUsd: borrowedUsd,
     totalCollateralUsd: collateralAmountUsd,
     rates: {
-      borrow: rate * 100,
-      lend: null,
+      borrowApy: rate * 100,
       lendApr: null,
       lendCrvAprBoosted: null,
       lendCrvAprUnboosted: null,
+      lendTotalApyMinBoosted: null,
       lendTotalApyMaxBoosted: null,
-      borrowTotalApy: rate * 100,
+      borrowTotalApy: rate * 100 - (collateralToken.rebasingYield ?? 0),
       incentives: [],
     },
     type: LlamaMarketType.Mint,

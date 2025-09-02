@@ -10,6 +10,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
   llamma: x.llamma,
   rate: x.rate,
   borrowed: x.total_debt,
+  borrowedUsd: x.total_debt_usd,
   borrowable: x.borrowable,
   collateralAmount: x.collateral_amount,
   collateralAmountUsd: x.collateral_amount_usd,

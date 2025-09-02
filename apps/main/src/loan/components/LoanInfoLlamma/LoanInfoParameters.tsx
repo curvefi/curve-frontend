@@ -16,7 +16,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
   return (
     <Box grid gridRowGap="1">
       <DetailInfo label={t`Band width factor`} size="md">
-        <span>{formatNumber(llamma?.A, { useGrouping: false })}</span>
+        <span>{formatNumber(llamma?.A, { useGrouping: false, trailingZeroDisplay: 'stripIfInteger' })}</span>
       </DetailInfo>
       <DetailInfo label={t`Base price`} size="md">
         {typeof loanDetails?.basePrice !== 'undefined' && (

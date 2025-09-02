@@ -27,8 +27,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="lg" />
 }
 
-const formatUsd = (value: number) => formatNumber(value, { currency: 'USD' })
-const formatPercent = (value: number) => value.toFixed(2) + '%'
+const formatUsd = (value: number) => formatNumber(value, { currency: 'USD', decimals: 0 })
+const formatPercent = (value: number) => formatNumber(value, { style: 'percent' })
 
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.

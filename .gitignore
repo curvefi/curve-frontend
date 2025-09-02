@@ -16,6 +16,7 @@ node_modules
 # testing
 coverage
 cypress.env.json
+tests/cypress/screenshots
 
 # next.js
 .next/

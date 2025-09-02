@@ -5,6 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <title>Components App</title>
+    <script>
+      // We have `queryKeyHashFn: hashFn` in ui-kit\src\lib\api\query-client.ts, but somehow it doesn't work in Cypress tests.
+      // This issue has been verified to not occur in the actual app, only in Cypress tests.
+      BigInt.prototype['toJSON'] = function () {
+        return this.toString()
+      }
+    </script>
   </head>
   <body>
     <div id="app" data-cy-root></div>

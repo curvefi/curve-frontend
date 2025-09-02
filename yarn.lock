@@ -713,15 +713,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:1.0.28":
-  version: 1.0.28
-  resolution: "@curvefi/llamalend-api@npm:1.0.28"
+"@curvefi/llamalend-api@npm:1.0.29":
+  version: 1.0.29
+  resolution: "@curvefi/llamalend-api@npm:1.0.29"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.15"
     bignumber.js: "npm:^9.3.0"
     ethers: "npm:^6.14.3"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/f7438595c4b625c2eb71eed9592c949134d7088e70d7324d010fea69349e0169c440dda4cc90924518bba34ff18285969149d16efcc28449d30659d91d7bc141
+  checksum: 10c0/e11535649826431836f95d0bc1e9b3419d8d0a79b69f4be985dfb3ed76bcf7a999090e45121eb67ad4ce78899919592f0dac8026bcbc5403caaf55c6ba43584d
   languageName: node
   linkType: hard
 
@@ -2003,13 +2003,6 @@ __metadata:
     "@json-rpc-tools/types": "npm:^1.7.6"
     "@pedrouid/environment": "npm:^1.0.1"
   checksum: 10c0/ba64fc5f709061b86afc91cf4b59a5108596b15b2a0820e1bec2df915488b9e29451205c93cd02c84f0e42b272dd069948d4c9d30345258cc3d5131563cc2cd3
-  languageName: node
-  linkType: hard
-
-"@lingui/detect-locale@npm:^5.4.1":
-  version: 5.4.1
-  resolution: "@lingui/detect-locale@npm:5.4.1"
-  checksum: 10c0/671c091b6ebf45928c3a5979fccb135257a58eb8cc97d7fa84bc9ba92caa826cd313483b9ed7abd859c87041b7b2ec4243bf1271c4ab85e1ad4a55ea2aaae525
   languageName: node
   linkType: hard
 
@@ -11988,7 +11981,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:2.68.6"
-    "@curvefi/llamalend-api": "npm:1.0.28"
+    "@curvefi/llamalend-api": "npm:1.0.29"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -15409,7 +15402,6 @@ __metadata:
   resolution: "ui@workspace:packages/ui"
   dependencies:
     "@carbon/icons-react": "npm:^11.65.0"
-    "@lingui/detect-locale": "npm:^5.4.1"
     "@types/react": "npm:*"
     "@types/react-dom": "npm:*"
     eslint: "npm:*"
