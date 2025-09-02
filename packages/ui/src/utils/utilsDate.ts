@@ -104,4 +104,4 @@ export const formatLocaleDateFromTimestamp = (unixTime: number) =>
  * @param unixTimeMs - The Unix timestamp in milliseconds. If wished this can be easily expanded to accept Date or string types.
  * @returns A formatted date string adjusted for the local timezone
  */
-export const formatLocaleDate = (unixTimeMs: number) => formatLocaleDateFromTimestamp(unixTimeMs / 1000)
+export const formatLocaleDate = (unixTimeMs: number) => formatDate(unixTimeMs - new Date().getTimezoneOffset() * 60000)
