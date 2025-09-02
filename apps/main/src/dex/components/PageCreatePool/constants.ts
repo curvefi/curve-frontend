@@ -192,6 +192,14 @@ export const POOL_PRESETS: PRESETS = {
       maHalfTime: '600',
     },
   },
+  9: {
+    name: 'FXSwap',
+    descriptionName: t`FXSwap (Coming soon!)`,
+    description: t`Suitable for forex tokens with low volatility`,
+    defaultParams: {
+      ...fillerParams,
+    },
+  },
 }
 
 // MIN-MAX PARAMS
