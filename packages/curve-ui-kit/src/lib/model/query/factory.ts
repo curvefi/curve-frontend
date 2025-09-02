@@ -6,7 +6,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { QueryFactoryInput, QueryFactoryOutput } from '@ui-kit/lib/types'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
-export const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey) =>
+const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
 
 export function queryFactory<
