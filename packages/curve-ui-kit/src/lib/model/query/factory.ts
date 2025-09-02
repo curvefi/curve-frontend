@@ -1,21 +1,21 @@
 import { CB } from 'vest-utils'
-import { QueryFunctionContext, queryOptions } from '@tanstack/react-query'
+import type { UseQueryOptions } from '@tanstack/react-query'
+import { QueryFunctionContext, QueryKey, queryOptions, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
-import { createQueryHook } from '@ui-kit/lib/queries'
 import { QueryFactoryInput, QueryFactoryOutput } from '@ui-kit/lib/types'
 import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
-export function getParamsFromQueryKey<TKey extends readonly unknown[], TParams, TQuery, TField>(
-  queryKey: TKey,
-  assertValidity: (data: TParams, fields?: TField[]) => TQuery,
-) {
-  const queryParams = Object.fromEntries(
-    queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : [])),
-  ) as TParams
-  return assertValidity(queryParams)
-}
+export const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams, TQuery, TField>(queryKey: TKey) =>
+  Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
+
+export const createQueryHook =
+  <TParams, TData, TQueryKey extends QueryKey>(
+    getQueryOptions: (params: TParams, condition?: boolean) => UseQueryOptions<TData, Error, TData, TQueryKey>,
+  ) =>
+  (params: TParams, condition?: boolean) =>
+    useQuery<TData, Error, TData, TQueryKey>(getQueryOptions(params, condition))
 
 export function queryFactory<
   TQuery extends object,
@@ -29,6 +29,7 @@ export function queryFactory<
   queryFn: runQuery,
   queryKey,
   staleTime,
+  gcTime,
   refetchInterval,
   validationSuite,
   dependencies,
@@ -49,14 +50,14 @@ export function queryFactory<
 
   const queryFn = ({ queryKey }: QueryFunctionContext<TKey>) => {
     logQuery(queryKey)
-    const params = getParamsFromQueryKey(queryKey, assertValidity)
-    return runQuery(params)
+    return runQuery(getParamsFromQueryKey(queryKey))
   }
 
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
       queryFn,
+      gcTime: REFRESH_INTERVAL[gcTime ?? '10m'],
       staleTime: REFRESH_INTERVAL[staleTime ?? '5m'],
       refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
       enabled: enabled && isEnabled(params),

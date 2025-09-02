@@ -42,6 +42,7 @@ export type QueryFactoryInput<
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, TGroup, TCallback>
   queryFn: (params: TValidParams) => Promise<TData>
+  gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
   refetchInterval?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
