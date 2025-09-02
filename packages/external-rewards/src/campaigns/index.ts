@@ -6,6 +6,7 @@ import Bills from './Bills.json'
 import Carrot from './Carrot.json'
 import DLCLink from './DLCLink.json'
 import DTrinity from './DTrinity.json'
+import Ebisu from './Ebisu.json'
 import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
@@ -74,4 +75,5 @@ export {
   Apple,
   Tharwa,
   Aegis,
+  Ebisu,
 }
