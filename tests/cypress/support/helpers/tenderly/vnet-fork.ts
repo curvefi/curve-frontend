@@ -3,7 +3,10 @@ import type { TestnetProps } from './types'
 
 /** Implemented as per https://docs.tenderly.co/reference/api#/operations/forkVnet */
 export type ForkVirtualTestnetOptions = Partial<Pick<TestnetProps, 'slug' | 'display_name' | 'description'>> & {
-  /** @see {@link TestnetProps.id} for complete documentation */
+  /**
+   * @see {@link TestnetProps.id} for complete documentation
+   * @remarks This differs from the `vnetId` property name used in the GET. Inconsistency at the end of Tenderly.
+   */
   vnet_id: TestnetProps['id']
 
   // For some reason differs from just the sync_state_config object itself.
