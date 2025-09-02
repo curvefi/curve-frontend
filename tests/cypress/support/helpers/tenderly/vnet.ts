@@ -64,7 +64,7 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
 }
 
 /**
- * Creates a Cypress test helper that created and manages a Tenderly virtual testnet lifecycle
+ * Creates a Cypress test helper that creates and manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns testnet configuration options based on UUID
  * @returns Function that returns the created virtual testnet instance
