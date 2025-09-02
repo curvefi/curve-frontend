@@ -123,15 +123,16 @@ export const Loading: Story = {
   },
 }
 
-export const LoadingWithNotionalValue: Story = {
+export const LoadingWithNotionalValueAndMax: Story = {
   args: {
     loading: true,
     notionalValue: 1234.56,
+    max: 'button',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Shows the component in a loading state with notional value skeleton',
+        story: 'Shows the component in a loading state with notional value skeleton and max button',
       },
     },
   },

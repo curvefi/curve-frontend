@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -19,19 +20,21 @@ const formatNumber = (value?: number): string => {
 }
 
 type MaxButtonProps = {
-  children: React.ReactNode
+  children: ReactNode
   underline: boolean
   sx?: SxProps
   onClick?: () => void
+  loading?: boolean
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick, loading }: MaxButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
     size="extraSmall"
     onClick={onClick}
+    loading={loading}
     sx={{
       /**
        * Remove any properties that cause the total height component to change
@@ -45,6 +48,8 @@ const MaxButton = ({ children, underline, sx, onClick }: MaxButtonProps) => (
           textDecoration: 'underline',
         },
       }),
+      // Scale down the loading indicator to fit better with the extraSmall text
+      '.MuiButton-loadingIndicator svg': { transform: 'scale(0.5)' },
       ...sx,
     }}
   >
@@ -102,7 +107,7 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValue, 
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
-      <MaxButton underline={true} onClick={() => onMax?.(balance)}>
+      <MaxButton underline={true} onClick={() => onMax?.(balance)} loading={loading}>
         <BalanceText symbol={symbol} balance={balance} loading={loading} />
       </MaxButton>
     ) : (
@@ -119,6 +124,7 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValue, 
 
     {max === 'button' && balance != null && (
       <MaxButton
+        loading={loading}
         underline={false}
         onClick={() => onMax?.(balance)}
         // Right-align without flex grow for precise click area
