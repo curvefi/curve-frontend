@@ -2,7 +2,8 @@ import { enforce, group, test } from 'vest'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { BORROW_PRESET_RANGES, type BorrowForm, type BorrowFormQueryParams } from '../borrow.types'
+import { type BorrowForm, type BorrowFormQueryParams } from '../borrow.types'
+import { BORROW_PRESET_RANGES } from '../borrow.util'
 
 export const borrowFormValidationGroup = (
   { userBorrowed, userCollateral, debt, leverage, range, slippage }: FieldsOf<BorrowForm>,

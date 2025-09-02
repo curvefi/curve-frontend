@@ -5,7 +5,8 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BORROW_PRESET_RANGES, BorrowPreset } from '../borrow.types'
+import { BorrowPreset } from '../borrow.types'
+import { BORROW_PRESET_RANGES } from '../borrow.util'
 
 const PRESETS = {
   [BorrowPreset.Safe]: {

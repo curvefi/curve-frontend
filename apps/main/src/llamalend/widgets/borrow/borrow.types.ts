@@ -1,5 +1,7 @@
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 
@@ -17,8 +19,6 @@ export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
   debt: number | undefined
 }
 
-export const DEFAULT_SLIPPAGE = 0.1 as const
-
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
 export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
 
@@ -30,8 +30,4 @@ export enum BorrowPreset {
   Custom = 'Custom',
 }
 
-export const BORROW_PRESET_RANGES = {
-  [BorrowPreset.Safe]: 50,
-  [BorrowPreset.MaxLtv]: 4,
-  [BorrowPreset.Custom]: 10,
-}
+export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate

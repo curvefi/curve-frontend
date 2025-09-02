@@ -9,7 +9,7 @@ import { getLlamaMarket } from '../llama.util'
 type UserBalancesQuery = UserQuery & PoolQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
 
-export const { useQuery: useUserBalances } = queryFactory({
+export const { useQuery: useUserBalances, queryKey: userBalancesQueryKey } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserBalancesParams) =>
     [...rootKeys.pool({ chainId, poolId }), 'user-balances', { userAddress }] as const,
   queryFn: async ({ poolId }: UserBalancesQuery) => {

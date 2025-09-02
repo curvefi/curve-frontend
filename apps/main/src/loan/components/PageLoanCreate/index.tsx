@@ -4,6 +4,7 @@ import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
+import networks from '@/loan/networks'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
@@ -19,20 +20,15 @@ const LoanCreate = ({
   loanExists: boolean | undefined
   fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => void
 }) => {
-  const { curve, llamma, loanExists, params, rCollateralId, rFormType } = props
+  const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
+  const network = networks[rChainId]
 
   const FORM_TYPES: { key: string; label: string }[] = [
     { label: t`Create Loan`, key: 'create' },
     { label: t`Leverage`, key: 'leverage' },
-  ].filter((f) => {
-    if (f.key === 'leverage') {
-      return hasLeverage(llamma)
-    } else {
-      return true
-    }
-  })
+  ].filter((f) => f.key != 'leverage' || hasLeverage(llamma))
 
   const handleTabClick = useCallback(
     (formType: FormType) => {
@@ -61,7 +57,7 @@ const LoanCreate = ({
       <AppFormContentWrapper>
         {isBeta && rFormType !== 'leverage' ? (
           <WithSkeleton loading={!llamma}>
-            {llamma && <BorrowTabContents chainId={props.rChainId} network={props.params.network} market={llamma} />}
+            {llamma && <BorrowTabContents chainId={props.rChainId} network={network} market={llamma} />}
           </WithSkeleton>
         ) : (
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />

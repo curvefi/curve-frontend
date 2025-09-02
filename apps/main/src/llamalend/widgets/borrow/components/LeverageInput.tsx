@@ -28,7 +28,9 @@ export const LeverageInput = ({
       label={
         <Stack gap={Spacing.sm}>
           <Typography variant="bodySBold">{t`Enable leverage`}</Typography>
-          <Typography variant="bodyXsRegular">{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
+          {maxLeverage && (
+            <Typography variant="bodyXsRegular">{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
+          )}
         </Stack>
       }
       control={

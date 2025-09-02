@@ -1,17 +1,18 @@
 import { FormProvider } from 'react-hook-form'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
-import { BorrowPreset } from '@/llamalend/widgets/borrow/borrow.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { BorrowPreset, type LlamaMarketTemplate } from '../borrow.types'
+import { hasLeverage } from '../borrow.util'
 import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
+import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
@@ -24,17 +25,24 @@ export const BorrowTabContents = ({
   network,
 }: {
   chainId: IChainId
-  market: MintMarketTemplate | LendMarketTemplate
-  network: NetworkEnum
+  market: LlamaMarketTemplate
+  network: BaseConfig<NetworkEnum>
 }) => {
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
-  const { values, onSubmit, isPending, maxBorrow, params, form, balances, collateralToken, borrowToken } =
-    useBorrowForm({
-      market,
-      chainId,
-      network,
-      preset,
-    })
+  const {
+    values,
+    onSubmit,
+    isPending,
+    maxBorrow,
+    params,
+    form,
+    balances,
+    collateralToken,
+    borrowToken,
+    isCreated,
+    creationError,
+    txHash,
+  } = useBorrowForm({ market, chainId, network, preset })
   const { maxDebt, maxTotalCollateral, maxLeverage } = maxBorrow.data ?? {}
   const { leverage } = values
   return (
@@ -58,7 +66,7 @@ export const BorrowTabContents = ({
             max={maxDebt}
           />
 
-          {!!(maxLeverage || leverage) && <LeverageInput maxLeverage={maxLeverage} leverage={leverage} form={form} />}
+          {hasLeverage(market) && <LeverageInput maxLeverage={maxLeverage} leverage={leverage} form={form} />}
 
           <LoanPresetSelector
             preset={preset}
@@ -67,7 +75,7 @@ export const BorrowTabContents = ({
           >
             {preset === BorrowPreset.Custom && (
               <AdvancedBorrowOptions
-                network={network}
+                network={network.id}
                 params={params}
                 values={values}
                 collateralToken={collateralToken}
@@ -83,6 +91,8 @@ export const BorrowTabContents = ({
           >
             {isPending ? t`Processing...` : t`Approve & Swap`}
           </Button>
+
+          <BorrowFormAlert isCreated={isCreated} creationError={creationError} network={network} txHash={txHash} />
 
           <BorrowActionInfoAccordion params={params} values={values} collateralToken={collateralToken} />
         </Stack>

@@ -36,7 +36,7 @@ const convertNumbers = ({
   collateralFromDebt: collateralFromDebt == null ? undefined : +collateralFromDebt,
 })
 
-export const { useQuery: useBorrowExpectedCollateral } = queryFactory({
+export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCollateralQueryKey } = queryFactory({
   queryKey: ({
     chainId,
     poolId,
