@@ -19,7 +19,9 @@ import {
   type GetVirtualTestnetResponse,
 } from './vnet-get'
 
-export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse) {
+export function createTestWagmiConfigFromVNet(
+  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse,
+) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
   const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
 
