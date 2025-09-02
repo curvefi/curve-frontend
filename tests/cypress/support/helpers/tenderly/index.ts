@@ -1,1 +1,1 @@
-export { createVirtualTestnet, withVirtualTestnet, createTestWagmiConfigFromVNet } from './vnet'
+export { createVirtualTestnet, withVirtualTestnet, forkVirtualTestnet, createTestWagmiConfigFromVNet } from './vnet'

@@ -9,6 +9,11 @@ import {
 } from './vnet-create'
 import { deleteVirtualTestnet as deleteVirtualTestnetRequest, type DeleteVirtualTestnetOptions } from './vnet-delete'
 import {
+  forkVirtualTestnet as forkVirtualTestnetRequest,
+  type ForkVirtualTestnetOptions,
+  type ForkVirtualTestnetResponse,
+} from './vnet-fork'
+import {
   getVirtualTestnet as getVirtualTestnetRequest,
   type GetVirtualTestnetOptions,
   type GetVirtualTestnetResponse,
@@ -103,6 +108,60 @@ export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateV
     const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
 
     createVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
+  })
+
+  after(() => {
+    if (!vnet) return
+
+    const deleteOpts: DeleteVirtualTestnetOptions = {
+      vnetId: vnet.id,
+    }
+
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, ...deleteOpts })
+  })
+
+  return () => vnet
+}
+
+/**
+ * Creates a Cypress test helper that forks and manages a Tenderly virtual testnet lifecycle
+ *
+ * @param opts - Function that returns fork configuration options based on UUID
+ * @returns Function that returns the forked virtual testnet instance
+ *
+ * @example
+ * ```typescript
+ * const getVirtualNetwork = forkVirtualTestnet((uuid) => ({
+ *   vnet_id: 'parent-vnet-id',
+ *   display_name: `Forked Testnet ${uuid}`
+ * }))
+ *
+ * it('should work with forked virtual testnet', () => {
+ *   const virtualNetwork = getVirtualNetwork()
+ *   // Use vnet in your test
+ * })
+ * ```
+ */
+export function forkVirtualTestnet(
+  opts: (uuid: number) => DeepPartial<ForkVirtualTestnetOptions> & Pick<ForkVirtualTestnetOptions, 'vnet_id'>,
+) {
+  let vnet: ForkVirtualTestnetResponse
+
+  before(() => {
+    if (!tenderlyAccount) {
+      cy.log('Tenderly credentials not configured, skipping virtual testnet forking')
+      return
+    }
+
+    const uuid = Cypress._.random(0, 1e6)
+
+    const defaultOpts: Partial<ForkVirtualTestnetOptions> = {
+      wait: true,
+    }
+
+    const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
+
+    forkVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((forked) => (vnet = forked))
   })
 
   after(() => {
