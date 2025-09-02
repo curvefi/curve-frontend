@@ -1,6 +1,6 @@
-import { useId, type ReactNode } from 'react'
+import { type ReactNode, useId } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Box, ButtonBase, Collapse, Stack, Typography, type Theme } from '@mui/material'
+import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -18,7 +18,7 @@ const titleVariants = {
 const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
-type Props = {
+type AccordionBaseProps = {
   /** The title displayed in the accordion header */
   title: ReactNode
   /** Optional icon to display before the title */
@@ -29,10 +29,38 @@ type Props = {
   size?: Size
   /** Optional information to display in the header */
   info?: ReactNode
-  /** Control initial expanded state */
-  defaultExpanded?: boolean
   /** Content to display when the accordion is expanded */
   children?: ReactNode
+}
+
+type UncontrolledAccordionProps = {
+  /** Initial expanded state (uncontrolled mode) */
+  defaultExpanded?: boolean
+  /** Never provided in uncontrolled mode */
+  expanded?: never
+  /** Never provided in uncontrolled mode */
+  toggle?: never
+}
+
+type ControlledAccordionProps = {
+  /** Never provided in controlled mode */
+  defaultExpanded?: never
+  /** Current expanded state (controlled mode) */
+  expanded: boolean
+  /** Callback when expanded state should change */
+  toggle: () => void
+}
+
+type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+
+/**
+ * Handles the toggle logic for both controlled and uncontrolled accordion modes.
+ */
+function useAccordionToggle(props: UncontrolledAccordionProps | ControlledAccordionProps) {
+  const { defaultExpanded = false } = props as UncontrolledAccordionProps
+  const [internalExpanded, , , internalToggle] = useSwitch(defaultExpanded)
+  const { expanded = internalExpanded, toggle = internalToggle } = props as ControlledAccordionProps
+  return [expanded, toggle] as const
 }
 
 /**
@@ -44,6 +72,10 @@ type Props = {
  * MUI Accordion lacks the customization options needed for our design requirements,
  * particularly for features like the ghost variant and responsive sizing with
  * appropriate effects on children elements.
+ *
+ * Can be used in both controlled and uncontrolled modes:
+ * - Uncontrolled: Use `defaultExpanded` prop
+ * - Controlled: Use `expanded` and `toggle` props
  */
 export const Accordion = ({
   title,
@@ -51,10 +83,10 @@ export const Accordion = ({
   ghost = false,
   size = 'small',
   info,
-  defaultExpanded = false,
   children,
-}: Props) => {
-  const [isOpen, , , toggle] = useSwitch(defaultExpanded)
+  ...controlProps
+}: AccordionProps) => {
+  const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
 
   return (
@@ -146,7 +178,7 @@ export const Accordion = ({
           ...(!ghost && { backgroundColor: layer1Fill }),
         }}
       >
-        {/* 
+        {/*
           This Box wrapper serves two purposes:
           1. Padding is applied here instead of on Collapse because Collapse would never
              shrink below the padding size when closing
