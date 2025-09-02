@@ -55,11 +55,6 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
   let vnet: GetVirtualTestnetResponse
 
   before(() => {
-    if (!tenderlyAccount) {
-      cy.log('Tenderly credentials not configured, skipping virtual testnet fetching')
-      return
-    }
-
     getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched))
   })
 
@@ -89,11 +84,6 @@ export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateV
   let vnet: CreateVirtualTestnetResponse
 
   before(() => {
-    if (!tenderlyAccount) {
-      cy.log('Tenderly credentials not configured, skipping virtual testnet creation')
-      return
-    }
-
     const uuid = Cypress._.random(0, 1e6)
 
     const defaultOpts: CreateVirtualTestnetOptions = {
@@ -151,11 +141,6 @@ export function forkVirtualTestnet(
   let vnet: ForkVirtualTestnetResponse
 
   before(() => {
-    if (!tenderlyAccount) {
-      cy.log('Tenderly credentials not configured, skipping virtual testnet forking')
-      return
-    }
-
     const uuid = Cypress._.random(0, 1e6)
 
     const defaultOpts: Partial<ForkVirtualTestnetOptions> = {
