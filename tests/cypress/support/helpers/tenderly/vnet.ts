@@ -22,7 +22,7 @@ import {
 
 export function createTestWagmiConfigFromVNet({
   vnet,
-  privateKey,
+  privateKey = generatePrivateKey(),
 }: {
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
   privateKey?: Hex
@@ -32,11 +32,7 @@ export function createTestWagmiConfigFromVNet({
 
   if (!rpcUrl) throw new Error('RPC URL is undefined')
 
-  return createTestWagmiConfig({
-    privateKey: privateKey ?? generatePrivateKey(),
-    rpcUrl,
-    explorerUrl,
-  })
+  return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl })
 }
 
 /**
