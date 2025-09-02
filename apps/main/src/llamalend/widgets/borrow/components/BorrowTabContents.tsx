@@ -47,7 +47,7 @@ export const BorrowTabContents = ({
   const { leverage } = values
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
         <Stack gap={Spacing.md}>
           <BorrowFormTokenInput
             label={t`Collateral`}

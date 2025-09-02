@@ -28,8 +28,11 @@ export const BorrowFormAlert = ({
       </Alert>
     )}
     {creationError && (
-      <Alert severity="error">
-        <AlertTitle>t`An error occurred`</AlertTitle>
+      <Alert
+        severity="error"
+        sx={{ overflowWrap: 'anywhere' /* break anywhere as there is often JSON in the error breaking the design */ }}
+      >
+        <AlertTitle>{t`An error occurred`}</AlertTitle>
         {creationError.message}
       </Alert>
     )}

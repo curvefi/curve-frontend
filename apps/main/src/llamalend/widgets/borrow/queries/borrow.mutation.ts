@@ -30,6 +30,22 @@ function assert<T>(value: T, message: string) {
   return value
 }
 
+const getCreateMethods = (poolId: string, leverage: number | undefined) => {
+  const [market, type] = getLlamaMarket(poolId)
+  const parent = leverage
+    ? market
+    : type === LlamaMarketType.Lend
+      ? market.leverage
+      : market.leverageV2.hasLeverage()
+        ? market.leverageV2
+        : market.leverage
+  return {
+    createLoanIsApproved: parent.createLoanIsApproved.bind(parent),
+    createLoanApprove: parent.createLoanApprove.bind(parent),
+    createLoan: parent.createLoan.bind(parent),
+  }
+}
+
 export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
   const { address: userAddress } = useAccount()
   const mutationKey = ['create-loan', { chainId, poolId }] as const
@@ -39,14 +55,7 @@ export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
         const { userCollateral, userBorrowed, debt, leverage, slippage, range } = mutation
-        const [market, type] = getLlamaMarket(poolId)
-        const { createLoanIsApproved, createLoanApprove, createLoan } = leverage
-          ? market
-          : type === LlamaMarketType.Lend
-            ? market.leverage
-            : market.leverageV2.hasLeverage()
-              ? market.leverageV2
-              : market.leverage
+        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId, leverage)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
           // Approve if needed

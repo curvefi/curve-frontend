@@ -106,7 +106,7 @@ export const BorrowActionInfoAccordion = ({
         />
         <ActionInfo label={t`N`} value={formatNumber(range)} />
         {/*TODO <ActionInfo label={t`Borrow APY`} prevValue="1.56" value="1.56" valueRight="%" />*/}
-        {/*TODO <ActionInfo label={t`Loan to value ratio`} value="131.89" valueRight="%" />*/}
+        {/*TODO <ActionInfo label={t`Loan to value ratio`} value={formatPercent(debt / collateralValue * 100)} valueRight="%" />*/}
         {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
         <ActionInfo
           label={t`Slippage tolerance`}
