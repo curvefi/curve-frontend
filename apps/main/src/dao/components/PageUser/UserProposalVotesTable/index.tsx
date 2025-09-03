@@ -71,12 +71,12 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
           <TableData
             className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.voteFor, {})}
+            {formatNumber(proposalVote.voteFor)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.voteAgainst, {})}
+            {formatNumber(proposalVote.voteAgainst)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}

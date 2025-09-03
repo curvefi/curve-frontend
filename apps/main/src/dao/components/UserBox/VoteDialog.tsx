@@ -107,7 +107,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
                     <Icon color="var(--chart-green)" name="CheckmarkFilled" size={16} /> {t`For`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotes?.[proposalKey].voteFor, {})}{' '}
+                    {formatNumber(userProposalVotes?.[proposalKey].voteFor)}{' '}
                     {votePercentage(
                       userProposalVotes[proposalKey].voteFor,
                       userProposalVotes[proposalKey].voteTotalSupply,
@@ -121,7 +121,7 @@ const VoteDialog = ({ userAddress, activeProposal, className, votingPower, propo
                     <Icon color="var(--chart-red)" name="Misuse" size={16} /> {t`Against`}
                   </VotedRowItem>
                   <VotedRowItem>
-                    {formatNumber(userProposalVotes?.[proposalKey].voteAgainst, {})}{' '}
+                    {formatNumber(userProposalVotes?.[proposalKey].voteAgainst)}{' '}
                     {votePercentage(
                       userProposalVotes[proposalKey].voteAgainst,
                       userProposalVotes[proposalKey].voteTotalSupply,
