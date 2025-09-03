@@ -4,7 +4,7 @@ import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import { QueryFactoryInput, QueryFactoryOutput } from '@ui-kit/lib/types'
-import { assertValidity as sharedAssertValidity, checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import { checkValidity, FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
 const getParamsFromQueryKey = <TKey extends readonly unknown[], TParams>(queryKey: TKey) =>
   Object.fromEntries(queryKey.flatMap((i) => (i && typeof i === 'object' ? Object.entries(i) : []))) as TParams
@@ -20,50 +20,40 @@ export function queryFactory<
 >({
   queryFn: runQuery,
   queryKey,
-  staleTime,
-  gcTime,
+  staleTime = '5m',
+  gcTime = '10m',
   refetchInterval,
   validationSuite,
   dependencies,
-  refetchOnWindowFocus,
-  refetchOnMount,
+  ...options
 }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
   TQuery,
   TKey,
   TData,
   TParams
 > {
-  const isEnabled = (params: TParams) =>
-    checkValidity(validationSuite, params) && !dependencies?.(params).some((key) => !queryClient.getQueryData(key))
-
-  const queryFn = ({ queryKey }: QueryFunctionContext<TKey>) => {
-    logQuery(queryKey)
-    return runQuery(getParamsFromQueryKey(queryKey))
-  }
-
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),
-      queryFn,
-      gcTime: REFRESH_INTERVAL[gcTime ?? '10m'],
-      staleTime: REFRESH_INTERVAL[staleTime ?? '5m'],
-      refetchInterval: refetchInterval ? REFRESH_INTERVAL[refetchInterval] : undefined,
-      enabled: enabled && isEnabled(params),
-      refetchOnWindowFocus,
-      refetchOnMount,
+      queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
+        logQuery(queryKey, 'from-factory')
+        return runQuery(getParamsFromQueryKey(queryKey))
+      },
+      gcTime: REFRESH_INTERVAL[gcTime],
+      staleTime: REFRESH_INTERVAL[staleTime],
+      refetchInterval: refetchInterval && REFRESH_INTERVAL[refetchInterval],
+      enabled:
+        enabled &&
+        checkValidity(validationSuite, params) &&
+        !dependencies?.(params).some((key) => !queryClient.getQueryData(key)),
+      ...options,
     })
-
   return {
-    assertValidity: (data: TParams, fields?: TField[]) =>
-      sharedAssertValidity(validationSuite, data, fields) as unknown as TQuery,
-    checkValidity: (data: TParams, fields?: TField[]) => checkValidity(validationSuite, data, fields),
-    isEnabled,
     queryKey,
     getQueryOptions,
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
-    prefetchQuery: (params, staleTime = 0) =>
-      queryClient.prefetchQuery({ queryKey: queryKey(params), queryFn, staleTime }),
+    prefetchQuery: (params, staleTime = 0) => queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
     fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
     useQuery: (params, condition) => useQuery(getQueryOptions(params, condition)),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
