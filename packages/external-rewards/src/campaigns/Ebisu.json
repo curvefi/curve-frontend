@@ -1,0 +1,21 @@
+{
+  "campaignName": "xEBISU",
+  "platform": "Ebisu",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "xebisu.png",
+  "dashboardLink": "https://ebisu.money/xebisu/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for xEBISU rewards (xEBISU is a tokenized point). Visit Ebisu dapp to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xD25f2cC6819FBD34641712122397eFbaf9b6A6e2",
+      "network": "ethereum",
+      "multiplier": "5x",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

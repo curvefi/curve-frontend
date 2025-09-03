@@ -8,7 +8,7 @@ import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
-import { formatNumber, convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
+import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
@@ -61,10 +61,8 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           title={t`Created`}
           data={
             <StyledMetricsColumnData>
-              {!dataLoading &&
-                formatDateFromTimestamp(
-                  convertToLocaleTimestamp(new Date(gaugeData?.creation_date || '').getTime() / 1000),
-                )}
+              {gaugeData &&
+                formatDateFromTimestamp(convertToLocaleTimestamp(new Date(gaugeData.creation_date).getTime() / 1000))}
             </StyledMetricsColumnData>
           }
         />
