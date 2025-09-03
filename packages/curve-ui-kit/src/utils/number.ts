@@ -92,9 +92,8 @@ type DefaultFormatterOptions = Pick<
  * - Returns "∞" for positive infinity values
  * - Returns "-∞" for negative infinity values
  * - Returns "0" for exactly zero values regardless of decimal configuration
- * - For positive values smaller than 0.000000001, returns "<0.000000001"
- * - For negative values between -0.000000001 and 0, returns ">-0.000000001"
- * - For values <= 0.0009 (absolute), uses 4 significant digits for better precision
+ * - For positive values smaller than 0.00001, returns "<0.00001"
+ * - For negative values between -0.0001 and 0, returns ">-0.0001"
  * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
  * - When `showDecimalIfSmallNumberOnly` is true, numbers with absolute value > 10 are formatted with 0 decimals
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
@@ -109,15 +108,13 @@ export const defaultNumberFormatter = (
   if (value === 0) return '0'
 
   const absValue = Math.abs(value)
-  if (absValue > 0 && absValue < 0.000000001) return value > 0 ? '<0.000000001' : '>-0.000000001'
-  const maximumSignificantDigits = absValue <= 0.0009 ? 4 : undefined
+  if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
 
   decimals = showDecimalIfSmallNumberOnly && absValue > 10 ? 0 : decimals
 
   const formatted = value.toLocaleString(LOCALE, {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-    maximumSignificantDigits,
     useGrouping,
     trailingZeroDisplay,
   })

@@ -229,23 +229,15 @@ describe('defaultNumberFormatter', () => {
     })
 
     it('handles extremely small positive numbers', () => {
-      expect(defaultNumberFormatter(0.0000000005)).toBe('<0.000000001')
-      expect(defaultNumberFormatter(0.0000000001)).toBe('<0.000000001')
-      expect(defaultNumberFormatter(1e-10)).toBe('<0.000000001')
+      expect(defaultNumberFormatter(0.000005)).toBe('<0.00001')
+      expect(defaultNumberFormatter(0.00001)).not.toBe('<0.00001')
+      expect(defaultNumberFormatter(1e-10)).toBe('<0.00001')
     })
 
     it('handles extremely small negative numbers', () => {
-      expect(defaultNumberFormatter(-0.0000000005)).toBe('>-0.000000001')
-      expect(defaultNumberFormatter(-0.0000000001)).toBe('>-0.000000001')
-      expect(defaultNumberFormatter(-1e-10)).toBe('>-0.000000001')
-    })
-
-    it('uses 4 significant digits for small numbers <= 0.0009 (absolute)', () => {
-      expect(defaultNumberFormatter(0.0005)).toBe('0.0005')
-      expect(defaultNumberFormatter(0.0009)).toBe('0.0009')
-      expect(defaultNumberFormatter(0.00012)).toBe('0.00012')
-      expect(defaultNumberFormatter(-0.0005)).toBe('-0.0005')
-      expect(defaultNumberFormatter(-0.0009)).toBe('-0.0009')
+      expect(defaultNumberFormatter(-0.000005)).toBe('>-0.00001')
+      expect(defaultNumberFormatter(-0.00001)).not.toBe('>-0.00001')
+      expect(defaultNumberFormatter(-1e-10)).toBe('>-0.00001')
     })
 
     it('switches to significant digits when formatted result would misleadingly show zero', () => {
@@ -253,12 +245,6 @@ describe('defaultNumberFormatter', () => {
       expect(defaultNumberFormatter(0.001, { decimals: 2 })).toBe('0.001')
       expect(defaultNumberFormatter(-0.001, { decimals: 2 })).toBe('-0.001')
       expect(defaultNumberFormatter(0.0001, { decimals: 2 })).toBe('0.0001')
-    })
-
-    it('handles boundary cases around 0.0009 threshold', () => {
-      expect(defaultNumberFormatter(0.001)).toBe('0.001') // 0.001 is above the 0.0009 threshold, so uses normal formatting which happens to be the same
-      expect(defaultNumberFormatter(0.0009)).toBe('0.0009') // Uses significant digits
-      expect(defaultNumberFormatter(0.00089)).toBe('0.00089') // Uses significant digits
     })
   })
 
@@ -535,8 +521,8 @@ describe('formatNumber', () => {
     })
 
     it('handles very small numbers', () => {
-      expect(formatNumber(0.0000000001, { abbreviate: true })).toBe('<0.000000001')
-      expect(formatNumber(-0.0000000001, { abbreviate: true })).toBe('>-0.000000001')
+      expect(formatNumber(0.0000000001, { abbreviate: true })).toBe('<0.00001')
+      expect(formatNumber(-0.0000000001, { abbreviate: true })).toBe('>-0.00001')
     })
 
     it('handles NaN', () => {
