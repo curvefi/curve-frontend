@@ -33,7 +33,6 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   }
 
   const usdValue = usdPrice && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
-  const usdTooltip = usdPrice && formatNumber(value * usdPrice, { currency: 'USD' })
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
