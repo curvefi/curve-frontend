@@ -42,6 +42,7 @@ export type QueryFactoryInput<
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
   validationSuite: Suite<TField, TGroup, TCallback>
   queryFn: (params: TValidParams) => Promise<TData>
+  gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL
   refetchInterval?: keyof typeof REFRESH_INTERVAL
   dependencies?: (params: TParams) => QueryKey[]
@@ -58,9 +59,6 @@ export type QueryFactoryOutput<
 > = {
   getQueryOptions: (params: TParams, enabled?: boolean) => UseQueryOptions<TData, TError, TData, TKey>
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  checkValidity: (data: TParams) => boolean
-  isEnabled: (data: TParams) => boolean
-  assertValidity: (data: TParams) => TValidParams
   useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData, TError>
   getQueryData: (params: TParams) => TData | undefined
   setQueryData: (params: TParams, data: TData) => void
