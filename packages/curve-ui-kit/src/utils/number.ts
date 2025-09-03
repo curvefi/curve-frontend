@@ -96,7 +96,7 @@ type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGroupi
  */
 export const defaultNumberFormatter = (
   value: number,
-  { decimals, useGrouping, trailingZeroDisplay = 'stripIfInteger' }: DefaultFormatterOptions = {},
+  { decimals = 2, useGrouping, trailingZeroDisplay = 'stripIfInteger' }: DefaultFormatterOptions = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
@@ -193,9 +193,7 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
   }
 
   const abbreviatedValue = abbreviate ? abbreviateNumber(value) : value
-  const mainValue = formatter
-    ? formatter(abbreviatedValue)
-    : defaultNumberFormatter(abbreviatedValue, { ...options, decimals: options.decimals ?? 2 })
+  const mainValue = formatter ? formatter(abbreviatedValue) : defaultNumberFormatter(abbreviatedValue, options)
 
   return {
     prefix: position === 'prefix' ? symbol : '',
