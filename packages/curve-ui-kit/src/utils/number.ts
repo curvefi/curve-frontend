@@ -69,7 +69,12 @@ export function abbreviateNumber(value: number): number {
   return value
 }
 
-type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGrouping' | 'trailingZeroDisplay'>
+/**
+ * We allow custom Intl.NumberFormatOptions options in our default number formatter,
+ * but we have our own formatting with regards to units, style and abbreviation.
+ * Hence we need to make sure those settings for Intl.NumberFormatOptions are disabled.
+ */
+const formatterReset = { style: undefined, currency: undefined, notation: undefined, unit: undefined }
 
 /**
  * Default formatter for numeric values with comprehensive edge case handling.
@@ -97,7 +102,7 @@ type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGroupi
  */
 export const defaultNumberFormatter = (
   value: number,
-  { decimals = 2, useGrouping, trailingZeroDisplay = 'stripIfInteger' }: DefaultFormatterOptions = {},
+  { decimals = 2, trailingZeroDisplay = 'stripIfInteger', ...options }: Partial<NumberFormatOptions> = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
@@ -108,10 +113,11 @@ export const defaultNumberFormatter = (
   if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
 
   const formatted = value.toLocaleString(LOCALE, {
-    minimumFractionDigits: decimals,
+    minimumFractionDigits: Math.min(decimals, options.maximumFractionDigits ?? Infinity),
     maximumFractionDigits: decimals,
-    useGrouping,
     trailingZeroDisplay,
+    ...options,
+    ...formatterReset,
   })
 
   /*
@@ -129,7 +135,8 @@ export const defaultNumberFormatter = (
   if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
     return value.toLocaleString(LOCALE, {
       maximumSignificantDigits: 6,
-      useGrouping,
+      ...options,
+      ...formatterReset,
     })
   }
 
@@ -158,7 +165,7 @@ export type NumberFormatOptions = {
   abbreviate: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
-} & Pick<Intl.NumberFormatOptions, 'useGrouping' | 'trailingZeroDisplay'>
+} & Intl.NumberFormatOptions
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
