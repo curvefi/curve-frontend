@@ -91,7 +91,8 @@ type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGroupi
  * - Returns "0" for exactly zero values regardless of decimal configuration
  * - For positive values smaller than 0.00001, returns "<0.00001"
  * - For negative values between -0.0001 and 0, returns ">-0.0001"
- * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
+ * - True integer numbers will have no decimals, unless trailingZeroDisplay is set to 'auto'
+ * - When formatted output would show "0.00", "1.00", or just "0"/"1" but value has more precision, switches to 6 significant digits
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
@@ -113,11 +114,21 @@ export const defaultNumberFormatter = (
     trailingZeroDisplay,
   })
 
-  // If the formatted result is "0" or "0.00" but value isn't actually zero
-  if (value !== 0 && (formatted === '0' || formatted === '-0' || /^-?0\.0+$/.test(formatted))) {
-    // Use significant digits instead
+  /*
+   * If the formatted result loses important precision for small values, we need to show more digits.
+   * This happens when the value is non-zero but the formatted result shows as "0", "-0", or has only zeros
+   * after the decimal point (e.g., "0.00", "-0.000", "1.00" when the actual value is 1.0001).
+   * This is common with stablecoin values where precision matters.
+   *
+   * Examples:
+   * - formatNumber(0.0001, { decimals: 2 }) would show "0.00" but we want "0.0001"
+   * - formatNumber(-0.000123, { decimals: 3 }) would show "-0.000" but we want "-0.000123"
+   * - formatNumber(1.0001, { decimals: 2 }) would show "1.00" but we want "1.0001"
+   * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
+   */
+  if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
     return value.toLocaleString(LOCALE, {
-      maximumSignificantDigits: 4,
+      maximumSignificantDigits: 6,
       useGrouping,
     })
   }

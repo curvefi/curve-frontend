@@ -238,11 +238,36 @@ describe('defaultNumberFormatter', () => {
       expect(defaultNumberFormatter(-1e-10)).toBe('>-0.00001')
     })
 
-    it('switches to significant digits when formatted result would misleadingly show zero', () => {
-      // Very small number that would format to "0.00" with 2 decimals
-      expect(defaultNumberFormatter(0.001)).toBe('0.001')
-      expect(defaultNumberFormatter(-0.001)).toBe('-0.001')
-      expect(defaultNumberFormatter(0.0001)).toBe('0.0001')
+    it('switches to significant digits when formatted result would misleadingly show zero or one', () => {
+      // Values that would format to "0.00" with 2 decimals should use significant digits
+      expect(defaultNumberFormatter(0.001, { decimals: 2 })).toBe('0.001')
+      expect(defaultNumberFormatter(-0.001, { decimals: 2 })).toBe('-0.001')
+      expect(defaultNumberFormatter(0.0001, { decimals: 2 })).toBe('0.0001')
+      expect(defaultNumberFormatter(-0.0001, { decimals: 2 })).toBe('-0.0001')
+
+      // Values that would format to "0.000" with 3 decimals should use significant digits
+      expect(defaultNumberFormatter(0.0001, { decimals: 3 })).toBe('0.0001')
+      expect(defaultNumberFormatter(-0.000123, { decimals: 3 })).toBe('-0.000123')
+
+      // Values just below 1 that would format to "1.00" but have more precision
+      expect(defaultNumberFormatter(0.99997, { decimals: 2 })).toBe('0.99997')
+      expect(defaultNumberFormatter(-0.99997, { decimals: 2 })).toBe('-0.99997')
+      expect(defaultNumberFormatter(0.999999, { decimals: 3 })).toBe('0.999999')
+      expect(defaultNumberFormatter(-0.999999, { decimals: 3 })).toBe('-0.999999')
+
+      // Values that would format to "1.00" but have more precision
+      expect(defaultNumberFormatter(1.0001, { decimals: 2 })).toBe('1.0001')
+      expect(defaultNumberFormatter(-1.0001, { decimals: 2 })).toBe('-1.0001')
+
+      // Values that would format to "1" with 0 decimals but have fractional parts
+      expect(defaultNumberFormatter(1.0001, { decimals: 0 })).toBe('1.0001')
+      expect(defaultNumberFormatter(-1.0001, { decimals: 0 })).toBe('-1.0001')
+      expect(defaultNumberFormatter(0.99997, { decimals: 0 })).toBe('0.99997')
+      expect(defaultNumberFormatter(-0.99997, { decimals: 0 })).toBe('-0.99997')
+
+      // Values that would format to "1.000" with 3 decimals but have more precision
+      expect(defaultNumberFormatter(1.00001, { decimals: 3 })).toBe('1.00001')
+      expect(defaultNumberFormatter(-1.00001, { decimals: 3 })).toBe('-1.00001')
     })
   })
 
