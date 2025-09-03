@@ -14,7 +14,7 @@ const TableRow = ({ holder, sortBy, labels, gridTemplateColumns }: TableRowProps
   <TableRowWrapper columns={labels.length} gridTemplateColumns={gridTemplateColumns}>
     {labels.map((label, index) => (
       <TableData key={index} className={sortBy.key === label.key ? 'active left-padding' : 'left-padding'}>
-        {formatNumber(holder[label.key], { showDecimalIfSmallNumberOnly: true })}
+        {formatNumber(holder[label.key])}
       </TableData>
     ))}
   </TableRowWrapper>

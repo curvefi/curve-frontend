@@ -259,36 +259,6 @@ describe('defaultNumberFormatter', () => {
     })
   })
 
-  describe('showDecimalIfSmallNumberOnly option', () => {
-    it('shows decimals for numbers with absolute value ≤ 10', () => {
-      expect(defaultNumberFormatter(5.5, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('5.50')
-      expect(defaultNumberFormatter(10.0, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('10.00')
-      expect(defaultNumberFormatter(-5.5, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('-5.50')
-      expect(defaultNumberFormatter(-10.0, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('-10.00')
-    })
-
-    it('hides decimals for numbers with absolute value > 10', () => {
-      expect(defaultNumberFormatter(10.1, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('10')
-      expect(defaultNumberFormatter(15.5, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('16')
-      expect(defaultNumberFormatter(100.99, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('101')
-      expect(defaultNumberFormatter(-10.1, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('-10')
-      expect(defaultNumberFormatter(-15.5, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('-16')
-      expect(defaultNumberFormatter(-100.99, { decimals: 2, showDecimalIfSmallNumberOnly: true })).toBe('-101')
-    })
-
-    it('respects decimals setting when showDecimalIfSmallNumberOnly is false', () => {
-      expect(defaultNumberFormatter(5.5, { decimals: 2, showDecimalIfSmallNumberOnly: false })).toBe('5.50')
-      expect(defaultNumberFormatter(15.5, { decimals: 2, showDecimalIfSmallNumberOnly: false })).toBe('15.50')
-      expect(defaultNumberFormatter(100.99, { decimals: 2, showDecimalIfSmallNumberOnly: false })).toBe('100.99')
-    })
-
-    it('works with different decimal counts', () => {
-      expect(defaultNumberFormatter(5.123456, { decimals: 4, showDecimalIfSmallNumberOnly: true })).toBe('5.1235')
-      expect(defaultNumberFormatter(15.123456, { decimals: 4, showDecimalIfSmallNumberOnly: true })).toBe('15')
-      expect(defaultNumberFormatter(5.123456, { decimals: 0, showDecimalIfSmallNumberOnly: true })).toBe('5')
-    })
-  })
-
   describe('Infinity handling', () => {
     it('formats Infinity values', () => {
       const result = defaultNumberFormatter(Infinity)

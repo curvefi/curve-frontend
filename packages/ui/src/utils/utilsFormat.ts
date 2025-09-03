@@ -9,7 +9,6 @@ export const BN = BigNumber
 export interface NumberFormatOptions extends Intl.NumberFormatOptions {
   defaultValue?: string // value to display when it is undefined || null || empty string
   showAllFractionDigits?: boolean // do not hide any decimal digits
-  showDecimalIfSmallNumberOnly?: boolean // show decimal if value is < 10
   decimals?: number // number of decimal places to show
 }
 

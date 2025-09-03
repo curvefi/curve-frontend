@@ -69,10 +69,7 @@ export function abbreviateNumber(value: number): number {
   return value
 }
 
-type DefaultFormatterOptions = Pick<
-  NumberFormatOptions,
-  'decimals' | 'showDecimalIfSmallNumberOnly' | 'useGrouping' | 'trailingZeroDisplay'
->
+type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGrouping' | 'trailingZeroDisplay'>
 
 /**
  * Default formatter for numeric values with comprehensive edge case handling.
@@ -95,12 +92,11 @@ type DefaultFormatterOptions = Pick<
  * - For positive values smaller than 0.00001, returns "<0.00001"
  * - For negative values between -0.0001 and 0, returns ">-0.0001"
  * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
- * - When `showDecimalIfSmallNumberOnly` is true, numbers with absolute value > 10 are formatted with 0 decimals
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
   value: number,
-  { decimals, useGrouping, trailingZeroDisplay, showDecimalIfSmallNumberOnly }: DefaultFormatterOptions = {},
+  { decimals, useGrouping, trailingZeroDisplay }: DefaultFormatterOptions = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
@@ -109,8 +105,6 @@ export const defaultNumberFormatter = (
 
   const absValue = Math.abs(value)
   if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
-
-  decimals = showDecimalIfSmallNumberOnly && absValue > 10 ? 0 : decimals
 
   const formatted = value.toLocaleString(LOCALE, {
     minimumFractionDigits: decimals,
@@ -149,8 +143,6 @@ export type NumberFormatOptions = {
   unit?: Unit | undefined
   /** The number of decimals the value should contain (when no custom formatter is given) */
   decimals?: number
-  /** Only show decimals if value < 10 */
-  showDecimalIfSmallNumberOnly?: boolean
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
   /** Optional formatter for value */
@@ -245,12 +237,6 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
  *
  * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.5000"
- *
- * formatNumber(5.5, { decimals: 2, showDecimalIfSmallNumberOnly: true, abbreviate: false })
- * // Returns "5.50" (shows decimals because 5.5 ≤ 10)
- *
- * formatNumber(25.5, { decimals: 2, showDecimalIfSmallNumberOnly: true, abbreviate: false })
- * // Returns "26" (no decimals because 25.5 > 10)
  */
 export const formatNumber = (value: number, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)

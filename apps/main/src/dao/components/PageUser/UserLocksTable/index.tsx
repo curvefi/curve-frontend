@@ -57,7 +57,7 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
         <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
           <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(Number(lock.amount), { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(Number(lock.amount))}
           </TableData>
           <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
             {formatDate(lock.timestamp)}
