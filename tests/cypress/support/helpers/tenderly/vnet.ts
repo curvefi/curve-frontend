@@ -1,39 +1,68 @@
+import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
+import { DeepPartial } from '@ui-kit/types/util'
 import { createTestWagmiConfig } from '../wagmi'
+import { tenderlyAccount } from './account'
 import {
-  createVirtualTestnet,
-  deleteVirtualTestnets,
-  tenderlyAccount,
+  createVirtualTestnet as createVirtualTestnetRequest,
   type CreateVirtualTestnetOptions,
   type CreateVirtualTestnetResponse,
-  type DeleteVirtualTestnetsOptions,
-} from './'
+} from './vnet-create'
+import { deleteVirtualTestnet as deleteVirtualTestnetRequest } from './vnet-delete'
+import {
+  forkVirtualTestnet as forkVirtualTestnetRequest,
+  type ForkVirtualTestnetOptions,
+  type ForkVirtualTestnetResponse,
+} from './vnet-fork'
+import {
+  getVirtualTestnet as getVirtualTestnetRequest,
+  type GetVirtualTestnetOptions,
+  type GetVirtualTestnetResponse,
+} from './vnet-get'
 
-export function createTestWagmiConfigFromVNet(vnet: CreateVirtualTestnetResponse) {
+export function createTestWagmiConfigFromVNet({
+  vnet,
+  privateKey = generatePrivateKey(),
+}: {
+  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
+  privateKey?: Hex
+}) {
   const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
   const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
 
   if (!rpcUrl) throw new Error('RPC URL is undefined')
 
-  return createTestWagmiConfig({
-    privateKey: generatePrivateKey(),
-    rpcUrl,
-    explorerUrl,
-  })
+  return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl })
 }
 
 /**
- * Creates a deep partial type that makes all properties optional recursively,
- * while preserving function types as-is
+ * Creates a Cypress test helper for getting virtual testnets using Tenderly.
  *
- * @template T - The type to make deeply partial
+ * @param opts - A function that returns configuration options for the virtual testnet
+ * @returns A function that returns the fetched virtual testnet response data
+ *
+ * @example
+ * ```typescript
+ * const getVirtualNetwork = withVirtualTestnet(() => ({ vnetid: 'your-vnet-id' }));
+ *
+ * it('should work with virtual testnet', () => {
+ *   const virtualNetwork = getVirtualNetwork()
+ *   // Use vnet in your test
+ * })
+ * ```
  */
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? (T[P] extends (...args: any[]) => any ? T[P] : DeepPartial<T[P]>) : T[P]
+export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
+  let vnet: GetVirtualTestnetResponse
+
+  before(() => {
+    getVirtualTestnetRequest({ ...tenderlyAccount, ...opts() }).then((fetched) => (vnet = fetched))
+  })
+
+  return () => vnet
 }
 
 /**
- * Creates a Cypress test helper that manages a Tenderly virtual testnet lifecycle
+ * Creates a Cypress test helper that creates and manages a Tenderly virtual testnet lifecycle
  *
  * @param opts - Function that returns testnet configuration options based on UUID
  * @returns Function that returns the created virtual testnet instance
@@ -51,15 +80,10 @@ export type DeepPartial<T> = {
  * })
  * ```
  */
-export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions>) {
+export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions>) {
   let vnet: CreateVirtualTestnetResponse
 
   before(() => {
-    if (!tenderlyAccount) {
-      cy.log('Tenderly credentials not configured, skipping virtual testnet creation')
-      return
-    }
-
     const uuid = Cypress._.random(0, 1e6)
 
     const defaultOpts: CreateVirtualTestnetOptions = {
@@ -76,17 +100,56 @@ export function withVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVir
 
     const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
 
-    createVirtualTestnet({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
+    createVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
   })
 
   after(() => {
     if (!vnet) return
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
+  })
 
-    const deleteOpts: DeleteVirtualTestnetsOptions = {
-      vnet_ids: [vnet.id],
+  return () => vnet
+}
+
+/**
+ * Creates a Cypress test helper that forks and manages a Tenderly virtual testnet lifecycle
+ *
+ * @param opts - Function that returns fork configuration options based on UUID
+ * @returns Function that returns the forked virtual testnet instance
+ *
+ * @example
+ * ```typescript
+ * const getVirtualNetwork = forkVirtualTestnet((uuid) => ({
+ *   vnet_id: 'parent-vnet-id',
+ *   display_name: `Forked Testnet ${uuid}`
+ * }))
+ *
+ * it('should work with forked virtual testnet', () => {
+ *   const virtualNetwork = getVirtualNetwork()
+ *   // Use vnet in your test
+ * })
+ * ```
+ */
+export function forkVirtualTestnet(
+  opts: (uuid: number) => DeepPartial<ForkVirtualTestnetOptions> & Pick<ForkVirtualTestnetOptions, 'vnet_id'>,
+) {
+  let vnet: ForkVirtualTestnetResponse
+
+  before(() => {
+    const uuid = Cypress._.random(0, 1e6)
+
+    const defaultOpts: Partial<ForkVirtualTestnetOptions> = {
+      wait: true,
     }
 
-    deleteVirtualTestnets({ ...tenderlyAccount!, ...deleteOpts })
+    const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
+
+    forkVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((forked) => (vnet = forked))
+  })
+
+  after(() => {
+    if (!vnet) return
+    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
   })
 
   return () => vnet
