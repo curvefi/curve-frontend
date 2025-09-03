@@ -11,6 +11,8 @@ describe('Basic Access Test', () => {
     cy.visit('/dex/ethereum/pools', { failOnStatusCode: false })
     cy.wait('@error')
     cy.get('[data-testid="error-title"]').should('contain.text', 'Unexpected Error')
+    cy.get('[data-testid="retry-error-button"]').click()
+    cy.wait('@error') // error called again
   })
 
   it(`should open the Main DApp successfully at ${path}`, () => {
