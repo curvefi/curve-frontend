@@ -28,11 +28,11 @@ const TopHoldersBarChartTooltip = ({ active, payload }: TooltipProps<ValueType, 
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`veCRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(weight, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
+            <TooltipData>{formatNumber(weight)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Locked CRV`}</TooltipDataTitle>
-            <TooltipData>{formatNumber(locked, { showDecimalIfSmallNumberOnly: true })}</TooltipData>
+            <TooltipData>{formatNumber(locked)}</TooltipData>
           </TooltipColumn>
           <TooltipColumn>
             <TooltipDataTitle>{t`Unlock Date`}</TooltipDataTitle>

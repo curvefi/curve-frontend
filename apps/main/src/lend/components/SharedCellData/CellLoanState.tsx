@@ -19,8 +19,8 @@ const CellLoanState = ({ userActiveKey, market }: { userActiveKey: string; marke
     return Math.abs(Number(deposited_collateral) - Number(current_collateral_estimation)).toString()
   }, [current_collateral_estimation, deposited_collateral])
 
-  const depositedCollateral = formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })
-  const currentCollateralEst = formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })
+  const depositedCollateral = formatNumber(deposited_collateral)
+  const currentCollateralEst = formatNumber(current_collateral_estimation)
 
   return (
     <>

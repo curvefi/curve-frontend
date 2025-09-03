@@ -33,10 +33,9 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   }
 
   const usdValue = usdPrice && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
-  const usdTooltip = usdPrice && formatNumber(value * usdPrice, { currency: 'USD' })
   return (
     <Stack direction="column" spacing={1} alignItems="end">
-      <Tooltip title={`${formatNumber(value, { showAllFractionDigits: true })} ${symbol}`}>
+      <Tooltip title={`${formatNumber(value, { decimals: 5 })} ${symbol}`}>
         <WithSkeleton loading={isLoading}>
           <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
             <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
@@ -44,7 +43,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
           </Stack>
         </WithSkeleton>
       </Tooltip>
-      <Tooltip title={formatNumber(usdValue, { currency: 'USD', showAllFractionDigits: true })}>
+      <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
         <WithSkeleton loading={isLoading || isUsdRateLoading}>
           <Typography variant="bodySRegular" color="text.secondary">
             {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
