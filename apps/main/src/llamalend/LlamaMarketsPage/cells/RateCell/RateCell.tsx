@@ -5,8 +5,8 @@ import Typography from '@mui/material/Typography'
 import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { formatNumber } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../../columns.enum'
-import { formatPercent } from '../cell.format'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
@@ -46,7 +46,15 @@ export const RateCell = ({
       <Tooltip market={market}>
         <Stack gap={Spacing.xs} alignItems="end">
           <Typography variant="tableCellMBold" color="textPrimary">
-            {formatPercent(rate)}
+            {rate == null
+              ? '—'
+              : formatNumber(rate, {
+                  unit: 'percentage',
+                  abbreviate: true,
+                  // Disregard the precision edge case around 0 and 1 and force using 2 decimals
+                  minimumFractionDigits: 2,
+                  maximumSignificantDigits: undefined,
+                })}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />
