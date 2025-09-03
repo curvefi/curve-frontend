@@ -8,7 +8,6 @@ export const BN = BigNumber
 // see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat/NumberFormat
 export interface NumberFormatOptions extends Intl.NumberFormatOptions {
   defaultValue?: string // value to display when it is undefined || null || empty string
-  showAllFractionDigits?: boolean // do not hide any decimal digits
   decimals?: number // number of decimal places to show
 }
 
@@ -43,14 +42,9 @@ export function formatNumber(val: number | string | undefined | null, options?: 
         ? 'percentage'
         : undefined
 
-  const decimals = options?.showAllFractionDigits
-    ? (new BigNumber(Number(val)).toString().split('.')[1]?.length ?? 0)
-    : options?.decimals
-
   return newFormatNumber(Number(val), {
     ...options,
     unit,
     abbreviate: options?.notation === 'compact',
-    decimals,
   })
 }

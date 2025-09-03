@@ -44,12 +44,12 @@ const MarketParameters = ({
         { label: t`Max LTV`, value: _getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, isAdvance: true, tooltip: t`Max possible loan at N=4` },
       ],
       [
-        { label: t`Base price`, value: prices?.basePrice, formatOptions: { showAllFractionDigits: true }, title: t`Prices`, isError: pricesError },
-        { label: t`Oracle price`, value: prices?.oraclePrice, formatOptions: { showAllFractionDigits: true }, isError: pricesError },
+        { label: t`Base price`, value: prices?.basePrice, formatOptions: { decimals: 5 }, title: t`Prices`, isError: pricesError },
+        { label: t`Oracle price`, value: prices?.oraclePrice, formatOptions: { decimals: 5 }, isError: pricesError },
       ],
     ] : [
       [
-        { label: t`Price per share`, value: pricePerShare, formatOptions: { showAllFractionDigits: true }, isRow: true, isError: pricePerShareError },
+        { label: t`Price per share`, value: pricePerShare, formatOptions: { decimals: 5 }, isRow: true, isError: pricePerShareError },
       ]
     ]
 

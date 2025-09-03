@@ -205,7 +205,7 @@ const LoanSelfLiquidation = ({
   return (
     <>
       <InputReadOnly title={t`Self-liquidation amount`}>
-        {formatNumber(liquidationAmt, { showAllFractionDigits: true, defaultValue: '-' })}
+        {formatNumber(liquidationAmt, { decimals: 5, defaultValue: '-' })}
       </InputReadOnly>
 
       {/* detail info */}
