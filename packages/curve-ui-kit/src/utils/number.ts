@@ -165,7 +165,7 @@ export type NumberFormatOptions = {
   abbreviate: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
-} & Intl.NumberFormatOptions
+} & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation'>
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
