@@ -80,8 +80,6 @@ type DefaultFormatterOptions = Pick<
  * Formats numbers to a readable string representation with proper handling of:
  * - Invalid inputs (NaN, Infinity)
  * - Zero values and extremely small (negative) numbers that would display misleadingly as zero
- * - Extremely small numbers that would display misleadingly as zero
- * - Numbers requiring significant digits for proper precision display
  * - Conditional decimal display based on number magnitude
  *
  * @param value - The numeric value to format
