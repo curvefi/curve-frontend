@@ -163,7 +163,6 @@ const FormVecrv = () => {
                 <strong>
                   {formatNumber(veCrvPct, {
                     style: 'percent',
-                    trailingZeroDisplay: 'stripIfInteger',
                     defaultValue: '-',
                   })}
                 </strong>{' '}

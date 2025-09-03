@@ -250,8 +250,9 @@ describe('defaultNumberFormatter', () => {
 
   describe('Intl.NumberFormat options', () => {
     it('handles trailingZeroDisplay option', () => {
-      expect(defaultNumberFormatter(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })).toBe('12.5000') // stripIfInteger only removes trailing zeros if result is integer
-      expect(defaultNumberFormatter(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })).toBe('12')
+      expect(defaultNumberFormatter(12.5, { decimals: 4 })).toBe('12.5000')
+      expect(defaultNumberFormatter(12.0, { decimals: 4 })).toBe('12')
+      expect(defaultNumberFormatter(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })).toBe('12.0000')
     })
 
     it('handles useGrouping false', () => {
@@ -297,7 +298,7 @@ describe('decomposeNumber', () => {
       const result = decomposeNumber(1500, { abbreviate: false })
       expect(result).toEqual({
         prefix: '',
-        mainValue: '1,500.00',
+        mainValue: '1,500',
         suffix: '',
         scaleSuffix: '',
       })
@@ -307,7 +308,7 @@ describe('decomposeNumber', () => {
       const result = decomposeNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })
       expect(result).toEqual({
         prefix: '$',
-        mainValue: '1.00',
+        mainValue: '1',
         suffix: '',
         scaleSuffix: 'm',
       })
@@ -317,7 +318,7 @@ describe('decomposeNumber', () => {
       const result = decomposeNumber(50, { unit: { symbol: '%', position: 'suffix' }, abbreviate: false })
       expect(result).toEqual({
         prefix: '',
-        mainValue: '50.00',
+        mainValue: '50',
         suffix: '%',
         scaleSuffix: '',
       })
@@ -348,7 +349,7 @@ describe('decomposeNumber', () => {
 
     it('handles useGrouping option', () => {
       const result = decomposeNumber(1234567, { abbreviate: false, useGrouping: false })
-      expect(result.mainValue).toBe('1234567.00')
+      expect(result.mainValue).toBe('1234567')
     })
   })
 
@@ -428,23 +429,23 @@ describe('formatNumber', () => {
   describe('basic functionality', () => {
     it('formats with default options (abbreviation enabled)', () => {
       expect(formatNumber(1234.56, { abbreviate: true })).toBe('1.23k')
-      expect(formatNumber(1000000, { abbreviate: true })).toBe('1.00m')
+      expect(formatNumber(1000000, { abbreviate: true })).toBe('1m')
       expect(formatNumber(2500000000, { abbreviate: true })).toBe('2.50b')
     })
 
     it('formats without abbreviation', () => {
-      expect(formatNumber(1500, { abbreviate: false })).toBe('1,500.00')
+      expect(formatNumber(1500, { abbreviate: false })).toBe('1,500')
       expect(formatNumber(1234567.89, { abbreviate: false, useGrouping: true })).toBe('1,234,567.89')
     })
 
     it('formats with currency prefix', () => {
-      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
-      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1.00k')
+      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1m')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1k')
     })
 
     it('formats with percentage suffix', () => {
-      expect(formatNumber(50, { unit: { symbol: '%', position: 'suffix' }, abbreviate: false })).toBe('50.00%')
-      expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50.00%')
+      expect(formatNumber(50, { unit: { symbol: '%', position: 'suffix' }, abbreviate: false })).toBe('50%')
+      expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50%')
     })
 
     it('combines all components correctly', () => {
@@ -462,15 +463,14 @@ describe('formatNumber', () => {
     })
 
     it('handles trailingZeroDisplay', () => {
-      expect(formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger', abbreviate: false })).toBe(
-        '12.5000',
-      ) // stripIfInteger only removes trailing zeros if result is integer
-      expect(formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger', abbreviate: false })).toBe('12')
+      expect(formatNumber(12.5, { decimals: 4, abbreviate: false })).toBe('12.5000')
+      expect(formatNumber(12.0, { decimals: 4, abbreviate: false })).toBe('12')
+      expect(defaultNumberFormatter(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })).toBe('12.0000')
     })
 
     it('handles useGrouping', () => {
-      expect(formatNumber(1234567, { abbreviate: false, useGrouping: false })).toBe('1234567.00')
-      expect(formatNumber(1234567, { abbreviate: false, useGrouping: true })).toBe('1,234,567.00')
+      expect(formatNumber(1234567, { abbreviate: false, useGrouping: false })).toBe('1234567')
+      expect(formatNumber(1234567, { abbreviate: false, useGrouping: true })).toBe('1,234,567')
     })
 
     it('handles custom formatter', () => {
@@ -487,7 +487,7 @@ describe('formatNumber', () => {
 
     it('handles negative numbers', () => {
       expect(formatNumber(-1500, { abbreviate: true })).toBe('-1.50k')
-      expect(formatNumber(-1000000, { abbreviate: true, unit: 'dollar' })).toBe('$-1.00m')
+      expect(formatNumber(-1000000, { abbreviate: true, unit: 'dollar' })).toBe('$-1m')
     })
 
     it('handles very small numbers', () => {
@@ -518,31 +518,29 @@ describe('formatNumber', () => {
 
   describe('unit types', () => {
     it('handles all predefined unit types', () => {
-      expect(formatNumber(1000, { abbreviate: true, unit: 'none' })).toBe('1.00k')
-      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1.00k')
-      expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50.00%')
-      expect(formatNumber(20000, { unit: 'multiplier', abbreviate: false })).toBe('20,000.00x')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'none' })).toBe('1k')
+      expect(formatNumber(1000, { abbreviate: true, unit: 'dollar' })).toBe('$1k')
+      expect(formatNumber(50, { unit: 'percentage', abbreviate: false })).toBe('50%')
+      expect(formatNumber(20000, { unit: 'multiplier', abbreviate: false })).toBe('20,000x')
     })
 
     it('handles custom unit objects', () => {
-      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: 'ETH', position: 'suffix' } })).toBe('1.00kETH')
-      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: '£', position: 'prefix' } })).toBe('£1.00k')
+      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: ' ETH', position: 'suffix' } })).toBe('1k ETH')
+      expect(formatNumber(1000, { abbreviate: true, unit: { symbol: '£', position: 'prefix' } })).toBe('£1k')
     })
   })
 
   describe('real-world examples from JSDoc', () => {
     it('matches JSDoc examples exactly', () => {
       expect(formatNumber(1234.56, { abbreviate: true })).toBe('1.23k')
-      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1.00m')
-      expect(formatNumber(500, { abbreviate: false })).toBe('500.00')
+      expect(formatNumber(1000000, { abbreviate: true, unit: { symbol: '$', position: 'prefix' } })).toBe('$1m')
+      expect(formatNumber(500, { abbreviate: false })).toBe('500')
       expect(
         formatNumber(2500000000, { abbreviate: true, unit: { symbol: '%', position: 'suffix' }, decimals: 1 }),
       ).toBe('2.5b%')
       expect(formatNumber(1234567.89, { useGrouping: true, abbreviate: false })).toBe('1,234,567.89')
-      expect(formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger', abbreviate: false })).toBe(
-        '12.5000',
-      )
-      expect(formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger', abbreviate: false })).toBe('12')
+      expect(formatNumber(12.5, { decimals: 4, abbreviate: false })).toBe('12.5000')
+      expect(formatNumber(12.0, { decimals: 4, abbreviate: false })).toBe('12')
       expect(formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto', abbreviate: false })).toBe('12.5000')
     })
 

@@ -96,7 +96,7 @@ type DefaultFormatterOptions = Pick<NumberFormatOptions, 'decimals' | 'useGroupi
  */
 export const defaultNumberFormatter = (
   value: number,
-  { decimals, useGrouping, trailingZeroDisplay }: DefaultFormatterOptions = {},
+  { decimals, useGrouping, trailingZeroDisplay = 'stripIfInteger' }: DefaultFormatterOptions = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
@@ -114,7 +114,7 @@ export const defaultNumberFormatter = (
   })
 
   // If the formatted result is "0" or "0.00" but value isn't actually zero
-  if (value !== 0 && (formatted === '0' || /^-?0\.0+$/.test(formatted))) {
+  if (value !== 0 && (formatted === '0' || formatted === '-0' || /^-?0\.0+$/.test(formatted))) {
     // Use significant digits instead
     return value.toLocaleString(LOCALE, {
       maximumSignificantDigits: 4,
@@ -229,14 +229,11 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
  * formatNumber(1234567.89, { useGrouping: true, abbreviate: false })
  * // Returns "1,234,567.89"
  *
- * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
- * // Returns "12.5000" (trailing zeros kept because 12.5 is not an integer)
- *
- * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
+ * formatNumber(12.0, { decimals: 4 })
  * // Returns "12" (trailing zeros stripped because 12.0 is effectively an integer)
  *
- * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
- * // Returns "12.5000"
+ * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
+ * // Returns "12.0000"
  */
 export const formatNumber = (value: number, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
