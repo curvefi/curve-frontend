@@ -18,7 +18,7 @@ export const BorrowFormAlert = ({
 }) => (
   <>
     {isCreated && (
-      <Alert severity="success">
+      <Alert severity="success" data-testid="borrow-success-alert">
         <AlertTitle>{t`Loan created`}</AlertTitle>
         {txHash && (
           <Link rel="noreferrer" target="_blank" href={network.scanTxPath(txHash)}>

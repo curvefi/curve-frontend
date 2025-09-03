@@ -11,6 +11,7 @@ export const BorrowFormTokenInput = ({
   max: balance,
   state: { isError, isLoading: isLoading },
   form,
+  testId,
 }: {
   label: string
   token: Token | undefined
@@ -18,10 +19,12 @@ export const BorrowFormTokenInput = ({
   max: number | undefined
   name: keyof BorrowForm
   form: UseFormReturn<BorrowForm>
+  testId?: string
 }) => (
   <LargeTokenInput
     name={name}
     label={label}
+    testId={testId}
     tokenSelector={
       <TokenLabel
         blockchainId={token?.chain}

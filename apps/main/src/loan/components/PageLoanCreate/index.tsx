@@ -57,7 +57,7 @@ const LoanCreate = ({
       <AppFormContentWrapper>
         {isBeta && rFormType !== 'leverage' ? (
           <WithSkeleton loading={!llamma}>
-            {llamma && <BorrowTabContents chainId={props.rChainId} network={network} market={llamma} />}
+            {llamma && <BorrowTabContents network={network} market={llamma} />}
           </WithSkeleton>
         ) : (
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />

@@ -16,9 +16,8 @@ import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { useUserBalances } from './queries/user-balances.query'
 
 type UseBorrowFormParams = {
-  chainId: IChainId
   market: LlamaMarketTemplate
-  network: BaseConfig<NetworkEnum>
+  network: BaseConfig<NetworkEnum, IChainId>
   preset: BorrowPreset
 }
 
@@ -53,7 +52,7 @@ const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
         },
       }
 
-export function useBorrowForm({ market, chainId, network: { id: chain }, preset }: UseBorrowFormParams) {
+export function useBorrowForm({ market, network: { id: chain, chainId }, preset }: UseBorrowFormParams) {
   const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,

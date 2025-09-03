@@ -53,7 +53,7 @@ export const BorrowActionInfoAccordion = ({
       info={
         <Typography
           sx={{ ...(health && { color: (t) => getHealthValueColor(health, t) }) }}
-          data-testid={JSON.stringify(params)}
+          data-testid="borrow-health-value"
         >
           {healthLoading ? '...' : healthError ? '!' : health ? formatNumber(health) : '∞'}
         </Typography>

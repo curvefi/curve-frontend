@@ -20,13 +20,11 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 const { Spacing } = SizesAndSpaces
 
 export const BorrowTabContents = ({
-  chainId,
   market,
   network,
 }: {
-  chainId: IChainId
   market: LlamaMarketTemplate
-  network: BaseConfig<NetworkEnum>
+  network: BaseConfig<NetworkEnum, IChainId>
 }) => {
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
   const {
@@ -42,7 +40,7 @@ export const BorrowTabContents = ({
     isCreated,
     creationError,
     txHash,
-  } = useBorrowForm({ market, chainId, network, preset })
+  } = useBorrowForm({ market, network, preset })
   const { maxDebt, maxTotalCollateral, maxLeverage } = maxBorrow.data ?? {}
   const { leverage } = values
   return (
@@ -56,6 +54,7 @@ export const BorrowTabContents = ({
             form={form}
             state={maxBorrow}
             max={balances.data?.collateral ?? maxTotalCollateral}
+            testId="borrow-collateral-input"
           />
           <BorrowFormTokenInput
             label={t`Borrow`}
@@ -64,6 +63,7 @@ export const BorrowTabContents = ({
             form={form}
             state={maxBorrow}
             max={maxDebt}
+            testId="borrow-debt-input"
           />
 
           {hasLeverage(market) && <LeverageInput maxLeverage={maxLeverage} leverage={leverage} form={form} />}
@@ -87,6 +87,7 @@ export const BorrowTabContents = ({
           <Button
             type="submit"
             loading={isPending}
+            data-testid="borrow-submit-button"
             // todo: endIcon={<ChrevronDownIcon />}
           >
             {isPending ? t`Processing...` : t`Approve & Swap`}
