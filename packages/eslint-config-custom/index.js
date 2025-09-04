@@ -21,13 +21,16 @@ module.exports = {
         basePath: __dirname + '/../..',
         // this syntax is confusing: 'target' is importing, 'from' is imported
         zones: [
-          { target: 'packages', from: 'apps' },
-          ...['dex', 'dao', 'lend', 'loan', 'llamalend']
-            .map((app) => [`apps/main/src/${app}`, `apps/main/src/app/${app}`])
-            .map((from, index, paths) => ({
-              target: paths.filter((_, i) => i !== index).flat(), // target ==> all apps except the one importing from
-              from, // from ==> the app importing
-            })),
+          { from: 'apps', target: 'packages' }, // packages cannot import apps
+          ...['dex', 'dao', 'lend', 'loan', 'llamalend'].map((importedApp, index, importingApp) => ({
+            target: importingApp
+              .filter(
+                // target ==> forbid import all apps except itself. Allow lend/loan apps to import llamalend
+                (importing, i) => i !== index && !(['loan', 'lend'].includes(importing) && importedApp === 'llamalend'),
+              )
+              .map((targetApp) => `apps/main/src/${targetApp}`),
+            from: `apps/main/src/${importedApp}`, // from ==> the app imported
+          })),
         ],
       },
     ],

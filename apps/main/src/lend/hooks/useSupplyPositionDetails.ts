@@ -30,7 +30,7 @@ export const useSupplyPositionDetails = ({
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
-    chainId: chainId,
+    chainId,
     marketId,
   })
   const { data: userSupplyBoost, isLoading: isUserSupplyBoostLoading } = useUserSupplyBoost({
@@ -42,7 +42,7 @@ export const useSupplyPositionDetails = ({
     marketId,
   })
   const { data: suppliedAssetUsdRate, isLoading: suppliedAssetUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
@@ -128,7 +128,7 @@ export const useSupplyPositionDetails = ({
         ? onChainRates?.rewardsApr.map((r) => ({
             title: r.symbol,
             percentage: r.apy,
-            blockchainId: networks[chainId as keyof typeof networks]?.id as Chain,
+            blockchainId: networks[chainId]?.id as Chain,
             address: r.tokenAddress,
           }))
         : [],

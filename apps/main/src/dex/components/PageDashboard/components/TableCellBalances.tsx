@@ -20,11 +20,7 @@ const TableCellBalances = ({ isHighLight, liquidityUsd, percentStaked }: Props) 
       {formatNumber(liquidityUsd, { currency: 'USD', notation: 'compact' })}
     </Chip>
     <div>
-      {percentStaked && (
-        <DetailText>
-          {formatNumber(percentStaked, { ...FORMAT_OPTIONS.PERCENT, trailingZeroDisplay: 'stripIfInteger' })} staked
-        </DetailText>
-      )}
+      {percentStaked && <DetailText>{formatNumber(percentStaked, { ...FORMAT_OPTIONS.PERCENT })} staked</DetailText>}
     </div>
   </>
 )

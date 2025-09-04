@@ -94,6 +94,15 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           },
         },
       },
+      {
+        props: { variant: 'inline', size: 'extraSmall' },
+        style: {
+          '&.MuiButton-loading': {
+            backgroundColor: 'transparent', // The disabled background looks very weird in such a small button
+            svg: { transform: 'scale(0.75)' }, // Scale down the loading indicator to fit better with the extraSmall text
+          },
+        },
+      },
     ],
     styleOverrides: {
       root: {

@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { styled } from 'styled-components'
-import ExpectedLabel from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedLabel'
-import ExpectedSummary from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSummary'
-import ExpectedSwapDetails from '@/lend/components/DetailInfoLeverageAdvancedExpected/components/ExpectedSwapDetails'
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
 import Button from '@ui/Button'
 import TextCaption from '@ui/TextCaption'
 import { t } from '@ui-kit/lib/i18n'
+import ExpectedLabel from './components/ExpectedLabel'
+import ExpectedSummary from './components/ExpectedSummary'
+import ExpectedSwapDetails from './components/ExpectedSwapDetails'
+import type { RouteDetailsProps } from './types'
 
-const DetailInfoLeverageAdvancedExpected = ({
-  rChainId,
+const RouteDetails = ({
   loading,
   swapFrom,
   swapFromAmounts,
@@ -21,7 +20,8 @@ const DetailInfoLeverageAdvancedExpected = ({
   routeImage,
   type,
   $minWidth,
-}: DetailInfoLeverageExpectedProps) => {
+  network,
+}: RouteDetailsProps) => {
   const [showDetails, toggleShowDetails] = useState(false)
 
   const { address: swapToAddress = '', symbol: swapToSymbol = '' } = swapTo ?? {}
@@ -62,7 +62,7 @@ const DetailInfoLeverageAdvancedExpected = ({
           <ExpectedSwapDetails
             label={<SectionTitle>{t`Route Details`}</SectionTitle>}
             loading={loading}
-            rChainId={rChainId}
+            network={network}
             swapFromAddress={swapFromAddress}
             swapFromSymbol={swapFromSymbol}
             swapFromAmounts={swapFromAmounts}
@@ -107,4 +107,4 @@ export const DetailsButton = styled(Button)<{ $isOpen?: boolean }>`
   }
 `
 
-export default DetailInfoLeverageAdvancedExpected
+export default RouteDetails

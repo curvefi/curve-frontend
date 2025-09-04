@@ -40,7 +40,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
       <Metric
         label={t`Debt to repay`}
         value={debtToken?.amount}
-        valueOptions={{ decimals: 2, abbreviate: true }}
+        valueOptions={{ abbreviate: true }}
         notional={debtToken?.symbol ?? ''}
         alignment="center"
         size="large"
@@ -49,14 +49,13 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
       <Metric
         label={t`Collateral to recover`}
         value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
-        valueOptions={{ decimals: 2, unit: 'dollar' }}
+        valueOptions={{ unit: 'dollar' }}
         notional={(collateralToRecover ?? [])
           .filter((x) => x.amount ?? 0 > 0)
           .map((x) => ({
             value: x.amount!,
             unit: { symbol: ` ${x.symbol}`, position: 'suffix' },
             abbreviate: true,
-            decimals: 2,
           }))}
         alignment="center"
         size="large"

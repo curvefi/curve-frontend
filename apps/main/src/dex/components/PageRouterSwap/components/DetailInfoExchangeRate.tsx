@@ -37,7 +37,7 @@ const DetailInfoExchangeRate = ({
               isBold
               noWrap
               size="md"
-              tooltip={`${formatNumber(1)} ${from} = ${formatNumber(value, { showAllFractionDigits: true })} ${to}`}
+              tooltip={`${formatNumber(1)} ${from} = ${formatNumber(value, { decimals: 5 })} ${to}`}
               tooltipProps={{ placement: 'bottom-end', noWrap: true }}
             >
               {formatNumber(value, { ...getFractionDigitsOptions(value, 5) })}

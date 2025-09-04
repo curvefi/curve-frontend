@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import type { BreakdownItem } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Icon from '@ui/Icon'
+import type { RouteDetailsProps } from '../types'
+import type { BreakdownItem } from '../types'
+import { format } from '../utils'
 
 const ExpectedSummary = ({
   label,
@@ -14,10 +14,7 @@ const ExpectedSummary = ({
   nonSwapAmount,
   total,
   $minWidth,
-}: Pick<
-  DetailInfoLeverageExpectedProps,
-  'swapFromAmounts' | 'swapToAmounts' | 'nonSwapAmount' | 'total' | '$minWidth'
-> & {
+}: Pick<RouteDetailsProps, 'swapFromAmounts' | 'swapToAmounts' | 'nonSwapAmount' | 'total' | '$minWidth'> & {
   label: ReactNode
   swapFromSymbol: string
   swapToSymbol: string

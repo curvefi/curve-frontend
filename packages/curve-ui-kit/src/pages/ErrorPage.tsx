@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import { ERROR_IMAGE_URL } from 'ui/src/utils'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -15,12 +16,25 @@ export const ErrorPage = ({
   title,
   subtitle,
   resetError,
+  hideRetry,
 }: {
   title: string
   subtitle: string
   resetError?: () => void
+  hideRetry?: boolean
 }) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
+  const [resetClicked, setResetClicked] = useState(false)
+  const onClick = useCallback(() => {
+    if (resetError && !resetClicked) {
+      setResetClicked(true)
+      resetError()
+    } else {
+      // if the refresh doesn't work, reload the whole page
+      window.location.reload()
+    }
+  }, [resetError, resetClicked])
+
   return (
     <Stack
       sx={{
@@ -46,7 +60,9 @@ export const ErrorPage = ({
         {subtitle}
       </Typography>
       <Stack direction="row" spacing={2} margin={2}>
-        <Button onClick={resetError} variant="contained">{t`Try again`}</Button>
+        {!hideRetry && (
+          <Button onClick={onClick} variant="contained" data-testid="retry-error-button">{t`Try again`}</Button>
+        )}
         <Button component={RouterLink} href="/" variant="contained">
           {t`Go to homepage`}
         </Button>

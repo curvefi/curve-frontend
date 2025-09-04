@@ -69,10 +69,12 @@ export function abbreviateNumber(value: number): number {
   return value
 }
 
-type DefaultFormatterOptions = Pick<
-  NumberFormatOptions,
-  'decimals' | 'showDecimalIfSmallNumberOnly' | 'useGrouping' | 'trailingZeroDisplay'
->
+/**
+ * We allow custom Intl.NumberFormatOptions options in our default number formatter,
+ * but we have our own formatting with regards to units, style and abbreviation.
+ * Hence we need to make sure those settings for Intl.NumberFormatOptions are disabled.
+ */
+const formatterReset = { style: undefined, currency: undefined, notation: undefined, unit: undefined }
 
 /**
  * Default formatter for numeric values with comprehensive edge case handling.
@@ -80,8 +82,6 @@ type DefaultFormatterOptions = Pick<
  * Formats numbers to a readable string representation with proper handling of:
  * - Invalid inputs (NaN, Infinity)
  * - Zero values and extremely small (negative) numbers that would display misleadingly as zero
- * - Extremely small numbers that would display misleadingly as zero
- * - Numbers requiring significant digits for proper precision display
  * - Conditional decimal display based on number magnitude
  *
  * @param value - The numeric value to format
@@ -94,16 +94,15 @@ type DefaultFormatterOptions = Pick<
  * - Returns "∞" for positive infinity values
  * - Returns "-∞" for negative infinity values
  * - Returns "0" for exactly zero values regardless of decimal configuration
- * - For positive values smaller than 0.000000001, returns "<0.000000001"
- * - For negative values between -0.000000001 and 0, returns ">-0.000000001"
- * - For values <= 0.0009 (absolute), uses 4 significant digits for better precision
- * - When formatted output would show "0.00" but value is non-zero, switches to 4 significant digits
- * - When `showDecimalIfSmallNumberOnly` is true, numbers with absolute value > 10 are formatted with 0 decimals
+ * - For positive values smaller than 0.00001, returns "<0.00001"
+ * - For negative values between -0.0001 and 0, returns ">-0.0001"
+ * - True integer numbers will have no decimals, unless trailingZeroDisplay is set to 'auto'
+ * - When formatted output would show "0.00", "1.00", or just "0"/"1" but value has more precision, switches to 6 significant digits
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
   value: number,
-  { decimals, useGrouping, trailingZeroDisplay, showDecimalIfSmallNumberOnly }: DefaultFormatterOptions = {},
+  { decimals = 2, trailingZeroDisplay = 'stripIfInteger', ...options }: Partial<NumberFormatOptions> = {},
 ): string => {
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
@@ -111,25 +110,33 @@ export const defaultNumberFormatter = (
   if (value === 0) return '0'
 
   const absValue = Math.abs(value)
-  if (absValue > 0 && absValue < 0.000000001) return value > 0 ? '<0.000000001' : '>-0.000000001'
-  const maximumSignificantDigits = absValue <= 0.0009 ? 4 : undefined
-
-  decimals = showDecimalIfSmallNumberOnly && absValue > 10 ? 0 : decimals
+  if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
 
   const formatted = value.toLocaleString(LOCALE, {
-    minimumFractionDigits: decimals,
+    minimumFractionDigits: Math.min(decimals, options.maximumFractionDigits ?? Infinity),
     maximumFractionDigits: decimals,
-    maximumSignificantDigits,
-    useGrouping,
     trailingZeroDisplay,
+    ...options,
+    ...formatterReset,
   })
 
-  // If the formatted result is "0" or "0.00" but value isn't actually zero
-  if (value !== 0 && (formatted === '0' || /^-?0\.0+$/.test(formatted))) {
-    // Use significant digits instead
+  /*
+   * If the formatted result loses important precision for small values, we need to show more digits.
+   * This happens when the value is non-zero but the formatted result shows as "0", "-0", or has only zeros
+   * after the decimal point (e.g., "0.00", "-0.000", "1.00" when the actual value is 1.0001).
+   * This is common with stablecoin values where precision matters.
+   *
+   * Examples:
+   * - formatNumber(0.0001, { decimals: 2 }) would show "0.00" but we want "0.0001"
+   * - formatNumber(-0.000123, { decimals: 3 }) would show "-0.000" but we want "-0.000123"
+   * - formatNumber(1.0001, { decimals: 2 }) would show "1.00" but we want "1.0001"
+   * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
+   */
+  if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
     return value.toLocaleString(LOCALE, {
-      maximumSignificantDigits: 4,
-      useGrouping,
+      maximumSignificantDigits: 6,
+      ...options,
+      ...formatterReset,
     })
   }
 
@@ -154,13 +161,11 @@ export type NumberFormatOptions = {
   unit?: Unit | undefined
   /** The number of decimals the value should contain (when no custom formatter is given) */
   decimals?: number
-  /** Only show decimals if value < 10 */
-  showDecimalIfSmallNumberOnly?: boolean
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
   /** Optional formatter for value */
   formatter?: (value: number) => string
-} & Pick<Intl.NumberFormatOptions, 'useGrouping' | 'trailingZeroDisplay'>
+} & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation'>
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
@@ -206,9 +211,7 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
   }
 
   const abbreviatedValue = abbreviate ? abbreviateNumber(value) : value
-  const mainValue = formatter
-    ? formatter(abbreviatedValue)
-    : defaultNumberFormatter(abbreviatedValue, { ...options, decimals: options.decimals ?? 2 })
+  const mainValue = formatter ? formatter(abbreviatedValue) : defaultNumberFormatter(abbreviatedValue, options)
 
   return {
     prefix: position === 'prefix' ? symbol : '',
@@ -242,20 +245,11 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
  * formatNumber(1234567.89, { useGrouping: true, abbreviate: false })
  * // Returns "1,234,567.89"
  *
- * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
- * // Returns "12.5000" (trailing zeros kept because 12.5 is not an integer)
- *
- * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'stripIfInteger' })
+ * formatNumber(12.0, { decimals: 4 })
  * // Returns "12" (trailing zeros stripped because 12.0 is effectively an integer)
  *
- * formatNumber(12.5, { decimals: 4, trailingZeroDisplay: 'auto' })
- * // Returns "12.5000"
- *
- * formatNumber(5.5, { decimals: 2, showDecimalIfSmallNumberOnly: true, abbreviate: false })
- * // Returns "5.50" (shows decimals because 5.5 ≤ 10)
- *
- * formatNumber(25.5, { decimals: 2, showDecimalIfSmallNumberOnly: true, abbreviate: false })
- * // Returns "26" (no decimals because 25.5 > 10)
+ * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
+ * // Returns "12.0000"
  */
 export const formatNumber = (value: number, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)

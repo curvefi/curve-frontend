@@ -80,7 +80,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
           label={t`Supply rate`}
           value={supplyAPY?.rate}
           loading={supplyAPY?.rate == null && supplyAPY?.loading}
-          valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
+          valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
             maxApy ? t`max Boost ${formatNumber(maxApy, { unit: 'percentage', abbreviate: false })}` : undefined
           }
@@ -142,7 +142,6 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
               ? {
                   value: (shares.staked / shares.value) * 100,
                   unit: { symbol: t`% staked`, position: 'suffix' },
-                  decimals: 2,
                 }
               : undefined
           }

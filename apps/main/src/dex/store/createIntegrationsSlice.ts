@@ -98,12 +98,8 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       const {
         networks: { networks },
       } = get()
-      const networkId = networks[+filterNetworkId as ChainId]?.id
-
-      if (networkId) {
-        return integrationApps.filter(({ networks }) => networks[networkId])
-      }
-      return integrationApps
+      const networkId = networks[+filterNetworkId]?.id
+      return networkId ? integrationApps.filter(({ networks }) => networks[networkId]) : integrationApps
     },
     filterBySearchText: (searchText: string, integrationApps: IntegrationApp[]) => {
       const fuse = new Fuse<IntegrationApp>(integrationApps, {

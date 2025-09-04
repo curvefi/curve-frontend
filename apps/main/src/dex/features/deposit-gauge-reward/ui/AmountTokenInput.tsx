@@ -129,7 +129,7 @@ export const AmountTokenInput = ({ chainId, poolId }: { chainId: ChainId; poolId
               haveSigner && {
                 label: t`Avail.`,
                 descriptionLoading: isTokenBalancesLoading,
-                description: formatNumber(tokenBalance, { showAllFractionDigits: true }),
+                description: formatNumber(tokenBalance, { decimals: 5 }),
               }
             }
             testId="deposit-amount"

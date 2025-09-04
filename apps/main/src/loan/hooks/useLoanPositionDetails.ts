@@ -64,11 +64,11 @@ export const useLoanPositionDetails = ({
   }, [oraclePriceBand, healthFull, healthNotFull, userBands])
 
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: llamma?.collateral,
   })
   const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
-    chainId: chainId,
+    chainId,
     tokenAddress: CRVUSD_ADDRESS,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({

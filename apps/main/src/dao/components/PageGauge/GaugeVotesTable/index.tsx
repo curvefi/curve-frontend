@@ -5,7 +5,7 @@ import { TOP_HOLDERS } from '@/dao/constants'
 import useStore from '@/dao/store/useStore'
 import { GaugeVote, GaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { convertToLocaleTimestamp, formatDateFromTimestamp } from '@ui/utils/'
+import { formatLocaleDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -69,7 +69,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
           gridTemplateColumns={gridTemplateColumns}
         >
           <TableData className={gaugeVotesSortBy.key === 'timestamp' ? 'sortby-active align-left' : 'align-left'}>
-            {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp / 1000))}
+            {formatLocaleDate(gaugeVote.timestamp)}
           </TableData>
           <TableData className={gaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}>
             {weightBpsToPercentage(gaugeVote.weight)}%
