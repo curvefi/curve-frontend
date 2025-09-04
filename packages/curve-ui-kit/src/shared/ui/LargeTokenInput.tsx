@@ -73,7 +73,7 @@ export interface LargeTokenInputRef {
  * When provided, enables percentage-based input via the slider.
  *
  * @property {number} [balance] - The maximum numerical balance available for this input.
- * @property {number} [notionalValue] - The notional value (e.g., in USD) of the maximum balance.
+ * @property {number} [notionalValueUsd] - The notional value (in USD) of the maximum balance.
  * @property {string} [symbol] - The token symbol (e.g., 'ETH').
  * @property {boolean} [showBalance=true] - Whether to display the balance component.
  *                                        When true, shows the token balance and notional value.
@@ -82,7 +82,7 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol' | 'loading'>> & {
+type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading'>> & {
   showBalance?: boolean
   showSlider?: boolean
 }
@@ -278,7 +278,7 @@ export const LargeTokenInput = ({
               <Balance
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
-                notionalValue={maxBalance.notionalValue}
+                notionalValueUsd={maxBalance.notionalValueUsd}
                 max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
                 // Stretch the balance component if there's no slider so the max button can reach the end

@@ -14,7 +14,7 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The token balance',
     },
-    notionalValue: {
+    notionalValueUsd: {
       control: 'number',
       description: 'The USD value of the balance',
     },
@@ -60,7 +60,7 @@ export const Default: Story = {
 
 export const WithNotionalValue: Story = {
   args: {
-    notionalValue: 2345.67,
+    notionalValueUsd: 2345.67,
   },
 }
 
@@ -85,7 +85,7 @@ export const NoIcon: Story = {
 export const FullFeatured: Story = {
   args: {
     balance: 42.69,
-    notionalValue: 69420.42,
+    notionalValueUsd: 69420.42,
     max: 'button',
   },
 }
@@ -93,7 +93,7 @@ export const FullFeatured: Story = {
 export const FullFeaturedWithMaxBalance: Story = {
   args: {
     balance: 42.69,
-    notionalValue: 69420.42,
+    notionalValueUsd: 69420.42,
     max: 'balance',
   },
 }
@@ -126,7 +126,7 @@ export const Loading: Story = {
 export const LoadingWithNotionalValueAndMax: Story = {
   args: {
     loading: true,
-    notionalValue: 1234.56,
+    notionalValueUsd: 1234.56,
     max: 'button',
   },
   parameters: {
