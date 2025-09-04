@@ -1,10 +1,12 @@
 import AcUnitIcon from '@mui/icons-material/AcUnit'
+import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Accordion } from '../Accordion'
 import { WithSkeleton } from '../WithSkeleton'
 
@@ -184,6 +186,38 @@ export const ComplexContent: Story = {
     docs: {
       description: {
         story: 'Accordion with complex nested content',
+      },
+    },
+  },
+}
+
+export const Controlled: Story = {
+  render: () => {
+    const [expanded, , , toggle] = useSwitch(true)
+    return (
+      <Stack gap={4}>
+        <Stack direction="row" gap={2} alignItems="center">
+          <Button variant="outlined" onClick={toggle} sx={{ marginRight: 1 }}>
+            Toggle from outside
+          </Button>
+          <Typography variant="bodySRegular" component="span">
+            Current state: {expanded ? 'Open' : 'Closed'}
+          </Typography>
+        </Stack>
+        <Accordion title="Controlled Accordion" expanded={expanded} toggle={toggle}>
+          <Typography variant="bodySRegular">
+            This accordion is controlled externally. You can toggle it using the button above or by clicking the
+            accordion header.
+          </Typography>
+        </Accordion>
+      </Stack>
+    )
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Accordion with controlled state. The expanded state is managed externally using the `expanded` and `toggle` props.',
       },
     },
   },

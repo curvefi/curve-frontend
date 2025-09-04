@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { type Ref, type ReactNode, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -10,7 +10,7 @@ import { TradingSlider } from './TradingSlider'
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
 type HelperMessageProps = {
-  message: string | React.ReactNode
+  message: string | ReactNode
   isError: boolean
 }
 
@@ -73,7 +73,7 @@ export interface LargeTokenInputRef {
  * When provided, enables percentage-based input via the slider.
  *
  * @property {number} [balance] - The maximum numerical balance available for this input.
- * @property {number} [notionalValue] - The notional value (e.g., in USD) of the maximum balance.
+ * @property {number} [notionalValueUsd] - The notional value (in USD) of the maximum balance.
  * @property {string} [symbol] - The token symbol (e.g., 'ETH').
  * @property {boolean} [showBalance=true] - Whether to display the balance component.
  *                                        When true, shows the token balance and notional value.
@@ -82,18 +82,18 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValue' | 'symbol' | 'loading'>> & {
+type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading'>> & {
   showBalance?: boolean
   showSlider?: boolean
 }
 
 type Props = {
-  ref?: React.Ref<LargeTokenInputRef>
+  ref?: Ref<LargeTokenInputRef>
 
   /**
    * The token selector UI element to be rendered.
    *
-   * We've chosen to use React.ReactNode here to prevent coupling the relatively simple
+   * We've chosen to use ReactNode here to prevent coupling the relatively simple
    * LargeTokenInput component with the more complex SelectToken feature. This approach provides better composability,
    * allowing you to:
    *
@@ -106,7 +106,7 @@ type Props = {
    * Note: We'll likely create a new 'feature' component that combines this LargeTokenInput component with
    * a token selector and other required app interactions.
    */
-  tokenSelector: React.ReactNode
+  tokenSelector: ReactNode
 
   /**
    * Maximum balance configuration for the input.
@@ -119,7 +119,7 @@ type Props = {
    * Can also be used for displaying an error message.
    * Can be a string or a ReactNode for greater message customization and styling.
    */
-  message?: string | React.ReactNode
+  message?: string | ReactNode
 
   /** Optional label explaining what the input is all about. */
   label?: string
@@ -127,16 +127,14 @@ type Props = {
   /** Name attribute for the input element, useful for form handling and identification. */
   name: string
 
+  /** Optional test ID for testing purposes. */
+  testId?: string
+
   /**
    * Whether the input is in an error state.
    * @default false
    */
   isError?: boolean
-
-  /**
-   * WHether
-   */
-  isLoading?: boolean
 
   /**
    * Number of decimal places to round balance values to when calculating from percentage.
@@ -161,6 +159,7 @@ export const LargeTokenInput = ({
   isError = false,
   balanceDecimals = 4,
   onBalance,
+  testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
   const [balance, setBalance] = useState<number | undefined>(undefined)
@@ -236,6 +235,7 @@ export const LargeTokenInput = ({
 
   return (
     <Stack
+      data-testid={testId}
       gap={Spacing.xs}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
@@ -278,7 +278,7 @@ export const LargeTokenInput = ({
               <Balance
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
-                notionalValue={maxBalance.notionalValue}
+                notionalValueUsd={maxBalance.notionalValueUsd}
                 max={maxBalance ? 'button' : 'off'}
                 onMax={() => handlePercentageChange(100)}
                 // Stretch the balance component if there's no slider so the max button can reach the end

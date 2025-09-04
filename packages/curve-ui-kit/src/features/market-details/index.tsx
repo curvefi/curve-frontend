@@ -140,13 +140,12 @@ export const MarketDetails = ({
           label={t`Borrow rate`}
           value={borrowAPY?.totalBorrowRate}
           loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
-          valueOptions={{ unit: 'percentage', decimals: 2 }}
+          valueOptions={{ unit: 'percentage' }}
           notional={
             borrowAPY?.totalAverageBorrowRate
               ? {
                   value: borrowAPY.totalAverageBorrowRate,
                   unit: { symbol: `% ${borrowAPY.averageRateLabel} Avg`, position: 'suffix' },
-                  decimals: 2,
                 }
               : undefined
           }
@@ -175,13 +174,12 @@ export const MarketDetails = ({
             label={t`Supply rate`}
             value={supplyAPY?.totalSupplyRateMinBoost}
             loading={supplyAPY?.totalSupplyRateMinBoost == null && supplyAPY?.loading}
-            valueOptions={{ unit: 'percentage', decimals: 2 }}
+            valueOptions={{ unit: 'percentage' }}
             notional={
               supplyAPY?.averageRate
                 ? {
                     value: supplyAPY.averageRate,
                     unit: { symbol: `% ${supplyAPY.averageRateLabel} Avg`, position: 'suffix' },
-                    decimals: 2,
                   }
                 : undefined
             }
@@ -253,7 +251,7 @@ export const MarketDetails = ({
           label={t`Utilization`}
           value={utilization}
           loading={utilization == null && availableLiquidity?.loading}
-          valueOptions={{ unit: 'percentage', decimals: 2 }}
+          valueOptions={{ unit: 'percentage' }}
           notional={utilization ? utilizationBreakdown : undefined}
           valueTooltip={{
             title: t`Utilization ${MarketTypeSuffix[marketType]}`,

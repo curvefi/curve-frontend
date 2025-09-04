@@ -77,7 +77,7 @@ const ChartBandBalances = ({
                   height={50}
                   tick={{ fontSize: 12 }}
                   tickFormatter={(n) => {
-                    let formattedTick = formatNumber(n, { showAllFractionDigits: true })
+                    let formattedTick = formatNumber(n, { decimals: 5 })
                     if (xAxisDisplayType === 'price') {
                       const d = data.find((d) => d.n === n)
                       if (d) {

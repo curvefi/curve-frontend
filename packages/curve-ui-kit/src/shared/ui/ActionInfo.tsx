@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import CallMade from '@mui/icons-material/CallMade'
 import ContentCopy from '@mui/icons-material/ContentCopy'
@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -92,19 +93,20 @@ const ActionInfo = ({
   link,
   size = 'medium',
   copy = false,
-  copyValue,
+  copyValue: givenCopyValue,
   copiedTitle,
   loading = false,
   error = false,
   testId = 'action-info',
   sx,
 }: ActionInfoProps) => {
-  const [isOpen, open, close] = useSwitch(false)
+  const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
+  const copyValue = (givenCopyValue ?? value).trim()
 
-  const handleCopyValue = () => {
-    void copyToClipboard(copyValue ?? value)
-    open()
-  }
+  const copyAndShowSnackbar = useCallback(() => {
+    void copyToClipboard(copyValue)
+    openSnackbar()
+  }, [copyValue, openSnackbar])
 
   return (
     <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx} data-testid={testId}>
@@ -136,7 +138,17 @@ const ActionInfo = ({
 
             <WithSkeleton loading={!!loading}>
               <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '?' : value}
+                {loading ? (
+                  typeof loading === 'string' ? (
+                    loading
+                  ) : (
+                    MOCK_SKELETON
+                  )
+                ) : error ? (
+                  <ExclamationTriangleIcon fontSize="small" />
+                ) : (
+                  value
+                )}
               </Typography>
             </WithSkeleton>
 
@@ -144,8 +156,8 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {copy && (
-          <IconButton size="extraSmall" onClick={handleCopyValue} color="primary">
+        {copy && copyValue && (
+          <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
             <ContentCopy />
           </IconButton>
         )}
@@ -164,10 +176,10 @@ const ActionInfo = ({
         )}
       </Stack>
 
-      <Snackbar open={isOpen} onClose={close} autoHideDuration={Duration.Snackbar}>
+      <Snackbar open={isSnackbarOpen} onClose={closeSnackbar} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           <AlertTitle>{copiedTitle ?? t`Value has been copied to clipboard`}</AlertTitle>
-          {copyValue ?? value}
+          {copyValue}
         </Alert>
       </Snackbar>
     </Stack>

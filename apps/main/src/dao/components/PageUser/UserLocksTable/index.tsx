@@ -5,7 +5,7 @@ import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '
 import useStore from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
-import { formatDateFromTimestamp, convertToLocaleTimestamp, formatNumber } from '@ui/utils'
+import { formatDate, formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
 
@@ -57,13 +57,13 @@ const UserLocksTable = ({ userAddress }: UserLocksTableProps) => {
         <TableRowWrapper key={index} columns={LOCKS_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className="align-left">{lockTypeLabel(lock.lockType)}</TableData>
           <TableData className={userLocksSortBy.key === 'amount' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatNumber(Number(lock.amount), { showDecimalIfSmallNumberOnly: true })}
+            {formatNumber(Number(lock.amount))}
           </TableData>
           <TableData className={userLocksSortBy.key === 'timestamp' ? 'sortby-active right-padding' : 'right-padding'}>
-            {formatDateFromTimestamp(convertToLocaleTimestamp(new Date(lock.timestamp).getTime() / 1000))}
+            {formatDate(lock.timestamp)}
           </TableData>
           <TableData className={userLocksSortBy.key === 'unlockTime' ? 'sortby-active right-padding' : 'right-padding'}>
-            {lock.unlockTime ? formatDateFromTimestamp(convertToLocaleTimestamp(lock.unlockTime)) : '-'}
+            {lock.unlockTime ? formatLocaleDateFromTimestamp(lock.unlockTime) : '-'}
           </TableData>
         </TableRowWrapper>
       )}

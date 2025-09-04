@@ -53,7 +53,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
               interval="preserveStartEnd"
               stroke={chartAxisColor}
               tick={{ fontSize: 12 }}
-              tickFormatter={(tick) => `${formatNumber(tick, { showDecimalIfSmallNumberOnly: true })}`}
+              tickFormatter={(tick) => `${formatNumber(tick, { ...(tick > 10 && { decimals: 0 }) })}`}
               domain={([dataMin, dataMax]) => {
                 // add 0.1 spacing to min and max data
                 const min = Math.floor(dataMin - dataMin * 0.1)

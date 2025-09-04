@@ -25,9 +25,7 @@ const AlertSeedAmounts = ({ seed, poolData }: Props) => {
 
       const seedAmounts = await pool.getSeedAmounts('1', useUnderlying)
 
-      setSeedAmounts(
-        tokens.map((token, idx) => `${formatNumber(seedAmounts[idx], { showAllFractionDigits: true })} ${token}`),
-      )
+      setSeedAmounts(tokens.map((token, idx) => `${formatNumber(seedAmounts[idx], { decimals: 5 })} ${token}`))
     } catch (error) {
       console.error(error)
     }

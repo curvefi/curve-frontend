@@ -14,7 +14,7 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The token balance',
     },
-    notionalValue: {
+    notionalValueUsd: {
       control: 'number',
       description: 'The USD value of the balance',
     },
@@ -30,6 +30,10 @@ const meta: Meta<typeof Balance> = {
     onMax: {
       action: 'onMax',
       description: 'Callback when max button is clicked',
+    },
+    loading: {
+      control: 'boolean',
+      description: 'Whether the component is in a loading state',
     },
   },
   args: {
@@ -56,7 +60,7 @@ export const Default: Story = {
 
 export const WithNotionalValue: Story = {
   args: {
-    notionalValue: 2345.67,
+    notionalValueUsd: 2345.67,
   },
 }
 
@@ -81,7 +85,7 @@ export const NoIcon: Story = {
 export const FullFeatured: Story = {
   args: {
     balance: 42.69,
-    notionalValue: 69420.42,
+    notionalValueUsd: 69420.42,
     max: 'button',
   },
 }
@@ -89,7 +93,7 @@ export const FullFeatured: Story = {
 export const FullFeaturedWithMaxBalance: Story = {
   args: {
     balance: 42.69,
-    notionalValue: 69420.42,
+    notionalValueUsd: 69420.42,
     max: 'balance',
   },
 }
@@ -103,6 +107,34 @@ export const ZeroBalance: Story = {
 export const NoBalance: Story = {
   args: {
     balance: undefined,
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component in a loading state with skeleton placeholders',
+      },
+    },
+  },
+}
+
+export const LoadingWithNotionalValueAndMax: Story = {
+  args: {
+    loading: true,
+    notionalValueUsd: 1234.56,
+    max: 'button',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component in a loading state with notional value skeleton and max button',
+      },
+    },
   },
 }
 

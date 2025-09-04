@@ -41,7 +41,7 @@ const StatsStack = () => {
         <Metric
           label="Current projected APY"
           value={statisticsData?.apyProjected}
-          valueOptions={{ unit: 'percentage', decimals: 2 }}
+          valueOptions={{ unit: 'percentage' }}
           loading={statisticsIsFetching}
           copyText={t`Copied current projected APY`}
         />

@@ -73,13 +73,12 @@ export const BorrowInformation = ({
         label={t`Borrow rate`}
         value={borrowAPY?.totalBorrowRate}
         loading={borrowAPY?.totalBorrowRate == null && borrowAPY?.loading}
-        valueOptions={{ unit: 'percentage', color: 'warning', decimals: 2 }}
+        valueOptions={{ unit: 'percentage', color: 'warning' }}
         notional={
           borrowAPY?.totalAverageBorrowRate
             ? {
                 value: borrowAPY.totalAverageBorrowRate,
                 unit: { symbol: '% 30D Avg', position: 'suffix' },
-                decimals: 2,
               }
             : undefined
         }
@@ -136,7 +135,7 @@ export const BorrowInformation = ({
         label={t`Current LTV`}
         value={ltv?.value}
         loading={ltv?.value == null && ltv?.loading}
-        valueOptions={{ unit: 'percentage', decimals: 2 }}
+        valueOptions={{ unit: 'percentage' }}
         valueTooltip={{
           title: t`Current LTV (Loan To Value ratio)`,
           body: <CurrentLTVTooltipContent />,
@@ -207,7 +206,6 @@ export const BorrowInformation = ({
                   symbol: `% distance to LT`,
                   position: 'suffix',
                 },
-                decimals: 2,
               }
             : undefined
         }
