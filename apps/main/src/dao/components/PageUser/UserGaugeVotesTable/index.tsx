@@ -10,7 +10,7 @@ import {
 import useStore from '@/dao/store/useStore'
 import { SortDirection, UserGaugeVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { formatDateFromTimestamp, convertToLocaleTimestamp } from '@ui/utils'
+import { formatLocaleDateFromTimestamp } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { formatNumber, shortenAddress } from '@ui-kit/utils'
@@ -59,7 +59,7 @@ const UserGaugeVotesTable = ({ userAddress, tableMinWidth }: UserGaugeVotesTable
         <TableRowWrapper key={index} columns={GAUGE_VOTES_LABELS.length} gridTemplateColumns={gridTemplateColumns}>
           <TableData className="align-left">{gaugeVote.gaugeName}</TableData>
           <TableData className={`right-padding ${userGaugeVotesSortBy.key === 'timestamp' ? 'sortby-active' : ''}`}>
-            {formatDateFromTimestamp(convertToLocaleTimestamp(gaugeVote.timestamp))}
+            {formatLocaleDateFromTimestamp(gaugeVote.timestamp)}
           </TableData>
           <TableData
             className={userGaugeVotesSortBy.key === 'weight' ? 'sortby-active right-padding' : 'right-padding'}

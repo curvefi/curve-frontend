@@ -116,7 +116,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
           <Metric
             label={t`Utilization`}
             value={utilizationPercent}
-            valueOptions={{ unit: 'percentage', decimals: 2 }}
+            valueOptions={{ unit: 'percentage' }}
             testId="metric-utilizationPercent"
           />
         </Grid>

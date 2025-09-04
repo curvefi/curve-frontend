@@ -54,7 +54,7 @@ export const router = createRouter({
       <head>
         <title>{t`Error 404` + ' - Curve'}</title>
       </head>
-      <ErrorPage title="404" subtitle={t`Page Not Found`} />
+      <ErrorPage title="404" subtitle={t`Page Not Found`} hideRetry />
     </>
   ),
 })

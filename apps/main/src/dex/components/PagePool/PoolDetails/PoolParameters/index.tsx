@@ -33,9 +33,9 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const pricesData = pricesApiPoolDataMapper[poolAddress]
   const basePoolList = isBasePoolsLoading ? [] : basePools[rChainId]
 
-  const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { showAllFractionDigits: true })
-  const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { showAllFractionDigits: true })
-  const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { showAllFractionDigits: true })
+  const convert1e8 = (number: number) => formatNumber(number / 10 ** 8, { decimals: 5 })
+  const convert1e10 = (number: number) => formatNumber(number / 10 ** 10, { decimals: 5 })
+  const convert1e18 = (number: number) => formatNumber(number / 10 ** 18, { decimals: 5 })
 
   const { gamma, A, future_A, future_A_time, initial_A, initial_A_time } = poolData.parameters ?? {}
 

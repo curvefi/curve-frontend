@@ -38,7 +38,7 @@ export const Statistics = () => {
             size="large"
             label={t`Reserve share of crvUSD supply`}
             value={share}
-            valueOptions={{ decimals: 2, unit: 'percentage' }}
+            valueOptions={{ unit: 'percentage' }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve-share"
           />

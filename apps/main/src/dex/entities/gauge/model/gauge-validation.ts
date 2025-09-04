@@ -68,6 +68,6 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
 
   enforce(amount).condition((amount) => ({
     pass: BD.from(amount).lte(BD.from(tokenBalance)),
-    message: t`Amount ${formatNumber(amount, { showAllFractionDigits: true })} > wallet balance ${formatNumber(tokenBalance, { showAllFractionDigits: true })}`,
+    message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(tokenBalance, { decimals: 5 })}`,
   }))
 }

@@ -36,7 +36,7 @@ const PositiveAndNegativeBarChart = ({ data, height = 500 }: PositiveAndNegative
         tick={{ fill: 'var(--page--text-color)', fontSize: 'var(--font-size-1)' }}
         tickLine={{ opacity: 0.3, strokeWidth: 0.3 }}
         axisLine={{ opacity: 0.3, strokeWidth: 0.3 }}
-        tickFormatter={(value: number) => `${formatNumber(value, { showDecimalIfSmallNumberOnly: true })}`}
+        tickFormatter={(value: number) => `${formatNumber(value, { ...(value > 10 && { decimals: 0 }) })}`}
         tickCount={10}
       />
       <Tooltip content={PositiveAndNegativeBarChartTooltip} cursor={{ opacity: 0.3 }} />

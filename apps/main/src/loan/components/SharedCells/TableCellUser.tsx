@@ -19,7 +19,7 @@ const TableCellUser = ({
 
   if (type === 'health') {
     return (
-      <Chip {...props} size="md" tooltip={formatNumber(userHealth, { showAllFractionDigits: true })}>
+      <Chip {...props} size="md" tooltip={formatNumber(userHealth, { decimals: 5 })}>
         {formatNumber(userHealth, { style: 'percent', maximumFractionDigits: 2 })}
       </Chip>
     )

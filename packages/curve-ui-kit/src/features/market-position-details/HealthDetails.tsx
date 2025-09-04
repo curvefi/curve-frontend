@@ -26,7 +26,7 @@ export const HealthDetails = ({
             label={t`Health`}
             value={Number(value)}
             loading={loading}
-            valueOptions={{ unit: 'none', decimals: 2, color: getHealthValueColor(value ?? 0, theme) }}
+            valueOptions={{ unit: 'none', color: getHealthValueColor(value ?? 0, theme) }}
             size="large"
           />
           <HealthBar health={Number(value)} softLiquidation={softLiquidation} />

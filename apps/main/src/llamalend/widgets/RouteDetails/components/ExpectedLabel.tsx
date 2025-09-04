@@ -1,10 +1,10 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import { DetailsButton } from '@/lend/components/DetailInfoLeverageAdvancedExpected'
-import type { DetailInfoLeverageExpectedProps } from '@/lend/components/DetailInfoLeverageAdvancedExpected/types'
-import { format } from '@/lend/components/DetailInfoLeverageAdvancedExpected/utils'
 import Icon from '@ui/Icon'
 import Loader from '@ui/Loader'
+import { DetailsButton } from '../index'
+import type { RouteDetailsProps } from '../types'
+import { format } from '../utils'
 
 const ExpectedLabel = ({
   loading,
@@ -13,7 +13,7 @@ const ExpectedLabel = ({
   swapToSymbol,
   showDetails,
   toggleShowDetails,
-}: Pick<DetailInfoLeverageExpectedProps, 'loading' | 'total'> & {
+}: Pick<RouteDetailsProps, 'loading' | 'total'> & {
   label: string
   showDetails: boolean
   swapToSymbol: string

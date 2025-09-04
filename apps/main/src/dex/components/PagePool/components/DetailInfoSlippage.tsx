@@ -65,7 +65,6 @@ const DetailInfoSlippage = ({ loading, isHighSlippage, isBonus, slippage }: Prop
       {formatNumber(slippage, {
         style: 'percent',
         maximumFractionDigits: 4,
-        trailingZeroDisplay: 'stripIfInteger',
         defaultValue: '-',
       })}
     </DetailInfo>
