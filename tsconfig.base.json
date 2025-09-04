@@ -9,8 +9,7 @@
     "jsx": "react-jsx",
 
     // === Module Resolution ===
-    // You'd expect 'bundler' here, but it for unknown reasons that gives type definitions errors for dependencie such as ethers, viem and zustand
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
 

@@ -1,4 +1,4 @@
-import type { Eip1193Provider } from 'ethers/lib.esm'
+import type { Eip1193Provider } from 'ethers'
 import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import type { NetworkDef } from '@ui/utils'

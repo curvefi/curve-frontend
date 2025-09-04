@@ -1,8 +1,8 @@
-import ethers from 'ethers'
+import type { Contract } from 'ethers'
 
 export type EtherContract = {
   contractAddress: string
-  contract: ethers.ethers.Contract
+  contract: Contract
   poolName: string
   poolId: string
   token: string
