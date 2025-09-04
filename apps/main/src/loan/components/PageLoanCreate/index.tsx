@@ -24,10 +24,12 @@ const LoanCreate = ({
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
   const network = networks[rChainId]
+  const [isBeta] = useBetaFlag()
 
   const FORM_TYPES: { key: string; label: string }[] = [
     { label: t`Create Loan`, key: 'create' },
     { label: t`Leverage`, key: 'leverage' },
+    ...(isBeta ? [{ label: t`Beta`, key: 'borrow' }] : []),
   ].filter((f) => f.key != 'leverage' || hasLeverage(llamma))
 
   const handleTabClick = useCallback(
@@ -44,8 +46,6 @@ const LoanCreate = ({
     [curve, fetchInitial, llamma, loanExists, push, params, rCollateralId],
   )
 
-  const [isBeta] = useBetaFlag()
-
   return (
     <AppFormContent variant="primary" shadowed>
       <AppFormHeader
@@ -55,7 +55,7 @@ const LoanCreate = ({
       />
 
       <AppFormContentWrapper>
-        {isBeta && rFormType !== 'leverage' ? (
+        {rFormType === 'borrow' ? (
           <WithSkeleton loading={!llamma}>
             {llamma && <BorrowTabContents network={network} market={llamma} />}
           </WithSkeleton>
