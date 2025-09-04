@@ -81,7 +81,7 @@ export type Props = {
   /** The token balance amount (optional, in case of loading) */
   balance?: number
   /** The USD value of the balance (optional) */
-  notionalValue?: number
+  notionalValueUsd?: number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
   sx?: SxProps
@@ -91,7 +91,7 @@ export type Props = {
   loading?: boolean
 }
 
-export const Balance = ({ symbol, max, loading = false, balance, notionalValue, hideIcon, sx, onMax }: Props) => (
+export const Balance = ({ symbol, max, loading = false, balance, notionalValueUsd, hideIcon, sx, onMax }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
@@ -103,9 +103,9 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValue, 
       <BalanceText symbol={symbol} balance={balance} loading={loading} />
     )}
 
-    {notionalValue != null && !loading && (
+    {notionalValueUsd != null && !loading && (
       <Typography variant="bodySRegular" color="textTertiary">
-        {formatNumber(notionalValue, { unit: 'dollar', abbreviate: true })}
+        {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}
 
