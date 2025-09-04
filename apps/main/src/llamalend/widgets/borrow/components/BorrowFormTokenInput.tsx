@@ -1,8 +1,11 @@
 import { useCallback, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form/dist/types'
+import type { SetValueConfig } from 'react-hook-form/dist/types/form'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { BorrowForm, Token } from '../borrow.types'
+
+const options: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
 
 export const BorrowFormTokenInput = ({
   label,
@@ -33,7 +36,7 @@ export const BorrowFormTokenInput = ({
         label={token?.symbol ?? '?'}
       />
     }
-    onBalance={useCallback((v) => form.setValue(name, v), [form, name])}
+    onBalance={useCallback((v) => form.setValue(name, v, options), [form, name])}
     isError={isError}
     balanceDecimals={2}
     maxBalance={useMemo(() => ({ balance, symbol: token?.symbol, loading: isLoading }), [balance, isLoading, token])}

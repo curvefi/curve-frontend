@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 import { useAccount } from 'wagmi'
+import { borrowFormValidationSuite } from '@/llamalend/widgets/borrow/queries/borrow.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { logSuccess } from '@ui-kit/lib'
+import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -46,7 +47,7 @@ const getCreateMethods = (poolId: string, leverage: number | undefined) => {
   }
 }
 
-export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) => {
   const { address: userAddress } = useAccount()
   const mutationKey = ['create-loan', { chainId, poolId }] as const
 
@@ -54,6 +55,7 @@ export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
     mutationKey,
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
+        assertValidity(borrowFormValidationSuite, mutation)
         const { userCollateral, userBorrowed, debt, leverage, slippage, range } = mutation
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId, leverage)
 
@@ -77,12 +79,7 @@ export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
     },
   })
 
-  const onSubmit = useCallback(
-    ({ userCollateral, debt, ...data }: BorrowForm) =>
-      // should be safe to assert as we have form validation
-      mutateAsync({ userCollateral: userCollateral!, debt: debt!, ...data }),
-    [mutateAsync],
-  )
+  const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])
 
   return { onSubmit, error, txHash: data, isPending, isSuccess }
 }

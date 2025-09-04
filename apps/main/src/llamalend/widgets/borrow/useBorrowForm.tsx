@@ -5,6 +5,7 @@ import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import { useMaxBorrowLeverage } from '@/llamalend/widgets/borrow/queries/borrow-max-leverage.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { formDefaultOptions } from '@ui-kit/lib/model'
@@ -12,8 +13,8 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { type BorrowForm, BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
 import { BORROW_PRESET_RANGES, DEFAULT_SLIPPAGE } from './borrow.util'
 import { useMaxBorrowReceive } from './queries/borrow-max-receive.query'
-import { useCreateLoan } from './queries/borrow.mutation'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
+import { useCreateLoanMutation } from './queries/create-loan.mutation'
 import { useUserBalances } from './queries/user-balances.query'
 
 type UseBorrowFormParams = {
@@ -57,15 +58,19 @@ export function useBorrowForm({ market, network: { id: chain, chainId }, preset 
   const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
+    // todo: also validate maxLeverage and maxCollateral
     resolver: vestResolver(borrowFormValidationSuite),
-    defaultValues: {
-      userCollateral: undefined,
-      userBorrowed: 0,
-      debt: undefined,
-      leverage: undefined,
-      slippage: DEFAULT_SLIPPAGE,
-      range: BORROW_PRESET_RANGES[preset],
-    },
+    defaultValues: useMemo(
+      () => ({
+        userCollateral: undefined,
+        userBorrowed: 0,
+        debt: undefined,
+        leverage: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+        range: BORROW_PRESET_RANGES[preset],
+      }),
+      [preset],
+    ),
   })
   const values = form.watch()
   const params = { chainId, poolId: market.id, userAddress, ...values }
@@ -75,13 +80,22 @@ export function useBorrowForm({ market, network: { id: chain, chainId }, preset 
     isSuccess: isCreated,
     error: creationError,
     txHash,
-  } = useCreateLoan({ chainId, poolId: market.id, reset: form.reset })
+  } = useCreateLoanMutation({ chainId, poolId: market.id, reset: form.reset })
   const { borrowToken, collateralToken } = useMemo(() => getTokens(market, chain), [market, chain])
+
+  // todo: figure out why form.formState.isValid is always true. For now, using useMemo to recalculate validation
+  // const validation = useMemo(() => {
+  //   const validation = borrowFormValidationSuite(values)
+  //   const result = { isValid: validation.isValid(), errors: validation.getErrors() }
+  //   console.log(result, validation)
+  //   return result
+  // }, [values])
+
   return {
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isCreating,
+    isPending: form.formState.isSubmitting || isCreating || form.formState.isSubmitting,
     onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
     maxBorrow: useMaxBorrowReceive(params),
     maxLeverage: useMaxBorrowLeverage(params),
@@ -91,5 +105,12 @@ export function useBorrowForm({ market, network: { id: chain, chainId }, preset 
     isCreated,
     creationError,
     txHash,
+    formErrors: useMemo(
+      () =>
+        recordEntries(form.formState.errors)
+          .filter(([field, error]) => field in form.formState.dirtyFields && error?.message)
+          .map(([_, error]) => error!.message!),
+      [form.formState],
+    ),
   }
 }

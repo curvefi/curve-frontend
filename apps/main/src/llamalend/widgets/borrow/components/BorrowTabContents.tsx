@@ -41,6 +41,7 @@ export const BorrowTabContents = ({
     creationError,
     txHash,
     maxLeverage,
+    formErrors,
   } = useBorrowForm({ market, network, preset })
   const { maxDebt, maxTotalCollateral } = maxBorrow.data ?? {}
   const { leverage } = values
@@ -88,13 +89,20 @@ export const BorrowTabContents = ({
           <Button
             type="submit"
             loading={isPending}
+            disabled={!form.formState.isValid}
             data-testid="borrow-submit-button"
             // todo: endIcon={<ChrevronDownIcon />}
           >
             {isPending ? t`Processing...` : t`Approve & Swap`}
           </Button>
 
-          <BorrowFormAlert isCreated={isCreated} creationError={creationError} network={network} txHash={txHash} />
+          <BorrowFormAlert
+            isCreated={isCreated}
+            creationError={creationError}
+            formErrors={formErrors}
+            network={network}
+            txHash={txHash}
+          />
 
           <BorrowActionInfoAccordion params={params} values={values} collateralToken={collateralToken} />
         </Stack>
