@@ -7,9 +7,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
+import { formatPercent } from '@ui-kit/shared/ui/tooltips/utils'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent } from '../cell.format'
 
 const { Spacing } = SizesAndSpaces
 
