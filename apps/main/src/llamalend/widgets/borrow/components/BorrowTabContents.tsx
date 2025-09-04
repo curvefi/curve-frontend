@@ -8,13 +8,10 @@ import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPreset, type LlamaMarketTemplate } from '../borrow.types'
-import { hasLeverage } from '../borrow.util'
 import { useBorrowForm } from '../useBorrowForm'
-import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
-import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
@@ -40,11 +37,9 @@ export const BorrowTabContents = ({
     isCreated,
     creationError,
     txHash,
-    maxLeverage,
     formErrors,
   } = useBorrowForm({ market, network, preset })
   const { maxDebt, maxTotalCollateral } = maxBorrow.data ?? {}
-  const { leverage } = values
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
@@ -68,23 +63,11 @@ export const BorrowTabContents = ({
             testId="borrow-debt-input"
           />
 
-          {hasLeverage(market) && <LeverageInput maxLeverage={maxLeverage} leverage={leverage} form={form} />}
-
           <LoanPresetSelector
             preset={preset}
             setPreset={setPreset}
             setRange={(range: number) => form.setValue('range', range)}
-          >
-            {preset === BorrowPreset.Custom && (
-              <AdvancedBorrowOptions
-                network={network.id}
-                params={params}
-                values={values}
-                collateralToken={collateralToken}
-                borrowToken={borrowToken}
-              />
-            )}
-          </LoanPresetSelector>
+          />
 
           <Button
             type="submit"

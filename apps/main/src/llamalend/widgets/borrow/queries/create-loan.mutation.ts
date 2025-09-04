@@ -10,7 +10,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
-import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
 import { userBalancesQueryKey } from '../queries/user-balances.query'
 
 type BorrowMutationContext = {
@@ -74,7 +73,6 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       notify(t`Loan created successfully`, 'success')
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: userBalancesQueryKey({ chainId, poolId, userAddress }) }),
-        queryClient.invalidateQueries({ queryKey: borrowExpectedCollateralQueryKey({ chainId, poolId, ...mutation }) }),
       ])
     },
   })

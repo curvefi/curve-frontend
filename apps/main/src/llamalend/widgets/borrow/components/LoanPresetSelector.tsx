@@ -41,7 +41,7 @@ export const LoanPresetSelector = ({
   preset: BorrowPreset | undefined
   setPreset: (value: BorrowPreset) => void
   setRange: (value: number) => void
-  children: ReactNode
+  children?: ReactNode
 }) => (
   <Stack gap={Spacing.sm}>
     <ToggleButtonGroup

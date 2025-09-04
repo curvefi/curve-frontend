@@ -10,16 +10,13 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
 import { useBorrowBands } from '../queries/borrow-bands.query'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
-import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
 
 export const BorrowActionInfoAccordion = ({
   params,
-  values: { range, slippage, leverage },
-  collateralToken,
+  values: { range, slippage },
 }: {
   params: BorrowFormQueryParams
   values: BorrowForm
@@ -27,26 +24,14 @@ export const BorrowActionInfoAccordion = ({
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const {
-    data: expectedCollateral,
-    isLoading: expectedCollateralLoading,
-    error: expectedCollateralError,
-  } = useBorrowExpectedCollateral(params, isOpen && !!leverage)
-  const {
     data: priceImpactPercent,
     isLoading: priceImpactPercentLoading,
     error: priceImpactPercentError,
   } = useBorrowPriceImpact(params, isOpen)
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen)
-  const {
-    data: maxBorrowReceive,
-    isLoading: maxBorrowReceiveLoading,
-    error: maxBorrowReceiveError,
-  } = useMaxBorrowReceive(params, isOpen)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params)
 
-  const { totalCollateral } = expectedCollateral ?? {}
-  const { avgPrice, maxLeverage } = maxBorrowReceive ?? {}
   const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
 
   return (
@@ -61,7 +46,7 @@ export const BorrowActionInfoAccordion = ({
             '...'
           ) : healthError ? (
             <Tooltip title={healthError.message}>
-              {/*todo: tooltip doesn't work because accordion takes the mouse focus */}
+              {/*todo: tooltip doesn't work because accordion takes the precen*/}
               <ExclamationTriangleIcon sx={{ color: (t) => t.design.Layer.Feedback.Error }} fontSize="small" />
             </Tooltip>
           ) : health ? (
@@ -75,27 +60,6 @@ export const BorrowActionInfoAccordion = ({
       toggle={toggle}
     >
       <Stack>
-        <ActionInfo
-          label={t`Leverage`}
-          value={formatNumber(leverage, { defaultValue: '1', maximumFractionDigits: 0 })}
-          valueRight={
-            leverage != null && maxLeverage && ` (max ${formatNumber(maxLeverage, { maximumFractionDigits: 0 })})`
-          }
-          error={expectedCollateralError || maxBorrowReceiveError}
-          loading={expectedCollateralLoading || maxBorrowReceiveLoading}
-        />
-        <ActionInfo
-          label={t`Expected`}
-          value={formatNumber(totalCollateral, { currency: collateralToken?.symbol, defaultValue: '-' })}
-          error={expectedCollateralError}
-          loading={expectedCollateralLoading}
-        />
-        <ActionInfo
-          label={t`Expected avg. price`}
-          value={formatNumber(avgPrice, { defaultValue: '-' })}
-          error={maxBorrowReceiveError}
-          loading={maxBorrowReceiveLoading}
-        />
         <ActionInfo
           label={isHighImpact ? t`High price impact` : t`Price impact`}
           value={formatNumber(priceImpactPercent, { defaultValue: '-' })}
