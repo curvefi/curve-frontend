@@ -1,72 +1,57 @@
-import { useRef } from 'react'
-import { useButton } from 'react-aria'
 import { useOverlayTriggerState } from 'react-stately'
 import { styled, css } from 'styled-components'
-import Button from 'ui/src/Button'
-import type { ButtonProps } from 'ui/src/Button/types'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Spinner from 'ui/src/Spinner/Spinner'
 import { StepModal } from 'ui/src/Stepper'
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
 import { isInProgress, taskStepStatusStyles } from './helpers'
 
-const StepAction = ({ className, step }: { className?: string; step: Step }) => {
-  const overlayTriggerState = useOverlayTriggerState({})
-  const openButtonRef = useRef<HTMLButtonElement>(null)
-  const classNames = `${className} custom-font step-box`
+const { Spacing } = SizesAndSpaces
 
-  const { buttonProps: openButtonProps } = useButton({ onPress: () => overlayTriggerState.open() }, openButtonRef)
+const StepAction = ({ step }: { step: Step }) => {
+  const overlayTriggerState = useOverlayTriggerState({})
+
+  const content = (
+    <Stack direction="row" gap={Spacing.md} alignItems="center">
+      {step.content}
+      {isInProgress(step) ? <Spinner isDisabled size={18} /> : null}
+    </Stack>
+  )
 
   if (step.type === 'task' || step.status === 'succeeded' || step.status === 'failed') {
     return (
-      <TaskStep className={`${classNames} font-size-3`} status={step.status}>
-        <Content className="content">
-          {step.content} {isInProgress(step) ? <StyledSpinner isDisabled size={18} /> : null}
-        </Content>
+      <TaskStep className="step-box font-size-3" status={step.status}>
+        {content}
       </TaskStep>
     )
   }
 
-  if (step.status === 'in-progress') {
-    return (
-      <ActionBox className={`${classNames} font-size-3`}>
-        <Content className="content">
-          {step.content} {isInProgress(step) ? <StyledSpinner size={15} /> : null}
-        </Content>
-      </ActionBox>
-    )
-  }
-
-  const buttonProps: ButtonProps = {
-    fillWidth: true,
-    size: 'large',
-    variant: 'filled',
-  }
-
-  return 'onClick' in step ? (
+  return (
     <>
-      <StyledButton
-        className={classNames}
-        {...buttonProps}
+      <Button
+        {...open}
+        className="step-box"
         disabled={step.status !== 'current'}
-        testId={step.key.toLowerCase()}
-        onClick={step.onClick}
+        data-testid={step.key.toLowerCase()}
+        onClick={'onClick' in step ? step.onClick : overlayTriggerState.open}
+        fullWidth
+        size="medium"
+        sx={{
+          // Not the default disabled styling, but we gotta match it with the legacy stepper style for the time being
+          '&.Mui-disabled': {
+            color: 'var(--input--disabled--color)',
+            backgroundColor: 'var(--button--disabled--background-color)',
+          },
+        }}
       >
-        {step.content} {isInProgress(step) ? <StyledSpinner isDisabled size={15} /> : null}
-      </StyledButton>
-    </>
-  ) : (
-    <>
-      <StyledButton
-        className={classNames}
-        {...buttonProps}
-        {...openButtonProps}
-        ref={openButtonRef}
-        disabled={step.status !== 'current'}
-        testId={step.key.toLowerCase()}
-      >
-        {step.content} {isInProgress(step) ? <StyledSpinner isDisabled size={15} /> : null}
-      </StyledButton>
-      {overlayTriggerState.isOpen && <StepModal modal={step.modal} overlayTriggerState={overlayTriggerState} />}
+        {content}
+      </Button>
+
+      {!('onClick' in step) && overlayTriggerState.isOpen && (
+        <StepModal modal={step.modal} overlayTriggerState={overlayTriggerState} />
+      )}
     </>
   )
 }
@@ -87,46 +72,11 @@ const stepStyle = css`
   font-weight: var(--button--font-weight);
 `
 
-const StyledSpinner = styled(Spinner)`
-  margin-left: var(--spacing-2);
-`
-
-const StyledButton = styled(Button)`
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  padding: var(--spacing-1);
-
-  text-transform: var(--box_action--button--text-transform);
-`
-
-const ActionBox = styled(StepBox)`
-  ${stepStyle};
-
-  color: var(--box_action--button--loading--color);
-  background-color: var(--box_action--button--loading--background-color);
-  box-shadow: 3px 3px var(--box_action--button--loading--shadow-color);
-
-  text-align: center;
-
-  ${StyledSpinner} {
-    > div {
-      border-color: var(--box_action--button--loading--color) transparent transparent transparent;
-    }
-  }
-`
-
 const TaskStep = styled(StepBox)<{ status: StepStatus }>`
   ${stepStyle}
 
   ${(props) => taskStepStatusStyles(props.status)}
   transition: all 0.5s ease;
-`
-
-const Content = styled.div`
-  align-items: center;
-  display: flex;
-  text-align: center;
 `
 
 export default StepAction
