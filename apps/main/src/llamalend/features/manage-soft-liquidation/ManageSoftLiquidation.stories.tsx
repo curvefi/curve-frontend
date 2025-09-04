@@ -131,7 +131,7 @@ const actionInfos = {
 }
 
 const meta: Meta<typeof ManageSoftLiquidation> = {
-  title: 'UI Kit/Features/ManageSoftLiquidation',
+  title: 'Llamalend/Features/ManageSoftLiquidation',
   component: ManageSoftLiquidation,
 }
 
