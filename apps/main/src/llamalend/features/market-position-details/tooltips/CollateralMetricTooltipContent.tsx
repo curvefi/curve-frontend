@@ -1,8 +1,8 @@
 import { Stack } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
-import { CollateralValue } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import type { CollateralValue } from '../BorrowPositionDetails'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null

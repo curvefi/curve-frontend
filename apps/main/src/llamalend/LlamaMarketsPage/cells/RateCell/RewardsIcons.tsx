@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import type { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { useMarketExtraIncentives } from '@ui-kit/hooks/useMarketExtraIncentives'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { useFilteredRewards } from '@ui-kit/shared/ui/tooltips/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketRateType } from '@ui-kit/types/market'
 

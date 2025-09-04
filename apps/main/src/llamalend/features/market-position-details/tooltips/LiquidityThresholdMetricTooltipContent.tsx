@@ -1,7 +1,7 @@
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
-import { BandRange, LiquidationRange } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import type { BandRange, LiquidationRange } from '../BorrowPositionDetails'
 
 type LiquidityThresholdTooltipContentProps = {
   liquidationRange: LiquidationRange | undefined | null

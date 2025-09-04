@@ -1,7 +1,7 @@
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
-import { Pnl } from '@ui-kit/features/market-position-details/BorrowPositionDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import type { Pnl } from '../BorrowPositionDetails'
 
 type PnlMetricTooltipContentProps = {
   pnl: Pnl | undefined | null
