@@ -1,10 +1,10 @@
 import { Alert, Stack, Typography } from '@mui/material'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
-import { BorrowInformation } from '@ui-kit/features/market-position-details/BorrowInformation'
-import { HealthDetails } from '@ui-kit/features/market-position-details/HealthDetails'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
+import { BorrowInformation } from './BorrowInformation'
+import { HealthDetails } from './HealthDetails'
 
 const { Spacing } = SizesAndSpaces
 

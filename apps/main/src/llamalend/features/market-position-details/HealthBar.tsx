@@ -1,10 +1,7 @@
 import { Stack, type Theme, Typography } from '@mui/material'
-import { getHealthTrackColor } from '@ui-kit/features/market-position-details/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
+import { getHealthTrackColor } from './utils'
 
 type HealthBarProps = {
   health: number | undefined | null
