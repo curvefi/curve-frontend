@@ -4,7 +4,7 @@ import { formatNumber } from '@ui/utils'
 import { getHealthValueColor } from '@ui-kit/features/market-position-details/utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { ControlledAccordion } from '@ui-kit/shared/ui/Accordion'
+import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
 import { useBorrowBands } from '../queries/borrow-bands.query'
@@ -48,7 +48,7 @@ export const BorrowActionInfoAccordion = ({
   const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
 
   return (
-    <ControlledAccordion
+    <Accordion
       title={t`Health`}
       info={
         <Typography
@@ -58,7 +58,7 @@ export const BorrowActionInfoAccordion = ({
           {healthLoading ? '...' : healthError ? '!' : health ? formatNumber(health) : '∞'}
         </Typography>
       }
-      isOpen={isOpen}
+      expanded={isOpen}
       toggle={toggle}
     >
       <Stack>
@@ -73,8 +73,7 @@ export const BorrowActionInfoAccordion = ({
         />
         <ActionInfo
           label={t`Expected`}
-          value={formatNumber(totalCollateral, { showDecimalIfSmallNumberOnly: true })}
-          valueRight={collateralToken?.symbol}
+          value={formatNumber(totalCollateral, { currency: collateralToken?.symbol, defaultValue: '-' })}
           error={expectedCollateralError}
           loading={expectedCollateralLoading}
         />
@@ -114,6 +113,6 @@ export const BorrowActionInfoAccordion = ({
           // todo: valueRight={<SettingsIcon />}
         />
       </Stack>
-    </ControlledAccordion>
+    </Accordion>
   )
 }
