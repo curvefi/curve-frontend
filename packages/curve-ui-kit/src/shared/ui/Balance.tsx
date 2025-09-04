@@ -6,12 +6,9 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber as sharedFormat, SxProps } from '@ui-kit/utils'
+import { formatNumber, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
-
-const formatNumber = (value?: number): string =>
-  value == null ? '?' : sharedFormat(value, { decimals: 2, abbreviate: true })
 
 type MaxButtonProps = {
   children: ReactNode
@@ -59,7 +56,7 @@ const BalanceText = ({ symbol, balance, loading = false }: BalanceTextProps) => 
   <WithSkeleton loading={loading}>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
       <Typography className="balance" variant="highlightS" color={balance != null ? 'textPrimary' : 'textTertiary'}>
-        {formatNumber(balance)}
+        {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
       </Typography>
 
       <Typography variant="highlightS" color="textPrimary">
@@ -106,9 +103,9 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValue, 
       <BalanceText symbol={symbol} balance={balance} loading={loading} />
     )}
 
-    {notionalValue && !loading && (
+    {notionalValue != null && !loading && (
       <Typography variant="bodySRegular" color="textTertiary">
-        ${formatNumber(notionalValue)}
+        ${formatNumber(notionalValue, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}
 
