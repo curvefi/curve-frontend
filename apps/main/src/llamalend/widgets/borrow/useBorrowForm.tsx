@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import type { UseFormReturn } from 'react-hook-form/dist/types'
 import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import { useMaxBorrowLeverage } from '@/llamalend/widgets/borrow/queries/borrow-max-leverage.query'
@@ -54,23 +55,23 @@ const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
         },
       }
 
+const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
+  useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
 export function useBorrowForm({ market, network: { id: chain, chainId }, preset }: UseBorrowFormParams) {
   const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
     // todo: also validate maxLeverage and maxCollateral
     resolver: vestResolver(borrowFormValidationSuite),
-    defaultValues: useMemo(
-      () => ({
-        userCollateral: undefined,
-        userBorrowed: 0,
-        debt: undefined,
-        leverage: undefined,
-        slippage: DEFAULT_SLIPPAGE,
-        range: BORROW_PRESET_RANGES[preset],
-      }),
-      [preset],
-    ),
+    defaultValues: {
+      userCollateral: undefined,
+      userBorrowed: 0,
+      debt: undefined,
+      leverage: undefined,
+      slippage: DEFAULT_SLIPPAGE,
+      range: BORROW_PRESET_RANGES[preset],
+    },
   })
   const values = form.watch()
   const params = { chainId, poolId: market.id, userAddress, ...values }
@@ -80,8 +81,10 @@ export function useBorrowForm({ market, network: { id: chain, chainId }, preset 
     isSuccess: isCreated,
     error: creationError,
     txHash,
+    reset: resetCreation,
   } = useCreateLoanMutation({ chainId, poolId: market.id, reset: form.reset })
   const { borrowToken, collateralToken } = useMemo(() => getTokens(market, chain), [market, chain])
+  useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
   // todo: figure out why form.formState.isValid is always true. For now, using useMemo to recalculate validation
   // const validation = useMemo(() => {

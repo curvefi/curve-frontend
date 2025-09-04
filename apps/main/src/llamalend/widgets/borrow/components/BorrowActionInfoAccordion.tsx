@@ -4,8 +4,10 @@ import { formatNumber } from '@ui/utils'
 import { getHealthValueColor } from '@ui-kit/features/market-position-details/utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
@@ -55,7 +57,18 @@ export const BorrowActionInfoAccordion = ({
           sx={{ ...(health && { color: (t) => getHealthValueColor(health, t) }) }}
           data-testid="borrow-health-value"
         >
-          {healthLoading ? '...' : healthError ? '!' : health ? formatNumber(health) : '∞'}
+          {healthLoading ? (
+            '...'
+          ) : healthError ? (
+            <Tooltip title={healthError.message}>
+              {/*todo: tooltip doesn't work because accordion takes the mouse focus */}
+              <ExclamationTriangleIcon sx={{ color: (t) => t.design.Layer.Feedback.Error }} fontSize="small" />
+            </Tooltip>
+          ) : health ? (
+            formatNumber(health)
+          ) : (
+            '∞'
+          )}
         </Typography>
       }
       expanded={isOpen}

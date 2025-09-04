@@ -43,6 +43,7 @@ export const LeverageInput = ({
         />
       }
     />
+    {/* todo: remove leverage for now */}
     <Input
       inputProps={{
         sx: { textAlign: 'right', paddingInline: Spacing.sm },

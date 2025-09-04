@@ -51,7 +51,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
   const { address: userAddress } = useAccount()
   const mutationKey = ['create-loan', { chainId, poolId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess } = useMutation({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
@@ -81,5 +81,5 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
 
   const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])
 
-  return { onSubmit, error, txHash: data, isPending, isSuccess }
+  return { onSubmit, error, txHash: data, isPending, isSuccess, reset }
 }
