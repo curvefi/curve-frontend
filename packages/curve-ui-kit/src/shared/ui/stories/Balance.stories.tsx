@@ -31,6 +31,10 @@ const meta: Meta<typeof Balance> = {
       action: 'onMax',
       description: 'Callback when max button is clicked',
     },
+    loading: {
+      control: 'boolean',
+      description: 'Whether the component is in a loading state',
+    },
   },
   args: {
     symbol: 'ETH',
@@ -103,6 +107,34 @@ export const ZeroBalance: Story = {
 export const NoBalance: Story = {
   args: {
     balance: undefined,
+  },
+}
+
+export const Loading: Story = {
+  args: {
+    loading: true,
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component in a loading state with skeleton placeholders',
+      },
+    },
+  },
+}
+
+export const LoadingWithNotionalValueAndMax: Story = {
+  args: {
+    loading: true,
+    notionalValue: 1234.56,
+    max: 'button',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component in a loading state with notional value skeleton and max button',
+      },
+    },
   },
 }
 
