@@ -138,6 +138,9 @@ type Props = {
    */
   isLoading?: boolean
 
+  /** Optional test ID for Cypress testing */
+  testId?: string
+
   /**
    * Number of decimal places to round balance values to when calculating from percentage.
    * @default 4
@@ -161,6 +164,7 @@ export const LargeTokenInput = ({
   isError = false,
   balanceDecimals = 4,
   onBalance,
+  testId: dataTestId,
 }: Props) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
   const [balance, setBalance] = useState<number | undefined>(undefined)
@@ -237,6 +241,7 @@ export const LargeTokenInput = ({
   return (
     <Stack
       gap={Spacing.xs}
+      data-testid={dataTestId}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         padding: Spacing.md,
