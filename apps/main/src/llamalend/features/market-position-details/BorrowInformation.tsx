@@ -1,4 +1,9 @@
+import { MarketBorrowRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipContent'
 import { CardHeader, Stack } from '@mui/material'
+import { t } from '@ui-kit/lib/i18n'
+import { Metric } from '@ui-kit/shared/ui/Metric'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { LlamaMarketType } from '@ui-kit/types/market'
 import type {
   Pnl,
   BorrowAPY,
@@ -8,17 +13,12 @@ import type {
   TotalDebt,
   LiquidationRange,
   BandRange,
-} from '@ui-kit/features/market-position-details/BorrowPositionDetails'
-import { CollateralMetricTooltipContent } from '@ui-kit/features/market-position-details/tooltips/CollateralMetricTooltipContent'
-import { CurrentLTVTooltipContent } from '@ui-kit/features/market-position-details/tooltips/CurrentLTVTooltipContent'
-import { LiquidityThresholdTooltipContent } from '@ui-kit/features/market-position-details/tooltips/LiquidityThresholdMetricTooltipContent'
-import { PnlMetricTooltipContent } from '@ui-kit/features/market-position-details/tooltips/PnlMetricTooltipContent'
-import { TotalDebtTooltipContent } from '@ui-kit/features/market-position-details/tooltips/TotalDebtTooltipContent'
-import { t } from '@ui-kit/lib/i18n'
-import { Metric } from '@ui-kit/shared/ui/Metric'
-import { MarketBorrowRateTooltipContent } from '@ui-kit/shared/ui/tooltips/MarketBorrowRateTooltipContent'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketType } from '@ui-kit/types/market'
+} from './BorrowPositionDetails'
+import { CollateralMetricTooltipContent } from './tooltips/CollateralMetricTooltipContent'
+import { CurrentLTVTooltipContent } from './tooltips/CurrentLTVTooltipContent'
+import { LiquidityThresholdTooltipContent } from './tooltips/LiquidityThresholdMetricTooltipContent'
+import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
+import { TotalDebtTooltipContent } from './tooltips/TotalDebtTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 

@@ -32,23 +32,26 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     return statsError && <ErrorCell error={statsError} />
   }
 
-  const usdValue = usdPrice && formatNumber(value * usdPrice, { currency: 'USD', notation: 'compact' })
+  const usdValue = usdPrice && value * usdPrice
   return (
     <Stack direction="column" spacing={1} alignItems="end">
       <Tooltip title={`${formatNumber(value, { decimals: 5 })} ${symbol}`}>
-        <WithSkeleton loading={isLoading}>
-          <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
+        <Stack direction="row" spacing={1} alignItems="center" whiteSpace="nowrap">
+          <WithSkeleton loading={isLoading}>
             <Typography variant="tableCellMBold">{formatNumber(value, { notation: 'compact' })}</Typography>
             <TokenIcon blockchainId={chain} address={address} size="mui-md" />
-          </Stack>
-        </WithSkeleton>
+          </WithSkeleton>
+        </Stack>
       </Tooltip>
       <Tooltip title={formatNumber(usdValue, { currency: 'USD', decimals: 5 })}>
-        <WithSkeleton loading={isLoading || isUsdRateLoading}>
-          <Typography variant="bodySRegular" color="text.secondary">
+        <Typography variant="bodySRegular" color="text.secondary">
+          <WithSkeleton
+            loading={isLoading || isUsdRateLoading}
+            sx={{ transform: 'unset' /* other mui will scale the text down */ }}
+          >
             {formatNumber(usdValue, { currency: 'USD', notation: 'compact' })}
-          </Typography>
-        </WithSkeleton>
+          </WithSkeleton>
+        </Typography>
       </Tooltip>
     </Stack>
   )

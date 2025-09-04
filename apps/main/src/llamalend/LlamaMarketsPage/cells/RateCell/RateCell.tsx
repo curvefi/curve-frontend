@@ -1,4 +1,5 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { formatPercent } from '@/llamalend/utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -6,7 +7,6 @@ import { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../../columns.enum'
-import { formatPercent } from '../cell.format'
 import { BorrowRateTooltip } from './BorrowRateTooltip'
 import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
@@ -46,7 +46,7 @@ export const RateCell = ({
       <Tooltip market={market}>
         <Stack gap={Spacing.xs} alignItems="end">
           <Typography variant="tableCellMBold" color="textPrimary">
-            {formatPercent(rate)}
+            {rate == null ? '—' : formatPercent(rate)}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />

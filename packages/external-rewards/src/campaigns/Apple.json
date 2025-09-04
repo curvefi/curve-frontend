@@ -76,6 +76,18 @@
       "multiplier": "",
       "tags": ["tokens"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for applXTZ rewards. Visit Apple Farm to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x5D37F9B272ca7cdA2A05245b9a503746EefAC88f",
+      "network": "etherlink",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
     }
   ]
 }
