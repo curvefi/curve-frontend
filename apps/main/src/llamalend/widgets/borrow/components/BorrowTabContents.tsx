@@ -40,8 +40,9 @@ export const BorrowTabContents = ({
     isCreated,
     creationError,
     txHash,
+    maxLeverage,
   } = useBorrowForm({ market, network, preset })
-  const { maxDebt, maxTotalCollateral, maxLeverage } = maxBorrow.data ?? {}
+  const { maxDebt, maxTotalCollateral } = maxBorrow.data ?? {}
   const { leverage } = values
   return (
     <FormProvider {...form}>

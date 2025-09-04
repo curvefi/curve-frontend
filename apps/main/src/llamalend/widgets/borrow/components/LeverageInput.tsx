@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { BorrowForm } from '../borrow.types'
 
@@ -14,11 +15,11 @@ const { Spacing } = SizesAndSpaces
 const setOptionalNumber = (val: string) => (val ? +val : undefined)
 
 export const LeverageInput = ({
-  maxLeverage,
+  maxLeverage: { data: maxLeverage, isLoading },
   leverage,
   form,
 }: {
-  maxLeverage: number | undefined
+  maxLeverage: { data: number | undefined; isLoading: boolean }
   leverage: number | undefined
   form: UseFormReturn<BorrowForm>
 }) => (
@@ -28,14 +29,15 @@ export const LeverageInput = ({
       label={
         <Stack gap={Spacing.sm}>
           <Typography variant="bodySBold">{t`Enable leverage`}</Typography>
-          {maxLeverage && (
+          <WithSkeleton loading={isLoading}>
             <Typography variant="bodyXsRegular">{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
-          )}
+          </WithSkeleton>
         </Stack>
       }
       control={
         <Checkbox
           size="small"
+          disabled={!maxLeverage}
           checked={!!leverage}
           onChange={(x) => form.setValue('leverage', x.target.checked ? 1 : undefined)}
         />
@@ -48,6 +50,7 @@ export const LeverageInput = ({
       sx={{ paddingInlineEnd: Spacing.sm }}
       {...form.register('leverage', { setValueAs: setOptionalNumber, min: 1, max: maxLeverage })}
       endAdornment={'x'}
+      disabled={!leverage}
     />
   </Stack>
 )

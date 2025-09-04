@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import { useMaxBorrowLeverage } from '@/llamalend/widgets/borrow/queries/borrow-max-leverage.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -81,8 +82,9 @@ export function useBorrowForm({ market, network: { id: chain, chainId }, preset 
     values,
     params,
     isPending: form.formState.isSubmitting || isCreating,
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
     maxBorrow: useMaxBorrowReceive(params),
+    maxLeverage: useMaxBorrowLeverage(params),
     balances: useUserBalances(params),
     borrowToken,
     collateralToken,

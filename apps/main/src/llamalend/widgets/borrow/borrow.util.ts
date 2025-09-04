@@ -1,11 +1,12 @@
+import { ZeroAddress } from 'ethers'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { BorrowPreset } from './borrow.types'
 
 export const hasLeverage = (market: MintMarketTemplate | LendMarketTemplate) =>
-  market instanceof LendMarketTemplate ||
-  market.leverageZap !== '0x0000000000000000000000000000000000000000' ||
-  market.leverageV2.hasLeverage()
+  market instanceof LendMarketTemplate
+    ? market.leverage.hasLeverage()
+    : market.leverageZap !== ZeroAddress || market.leverageV2.hasLeverage()
 
 export const DEFAULT_SLIPPAGE = 0.1 as const
 

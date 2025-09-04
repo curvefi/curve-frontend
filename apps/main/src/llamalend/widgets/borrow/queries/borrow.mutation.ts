@@ -58,7 +58,6 @@ export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId, leverage)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
-          // Approve if needed
           const approvalTx = await createLoanApprove(userCollateral, userBorrowed)
           assert(approvalTx, t`Failed to approve loan creation`)
           notify(t`Approved loan creation`, 'success')
@@ -71,17 +70,19 @@ export const useCreateLoan = ({ chainId, poolId }: CreateLoanOptions) => {
     onSuccess: (tx, mutation) => {
       logSuccess(mutationKey, tx)
       notify(t`Loan created successfully`, 'success')
-      // Invalidate relevant queries
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: userBalancesQueryKey({ chainId, poolId, userAddress }) }),
         queryClient.invalidateQueries({ queryKey: borrowExpectedCollateralQueryKey({ chainId, poolId, ...mutation }) }),
       ])
     },
   })
+
   const onSubmit = useCallback(
     ({ userCollateral, debt, ...data }: BorrowForm) =>
+      // should be safe to assert as we have form validation
       mutateAsync({ userCollateral: userCollateral!, debt: debt!, ...data }),
     [mutateAsync],
   )
+
   return { onSubmit, error, txHash: data, isPending, isSuccess }
 }
