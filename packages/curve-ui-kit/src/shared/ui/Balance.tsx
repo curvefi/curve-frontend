@@ -105,7 +105,7 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValue, 
 
     {notionalValue != null && !loading && (
       <Typography variant="bodySRegular" color="textTertiary">
-        ${formatNumber(notionalValue, { unit: 'dollar', abbreviate: true })}
+        {formatNumber(notionalValue, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}
 
