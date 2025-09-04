@@ -1,5 +1,6 @@
 import { ReactElement } from 'react'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { formatPercent } from '@/llamalend/utils'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -99,7 +100,7 @@ const UtilizationTooltip = ({ market, children }: { market: LlamaMarket; childre
 export const UtilizationCell = ({ row, getValue }: CellContext<LlamaMarket, number>) => (
   <UtilizationTooltip market={row.original}>
     <Stack gap={Spacing.xs}>
-      {formatNumber(getValue(), { style: 'percent' })}
+      {formatPercent(getValue())}
       <LinearProgress percent={getValue()} size="medium" />
     </Stack>
   </UtilizationTooltip>

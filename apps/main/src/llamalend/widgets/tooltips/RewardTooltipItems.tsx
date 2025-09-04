@@ -1,3 +1,4 @@
+import { formatPercent } from '@/llamalend/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
@@ -7,8 +8,7 @@ import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { TooltipItem } from '../TooltipComponents'
-import { formatPercent } from './utils'
+import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
 

@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import { formatPercent } from '@/llamalend/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
@@ -9,7 +10,6 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatPercent } from '../cell.format'
 
 const { Spacing } = SizesAndSpaces
 
