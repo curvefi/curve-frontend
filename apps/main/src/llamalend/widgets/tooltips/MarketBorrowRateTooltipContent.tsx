@@ -2,7 +2,12 @@ import { formatPercent } from '@/llamalend/utils'
 import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import {
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+  TooltipDescription,
+} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 

@@ -7,7 +7,7 @@ import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { TooltipItem } from '@ui-kit/shared/ui/TooltipComponents'
+import { TooltipItem } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 

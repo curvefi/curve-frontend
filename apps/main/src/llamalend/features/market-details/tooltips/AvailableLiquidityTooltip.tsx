@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
+import { TooltipWrapper, TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
 const descriptions: Record<LlamaMarketType, string[]> = {

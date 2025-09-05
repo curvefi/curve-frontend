@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -49,24 +50,37 @@ export const TooltipItem = ({
   children,
   loading = false,
   variant = 'default',
+  titleIcon,
 }: {
   title: ReactNode
   children?: ReactNode
   loading?: boolean // shows skeleton instead of children
   variant?: ItemVariant
+  titleIcon?: { blockchainId: string; address: string; size: Size }
 }) => (
   <Stack direction="row" justifyContent="space-between">
-    <Typography
-      color={titleTypographyColor[variant]}
-      variant={titleTypographyVariant[variant]}
-      {...(variant === 'subItem' && {
-        sx: {
-          marginLeft: Spacing.md,
-        },
-      })}
-    >
-      {title}
-    </Typography>
+    <Stack direction="row" gap={Spacing.xxs} alignItems="center">
+      {titleIcon && (
+        <TokenIcon
+          blockchainId={titleIcon.blockchainId}
+          address={titleIcon.address}
+          size={titleIcon.size}
+          sx={{ marginLeft: Spacing.md }}
+        />
+      )}
+      <Typography
+        color={titleTypographyColor[variant]}
+        variant={titleTypographyVariant[variant]}
+        {...(variant === 'subItem' &&
+          titleIcon == null && {
+            sx: {
+              marginLeft: Spacing.md,
+            },
+          })}
+      >
+        {title}
+      </Typography>
+    </Stack>
     <WithSkeleton loading={loading}>
       <Stack direction="row" spacing={1}>
         {React.Children.map(children, (child, index) => {
@@ -85,8 +99,24 @@ export const TooltipItem = ({
   </Stack>
 )
 
-export const TooltipItems = ({ children, secondary }: { children: ReactNode; secondary?: boolean }) => (
-  <Stack padding={Spacing.sm} gap={Spacing.xs} {...(secondary && { bgcolor: (t) => t.design.Layer[2].Fill })}>
+export const TooltipItems = ({
+  children,
+  secondary,
+  borderTop = false,
+  extraMargin = false,
+}: {
+  children: ReactNode
+  secondary?: boolean
+  borderTop?: boolean
+  extraMargin?: boolean
+}) => (
+  <Stack
+    padding={Spacing.sm}
+    gap={Spacing.xs}
+    marginTop={extraMargin ? Spacing.sm : 0}
+    {...(borderTop && { borderTop: (t) => `1px solid ${t.design.Layer[3].Outline}` })}
+    {...(secondary && { bgcolor: (t) => t.design.Layer[2].Fill })}
+  >
     {children}
   </Stack>
 )
