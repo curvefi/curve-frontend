@@ -1,7 +1,7 @@
+import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { styled } from '@mui/material/styles'
 import { CURVE_ASSETS_URL } from '@ui/utils'
 import { applySxProps, type SxProps } from '@ui-kit/utils'
-import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 const { IconSize } = SizesAndSpaces
 

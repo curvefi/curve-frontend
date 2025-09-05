@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
+import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -132,4 +132,6 @@ export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
   </Stack>
 )
 
-export const TooltipDescription = ({ text }: { text: string }) => <Typography variant="bodySRegular">{text}</Typography>
+export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
+  <Typography variant="bodySRegular">{text}</Typography>
+)
