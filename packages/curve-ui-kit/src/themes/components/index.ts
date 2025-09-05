@@ -90,7 +90,7 @@ export const createComponents = (
   MuiInputLabel: {
     styleOverrides: {
       root: {
-        '&.MuiInputLabel-sizeExtraSmall:not(.MuiInputLabel-shrink)': {
+        '&.MuiInputLabel-sizeTiny:not(.MuiInputLabel-shrink)': {
           // the default in mui is 14px,16px but in extraSmall inputs it gets out of the box
           transform: 'translate(14px, 2px)',
         },
