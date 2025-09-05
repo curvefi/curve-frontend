@@ -1,7 +1,10 @@
 import { FormProvider } from 'react-hook-form'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
+import { AdvancedBorrowOptions } from '@/llamalend/widgets/borrow/components/AdvancedBorrowOptions'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
@@ -20,7 +23,7 @@ export const BorrowTabContents = ({
   market,
   network,
 }: {
-  market: LlamaMarketTemplate
+  market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkEnum, IChainId>
 }) => {
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
@@ -38,8 +41,10 @@ export const BorrowTabContents = ({
     creationError,
     txHash,
     formErrors,
+    tooMuchDebt,
   } = useBorrowForm({ market, network, preset })
   const { maxDebt, maxTotalCollateral } = maxBorrow.data ?? {}
+  const setRange = (range: number) => form.setValue('range', range, setValueOptions)
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
@@ -49,7 +54,8 @@ export const BorrowTabContents = ({
             token={collateralToken}
             name="userCollateral"
             form={form}
-            state={maxBorrow}
+            isLoading={maxBorrow.isLoading || !market}
+            isError={maxBorrow.isError}
             max={balances.data?.collateral ?? maxTotalCollateral}
             testId="borrow-collateral-input"
           />
@@ -58,21 +64,28 @@ export const BorrowTabContents = ({
             token={borrowToken}
             name="debt"
             form={form}
-            state={maxBorrow}
+            isLoading={maxBorrow.isLoading || !market}
+            isError={maxBorrow.isError}
             max={maxDebt}
             testId="borrow-debt-input"
           />
 
-          <LoanPresetSelector
-            preset={preset}
-            setPreset={setPreset}
-            setRange={(range: number) => form.setValue('range', range)}
-          />
+          <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
+            <Collapse in={preset === BorrowPreset.Custom}>
+              <AdvancedBorrowOptions
+                market={market}
+                values={values}
+                params={params}
+                setRange={setRange}
+                enabled={preset === BorrowPreset.Custom}
+              />
+            </Collapse>
+          </LoanPresetSelector>
 
           <Button
             type="submit"
-            loading={isPending}
-            disabled={!form.formState.isValid}
+            loading={isPending || !market}
+            disabled={formErrors.length > 0}
             data-testid="borrow-submit-button"
             // todo: endIcon={<ChrevronDownIcon />}
           >
@@ -87,7 +100,12 @@ export const BorrowTabContents = ({
             txHash={txHash}
           />
 
-          <BorrowActionInfoAccordion params={params} values={values} collateralToken={collateralToken} />
+          <BorrowActionInfoAccordion
+            params={params}
+            values={values}
+            collateralToken={collateralToken}
+            tooMuchDebt={tooMuchDebt}
+          />
         </Stack>
       </form>
     </FormProvider>

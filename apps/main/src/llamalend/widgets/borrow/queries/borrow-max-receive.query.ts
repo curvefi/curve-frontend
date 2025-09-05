@@ -48,7 +48,7 @@ export const maxReceiveValidation = createValidationSuite(
   },
 )
 
-export const { useQuery: useMaxBorrowReceive } = queryFactory({
+export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = queryFactory({
   queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage, range }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),

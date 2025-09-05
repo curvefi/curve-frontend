@@ -5,9 +5,9 @@ import { getLlamaMarket } from '../llama.util'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
-type BorrowBandsResult = [number, number]
+type BorrowBandsResult = Record<number, [number, number] | null>
 
-export const { useQuery: useBorrowBands } = queryFactory({
+export const { useQuery: useBorrowBandsAllRanges } = queryFactory({
   queryKey: ({
     chainId,
     poolId,
@@ -24,7 +24,6 @@ export const { useQuery: useBorrowBands } = queryFactory({
       { userBorrowed },
       { debt },
       { leverage },
-      { range },
     ] as const,
   queryFn: async ({
     poolId,
@@ -32,16 +31,15 @@ export const { useQuery: useBorrowBands } = queryFactory({
     userCollateral = 0,
     debt = 0,
     leverage,
-    range,
   }: BorrowFormQuery): Promise<BorrowBandsResult> => {
     const [market, type] = getLlamaMarket(poolId)
     return !leverage
-      ? market.createLoanBands(userCollateral, userBorrowed, range)
+      ? market.createLoanBandsAllRanges(userCollateral, userBorrowed)
       : type === LlamaMarketType.Lend
-        ? market.leverage.createLoanBands(userCollateral, userBorrowed, debt, range)
+        ? market.leverage.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
         : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
-          : await market.leverage.createLoanBands(userCollateral, debt, range)
+          ? await market.leverageV2.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
+          : await market.leverage.createLoanBandsAllRanges(userCollateral, debt)
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

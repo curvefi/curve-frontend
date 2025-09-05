@@ -1,3 +1,4 @@
+import { maxBorrowReceiveKey } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -50,4 +51,5 @@ export const { useQuery: useBorrowPrices } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
+  dependencies: (params) => [maxBorrowReceiveKey(params)],
 })

@@ -1,5 +1,5 @@
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/api/lib/interfaces'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'

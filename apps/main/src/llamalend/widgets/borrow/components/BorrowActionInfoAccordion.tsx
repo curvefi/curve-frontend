@@ -1,26 +1,47 @@
+import { getHealthValueColor } from '@/llamalend/features/market-position-details/utils'
+import { formatPercent } from '@/llamalend/utils'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
+import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@ui/utils'
-import { getHealthValueColor } from '@ui-kit/features/market-position-details/utils'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
 
+const useLoanToValue = ({
+  chainId,
+  collateralToken,
+  debt,
+  userCollateral,
+}: {
+  chainId: IChainId
+  debt: number | undefined
+  userCollateral: number | undefined
+  collateralToken: Token | undefined
+}) => {
+  const tokenAddress = collateralToken?.address
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress })
+  const collateralValue = collateralUsdRate != null && userCollateral != null && userCollateral * collateralUsdRate
+  return collateralValue && debt != null ? (debt / collateralValue) * 100 : null
+}
+
 export const BorrowActionInfoAccordion = ({
   params,
-  values: { range, slippage },
+  values: { range, slippage, debt, userCollateral },
+  collateralToken,
+  tooMuchDebt,
 }: {
   params: BorrowFormQueryParams
   values: BorrowForm
   collateralToken: Token | undefined
+  tooMuchDebt: boolean
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const {
@@ -28,9 +49,11 @@ export const BorrowActionInfoAccordion = ({
     isLoading: priceImpactPercentLoading,
     error: priceImpactPercentError,
   } = useBorrowPriceImpact(params, isOpen)
-  const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen)
-  const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen)
-  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params)
+  const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
+  const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
+  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt)
+  const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
+  const theme = useTheme()
 
   const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
 
@@ -38,23 +61,13 @@ export const BorrowActionInfoAccordion = ({
     <Accordion
       title={t`Health`}
       info={
-        <Typography
-          sx={{ ...(health && { color: (t) => getHealthValueColor(health, t) }) }}
-          data-testid="borrow-health-value"
-        >
-          {healthLoading ? (
-            '...'
-          ) : healthError ? (
-            <Tooltip title={healthError.message}>
-              {/*todo: tooltip doesn't work because accordion takes the precen*/}
-              <ExclamationTriangleIcon sx={{ color: (t) => t.design.Layer.Feedback.Error }} fontSize="small" />
-            </Tooltip>
-          ) : health ? (
-            formatNumber(health)
-          ) : (
-            '∞'
-          )}
-        </Typography>
+        <ActionInfo
+          label=""
+          value={health == null ? '∞' : formatNumber(health)}
+          valueColor={getHealthValueColor(health ?? 100, theme)}
+          error={healthError}
+          loading={healthLoading}
+        />
       }
       expanded={isOpen}
       toggle={toggle}
@@ -82,7 +95,7 @@ export const BorrowActionInfoAccordion = ({
         />
         <ActionInfo label={t`N`} value={formatNumber(range)} />
         {/*TODO <ActionInfo label={t`Borrow APY`} prevValue="1.56" value="1.56" valueRight="%" />*/}
-        {/*TODO <ActionInfo label={t`Loan to value ratio`} value={formatPercent(debt / collateralValue * 100)} valueRight="%" />*/}
+        {loanToValue != null && <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} />}
         {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
         <ActionInfo
           label={t`Slippage tolerance`}

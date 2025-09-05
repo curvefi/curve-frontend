@@ -11,7 +11,6 @@ import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppFor
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 
 const LoanCreate = ({
   fetchInitial,
@@ -56,9 +55,7 @@ const LoanCreate = ({
 
       <AppFormContentWrapper>
         {rFormType === 'borrow' ? (
-          <WithSkeleton loading={!llamma}>
-            {llamma && <BorrowTabContents network={network} market={llamma} />}
-          </WithSkeleton>
+          <BorrowTabContents network={network} market={llamma ?? undefined} />
         ) : (
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />
         )}

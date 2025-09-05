@@ -1,4 +1,5 @@
 import { ZeroAddress } from 'ethers'
+import type { SetValueConfig } from 'react-hook-form/dist/types/form'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { BorrowPreset } from './borrow.types'
@@ -15,3 +16,5 @@ export const BORROW_PRESET_RANGES = {
   [BorrowPreset.MaxLtv]: 4,
   [BorrowPreset.Custom]: 10,
 }
+
+export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
