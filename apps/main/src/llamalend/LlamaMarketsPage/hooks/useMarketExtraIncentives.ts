@@ -32,7 +32,7 @@ export const useMarketExtraIncentives = (
                 blockchainId: 'ethereum',
                 isBoost: true,
               },
-            ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: true }),
+            ...incentives.map((incentive) => incentive.percentage > 0 && { ...incentive, isBoost: false }),
           )
         : [],
     [incentives, minApr, type, userBoost],
