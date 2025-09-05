@@ -4,7 +4,6 @@ import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TooltipItem } from './TooltipComponents'
@@ -42,7 +41,7 @@ export const RewardsTooltipItems = ({ title, extraRewards, extraIncentives }: Re
         </TooltipItem>
       ))}
       {extraRewards.map((r, i) => (
-        <TooltipItem variant="subItem" key={i} title={t`Points`}>
+        <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
           <Stack
             component={Link}
             href={r.dashboardLink}
@@ -57,7 +56,6 @@ export const RewardsTooltipItems = ({ title, extraRewards, extraIncentives }: Re
             alignItems="center"
             gap={Spacing.xs}
           >
-            <RewardIcon size="md" imageId={r.platformImageId} />
             {r.multiplier}
             <ArrowOutwardIcon />
           </Stack>

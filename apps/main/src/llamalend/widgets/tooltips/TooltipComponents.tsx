@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
 import { TokenIcon, type Size } from '@ui-kit/shared/ui/TokenIcon'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -50,13 +51,15 @@ export const TooltipItem = ({
   children,
   loading = false,
   variant = 'default',
-  titleIcon,
+  titleIcon, // used for token icons
+  imageId, // used for campaign reward icons
 }: {
   title: ReactNode
   children?: ReactNode
   loading?: boolean // shows skeleton instead of children
   variant?: ItemVariant
   titleIcon?: { blockchainId: string; address: string; size: Size }
+  imageId?: string
 }) => (
   <Stack direction="row" justifyContent="space-between">
     <Stack direction="row" gap={Spacing.xxs} alignItems="center">
@@ -68,11 +71,13 @@ export const TooltipItem = ({
           sx={{ marginLeft: Spacing.md }}
         />
       )}
+      {imageId && <RewardIcon size="md" imageId={imageId} sx={{ marginLeft: Spacing.md }} />}
       <Typography
         color={titleTypographyColor[variant]}
         variant={titleTypographyVariant[variant]}
         {...(variant === 'subItem' &&
-          titleIcon == null && {
+          titleIcon == null &&
+          imageId == null && {
             sx: {
               marginLeft: Spacing.md,
             },
