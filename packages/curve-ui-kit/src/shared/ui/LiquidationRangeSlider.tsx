@@ -20,7 +20,6 @@ export const LiquidationRangeSlider = ({
   showEditLiqRange,
   handleSelLiqRange,
 }: {
-  bands: [number, number]
   detailInfoLeverage?: ReactNode
   liqRanges: LiqRange[]
   loading: boolean
