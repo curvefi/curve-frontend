@@ -81,6 +81,7 @@ export const MarketSupplyRateTooltipContent = ({
           <TooltipItems secondary>
             <RewardsTooltipItems
               title={t`Staking incentives`}
+              tooltipType={'supply'}
               extraRewards={extraRewards}
               extraIncentives={extraIncentivesFormatted}
             />

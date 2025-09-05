@@ -2,6 +2,7 @@ import { formatPercent } from '@/llamalend/utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
+import type { RewardsAction } from '@ui/CampaignRewards/types'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
@@ -22,10 +23,16 @@ type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
   extraRewards: PoolRewards[]
+  tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
   extraIncentives: ExtraIncentiveItem[]
 }
 
-export const RewardsTooltipItems = ({ title, extraRewards, extraIncentives }: RewardsTooltipItemsProps) => {
+export const RewardsTooltipItems = ({
+  title,
+  extraRewards,
+  extraIncentives,
+  tooltipType,
+}: RewardsTooltipItemsProps) => {
   const totalExtraPercentage =
     extraIncentives.length > 0
       ? formatPercent(extraIncentives.reduce((sum, item) => sum + (item.percentage || 0), 0))
@@ -40,27 +47,30 @@ export const RewardsTooltipItems = ({ title, extraRewards, extraIncentives }: Re
           {formatPercent(percentage)}
         </TooltipItem>
       ))}
-      {extraRewards.map((r, i) => (
-        <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
-          <Stack
-            component={Link}
-            href={r.dashboardLink}
-            target="_blank"
-            sx={{
-              textDecoration: 'none',
-              color: (t) => t.design.Text.TextColors.Secondary,
-              svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
-              '&:hover svg': { fontSize: 20 },
-            }}
-            direction="row"
-            alignItems="center"
-            gap={Spacing.xs}
-          >
-            {r.multiplier}
-            <ArrowOutwardIcon />
-          </Stack>
-        </TooltipItem>
-      ))}
+      {extraRewards.map(
+        (r, i) =>
+          r.action === tooltipType && (
+            <TooltipItem variant="subItem" key={i} title={t`Points`} imageId={r.platformImageId}>
+              <Stack
+                component={Link}
+                href={r.dashboardLink}
+                target="_blank"
+                sx={{
+                  textDecoration: 'none',
+                  color: (t) => t.design.Text.TextColors.Secondary,
+                  svg: { fontSize: 0, transition: `font-size ${TransitionFunction}` },
+                  '&:hover svg': { fontSize: 20 },
+                }}
+                direction="row"
+                alignItems="center"
+                gap={Spacing.xs}
+              >
+                {r.multiplier}
+                <ArrowOutwardIcon />
+              </Stack>
+            </TooltipItem>
+          ),
+      )}
     </>
   )
 }
