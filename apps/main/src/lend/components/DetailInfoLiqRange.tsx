@@ -1,15 +1,14 @@
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
-import ChartLiquidationRange from '@/lend/components/ChartLiquidationRange'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import useStore from '@/lend/store/useStore'
 import { ChainId, HealthMode } from '@/lend/types/lend.types'
+import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import Button from '@ui/Button'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
 
@@ -46,11 +45,7 @@ const DetailInfoLiqRange = ({
 }) => {
   const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
-
-  const theme = useUserProfileStore((state) => state.theme)
-
   const { prices: loanPrices } = loanPricesResp ?? {}
-
   const { parsedNewBands, parsedNewPrices } = useMemo(
     () =>
       isFullRepay
@@ -125,12 +120,7 @@ const DetailInfoLiqRange = ({
         </LiqRangeEditWrapper>
 
         {/* Liquidation range chart */}
-        <ChartLiquidationRange
-          data={liqRangeData}
-          healthColorKey={healthMode?.colorKey}
-          isManage={isManage}
-          theme={theme}
-        />
+        <ChartLiquidationRange data={liqRangeData} healthColorKey={healthMode?.colorKey} isManage={isManage} />
       </Wrapper>
 
       {/* Detail info leverage */}

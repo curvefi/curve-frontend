@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
-import ChartLiquidationRange from '@/loan/components/ChartLiquidationRange'
+import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import type { LiqRangeSliderIdx } from '@/loan/store/types'
 import { HealthMode, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import Button from '@ui/Button'
@@ -8,7 +8,6 @@ import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 const DetailInfoLiqRange = ({
@@ -38,8 +37,6 @@ const DetailInfoLiqRange = ({
   userLoanDetails: UserLoanDetails | undefined
   handleLiqRangesEdit?: () => void
 }) => {
-  const theme = useUserProfileStore((state) => state.theme)
-
   const { userPrices: currPrices, userBands: currBands } = userLoanDetails ?? {}
 
   // default to empty data to show chart
@@ -124,7 +121,6 @@ const DetailInfoLiqRange = ({
           }
           healthColorKey={healthMode?.colorKey}
           isManage={isManage}
-          theme={theme === 'light' ? 'default' : theme}
         />
       </Wrapper>
 
