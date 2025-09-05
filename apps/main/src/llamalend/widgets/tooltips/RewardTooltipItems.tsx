@@ -5,7 +5,6 @@ import Link from '@mui/material/Link'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { RewardIcon } from '@ui-kit/shared/ui/RewardIcon'
-import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TooltipItem } from './TooltipComponents'
@@ -17,6 +16,7 @@ export type ExtraIncentiveItem = {
   percentage: number
   address: string
   blockchainId: string
+  isBoost: boolean
 }
 
 type RewardsTooltipItemsProps = {
@@ -35,12 +35,10 @@ export const RewardsTooltipItems = ({ title, extraRewards, extraIncentives }: Re
   return (
     <>
       <TooltipItem title={title}>{totalExtraPercentage}</TooltipItem>
-      {extraIncentives.map(({ percentage, title, address, blockchainId }, i) => (
-        <TooltipItem key={i} variant="subItem" title={title}>
-          <Stack direction="row" gap={Spacing.xs} alignItems="center">
-            <TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />
-            {formatPercent(percentage)}
-          </Stack>
+      {extraIncentives.map(({ percentage, title, address, blockchainId, isBoost }, i) => (
+        <TooltipItem key={i} variant="subItem" title={title} titleIcon={{ blockchainId, address, size: 'mui-sm' }}>
+          {isBoost && '+'}
+          {formatPercent(percentage)}
         </TooltipItem>
       ))}
       {extraRewards.map((r, i) => (

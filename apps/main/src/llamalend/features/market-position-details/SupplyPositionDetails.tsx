@@ -7,6 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
+import { BoostTooltipContent } from './tooltips/BoostTooltipContent'
 import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces
@@ -17,6 +18,8 @@ type SupplyAPY = {
   averageRateLabel: string
   rebasingYield: number | null
   averageRebasingYield: number | null
+  userCurrentCRVApr: number | undefined | null
+  userTotalCurrentSupplyApr: number | undefined | null
   supplyAprCrvMinBoost: number | undefined | null
   supplyAprCrvMaxBoost: number | undefined | null
   averageSupplyAprCrvMinBoost: number | undefined | null
@@ -34,6 +37,11 @@ type SupplyAPY = {
 type Shares = {
   value: number | undefined | null
   staked: number | undefined | null
+  loading: boolean
+}
+type ClaimableRewards = {
+  crv: string | undefined | null
+  rewards: { token: string; symbol: string; amount: string }[] | undefined | null
   loading: boolean
 }
 type Boost = {
@@ -54,9 +62,16 @@ export type SupplyPositionDetailsProps = {
   shares: Shares
   supplyAsset: SupplyAsset
   boost: Boost
+  claimableRewards: ClaimableRewards
 }
 
-export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = ({
+  supplyAPY,
+  shares,
+  supplyAsset,
+  boost,
+  claimableRewards,
+}: SupplyPositionDetailsProps) => {
   const maxApy =
     (supplyAPY?.rate ?? 0) + (supplyAPY?.supplyAprCrvMinBoost ?? 0) + (supplyAPY?.supplyAprCrvMaxBoost ?? 0)
 
@@ -78,8 +93,8 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
         <Metric
           size="medium"
           label={t`Supply rate`}
-          value={supplyAPY?.rate}
-          loading={supplyAPY?.rate == null && supplyAPY?.loading}
+          value={supplyAPY?.userTotalCurrentSupplyApr ?? supplyAPY?.totalSupplyRateMinBoost}
+          loading={supplyAPY?.totalSupplyRateMinBoost == null && supplyAPY?.loading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
             maxApy ? t`max Boost ${formatNumber(maxApy, { unit: 'percentage', abbreviate: false })}` : undefined
@@ -95,6 +110,8 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
                 extraIncentives={supplyAPY?.extraIncentives ?? []}
                 minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
                 maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
+                userBoost={boost?.value}
+                userTotalCurrentSupplyApr={supplyAPY?.userTotalCurrentSupplyApr}
                 totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
                 totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
                 totalAverageSupplyRateMinBoost={supplyAPY?.totalAverageSupplyRateMinBoost}
@@ -159,6 +176,13 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
           value={boost?.value}
           loading={boost?.value == null && boost?.loading}
           valueOptions={{ unit: 'multiplier' }}
+          valueTooltip={{
+            title: t`veCRV Boost`,
+            body: <BoostTooltipContent />,
+            placement: 'top',
+            arrow: false,
+            clickable: true,
+          }}
         />
       </Box>
     </Box>

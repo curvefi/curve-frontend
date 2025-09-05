@@ -1,20 +1,27 @@
+import { useMarketExtraIncentives } from '@/llamalend/LlamaMarketsPage/hooks/useMarketExtraIncentives'
 import { formatPercent } from '@/llamalend/utils'
+import {
+  TooltipDescription,
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
-import { useMarketExtraIncentives } from '@ui-kit/hooks/useMarketExtraIncentives'
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipDescription, TooltipItem, TooltipItems, TooltipWrapper } from '@ui-kit/shared/ui/TooltipComponents'
-import { MarketRateType } from '@ui-kit/types/market'
-import { type ExtraIncentiveItem, RewardsTooltipItems } from './RewardTooltipItems'
+import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
+import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketSupplyRateTooltipContentProps = {
   supplyRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string
   extraRewards: PoolRewards[]
-  extraIncentives: ExtraIncentiveItem[]
+  extraIncentives: ExtraIncentive[]
   minBoostApr: number | null | undefined
   maxBoostApr: number | null | undefined
+  userBoost?: number | null | undefined
+  userTotalCurrentSupplyApr?: number | null | undefined
   totalSupplyRateMinBoost: number | null | undefined
   totalSupplyRateMaxBoost: number | null | undefined
   totalAverageSupplyRateMinBoost: number | null | undefined
@@ -32,6 +39,8 @@ export const MarketSupplyRateTooltipContent = ({
   extraIncentives,
   minBoostApr,
   maxBoostApr,
+  userBoost,
+  userTotalCurrentSupplyApr,
   totalSupplyRateMinBoost,
   totalSupplyRateMaxBoost,
   totalAverageSupplyRateMinBoost,
@@ -40,7 +49,12 @@ export const MarketSupplyRateTooltipContent = ({
   rebasingSymbol,
   isLoading,
 }: MarketSupplyRateTooltipContentProps) => {
-  const extraIncentivesFormatted = useMarketExtraIncentives(MarketRateType.Supply, extraIncentives, minBoostApr)
+  const extraIncentivesFormatted = useMarketExtraIncentives(
+    MarketRateType.Supply,
+    extraIncentives,
+    minBoostApr,
+    userBoost,
+  )
 
   return (
     <TooltipWrapper>
@@ -74,26 +88,26 @@ export const MarketSupplyRateTooltipContent = ({
         )}
         {(rebasingYield ||
           extraRewards.length + extraIncentivesFormatted.length > 0 ||
+          !!userTotalCurrentSupplyApr ||
           !!minBoostApr ||
           !!maxBoostApr) && (
-          <TooltipItems>
+          <TooltipItems borderTop>
             <TooltipItem variant="primary" title={t`Total APR`}>
-              {formatPercent(totalSupplyRateMinBoost)}
+              {formatPercent(userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost)}
             </TooltipItem>
             <TooltipItem variant="subItem" loading={isLoading} title={`${periodLabel} ${t`Average`}`}>
+              {/* We don't have historical boost values to calculate an average boosted CRV apr for a user, so we have to use the average min boost value */}
               {totalAverageSupplyRateMinBoost ? formatPercent(totalAverageSupplyRateMinBoost) : 'N/A'}
             </TooltipItem>
           </TooltipItems>
         )}
-        {(minBoostApr ?? 0) > 0 && (
-          <TooltipItems secondary>
-            <TooltipItem variant="subItem" title={t`Extra CRV (veCRV Boost)`}>
-              {formatPercent(minBoostApr)}
-            </TooltipItem>
+        {(maxBoostApr ?? 0) > 0 && (
+          <TooltipItems secondary extraMargin>
+            <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatPercent(maxBoostApr)}</TooltipItem>
           </TooltipItems>
         )}
         {(maxBoostApr ?? 0) > 0 && (
-          <TooltipItems>
+          <TooltipItems borderTop>
             <TooltipItem variant="primary" title={`${t`Total max boosted APR`}`}>
               {formatPercent(totalSupplyRateMaxBoost)}
             </TooltipItem>

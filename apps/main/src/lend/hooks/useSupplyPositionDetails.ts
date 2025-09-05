@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useMarketOnChainRates, useMarketPricePerShare } from '@/lend/entities/market-details'
 import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
 import { useUserSupplyBoost } from '@/lend/entities/user-supply-boost'
+import { useUserSupplyClaimable } from '@/lend/entities/user-supply-claimable'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -45,11 +46,15 @@ export const useSupplyPositionDetails = ({
     chainId,
     tokenAddress: market?.addresses?.borrowed_token,
   })
+  const { data: userSupplyClaimable, isLoading: isUserSupplyClaimableLoading } = useUserSupplyClaimable({
+    chainId,
+    marketId,
+  })
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId: networks[chainId].id as Chain,
     contractAddress: market?.addresses?.controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: averageMultiplier, // fetch last 30 days for 30 day average calcs
   })
 
   const {
@@ -76,19 +81,19 @@ export const useSupplyPositionDetails = ({
     [lendingSnapshots],
   )
 
-  const extraIncentivesTotalApr = onChainRates?.rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
   const rebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take the most recent rebasing yield
-  const supplyApy = onChainRates?.rates?.lendApy ?? marketRate?.rates?.lendApy
+  const supplyApyValue = onChainRates?.rates?.lendApy ?? marketRate?.rates?.lendApy
+  const supplyApy = supplyApyValue === null ? null : Number(supplyApyValue)
   const supplyAprCrvMinBoost = onChainRates?.crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = onChainRates?.crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
+  const userCurrentCRVApr = (supplyAprCrvMinBoost ?? 0) * (userSupplyBoost ?? 1)
+  const extraIncentivesTotalApr = onChainRates?.rewardsApr?.reduce((acc, r) => acc + r.apy, 0) ?? 0
+  const userTotalCurrentSupplyApr =
+    supplyApy == null ? null : supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + userCurrentCRVApr
   const totalSupplyRateMinBoost =
-    supplyApy == null
-      ? null
-      : Number(supplyApy) - (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
+    supplyApy == null ? null : supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
   const totalSupplyRateMaxBoost =
-    supplyApy == null
-      ? null
-      : Number(supplyApy) - (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
+    supplyApy == null ? null : supplyApy + (rebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
   const totalAverageSupplyRateMinBoost =
     averageRate == null
       ? null
@@ -111,11 +116,13 @@ export const useSupplyPositionDetails = ({
 
   return {
     supplyAPY: {
-      rate: supplyApy == null ? null : Number(supplyApy),
+      rate: supplyApy,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
+      userCurrentCRVApr,
+      userTotalCurrentSupplyApr,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
       averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,
@@ -135,6 +142,11 @@ export const useSupplyPositionDetails = ({
       averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
       extraRewards: campaignRewards,
       loading: islendingSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
+    },
+    claimableRewards: {
+      crv: userSupplyClaimable?.crv,
+      rewards: userSupplyClaimable?.rewards,
+      loading: isUserSupplyClaimableLoading,
     },
     boost: {
       value: userSupplyBoost,
