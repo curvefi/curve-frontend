@@ -1,5 +1,5 @@
-import { t, Trans } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 export const CollateralBorrowHeaderTooltipContent = () => (
   <TooltipWrapper>

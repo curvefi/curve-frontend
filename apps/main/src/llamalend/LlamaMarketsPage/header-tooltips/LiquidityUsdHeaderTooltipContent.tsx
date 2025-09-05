@@ -1,5 +1,5 @@
-import { t } from '@ui-kit/lib/i18n'
 import { TooltipDescription, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
+import { t } from '@ui-kit/lib/i18n'
 
 export const LiquidityUsdHeaderTooltipContent = () => (
   <TooltipWrapper>

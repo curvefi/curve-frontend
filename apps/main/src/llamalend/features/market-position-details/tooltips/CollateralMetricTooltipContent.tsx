@@ -1,12 +1,12 @@
-import { Stack } from '@mui/material'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
-import { t } from '@ui-kit/lib/i18n'
 import {
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
   TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
+import { Stack } from '@mui/material'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
+import { t } from '@ui-kit/lib/i18n'
 import type { CollateralValue } from '../BorrowPositionDetails'
 
 type CollateralMetricTooltipContentProps = {
