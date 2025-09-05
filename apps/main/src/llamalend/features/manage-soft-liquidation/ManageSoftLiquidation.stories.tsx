@@ -3,8 +3,8 @@ import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
+import type { TokenOption } from '@ui-kit/features/select-token'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
-import type { TokenOption } from '../select-token'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
 type Token = TokenOption & { amount: number }
@@ -131,7 +131,7 @@ const actionInfos = {
 }
 
 const meta: Meta<typeof ManageSoftLiquidation> = {
-  title: 'UI Kit/Features/ManageSoftLiquidation',
+  title: 'Llamalend/Features/ManageSoftLiquidation',
   component: ManageSoftLiquidation,
 }
 
