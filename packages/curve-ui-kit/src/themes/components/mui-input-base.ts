@@ -34,7 +34,7 @@ export const defineMuiInputBase = (
       '&.MuiInputBase-sizeSmall': {
         height: ButtonSize.sm,
       },
-      '&.MuiInputBase-sizeExtraSmall': {
+      '&.MuiInputBase-sizeTiny': {
         ...handleBreakpoints({ height: Sizing.sm, ...typography.bodySBold }),
         '& input': handleBreakpoints({ height: Sizing.sm, padding: 0, marginInline: Spacing.sm }),
       },

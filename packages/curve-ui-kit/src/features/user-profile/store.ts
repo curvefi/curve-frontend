@@ -1,8 +1,7 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
 import { create, type StateCreator } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import type { PersistOptions } from 'zustand/middleware/persist'
+import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 export const SMALL_POOL_TVL = 10000

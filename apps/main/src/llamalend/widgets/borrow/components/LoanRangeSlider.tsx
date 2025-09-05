@@ -52,7 +52,7 @@ export const LoanRangeSlider = ({
             value={sliderValue}
             name="range"
             variant="standard"
-            size="extraSmall"
+            size="tiny"
             min={minValue}
             max={maxValue}
             onChange={(val) => val && setSliderValue(val)}
