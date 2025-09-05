@@ -72,8 +72,25 @@ export const SupplyPositionDetails = ({
   boost,
   claimableRewards,
 }: SupplyPositionDetailsProps) => {
-  const maxApy =
-    (supplyAPY?.rate ?? 0) + (supplyAPY?.supplyAprCrvMinBoost ?? 0) + (supplyAPY?.supplyAprCrvMaxBoost ?? 0)
+  const {
+    totalSupplyRateMaxBoost,
+    totalSupplyRateMinBoost,
+    totalAverageSupplyRateMaxBoost,
+    totalAverageSupplyRateMinBoost,
+    rate,
+    averageRate,
+    averageRateLabel,
+    extraRewards,
+    extraIncentives,
+    supplyAprCrvMinBoost,
+    supplyAprCrvMaxBoost,
+    userTotalCurrentSupplyApr,
+    loading: supplyAPYLoading,
+    rebasingYield,
+  } = supplyAPY
+  const { loading: supplyAssetLoading, symbol: supplyAssetSymbol, depositedAmount } = supplyAsset
+  const { value: sharesValue, staked: sharesStaked, loading: sharesLoading } = shares
+  const { value: boostValue, loading: boostLoading } = boost
 
   return (
     <Box>
@@ -93,32 +110,34 @@ export const SupplyPositionDetails = ({
         <Metric
           size="medium"
           label={t`Supply rate`}
-          value={supplyAPY?.userTotalCurrentSupplyApr ?? supplyAPY?.totalSupplyRateMinBoost}
-          loading={supplyAPY?.totalSupplyRateMinBoost == null && supplyAPY?.loading}
+          value={userTotalCurrentSupplyApr ?? totalSupplyRateMinBoost}
+          loading={totalSupplyRateMinBoost == null && supplyAPYLoading}
           valueOptions={{ unit: 'percentage', color: 'warning' }}
           notional={
-            maxApy ? t`max Boost ${formatNumber(maxApy, { unit: 'percentage', abbreviate: false })}` : undefined
+            totalSupplyRateMaxBoost
+              ? t`max Boost ${formatNumber(totalSupplyRateMaxBoost, { unit: 'percentage', abbreviate: false })}`
+              : undefined
           }
           valueTooltip={{
             title: t`Supply Rate`,
             body: (
               <MarketSupplyRateTooltipContent
-                supplyRate={supplyAPY?.rate}
-                averageRate={supplyAPY?.averageRate}
-                periodLabel={supplyAPY?.averageRateLabel ?? ''}
-                extraRewards={supplyAPY?.extraRewards ?? []}
-                extraIncentives={supplyAPY?.extraIncentives ?? []}
-                minBoostApr={supplyAPY?.supplyAprCrvMinBoost}
-                maxBoostApr={supplyAPY?.supplyAprCrvMaxBoost}
-                userBoost={boost?.value}
-                userTotalCurrentSupplyApr={supplyAPY?.userTotalCurrentSupplyApr}
-                totalSupplyRateMinBoost={supplyAPY?.totalSupplyRateMinBoost}
-                totalSupplyRateMaxBoost={supplyAPY?.totalSupplyRateMaxBoost}
-                totalAverageSupplyRateMinBoost={supplyAPY?.totalAverageSupplyRateMinBoost}
-                totalAverageSupplyRateMaxBoost={supplyAPY?.totalAverageSupplyRateMaxBoost}
-                rebasingYield={supplyAPY?.rebasingYield}
-                rebasingSymbol={supplyAsset?.symbol}
-                isLoading={supplyAPY?.loading}
+                supplyRate={rate}
+                averageRate={averageRate}
+                periodLabel={averageRateLabel ?? ''}
+                extraRewards={extraRewards ?? []}
+                extraIncentives={extraIncentives ?? []}
+                minBoostApr={supplyAprCrvMinBoost}
+                maxBoostApr={supplyAprCrvMaxBoost}
+                userBoost={boostValue}
+                userTotalCurrentSupplyApr={userTotalCurrentSupplyApr}
+                totalSupplyRateMinBoost={totalSupplyRateMinBoost}
+                totalSupplyRateMaxBoost={totalSupplyRateMaxBoost}
+                totalAverageSupplyRateMinBoost={totalAverageSupplyRateMinBoost}
+                totalAverageSupplyRateMaxBoost={totalAverageSupplyRateMaxBoost}
+                rebasingYield={rebasingYield}
+                rebasingSymbol={supplyAssetSymbol}
+                isLoading={supplyAPYLoading}
               />
             ),
             placement: 'top',
@@ -129,14 +148,14 @@ export const SupplyPositionDetails = ({
         <Metric
           size="medium"
           label={t`Amount supplied`}
-          value={supplyAsset?.depositedAmount}
-          loading={supplyAsset?.depositedAmount == null && supplyAsset?.loading}
+          value={depositedAmount}
+          loading={depositedAmount == null && supplyAssetLoading}
           valueOptions={{ unit: 'dollar' }}
           notional={
-            supplyAsset?.depositedAmount
+            depositedAmount
               ? {
-                  value: supplyAsset.depositedAmount,
-                  unit: { symbol: ` ${supplyAsset.symbol}`, position: 'suffix' },
+                  value: depositedAmount,
+                  unit: { symbol: ` ${supplyAssetSymbol}`, position: 'suffix' },
                 }
               : undefined
           }
@@ -151,13 +170,13 @@ export const SupplyPositionDetails = ({
         <Metric
           size="medium"
           label={t`Vault shares`}
-          value={shares?.value}
-          loading={shares?.value == null && shares?.loading}
+          value={sharesValue}
+          loading={sharesValue == null && sharesLoading}
           valueOptions={{}}
           notional={
-            shares.staked && shares.value
+            sharesStaked && sharesValue
               ? {
-                  value: (shares.staked / shares.value) * 100,
+                  value: (sharesStaked / sharesValue) * 100,
                   unit: { symbol: t`% staked`, position: 'suffix' },
                 }
               : undefined
@@ -173,8 +192,8 @@ export const SupplyPositionDetails = ({
         <Metric
           size="medium"
           label={t`veCRV Boost`}
-          value={boost?.value}
-          loading={boost?.value == null && boost?.loading}
+          value={boostValue}
+          loading={boostValue == null && boostLoading}
           valueOptions={{ unit: 'multiplier' }}
           valueTooltip={{
             title: t`veCRV Boost`,
