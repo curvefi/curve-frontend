@@ -46,6 +46,9 @@ export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
+export const useBorrowPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
+  useLocalStorage<T>('borrow-preset', defaultValue)
+
 export const useTableFilters = (
   tableTitle: string,
   defaultFilters: ColumnFiltersState,

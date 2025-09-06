@@ -17,11 +17,11 @@ export const useChainId = ({ network }: NetworkUrlParams) =>
 export const getLoanCreatePathname = (
   params: NetworkUrlParams,
   collateralId: string,
-  formType?: 'create' | 'leverage',
+  formType?: 'create' | 'leverage' | 'borrow',
 ) =>
   getPath(
     params,
-    `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_CREATE}${formType === 'leverage' ? '/leverage' : ''}`,
+    `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_CREATE}${formType && formType != 'create' ? `/${formType}` : ''}`,
   )
 
 export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>

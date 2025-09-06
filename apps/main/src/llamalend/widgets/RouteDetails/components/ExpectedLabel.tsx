@@ -1,7 +1,9 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import Icon from '@ui/Icon'
 import Loader from '@ui/Loader'
+import { t } from '@ui-kit/lib/i18n'
+import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import { DetailsButton } from '../index'
 import type { RouteDetailsProps } from '../types'
 import { format } from '../utils'
@@ -29,8 +31,14 @@ const ExpectedLabel = ({
           {format(total, { defaultValue: '-' })} {swapToSymbol}
         </strong>
       )}
-      <DetailsButton $isOpen={showDetails} variant="outlined" onClick={() => toggleShowDetails((prev) => !prev)}>
-        Details {showDetails ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}
+      <DetailsButton
+        type="button"
+        $isOpen={showDetails}
+        variant="outlined"
+        onClick={() => toggleShowDetails((prev) => !prev)}
+      >
+        {t`Details` + ' '}
+        <RotatableIcon rotated={showDetails} icon={ChevronDownIcon} fontSize={16} />
       </DetailsButton>
     </span>
   </Label>

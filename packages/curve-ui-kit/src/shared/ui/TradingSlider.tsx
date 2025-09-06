@@ -45,7 +45,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
 
     <NumericTextField
       placeholder="0"
-      size="small"
+      size="extraSmall"
       variant="standard"
       value={percentage}
       min={0}
@@ -54,17 +54,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       onBlur={(newPercentage) => onCommit?.(newPercentage)}
       slotProps={{
         input: {
-          sx: {
-            fontFamily: (t) => t.typography.bodySBold.fontFamily,
-            fontSize: FontSize.sm,
-            fontWeight: FontWeight.Bold,
-            height: Sizing.sm,
-            '& input': {
-              padding: 0,
-              marginInline: Spacing.sm,
-              textAlign,
-            },
-          },
+          sx: { '& input': { textAlign } },
           endAdornment: (
             <Typography variant="bodySBold" color="textTertiary">
               %

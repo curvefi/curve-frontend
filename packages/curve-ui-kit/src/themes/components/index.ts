@@ -1,9 +1,9 @@
 import { type ThemeOptions, type TypographyVariantsOptions } from '@mui/material/styles'
 import { alpha } from '@mui/system'
+import { defineMuiInputBase } from '@ui-kit/themes/components/mui-input-base'
 import { basicMuiTheme } from '../basic-theme'
 import { getShadow } from '../basic-theme/shadows'
 import { DesignSystem } from '../design'
-import { TransitionFunction } from '../design/0_primitives'
 import { SizesAndSpaces } from '../design/1_sizes_spaces'
 import { defineMuiButton, defineMuiIconButton, defineMuiToggleButton } from './button'
 import { defineMuiCardHeader } from './card-header'
@@ -86,33 +86,14 @@ export const createComponents = (
       }),
     },
   },
-  MuiInputBase: {
+  MuiInputBase: defineMuiInputBase(design, typography),
+  MuiInputLabel: {
     styleOverrides: {
       root: {
-        backgroundColor: design.Inputs.Base.Default.Fill,
-        // color the whole input base when accepting autofill suggestions in Chromium browsers
-        ':has(input:autofill)': {
-          backgroundColor: 'light-dark(rgb(232, 240, 254), rgba(70, 90, 126, 0.4))',
-          boxShadow: '0 0 0 100px #266798 inset',
-          '& svg': { color: 'rgb(232, 240, 254)' },
+        '&.MuiInputLabel-sizeExtraSmall:not(.MuiInputLabel-shrink)': {
+          // the default in mui is 14px,16px but in extraSmall inputs it gets out of the box
+          transform: 'translate(14px, 2px)',
         },
-        '& .MuiOutlinedInput-notchedOutline': {
-          borderWidth: 1,
-          transition: `border-color ${TransitionFunction}`,
-        },
-        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-          borderColor: design.Inputs.Base.Default.Border.Active,
-        },
-        '&.Mui-error .MuiOutlinedInput-notchedOutline': {
-          borderColor: design.Inputs.Base.Default.Border.Error,
-        },
-      },
-      input: {
-        height: SizesAndSpaces.ButtonSize.md,
-        boxSizing: 'border-box',
-      },
-      inputSizeSmall: {
-        height: SizesAndSpaces.ButtonSize.sm,
       },
     },
   },
