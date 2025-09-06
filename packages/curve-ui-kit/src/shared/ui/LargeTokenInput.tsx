@@ -183,7 +183,8 @@ export const LargeTokenInput = ({
 
       let newBalance = (maxBalance.balance * newPercentage) / 100
       if (balanceDecimals != null) {
-        newBalance = Number(newBalance.toFixed(balanceDecimals))
+        // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
+        newBalance = Math.min(+newBalance.toFixed(balanceDecimals), maxBalance.balance)
       }
 
       setBalance(newBalance)
