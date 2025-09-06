@@ -1,56 +1,38 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
+import { useCallback, useEffect, useState } from 'react'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
 import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
-import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
-const TABS: { label: string; formType: FormType }[] = [
-  { label: t`Lock More`, formType: 'adjust_crv' },
-  { label: t`Extend Lock`, formType: 'adjust_date' },
-  { label: t`Withdraw`, formType: 'withdraw' },
+const TABS: { value: FormType; label: string }[] = [
+  { value: 'adjust_crv', label: t`Lock More` },
+  { value: 'adjust_date', label: t`Extend Lock` },
+  { value: 'withdraw', label: t`Withdraw` },
 ]
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
-  const tabsRef = useRef<HTMLDivElement>(null)
-  const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
   const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
-  const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
   const canUnlock =
     +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
+  const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
+
   const setData = useCallback(async () => {
     setFormValues(curve, isLoadingCurve, selectedTab, {}, vecrvInfo, true)
   }, [curve, isLoadingCurve, vecrvInfo, selectedTab, setFormValues])
-
-  useEffect(() => {
-    if (selectedTab === 'adjust_crv') {
-      setSelectedTabIdx(0)
-    } else if (selectedTab === 'adjust_date') {
-      setSelectedTabIdx(1)
-    } else if (selectedTab === 'withdraw') {
-      setSelectedTabIdx(2)
-    }
-  }, [selectedTab, setSelectedTabIdx])
-
-  const handleTabClick = (formType: FormType, idx: number) => {
-    setSelectedTab(formType)
-    setSelectedTabIdx(idx)
-  }
 
   useEffect(() => {
     if (canUnlock) {
@@ -74,22 +56,19 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   return selectedTab === 'adjust_crv' || selectedTab === 'adjust_date' || selectedTab === 'withdraw' ? (
     <>
-      <StyledTabSlide activeIdx={selectedTabIdx}>
-        <SlideTabs ref={tabsRef}>
-          {TABS.map(({ formType, label }, idx) => (
-            <SlideTab
-              key={label}
-              disabled={canUnlock && formType !== 'withdraw'} // disable other tabs if user can unlock
-              tabLeft={tabPositions[idx]?.left}
-              tabWidth={tabPositions[idx]?.width}
-              tabTop={tabPositions[idx]?.top}
-              onChange={() => handleTabClick(formType, idx)}
-              tabIdx={idx}
-              label={label}
-            />
-          ))}
-        </SlideTabs>
-      </StyledTabSlide>
+      <TabsSwitcher
+        variant="underlined"
+        size="small"
+        value={selectedTab}
+        onChange={setSelectedTab}
+        options={TABS}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          // Undo the padding from parent container, not the cleanest but will have to do for now.
+          marginInline: 'calc(-1 * var(--spacing-3))',
+          marginTop: '-1rem',
+        }}
+      />
 
       {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
       {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
@@ -99,9 +78,5 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     <FormLockCreate {...pageProps} />
   )
 }
-
-export const StyledTabSlide = styled(TabSlide)`
-  margin-bottom: var(--spacing-2);
-`
 
 export default FormCrvLocker
