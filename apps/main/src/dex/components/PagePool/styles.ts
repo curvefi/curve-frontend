@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
 import ShadowedBox from '@ui/ShadowedBox'
-import TabSlide from '@ui/TabSlide'
 
 export const Wrapper = styled(ShadowedBox)`
   justify-content: flex-start;
@@ -10,10 +9,6 @@ export const Wrapper = styled(ShadowedBox)`
 
   color: var(--box--primary--color);
   background: var(--box--primary--background);
-`
-
-export const StyledTabSlide = styled(TabSlide)`
-  margin-bottom: var(--spacing-2);
 `
 
 export const FieldsWrapper = styled.div`
