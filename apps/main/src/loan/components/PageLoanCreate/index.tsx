@@ -5,9 +5,10 @@ import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const LoanCreate = ({
   fetchInitial,
@@ -20,11 +21,11 @@ const LoanCreate = ({
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
 
-  const FORM_TYPES: { key: string; label: string }[] = [
-    { label: t`Create Loan`, key: 'create' },
-    { label: t`Leverage`, key: 'leverage' },
+  const FORM_TYPES: { value: string; label: string }[] = [
+    { value: 'create', label: t`Create Loan` },
+    { value: 'leverage', label: t`Leverage` },
   ].filter((f) => {
-    if (f.key === 'leverage') {
+    if (f.value === 'leverage') {
       return hasLeverage(llamma)
     } else {
       return true
@@ -46,11 +47,13 @@ const LoanCreate = ({
   )
 
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'create' : (rFormType as string)}
-        handleClick={(key: string) => handleTabClick(key as FormType)}
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'create' : rFormType}
+        onChange={(key) => handleTabClick(key as FormType)}
+        options={FORM_TYPES}
       />
 
       <AppFormContentWrapper>

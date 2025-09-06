@@ -16,10 +16,11 @@ import type {
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import useStore from '@/loan/store/useStore'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 interface Props extends PageLoanManageProps {}
 
@@ -33,13 +34,13 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const [selectedTabIdx, setSelectedTabIdx] = useState(0)
   const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
 
-  const FORM_TYPES: { key: string; label: string }[] = [
-    { label: t`Loan`, key: 'loan' },
-    { label: t`Collateral`, key: 'collateral' },
-    { label: t`Deleverage`, key: 'deleverage' },
+  const FORM_TYPES: { value: string; label: string }[] = [
+    { value: 'loan', label: t`Loan` },
+    { value: 'collateral', label: t`Collateral` },
+    { value: 'deleverage', label: t`Deleverage` },
     // { label: t`Swap`, key: MANAGE_LOAN_FORM_TYPE.swap }, // hide swap (aka liquidation) from UI for now
   ].filter((f) => {
-    if (f.key === 'deleverage') {
+    if (f.value === 'deleverage') {
       return hasDeleverage(llamma)
     } else {
       return true
@@ -92,11 +93,13 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
-        handleClick={(key: string) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'loan' : rFormType}
+        onChange={(key) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
+        options={FORM_TYPES}
       />
 
       <AppFormContentWrapper>

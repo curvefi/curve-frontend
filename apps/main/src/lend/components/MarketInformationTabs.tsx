@@ -27,7 +27,7 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
 
   return (
     <Box>
-      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="small" options={TABS} />
+      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="medium" options={TABS} />
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>
     </Box>
   )
