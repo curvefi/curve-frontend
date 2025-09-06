@@ -16,6 +16,11 @@ export const AppFormContentWrapper = styled(TabContentWrapper)`
 export const AppFormContent = styled(Box)`
   position: relative;
   min-height: 17.125rem;
+  background-color: unset;
+
+  // Copied straight from Figma. Do not judge; app forms will be replaced by proper mui cards.
+  min-width: 374px;
+  max-width: 464px;
 `
 
 export const AppFormSlideTab = styled(SlideTab)<{ moreSpace?: true }>`

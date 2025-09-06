@@ -4,9 +4,10 @@ import type { FormType } from '@/lend/components/PageLoanCreate/types'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
@@ -17,10 +18,10 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
 
   // form tabs
   const FORM_TYPES = useMemo(() => {
-    const forms: { key: FormType; label: string }[] = [{ label: t`Create Loan`, key: 'create' }]
+    const forms: { value: FormType; label: string }[] = [{ value: 'create', label: t`Create Loan` }]
 
     if (market?.leverage.hasLeverage()) {
-      forms.push({ label: t`Leverage`, key: 'leverage' })
+      forms.push({ value: 'leverage', label: t`Leverage` })
     }
     return forms
   }, [market?.leverage])
@@ -33,14 +34,16 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'create' : (rFormType as string)}
-        handleClick={(key: string) => {
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'create' : rFormType}
+        onChange={(key) => {
           resetState({ rChainId, rOwmId, key })
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
+        options={FORM_TYPES}
       />
 
       <AppFormContentWrapper grid gridRowGap={3} padding margin="1rem 0 0 0">
