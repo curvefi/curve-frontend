@@ -1,6 +1,4 @@
-import lodash from 'lodash'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
+import { useState } from 'react'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -14,10 +12,8 @@ import type {
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
-import useStore from '@/loan/store/useStore'
-import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
-import SlideTabsWrapper, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -26,19 +22,11 @@ interface Props extends PageLoanManageProps {}
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
   const push = useNavigate()
-  const tabsRef = useRef<HTMLDivElement>(null)
-
-  const loanExists = useStore((state) => state.loans.existsMapper[llammaId]?.loanExists)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
-
-  const [selectedTabIdx, setSelectedTabIdx] = useState(0)
-  const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
 
   const FORM_TYPES: { value: string; label: string }[] = [
     { value: 'loan', label: t`Loan` },
     { value: 'collateral', label: t`Collateral` },
-    { value: 'deleverage', label: t`Deleverage` },
-    // { label: t`Swap`, key: MANAGE_LOAN_FORM_TYPE.swap }, // hide swap (aka liquidation) from UI for now
+    { value: 'deleverage', label: t`Delever` },
   ].filter((f) => {
     if (f.value === 'deleverage') {
       return hasDeleverage(llamma)
@@ -47,47 +35,19 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     }
   })
 
-  const LOAN_TABS: { label: string; formType: LoanFormType }[] = [
-    { label: t`Borrow more`, formType: 'loan-increase' },
-    { label: t`Repay`, formType: 'loan-decrease' },
-    { label: t`Self-liquidate`, formType: 'loan-liquidate' },
+  const LOAN_TABS: { value: LoanFormType; label: string }[] = [
+    { value: 'loan-increase', label: t`Borrow more` },
+    { value: 'loan-decrease', label: t`Repay` },
+    { value: 'loan-liquidate', label: t`Self-liquidate` },
   ]
 
-  const COLLATERAL_TABS: { label: string; formType: CollateralFormType }[] = [
-    { label: t`Add`, formType: 'collateral-increase' },
-    { label: t`Remove`, formType: 'collateral-decrease' },
+  const COLLATERAL_TABS: { value: CollateralFormType; label: string }[] = [
+    { value: 'collateral-increase', label: t`Add` },
+    { value: 'collateral-decrease', label: t`Remove` },
   ]
 
-  const shouldContinueAction = useCallback(
-    (cb: () => void) => {
-      if (loanExists) {
-        cb()
-      } else {
-        if (llamma) resetUserDetailsState(llamma)
-        push(getLoanCreatePathname(params, rCollateralId))
-      }
-    },
-    [llamma, loanExists, push, params, rCollateralId, resetUserDetailsState],
-  )
-
-  // tabs positions
-  useEffect(() => {
-    if (!tabsRef.current) return
-
-    const tabsNode = tabsRef.current
-    const tabsDOMRect = tabsNode.getBoundingClientRect()
-    const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
-      .map((n, idx) => {
-        const domRect = n.getBoundingClientRect()
-        const left = idx == 0 ? 0 : domRect.left - tabsDOMRect.left
-        const top = domRect.bottom - tabsDOMRect.top
-        return { left, width: domRect.width, top }
-      })
-
-    setTabPositions(updatedTabPositions)
-    setSelectedTabIdx(0)
-  }, [rFormType])
+  type Tabs = LoanFormType | CollateralFormType
+  const [selectedTab, setSelectedTab] = useState<Tabs>('loan-increase')
 
   const tabs = rFormType === 'loan' ? LOAN_TABS : rFormType === 'collateral' ? COLLATERAL_TABS : []
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
@@ -102,48 +62,25 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         options={FORM_TYPES}
       />
 
+      <TabsSwitcher
+        variant="underlined"
+        size="small"
+        value={selectedTab}
+        onChange={setSelectedTab}
+        options={tabs}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+      />
+
       <AppFormContentWrapper>
-        {tabs.length > 0 && (
-          <StyledSlideTabsWrapper activeIdx={selectedTabIdx} disabled={typeof loanExists === 'undefined'}>
-            <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label, formType }, idx) => (
-                <SlideTab
-                  key={label}
-                  disabled={lodash.isUndefined(loanExists)}
-                  tabLeft={tabPositions[idx]?.left}
-                  tabWidth={tabPositions[idx]?.width}
-                  tabTop={tabPositions[idx]?.top}
-                  onChange={() => shouldContinueAction(() => setSelectedTabIdx(idx))}
-                  tabIdx={idx}
-                  label={label}
-                />
-              ))}
-            </SlideTabs>
-          </StyledSlideTabsWrapper>
-        )}
-        <>
-          {rFormType === 'loan' ? (
-            <>
-              {selectedTabIdx === 0 && <LoanIncrease {...formProps} />}
-              {selectedTabIdx === 1 && <LoanDecrease {...formProps} params={params} />}
-              {selectedTabIdx === 2 && <LoanLiquidate {...formProps} params={params} />}
-            </>
-          ) : rFormType === 'deleverage' ? (
-            <LoanDeleverage {...formProps} params={params} />
-          ) : rFormType === 'collateral' ? (
-            <>
-              {selectedTabIdx === 0 && <CollateralIncrease {...formProps} />}
-              {selectedTabIdx === 1 && <CollateralDecrease {...formProps} />}
-            </>
-          ) : null}
-        </>
+        {selectedTab === 'loan-increase' && <LoanIncrease {...formProps} />}
+        {selectedTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
+        {selectedTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
+        {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
+        {selectedTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
+        {selectedTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
       </AppFormContentWrapper>
     </AppFormContent>
   )
 }
-
-const StyledSlideTabsWrapper = styled(SlideTabsWrapper)`
-  margin-bottom: var(--spacing-2);
-`
 
 export default LoanManage
