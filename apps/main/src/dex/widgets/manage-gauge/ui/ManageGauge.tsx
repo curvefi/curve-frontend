@@ -5,7 +5,6 @@ import { useSignerAddress } from '@/dex/entities/signer'
 import AddRewardToken from '@/dex/features/add-gauge-reward-token'
 import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
-import { Tab } from '@ui/TabSlider/TabSlider'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
@@ -29,9 +28,9 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     [rewardDistributors, signerAddress],
   )
 
-  type TabValue = 'add_reward' | 'deposit_reward'
-  const TABS: Tab<TabValue>[] = useMemo(() => {
-    const tabs: Tab<TabValue>[] = []
+  type Tab = { value: 'add_reward' | 'deposit_reward'; label: string }
+  const TABS: Tab[] = useMemo(() => {
+    const tabs: Tab[] = []
 
     if (isGaugeManager)
       tabs.push({
@@ -48,7 +47,7 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     return tabs
   }, [isGaugeManager, isRewardsDistributor])
 
-  const [selectedTab, setSelectedTab] = useState<TabValue>(isGaugeManager ? 'add_reward' : 'deposit_reward')
+  const [selectedTab, setSelectedTab] = useState<Tab['value']>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
     <>

@@ -12,7 +12,6 @@ import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import { SpinnerWrapper } from '@ui/Spinner'
 import Stats from '@ui/Stats'
-import TabSlide from '@ui/TabSlide'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
@@ -122,18 +121,6 @@ const AddressSearchWrapper = styled.div`
 
 export const StyledStats = styled(Stats)`
   border-color: var(--summary_content--border-color);
-`
-
-const StyledTabSlide = styled(TabSlide)`
-  margin: 1rem 0;
-
-  label {
-    color: var(--page--text-color);
-  }
-
-  .tab-slider {
-    background: var(--page--text-color);
-  }
 `
 
 const TabContentWrapper = styled(Box)``
