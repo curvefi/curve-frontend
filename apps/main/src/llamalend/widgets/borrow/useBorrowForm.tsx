@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import type { UseFormReturn } from 'react-hook-form/dist/types'
+import type { UseFormReturn } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -85,7 +85,7 @@ export function useBorrowForm({
     txHash,
     reset: resetCreation,
   } = useCreateLoanMutation({ chainId, poolId: market?.id, reset: form.reset })
-  const { borrowToken, collateralToken } = useMemo(() => (market ? getTokens(market, chain) : {}), [market, chain])
+  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
   // todo: figure out why form.formState.isValid is always true. For now, using useMemo to recalculate validation

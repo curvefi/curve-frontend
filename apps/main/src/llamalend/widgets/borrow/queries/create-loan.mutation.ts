@@ -14,7 +14,7 @@ import { userBalancesQueryKey } from '../queries/user-balances.query'
 
 type BorrowMutationContext = {
   chainId: IChainId
-  poolId: string
+  poolId: string | undefined
 }
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
@@ -56,7 +56,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
         const { userCollateral, userBorrowed, debt, leverage, slippage, range } = mutation
-        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId, leverage)
+        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverage)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
           const approvalTx = await createLoanApprove(userCollateral, userBorrowed)
@@ -68,7 +68,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       },
       [poolId],
     ),
-    onSuccess: (tx, mutation) => {
+    onSuccess: (tx, _mutation) => {
       logSuccess(mutationKey, tx)
       notify(t`Loan created successfully`, 'success')
       return Promise.all([
