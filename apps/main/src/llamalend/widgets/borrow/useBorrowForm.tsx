@@ -116,7 +116,7 @@ export function useBorrowForm({
     form,
     values,
     params,
-    isPending: form.formState.isSubmitting || isCreating || form.formState.isSubmitting,
+    isPending: form.formState.isSubmitting || isCreating,
     onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
     maxBorrow,
     borrowToken,

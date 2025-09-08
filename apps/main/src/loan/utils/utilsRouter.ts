@@ -21,7 +21,7 @@ export const getLoanCreatePathname = (
 ) =>
   getPath(
     params,
-    `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_CREATE}${formType && formType != 'create' ? `/${formType}` : ''}`,
+    `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_CREATE}${formType && formType !== 'create' ? `/${formType}` : ''}`,
   )
 
 export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>

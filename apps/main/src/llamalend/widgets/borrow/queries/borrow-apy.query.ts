@@ -26,7 +26,7 @@ const convertRates = ({
   borrowApr: +borrowApr,
   ...(borrowApy && { borrowApy: +borrowApy }),
   ...(lendApy && { lendApy: +lendApy }),
-  ...(lendApr && { borrowApr: +lendApr }),
+  ...(lendApr && { lendApr: +lendApr }),
 })
 
 export const { useQuery: useMarketRates } = queryFactory({
