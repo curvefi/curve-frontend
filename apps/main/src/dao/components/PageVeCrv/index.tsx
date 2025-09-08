@@ -5,10 +5,14 @@ import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
 import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
+import Stack from '@mui/material/Stack'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const TABS: { value: FormType; label: string }[] = [
   { value: 'adjust_crv', label: t`Lock More` },
@@ -56,26 +60,18 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   return selectedTab === 'adjust_crv' || selectedTab === 'adjust_date' || selectedTab === 'withdraw' ? (
     <>
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={TABS}
-        sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
-          // Undo the padding from parent container, not the cleanest but will have to do for now.
-          marginInline: 'calc(-1 * var(--spacing-3))',
-          marginTop: '-1rem',
-        }}
-      />
+      <TabsSwitcher variant="underlined" size="small" value={selectedTab} onChange={setSelectedTab} options={TABS} />
 
-      {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
-      {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
-      {selectedTab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={selectedTab} />}
+      <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
+        {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
+        {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
+        {selectedTab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={selectedTab} />}
+      </Stack>
     </>
   ) : (
-    <FormLockCreate {...pageProps} />
+    <Stack gap={Spacing.md} padding={Spacing.md}>
+      <FormLockCreate {...pageProps} />
+    </Stack>
   )
 }
 
