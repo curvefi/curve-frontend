@@ -1,5 +1,5 @@
 import { ZeroAddress } from 'ethers'
-import type { SetValueConfig } from 'react-hook-form/dist/types/form'
+import type { SetValueConfig } from 'react-hook-form'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { BorrowPreset } from './borrow.types'

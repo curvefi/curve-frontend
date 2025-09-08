@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form/dist/types'
+import type { UseFormReturn } from 'react-hook-form'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { BorrowForm, Token } from '../borrow.types'
