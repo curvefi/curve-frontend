@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
-import SubNav from '@/dao/components/SubNav'
 import useStore from '@/dao/store/useStore'
 import type { UserUrlParams } from '@/dao/types/dao.types'
 import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import UserHeader from './UserHeader'
 import UserLocksTable from './UserLocksTable'
@@ -27,9 +27,9 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
   const { allHolders, fetchStatus } = veCrvHolders
 
   const navItems = [
-    { key: 'proposals', label: t`User Proposal Votes` },
-    { key: 'gauge_votes', label: t`User Gauge Votes` },
-    { key: 'locks', label: t`User Locks` },
+    { value: 'proposals', label: t`User Proposal Votes` },
+    { value: 'gauge_votes', label: t`User Gauge Votes` },
+    { value: 'locks', label: t`User Locks` },
   ]
 
   const userAddress = rUserAddress.toLowerCase()
@@ -67,7 +67,8 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
       </UserPageContainer>
       <Box>
-        <SubNav activeKey={activeNavKey} navItems={navItems} setNavChange={setNavKey} />
+        <TabsSwitcher variant="contained" size="medium" value={activeNavKey} onChange={setNavKey} options={navItems} />
+
         <Container variant="secondary">
           {activeNavKey === 'proposals' && (
             <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
@@ -109,7 +110,6 @@ const Container = styled(Box)`
   width: 100%;
   height: 100%;
   border: none;
-  padding-top: var(--spacing-1);
 `
 
 export default UserPage
