@@ -44,8 +44,6 @@ export const AppPageFormsWrapper = styled(Box)`
 
   @media (min-width: ${breakpoints.md}rem) {
     align-self: flex-start;
-    min-width: 23.3125rem;
-    max-width: 23.3125rem;
   }
 `
 
