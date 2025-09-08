@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { styled } from 'styled-components'
-import { SubNavItem } from '@/dao/components/SubNav/types'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import SubNav from '../SubNav'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import CrvStats from './CrvStats'
 import DailyLocks from './DailyLocksChart'
 import HoldersTable from './HoldersTable'
@@ -18,10 +17,10 @@ const Analytics = () => {
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
 
-  const navItems: SubNavItem[] = [
-    { key: 'fees', label: t`veCRV Fees` },
-    { key: 'holders', label: t`Holders` },
-    { key: 'locks', label: t`Locks` },
+  const navItems = [
+    { value: 'fees', label: t`veCRV Fees` },
+    { value: 'holders', label: t`Holders` },
+    { value: 'locks', label: t`Locks` },
   ]
 
   useEffect(() => {
@@ -35,12 +34,14 @@ const Analytics = () => {
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
         <CrvStats />
         <Box>
-          <SubNav
-            activeKey={navSelection}
-            navItems={navItems}
-            setNavChange={setNavSelection as (key: string) => void}
-            nested
+          <TabsSwitcher
+            variant="contained"
+            size="medium"
+            value={navSelection}
+            onChange={setNavSelection as (key: string) => void}
+            options={navItems}
           />
+
           <Container variant="secondary">
             {navSelection === 'fees' && <VeCrvFees />}
             {navSelection === 'holders' && (
