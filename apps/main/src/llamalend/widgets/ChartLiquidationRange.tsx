@@ -1,4 +1,5 @@
-import lodash from 'lodash'
+import { inRange } from 'lodash'
+import type { ReactNode } from 'react'
 import {
   Bar,
   ComposedChart,
@@ -11,28 +12,94 @@ import {
   YAxis,
 } from 'recharts'
 import { styled } from 'styled-components'
-import ChartTooltip, { TipContent, TipIcon, TipTitle } from '@/lend/components/ChartTooltip'
-import { HealthColorKey } from '@/lend/types/lend.types'
+import { useTheme } from '@mui/material/styles'
+import Box from '@ui/Box'
+import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
+import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
-interface Props {
-  data: { name: string; curr: number[]; new: number[]; oraclePrice: string; oraclePriceBand: number | null }[]
-  healthColorKey: HealthColorKey | undefined
-  height?: number
-  isDetailView?: boolean // component not inside the form
-  isManage: boolean
-  theme: ThemeKey
+export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
+
+export interface LiquidationRangeData {
+  name: string
+  curr: number[]
+  new: number[]
+  oraclePrice: string
+  oraclePriceBand: number | null
+  newLabel?: string
 }
 
-const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetailView, theme }: Props) => {
+export interface ChartLiquidationRangeProps {
+  data: LiquidationRangeData[]
+  healthColorKey: HealthColorKey | undefined
+  height?: number
+  isDetailView?: boolean
+  isManage?: boolean
+  tooltipContent?: (params: TooltipContentProps) => ReactNode
+}
+
+export interface TooltipContentProps {
+  active?: boolean
+  payload?: any[]
+  oraclePrice: string
+  isManage: boolean
+  chartHealthColor: string
+}
+
+const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHealthColor }: TooltipContentProps) => {
+  if (!active || !payload || !payload.length || !oraclePrice) return null
+
+  const currPrices = isManage ? payload.find((p) => p.name === 'curr') : undefined
+  const newPrices = isManage ? payload.find((p) => p.name === 'new') : payload[0]
+
+  const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
+  const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
+  const oraclePriceValue = newPrices?.payload.oraclePrice
+
+  return (
+    <ChartTooltip>
+      {currPrices && !!cp1 && !!cp2 && (
+        <div>
+          <TipTitle>{t`Liquidation range`}</TipTitle>
+          <TipContent>
+            <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
+            <>{`${formatNumber(cp2)} - ${formatNumber(cp1)}`}</>
+          </TipContent>
+        </div>
+      )}
+      {!!np1 && !!np2 && (
+        <div>
+          <TipTitle>{t`Liquidation range${currPrices ? ' (new)' : ''}`}</TipTitle>
+          <TipContent>
+            <TipIcon name="StopFilledAlt" fill={chartHealthColor} size={20} />{' '}
+            {`${formatNumber(np1)} - ${formatNumber(np2)}`}
+          </TipContent>
+        </div>
+      )}
+      <div>
+        <TipTitle>{t`Oracle price`}</TipTitle>
+        <TipContent>{formatNumber(oraclePriceValue)}</TipContent>
+      </div>
+    </ChartTooltip>
+  )
+}
+
+export const ChartLiquidationRange = ({
+  data,
+  healthColorKey,
+  height = 85,
+  isDetailView = false,
+  isManage = false,
+  tooltipContent,
+}: ChartLiquidationRangeProps) => {
   const oraclePrice = data[0]?.oraclePrice
   const haveCurrData = data[0]?.curr[0] > 0
   const haveNewData = data[0]?.new[0] > 0
-  const isInLiquidationRange = haveCurrData ? lodash.inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
-  const showFireStyle = isInLiquidationRange && theme === 'chad'
-  const chartHeight = height || 85
+  const isInLiquidationRange = haveCurrData ? inRange(+oraclePrice, data[0].curr[1], data[0].curr[0]) : false
+  const theme = useTheme()
+  const showFireStyle = isInLiquidationRange && theme.key === 'chad'
+
   const chartAxisColor = isDetailView ? 'var(--chart_axis--color)' : 'var(--chart_axis_darkBg--color)'
   const chartReferenceLineColor = isDetailView
     ? 'var(--chart_reference_line--color)'
@@ -42,10 +109,12 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
     : `var(--health_mode_${healthColorKey}--color)`
   const chartLabelColor = isDetailView ? 'var(--chart_label--color)' : 'var(--chart_label_darkBg--color)'
 
+  const TooltipContentComponent = tooltipContent || DefaultTooltipContent
+
   return (
-    <Wrapper chartHeight={chartHeight}>
+    <Wrapper chartHeight={height}>
       <InnerWrapper>
-        <ResponsiveContainer width={'99%'} height={chartHeight}>
+        <ResponsiveContainer width="99%" height={height}>
           <ComposedChart layout="vertical" barGap={-30} data={data} margin={{ left: 5, top: 10 }}>
             <XAxis
               type="number"
@@ -81,53 +150,20 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
               tick={false}
             />
 
-            {/* chart tooltip */}
             <Tooltip
               cursor={false}
               wrapperStyle={{ zIndex: 1000 }}
-              content={({ active, payload }) => {
-                if (active && payload && payload.length && !!oraclePrice) {
-                  // should be same order as chart Line, Bar, Bar
-                  const currPrices = isManage ? payload.find((p) => p.name === 'curr') : undefined
-                  const newPrices = isManage ? payload.find((p) => p.name === 'new') : payload[0]
-
-                  const [cp1, cp2] = currPrices ? (currPrices.payload.curr as string[]) : []
-                  const [np1, np2] = (newPrices?.payload.new as string[]) ?? []
-                  const oraclePrice = newPrices?.payload.oraclePrice
-
-                  return (
-                    <ChartTooltip>
-                      {currPrices && !!cp1 && !!cp2 && (
-                        <div>
-                          <TipTitle>{t`Liquidation range`}</TipTitle>
-                          <TipContent>
-                            <TipIcon name="Stop" size={20} fill={currPrices.stroke} />{' '}
-                            <>{`${formatNumber(cp2)} - ${formatNumber(cp1)}`}</>
-                          </TipContent>
-                        </div>
-                      )}
-                      {!!np1 && !!np2 && (
-                        <div>
-                          <TipTitle>{t`Liquidation range${currPrices ? ' (new)' : ''}`}</TipTitle>
-                          <TipContent>
-                            <TipIcon name="StopFilledAlt" fill={chartHealthColor} size={20} />{' '}
-                            {`${formatNumber(np1)} - ${formatNumber(np2)}`}
-                          </TipContent>
-                        </div>
-                      )}
-
-                      <div>
-                        <TipTitle>{t`Oracle price`}</TipTitle>
-                        <TipContent>{formatNumber(oraclePrice)}</TipContent>
-                      </div>
-                    </ChartTooltip>
-                  )
-                }
-                return null
-              }}
+              content={({ active, payload }) => (
+                <TooltipContentComponent
+                  active={active || false}
+                  payload={payload || []}
+                  oraclePrice={oraclePrice}
+                  isManage={isManage}
+                  chartHealthColor={chartHealthColor}
+                />
+              )}
             />
 
-            {/* stripe pattern */}
             <defs>
               <pattern
                 id="pattern-stripe"
@@ -181,7 +217,7 @@ const ChartLiquidationRange = ({ height, data, healthColorKey, isManage, isDetai
             >
               <LabelList
                 dataKey="newLabel"
-                position="inside"
+                position="insideLeft"
                 fill={chartLabelColor}
                 fontSize={10}
                 fontWeight="bold"
@@ -252,4 +288,36 @@ const InnerWrapper = styled.div`
   left: 0;
 `
 
-export default ChartLiquidationRange
+const TooltipWrapper = styled(Box)`
+  background-color: var(--tooltip--background-color);
+  color: var(--tooltip--color);
+  font-size: var(--font-size-2);
+  outline: none;
+  padding: 1rem 1.25rem;
+`
+
+const ChartTooltip = ({ children }: { children: ReactNode }) => (
+  <TooltipWrapper grid gridRowGap={2}>
+    {children}
+  </TooltipWrapper>
+)
+
+const TipTitle = styled.div`
+  font-weight: bold;
+  margin-bottom: 2px;
+`
+
+const TipContent = styled(Box)`
+  align-items: center;
+  display: grid;
+  justify-content: flex-start;
+
+  @media (min-width: ${breakpoints.sm}rem) {
+    display: flex;
+  }
+`
+
+const TipIcon = styled(Icon)`
+  position: relative;
+  left: -2px;
+`
