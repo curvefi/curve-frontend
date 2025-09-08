@@ -10,6 +10,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
+import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
@@ -52,6 +53,7 @@ export const BorrowActionInfoAccordion = ({
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt)
+  const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
 
@@ -94,7 +96,12 @@ export const BorrowActionInfoAccordion = ({
           loading={pricesLoading}
         />
         <ActionInfo label={t`N`} value={formatNumber(range)} />
-        {/*TODO <ActionInfo label={t`Borrow APY`} prevValue="1.56" value="1.56" valueRight="%" />*/}
+        <ActionInfo
+          label={t`Borrow APR`}
+          value={formatPercent(rates?.borrowApr)}
+          error={ratesError}
+          loading={ratesLoading}
+        />
         {loanToValue != null && <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} />}
         {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
         <ActionInfo

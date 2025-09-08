@@ -87,7 +87,6 @@ export const BorrowTabContents = ({
             loading={isPending || !market}
             disabled={formErrors.length > 0}
             data-testid="borrow-submit-button"
-            // todo: endIcon={<ChrevronDownIcon />}
           >
             {isPending ? t`Processing...` : t`Approve & Swap`}
           </Button>

@@ -72,7 +72,6 @@ export const LoanPresetSelector = ({
       <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
         <AlertTitle>{PRESETS[preset].title}</AlertTitle>
         {PRESETS[preset].description}
-        {/* todo: learn more about llamalend presets link */}
       </Alert>
     )}
   </Stack>
