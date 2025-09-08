@@ -1,6 +1,8 @@
 import { useLiquidationRangeChartData } from '@/llamalend/widgets/borrow/hooks/useLiquidationRangeChartData'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type BorrowForm, type BorrowFormQueryParams, type LlamaMarketTemplate } from '../borrow.types'
 import { LoanRangeSlider } from './LoanRangeSlider'
@@ -26,13 +28,16 @@ export const AdvancedBorrowOptions = ({
   return (
     <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
       <LoanRangeSlider market={market} range={range} setRange={setRange} />
-      <ChartLiquidationRange
-        data={chartData}
-        healthColorKey="healthy"
-        height={height}
-        isDetailView={true}
-        isManage={true}
-      />
+      <Stack>
+        <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
+        <ChartLiquidationRange
+          data={chartData}
+          healthColorKey="healthy"
+          height={height}
+          isDetailView={true}
+          isManage={true}
+        />
+      </Stack>
     </Stack>
   )
 }

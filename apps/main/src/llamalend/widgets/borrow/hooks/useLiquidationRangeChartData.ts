@@ -20,7 +20,7 @@ export const useLiquidationRangeChartData = (
         currLabel: '',
         curr: [0, 0], // Empty array for new borrow (no current position)
         new: prices ?? [0, 0],
-        newLabel: 'Liquidation Range',
+        newLabel: 'LR',
         oraclePrice: oraclePrice ?? '',
         oraclePriceBand: oraclePriceBand ?? null,
       },
