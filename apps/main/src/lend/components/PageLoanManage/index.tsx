@@ -96,7 +96,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         options={FORM_TYPES}
       />
 
-      <AppFormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper>
         {/* FORMS SELECTOR */}
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
