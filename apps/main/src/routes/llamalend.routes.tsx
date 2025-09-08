@@ -8,7 +8,7 @@ import { redirectTo } from './util'
 const llamalendLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'llamalend',
-  component: () => <Outlet />,
+  component: Outlet,
 })
 
 const layoutProps = { getParentRoute: () => llamalendLayoutRoute }
