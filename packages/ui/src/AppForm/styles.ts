@@ -8,7 +8,6 @@ export const AppFormContentWrapper = styled(TabContentWrapper)`
   display: grid;
   grid-row-gap: var(--spacing-3);
   padding: var(--spacing-3);
-  padding-top: 0.5rem;
   position: relative;
   min-height: 14rem; // 224px;
 `
