@@ -46,7 +46,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         options={FORM_TYPES}
       />
 
-      <AppFormContentWrapper grid gridRowGap={3} padding margin="1rem 0 0 0">
+      <AppFormContentWrapper>
         {/* FORMS */}
         {(rFormType === '' || rFormType === 'create') && <LoanFormCreate {...pageProps} />}
         {rFormType === 'leverage' && <LoanFormCreate isLeverage {...pageProps} />}
