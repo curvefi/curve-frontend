@@ -3,6 +3,7 @@ import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
 import { AdvancedBorrowOptions } from '@/llamalend/widgets/borrow/components/AdvancedBorrowOptions'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
@@ -34,16 +35,17 @@ export const BorrowTabContents = ({
     maxBorrow,
     params,
     form,
-    balances,
     collateralToken,
     borrowToken,
     isCreated,
     creationError,
     txHash,
+    maxDebt,
+    maxCollateral,
     formErrors,
     tooMuchDebt,
+    tooMuchCollateral,
   } = useBorrowForm({ market, network, preset })
-  const { maxDebt, maxTotalCollateral } = maxBorrow.data ?? {}
   const setRange = (range: number) => form.setValue('range', range, setValueOptions)
   return (
     <FormProvider {...form}>
@@ -55,8 +57,8 @@ export const BorrowTabContents = ({
             name="userCollateral"
             form={form}
             isLoading={maxBorrow.isLoading || !market}
-            isError={maxBorrow.isError}
-            max={balances.data?.collateral ?? maxTotalCollateral}
+            isError={maxBorrow.isError || tooMuchCollateral}
+            max={maxCollateral}
             testId="borrow-collateral-input"
           />
           <BorrowFormTokenInput
@@ -65,7 +67,7 @@ export const BorrowTabContents = ({
             name="debt"
             form={form}
             isLoading={maxBorrow.isLoading || !market}
-            isError={maxBorrow.isError}
+            isError={maxBorrow.isError || tooMuchDebt}
             max={maxDebt}
             testId="borrow-debt-input"
           />
@@ -99,12 +101,24 @@ export const BorrowTabContents = ({
             txHash={txHash}
           />
 
-          <BorrowActionInfoAccordion
-            params={params}
-            values={values}
-            collateralToken={collateralToken}
-            tooMuchDebt={tooMuchDebt}
-          />
+          <Box
+            // this box wraps around the accordion and makes it look like the accordion is out of the tab
+            // in the future we could move the info out of the card, but this is simpler during refactoring the old page
+            sx={{
+              backgroundColor: 'var(--page--background-color)',
+              marginInline: '-16px',
+              marginBlockEnd: '-16px',
+              paddingBlockStart: '16px',
+              position: 'relative',
+            }}
+          >
+            <BorrowActionInfoAccordion
+              params={params}
+              values={values}
+              collateralToken={collateralToken}
+              tooMuchDebt={tooMuchDebt}
+            />
+          </Box>
         </Stack>
       </form>
     </FormProvider>

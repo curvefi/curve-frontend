@@ -24,7 +24,7 @@ export const AdvancedBorrowOptions = ({
 }) => {
   const chartData = useLiquidationRangeChartData(params, enabled)
   return (
-    <Stack gap={Spacing.sm}>
+    <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
       <LoanRangeSlider market={market} range={range} setRange={setRange} />
       <ChartLiquidationRange
         data={chartData}

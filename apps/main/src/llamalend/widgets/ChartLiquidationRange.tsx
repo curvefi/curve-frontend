@@ -217,7 +217,7 @@ export const ChartLiquidationRange = ({
             >
               <LabelList
                 dataKey="newLabel"
-                position="inside"
+                position="insideLeft"
                 fill={chartLabelColor}
                 fontSize={10}
                 fontWeight="bold"

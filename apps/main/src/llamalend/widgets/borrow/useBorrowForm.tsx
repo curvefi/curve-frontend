@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
-import { useForm } from 'react-hook-form'
 import type { UseFormReturn } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -8,6 +8,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
+import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { CRVUSD_ADDRESS, formatNumber } from '@ui-kit/utils'
@@ -76,7 +77,13 @@ export function useBorrowForm({
     },
   })
   const values = form.watch()
-  const params = { chainId, poolId: market?.id, userAddress, ...values }
+  const params = useDebouncedValue(
+    useMemo(
+      () => ({ chainId, poolId: market?.id, userAddress, ...values }),
+      [chainId, market?.id, userAddress, values],
+    ),
+  )
+
   const {
     onSubmit,
     isPending: isCreating,
@@ -85,23 +92,26 @@ export function useBorrowForm({
     txHash,
     reset: resetCreation,
   } = useCreateLoanMutation({ chainId, poolId: market?.id, reset: form.reset })
+  const maxBorrow = useMaxBorrowReceive(params)
+  const balances = useUserBalances(params)
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
+
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
-  // todo: figure out why form.formState.isValid is always true. For now, using useMemo to recalculate validation
-  // const validation = useMemo(() => {
-  //   const validation = borrowFormValidationSuite(values)
-  //   const result = { isValid: validation.isValid(), errors: validation.getErrors() }
-  //   console.log(result, validation)
-  //   return result
-  // }, [values])
-
-  const maxBorrow = useMaxBorrowReceive(params)
+  const maxDebt = maxBorrow.data?.maxDebt
   const maxDebtError =
-    maxBorrow.data &&
+    maxDebt != null &&
     values.debt &&
-    values.debt > maxBorrow.data.maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxBorrow.data.maxDebt, { abbreviate: true })}`
+    values.debt > maxDebt &&
+    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })}`
+
+  const maxCollateral = balances.data?.collateral ?? maxBorrow.data?.maxTotalCollateral
+  const maxCollateralError =
+    maxCollateral != null &&
+    values.userCollateral &&
+    values.userCollateral > maxCollateral &&
+    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })}`
+
   return {
     form,
     values,
@@ -109,13 +119,15 @@ export function useBorrowForm({
     isPending: form.formState.isSubmitting || isCreating || form.formState.isSubmitting,
     onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
     maxBorrow,
-    balances: useUserBalances(params),
     borrowToken,
     collateralToken,
     isCreated,
     creationError,
     txHash,
+    maxDebt,
+    maxCollateral,
     tooMuchDebt: !!maxDebtError,
+    tooMuchCollateral: !!maxCollateralError,
     formErrors: useMemo(
       () =>
         notFalsy(
@@ -123,8 +135,9 @@ export function useBorrowForm({
             .filter(([field, error]) => field in form.formState.dirtyFields && error?.message)
             .map(([_, error]) => error!.message!),
           maxDebtError,
+          maxCollateralError,
         ),
-      [form.formState, maxDebtError],
+      [form.formState, maxDebtError, maxCollateralError],
     ),
   }
 }

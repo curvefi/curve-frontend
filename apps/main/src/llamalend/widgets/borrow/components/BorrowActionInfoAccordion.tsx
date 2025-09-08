@@ -61,6 +61,7 @@ export const BorrowActionInfoAccordion = ({
 
   return (
     <Accordion
+      ghost
       title={t`Health`}
       info={
         <ActionInfo

@@ -46,6 +46,7 @@ export const LoanPresetSelector = ({
   <Stack gap={Spacing.sm}>
     <ToggleButtonGroup
       exclusive
+      compact
       value={preset}
       onChange={useCallback(
         (_: MouseEvent<HTMLElement>, p: BorrowPreset) => {
