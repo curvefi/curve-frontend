@@ -29,7 +29,6 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
-import SandwichMenu from '@ui/AppForm/ui/SandwichMenu'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -191,11 +190,20 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
-  const ACTION_TABS: { value: TransferFormType; label: string }[] = [
-    { value: 'deposit', label: t`Deposit` },
-    { value: 'withdraw', label: t`Withdraw` },
-    { value: 'swap', label: t`Swap` },
-  ]
+  type Tab = { value: TransferFormType; label: string }
+  const ACTION_TABS: Tab[] = useMemo(() => {
+    const tabs: Tab[] = [
+      { value: 'deposit', label: t`Deposit` },
+      { value: 'withdraw', label: t`Withdraw` },
+      { value: 'swap', label: t`Swap` },
+    ]
+
+    if (isAvailableManageGauge) {
+      tabs.push({ value: 'manage-gauge', label: t`Gauge` })
+    }
+
+    return tabs
+  }, [isAvailableManageGauge])
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
@@ -257,8 +265,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={ACTION_TABS}
             />
-
-            {isAvailableManageGauge && <SandwichMenu onItemClick={(key) => toggleForm(key as TransferFormType)} />}
 
             <AppFormContentWrapper>
               {rFormType === 'swap' ? (
