@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
-import SubNav from '@/dao/components/SubNav'
-import { SubNavItem } from '@/dao/components/SubNav/types'
 import Box from '@ui/Box'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import GaugesList from './GaugeList'
 import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
@@ -16,9 +15,9 @@ const Gauges = () => {
 
   const [navSelection, setNavSelection] = useState('gaugeList')
 
-  const navItems: SubNavItem[] = [
-    { key: 'gaugeList', label: t`Gauges` },
-    { key: 'gaugeVoting', label: t`Voting` },
+  const navItems = [
+    { value: 'gaugeList', label: t`Gauges` },
+    { value: 'gaugeVoting', label: t`Voting` },
   ]
 
   useEffect(() => {
@@ -32,7 +31,14 @@ const Gauges = () => {
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
         <GaugeWeightDistribution isUserVotes={navSelection === 'gaugeVoting'} userAddress={userAddress} />
         <Box>
-          <SubNav activeKey={navSelection} navItems={navItems} setNavChange={setNavSelection} />
+          <TabsSwitcher
+            variant="contained"
+            size="medium"
+            value={navSelection}
+            onChange={setNavSelection}
+            options={navItems}
+          />
+
           <Container variant="secondary">
             {navSelection === 'gaugeList' && <GaugesList />}
             {navSelection === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
