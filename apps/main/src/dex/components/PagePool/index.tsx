@@ -266,57 +266,57 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               options={ACTION_TABS}
             />
 
-            <AppFormContentWrapper>
-              {rFormType === 'swap' ? (
-                <>
-                  {poolAlert?.isDisableSwap ? (
-                    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-                  ) : (
-                    <Swap
-                      {...pageTransferProps}
-                      chainIdPoolId={chainIdPoolId}
-                      poolAlert={poolAlert}
-                      maxSlippage={maxSlippage}
-                      seed={seed}
-                      tokensMapper={tokensMapper}
-                      userPoolBalances={userPoolBalances}
-                      userPoolBalancesLoading={userPoolBalancesLoading}
-                    />
-                  )}
-                </>
-              ) : rFormType === 'deposit' ? (
-                <Deposit
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  blockchainId={networkId}
-                  hasDepositAndStake={hasDepositAndStake}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
-                />
-              ) : rFormType === 'withdraw' ? (
-                <Withdraw
-                  {...pageTransferProps}
-                  chainIdPoolId={chainIdPoolId}
-                  blockchainId={networkId}
-                  poolAlert={poolAlert}
-                  maxSlippage={maxSlippage}
-                  seed={seed}
-                  tokensMapper={tokensMapper}
-                  userPoolBalances={userPoolBalances}
-                  userPoolBalancesLoading={userPoolBalancesLoading}
-                />
-              ) : rFormType === 'manage-gauge' ? (
-                poolData ? (
-                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+            {rFormType === 'swap' ? (
+              <AppFormContentWrapper>
+                {poolAlert?.isDisableSwap ? (
+                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
                 ) : (
+                  <Swap
+                    {...pageTransferProps}
+                    chainIdPoolId={chainIdPoolId}
+                    poolAlert={poolAlert}
+                    maxSlippage={maxSlippage}
+                    seed={seed}
+                    tokensMapper={tokensMapper}
+                    userPoolBalances={userPoolBalances}
+                    userPoolBalancesLoading={userPoolBalancesLoading}
+                  />
+                )}
+              </AppFormContentWrapper>
+            ) : rFormType === 'deposit' ? (
+              <Deposit
+                {...pageTransferProps}
+                chainIdPoolId={chainIdPoolId}
+                blockchainId={networkId}
+                hasDepositAndStake={hasDepositAndStake}
+                poolAlert={poolAlert}
+                maxSlippage={maxSlippage}
+                seed={seed}
+                tokensMapper={tokensMapper}
+                userPoolBalances={userPoolBalances}
+                userPoolBalancesLoading={userPoolBalancesLoading}
+              />
+            ) : rFormType === 'withdraw' ? (
+              <Withdraw
+                {...pageTransferProps}
+                chainIdPoolId={chainIdPoolId}
+                blockchainId={networkId}
+                poolAlert={poolAlert}
+                maxSlippage={maxSlippage}
+                seed={seed}
+                tokensMapper={tokensMapper}
+                userPoolBalances={userPoolBalances}
+                userPoolBalancesLoading={userPoolBalancesLoading}
+              />
+            ) : rFormType === 'manage-gauge' ? (
+              poolData ? (
+                <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+              ) : (
+                <AppFormContentWrapper>
                   <BlockSkeleton width={339} />
-                )
-              ) : null}
-            </AppFormContentWrapper>
+                </AppFormContentWrapper>
+              )
+            ) : null}
           </AppFormContent>
         </AppPageFormsWrapper>
 

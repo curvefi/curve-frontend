@@ -5,6 +5,7 @@ import FormUnstake from '@/dex/components/PagePool/Withdraw/components/FormUnsta
 import FormWithdraw from '@/dex/components/PagePool/Withdraw/components/FormWithdraw'
 import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import useStore from '@/dex/store/useStore'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
@@ -46,17 +47,14 @@ const Withdraw = (transferProps: TransferProps) => {
         value={selectedTab}
         onChange={handleTabChange}
         options={TABS}
-        sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
-          // Undo the padding from AppFormContentWrapper, not the cleanest but will have to do for now.
-          marginInline: 'calc(-1 * var(--spacing-3))',
-          marginTop: '-0.5rem',
-        }}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />
 
-      {formType === 'WITHDRAW' && <FormWithdraw {...transferProps} />}
-      {formType === 'UNSTAKE' && <FormUnstake {...transferProps} />}
-      {formType === 'CLAIM' && <FormClaim {...transferProps} />}
+      <AppFormContentWrapper>
+        {formType === 'WITHDRAW' && <FormWithdraw {...transferProps} />}
+        {formType === 'UNSTAKE' && <FormUnstake {...transferProps} />}
+        {formType === 'CLAIM' && <FormClaim {...transferProps} />}
+      </AppFormContentWrapper>
     </>
   )
 }
