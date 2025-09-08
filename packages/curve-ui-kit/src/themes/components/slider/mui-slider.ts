@@ -38,7 +38,6 @@ const trackAndThumbHeights = {
  * and extends beyond the slider's right edge by half the thumb width to prevent
  * the thumb from overlapping with the border when at 100% position.
  *
- * The negative z-index ensures the border appears behind the slider components.
  * Also provides a background fill area that can be customized via CSS custom properties.
  *
  * @param design - The design system containing color definitions
@@ -52,7 +51,6 @@ const rightExtension = (design: DesignSystem) => ({
     right: -THUMB_WIDTH / 2,
     left: -THUMB_WIDTH / 2,
     border: `1px solid ${design.Color.Neutral[500]}`,
-    zIndex: -1,
     backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
   },
 })
