@@ -13,11 +13,12 @@ import type {
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader, AppFormSlideTab } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
 import { useNavigate } from '@ui-kit/hooks/router'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
@@ -29,13 +30,13 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const FORM_TYPES = useMemo(() => {
-    const forms: { key: FormType; label: string }[] = [
-      { label: t`Loan`, key: 'loan' },
-      { label: t`Collateral`, key: 'collateral' },
+    const forms: { value: FormType; label: string }[] = [
+      { value: 'loan', label: t`Loan` },
+      { value: 'collateral', label: t`Collateral` },
     ]
 
     if (market?.leverage?.hasLeverage()) {
-      forms.push({ label: t`Leverage`, key: 'leverage' })
+      forms.push({ value: 'leverage', label: t`Leverage` })
     }
 
     return forms
@@ -86,14 +87,16 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           : []
 
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'loan' : (rFormType as string)}
-        handleClick={(key: string) => push(getLoanManagePathname(params, rOwmId, key))}
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'loan' : rFormType}
+        onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
+        options={FORM_TYPES}
       />
 
-      <AppFormContentWrapper grid gridRowGap={3} padding>
+      <AppFormContentWrapper>
         {/* FORMS SELECTOR */}
         {tabs.length > 0 && (
           <SlideTabsWrapper activeIdx={selectedTabIdx}>
