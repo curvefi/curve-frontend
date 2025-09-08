@@ -23,6 +23,7 @@ import LevelMoney from './LevelMoney.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
+import MezoUSD from './MezoUSD.json'
 import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
@@ -76,4 +77,5 @@ export {
   Tharwa,
   Aegis,
   Ebisu,
+  MezoUSD,
 }

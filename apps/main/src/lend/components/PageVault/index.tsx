@@ -12,11 +12,12 @@ import {
   type VaultWithdrawFormType,
 } from '@/lend/types/lend.types'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormSlideTab, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper, AppFormSlideTab } from '@ui/AppForm'
 import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
 import { useNavigate } from '@ui-kit/hooks/router'
 import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
@@ -27,9 +28,9 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
 
   const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
-  const FORM_TYPES: { key: string; label: string }[] = [
-    { label: t`Deposit`, key: 'deposit' },
-    { label: t`Withdraw`, key: 'withdraw' },
+  const FORM_TYPES: { value: string; label: string }[] = [
+    { value: 'deposit', label: t`Deposit` },
+    { value: 'withdraw', label: t`Withdraw` },
   ]
 
   const DEPOSIT_TABS: { label: string; formType: VaultDepositFormType }[] = [
@@ -53,11 +54,13 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
-        handleClick={(key) => push(getVaultPathname(params, rOwmId, key))}
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'deposit' : rFormType}
+        onChange={(key) => push(getVaultPathname(params, rOwmId, key))}
+        options={FORM_TYPES}
       />
 
       <AppFormContentWrapper>

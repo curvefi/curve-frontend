@@ -28,7 +28,8 @@ import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
 import AlertBox from '@ui/AlertBox'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import SandwichMenu from '@ui/AppForm/ui/SandwichMenu'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -51,6 +52,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
@@ -189,10 +191,10 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
-  const ACTION_TABS: { key: TransferFormType; label: string }[] = [
-    { key: 'deposit', label: t`Deposit` },
-    { key: 'withdraw', label: t`Withdraw/Claim` },
-    { key: 'swap', label: t`Swap` },
+  const ACTION_TABS: { value: TransferFormType; label: string }[] = [
+    { value: 'deposit', label: t`Deposit` },
+    { value: 'withdraw', label: t`Withdraw` },
+    { value: 'swap', label: t`Swap` },
   ]
 
   const toggleForm = useCallback(
@@ -247,13 +249,16 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper className="grid-transfer">
           {!isMdUp && <TitleComp />}
-          <AppFormContent variant="primary" shadowed>
-            <AppFormHeader
-              formTypes={ACTION_TABS}
-              activeFormKey={!rFormType ? 'deposit' : (rFormType as string)}
-              handleClick={(key: string) => toggleForm(key as TransferFormType)}
-              showMenuButton={isAvailableManageGauge}
+          <AppFormContent variant="primary">
+            <TabsSwitcher
+              variant="contained"
+              size="medium"
+              value={!rFormType ? 'deposit' : rFormType}
+              onChange={(key) => toggleForm(key as TransferFormType)}
+              options={ACTION_TABS}
             />
+
+            {isAvailableManageGauge && <SandwichMenu onItemClick={(key) => toggleForm(key as TransferFormType)} />}
 
             <AppFormContentWrapper>
               {rFormType === 'swap' ? (

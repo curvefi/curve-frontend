@@ -6,7 +6,7 @@ import { CLASS_BORDERLESS, SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/componen
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { NumericTextField } from './NumericTextField'
 
-const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 type Props = {
   /** Current percentage value (0-100) */
@@ -40,7 +40,13 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       min={0}
       max={100}
       step={step}
-      sx={{ [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200] }}
+      sx={{
+        [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200],
+        '&.MuiSlider-root::after': {
+          // probably due to the background above, this the slider will be behind the background and become invisible
+          zIndex: -1,
+        },
+      }}
     />
 
     <NumericTextField
