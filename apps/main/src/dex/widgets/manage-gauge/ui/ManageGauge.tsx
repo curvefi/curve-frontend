@@ -51,7 +51,14 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
 
   return (
     <>
-      <TabsSwitcher variant="underlined" size="small" value={selectedTab} onChange={setSelectedTab} options={TABS} />
+      <TabsSwitcher
+        variant="underlined"
+        size="small"
+        value={selectedTab}
+        onChange={setSelectedTab}
+        options={TABS}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+      />
       {selectedTab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
       {selectedTab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
     </>
