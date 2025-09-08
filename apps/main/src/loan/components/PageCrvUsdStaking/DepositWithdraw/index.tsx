@@ -3,12 +3,11 @@ import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
-import SubNav, { SUB_NAV_ITEMS, type SubNavItem } from '../components/SubNav'
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
-import type { DepositWithdrawModule } from '../types'
 import DeployButton from './DeployButton'
 import DepositModule from './DepositModule'
 import WithdrawModule from './WithdrawModule'
@@ -34,15 +33,6 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const estimateGasDeposit = useStore((state) => state.scrvusd.estimateGas.deposit)
   const estimateGasWithdraw = useStore((state) => state.scrvusd.estimateGas.withdraw)
   const { llamaApi: curve = null } = useConnection()
-
-  const setNavChange = (key: SubNavItem['key']) => {
-    // Swapping opens a new browser tab for now, temp solution until it can be replaced with an actual tab and an Enzo zap in the future.
-    if (key === 'swap') {
-      window.open(`${getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`, '_blank')
-    } else {
-      setStakingModule(key as DepositWithdrawModule)
-    }
-  }
 
   const transactionInProgress =
     (stakingModule === 'deposit' &&
@@ -95,9 +85,27 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     isDepositApprovalReady,
   ])
 
+  const TABS = [
+    { value: 'deposit', label: 'Deposit' },
+    { value: 'withdraw', label: 'Withdraw' },
+    { value: 'swap', label: 'Swap' },
+  ] as const
+
+  type Tab = (typeof TABS)[number]['value']
+
+  const handleSelectTab = (tab: Tab) => {
+    // Swapping opens a new browser tab for now, temp solution until it can be replaced with an actual tab and an Enzo zap in the future.
+    if (tab === 'swap') {
+      window.open(`${getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`, '_blank')
+    } else {
+      setStakingModule(tab)
+    }
+  }
+
   return (
     <Wrapper className={className}>
-      <SubNav activeKey={stakingModule} navItems={SUB_NAV_ITEMS} setNavChange={setNavChange} />
+      <TabsSwitcher variant="contained" size="medium" value={stakingModule} onChange={handleSelectTab} options={TABS} />
+
       <ModuleContainer>
         {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}
         {transactionInProgress || transactionSuccess ? <StyledTransactionTracking /> : <StyledDeployButton />}
