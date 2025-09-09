@@ -1,7 +1,9 @@
 import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
-import { useAccount } from 'wagmi'
+import type { Address } from 'viem'
+import { formatUnits } from 'viem'
+import { useAccount, useBalance } from 'wagmi'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -17,7 +19,6 @@ import { BORROW_PRESET_RANGES, DEFAULT_SLIPPAGE } from './borrow.util'
 import { useMaxBorrowReceive } from './queries/borrow-max-receive.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { useCreateLoanMutation } from './queries/create-loan.mutation'
-import { useUserBalances } from './queries/user-balances.query'
 
 const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
   market instanceof MintMarketTemplate
@@ -25,7 +26,7 @@ const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
         collateralToken: {
           chain,
           symbol: market.collateralSymbol,
-          address: market.collateral,
+          address: market.collateral as Address,
           decimals: market.collateralDecimals,
         },
         borrowToken: {
@@ -39,19 +40,24 @@ const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
         collateralToken: {
           chain,
           symbol: market.collateral_token.symbol,
-          address: market.collateral_token.address,
+          address: market.collateral_token.address as Address,
           decimals: market.collateral_token.decimals,
         },
         borrowToken: {
           chain,
           symbol: market.borrowed_token.symbol,
-          address: market.borrowed_token.address,
+          address: market.borrowed_token.address as Address,
           decimals: market.borrowed_token.decimals,
         },
       }
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
+const useUserBalance = (userAddress: Address | undefined, token: { address: Address } | undefined, chainId: number) => {
+  const { data: userCollateral } = useBalance({ address: userAddress, token: token?.address, chainId })
+  return parseInt(formatUnits(userCollateral?.value || 0n, userCollateral?.decimals || 18), 10)
+}
 
 export function useBorrowForm({
   market,
@@ -93,8 +99,9 @@ export function useBorrowForm({
     reset: resetCreation,
   } = useCreateLoanMutation({ chainId, poolId: market?.id, reset: form.reset })
   const maxBorrow = useMaxBorrowReceive(params)
-  const balances = useUserBalances(params)
+
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
+  const userCollateralBalance = useUserBalance(userAddress, collateralToken, chainId)
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
@@ -105,7 +112,7 @@ export function useBorrowForm({
     values.debt > maxDebt &&
     t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })} ${borrowToken?.symbol ?? ''}`
 
-  const maxCollateral = balances.data?.collateral ?? maxBorrow.data?.maxTotalCollateral
+  const maxCollateral = userCollateralBalance ?? maxBorrow.data?.maxTotalCollateral
   const maxCollateralError =
     maxCollateral != null &&
     values.userCollateral &&
