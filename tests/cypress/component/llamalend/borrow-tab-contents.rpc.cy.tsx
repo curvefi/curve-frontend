@@ -1,21 +1,29 @@
 import React, { useMemo } from 'react'
+import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { BorrowTabContents } from '@/llamalend/widgets/borrow/components/BorrowTabContents'
 import networks from '@/loan/networks'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
 import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
+import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 
 const network = networks[1]
+const MARKET_ID = 'lbtc'
+const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
+const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 function BorrowTabTest() {
   const { llamaApi } = useConnection()
-  const market = useMemo(() => llamaApi?.getMintMarket('lbtc'), [llamaApi])
+  const market = useMemo(() => llamaApi?.getMintMarket(MARKET_ID), [llamaApi])
   return market ? <BorrowTabContents market={market} network={network} /> : <Skeleton />
 }
 
 describe('BorrowTabContents Component Tests', () => {
+  const privateKey = generatePrivateKey()
+  const { address } = privateKeyToAccount(privateKey) // 0x4d1Cd72c062447b03c01521D52733145D452d069
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
     slug: `borrow-tab-${uuid}`,
     display_name: `BorrowTab (${uuid})`,
@@ -24,8 +32,16 @@ describe('BorrowTabContents Component Tests', () => {
     },
   }))
 
+  beforeEach(() => {
+    const vnet = getVirtualNetwork()
+    const { adminRpcUrl } = getRpcUrls(vnet)
+    fundEth({ adminRpcUrl, amountWei: oneEthInWei, recipientAddresses: [address] })
+    fundErc20({ adminRpcUrl, amountWei: oneEthInWei, tokenAddress: COLLATERAL_ADDRESS, recipientAddresses: [address] })
+    cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
+  })
+
   const BorrowTabTestWrapper = () => (
-    <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork() })} autoConnect>
+    <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
       <ConnectionProvider app="llamalend" network={network} onChainUnavailable={console.error}>
         <Box sx={{ maxWidth: 500 }}>
           <BorrowTabTest />
@@ -56,10 +72,10 @@ describe('BorrowTabContents Component Tests', () => {
     getActionValue('borrow-apr').contains('%')
     getActionValue('borrow-ltv').contains('%')
     getActionValue('borrow-slippage').contains('%')
+    getActionValue('borrow-n').contains('50')
 
-    // todo: mint some coins with tenderly so we can actually do a transaction
-    cy.get('[data-testid="borrow-form-errors"]').contains('Exceeds maximum collateral of 0 lbtc')
+    cy.get('[data-testid="borrow-form-errors"]').should('not.exist')
     // todo: actually sign a transaction with the wagmi test connector and start a loan
-    cy.get('[data-testid="borrow-submit-button"]').should('be.disabled')
+    cy.get('[data-testid="borrow-submit-button"]').should('be.enabled')
   })
 })
