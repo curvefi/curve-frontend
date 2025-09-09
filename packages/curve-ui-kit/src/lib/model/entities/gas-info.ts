@@ -1,8 +1,8 @@
-import { getEthereumCustomFeeDataValues } from '@ui/utils'
+import { BN, formatNumber, getEthereumCustomFeeDataValues } from '@ui/utils'
 import { getLib, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model/query'
+import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
-import { Chain, gweiToWai } from '@ui-kit/utils'
+import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { providerValidationGroup } from '../query/provider-validation'
 
@@ -134,9 +134,7 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
       }
     }
 
-    return (parsedGasInfo ? Promise.resolve(parsedGasInfo) : parseGasInfo(curve, provider, gasPricesUrlL2)).then(
-      (x) => x.gasInfo,
-    )
+    return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
   },
   staleTime: '5m',
   refetchInterval: '1m',
@@ -316,3 +314,55 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>({
   chainId: TChainId
   networks: Record<TChainId, Network>
 }) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
+
+/**
+ * Calculate estimated gas costs with ETH+USD conversion and tooltip
+ */
+export function calculateGas(
+  estimatedGas: number | number[] | null,
+  gasInfo: GasInfo | undefined,
+  chainTokenUsdRate: number | undefined,
+  {
+    chainId,
+    symbol: networkSymbol,
+    gasPricesUnit,
+    gasL2: isL2Network,
+    gasPricesDefault,
+  }: {
+    chainId: number
+    symbol: string
+    gasPricesUnit: string
+    gasL2: boolean
+    gasPricesDefault: number | undefined
+  },
+) {
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault ?? 0]
+
+  if (!estimatedGas || !basePlusPriority || !gasInfo) {
+    return { estGasCost: '0', estGasCostUsd: undefined, tooltip: undefined, gasCostInWei: 0 }
+  }
+
+  const { l1GasPriceWei, l2GasPriceWei } = gasInfo
+  const gasCostInWei =
+    [Chain.Arbitrum, Chain.XLayer, Chain.Mantle].includes(chainId!) && l2GasPriceWei && typeof estimatedGas === 'number'
+      ? // Special handling for L2 networks with different gas pricing
+        l2GasPriceWei * estimatedGas
+      : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
+        ? // L1+L2 gas for optimistic rollups
+          estimatedGas[0] * l2GasPriceWei + estimatedGas[1] * l1GasPriceWei
+        : typeof estimatedGas === 'number'
+          ? // Default calculation for regular networks
+            basePlusPriority * estimatedGas
+          : 0
+
+  const estGasCost = new BN(gweiToEther(weiToGwei(gasCostInWei)))
+  return {
+    estGasCost: estGasCost.toString(),
+    estGasCostUsd:
+      chainTokenUsdRate == undefined || isNaN(chainTokenUsdRate)
+        ? undefined
+        : estGasCost.multipliedBy(chainTokenUsdRate).toString(),
+    tooltip: `${formatNumber(estGasCost.toString())} ${networkSymbol} at ${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })} ${gasPricesUnit}`,
+    gasCostInWei,
+  }
+}

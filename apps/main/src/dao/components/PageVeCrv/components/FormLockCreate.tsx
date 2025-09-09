@@ -244,7 +244,6 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       <div>
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             estimatedGas={formEstGas.estimatedGas}
