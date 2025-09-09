@@ -17,8 +17,7 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   }
 
   &:hover {
-    background-color: var(--tab--content--hover--background-color);
-    color: var(--tab--content--hover-color);
+    background-color: var(--tab--content--background-color);
   }
 
   &.active {
