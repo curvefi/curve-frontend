@@ -134,7 +134,7 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
       }
     }
 
-    return (parsedGasInfo || (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
+    return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
   },
   staleTime: '5m',
   refetchInterval: '1m',
@@ -316,38 +316,9 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>({
 }) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
 
 /**
- * Calculate gas cost in Wei based on network type and gas info
+ * Calculate estimated gas costs with ETH+USD conversion and tooltip
  */
-export function calculateGasCostInWei(
-  estimatedGas: number | number[],
-  gasInfo: GasInfo,
-  basePlusPriority: number,
-  isL2Network: boolean,
-  chainId?: number,
-): number {
-  // Special handling for L2 networks with different gas pricing
-  if (chainId && (chainId === Chain.Arbitrum || chainId === Chain.XLayer || chainId === Chain.Mantle)) {
-    if (gasInfo.l2GasPriceWei && typeof estimatedGas === 'number') {
-      return gasInfo.l2GasPriceWei * estimatedGas
-    }
-  }
-  // Handle L1+L2 gas for optimistic rollups
-  if (isL2Network && Array.isArray(estimatedGas)) {
-    if (gasInfo.l2GasPriceWei && gasInfo.l1GasPriceWei) {
-      const [l2GasUsed, l1GasUsed] = estimatedGas
-      const l2GasCost = l2GasUsed * gasInfo.l2GasPriceWei
-      const l1GasCost = l1GasUsed * gasInfo.l1GasPriceWei
-      return l2GasCost + l1GasCost
-    }
-  }
-  // Default calculation for regular networks
-  return typeof estimatedGas === 'number' ? basePlusPriority * estimatedGas : 0
-}
-
-/**
- * Calculate estimated gas costs with USD conversion and tooltip
- */
-export function calculateGasEstimation(
+export function calculateGas(
   estimatedGas: number | number[] | null,
   gasInfo: GasInfo | undefined,
   chainTokenUsdRate: number | undefined,
@@ -364,33 +335,34 @@ export function calculateGasEstimation(
     gasL2: boolean
     gasPricesDefault: number | undefined
   },
-): {
-  estGasCost: string
-  estGasCostUsd: string | undefined
-  tooltip: string | undefined
-  gasCostInWei: number
-} {
+) {
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault ?? 0]
 
   if (!estimatedGas || !basePlusPriority || !gasInfo) {
     return { estGasCost: '0', estGasCostUsd: undefined, tooltip: undefined, gasCostInWei: 0 }
   }
 
-  // Calculate gas cost in Wei
-  const gasCostInWei = calculateGasCostInWei(estimatedGas, gasInfo, basePlusPriority, isL2Network, chainId)
+  const { l1GasPriceWei, l2GasPriceWei } = gasInfo
+  const gasCostInWei =
+    [Chain.Arbitrum, Chain.XLayer, Chain.Mantle].includes(chainId!) && l2GasPriceWei && typeof estimatedGas === 'number'
+      ? // Special handling for L2 networks with different gas pricing
+        l2GasPriceWei * estimatedGas
+      : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
+        ? // L1+L2 gas for optimistic rollups
+          estimatedGas[0] * l2GasPriceWei + estimatedGas[1] * l1GasPriceWei
+        : typeof estimatedGas === 'number'
+          ? // Default calculation for regular networks
+            basePlusPriority * estimatedGas
+          : 0
 
-  // Convert to Ether
-  const estGasCostEth = new BN(gweiToEther(weiToGwei(gasCostInWei)))
-
-  // Calculate USD value if rate is available
-  const estGasCostUsd =
-    chainTokenUsdRate == undefined || isNaN(chainTokenUsdRate)
-      ? undefined
-      : estGasCostEth.multipliedBy(chainTokenUsdRate).toString()
-
-  // Create tooltip
-  const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
-  const tooltip = `${formatNumber(estGasCostEth.toString())} ${networkSymbol} at ${gasAmountUnit} ${gasPricesUnit}`
-
-  return { estGasCost: estGasCostEth.toString(), estGasCostUsd, tooltip, gasCostInWei }
+  const estGasCost = new BN(gweiToEther(weiToGwei(gasCostInWei)))
+  return {
+    estGasCost: estGasCost.toString(),
+    estGasCostUsd:
+      chainTokenUsdRate == undefined || isNaN(chainTokenUsdRate)
+        ? undefined
+        : estGasCost.multipliedBy(chainTokenUsdRate).toString(),
+    tooltip: `${formatNumber(estGasCost.toString())} ${networkSymbol} at ${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })} ${gasPricesUnit}`,
+    gasCostInWei,
+  }
 }

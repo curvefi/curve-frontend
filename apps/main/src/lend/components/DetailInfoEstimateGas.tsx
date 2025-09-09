@@ -7,7 +7,7 @@ import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { calculateGasEstimation, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export type StepProgress = {
@@ -31,7 +31,7 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     if (!chainId || !estimatedGas) return { estGasCostUsd: 0, tooltip: '' }
-    const { estGasCostUsd, tooltip } = calculateGasEstimation(estimatedGas, gasInfo, chainTokenUsdRate, network)
+    const { estGasCostUsd, tooltip } = calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network)
     return chainTokenUsdRate
       ? { estGasCostUsd: estGasCostUsd || 0, tooltip: tooltip || '' }
       : { estGasCostUsd: 'NaN', tooltip: '' }

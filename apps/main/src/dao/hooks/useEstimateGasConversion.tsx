@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import networks from '@/dao/networks'
-import { calculateGasEstimation, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const useEstimateGasConversion = (gas: number | null | undefined) => {
@@ -14,7 +14,7 @@ const useEstimateGasConversion = (gas: number | null | undefined) => {
 
   return useMemo(() => {
     if (!gas || !chainId) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
-    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(gas, gasInfo, chainTokenUsdRate, network)
+    const { estGasCost, estGasCostUsd, tooltip } = calculateGas(gas, gasInfo, chainTokenUsdRate, network)
     return chainTokenUsdRate
       ? { estGasCost, estGasCostUsd, tooltip }
       : { estGasCost, estGasCostUsd: undefined, tooltip: undefined }

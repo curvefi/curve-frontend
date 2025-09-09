@@ -3,7 +3,7 @@ import { ethAddress } from 'viem'
 import { useChainId } from 'wagmi'
 import networks from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
-import { calculateGasEstimation, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 const useEstimateGasConversion = (gas: number) => {
@@ -14,7 +14,7 @@ const useEstimateGasConversion = (gas: number) => {
 
   return useMemo(() => {
     if (!chainId) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
-    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(gas, gasInfo, chainTokenUsdRate, network)
+    const { estGasCost, estGasCostUsd, tooltip } = calculateGas(gas, gasInfo, chainTokenUsdRate, network)
     return chainTokenUsdRate == null
       ? { estGasCost: estGasCost, estGasCostUsd: 'NaN', tooltip: '' }
       : { estGasCost: estGasCost, estGasCostUsd: estGasCostUsd || 0, tooltip: tooltip || '' }
