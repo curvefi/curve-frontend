@@ -1,5 +1,5 @@
+import { TooltipWrapper, TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 
 export const AmountSuppliedTooltipContent = () => (
   <TooltipWrapper>
