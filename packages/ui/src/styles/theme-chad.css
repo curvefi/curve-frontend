@@ -41,12 +41,12 @@ body.theme-chad {
   /* ------ Components  ------ */
   /* Box */
   --box--primary--color: var(--text-700);
-  --box--primary--background-color: var(--primary-300);
+  --box--primary--background-color: var(--gray-600);
   --box--primary--background: var(--box--primary--background-color);
   --box--primary--shadow-color: var(--gray-300);
   --box--primary--content--background-color: var(--primary-500);
   --box--primary--content--shadow-color: var(--primary-500);
-  --box_header--primary--background-color: var(--primary-100);
+  --box_header--primary--background-color: var(--primary-500);
   --box--secondary--background-color: var(--white);
   --box--secondary--border: 0 solid var(--white);
   --box_action--button--font-size: var(--font-size-3);
