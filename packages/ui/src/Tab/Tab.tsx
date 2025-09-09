@@ -11,15 +11,13 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   padding: 0 1rem;
   position: relative;
   transition: all 0.2s ease-in-out;
-  text-transform: uppercase;
 
   &:not(:disabled) {
     cursor: pointer;
   }
 
   &:hover {
-    background-color: var(--tab--content--hover--background-color);
-    color: var(--tab--content--hover-color);
+    background-color: var(--tab--content--background-color);
   }
 
   &.active {
