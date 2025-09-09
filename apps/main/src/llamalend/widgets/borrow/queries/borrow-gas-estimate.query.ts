@@ -15,63 +15,26 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 type BorrowGasEstimateQuery<T = IChainId> = BorrowFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<BorrowGasEstimateQuery<T>>
 
-/**
- * Returns the functions to estimate gas for approving and creating a loan based on the market type and leverage.
- */
-const getEstimateGasMethods = (poolId: string, leverage: number | undefined) => {
-  const [market, type] = getLlamaMarket(poolId)
-  const parent = !leverage
-    ? market
-    : type === LlamaMarketType.Lend
-      ? market.leverage
-      : market.leverageV2.hasLeverage()
-        ? market.leverageV2
-        : market.leverage
-  return {
-    estimateGasApprove: parent.estimateGas.createLoanApprove.bind(parent.estimateGas),
-    estimateGasLoan: parent.estimateGas.createLoan.bind(parent.estimateGas),
-  }
-}
-
 const { useQuery: useGasEstimate } = queryFactory({
-  queryKey: ({
-    chainId,
-    poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
-    leverage,
-    range,
-    slippage,
-  }: GasEstimateParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage }: GasEstimateParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-gas-estimation',
       { userBorrowed },
       { userCollateral },
-      { debt },
       { leverage },
-      { range },
-      { slippage },
     ] as const,
-  queryFn: async ({
-    poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
-    leverage,
-    range,
-    slippage,
-  }: BorrowGasEstimateQuery) => {
-    const { estimateGasApprove, estimateGasLoan } = getEstimateGasMethods(poolId, leverage)
-    const [createLoanApprove, createLoan] = await Promise.all([
-      estimateGasApprove(userCollateral, userBorrowed),
-      estimateGasLoan(userCollateral, userBorrowed, debt, range, slippage),
-    ])
-    const total = Array.isArray(createLoanApprove)
-      ? createLoanApprove.map((approve, i) => approve + (createLoan as number[])[i])
-      : createLoanApprove + (createLoan as number)
-    return { createLoanApprove, createLoan, total }
+  queryFn: async ({ poolId, userBorrowed = 0, userCollateral = 0, leverage }: BorrowGasEstimateQuery) => {
+    const [market, type] = getLlamaMarket(poolId)
+    return {
+      createLoanApprove: !leverage
+        ? await market.estimateGas.createLoanApprove(userCollateral)
+        : type === LlamaMarketType.Lend
+          ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          : market.leverageV2.hasLeverage()
+            ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+            : await market.leverage.estimateGas.createLoanApprove(userCollateral),
+    }
   },
   validationSuite: borrowQueryValidationSuite,
   dependencies: (params) => [maxBorrowReceiveKey(params)],
@@ -88,7 +51,10 @@ export const useBorrowEstimateGas = <ChainId extends IChainId>(
   const { data: gasInfo, isLoading: gasInfoLoading } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
   const { data: estimate, isLoading: estimateLoading } = useGasEstimate(query, enabled)
   const data = useMemo(
-    () => (!estimate || !network ? {} : { totalCost: calculateGas(estimate.total, gasInfo, ethRate, network) }),
+    () =>
+      !estimate || !network
+        ? {}
+        : { createLoanApprove: calculateGas(estimate.createLoanApprove, gasInfo, ethRate, network) },
     [estimate, network, gasInfo, ethRate],
   )
   return { data, isLoading: ethRateLoading || gasInfoLoading || estimateLoading }
