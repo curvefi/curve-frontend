@@ -9,7 +9,7 @@ import { LoanRangeSlider } from './LoanRangeSlider'
 
 const { Spacing } = SizesAndSpaces
 
-const height = 85
+const height = 185
 
 export const AdvancedBorrowOptions = ({
   params,
@@ -28,15 +28,15 @@ export const AdvancedBorrowOptions = ({
   return (
     <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
       <LoanRangeSlider market={market} range={range} setRange={setRange} />
-      <Stack>
+      <Stack
+        sx={{
+          '--chart_reference_line--color': (t) => t.design.Color.Primary[500],
+          '--health_mode_healthy_darkBg--color': (t) => t.design.Text.TextColors.Feedback.Success,
+          '& .recharts-reference-line-line': { strokeDasharray: '6' },
+        }}
+      >
         <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
-        <ChartLiquidationRange
-          data={chartData}
-          healthColorKey="healthy"
-          height={height}
-          isDetailView={true}
-          isManage={true}
-        />
+        <ChartLiquidationRange data={chartData} healthColorKey="healthy" height={height} isDetailView showLegend />
       </Stack>
     </Stack>
   )

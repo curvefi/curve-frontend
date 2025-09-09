@@ -5,12 +5,14 @@ import {
   ComposedChart,
   Label,
   LabelList,
+  Legend,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
+import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
 import { styled } from 'styled-components'
 import { useTheme } from '@mui/material/styles'
 import Box from '@ui/Box'
@@ -36,6 +38,7 @@ export interface ChartLiquidationRangeProps {
   height?: number
   isDetailView?: boolean
   isManage?: boolean
+  showLegend?: boolean
   tooltipContent?: (params: TooltipContentProps) => ReactNode
 }
 
@@ -85,12 +88,24 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
   )
 }
 
+const Content = ({ payload }: LegendContentProps) => (
+  <LegendContainer>
+    {payload?.map(({ color: backgroundColor, type, value, id }) => (
+      <LegendItem key={`legend-${id}`}>
+        {type === 'line' ? <LegendLine style={{ backgroundColor }} /> : <LegendBox style={{ backgroundColor }} />}
+        <LegendText>{value}</LegendText>
+      </LegendItem>
+    ))}
+  </LegendContainer>
+)
+
 export const ChartLiquidationRange = ({
   data,
   healthColorKey,
   height = 85,
   isDetailView = false,
   isManage = false,
+  showLegend = false,
   tooltipContent,
 }: ChartLiquidationRangeProps) => {
   const oraclePrice = data[0]?.oraclePrice
@@ -149,7 +164,6 @@ export const ChartLiquidationRange = ({
               width={5}
               tick={false}
             />
-
             <Tooltip
               cursor={false}
               wrapperStyle={{ zIndex: 1000 }}
@@ -163,7 +177,6 @@ export const ChartLiquidationRange = ({
                 />
               )}
             />
-
             <defs>
               <pattern
                 id="pattern-stripe"
@@ -178,7 +191,6 @@ export const ChartLiquidationRange = ({
                 <rect x={0} y={0} width="100%" height="100%" fill="url(#pattern-stripe)" />
               </mask>
             </defs>
-
             {/* curr liq range bar */}
             {haveCurrData && (
               <Bar
@@ -204,7 +216,6 @@ export const ChartLiquidationRange = ({
                 strokeWidth={1}
               />
             )}
-
             {/* new liq range bar */}
             <Bar
               dataKey="new"
@@ -224,7 +235,6 @@ export const ChartLiquidationRange = ({
                 formatter={(val: string) => (haveNewData ? val : '')}
               />
             </Bar>
-
             {/* oracle price reference line */}
             {oraclePrice !== '' && (
               <ReferenceLine
@@ -265,6 +275,27 @@ export const ChartLiquidationRange = ({
                         />
                       ),
                     })}
+              />
+            )}
+            {showLegend && (
+              <Legend
+                verticalAlign="bottom"
+                align="left"
+                iconType="rect"
+                wrapperStyle={{ color: chartLabelColor }}
+                payload={[
+                  {
+                    value: `${t`Oracle Price`} (${formatNumber(oraclePrice, { currency: 'USD' })})`,
+                    type: 'line',
+                    color: chartReferenceLineColor,
+                  },
+                  {
+                    value: `${t`Liquidation Range`} (${data.map((d) => d.new.map((n) => formatNumber(n, { currency: 'USD' })).join(' - ')).join(', ')})`,
+                    type: 'rect',
+                    color: chartHealthColor,
+                  },
+                ]}
+                content={Content}
               />
             )}
           </ComposedChart>
@@ -320,4 +351,55 @@ const TipContent = styled(Box)`
 const TipIcon = styled(Icon)`
   position: relative;
   left: -2px;
+`
+
+const LegendContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 0;
+`
+
+const LegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const LegendBox = styled.div`
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+`
+
+const LegendLine = styled.div`
+  width: 14px;
+  height: 3px;
+  border-radius: 1px;
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background-color: inherit;
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  &::before {
+    left: -5px;
+  }
+
+  &::after {
+    right: -5px;
+  }
+`
+
+const LegendText = styled.span`
+  font-size: 14px;
+  color: var(--page--text-color);
 `
