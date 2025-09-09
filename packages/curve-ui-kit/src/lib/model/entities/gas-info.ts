@@ -272,16 +272,17 @@ async function parseGasInfo(curve: CurveApi, provider: Provider, l2GasUrl?: stri
 
 type Network = { gasPricesUrl: string; gasL2: boolean }
 
+type GasInfoQueryOptions<TChainId extends number> = {
+  chainId?: TChainId | null
+  networks: Record<TChainId, Network>
+}
+
 /** Helper function to create required query options based on network configs. */
 export function createGasInfoQueryOptions<TChainId extends number>({
   chainId,
   networks,
-}: {
-  chainId: TChainId
-  networks: Record<TChainId, Network>
-}): GasInfoQuery<TChainId> {
-  const network = networks[chainId]
-
+}: GasInfoQueryOptions<TChainId>): GasInfoParams<TChainId> {
+  const network = chainId && networks[chainId]
   return {
     chainId,
     gasPricesUrl: network?.gasPricesUrl,
@@ -298,22 +299,16 @@ export function createGasInfoQueryOptions<TChainId extends number>({
 export const fetchGasInfoAndUpdateLib = <TChainId extends number>({
   chainId,
   networks,
-}: {
-  chainId: TChainId
-  networks: Record<TChainId, Network>
-}) => fetchGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
+}: GasInfoQueryOptions<TChainId>) => fetchGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
 
 /**
  * Fetches gas info and updates the library. This wrapper exists as the base query requires query options
  * derived from network config objects. Having to import and use `createGasInfoQueryOptions` is cumbersome.
  */
-export const useGasInfoAndUpdateLib = <TChainId extends number>({
-  chainId,
-  networks,
-}: {
-  chainId: TChainId
-  networks: Record<TChainId, Network>
-}) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
+export const useGasInfoAndUpdateLib = <TChainId extends number>(
+  { chainId, networks }: GasInfoQueryOptions<TChainId>,
+  enabled?: boolean,
+) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }), enabled)
 
 /**
  * Calculate estimated gas costs with ETH+USD conversion and tooltip

@@ -1,5 +1,5 @@
 import { FormProvider } from 'react-hook-form'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
 import { AdvancedBorrowOptions } from '@/llamalend/widgets/borrow/components/AdvancedBorrowOptions'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -7,7 +7,6 @@ import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -20,13 +19,16 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
 
-export const BorrowTabContents = ({
+export const BorrowTabContents = <ChainId extends IChainId>({
   market,
-  network,
+  networks,
+  chainId,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
 }) => {
+  const network = networks[chainId]
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
   const {
     values,
@@ -117,6 +119,7 @@ export const BorrowTabContents = ({
               values={values}
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
+              networks={networks}
             />
           </Box>
         </Stack>

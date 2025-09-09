@@ -19,8 +19,8 @@ export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
   debt: number | undefined
 }
 
-export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
-export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
+export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
+export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 export type Token = { symbol: string; address: string; chain: NetworkEnum }
 

@@ -1,5 +1,7 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details/utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { formatPercent } from '@/llamalend/utils'
+import { useBorrowEstimateGas } from '@/llamalend/widgets/borrow/queries/borrow-gas-estimate.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -33,18 +35,21 @@ const useLoanToValue = ({
   return collateralValue && debt != null ? (debt / collateralValue) * 100 : null
 }
 
-export const BorrowActionInfoAccordion = ({
+export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,
   values: { range, slippage, debt, userCollateral },
   collateralToken,
   tooMuchDebt,
+  networks,
 }: {
-  params: BorrowFormQueryParams
+  params: BorrowFormQueryParams<ChainId>
   values: BorrowForm
   collateralToken: Token | undefined
   tooMuchDebt: boolean
+  networks: NetworkDict<ChainId>
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
+  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
   const {
     data: priceImpactPercent,
     isLoading: priceImpactPercentLoading,
@@ -52,8 +57,8 @@ export const BorrowActionInfoAccordion = ({
   } = useBorrowPriceImpact(params, isOpen)
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
-  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
+  const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
 
@@ -104,7 +109,12 @@ export const BorrowActionInfoAccordion = ({
           loading={ratesLoading}
         />
         {loanToValue != null && <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} />}
-        {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
+        <ActionInfo
+          label={t`Estimated tx cost`}
+          value={formatNumber(gas.totalCost?.estGasCostUsd, { currency: 'USD' })}
+          valueTooltip={gas.totalCost?.tooltip}
+          loading={gasLoading}
+        />
         <ActionInfo
           label={t`Slippage tolerance`}
           value={formatNumber(slippage)}

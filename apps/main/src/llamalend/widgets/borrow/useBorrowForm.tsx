@@ -53,13 +53,13 @@ const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export function useBorrowForm({
+export function useBorrowForm<ChainId extends IChainId>({
   market,
   network: { id: chain, chainId },
   preset,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  network: BaseConfig<NetworkEnum, ChainId>
   preset: BorrowPreset
 }) {
   const { address: userAddress } = useAccount()
@@ -103,14 +103,14 @@ export function useBorrowForm({
     maxDebt != null &&
     values.debt &&
     values.debt > maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })}`
+    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true, currency: borrowToken?.symbol })}`
 
   const maxCollateral = balances.data?.collateral ?? maxBorrow.data?.maxTotalCollateral
   const maxCollateralError =
     maxCollateral != null &&
     values.userCollateral &&
     values.userCollateral > maxCollateral &&
-    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })}`
+    t`Exceeds your balance of ${formatNumber(maxCollateral, { abbreviate: true, currency: collateralToken?.symbol })}`
 
   return {
     form,
