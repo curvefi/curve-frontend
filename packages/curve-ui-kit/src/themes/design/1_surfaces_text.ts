@@ -5,7 +5,7 @@ function createLightSurfaces() {
     Primary: Grays[950],
     Secondary: Grays[700],
     Tertiary: Grays[500],
-    Disabled: Grays[400],
+    Disabled: Grays[500],
     Highlight: Blues[500],
     Feedback: {
       Success: Greens[600],
@@ -159,9 +159,9 @@ function createDarkSurfaces() {
 function createChadSurfaces() {
   const Text = {
     Primary: Grays[950],
-    Secondary: Grays[700],
-    Tertiary: Grays[500],
-    Disabled: Grays[400],
+    Secondary: Grays[750],
+    Tertiary: Grays[700],
+    Disabled: Grays[500],
     Highlight: Violet[600],
     Feedback: {
       Success: Greens[600],
