@@ -248,6 +248,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
+      Fill: Color.Neutral[100],
     },
     Hover: {
       Label: Text.TextColors.Highlight,
@@ -292,7 +293,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Large: {
       Default: {
-        Fill: Grays[150],
+        Fill: Grays[100],
       },
     },
     SliderThumbImage: '/mui/slider-thumb-white.svg',
@@ -625,6 +626,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
+      Fill: Color.Neutral[100],
     },
     Hover: {
       Label: Text.TextColors.Highlight,
@@ -669,7 +671,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Large: {
       Default: {
-        Fill: color[975],
+        Fill: color[950],
       },
     },
     SliderThumbImage: '/mui/slider-thumb-black.svg',
@@ -945,6 +947,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
+      Fill: Color.Primary[300],
     },
     Hover: {
       Label: Text.TextColors.Highlight,

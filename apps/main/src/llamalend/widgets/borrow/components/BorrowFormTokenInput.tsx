@@ -1,21 +1,24 @@
 import { useCallback, useMemo } from 'react'
-import type { UseFormReturn } from 'react-hook-form/dist/types'
+import type { UseFormReturn } from 'react-hook-form'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { BorrowForm, Token } from '../borrow.types'
+import { setValueOptions } from '../borrow.util'
 
 export const BorrowFormTokenInput = ({
   label,
   token,
   name,
   max: balance,
-  state: { isError, isLoading: isLoading },
+  isLoading,
+  isError,
   form,
   testId,
 }: {
   label: string
   token: Token | undefined
-  state: { isError: boolean; isLoading: boolean }
+  isError: boolean
+  isLoading: boolean
   max: number | undefined
   name: keyof BorrowForm
   form: UseFormReturn<BorrowForm>
@@ -33,9 +36,12 @@ export const BorrowFormTokenInput = ({
         label={token?.symbol ?? '?'}
       />
     }
-    onBalance={useCallback((v) => form.setValue(name, v), [form, name])}
+    onBalance={useCallback((v) => form.setValue(name, v, setValueOptions), [form, name])}
     isError={isError}
     balanceDecimals={2}
-    maxBalance={useMemo(() => ({ balance, symbol: token?.symbol, loading: isLoading }), [balance, isLoading, token])}
+    maxBalance={useMemo(
+      () => ({ balance, symbol: token?.symbol, loading: isLoading, showSlider: false }),
+      [balance, isLoading, token],
+    )}
   />
 )

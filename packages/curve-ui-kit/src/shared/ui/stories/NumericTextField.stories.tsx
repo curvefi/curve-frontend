@@ -48,7 +48,7 @@ const meta: Meta<typeof NumericTextField> = {
     },
     size: {
       control: 'select',
-      options: ['small', 'medium'],
+      options: ['tiny', 'small', 'medium'],
       description: 'Size of the input field',
     },
     variant: {
@@ -112,6 +112,13 @@ export const NoMinimum: Story = {
         story: 'Numeric input without minimum value constraint',
       },
     },
+  },
+}
+
+export const Tiny: Story = {
+  args: {
+    size: 'tiny',
+    label: 'Tiny (xxs)',
   },
 }
 

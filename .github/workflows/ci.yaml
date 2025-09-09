@@ -60,6 +60,7 @@ jobs:
           NODE_ENV: test
 
   cypress-component-rpc:
+    if: false # temporarily disable this job until we have a tenderly account and its secrets configured
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:

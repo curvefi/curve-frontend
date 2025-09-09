@@ -74,9 +74,8 @@ export function useStoredState<T>({
 
   useEffect(() => {
     const listener = () => setStateValue(get(fullKey, initialValue))
-    if (version && runMigration({ key, initialValue, get, set, version, migrate })) {
-      listener() // update state if migration ran
-    }
+    if (version) runMigration({ key, initialValue, get, set, version, migrate })
+    listener() // update state if migration ran or if fullKey changes
 
     // Update state when other components update the local storage
     storageEvent.addEventListener(fullKey, listener)

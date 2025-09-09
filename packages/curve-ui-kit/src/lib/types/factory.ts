@@ -2,8 +2,7 @@ import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
 import type { Suite } from 'vest'
 import type { CB } from 'vest-utils'
 import type { DefaultError } from '@tanstack/query-core'
-import type { FetchQueryOptions, QueryKey } from '@tanstack/react-query'
-import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query/src/types'
+import type { FetchQueryOptions, QueryKey, UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import type { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import type { FieldName, FieldsOf } from '@ui-kit/lib/validation'
 
@@ -59,9 +58,6 @@ export type QueryFactoryOutput<
 > = {
   getQueryOptions: (params: TParams, enabled?: boolean) => UseQueryOptions<TData, TError, TData, TKey>
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  checkValidity: (data: TParams) => boolean
-  isEnabled: (data: TParams) => boolean
-  assertValidity: (data: TParams) => TValidParams
   useQuery: (params: TParams, enabled?: boolean) => UseQueryResult<TData, TError>
   getQueryData: (params: TParams) => TData | undefined
   setQueryData: (params: TParams, data: TData) => void

@@ -24,7 +24,7 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
     leverage,
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
     const [market, type] = getLlamaMarket(poolId)
-    if (!leverage) return 0 // todo: do we have price impact without leverage?
+    if (!leverage) return 0 // no price impact without leverage
     // todo: check if it's correct to pass userCollateral to the old markets and userBorrowed to the new ones
     return type === LlamaMarketType.Lend
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))

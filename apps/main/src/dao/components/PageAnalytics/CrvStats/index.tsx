@@ -84,14 +84,14 @@ const CrvStats = () => {
             loading={loading}
             label={t`CRV Supply Locked`}
             value={noProvider || !statsSuccess ? null : veCrvData.lockedPercentage}
-            valueOptions={{ unit: 'percentage', decimals: 2 }}
+            valueOptions={{ unit: 'percentage' }}
           />
           <Metric
             size="small"
             loading={Boolean(loading || veCrvFeesLoading || aprLoading)}
             label={t`veCRV APR`}
             value={noProvider || !statsSuccess ? null : veCrvApr.current}
-            valueOptions={{ unit: 'percentage', decimals: 2 }}
+            valueOptions={{ unit: 'percentage' }}
             notional={
               loading || veCrvFeesLoading || aprLoading
                 ? undefined

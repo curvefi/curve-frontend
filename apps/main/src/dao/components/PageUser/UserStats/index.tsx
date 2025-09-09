@@ -17,20 +17,12 @@ const UserStats = ({ veCrvHolder, holdersLoading }: UserStatsProps) => (
       <MetricsComp
         loading={holdersLoading}
         title={t`Total veCRV`}
-        data={
-          <MetricsColumnData>
-            {formatNumber(veCrvHolder.weight.fromWei(), { showDecimalIfSmallNumberOnly: true })}
-          </MetricsColumnData>
-        }
+        data={<MetricsColumnData>{formatNumber(veCrvHolder.weight.fromWei())}</MetricsColumnData>}
       />
       <MetricsComp
         loading={holdersLoading}
         title={t`Locked CRV`}
-        data={
-          <MetricsColumnData>
-            {formatNumber(veCrvHolder.locked.fromWei(), { showDecimalIfSmallNumberOnly: true })}
-          </MetricsColumnData>
-        }
+        data={<MetricsColumnData>{formatNumber(veCrvHolder.locked.fromWei())}</MetricsColumnData>}
       />
       <MetricsComp
         loading={holdersLoading}

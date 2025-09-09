@@ -1,0 +1,33 @@
+{
+  "campaignName": "MUSD",
+  "platform": "Mezo",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "musd.png",
+  "dashboardLink": "https://app.merkl.xyz/users/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for MUSD rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xB5571E76693ba60110B5811DD650FFefce1C955f",
+      "network": "ethereum",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for MUSD rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x765Cbd88947fcBc5df1F763d02E384B0a2DD285E",
+      "network": "ethereum",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}

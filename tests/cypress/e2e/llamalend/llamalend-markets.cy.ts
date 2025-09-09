@@ -76,11 +76,11 @@ describe(`LlamaLend Markets`, () => {
         .should('exist')
       expandFirstRowOnMobile()
       // note: not possible currently to sort ascending
-      cy.get('[data-testid="metric-utilizationPercent"]').contains('99.00%', LOAD_TIMEOUT)
+      cy.get('[data-testid="metric-utilizationPercent"]').contains('99%', LOAD_TIMEOUT)
     } else {
       cy.get(`[data-testid="data-table-cell-rates_borrow"]`).first().contains('%')
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
-      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99.00%', LOAD_TIMEOUT)
+      cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('99%', LOAD_TIMEOUT)
       cy.get('[data-testid="data-table-header-utilizationPercent"]').click()
       cy.get('[data-testid="data-table-cell-utilizationPercent"]').first().contains('0%', LOAD_TIMEOUT)
     }

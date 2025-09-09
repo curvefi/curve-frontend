@@ -2,6 +2,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowBandsResult = [number, number]
@@ -44,4 +45,5 @@ export const { useQuery: useBorrowBands } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
+  dependencies: (params) => [maxBorrowReceiveKey(params)],
 })

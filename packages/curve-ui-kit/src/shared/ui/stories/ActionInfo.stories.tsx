@@ -62,6 +62,10 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'boolean',
       description: 'Whether the component is in a loading state. Can be boolean or string.',
     },
+    error: {
+      control: 'text',
+      description: 'Error message to display instead of the value',
+    },
   },
   args: {
     label: 'Contract',
@@ -189,6 +193,22 @@ export const Loading: Story = {
     docs: {
       description: {
         story: 'Shows the component in a loading state with a skeleton placeholder',
+      },
+    },
+  },
+}
+
+export const WithError: Story = {
+  args: {
+    error: new Error('Failed to load contract address'),
+    size: 'medium',
+    copy: false,
+    link: '',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the component displaying an error message instead of the value',
       },
     },
   },

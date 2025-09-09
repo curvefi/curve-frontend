@@ -7,11 +7,11 @@ import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import networks from '@/loan/networks'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormHeader } from '@ui/AppForm'
+import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const LoanCreate = ({
   fetchInitial,
@@ -24,11 +24,13 @@ const LoanCreate = ({
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
   const network = networks[rChainId]
+  const [isBeta] = useBetaFlag()
 
-  const FORM_TYPES: { key: string; label: string }[] = [
-    { label: t`Create Loan`, key: 'create' },
-    { label: t`Leverage`, key: 'leverage' },
-  ].filter((f) => f.key != 'leverage' || hasLeverage(llamma))
+  const FORM_TYPES: { value: string; label: string }[] = [
+    { label: t`Create Loan`, value: 'create' },
+    { label: t`Leverage`, value: 'leverage' },
+    ...(isBeta ? [{ label: t`Beta`, value: 'borrow' }] : []),
+  ].filter((f) => f.value != 'leverage' || hasLeverage(llamma))
 
   const handleTabClick = useCallback(
     (formType: FormType) => {
@@ -44,21 +46,19 @@ const LoanCreate = ({
     [curve, fetchInitial, llamma, loanExists, push, params, rCollateralId],
   )
 
-  const [isBeta] = useBetaFlag()
-
   return (
-    <AppFormContent variant="primary" shadowed>
-      <AppFormHeader
-        formTypes={FORM_TYPES}
-        activeFormKey={!rFormType ? 'create' : (rFormType as string)}
-        handleClick={(key: string) => handleTabClick(key as FormType)}
+    <AppFormContent variant="primary">
+      <TabsSwitcher
+        variant="contained"
+        size="medium"
+        value={!rFormType ? 'create' : rFormType}
+        onChange={(key) => handleTabClick(key as FormType)}
+        options={FORM_TYPES}
       />
 
       <AppFormContentWrapper>
-        {isBeta && rFormType !== 'leverage' ? (
-          <WithSkeleton loading={!llamma}>
-            {llamma && <BorrowTabContents network={network} market={llamma} />}
-          </WithSkeleton>
+        {rFormType === 'borrow' ? (
+          <BorrowTabContents network={network} market={llamma ?? undefined} />
         ) : (
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />
         )}

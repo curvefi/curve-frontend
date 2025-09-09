@@ -48,20 +48,12 @@ const GaugeVotingStats = ({ userAddress }: { userAddress: string }) => {
         <MetricsComp
           loading={userGaugeWeightsLoading}
           title="veCRV"
-          data={
-            <MetricsColumnData>
-              {formatNumber(userVeCrv.veCrv, { showDecimalIfSmallNumberOnly: true })}
-            </MetricsColumnData>
-          }
+          data={<MetricsColumnData>{formatNumber(userVeCrv.veCrv)}</MetricsColumnData>}
         />
         <MetricsComp
           loading={userGaugeWeightsLoading}
           title="veCRV used"
-          data={
-            <MetricsColumnData>
-              {formatNumber(userGaugeWeightVotes?.veCrvUsed, { showDecimalIfSmallNumberOnly: true })}
-            </MetricsColumnData>
-          }
+          data={<MetricsColumnData>{formatNumber(userGaugeWeightVotes?.veCrvUsed)}</MetricsColumnData>}
         />
         <ComboBoxSelectGauge title={''} />
       </Box>

@@ -52,16 +52,16 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
               <h5>
                 {gaugeData.pool?.trading_volume_24h
                   ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',
+                      ...(gaugeData.pool.trading_volume_24h > 10 && { decimals: 0 }),
                     })
                   : 'N/A'}
               </h5>
               <h5>
                 {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
-                      showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',
+                      ...(gaugeData.pool.tvl_usd > 10 && { decimals: 0 }),
                     })
                   : 'N/A'}
               </h5>
@@ -94,11 +94,7 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             }
           >
             <h5>
-              {emissions
-                ? formatNumber(emissions, {
-                    showDecimalIfSmallNumberOnly: true,
-                  })
-                : 'N/A'}
+              {emissions ? formatNumber(emissions) : 'N/A'}
               {isSideChain && <StyledInformationSquare16 name="InformationSquare" size={16} className="svg-tooltip" />}
             </h5>
           </Chip>

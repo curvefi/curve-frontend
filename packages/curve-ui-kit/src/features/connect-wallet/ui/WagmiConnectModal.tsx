@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react'
-import { BaseError } from 'viem/errors/base'
+import type { BaseError } from 'viem'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import MenuList from '@mui/material/MenuList'

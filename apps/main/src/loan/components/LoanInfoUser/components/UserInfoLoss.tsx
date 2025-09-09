@@ -35,8 +35,8 @@ const UserInfoLoss = ({
   }
 
   if (type === 'lossCollateral') {
-    const depositedCollateral = formatNumber(deposited_collateral, { trailingZeroDisplay: 'stripIfInteger' })
-    const currentCollateralEst = formatNumber(current_collateral_estimation, { trailingZeroDisplay: 'stripIfInteger' })
+    const depositedCollateral = formatNumber(deposited_collateral)
+    const currentCollateralEst = formatNumber(current_collateral_estimation)
 
     return (
       <Chip

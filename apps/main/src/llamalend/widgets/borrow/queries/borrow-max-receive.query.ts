@@ -48,25 +48,27 @@ export const maxReceiveValidation = createValidationSuite(
   },
 )
 
-export const { useQuery: useMaxBorrowReceive } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, range }: BorrowMaxReceiveParams) =>
+export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = queryFactory({
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage, range }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'max-borrow-receive-v1',
       { userBorrowed },
       { userCollateral },
+      { leverage },
       { range },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
+    leverage,
     range,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
     const [market, type] = getLlamaMarket(poolId)
-    // if (!leverage) {
-    //   return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
-    // }
+    if (!leverage) {
+      return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
+    }
     if (type === LlamaMarketType.Lend) {
       return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
@@ -74,9 +76,9 @@ export const { useQuery: useMaxBorrowReceive } = queryFactory({
       return convertNumbers(await market.leverageV2.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
 
-    console.assert(userBorrowed == 0, `userBorrowed must be 0 for non-leverage mint markets`)
+    console.assert(userBorrowed === 0, `userBorrowed must be 0 for non-leverage mint markets`)
     const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
-    const { maxBorrowable, maxCollateral, leverage, routeIdx } = result
+    const { maxBorrowable, maxCollateral, leverage: currentLeverage, routeIdx } = result
     return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage: '9' })
   },
   staleTime: '1m',

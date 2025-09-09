@@ -1,3 +1,4 @@
+import { maxBorrowReceiveKey } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
@@ -35,4 +36,5 @@ export const { useQuery: useBorrowHealth } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
+  dependencies: (params) => [maxBorrowReceiveKey(params)],
 })

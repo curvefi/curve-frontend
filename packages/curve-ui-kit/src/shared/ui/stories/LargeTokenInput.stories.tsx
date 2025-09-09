@@ -64,7 +64,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
       : {
           balance: tokenInfo.balance,
           symbol: tokenInfo.symbol,
-          notionalValue: tokenInfo.balance * 2, // Mock USD value
+          notionalValueUsd: tokenInfo.balance * 2, // Mock USD value
           showBalance: props.maxBalance.showBalance,
           showSlider: props.maxBalance.showSlider,
         }

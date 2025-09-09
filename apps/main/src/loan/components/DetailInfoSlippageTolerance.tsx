@@ -21,8 +21,7 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
         maxSlippage={maxSlippage}
         button={({ onClick }) => (
           <IconButton onClick={onClick}>
-            {formatNumber(maxSlippage, { style: 'percent', showAllFractionDigits: true, defaultValue: '-' })}{' '}
-            <Icon name="Settings" size={16} />
+            {formatNumber(maxSlippage, { style: 'percent', defaultValue: '-' })} <Icon name="Settings" size={16} />
           </IconButton>
         )}
         onSave={setMaxSlippage}

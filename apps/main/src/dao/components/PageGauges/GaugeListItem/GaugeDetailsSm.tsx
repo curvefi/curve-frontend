@@ -30,16 +30,14 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
           <StatsRow>
             <StatTitle>{t`Weight`}</StatTitle>
             <StatData>
-              {gaugeData.gauge_relative_weight
-                ? formatNumber(gaugeData.gauge_relative_weight, { showDecimalIfSmallNumberOnly: true })
-                : 'N/A'}
+              {gaugeData.gauge_relative_weight ? formatNumber(gaugeData.gauge_relative_weight) : 'N/A'}
             </StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`7d Delta`}</StatTitle>
             <StatData>
               {gaugeData.gauge_relative_weight_7d_delta
-                ? formatNumber(gaugeData.gauge_relative_weight_7d_delta, { showDecimalIfSmallNumberOnly: true })
+                ? formatNumber(gaugeData.gauge_relative_weight_7d_delta)
                 : 'N/A'}
             </StatData>
           </StatsRow>
@@ -47,7 +45,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
             <StatTitle>{t`60d Delta`}</StatTitle>
             <StatData>
               {gaugeData.gauge_relative_weight_60d_delta
-                ? formatNumber(gaugeData.gauge_relative_weight_60d_delta, { showDecimalIfSmallNumberOnly: true })
+                ? formatNumber(gaugeData.gauge_relative_weight_60d_delta)
                 : 'N/A'}
             </StatData>
           </StatsRow>
@@ -57,16 +55,14 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <Box flex flexColumn>
           <StatsRow>
             <StatTitle>{t`User Weight`}</StatTitle>
-            <StatData>
-              {formatNumber(userGaugeWeightVoteData.userPower, { showDecimalIfSmallNumberOnly: true })}%
-            </StatData>
+            <StatData>{formatNumber(userGaugeWeightVoteData.userPower)}%</StatData>
           </StatsRow>
           <StatsRow>
             <StatTitle>{t`veCRV used`}</StatTitle>
             <Box flex flexAlignItems="center">
               <StatData>
-                {formatNumber(userVeCrv, { showDecimalIfSmallNumberOnly: true })}
-                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv, { showDecimalIfSmallNumberOnly: true })}`}
+                {formatNumber(userVeCrv)}
+                {hasFutureVeCrv && ` → ${formatNumber(userFutureVeCrv)}`}
               </StatData>
             </Box>
           </StatsRow>
@@ -76,13 +72,7 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
         <CategoryTitle>{t`Gauge Information`}</CategoryTitle>
         <StatsRow>
           <StatTitle>{t`Emissions (CRV)`}</StatTitle>
-          <StatData>
-            {emissions
-              ? formatNumber(emissions, {
-                  showDecimalIfSmallNumberOnly: true,
-                })
-              : 'N/A'}
-          </StatData>
+          <StatData>{emissions ? formatNumber(emissions) : 'N/A'}</StatData>
         </StatsRow>
         <StatsRow>
           <StatTitle>{t`Deployment Date`}</StatTitle>
@@ -106,7 +96,6 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
               <StatData>
                 {gaugeData.pool?.trading_volume_24h
                   ? formatNumber(gaugeData.pool.trading_volume_24h, {
-                      showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',
                     })
                   : 'N/A'}
@@ -117,7 +106,6 @@ const GaugeDetailsSm = ({ gaugeData, userGaugeWeightVoteData, className }: Gauge
               <StatData>
                 {gaugeData.pool?.tvl_usd
                   ? formatNumber(gaugeData.pool.tvl_usd, {
-                      showDecimalIfSmallNumberOnly: true,
                       currency: 'USD',
                     })
                   : 'N/A'}

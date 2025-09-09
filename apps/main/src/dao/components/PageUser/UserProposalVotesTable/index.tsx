@@ -9,7 +9,7 @@ import {
 import useStore from '@/dao/store/useStore'
 import { SortDirection, UserProposalVotesSortBy } from '@/dao/types/dao.types'
 import { getEthPath } from '@/dao/utils'
-import { convertToLocaleTimestamp, formatDateFromTimestamp, formatNumber } from '@ui/utils/'
+import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { VOTES_LABELS } from '../constants'
@@ -71,26 +71,22 @@ const UserProposalVotesTable = ({ userAddress, tableMinWidth }: UserProposalVote
           <TableData
             className={userProposalVotesSortBy.key === 'voteFor' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.voteFor, {
-              showDecimalIfSmallNumberOnly: true,
-            })}
+            {formatNumber(proposalVote.voteFor)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteAgainst' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatNumber(proposalVote.voteAgainst, {
-              showDecimalIfSmallNumberOnly: true,
-            })}
+            {formatNumber(proposalVote.voteAgainst)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteOpen' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.voteOpen))}
+            {formatLocaleDateFromTimestamp(proposalVote.voteOpen)}
           </TableData>
           <TableData
             className={userProposalVotesSortBy.key === 'voteClose' ? 'sortby-active right-padding' : 'right-padding'}
           >
-            {formatDateFromTimestamp(convertToLocaleTimestamp(proposalVote.voteClose))}
+            {formatLocaleDateFromTimestamp(proposalVote.voteClose)}
           </TableData>
         </TableRowWrapper>
       )}

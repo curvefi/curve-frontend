@@ -1,6 +1,6 @@
-import { useId, type ReactNode } from 'react'
+import { type ReactNode, useId } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Box, ButtonBase, Collapse, Stack, Typography, type Theme } from '@mui/material'
+import { Box, ButtonBase, Collapse, Stack, type Theme, Typography } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -18,7 +18,7 @@ const titleVariants = {
 const borderStyle = (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`
 const layer1Fill = (t: Theme) => t.design.Layer[1].Fill
 
-type AccordionProps = {
+type AccordionBaseProps = {
   /** The title displayed in the accordion header */
   title: ReactNode
   /** Optional icon to display before the title */
@@ -29,13 +29,39 @@ type AccordionProps = {
   size?: Size
   /** Optional information to display in the header */
   info?: ReactNode
-  /** Control initial expanded state */
-  defaultExpanded?: boolean
   /** Content to display when the accordion is expanded */
   children?: ReactNode
 }
 
-type ControlledAccordionProps = Omit<AccordionProps, 'defaultExpanded'> & { isOpen: boolean; toggle: () => void }
+type UncontrolledAccordionProps = {
+  /** Initial expanded state (uncontrolled mode) */
+  defaultExpanded?: boolean
+  /** Never provided in uncontrolled mode */
+  expanded?: never
+  /** Never provided in uncontrolled mode */
+  toggle?: never
+}
+
+type ControlledAccordionProps = {
+  /** Never provided in controlled mode */
+  defaultExpanded?: never
+  /** Current expanded state (controlled mode) */
+  expanded: boolean
+  /** Callback when expanded state should change */
+  toggle: () => void
+}
+
+type AccordionProps = AccordionBaseProps & (UncontrolledAccordionProps | ControlledAccordionProps)
+
+/**
+ * Handles the toggle logic for both controlled and uncontrolled accordion modes.
+ */
+function useAccordionToggle(props: UncontrolledAccordionProps | ControlledAccordionProps) {
+  const { defaultExpanded = false } = props as UncontrolledAccordionProps
+  const [internalExpanded, , , internalToggle] = useSwitch(defaultExpanded)
+  const { expanded = internalExpanded, toggle = internalToggle } = props as ControlledAccordionProps
+  return [expanded, toggle] as const
+}
 
 /**
  * A customized accordion component that provides a collapsible content section.
@@ -46,25 +72,21 @@ type ControlledAccordionProps = Omit<AccordionProps, 'defaultExpanded'> & { isOp
  * MUI Accordion lacks the customization options needed for our design requirements,
  * particularly for features like the ghost variant and responsive sizing with
  * appropriate effects on children elements.
+ *
+ * Can be used in both controlled and uncontrolled modes:
+ * - Uncontrolled: Use `defaultExpanded` prop
+ * - Controlled: Use `expanded` and `toggle` props
  */
-export const Accordion = (props: AccordionProps) => {
-  const [isOpen, , , toggle] = useSwitch(props.defaultExpanded)
-  return <ControlledAccordion isOpen={isOpen} toggle={toggle} {...props} />
-}
-
-/**
- * A controlled version of the Accordion component where the open state is managed externally.
- */
-export const ControlledAccordion = ({
+export const Accordion = ({
   title,
   icon,
   ghost = false,
   size = 'small',
   info,
   children,
-  toggle,
-  isOpen,
-}: ControlledAccordionProps) => {
+  ...controlProps
+}: AccordionProps) => {
+  const [isOpen, toggle] = useAccordionToggle(controlProps)
   const id = `accordion-${useId()}`
 
   return (
@@ -119,7 +141,7 @@ export const ControlledAccordion = ({
               color="textSecondary"
               sx={{
                 textAlign: 'start',
-                // Specifcally unset to override the variant's uppercase styling; we want full control here
+                // Specifically unset to override the variant's uppercase styling; we want full control here
                 textTransform: ghost ? 'unset' : 'uppercase',
               }}
             >
@@ -156,7 +178,7 @@ export const ControlledAccordion = ({
           ...(!ghost && { backgroundColor: layer1Fill }),
         }}
       >
-        {/* 
+        {/*
           This Box wrapper serves two purposes:
           1. Padding is applied here instead of on Collapse because Collapse would never
              shrink below the padding size when closing
