@@ -343,7 +343,7 @@ export function calculateGas(
       ? // Special handling for L2 networks with different gas pricing
         l2GasPriceWei * estimatedGas
       : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
-        ? // L1+L2 gas for optimistic rollups
+        ? // L1+L2 gas for optimistic rollups (format is [l2Gas, l1Gas])
           estimatedGas[0] * l2GasPriceWei + estimatedGas[1] * l1GasPriceWei
         : typeof estimatedGas === 'number'
           ? // Default calculation for regular networks

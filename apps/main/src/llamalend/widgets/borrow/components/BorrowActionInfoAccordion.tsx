@@ -111,8 +111,8 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
         {loanToValue != null && <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} />}
         <ActionInfo
           label={t`Estimated tx cost (step 1 of 2)`}
-          value={formatNumber(gas.createLoanApprove?.estGasCostUsd, { currency: 'USD' })}
-          valueTooltip={gas.createLoanApprove?.tooltip}
+          value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
+          valueTooltip={gas?.createLoanApprove?.tooltip}
           loading={gasLoading}
         />
         <ActionInfo
