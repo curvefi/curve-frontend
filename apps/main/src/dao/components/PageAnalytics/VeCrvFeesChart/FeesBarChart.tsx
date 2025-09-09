@@ -40,9 +40,9 @@ const FeesBarChart = ({ data, height = 500 }: FeesBarChartProps) => (
         tickCount={10}
       />
       <Tooltip content={FeesBarChartTooltip} cursor={{ opacity: 0.3 }} />
-      <Bar dataKey="feesUsd" label={false} fill={'var(--primary-400)'} isAnimationActive={false}>
+      <Bar dataKey="feesUsd" label={false} fill={'var(--primary-300)'} isAnimationActive={false}>
         {data.map((entry, index) => (
-          <Cell key={`$cell-${index}`} fill={'var(--primary-400)'} />
+          <Cell key={`$cell-${index}`} fill={'var(--primary-300)'} />
         ))}
       </Bar>
     </BarChart>

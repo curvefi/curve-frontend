@@ -24,7 +24,7 @@ body.theme-default {
   --gray-500: hsla(35, 8%, 55%, 1);
   --gray-500a20: color-mix(in srgb, var(--gray-500) 20%, transparent);
   --gray-500a25: color-mix(in srgb, var(--gray-500) 25%, transparent);
-  --gray-600: hsla(20, 8%, 93%, 1);
+  --gray-600: hsl(24, 10%, 90%);
   --gray-700: hsla(0, 6.7%, 97.1%, 1);
 
   --orange-200: hsla(40, 100%, 77%, 1);
@@ -110,6 +110,7 @@ body.theme-default {
   --box_action--button--loading--color: var(--primary-500);
   --box_action--button--loading--background-color: var(--primary-300);
   --box_action--button--loading--shadow-color: var(--primary-200);
+  --box-navigation-background: var(--box--primary--background);
 
   /* Buttons */
   --button--color: var(--primary-700);

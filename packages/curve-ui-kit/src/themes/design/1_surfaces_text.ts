@@ -173,15 +173,15 @@ function createChadSurfaces() {
   } as const
   const Layer = {
     '1': {
-      Fill: Grays[50],
-      Outline: Grays[200],
+      Fill: Grays[150],
+      Outline: Grays[400],
     },
     '2': {
-      Fill: Grays[100],
+      Fill: Grays[300],
       Outline: Grays[500],
     },
     '3': {
-      Fill: Grays[150],
+      Fill: Grays[400],
       Outline: Grays[600],
     },
     Highlight: Violet[700],
@@ -202,7 +202,7 @@ function createChadSurfaces() {
     Text,
     Layer,
     Tables: {
-      Header: { Fill: Violet[50] },
+      Header: { Fill: Layer[3].Fill },
     },
     Badges: {
       Label: {

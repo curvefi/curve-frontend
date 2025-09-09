@@ -870,7 +870,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Color.Neutral[50],
-        Fill: Color.Primary[600],
+        Fill: Color.Primary[800],
       },
       Current: {
         Label: Text.TextColors.Primary,
