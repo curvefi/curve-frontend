@@ -5,11 +5,10 @@ import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
-import { BN, FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { calculateGasEstimation, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { gweiToEther, weiToGwei } from '@ui-kit/utils'
 
 export type StepProgress = {
   active: number
@@ -27,22 +26,23 @@ interface Props {
 
 const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedGas, stepProgress }: Props) => {
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
-  const gasPricesDefault = chainId && networks[chainId].gasPricesDefault
+  const network = networks[chainId]
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
-  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
-    if (estimatedGas && chainId && chainTokenUsdRate && basePlusPriority) {
-      const { symbol, gasPricesUnit } = networks[chainId]
-
-      const estGasCost = new BN(gweiToEther(weiToGwei(basePlusPriority) * estimatedGas))
-      const estGasCostUsd = estGasCost.multipliedBy(chainTokenUsdRate).toString()
-      const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })
-      const tooltip = `${formatNumber(estGasCost.toString())} ${symbol} at ${gasAmountUnit} ${gasPricesUnit}`
-      return { estGasCost: estGasCost.toString(), estGasCostUsd, tooltip }
-    }
-    return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
-  }, [chainTokenUsdRate, basePlusPriority, chainId, estimatedGas])
+    if (!chainId || !estimatedGas) return { estGasCostUsd: 0, tooltip: '' }
+    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
+    return calculateGasEstimation(
+      estimatedGas,
+      gasInfo,
+      gasPricesDefault,
+      chainTokenUsdRate,
+      symbol,
+      gasPricesUnit,
+      gasL2,
+      chainId,
+    )
+  }, [chainId, estimatedGas, network, gasInfo, chainTokenUsdRate])
 
   return (
     <DetailInfo
