@@ -84,7 +84,7 @@ const Compensation = ({
     setTxInfoBar(null)
   }, [curve?.signerAddress])
 
-  const formattedBalance = balance && formatNumber(balance, { minimumFractionDigits: 5 })
+  const formattedBalance = balance && formatNumber(balance, { minimumFractionDigits: 5, maximumFractionDigits: 5 })
 
   const disabled =
     balance === 0 || haveBalancesError || !curve || step === 'claimed' || step === 'error' || step === 'claiming'
@@ -107,7 +107,9 @@ const Compensation = ({
           {((formattedBalance && token === 'CRV') || vestedTotal > 0) && (
             <div>
               <strong>Remaining vested:</strong>{' '}
-              {vestedTotal > 0 ? formatNumber(vestedTotal, { minimumFractionDigits: 5 }) : '-'}
+              {vestedTotal > 0
+                ? formatNumber(vestedTotal, { minimumFractionDigits: 5, maximumFractionDigits: 5 })
+                : '-'}
             </div>
           )}
           {formattedBalance ? (
