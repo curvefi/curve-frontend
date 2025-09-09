@@ -173,18 +173,18 @@ function createChadSurfaces() {
   } as const
   const Layer = {
     '1': {
-      Fill: Violet[100],
-      Outline: Violet[300],
+      Fill: Grays[50],
+      Outline: Grays[200],
     },
     '2': {
-      Fill: Violet[200],
-      Outline: Violet[400],
+      Fill: Grays[100],
+      Outline: Grays[500],
     },
     '3': {
-      Fill: Violet[300],
-      Outline: Violet[500],
+      Fill: Grays[150],
+      Outline: Grays[600],
     },
-    Highlight: Violet[800],
+    Highlight: Violet[700],
     TypeAction: {
       Selected: Violet[50],
       Hover: Violet[200],
