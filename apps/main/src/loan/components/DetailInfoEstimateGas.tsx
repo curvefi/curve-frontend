@@ -31,17 +31,7 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     if (!chainId || !estimatedGas) return { estGasCostUsd: 0, tooltip: '' }
-    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
-    return calculateGasEstimation(
-      estimatedGas,
-      gasInfo,
-      gasPricesDefault,
-      chainTokenUsdRate,
-      symbol,
-      gasPricesUnit,
-      gasL2,
-      chainId,
-    )
+    return calculateGasEstimation(estimatedGas, gasInfo, chainTokenUsdRate, network)
   }, [chainId, estimatedGas, network, gasInfo, chainTokenUsdRate])
 
   return (

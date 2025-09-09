@@ -14,19 +14,7 @@ const useEstimateGasConversion = (gas: number | null | undefined) => {
 
   return useMemo(() => {
     if (!gas || !chainId) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
-
-    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
-    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(
-      gas,
-      gasInfo,
-      gasPricesDefault,
-      chainTokenUsdRate,
-      symbol,
-      gasPricesUnit,
-      gasL2,
-      chainId,
-    )
-
+    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(gas, gasInfo, chainTokenUsdRate, network)
     return chainTokenUsdRate
       ? { estGasCost, estGasCostUsd, tooltip }
       : { estGasCost, estGasCostUsd: undefined, tooltip: undefined }

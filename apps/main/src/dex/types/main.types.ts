@@ -279,7 +279,7 @@ export interface PoolAlert extends TooltipProps {
   message: ReactNode
 }
 
-export type EstimatedGas = number | [number, number] | null
+export type EstimatedGas = number | number[] | null
 
 export interface FnStepEstGasApprovalResponse {
   activeKey: string

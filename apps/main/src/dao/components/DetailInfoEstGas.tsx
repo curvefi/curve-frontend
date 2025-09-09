@@ -3,16 +3,12 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
 import networks from '@/dao/networks'
-import { CurveApi, ChainId, EstimatedGas } from '@/dao/types/dao.types'
+import { ChainId, EstimatedGas } from '@/dao/types/dao.types'
 import DetailInfo from '@ui/DetailInfo'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import {
-  calculateGasEstimation,
-  useGasInfoAndUpdateLib,
-  type EstimatedGas as GasEstimatedGas,
-} from '@ui-kit/lib/model/entities/gas-info'
+import { calculateGasEstimation, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export type StepProgress = {
@@ -21,19 +17,16 @@ export type StepProgress = {
 }
 
 const DetailInfoEstGas = ({
-  curve,
   chainId,
   isDivider = false,
   loading,
   estimatedGas,
   stepProgress,
 }: {
-  curve: CurveApi | null
   chainId: ChainId
   isDivider?: boolean
   loading: boolean
   estimatedGas: EstimatedGas | null
-  activeStep?: number
   stepProgress?: StepProgress | null
 }) => {
   const network = networks[chainId]
@@ -42,23 +35,8 @@ const DetailInfoEstGas = ({
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     if (!estimatedGas || !chainId) return { estGasCostUsd: 0, tooltip: '' }
-
-    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
-    const result = calculateGasEstimation(
-      estimatedGas as GasEstimatedGas,
-      gasInfo,
-      gasPricesDefault,
-      chainTokenUsdRate,
-      symbol,
-      gasPricesUnit,
-      gasL2,
-      chainId,
-    )
-
-    return {
-      estGasCostUsd: lodash.isUndefined(chainTokenUsdRate) ? 0 : result.estGasCostUsd || 0,
-      tooltip: result.tooltip || '',
-    }
+    const { estGasCostUsd, tooltip } = calculateGasEstimation(estimatedGas, gasInfo, chainTokenUsdRate, network)
+    return { estGasCostUsd: lodash.isUndefined(chainTokenUsdRate) ? 0 : estGasCostUsd || 0, tooltip: tooltip || '' }
   }, [estimatedGas, chainId, chainTokenUsdRate, network, gasInfo])
 
   const labelText = t`Estimated TX cost:`

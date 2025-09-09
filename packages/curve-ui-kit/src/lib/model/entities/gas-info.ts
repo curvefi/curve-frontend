@@ -315,13 +315,11 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>({
   networks: Record<TChainId, Network>
 }) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
 
-export type EstimatedGas = number | [number, number] // Simple gas or [l2Gas, l1Gas]
-
 /**
  * Calculate gas cost in Wei based on network type and gas info
  */
 export function calculateGasCostInWei(
-  estimatedGas: EstimatedGas,
+  estimatedGas: number | number[],
   gasInfo: GasInfo,
   basePlusPriority: number,
   isL2Network: boolean,
@@ -350,14 +348,22 @@ export function calculateGasCostInWei(
  * Calculate estimated gas costs with USD conversion and tooltip
  */
 export function calculateGasEstimation(
-  estimatedGas: EstimatedGas | null,
+  estimatedGas: number | number[] | null,
   gasInfo: GasInfo | undefined,
-  gasPricesDefault: number | undefined,
   chainTokenUsdRate: number | undefined,
-  networkSymbol: string,
-  gasPricesUnit: string,
-  isL2Network: boolean,
-  chainId: number,
+  {
+    chainId,
+    symbol: networkSymbol,
+    gasPricesUnit,
+    gasL2: isL2Network,
+    gasPricesDefault,
+  }: {
+    chainId: number
+    symbol: string
+    gasPricesUnit: string
+    gasL2: boolean
+    gasPricesDefault: number | undefined
+  },
 ): {
   estGasCost: string
   estGasCostUsd: string | undefined
@@ -378,7 +384,9 @@ export function calculateGasEstimation(
 
   // Calculate USD value if rate is available
   const estGasCostUsd =
-    chainTokenUsdRate == undefined ? undefined : estGasCostEth.multipliedBy(chainTokenUsdRate).toString()
+    chainTokenUsdRate == undefined || isNaN(chainTokenUsdRate)
+      ? undefined
+      : estGasCostEth.multipliedBy(chainTokenUsdRate).toString()
 
   // Create tooltip
   const gasAmountUnit = formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })

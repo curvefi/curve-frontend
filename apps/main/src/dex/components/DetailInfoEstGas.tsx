@@ -37,19 +37,8 @@ const DetailInfoEstGas = ({
 
   const { estGasCostUsd, tooltip } = useMemo(() => {
     if (!estimatedGas || !chainId) return { estGasCostUsd: 0, tooltip: '' }
-
-    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
-    const { estGasCostUsd, tooltip } = calculateGasEstimation(
-      estimatedGas,
-      gasInfo,
-      gasPricesDefault,
-      chainTokenUsdRate,
-      symbol,
-      gasPricesUnit,
-      gasL2,
-      chainId,
-    )
-    return { estGasCostUsd: chainTokenUsdRate ? 0 : estGasCostUsd || 0, tooltip: tooltip || '' }
+    const { estGasCostUsd, tooltip } = calculateGasEstimation(estimatedGas, gasInfo, chainTokenUsdRate, network)
+    return { estGasCostUsd: chainTokenUsdRate ? estGasCostUsd || 0 : 0, tooltip: tooltip || '' }
   }, [estimatedGas, chainId, chainTokenUsdRate, network, gasInfo])
 
   const labelText = t`Estimated TX cost:`

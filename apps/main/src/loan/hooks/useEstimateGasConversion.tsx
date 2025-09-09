@@ -14,17 +14,7 @@ const useEstimateGasConversion = (gas: number) => {
 
   return useMemo(() => {
     if (!chainId) return { estGasCost: 0, estGasCostUsd: 0, tooltip: '' }
-    const { symbol, gasPricesUnit, gasL2, gasPricesDefault } = network
-    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(
-      gas,
-      gasInfo,
-      gasPricesDefault,
-      chainTokenUsdRate,
-      symbol,
-      gasPricesUnit,
-      gasL2,
-      chainId,
-    )
+    const { estGasCost, estGasCostUsd, tooltip } = calculateGasEstimation(gas, gasInfo, chainTokenUsdRate, network)
     return chainTokenUsdRate == null
       ? { estGasCost: estGasCost, estGasCostUsd: 'NaN', tooltip: '' }
       : { estGasCost: estGasCost, estGasCostUsd: estGasCostUsd || 0, tooltip: tooltip || '' }
