@@ -106,9 +106,9 @@ export const BorrowTabContents = ({
             // in the future we could move the info out of the card, but this is simpler during refactoring the old page
             sx={{
               backgroundColor: 'var(--page--background-color)',
-              marginInline: '-16px',
-              marginBlockEnd: '-16px',
-              paddingBlockStart: '16px',
+              marginInline: 'calc(-1 * var(--spacing-3))',
+              marginBlockEnd: 'calc(-1 * var(--spacing-3))',
+              paddingBlockStart: 'var(--spacing-3)',
               position: 'relative',
             }}
           >
