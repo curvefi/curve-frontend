@@ -1,6 +1,11 @@
+import {
+  TooltipItem,
+  TooltipItems,
+  TooltipWrapper,
+  TooltipDescription,
+} from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import { TooltipItem, TooltipItems, TooltipWrapper, TooltipDescription } from '@ui-kit/shared/ui/TooltipComponents'
 import type { Pnl } from '../BorrowPositionDetails'
 
 type PnlMetricTooltipContentProps = {
