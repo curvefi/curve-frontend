@@ -8,6 +8,7 @@ import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { getBalanceQueryKey } from '@wagmi/core/query'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { userBalancesQueryKey } from '../queries/user-balances.query'
@@ -72,6 +73,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       logSuccess(mutationKey, tx)
       notify(t`Loan created successfully`, 'success')
       return Promise.all([
+        queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: userAddress }) }),
         queryClient.invalidateQueries({ queryKey: userBalancesQueryKey({ chainId, poolId, userAddress }) }),
       ])
     },
