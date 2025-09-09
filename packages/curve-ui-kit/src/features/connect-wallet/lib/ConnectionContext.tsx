@@ -56,7 +56,7 @@ function useWagmiWallet() {
  * Hacks the signerAddress property of the library to match the wallet address in Cypress tests.
  * This is needed because the signer address in Cypress doesn't match the wallet's one when using a private key.
  */
-const hackSignerAddress = (newLib: Libs[keyof Libs], wallet: Wallet | undefined) =>
+const hackSignerInCypress = (newLib: Libs[keyof Libs], wallet: Wallet | undefined) =>
   isCypress &&
   newLib?.signerAddress &&
   wallet?.account.address &&
@@ -141,7 +141,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
             : `First initialization`,
         )
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
-        hackSignerAddress(newLib, wallet)
+        hackSignerInCypress(newLib, wallet)
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
