@@ -72,7 +72,7 @@ body.theme-dark {
   --box--secondary--content--background-color: var(--black-300);
 
   /* Buttons */
-  --button--disabled--background-color: var(--black-600);
+  --button--disabled--background-color: var(--black-400);
   --button--disabled--border-color: var(--black-500);
   --button--disabled--color: var(--black-700);
   --button_outlined--hover--background-color: var(--primary-400a20);
