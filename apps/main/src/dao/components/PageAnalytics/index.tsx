@@ -21,7 +21,7 @@ const Analytics = () => {
     { value: 'fees', label: t`veCRV Fees` },
     { value: 'holders', label: t`Holders` },
     { value: 'locks', label: t`Locks` },
-  ]
+  ] as const
 
   useEffect(() => {
     if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
@@ -38,7 +38,7 @@ const Analytics = () => {
             variant="contained"
             size="medium"
             value={navSelection}
-            onChange={setNavSelection as (key: string) => void}
+            onChange={setNavSelection}
             options={navItems}
           />
 
