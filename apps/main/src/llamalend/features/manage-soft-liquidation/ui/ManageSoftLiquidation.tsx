@@ -44,7 +44,7 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePositio
             value={subTab}
             options={TABS_SUB}
             onChange={setSubTab}
-            sx={{ '& .MuiTab-root': { flexGrow: 1 } }}
+            fullWidth
           />
 
           {subTab === 'improve-health' && <ImproveHealth {...improveHealth} />}

@@ -66,7 +66,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
         value={selectedTab}
         onChange={setSelectedTab}
         options={TABS}
-        sx={{ '& .MuiTab-root': { flexGrow: 1 } }}
+        fullWidth
       />
 
       <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
