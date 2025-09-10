@@ -17,6 +17,8 @@ export type CompleteBorrowForm = {
 export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
   userCollateral: number | undefined
   debt: number | undefined
+  maxDebt: number | undefined
+  maxCollateral: number | undefined
 }
 
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
@@ -31,3 +33,5 @@ export enum BorrowPreset {
 }
 
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
+
+export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]
