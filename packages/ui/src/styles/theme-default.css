@@ -17,15 +17,16 @@ body.theme-default {
   --primary_darkBg-400: hsl(220, 98%, 54%);
 
   --gray-100: hsla(45, 7%, 9%, 1);
-  --gray-200: hsla(33, 7%, 27%, 1);
-  --gray-300: hsla(34, 6%, 43%, 1);
-  --gray-400: hsla(33, 8%, 55%, 1);
+  --gray-200: hsla(60, 7%, 11%, 1);
+  --gray-300: hsla(33, 7%, 33%, 1);
+  --gray-400: hsla(34, 6%, 43%, 1);
   --gray-400a20: color-mix(in srgb, var(--gray-400) 20%, transparent);
-  --gray-500: hsla(35, 8%, 71%, 1);
+  --gray-500: hsla(35, 8%, 55%, 1);
   --gray-500a20: color-mix(in srgb, var(--gray-500) 20%, transparent);
   --gray-500a25: color-mix(in srgb, var(--gray-500) 25%, transparent);
-  --gray-600: hsla(20, 8%, 93%, 1);
-  --gray-700: hsla(0, 7%, 99%, 1);
+  --gray-550: hsl(24, 10%, 90%);
+  --gray-600: hsl(24, 10%, 90%);
+  --gray-700: hsla(0, 6.7%, 97.1%, 1);
 
   --orange-200: hsla(40, 100%, 77%, 1);
   --orange-400: hsla(31, 100%, 48%, 1);
@@ -110,6 +111,7 @@ body.theme-default {
   --box_action--button--loading--color: var(--primary-500);
   --box_action--button--loading--background-color: var(--primary-300);
   --box_action--button--loading--shadow-color: var(--primary-200);
+  --box-navigation-background: var(--box--primary--background);
 
   /* Buttons */
   --button--color: var(--primary-700);
@@ -297,6 +299,8 @@ body.theme-default {
   /* Tab */
   --tab--color: var(--text-400);
   --tab--content--background-color: var(--box--primary--background);
+  --tab--content--hover--background-color: var(--gray-100);
+  --tab--content--hover-color: var(--gray-700);
   --tab--border-color: var(--border-400);
   --tab_secondary--color: var(--blackl30);
   --tab_secondary--active--color: var(--page--text-color);
@@ -313,6 +317,7 @@ body.theme-default {
   --table_row--hover--color: var(--border-600);
   --table_head--font: var(--font);
   --table_head--font-weight: var(--bold);
+  --table_head--background-color: var(--gray-600);
 
   /* Tooltip */
   --tooltip--color: var(--white);
