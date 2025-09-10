@@ -75,7 +75,7 @@ const Navigation = ({ navigation, setNavigation, blockchainId, chainId, curve }:
 const NavigationStyles = styled.div`
   display: flex;
   flex-direction: row;
-  background: var(--box--primary--background);
+  background: var(--box-navigation-background);
   justify-content: flex-start;
   padding: 0 var(--spacing-narrow) 0 var(--spacing-1);
   @media (min-width: 39.375rem) {

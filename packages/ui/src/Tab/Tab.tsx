@@ -10,14 +10,15 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   min-height: var(--height-large);
   padding: 0 1rem;
   position: relative;
-  transition: none;
+  transition: all 0.2s ease-in-out;
 
   &:not(:disabled) {
     cursor: pointer;
   }
 
   &:hover {
-    background-color: var(--tab--content--background-color);
+    background-color: var(--tab--content--hover--background-color);
+    color: var(--tab--content--hover-color);
   }
 
   &.active {

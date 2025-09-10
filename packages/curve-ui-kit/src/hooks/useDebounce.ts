@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 
 /**
  * A hook that debounces a value and calls a callback when the debounce period has elapsed.
@@ -68,6 +69,22 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
   )
 
   return [value, setDebouncedValue] as const
+}
+
+/**
+ * A hook that returns a debounced version of the given value.
+ * The debounced value only updates after the specified debounce period has elapsed
+ * since the last change to the given value.
+ * This is useful for delaying updates to a value that changes frequently,
+ * such as user input, to avoid excessive computations or side effects.
+ */
+export function useDebouncedValue<T>(givenValue: T, debounceMs: number = Duration.FormDebounce) {
+  const [value, setValue] = useState<T>(givenValue)
+  useEffect(() => {
+    const timer = setTimeout(() => setValue(givenValue), debounceMs)
+    return () => clearTimeout(timer)
+  }, [debounceMs, givenValue])
+  return value
 }
 
 const SearchDebounceMs = 166 // 10 frames at 60fps
