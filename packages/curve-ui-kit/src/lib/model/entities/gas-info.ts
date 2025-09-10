@@ -1,8 +1,8 @@
-import { getEthereumCustomFeeDataValues } from '@ui/utils'
+import { formatNumber, getEthereumCustomFeeDataValues } from '@ui/utils'
 import { getLib, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
-import { queryFactory, rootKeys, type ChainQuery } from '@ui-kit/lib/model/query'
+import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
-import { Chain, gweiToWai } from '@ui-kit/utils'
+import { Chain, gweiToEther, gweiToWai, weiToGwei } from '@ui-kit/utils'
 import { chainValidationGroup } from '../query/chain-validation'
 import { providerValidationGroup } from '../query/provider-validation'
 
@@ -27,6 +27,9 @@ type GasInfo = {
 
 const QUERY_KEY_IDENTIFIER = 'gasInfo' as const
 
+/* List of L2 networks with different gas pricing */
+const L2_NETWORKS_WITH_GAS_PRICE = [Chain.Arbitrum, Chain.XLayer, Chain.Mantle] as const
+
 /** Small utility function to immediately convert fetch results into a JSON response. */
 const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
@@ -40,16 +43,16 @@ const createQueryKey = ({ gasPricesUrl, gasPricesUrlL2, ...params }: GasInfoPara
   [...rootKeys.chain(params), { gasPricesUrl }, { gasPricesUrlL2 }, QUERY_KEY_IDENTIFIER] as const
 
 /**
- * We're dealing with a query here that's not read-only and has side-effects.
- * Specifically, `curve.setCustomFeeData` is being called which has an affect
- * on the gas prices used in plenty of (all?) CurveJS contract call.
+ * We're dealing with a query here that's not read-only and has side effects.
+ * Specifically, `curve.setCustomFeeData` is being called which affects the gas prices used in
+ * plenty of (all?) CurveJS contract calls.
  *
  * Untangling this mess is *not* part of the current ticket at the time of writing.
  * The goal here is to simply use TanStack's caching ability to prevent unnecessary gas fetches.
- * At a later point we can remove the side-effect and perhaps post it in a `useEffect` at the layout level.
+ * At a later point we can remove the side effect and perhaps post it in a `useEffect` at the layout level.
  *
  * As a result, you might find `fetchGasInfoAndUpdateLib` calls sprinkled in places where
- * the data returned is not being used, simply for its side-effect.
+ * the data returned is not being used, simply for its side effect.
  * The exported function names have the 'andUpdateLib' suffix to indicate this behavior.
  */
 const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateLibBase } = queryFactory({
@@ -134,9 +137,7 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
       }
     }
 
-    return (parsedGasInfo ? Promise.resolve(parsedGasInfo) : parseGasInfo(curve, provider, gasPricesUrlL2)).then(
-      (x) => x.gasInfo,
-    )
+    return (parsedGasInfo ?? (await parseGasInfo(curve, provider, gasPricesUrlL2))).gasInfo
   },
   staleTime: '5m',
   refetchInterval: '1m',
@@ -316,3 +317,55 @@ export const useGasInfoAndUpdateLib = <TChainId extends number>({
   chainId: TChainId
   networks: Record<TChainId, Network>
 }) => useGasInfoAndUpdateLibBase(createGasInfoQueryOptions({ chainId, networks }))
+
+// calculates L1+L2 gas for optimistic rollups
+const calculateOptimisticRollupGas = ([l2Gas, l1Gas]: number[], [l2GasPriceWei, l1GasPriceWei]: [number, number]) =>
+  l2Gas * l2GasPriceWei + l1Gas * l1GasPriceWei
+
+/**
+ * Calculate estimated gas costs with ETH+USD conversion and tooltip
+ */
+export function calculateGas(
+  estimatedGas: number | number[] | null | undefined,
+  gasInfo: GasInfo | undefined,
+  chainTokenUsdRate: number | undefined,
+  {
+    chainId,
+    symbol: networkSymbol,
+    gasPricesUnit,
+    gasL2: isL2Network,
+    gasPricesDefault = 0,
+  }: {
+    chainId: number
+    symbol: string
+    gasPricesUnit: string
+    gasL2: boolean
+    gasPricesDefault: number | undefined
+  },
+): {
+  estGasCost?: number
+  estGasCostUsd?: number
+  tooltip?: string
+  gasCostInWei?: number
+} {
+  const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
+  if (!estimatedGas || !basePlusPriority) {
+    return {}
+  }
+
+  const { l1GasPriceWei, l2GasPriceWei } = gasInfo
+  const gasCostInWei =
+    L2_NETWORKS_WITH_GAS_PRICE.includes(chainId) && l2GasPriceWei && typeof estimatedGas === 'number'
+      ? l2GasPriceWei * estimatedGas
+      : isL2Network && Array.isArray(estimatedGas) && l2GasPriceWei && l1GasPriceWei
+        ? calculateOptimisticRollupGas(estimatedGas, [l2GasPriceWei, l1GasPriceWei])
+        : typeof estimatedGas === 'number'
+          ? basePlusPriority * estimatedGas // Default calculation for regular networks
+          : 0
+
+  const estGasCost = gweiToEther(weiToGwei(gasCostInWei))
+  const tooltip =
+    `${formatNumber(estGasCost)} ${networkSymbol} at ` +
+    `${formatNumber(weiToGwei(basePlusPriority), { maximumFractionDigits: 2 })} ${gasPricesUnit}`
+  return { estGasCost, tooltip, ...(chainTokenUsdRate != null && { estGasCostUsd: estGasCost * chainTokenUsdRate }) }
+}
