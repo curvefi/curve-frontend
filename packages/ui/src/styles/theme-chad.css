@@ -47,7 +47,7 @@ body.theme-chad {
   --box--primary--content--background-color: var(--gray-600);
   --box--primary--content--shadow-color: var(--primary-500);
   --box_header--primary--background-color: var(--primary-500);
-  --box--secondary--background-color: var(--white);
+  --box--secondary--background-color: var(--gray-700);
   --box--secondary--border: 0 solid var(--white);
   --box_action--button--font-size: var(--font-size-3);
   --box-navigation-background: var(--primary-400);
@@ -166,6 +166,10 @@ body.theme-chad {
   /* Table */
   --table_detail_row--active--color: var(--white);
   --table_row--hover--color: var(--primary-400a10);
+  --table--background-color: var(--gray-600);
+  --table_row--hover--color: var(--gray-700);
+  --table_head--background-color: var(--gray-500);
+
 
   /* Tooltip */
   --tooltip--border-color: var(--border-600);

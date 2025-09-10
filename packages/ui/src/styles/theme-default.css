@@ -24,6 +24,7 @@ body.theme-default {
   --gray-500: hsla(35, 8%, 55%, 1);
   --gray-500a20: color-mix(in srgb, var(--gray-500) 20%, transparent);
   --gray-500a25: color-mix(in srgb, var(--gray-500) 25%, transparent);
+  --gray-550: hsl(24, 10%, 90%);
   --gray-600: hsl(24, 10%, 90%);
   --gray-700: hsla(0, 6.7%, 97.1%, 1);
 
@@ -316,6 +317,7 @@ body.theme-default {
   --table_row--hover--color: var(--border-600);
   --table_head--font: var(--font);
   --table_head--font-weight: var(--bold);
+  --table_head--background-color: var(--gray-600);
 
   /* Tooltip */
   --tooltip--color: var(--white);

@@ -133,6 +133,10 @@ const Container = styled.div<{ $isLite: boolean }>`
   background-color: var(--table--background-color);
   border: 1px solid var(--box--secondary--border);
 
+  th {
+    background-color: var(--table_head--background-color);
+  }
+
   @media (min-width: ${breakpoints.lg}rem) {
     margin: 1.5rem auto;
   }
