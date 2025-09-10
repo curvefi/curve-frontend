@@ -46,7 +46,8 @@ body.theme-chad {
   --box--primary--shadow-color: var(--gray-300);
   --box--primary--content--background-color: var(--gray-600);
   --box--primary--content--shadow-color: var(--primary-500);
-  --box_header--primary--background-color: var(--primary-500);
+  --box_header--primary--background-color: var(--primary-200);
+  --box_header--primary--color: var(--white);
   --box--secondary--background-color: var(--gray-700);
   --box--secondary--border: 0 solid var(--white);
   --box_action--button--font-size: var(--font-size-3);
@@ -109,6 +110,9 @@ body.theme-chad {
   /* Link */
   --link_box--color: var(--text-600);
   --link_box-alternate--background-color: var(--primary-600);
+
+  /*  Health Mode  */
+  --dialog--background-color: var(--box--primary--content--background-color);
 
   /* Nav */
   --nav--color: var(--text-600);
