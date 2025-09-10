@@ -19,6 +19,7 @@ export const InputDivider = ({ children = <LinkIcon /> }: { children?: ReactNode
         left: mapBreakpoints(IconSize.md, (iconSize) => `calc(50% - ${iconSize}/2 - ${borderWidth}/2)`),
         border: (t) => `${borderWidth} solid ${t.design.Color.Neutral[50]}`,
         backgroundColor: (t) => t.design.Layer[2].Fill,
+        stroke: (t) => t.design.Text.TextColors.Primary,
         svg: { fontSize: IconSize.md, width: IconSize.md, height: IconSize.md },
       }}
     >
