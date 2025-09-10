@@ -1,10 +1,10 @@
-import { useLiquidationRangeChartData } from '@/llamalend/widgets/borrow/hooks/useLiquidationRangeChartData'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type BorrowForm, type BorrowFormQueryParams, type LlamaMarketTemplate } from '../borrow.types'
+import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces

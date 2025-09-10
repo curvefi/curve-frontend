@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketTemplate } from '../borrow.types'
-import { BORROW_PRESET_RANGES } from '../borrow.util'
+import { BORROW_PRESET_RANGES } from '../llama.util'
 
 const { Spacing } = SizesAndSpaces
 const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
