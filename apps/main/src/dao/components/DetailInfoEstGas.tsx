@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { ethAddress } from 'viem'
@@ -54,12 +53,10 @@ const DetailInfoEstGas = ({
     </IconTooltip>
   )
 
-  const haveUsdRate = !lodash.isUndefined(chainTokenUsdRate) && !lodash.isNaN(chainTokenUsdRate)
-
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
       {estGasCost &&
-        (haveUsdRate ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
+        (estGasCostUsd ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
     </DetailInfo>
   )
 }

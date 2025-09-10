@@ -25,13 +25,6 @@ type GasInfo = {
   l2GasPriceWei?: number
 }
 
-export type GasCalculationResult = {
-  estGasCost?: number
-  estGasCostUsd?: number
-  tooltip?: string
-  gasCostInWei?: number
-}
-
 const QUERY_KEY_IDENTIFIER = 'gasInfo' as const
 
 /* List of L2 networks with different gas pricing */
@@ -349,7 +342,12 @@ export function calculateGas(
     gasL2: boolean
     gasPricesDefault: number | undefined
   },
-): GasCalculationResult {
+): {
+  estGasCost?: number
+  estGasCostUsd?: number
+  tooltip?: string
+  gasCostInWei?: number
+} {
   const basePlusPriority = gasInfo?.basePlusPriority?.[gasPricesDefault]
   if (!estimatedGas || !basePlusPriority) {
     return {}
