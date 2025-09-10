@@ -12,7 +12,7 @@ import { BORROW_PRESET_RANGES } from '../borrow.util'
 const { Spacing } = SizesAndSpaces
 const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 
-export const LoanRangeSlider = ({
+export const LiquidationRangeSlider = ({
   setRange,
   market,
   range,
@@ -31,7 +31,8 @@ export const LoanRangeSlider = ({
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
   return (
     <Grid container columnSpacing={Spacing.sm}>
-      <Grid size={8} paddingInline={Spacing.lg}>
+      {/* we need 10 px padding because the slider is overflowing its container */}
+      <Grid size={8} paddingInline="10px">
         <Slider
           aria-label={t`Bands`}
           getAriaValueText={format}
