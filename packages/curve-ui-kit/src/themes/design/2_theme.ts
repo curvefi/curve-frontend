@@ -269,10 +269,11 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
+  const InputBaseDefaultFill = Grays[100]
   const Inputs = {
     Base: {
       Default: {
-        Fill: Grays[100],
+        Fill: InputBaseDefaultFill,
         Border: {
           Default: Grays[400],
           Active: Light.Text.Highlight,
@@ -293,7 +294,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Large: {
       Default: {
-        Fill: Grays[100],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-white.svg',
@@ -647,10 +648,11 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
+  const InputBaseDefaultFill = color[850]
   const Inputs = {
     Base: {
       Default: {
-        Fill: color[850],
+        Fill: InputBaseDefaultFill,
         Border: {
           Default: color[600],
           Active: Dark.Text.Highlight,
@@ -671,7 +673,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Large: {
       Default: {
-        Fill: color[850],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-black.svg',
@@ -968,10 +970,11 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
+  const InputBaseDefaultFill = Violet[50]
   const Inputs = {
     Base: {
       Default: {
-        Fill: Violet[50],
+        Fill: InputBaseDefaultFill,
         Border: {
           Default: Violet[200],
           Active: Chad.Text.Highlight,
@@ -992,7 +995,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Large: {
       Default: {
-        Fill: Violet[50],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-white.svg',
