@@ -1,4 +1,5 @@
 /// <reference types="./mui-chip.d.ts" />
+import { recordEntries } from '@curvefi/prices-api/objects.util'
 import type { Components } from '@mui/material'
 import type { ChipProps } from '@mui/material/Chip'
 import type { TypographyVariantsOptions } from '@mui/material/styles'
@@ -20,27 +21,27 @@ const { Sizing, Spacing, IconSize } = SizesAndSpaces
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
-  height: Responsive
+  container: Responsive
   iconSize: Responsive
 }
 
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.sm, iconSize: IconSize.sm },
-  small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
-  medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
-  large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
-  extraLarge: { font: 'headingSBold', height: Sizing.xl, iconSize: IconSize.xl },
+  extraSmall: { font: 'bodyXsBold', container: IconSize.sm, iconSize: IconSize.sm },
+  small: { font: 'buttonXs', container: IconSize.md, iconSize: IconSize.sm },
+  medium: { font: 'buttonXs', container: Sizing.md, iconSize: IconSize.md },
+  large: { font: 'buttonM', container: Sizing.md, iconSize: IconSize.lg },
+  extraLarge: { font: 'headingSBold', container: Sizing.xl, iconSize: IconSize.xl },
 }
 
 // overrides for clickable chips
 const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
   extraSmall: { deleteIconSize: IconSize.xs },
-  small: { height: Sizing.md, deleteIconSize: IconSize.sm },
+  small: { container: Sizing.md, deleteIconSize: IconSize.sm },
   medium: { font: 'buttonS', deleteIconSize: IconSize.md },
-  large: { height: Sizing.lg, font: 'buttonS', deleteIconSize: IconSize.lg },
-  extraLarge: { height: Sizing.xl, deleteIconSize: IconSize.xl },
+  large: { container: Sizing.lg, font: 'buttonS', deleteIconSize: IconSize.lg },
+  extraLarge: { container: Sizing.xl, deleteIconSize: IconSize.xl },
 }
 
 /**
@@ -126,22 +127,23 @@ export const defineMuiChip = (
       },
     },
 
-    ...Object.entries(chipSizes).map(([size, { font, iconSize, ...rest }]) => ({
-      props: { size: size as ChipSizes },
+    ...recordEntries(chipSizes).map(([size, { font, container, iconSize, ...rest }]) => ({
+      props: { size },
       style: {
-        ...handleBreakpoints({ ...typography[font], ...rest }),
+        ...handleBreakpoints({ ...typography[font], width: container, height: container, ...rest }),
         '&:has(.MuiChip-icon)': {
-          '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
+          '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize, lineHeight: iconSize }),
         },
       },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, ...rest }]) => ({
-      props: {
-        size: size as ChipSizes,
-        clickable: true,
-      },
+    ...recordEntries(chipSizeClickable).map(([size, { font, container, deleteIconSize, ...rest }]) => ({
+      props: { size, clickable: true },
       style: {
-        ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+        ...handleBreakpoints({
+          ...(font && typography[font]),
+          ...(container && { width: container, height: container }),
+          ...rest,
+        }),
         '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
       },
     })),
