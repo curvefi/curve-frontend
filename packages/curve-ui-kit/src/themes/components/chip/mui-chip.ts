@@ -36,7 +36,10 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
+const chipSizeClickable: Record<
+  ChipSizes,
+  Omit<Partial<ChipSizeDefinition>, 'iconSize'> & { deleteIconSize: Responsive }
+> = {
   extraSmall: { deleteIconSize: IconSize.xs },
   small: { container: Sizing.md, deleteIconSize: IconSize.sm },
   medium: { font: 'buttonS', deleteIconSize: IconSize.md },
@@ -46,9 +49,9 @@ const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { delet
 
 /**
  * Defines the MuiChip component.
- * In Figma we have two different components "Badge" and "Chip" that are implemented here.
+ * In Figma, we have two different components "Badge" and "Chip" that are implemented here.
  * - Figma's Badge component is the non-clickable MuiChip. MuiBadge is attached to another component, so it cannot be used.
- * - As we share colors between components, Figma's Chip active color is implemented as "selected" color. inactive is "unselected"
+ * - As we share colors between components, Figma's Chip active color is implemented as color "selected". inactive is "unselected"
  * - We do not use the "variant" prop (at the time of writing).
  */
 export const defineMuiChip = (
@@ -95,7 +98,7 @@ export const defineMuiChip = (
       },
     },
 
-    // 'badge' colors not in design system but defined directly in components
+    // 'badge' colors not in the design system but defined directly in components
     createColor('Default', Badges),
     createColor('Active', Badges),
     createColor('Alert', Badges),
@@ -127,22 +130,21 @@ export const defineMuiChip = (
       },
     },
 
-    ...recordEntries(chipSizes).map(([size, { font, container, iconSize, ...rest }]) => ({
+    ...recordEntries(chipSizes).map(([size, { font, container, iconSize }]) => ({
       props: { size },
       style: {
-        ...handleBreakpoints({ ...typography[font], width: container, height: container, ...rest }),
+        ...handleBreakpoints({ ...typography[font], width: container, height: container }),
         '&:has(.MuiChip-icon)': {
           '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize, lineHeight: iconSize }),
         },
       },
     })),
-    ...recordEntries(chipSizeClickable).map(([size, { font, container, deleteIconSize, ...rest }]) => ({
+    ...recordEntries(chipSizeClickable).map(([size, { font, container, deleteIconSize }]) => ({
       props: { size, clickable: true },
       style: {
         ...handleBreakpoints({
           ...(font && typography[font]),
           ...(container && { width: container, height: container }),
-          ...rest,
         }),
         '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
       },
