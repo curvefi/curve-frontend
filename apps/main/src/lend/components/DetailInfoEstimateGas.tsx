@@ -29,13 +29,10 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
   const network = networks[chainId]
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
-  const { estGasCostUsd, tooltip } = useMemo(() => {
-    if (!chainId || !estimatedGas) return { estGasCostUsd: 0, tooltip: '' }
-    const { estGasCostUsd, tooltip } = calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network)
-    return chainTokenUsdRate
-      ? { estGasCostUsd: estGasCostUsd || 0, tooltip: tooltip || '' }
-      : { estGasCostUsd: 'NaN', tooltip: '' }
-  }, [chainId, estimatedGas, network, gasInfo, chainTokenUsdRate])
+  const { estGasCost, estGasCostUsd, tooltip } = useMemo(
+    () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network),
+    [estimatedGas, network, gasInfo, chainTokenUsdRate],
+  )
 
   return (
     <DetailInfo
@@ -60,8 +57,8 @@ const DetailInfoEstimateGas = ({ chainId, isDivider = false, loading, estimatedG
         ) : null
       }
     >
-      {estGasCostUsd ? (
-        estGasCostUsd === 'NaN' ? (
+      {estGasCost ? (
+        estGasCostUsd == null ? (
           t`Unable to get USD rate`
         ) : (
           <strong>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</strong>

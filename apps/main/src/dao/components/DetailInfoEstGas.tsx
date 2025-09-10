@@ -33,11 +33,10 @@ const DetailInfoEstGas = ({
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
-  const { estGasCostUsd, tooltip } = useMemo(() => {
-    if (!estimatedGas || !chainId) return { estGasCostUsd: 0, tooltip: '' }
-    const { estGasCostUsd, tooltip } = calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network)
-    return { estGasCostUsd: lodash.isUndefined(chainTokenUsdRate) ? 0 : estGasCostUsd || 0, tooltip: tooltip || '' }
-  }, [estimatedGas, chainId, chainTokenUsdRate, network, gasInfo])
+  const { estGasCost, estGasCostUsd, tooltip } = useMemo(
+    () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network),
+    [estimatedGas, chainTokenUsdRate, network, gasInfo],
+  )
 
   const labelText = t`Estimated TX cost:`
   const Label = stepProgress ? (
@@ -59,7 +58,7 @@ const DetailInfoEstGas = ({
 
   return (
     <DetailInfo isDivider={isDivider} loading={loading} loadingSkeleton={[50, 20]} label={Label} tooltip={Tooltip}>
-      {estGasCostUsd &&
+      {estGasCost &&
         (haveUsdRate ? <span>{formatNumber(estGasCostUsd, FORMAT_OPTIONS.USD)}</span> : t`Unable to get USD rate`)}
     </DetailInfo>
   )
