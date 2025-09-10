@@ -671,7 +671,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Large: {
       Default: {
-        Fill: color[950],
+        Fill: color[850],
       },
     },
     SliderThumbImage: '/mui/slider-thumb-black.svg',
