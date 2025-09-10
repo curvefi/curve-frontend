@@ -12,7 +12,7 @@ import { BORROW_PRESET_RANGES } from '../borrow.util'
 const { Spacing } = SizesAndSpaces
 const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 
-export const LoanRangeSlider = ({
+export const LiquidationRangeSlider = ({
   setRange,
   market,
   range,
