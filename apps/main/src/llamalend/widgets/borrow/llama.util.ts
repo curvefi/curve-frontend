@@ -18,8 +18,6 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
     ? market.leverage.hasLeverage()
     : market.leverageZap !== ZeroAddress || market.leverageV2.hasLeverage()
 
-export const DEFAULT_SLIPPAGE = 0.1 as const
-
 export const BORROW_PRESET_RANGES = {
   [BorrowPreset.Safe]: 50,
   [BorrowPreset.MaxLtv]: 4,

@@ -15,10 +15,11 @@ import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { CRVUSD_ADDRESS, formatNumber } from '@ui-kit/utils'
 import { type BorrowForm, BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
-import { BORROW_PRESET_RANGES, DEFAULT_SLIPPAGE } from './llama.util'
+import { BORROW_PRESET_RANGES } from './llama.util'
 import { useMaxBorrowReceive } from './queries/borrow-max-receive.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { useCreateLoanMutation } from './queries/create-loan.mutation'
+import { SLIPPAGE_PRESETS } from '@ui-kit/features/slippage-settings/ui/slippage.utils'
 
 const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
   market instanceof MintMarketTemplate
@@ -78,7 +79,7 @@ export function useBorrowForm({
       userBorrowed: 0,
       debt: undefined,
       leverage: undefined,
-      slippage: DEFAULT_SLIPPAGE,
+      slippage: SLIPPAGE_PRESETS.STABLE,
       range: BORROW_PRESET_RANGES[preset],
     },
   })
