@@ -14,12 +14,17 @@ import {
 } from 'recharts'
 import type { Props as LegendContentProps } from 'recharts/types/component/DefaultLegendContent'
 import { styled } from 'styled-components'
+import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
-import Box from '@ui/Box'
+import Typography from '@mui/material/Typography'
+import LegacyBox from '@ui/Box'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing, Sizing } = SizesAndSpaces
 
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 
@@ -88,15 +93,32 @@ const DefaultTooltipContent = ({ active, payload, oraclePrice, isManage, chartHe
   )
 }
 
-const Content = ({ payload }: LegendContentProps) => (
-  <LegendContainer>
-    {payload?.map(({ color: backgroundColor, type, value, id }) => (
-      <LegendItem key={`legend-${id}`}>
-        {type === 'line' ? <LegendLine style={{ backgroundColor }} /> : <LegendBox style={{ backgroundColor }} />}
-        <LegendText>{value}</LegendText>
-      </LegendItem>
+const LegendContent = ({ payload }: LegendContentProps) => (
+  <Stack gap={Spacing.xs}>
+    {payload?.map(({ color, type, value }, index) => (
+      <Stack direction="row" key={index} gap={Spacing.xs}>
+        <Stack
+          sx={{
+            width: Sizing.xs,
+            height: Sizing.xs,
+            ...(type === 'line'
+              ? { stroke: color, '& svg': { width: Sizing.xs, height: Sizing.xs } }
+              : { backgroundColor: color }),
+          }}
+          className={`recharts-reference-line-${type}`}
+        >
+          {type == 'line' && (
+            <svg viewBox="0 0 16 16">
+              <line strokeWidth={2} x1={0} y1={8} x2={16} y2={8} className="recharts-reference-line-line" />
+            </svg>
+          )}
+        </Stack>
+        <Typography variant="bodySRegular" color={index ? 'text.secondary' : 'text.primary'}>
+          {value}
+        </Typography>
+      </Stack>
     ))}
-  </LegendContainer>
+  </Stack>
 )
 
 export const ChartLiquidationRange = ({
@@ -295,7 +317,7 @@ export const ChartLiquidationRange = ({
                     color: chartHealthColor,
                   },
                 ]}
-                content={Content}
+                content={LegendContent}
               />
             )}
           </ComposedChart>
@@ -319,7 +341,7 @@ const InnerWrapper = styled.div`
   left: 0;
 `
 
-const TooltipWrapper = styled(Box)`
+const TooltipWrapper = styled(LegacyBox)`
   background-color: var(--tooltip--background-color);
   color: var(--tooltip--color);
   font-size: var(--font-size-2);
@@ -338,7 +360,7 @@ const TipTitle = styled.div`
   margin-bottom: 2px;
 `
 
-const TipContent = styled(Box)`
+const TipContent = styled(LegacyBox)`
   align-items: center;
   display: grid;
   justify-content: flex-start;
@@ -351,55 +373,4 @@ const TipContent = styled(Box)`
 const TipIcon = styled(Icon)`
   position: relative;
   left: -2px;
-`
-
-const LegendContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 8px 0;
-`
-
-const LegendItem = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const LegendBox = styled.div`
-  width: 14px;
-  height: 14px;
-  border-radius: 2px;
-`
-
-const LegendLine = styled.div`
-  width: 14px;
-  height: 3px;
-  border-radius: 1px;
-  position: relative;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background-color: inherit;
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  &::before {
-    left: -5px;
-  }
-
-  &::after {
-    right: -5px;
-  }
-`
-
-const LegendText = styled.span`
-  font-size: 14px;
-  color: var(--page--text-color);
 `
