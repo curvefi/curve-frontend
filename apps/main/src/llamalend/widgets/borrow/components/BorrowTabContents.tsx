@@ -117,6 +117,7 @@ export const BorrowTabContents = ({
               values={values}
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
+              onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
             />
           </Box>
         </Stack>
