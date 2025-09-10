@@ -865,12 +865,12 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
     Contained: {
       Default: {
-        Label: Color.Neutral[50],
-        Fill: Color.Primary[950],
+        Label: Text.TextColors.Secondary,
+        Fill: Color.Primary[200],
       },
       Hover: {
         Label: Color.Neutral[50],
-        Fill: Color.Primary[600],
+        Fill: Color.Primary[950],
       },
       Current: {
         Label: Text.TextColors.Primary,
