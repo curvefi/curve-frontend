@@ -35,11 +35,10 @@ const DetailInfoEstGas = ({
   const { data: chainTokenUsdRate } = useTokenUsdRate({ chainId, tokenAddress: ethAddress })
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
-  const { estGasCostUsd, tooltip } = useMemo(() => {
-    if (!estimatedGas || !chainId) return { estGasCostUsd: 0, tooltip: '' }
-    const { estGasCostUsd, tooltip } = calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network)
-    return { estGasCostUsd: chainTokenUsdRate ? estGasCostUsd || 0 : 0, tooltip: tooltip || '' }
-  }, [estimatedGas, chainId, chainTokenUsdRate, network, gasInfo])
+  const { estGasCostUsd, tooltip } = useMemo(
+    () => calculateGas(estimatedGas, gasInfo, chainTokenUsdRate, network),
+    [estimatedGas, chainTokenUsdRate, network, gasInfo],
+  )
 
   const labelText = t`Estimated TX cost:`
   const Label = stepProgress ? (

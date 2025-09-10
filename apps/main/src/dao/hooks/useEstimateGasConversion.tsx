@@ -12,13 +12,10 @@ const useEstimateGasConversion = (gas: number | null | undefined) => {
   const network = networks[chainId]
   const { data: gasInfo } = useGasInfoAndUpdateLib({ chainId, networks })
 
-  return useMemo(() => {
-    if (!gas || !chainId) return { estGasCost: undefined, estGasCostUsd: undefined, tooltip: undefined }
-    const { estGasCost, estGasCostUsd, tooltip } = calculateGas(gas, gasInfo, chainTokenUsdRate, network)
-    return chainTokenUsdRate
-      ? { estGasCost, estGasCostUsd, tooltip }
-      : { estGasCost, estGasCostUsd: undefined, tooltip: undefined }
-  }, [gas, chainId, network, gasInfo, chainTokenUsdRate])
+  return useMemo(
+    () => calculateGas(gas, gasInfo, chainTokenUsdRate, network),
+    [gas, network, gasInfo, chainTokenUsdRate],
+  )
 }
 
 export default useEstimateGasConversion
