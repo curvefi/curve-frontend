@@ -58,7 +58,7 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
         value={selectedTab}
         onChange={setSelectedTab}
         options={TABS}
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, '& .MuiTab-root': { flexGrow: 1 } }}
       />
 
       <AppFormContentWrapper>

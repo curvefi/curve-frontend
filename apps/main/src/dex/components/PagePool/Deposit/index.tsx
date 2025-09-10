@@ -52,7 +52,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         value={selectedTab}
         onChange={handleTabChange}
         options={TABS}
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, '& .MuiTab-root': { flexGrow: 1 } }}
       />
 
       <AppFormContentWrapper>

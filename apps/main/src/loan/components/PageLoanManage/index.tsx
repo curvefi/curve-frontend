@@ -68,7 +68,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         value={selectedTab}
         onChange={setSelectedTab}
         options={tabs}
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, '& .MuiTab-root': { flexGrow: 1 } }}
       />
 
       <AppFormContentWrapper>
