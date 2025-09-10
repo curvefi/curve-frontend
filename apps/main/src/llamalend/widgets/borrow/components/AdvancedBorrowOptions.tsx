@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type BorrowForm, type BorrowFormQueryParams, type LlamaMarketTemplate } from '../borrow.types'
-import { LoanRangeSlider } from './LoanRangeSlider'
+import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces
 
@@ -27,7 +27,7 @@ export const AdvancedBorrowOptions = ({
   const chartData = useLiquidationRangeChartData(params, enabled)
   return (
     <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
-      <LoanRangeSlider market={market} range={range} setRange={setRange} />
+      <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
       <Stack
         sx={{
           '--chart_reference_line--color': (t) => t.design.Color.Primary[500],

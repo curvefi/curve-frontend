@@ -5,7 +5,7 @@ function createLightSurfaces() {
     Primary: Grays[950],
     Secondary: Grays[700],
     Tertiary: Grays[500],
-    Disabled: Grays[400],
+    Disabled: Grays[500],
     Highlight: Blues[500],
     Feedback: {
       Success: Greens[600],
@@ -159,9 +159,9 @@ function createDarkSurfaces() {
 function createChadSurfaces() {
   const Text = {
     Primary: Grays[950],
-    Secondary: Grays[700],
-    Tertiary: Grays[500],
-    Disabled: Grays[400],
+    Secondary: Grays[750],
+    Tertiary: Grays[700],
+    Disabled: Grays[500],
     Highlight: Violet[600],
     Feedback: {
       Success: Greens[600],
@@ -173,18 +173,18 @@ function createChadSurfaces() {
   } as const
   const Layer = {
     '1': {
-      Fill: Violet[100],
-      Outline: Violet[300],
+      Fill: Grays[150],
+      Outline: Grays[400],
     },
     '2': {
-      Fill: Violet[200],
-      Outline: Violet[400],
+      Fill: Grays[300],
+      Outline: Grays[500],
     },
     '3': {
-      Fill: Violet[300],
-      Outline: Violet[500],
+      Fill: Grays[400],
+      Outline: Grays[600],
     },
-    Highlight: Violet[800],
+    Highlight: Violet[700],
     TypeAction: {
       Selected: Violet[50],
       Hover: Violet[200],
@@ -202,7 +202,7 @@ function createChadSurfaces() {
     Text,
     Layer,
     Tables: {
-      Header: { Fill: Violet[50] },
+      Header: { Fill: Layer[3].Fill },
     },
     Badges: {
       Label: {
