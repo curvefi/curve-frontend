@@ -60,8 +60,7 @@ jobs:
           NODE_ENV: test
 
   cypress-component-rpc:
-    name: Cypress component tests with RPC
-    if: ${{ secrets.TENDERLY_ACCESS_KEY }}  # only run if tenderly secrets are set
+    if: false # temporarily disable this job until we have a tenderly account and its secrets configured
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -78,9 +77,6 @@ jobs:
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
-          CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ secrets.TENDERLY_ACCOUNT_SLUG }}
-          CYPRESS_TENDERLY_PROJECT_SLUG: ${{ secrets.TENDERLY_PROJECT_SLUG }}
-          CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
 
   cypress-e2e:
     strategy:
