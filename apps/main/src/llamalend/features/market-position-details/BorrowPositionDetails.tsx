@@ -70,17 +70,18 @@ export type BorrowPositionDetailsProps = {
   totalDebt: TotalDebt
 }
 
+const alerts = {
+  soft: {
+    title: t`Soft-Liquidation active`,
+    description: t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`,
+  },
+  hard: {
+    title: t`Your position health is below 0`,
+    description: t`It can now be liquidated at any time. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
+  },
+}
+
 const LiquidationAlert = ({ type }: { type: 'soft' | 'hard' }) => {
-  const alerts = {
-    soft: {
-      title: t`Soft-Liquidation active`,
-      description: t`Price has entered the liquidation zone and your collateral is at risk. Manage your position to avoid full liquidation.`,
-    },
-    hard: {
-      title: t`Your position health is below 0`,
-      description: t`It can now be liquidated at any time. To recover remaining collateral (minus fees), repay your debt and withdraw promptly.`,
-    },
-  }
   const { title, description } = alerts[type]
 
   return (
