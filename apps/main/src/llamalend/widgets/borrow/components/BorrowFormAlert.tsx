@@ -14,7 +14,7 @@ export const BorrowFormAlert = ({
   formErrors,
 }: {
   network: BaseConfig<NetworkEnum>
-  isCreated: false | true
+  isCreated: boolean
   creationError: Error | null
   txHash: undefined | string
   formErrors: string[]
