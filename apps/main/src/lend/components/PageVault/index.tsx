@@ -15,25 +15,25 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 type FormType = 'deposit' | 'withdraw'
 
-const tabs: { value: FormType; label: string }[] = [
+const tabs: TabOption<FormType>[] = [
   { value: 'deposit', label: t`Deposit` },
   { value: 'withdraw', label: t`Withdraw` },
-] as const
+]
 
-const tabsDeposit: { value: VaultDepositFormType; label: string }[] = [
+const tabsDeposit: TabOption<VaultDepositFormType>[] = [
   { value: 'deposit', label: t`Deposit` },
   { value: 'stake', label: t`Stake` },
-] as const
+]
 
-const tabsWithdraw: { value: VaultWithdrawFormType; label: string }[] = [
+const tabsWithdraw: TabOption<VaultWithdrawFormType>[] = [
   { value: 'withdraw', label: t`Withdraw` },
   { value: 'unstake', label: t`Unstake` },
   { value: 'claim', label: t`Claim Rewards` },
-] as const
+]
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps

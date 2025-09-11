@@ -6,7 +6,7 @@ import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
@@ -15,7 +15,8 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const resetState = useStore((state) => state.loanCreate.resetState)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const tabs = useMemo(
+  type Tab = 'create' | 'leverage'
+  const tabs: TabOption<Tab>[] = useMemo(
     () => [
       { value: 'create' as const, label: t`Create Loan` },
       ...(market?.leverage.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),

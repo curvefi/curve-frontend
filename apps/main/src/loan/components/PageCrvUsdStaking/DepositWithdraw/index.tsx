@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import useStore from '@/loan/store/useStore'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { TransactionDetails } from '../components/TransactionDetails'
@@ -18,13 +18,12 @@ type DepositWithdrawProps = {
   className?: string
 }
 
-const tabs = [
+type Tab = 'deposit' | 'withdraw' | 'swap'
+const tabs: TabOption<Tab>[] = [
   { value: 'deposit', label: 'Deposit' },
   { value: 'withdraw', label: 'Withdraw' },
   { value: 'swap', label: 'Swap' },
-] as const
-
-type Tab = (typeof tabs)[number]['value']
+]
 
 const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)

@@ -11,7 +11,7 @@ import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const LoanCreate = ({
   fetchInitial,
@@ -26,11 +26,12 @@ const LoanCreate = ({
   const network = networks[rChainId]
   const [isBeta] = useBetaFlag()
 
-  const tabs: { value: string; label: string }[] = [
-    { label: t`Create Loan`, value: 'create' },
-    { label: t`Leverage`, value: 'leverage' },
-    ...(isBeta ? [{ label: t`Beta`, value: 'borrow' }] : []),
-  ].filter((f) => f.value != 'leverage' || hasLeverage(llamma))
+  type Tab = 'create' | 'leverage' | 'borrow'
+  const tabs: TabOption<Tab>[] = [
+    { value: 'create' as const, label: t`Create Loan` },
+    ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+    ...(isBeta ? [{ value: 'borrow' as const, label: t`Beta` }] : []),
+  ]
 
   const handleTabClick = useCallback(
     (formType: FormType) => {

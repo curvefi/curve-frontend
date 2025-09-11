@@ -7,7 +7,7 @@ import DepositReward from '@/dex/features/deposit-gauge-reward'
 import { ChainId } from '@/dex/types/main.types'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) => {
   const { data: signerAddress } = useSignerAddress()
@@ -29,8 +29,8 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     [rewardDistributors, signerAddress],
   )
 
-  type Tab = { value: 'add_reward' | 'deposit_reward'; label: string }
-  const tabs: Tab[] = useMemo(
+  type Tab = 'add_reward' | 'deposit_reward'
+  const tabs: TabOption<Tab>[] = useMemo(
     () => [
       ...(isGaugeManager ? [{ value: 'add_reward' as const, label: t`Add Reward` }] : []),
       ...(isRewardsDistributor ? [{ value: 'deposit_reward' as const, label: t`Deposit Reward` }] : []),
@@ -38,7 +38,7 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
     [isGaugeManager, isRewardsDistributor],
   )
 
-  const [tab, setTab] = useState<Tab['value']>(isGaugeManager ? 'add_reward' : 'deposit_reward')
+  const [tab, setTab] = useState<Tab>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
     <>

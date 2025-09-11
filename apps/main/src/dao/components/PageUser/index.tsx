@@ -6,18 +6,19 @@ import type { Locker } from '@curvefi/prices-api/dao'
 import Box from '@ui/Box'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import UserHeader from './UserHeader'
 import UserLocksTable from './UserLocksTable'
 import UserProposalVotesTable from './UserProposalVotesTable'
 import UserStats from './UserStats'
 
-const tabs = [
+type Tab = 'proposals' | 'gauge_votes' | 'locks'
+const tabs: TabOption<Tab>[] = [
   { value: 'proposals', label: t`User Proposal Votes` },
   { value: 'gauge_votes', label: t`User Gauge Votes` },
   { value: 'locks', label: t`User Locks` },
-] as const
+]
 
 type UserPageProps = {
   routerParams: UserUrlParams
@@ -28,7 +29,7 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const { getUserEns, userMapper } = useStore((state) => state.user)
   const { provider } = useWallet()
-  const [activeNavKey, setNavKey] = useState('proposals')
+  const [tab, setTab] = useState<Tab>('proposals')
 
   const { allHolders, fetchStatus } = veCrvHolders
 
@@ -67,16 +68,12 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
       </UserPageContainer>
       <Box>
-        <TabsSwitcher variant="contained" size="medium" value={activeNavKey} onChange={setNavKey} options={tabs} />
+        <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
 
         <Container variant="secondary">
-          {activeNavKey === 'proposals' && (
-            <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
-          )}
-          {activeNavKey === 'gauge_votes' && (
-            <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />
-          )}
-          {activeNavKey === 'locks' && <UserLocksTable userAddress={userAddress} />}
+          {tab === 'proposals' && <UserProposalVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+          {tab === 'gauge_votes' && <UserGaugeVotesTable userAddress={userAddress} tableMinWidth={tableMinWidth} />}
+          {tab === 'locks' && <UserLocksTable userAddress={userAddress} />}
         </Container>
       </Box>
     </Wrapper>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
 import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
@@ -10,13 +10,13 @@ import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveH
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
-const tabs = [{ value: 'manage', label: t`Manage soft-liquidation` }] as const
+const tabs: TabOption<'manage'>[] = [{ value: 'manage', label: t`Manage soft-liquidation` }]
 
-const subTabs = [
+type SubTab = 'improve-health' | 'close-position'
+const subTabs: TabOption<SubTab>[] = [
   { value: 'improve-health', label: t`Improve health` },
   { value: 'close-position', label: t`Close position` },
-] as const
-type SubTab = (typeof subTabs)[number]['value']
+]
 
 export type Props = {
   actionInfos: ActionInfosProps

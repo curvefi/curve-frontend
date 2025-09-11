@@ -1,47 +1,33 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import Box from '@ui/Box'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import GaugesList from './GaugeList'
 import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 
-const tabs = [
+type Tab = 'gaugeList' | 'gaugeVoting'
+const tabs: TabOption<Tab>[] = [
   { value: 'gaugeList', label: t`Gauges` },
   { value: 'gaugeVoting', label: t`Voting` },
-] as const
+]
 
 const Gauges = () => {
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
   const { address: userAddress } = useAccount()
-
-  const [navSelection, setNavSelection] = useState('gaugeList')
-
-  useEffect(() => {
-    if (isMdUp && navSelection === 'gaugeWeightDistribution') {
-      setNavSelection('gaugeList')
-    }
-  }, [isMdUp, navSelection])
+  const [tab, setTab] = useState<Tab>('gaugeList')
 
   return (
     <Wrapper>
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
-        <GaugeWeightDistribution isUserVotes={navSelection === 'gaugeVoting'} userAddress={userAddress} />
+        <GaugeWeightDistribution isUserVotes={tab === 'gaugeVoting'} userAddress={userAddress} />
         <Box>
-          <TabsSwitcher
-            variant="contained"
-            size="medium"
-            value={navSelection}
-            onChange={setNavSelection}
-            options={tabs}
-          />
+          <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
 
           <Container variant="secondary">
-            {navSelection === 'gaugeList' && <GaugesList />}
-            {navSelection === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
+            {tab === 'gaugeList' && <GaugesList />}
+            {tab === 'gaugeVoting' && <GaugeVoting userAddress={userAddress} />}
           </Container>
         </Box>
       </Box>

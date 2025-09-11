@@ -41,7 +41,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
 
@@ -101,9 +101,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
 
-  type DetailInfoTypes = 'user' | 'pool' | 'advanced'
-  type PoolInfoTab = { value: DetailInfoTypes; label: string }
-  const poolInfoTabs = useMemo<PoolInfoTab[]>(
+  type DetailInfoTab = 'user' | 'pool' | 'advanced'
+  const poolInfoTabs = useMemo<TabOption<DetailInfoTab>[]>(
     () => [
       { value: 'pool' as const, label: t`Pool Details` },
       ...(signerAddress ? [{ value: 'user' as const, label: t`Your Details` }] : []),
@@ -113,7 +112,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     ],
     [signerAddress, pricesApi, pricesApiPoolData, snapshotsMapper, poolData?.pool.address],
   )
-  const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTypes>('pool')
+  const [poolInfoTab, setPoolInfoTab] = useState<DetailInfoTab>('pool')
 
   const maxSlippage = useMemo(() => {
     if (storeMaxSlippage) return storeMaxSlippage
@@ -180,9 +179,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     [isGaugeManager, isPendingGaugeManager, isPendingRewardsDistributors, isRewardsDistributor],
   )
 
-  type Tab = { value: TransferFormType; label: string }
-  const tabs: Tab[] = useMemo(
-    (): Tab[] => [
+  const tabs: TabOption<TransferFormType>[] = useMemo(
+    () => [
       { value: 'deposit', label: t`Deposit` },
       { value: 'withdraw', label: t`Withdraw` },
       { value: 'swap', label: t`Swap` },

@@ -9,16 +9,16 @@ import Stack from '@mui/material/Stack'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const tabs: { value: FormType; label: string }[] = [
+const tabs: TabOption<FormType>[] = [
   { value: 'adjust_crv', label: t`Lock More` },
   { value: 'adjust_date', label: t`Extend Lock` },
   { value: 'withdraw', label: t`Withdraw` },
-] as const
+]
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps

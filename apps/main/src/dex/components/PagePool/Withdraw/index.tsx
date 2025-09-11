@@ -7,13 +7,13 @@ import type { FormType } from '@/dex/components/PagePool/Withdraw/types'
 import useStore from '@/dex/store/useStore'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
-const tabs: { value: FormType; label: string }[] = [
+const tabs: TabOption<FormType>[] = [
   { value: 'WITHDRAW', label: t`Withdraw` },
   { value: 'UNSTAKE', label: t`Unstake` },
   { value: 'CLAIM', label: t`Claim Rewards` },
-] as const
+]
 
 const Withdraw = (transferProps: TransferProps) => {
   const { poolData } = transferProps

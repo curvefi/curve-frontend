@@ -1,12 +1,12 @@
 import { ReactNode, useState } from 'react'
 import { Box } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
-type TabValue = 'borrow' | 'supply'
+type Tab = 'borrow' | 'supply'
 
 type MarketInformationTabsProps = {
-  currentTab: TabValue
+  currentTab: Tab
   hrefs: {
     borrow: string
     supply: string
@@ -19,11 +19,11 @@ type MarketInformationTabsProps = {
  * for this market or with MarketDetails if there is no user position.
  */
 export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInformationTabsProps) => {
-  const tabs: { value: TabValue; label: string; href: string }[] = [
+  const tabs: TabOption<Tab>[] = [
     { value: 'borrow', label: t`Borrow`, href: hrefs.borrow },
     { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
-  const [tab, setTab] = useState<TabValue>(currentTab)
+  const [tab, setTab] = useState<Tab>(currentTab)
 
   return (
     <Box>

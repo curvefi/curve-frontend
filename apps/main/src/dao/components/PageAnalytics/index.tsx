@@ -3,25 +3,24 @@ import { styled } from 'styled-components'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import CrvStats from './CrvStats'
 import DailyLocks from './DailyLocksChart'
 import HoldersTable from './HoldersTable'
 import TopHolders from './TopHoldersChart'
 import VeCrvFees from './VeCrvFeesTable'
 
-type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
-
-const tabs = [
+type Tab = 'fees' | 'holders' | 'locks'
+const tabs: TabOption<Tab>[] = [
   { value: 'fees', label: t`veCRV Fees` },
   { value: 'holders', label: t`Holders` },
   { value: 'locks', label: t`Locks` },
-] as const
+]
 
 const Analytics = () => {
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
-  const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
+  const [tab, setTab] = useState<Tab>('fees')
 
   useEffect(() => {
     if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
@@ -34,23 +33,17 @@ const Analytics = () => {
       <Box flex flexColumn fillWidth flexGap={'var(--spacing-3)'}>
         <CrvStats />
         <Box>
-          <TabsSwitcher
-            variant="contained"
-            size="medium"
-            value={navSelection}
-            onChange={setNavSelection}
-            options={tabs}
-          />
+          <TabsSwitcher variant="contained" size="medium" value={tab} onChange={setTab} options={tabs} />
 
           <Container variant="secondary">
-            {navSelection === 'fees' && <VeCrvFees />}
-            {navSelection === 'holders' && (
+            {tab === 'fees' && <VeCrvFees />}
+            {tab === 'holders' && (
               <Box flex flexColumn flexGap="var(--spacing-2)">
                 <TopHolders />
                 <HoldersTable />
               </Box>
             )}
-            {navSelection === 'locks' && <DailyLocks />}
+            {tab === 'locks' && <DailyLocks />}
           </Container>
         </Box>
       </Box>

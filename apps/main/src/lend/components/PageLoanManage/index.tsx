@@ -11,22 +11,20 @@ import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
-const tabsLoan: { value: LoanFormType; label: string }[] = [
+const tabsLoan: TabOption<LoanFormType>[] = [
   { value: 'loan-increase', label: t`Borrow more` },
   { value: 'loan-decrease', label: t`Repay` },
   { value: 'loan-liquidate', label: t`Self-liquidate` },
-] as const
+]
 
-const tabsCollateral: { value: CollateralFormType; label: string }[] = [
+const tabsCollateral: TabOption<CollateralFormType>[] = [
   { value: 'collateral-increase', label: t`Add collateral` },
   { value: 'collateral-decrease', label: t`Remove collateral` },
-] as const
+]
 
-const tabsLeverage: { value: LeverageFormType; label: string }[] = [
-  { value: 'leverage-borrow-more', label: t`Borrow more` },
-] as const
+const tabsLeverage: TabOption<LeverageFormType>[] = [{ value: 'leverage-borrow-more', label: t`Borrow more` }]
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, market, rChainId, params } = pageProps
@@ -34,7 +32,8 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const tabs = useMemo(
+  type Tab = 'loan' | 'collateral' | 'leverage'
+  const tabs: TabOption<Tab>[] = useMemo(
     () => [
       { value: 'loan' as const, label: t`Loan` },
       { value: 'collateral' as const, label: t`Collateral` },

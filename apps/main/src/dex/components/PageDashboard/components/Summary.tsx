@@ -17,9 +17,7 @@ import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-
-type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 export const tooltipProps: TooltipProps = {
   placement: 'bottom-end',
@@ -27,10 +25,11 @@ export const tooltipProps: TooltipProps = {
   noWrap: true,
 }
 
-const tabs: { value: SlideKey; label: string }[] = [
+type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
+const tabs: TabOption<Tab>[] = [
   { value: 'DAY_PROFITS', label: t`Daily Profits` },
   { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
-] as const
+]
 
 const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
@@ -40,7 +39,7 @@ const Summary = () => {
 
   const networkHaveLockedCrv = rChainId === 1
 
-  const [tab, setTab] = useState<SlideKey>('DAY_PROFITS')
+  const [tab, setTab] = useState<Tab>('DAY_PROFITS')
 
   return (
     <div>
@@ -83,7 +82,7 @@ const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
-            <SummaryClaimable title={tabs[1].label} />
+            <SummaryClaimable title={tabs[1].label?.toString()} />
           </>
         ) : (
           <>

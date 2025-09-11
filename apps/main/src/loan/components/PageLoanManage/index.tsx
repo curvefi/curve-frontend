@@ -16,35 +16,30 @@ import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 interface Props extends PageLoanManageProps {}
 
-const tabsLoan: { value: LoanFormType; label: string }[] = [
+const tabsLoan: TabOption<LoanFormType>[] = [
   { value: 'loan-increase', label: t`Borrow more` },
   { value: 'loan-decrease', label: t`Repay` },
   { value: 'loan-liquidate', label: t`Self-liquidate` },
-] as const
+]
 
-const tabsCollateral: { value: CollateralFormType; label: string }[] = [
+const tabsCollateral: TabOption<CollateralFormType>[] = [
   { value: 'collateral-increase', label: t`Add` },
   { value: 'collateral-decrease', label: t`Remove` },
-] as const
+]
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
   const push = useNavigate()
 
-  const tabs: { value: string; label: string }[] = [
-    { value: 'loan', label: t`Loan` },
-    { value: 'collateral', label: t`Collateral` },
-    { value: 'deleverage', label: t`Delever` },
-  ].filter((f) => {
-    if (f.value === 'deleverage') {
-      return hasDeleverage(llamma)
-    } else {
-      return true
-    }
-  })
+  type Tab = 'loan' | 'collateral' | 'deleverage'
+  const tabs: TabOption<Tab>[] = [
+    { value: 'loan' as const, label: t`Loan` },
+    { value: 'collateral' as const, label: t`Collateral` },
+    ...(hasDeleverage(llamma) ? [{ value: 'deleverage' as const, label: t`Delever` }] : []),
+  ]
 
   type SubTab = LoanFormType | CollateralFormType
   const [subTab, setSubTab] = useState<SubTab>('loan-increase')

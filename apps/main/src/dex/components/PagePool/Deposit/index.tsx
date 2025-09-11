@@ -9,13 +9,13 @@ import useStore from '@/dex/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
-const tabs: { value: FormType; label: string }[] = [
+const tabs: TabOption<FormType>[] = [
   { value: 'DEPOSIT', label: t`Deposit` },
   { value: 'STAKE', label: t`Stake` },
   { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake` },
-] as const
+]
 
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
