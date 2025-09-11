@@ -16,6 +16,7 @@ import { useBorrowForm } from '../useBorrowForm'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
+import { InputDivider } from './InputDivider'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
@@ -47,30 +48,33 @@ export const BorrowTabContents = ({
     tooMuchCollateral,
   } = useBorrowForm({ market, network, preset })
   const setRange = (range: number) => form.setValue('range', range, setValueOptions)
+
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
         <Stack gap={Spacing.md}>
-          <BorrowFormTokenInput
-            label={t`Collateral`}
-            token={collateralToken}
-            name="userCollateral"
-            form={form}
-            isLoading={maxBorrow.isLoading || !market}
-            isError={maxBorrow.isError || tooMuchCollateral}
-            max={maxCollateral}
-            testId="borrow-collateral-input"
-          />
-          <BorrowFormTokenInput
-            label={t`Borrow`}
-            token={borrowToken}
-            name="debt"
-            form={form}
-            isLoading={maxBorrow.isLoading || !market}
-            isError={maxBorrow.isError || tooMuchDebt}
-            max={maxDebt}
-            testId="borrow-debt-input"
-          />
+          <Stack divider={<InputDivider />}>
+            <BorrowFormTokenInput
+              label={t`Collateral`}
+              token={collateralToken}
+              name="userCollateral"
+              form={form}
+              isLoading={maxBorrow.isLoading || !market}
+              isError={maxBorrow.isError || tooMuchCollateral}
+              max={maxCollateral}
+              testId="borrow-collateral-input"
+            />
+            <BorrowFormTokenInput
+              label={t`Borrow`}
+              token={borrowToken}
+              name="debt"
+              form={form}
+              isLoading={maxBorrow.isLoading || !market}
+              isError={maxBorrow.isError || tooMuchDebt}
+              max={maxDebt}
+              testId="borrow-debt-input"
+            />
+          </Stack>
 
           <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
             <Collapse in={preset === BorrowPreset.Custom}>
@@ -117,6 +121,7 @@ export const BorrowTabContents = ({
               values={values}
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
+              onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
             />
           </Box>
         </Stack>
