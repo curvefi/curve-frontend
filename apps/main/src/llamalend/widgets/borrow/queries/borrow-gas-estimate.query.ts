@@ -3,11 +3,11 @@ import { ethAddress } from 'viem'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import { maxBorrowReceiveKey } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { borrowQueryValidationSuite } from './borrow.validation'
@@ -25,11 +25,11 @@ const { useQuery: useGasEstimate } = queryFactory({
       { leverage },
     ] as const,
   queryFn: async ({ poolId, userBorrowed = 0, userCollateral = 0, leverage }: BorrowGasEstimateQuery) => {
-    const [market, type] = getLlamaMarket(poolId)
+    const market = getLlamaMarket(poolId)
     return {
       createLoanApprove: !leverage
         ? await market.estimateGas.createLoanApprove(userCollateral)
-        : type === LlamaMarketType.Lend
+        : market instanceof LendMarketTemplate
           ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
           : market.leverageV2.hasLeverage()
             ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)

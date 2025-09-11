@@ -1,17 +1,18 @@
 import { useCallback } from 'react'
 import { useAccount } from 'wagmi'
-import { borrowFormValidationSuite } from '@/llamalend/widgets/borrow/queries/borrow.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useMutation } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { userBalancesQueryKey } from '../queries/user-balances.query'
+import { borrowFormValidationSuite } from './borrow.validation'
+import { assert } from '@ui-kit/utils'
 
 type BorrowMutationContext = {
   chainId: IChainId
@@ -24,18 +25,11 @@ type CreateLoanOptions = BorrowMutationContext & {
   reset: () => void
 }
 
-function assert<T>(value: T, message: string) {
-  if (!value) {
-    throw new Error(message)
-  }
-  return value
-}
-
 const getCreateMethods = (poolId: string, leverage: number | undefined) => {
-  const [market, type] = getLlamaMarket(poolId)
+  const market = getLlamaMarket(poolId)
   const parent = leverage
     ? market
-    : type === LlamaMarketType.Lend
+    : market instanceof LendMarketTemplate
       ? market.leverage
       : market.leverageV2.hasLeverage()
         ? market.leverageV2
