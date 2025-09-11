@@ -6,12 +6,12 @@ export const AppFormContentWrapper = styled(Box)`
   display: grid;
   grid-row-gap: var(--spacing-3);
   padding: var(--spacing-3);
+  margin: 0 auto;
   position: relative;
 
   min-height: 17.125rem;
 
   // Copied straight from Figma. Do not judge; app forms will be replaced by proper mui cards.
-  //min-width: 374px;
-  //max-width: 464px;
-  width: 419px;
+  // Used to be min-width and max-width, but alerts would make the card width annoyingly jump around
+  width: 374px;
 `
