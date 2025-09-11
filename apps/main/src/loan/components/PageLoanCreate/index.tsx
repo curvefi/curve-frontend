@@ -3,7 +3,7 @@ import type { OnBorrowFormUpdate } from '@/llamalend/widgets/borrow/borrow.types
 import { BorrowTabContents } from '@/llamalend/widgets/borrow/components/BorrowTabContents'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
-import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { DEFAULT_FORM_VALUES, hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
@@ -26,15 +26,14 @@ const useOnFormUpdate = ({ curve, llamma, rFormType }: PageLoanCreateProps): OnB
   useCallback(
     async ({ debt, userCollateral, range }) => {
       if (!curve || !llamma) return
+      const { maxSlippage } = useUserProfileStore.getState()
       const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
       const formValues: FormValues = {
+        ...DEFAULT_FORM_VALUES,
         n: range,
-        debt: `${debt ?? 0}`,
-        collateral: `${userCollateral ?? 0}`,
-        debtError: 'too-much',
-        collateralError: 'too-much',
+        debt: `${debt ?? ''}`,
+        collateral: `${userCollateral ?? ''}`,
       }
-      const { maxSlippage } = useUserProfileStore.getState()
       const isLeverage = rFormType === 'leverage'
       await setFormValues(curve, isLeverage, llamma, formValues, maxSlippage.crypto)
       setStateByKeys({ isEditLiqRange: true })
