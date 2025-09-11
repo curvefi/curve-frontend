@@ -41,15 +41,16 @@ body.theme-chad {
   /* ------ Components  ------ */
   /* Box */
   --box--primary--color: var(--text-700);
-  --box--primary--background-color: var(--primary-300);
+  --box--primary--background-color: var(--gray-600);
   --box--primary--background: var(--box--primary--background-color);
   --box--primary--shadow-color: var(--gray-300);
-  --box--primary--content--background-color: var(--primary-500);
+  --box--primary--content--background-color: var(--gray-600);
   --box--primary--content--shadow-color: var(--primary-500);
-  --box_header--primary--background-color: var(--primary-100);
-  --box--secondary--background-color: var(--white);
+  --box_header--primary--background-color: var(--primary-500);
+  --box--secondary--background-color: var(--gray-700);
   --box--secondary--border: 0 solid var(--white);
   --box_action--button--font-size: var(--font-size-3);
+  --box-navigation-background: var(--primary-400);
 
   /* Buttons */
   --button--color: var(--text-600);
@@ -73,10 +74,10 @@ body.theme-chad {
 
   /* Chart */
   --chart_axis--color: var(--gray-300);
-  --chart_axis_darkBg--color: var(--primary-600);
-  --chart_label_darkBg--color: var(--white);
+  --chart_axis_darkBg--color: var(--gray-200);
+  --chart_label_darkBg--color: var(--black);
   --chart_label--color: var(--blackl20);
-  --chart_reference_line_darkBg--color: var(--white);
+  --chart_reference_line_darkBg--color: var(--primary-300);
 
   --chart_collateral--color: var(--gray-500);
   --chart_stablecoin--color: var(--gray-400);
@@ -155,7 +156,7 @@ body.theme-chad {
 
   /* Tab */
   --tab--color: var(--text-200);
-  --tab--content--background-color: var(--gray-700);
+  --tab--content--background-color: var(--gray-600);
   --tab--content--hover--background-color: var(--primary-300);
 
   --tab_secondary--color: var(--gray-700);
@@ -165,6 +166,10 @@ body.theme-chad {
   /* Table */
   --table_detail_row--active--color: var(--white);
   --table_row--hover--color: var(--primary-400a10);
+  --table--background-color: var(--gray-600);
+  --table_row--hover--color: var(--gray-700);
+  --table_head--background-color: var(--gray-500);
+
 
   /* Tooltip */
   --tooltip--border-color: var(--border-600);

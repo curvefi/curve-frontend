@@ -11,7 +11,6 @@ export const Tab = styled.button<{ variant?: 'secondary' }>`
   padding: 0 1rem;
   position: relative;
   transition: all 0.2s ease-in-out;
-  text-transform: uppercase;
 
   &:not(:disabled) {
     cursor: pointer;

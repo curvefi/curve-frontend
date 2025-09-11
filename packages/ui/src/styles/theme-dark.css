@@ -170,6 +170,8 @@ body.theme-dark {
   --table_detail_row--active--background-color: var(--black-300);
   --table_box_loader--background-color: var(--black-300);
   --table_row--hover--color: var(--whitea10);
+  --table_head--background-color: var(--gray-300);
+
 
   /* Tooltip */
   --tooltip--background-color: var(--black-100);
