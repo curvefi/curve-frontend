@@ -111,14 +111,14 @@ export function useBorrowForm({
     maxDebt != null &&
     values.debt &&
     values.debt > maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })}`
+    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })} ${borrowToken?.symbol ?? ''}`
 
   const maxCollateral = userCollateralBalance ?? maxBorrow.data?.maxTotalCollateral
   const maxCollateralError =
     maxCollateral != null &&
     values.userCollateral &&
     values.userCollateral > maxCollateral &&
-    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })}`
+    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })} ${collateralToken?.symbol ?? ''}`
 
   return {
     form,

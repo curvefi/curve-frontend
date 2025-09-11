@@ -5,7 +5,8 @@ import type { NetworkDef } from '@ui/utils'
 import { AppLibs, globalLibs, isWalletMatching } from '@ui-kit/features/connect-wallet/lib/utils'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
-import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
+import { isCypress } from '@ui-kit/utils'
+import { ConnectState, type CurveApi, type Libs, type LlamaApi, type Wallet } from './types'
 import { type WagmiChainId } from './wagmi/wagmi-config'
 
 const { FAILURE, LOADING, SUCCESS } = ConnectState
@@ -35,7 +36,7 @@ const ConnectionContext = createContext<ConnectionContextValue>({
 function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
-  const { isReconnecting, isConnected } = useAccount()
+  const { isReconnecting, isConnected, address: account } = useAccount()
   return {
     // `useAccount` and `useClient` are not always in sync, so check both. `isReconnecting` is set when switching pages
     isReconnecting: !address && (isReconnecting || isConnected),
@@ -50,6 +51,20 @@ function useWagmiWallet() {
     }, [address, client?.chain.id, client?.transport.request]) ?? null),
   }
 }
+
+/**
+ * Hacks the signerAddress property of the library to match the wallet address in Cypress tests.
+ * This is needed because the signer address in Cypress doesn't match the wallet's one when using a private key.
+ */
+const hackSignerInCypress = (newLib: Libs[keyof Libs], wallet: Wallet | undefined) =>
+  isCypress &&
+  newLib?.signerAddress &&
+  wallet?.account.address &&
+  Object.defineProperty(newLib, 'signerAddress', {
+    get: () => wallet.account.address,
+    enumerable: true,
+    configurable: true,
+  })
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -126,6 +141,8 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
             : `First initialization`,
         )
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
+        hackSignerInCypress(newLib, wallet)
+
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
         setConnectState(SUCCESS)
