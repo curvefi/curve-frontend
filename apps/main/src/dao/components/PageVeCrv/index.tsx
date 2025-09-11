@@ -14,12 +14,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const tabs: TabOption<FormType>[] = [
-  { value: 'adjust_crv', label: t`Lock More` },
-  { value: 'adjust_date', label: t`Extend Lock` },
-  { value: 'withdraw', label: t`Withdraw` },
-]
-
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
 
@@ -32,6 +26,11 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   const canUnlock =
     +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
+  const tabs: TabOption<FormType>[] = [
+    { value: 'adjust_crv', label: t`Lock More`, disabled: canUnlock },
+    { value: 'adjust_date', label: t`Extend Lock`, disabled: canUnlock },
+    { value: 'withdraw', label: t`Withdraw` },
+  ]
   const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
   const setData = useCallback(async () => {
