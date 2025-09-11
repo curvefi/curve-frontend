@@ -69,6 +69,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
         options={tabs}
+        fullWidth
       />
 
       <TabsSwitcher

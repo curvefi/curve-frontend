@@ -30,7 +30,7 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePositio
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       <Stack>
-        <TabsSwitcher variant="contained" size="medium" value="manage" options={tabs} />
+        <TabsSwitcher variant="contained" size="medium" value="manage" options={tabs} fullWidth />
         <Box
           sx={{
             backgroundColor: (t) => t.design.Layer[1].Fill,

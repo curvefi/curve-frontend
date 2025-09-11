@@ -55,6 +55,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
         options={tabs}
+        fullWidth
       />
 
       <TabsSwitcher

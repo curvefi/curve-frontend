@@ -61,6 +61,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
         value={!rFormType ? 'deposit' : rFormType}
         onChange={(key) => push(getVaultPathname(params, rOwmId, key))}
         options={tabs}
+        fullWidth
       />
 
       <TabsSwitcher

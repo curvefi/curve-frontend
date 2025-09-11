@@ -248,6 +248,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
+              fullWidth
             />
 
             {rFormType === 'swap' ? (
