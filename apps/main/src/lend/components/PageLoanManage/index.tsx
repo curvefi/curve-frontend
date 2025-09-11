@@ -8,7 +8,8 @@ import type { CollateralFormType, LeverageFormType, LoanFormType } from '@/lend/
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -58,7 +59,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -68,15 +69,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         fullWidth
       />
 
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={subTab}
-        onChange={setSubTab}
-        options={subTabs}
-        fullWidth
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-      />
+      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
 
       <AppFormContentWrapper>
         {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
@@ -86,7 +79,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
         {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

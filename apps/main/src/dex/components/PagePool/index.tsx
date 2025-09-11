@@ -19,8 +19,9 @@ import useStore from '@/dex/store/useStore'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { ManageGauge } from '@/dex/widgets/manage-gauge'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import {
   AppPageFormContainer,
   AppPageFormsWrapper,
@@ -240,8 +241,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
       <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper className="grid-transfer">
-          {!isMdUp && <TitleComp />}
-          <AppFormContent variant="primary">
+          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            {!isMdUp && <TitleComp />}
             <TabsSwitcher
               variant="contained"
               size="medium"
@@ -302,7 +303,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
                 </AppFormContentWrapper>
               )
             ) : null}
-          </AppFormContent>
+          </Stack>
         </AppPageFormsWrapper>
 
         <AppPageInfoWrapper>

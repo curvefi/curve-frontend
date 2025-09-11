@@ -3,7 +3,8 @@ import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -32,7 +33,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -42,14 +43,14 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
+        fullWidth
       />
 
       <AppFormContentWrapper>
-        {/* FORMS */}
         {(rFormType === '' || rFormType === 'create') && <LoanFormCreate {...pageProps} />}
         {rFormType === 'leverage' && <LoanFormCreate isLeverage {...pageProps} />}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

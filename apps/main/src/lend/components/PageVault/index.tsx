@@ -12,7 +12,8 @@ import {
   type VaultWithdrawFormType,
 } from '@/lend/types/lend.types'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -55,7 +56,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -65,15 +66,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
         fullWidth
       />
 
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={subTab}
-        onChange={setSubTab}
-        options={subTabs}
-        fullWidth
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-      />
+      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
 
       <AppFormContentWrapper>
         {subTab === 'deposit' && <VaultDepositMint {...pageProps} rFormType="deposit" />}
@@ -82,7 +75,7 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
         {subTab === 'unstake' && <VaultUnstake {...pageProps} rFormType="unstake" />}
         {subTab === 'claim' && <VaultClaim {...pageProps} rFormType="claim" />}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

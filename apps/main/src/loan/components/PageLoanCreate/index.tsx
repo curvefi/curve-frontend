@@ -7,7 +7,8 @@ import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import networks from '@/loan/networks'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -48,13 +49,14 @@ const LoanCreate = ({
   )
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={!rFormType ? 'create' : rFormType}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
+        fullWidth
       />
 
       <AppFormContentWrapper>
@@ -64,7 +66,7 @@ const LoanCreate = ({
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />
         )}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

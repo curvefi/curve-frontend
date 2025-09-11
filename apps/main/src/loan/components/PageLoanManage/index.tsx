@@ -13,7 +13,8 @@ import type {
 } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -53,7 +54,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -63,15 +64,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         fullWidth
       />
 
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={subTab}
-        onChange={setSubTab}
-        options={subTabs}
-        fullWidth
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-      />
+      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
 
       <AppFormContentWrapper>
         {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
@@ -81,7 +74,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
         {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

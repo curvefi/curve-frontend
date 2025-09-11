@@ -6,6 +6,7 @@ import type { FormType } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PagePool/Deposit/utils'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import useStore from '@/dex/store/useStore'
+import Stack from '@mui/material/Stack'
 import AlertBox from '@ui/AlertBox'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
@@ -45,16 +46,8 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
   }, [poolData?.pool?.id])
 
   return (
-    <>
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={tab}
-        onChange={handleTabChange}
-        options={tabs}
-        fullWidth
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-      />
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={handleTabChange} options={tabs} fullWidth />
 
       <AppFormContentWrapper>
         {poolAlert && poolAlert.isDisableDeposit ? (
@@ -83,7 +76,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
           </>
         )}
       </AppFormContentWrapper>
-    </>
+    </Stack>
   )
 }
 
