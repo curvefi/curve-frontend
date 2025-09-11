@@ -1,4 +1,4 @@
-import React, { type ReactElement } from 'react'
+import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'

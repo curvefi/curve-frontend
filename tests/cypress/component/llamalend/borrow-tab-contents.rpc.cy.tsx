@@ -9,8 +9,9 @@ import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { Chain } from '@ui-kit/utils'
 
-const network = networks[1]
+const network = networks[Chain.Ethereum]
 const MARKET_ID = 'lbtc'
 const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
@@ -23,7 +24,7 @@ function BorrowTabTest() {
 
 describe('BorrowTabContents Component Tests', () => {
   const privateKey = generatePrivateKey()
-  const { address } = privateKeyToAccount(privateKey) // 0x4d1Cd72c062447b03c01521D52733145D452d069
+  const { address } = privateKeyToAccount(privateKey)
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
     slug: `borrow-tab-${uuid}`,
     display_name: `BorrowTab (${uuid})`,
