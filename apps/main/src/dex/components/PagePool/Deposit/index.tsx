@@ -11,19 +11,19 @@ import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
+const tabs: { value: FormType; label: string }[] = [
+  { value: 'DEPOSIT', label: t`Deposit` },
+  { value: 'STAKE', label: t`Stake` },
+  { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake` },
+] as const
+
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {
   const { poolAlert, poolData, poolDataCacheOrApi } = transferProps
   const formType = useStore((state) => state.poolDeposit.formType)
   const resetState = useStore((state) => state.poolDeposit.resetState)
   const setStateByKeys = useStore((state) => state.poolDeposit.setStateByKeys)
 
-  const TABS: { value: FormType; label: string }[] = [
-    { value: 'DEPOSIT', label: t`Deposit` },
-    { value: 'STAKE', label: t`Stake` },
-    { value: 'DEPOSIT_STAKE', label: t`Deposit & Stake` },
-  ]
-
-  const [selectedTab, setSelectedTab] = useState<FormType>('DEPOSIT')
+  const [tab, setTab] = useState<FormType>('DEPOSIT')
 
   const handleTabChange = useCallback(
     (tab: FormType) => {
@@ -31,7 +31,7 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
         formStatus: DEFAULT_FORM_STATUS,
         formType: tab,
       })
-      setSelectedTab(tab)
+      setTab(tab)
     },
     [setStateByKeys],
   )
@@ -49,9 +49,9 @@ const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { has
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
+        value={tab}
         onChange={handleTabChange}
-        options={TABS}
+        options={tabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />

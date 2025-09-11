@@ -27,6 +27,11 @@ export const tooltipProps: TooltipProps = {
   noWrap: true,
 }
 
+const tabs: { value: SlideKey; label: string }[] = [
+  { value: 'DAY_PROFITS', label: t`Daily Profits` },
+  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
+] as const
+
 const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
 
@@ -35,12 +40,7 @@ const Summary = () => {
 
   const networkHaveLockedCrv = rChainId === 1
 
-  const TABS: { value: SlideKey; label: string }[] = [
-    { value: 'DAY_PROFITS', label: t`Daily Profits` },
-    { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
-  ]
-
-  const [selectedTab, setSelectedTab] = useState<SlideKey>('DAY_PROFITS')
+  const [tab, setTab] = useState<SlideKey>('DAY_PROFITS')
 
   return (
     <div>
@@ -83,21 +83,15 @@ const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
-            <SummaryClaimable title={TABS[1].label} />
+            <SummaryClaimable title={tabs[1].label} />
           </>
         ) : (
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <TabsSwitcher
-                variant="underlined"
-                size="small"
-                value={selectedTab}
-                onChange={setSelectedTab}
-                options={TABS}
-              />
-              {selectedTab === 'DAY_PROFITS' && <SummaryRecurrence />}
-              {selectedTab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
+              <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} />
+              {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
+              {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
             </TabContentWrapper>
           </>
         )}

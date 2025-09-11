@@ -13,6 +13,12 @@ import UserLocksTable from './UserLocksTable'
 import UserProposalVotesTable from './UserProposalVotesTable'
 import UserStats from './UserStats'
 
+const tabs = [
+  { value: 'proposals', label: t`User Proposal Votes` },
+  { value: 'gauge_votes', label: t`User Gauge Votes` },
+  { value: 'locks', label: t`User Locks` },
+] as const
+
 type UserPageProps = {
   routerParams: UserUrlParams
 }
@@ -25,12 +31,6 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
   const [activeNavKey, setNavKey] = useState('proposals')
 
   const { allHolders, fetchStatus } = veCrvHolders
-
-  const navItems = [
-    { value: 'proposals', label: t`User Proposal Votes` },
-    { value: 'gauge_votes', label: t`User Gauge Votes` },
-    { value: 'locks', label: t`User Locks` },
-  ]
 
   const userAddress = rUserAddress.toLowerCase()
 
@@ -67,7 +67,7 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
         <UserStats veCrvHolder={veCrvHolder} holdersLoading={holdersLoading} />
       </UserPageContainer>
       <Box>
-        <TabsSwitcher variant="contained" size="medium" value={activeNavKey} onChange={setNavKey} options={navItems} />
+        <TabsSwitcher variant="contained" size="medium" value={activeNavKey} onChange={setNavKey} options={tabs} />
 
         <Container variant="secondary">
           {activeNavKey === 'proposals' && (

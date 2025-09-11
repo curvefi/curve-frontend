@@ -14,11 +14,11 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const TABS: { value: FormType; label: string }[] = [
+const tabs: { value: FormType; label: string }[] = [
   { value: 'adjust_crv', label: t`Lock More` },
   { value: 'adjust_date', label: t`Extend Lock` },
   { value: 'withdraw', label: t`Withdraw` },
-]
+] as const
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
@@ -32,25 +32,25 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   const canUnlock =
     +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
-  const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
+  const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
   const setData = useCallback(async () => {
-    setFormValues(curve, isLoadingCurve, selectedTab, {}, vecrvInfo, true)
-  }, [curve, isLoadingCurve, vecrvInfo, selectedTab, setFormValues])
+    setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true)
+  }, [curve, isLoadingCurve, vecrvInfo, tab, setFormValues])
 
   useEffect(() => {
     if (canUnlock) {
-      setSelectedTab('withdraw')
+      setTab('withdraw')
     }
     // if user has no locked crv, and is not on the create tab, set the tab to create
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && selectedTab !== 'create') {
-      setSelectedTab('create')
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && tab !== 'create') {
+      setTab('create')
     }
     // if user has locked crv, and is on the create tab, set the tab to adjust_crv
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && selectedTab === 'create') {
-      setSelectedTab('adjust_crv')
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && tab === 'create') {
+      setTab('adjust_crv')
     }
-  }, [selectedTab, vecrvInfo, canUnlock])
+  }, [tab, vecrvInfo, canUnlock])
 
   // fetch locked crv data
   useEffect(() => {
@@ -58,21 +58,14 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, signerAddress, isPageVisible])
 
-  return selectedTab === 'adjust_crv' || selectedTab === 'adjust_date' || selectedTab === 'withdraw' ? (
+  return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
     <>
-      <TabsSwitcher
-        variant="underlined"
-        size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={TABS}
-        fullWidth
-      />
+      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} fullWidth />
 
       <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
-        {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
-        {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
-        {selectedTab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={selectedTab} />}
+        {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}
+        {tab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={tab} />}
+        {tab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={tab} />}
       </Stack>
     </>
   ) : (

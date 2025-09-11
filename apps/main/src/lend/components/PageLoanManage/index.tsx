@@ -4,12 +4,7 @@ import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAd
 import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
 import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
-import type {
-  CollateralFormType,
-  FormType,
-  LeverageFormType,
-  LoanFormType,
-} from '@/lend/components/PageLoanManage/types'
+import type { CollateralFormType, LeverageFormType, LoanFormType } from '@/lend/components/PageLoanManage/types'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
@@ -18,42 +13,38 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
+const tabsLoan: { value: LoanFormType; label: string }[] = [
+  { value: 'loan-increase', label: t`Borrow more` },
+  { value: 'loan-decrease', label: t`Repay` },
+  { value: 'loan-liquidate', label: t`Self-liquidate` },
+] as const
+
+const tabsCollateral: { value: CollateralFormType; label: string }[] = [
+  { value: 'collateral-increase', label: t`Add collateral` },
+  { value: 'collateral-decrease', label: t`Remove collateral` },
+] as const
+
+const tabsLeverage: { value: LeverageFormType; label: string }[] = [
+  { value: 'leverage-borrow-more', label: t`Borrow more` },
+] as const
+
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, market, rChainId, params } = pageProps
   const push = useNavigate()
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const FORM_TYPES = useMemo(() => {
-    const forms: { value: FormType; label: string }[] = [
-      { value: 'loan', label: t`Loan` },
-      { value: 'collateral', label: t`Collateral` },
-    ]
+  const tabs = useMemo(
+    () => [
+      { value: 'loan' as const, label: t`Loan` },
+      { value: 'collateral' as const, label: t`Collateral` },
+      ...(market?.leverage?.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+    ],
+    [market?.leverage],
+  )
 
-    if (market?.leverage?.hasLeverage()) {
-      forms.push({ value: 'leverage', label: t`Leverage` })
-    }
-
-    return forms
-  }, [market?.leverage])
-
-  const TABS_LOAN: { value: LoanFormType; label: string }[] = [
-    { value: 'loan-increase', label: t`Borrow more` },
-    { value: 'loan-decrease', label: t`Repay` },
-    { value: 'loan-liquidate', label: t`Self-liquidate` },
-  ]
-
-  const TABS_COLLATERAL: { value: CollateralFormType; label: string }[] = [
-    { value: 'collateral-increase', label: t`Add collateral` },
-    { value: 'collateral-decrease', label: t`Remove collateral` },
-  ]
-
-  const TABS_LEVERAGE: { value: LeverageFormType; label: string }[] = [
-    { value: 'leverage-borrow-more', label: t`Borrow more` },
-  ]
-
-  type Tabs = LoanFormType | CollateralFormType | LeverageFormType
-  const [selectedTab, setSelectedTab] = useState<Tabs>('loan-increase')
+  type SubTab = LoanFormType | CollateralFormType | LeverageFormType
+  const [subTab, setSubTab] = useState<SubTab>('loan-increase')
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -62,13 +53,13 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
     }
   }, [initCampaignRewards, rChainId, initiated])
 
-  const tabs =
+  const subTabs =
     !rFormType || rFormType === 'loan'
-      ? TABS_LOAN
+      ? tabsLoan
       : rFormType === 'collateral'
-        ? TABS_COLLATERAL
+        ? tabsCollateral
         : rFormType === 'leverage'
-          ? TABS_LEVERAGE
+          ? tabsLeverage
           : []
 
   return (
@@ -78,26 +69,26 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
-        options={FORM_TYPES}
+        options={tabs}
       />
 
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={tabs}
+        value={subTab}
+        onChange={setSubTab}
+        options={subTabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />
 
       <AppFormContentWrapper>
-        {selectedTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
-        {selectedTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
-        {selectedTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
-        {selectedTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
-        {selectedTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
-        {selectedTab === 'leverage-borrow-more' && <LoanBorrowMore isLeverage {...pageProps} />}
+        {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
+        {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+        {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
+        {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
+        {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+        {subTab === 'leverage-borrow-more' && <LoanBorrowMore isLeverage {...pageProps} />}
       </AppFormContentWrapper>
     </AppFormContent>
   )

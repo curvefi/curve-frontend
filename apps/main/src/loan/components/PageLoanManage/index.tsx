@@ -20,10 +20,21 @@ import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 interface Props extends PageLoanManageProps {}
 
+const tabsLoan: { value: LoanFormType; label: string }[] = [
+  { value: 'loan-increase', label: t`Borrow more` },
+  { value: 'loan-decrease', label: t`Repay` },
+  { value: 'loan-liquidate', label: t`Self-liquidate` },
+] as const
+
+const tabsCollateral: { value: CollateralFormType; label: string }[] = [
+  { value: 'collateral-increase', label: t`Add` },
+  { value: 'collateral-decrease', label: t`Remove` },
+] as const
+
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
   const push = useNavigate()
 
-  const FORM_TYPES: { value: string; label: string }[] = [
+  const tabs: { value: string; label: string }[] = [
     { value: 'loan', label: t`Loan` },
     { value: 'collateral', label: t`Collateral` },
     { value: 'deleverage', label: t`Delever` },
@@ -35,21 +46,10 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     }
   })
 
-  const LOAN_TABS: { value: LoanFormType; label: string }[] = [
-    { value: 'loan-increase', label: t`Borrow more` },
-    { value: 'loan-decrease', label: t`Repay` },
-    { value: 'loan-liquidate', label: t`Self-liquidate` },
-  ]
+  type SubTab = LoanFormType | CollateralFormType
+  const [subTab, setSubTab] = useState<SubTab>('loan-increase')
 
-  const COLLATERAL_TABS: { value: CollateralFormType; label: string }[] = [
-    { value: 'collateral-increase', label: t`Add` },
-    { value: 'collateral-decrease', label: t`Remove` },
-  ]
-
-  type Tabs = LoanFormType | CollateralFormType
-  const [selectedTab, setSelectedTab] = useState<Tabs>('loan-increase')
-
-  const tabs = rFormType === 'loan' ? LOAN_TABS : rFormType === 'collateral' ? COLLATERAL_TABS : []
+  const subTabs = rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
@@ -59,26 +59,26 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
-        options={FORM_TYPES}
+        options={tabs}
       />
 
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={tabs}
+        value={subTab}
+        onChange={setSubTab}
+        options={subTabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />
 
       <AppFormContentWrapper>
-        {selectedTab === 'loan-increase' && <LoanIncrease {...formProps} />}
-        {selectedTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
-        {selectedTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
+        {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
+        {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
+        {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
         {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
-        {selectedTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
-        {selectedTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
+        {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
+        {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
       </AppFormContentWrapper>
     </AppFormContent>
   )

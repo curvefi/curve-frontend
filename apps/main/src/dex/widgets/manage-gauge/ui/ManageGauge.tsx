@@ -30,41 +30,31 @@ const ManageGauge = ({ poolId, chainId }: { poolId: string; chainId: ChainId }) 
   )
 
   type Tab = { value: 'add_reward' | 'deposit_reward'; label: string }
-  const TABS: Tab[] = useMemo(() => {
-    const tabs: Tab[] = []
+  const tabs: Tab[] = useMemo(
+    () => [
+      ...(isGaugeManager ? [{ value: 'add_reward' as const, label: t`Add Reward` }] : []),
+      ...(isRewardsDistributor ? [{ value: 'deposit_reward' as const, label: t`Deposit Reward` }] : []),
+    ],
+    [isGaugeManager, isRewardsDistributor],
+  )
 
-    if (isGaugeManager)
-      tabs.push({
-        label: t`Add Reward`,
-        value: 'add_reward',
-      })
-
-    if (isRewardsDistributor)
-      tabs.push({
-        label: t`Deposit Reward`,
-        value: 'deposit_reward',
-      })
-
-    return tabs
-  }, [isGaugeManager, isRewardsDistributor])
-
-  const [selectedTab, setSelectedTab] = useState<Tab['value']>(isGaugeManager ? 'add_reward' : 'deposit_reward')
+  const [tab, setTab] = useState<Tab['value']>(isGaugeManager ? 'add_reward' : 'deposit_reward')
 
   return (
     <>
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={TABS}
+        value={tab}
+        onChange={setTab}
+        options={tabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />
 
       <AppFormContentWrapper>
-        {selectedTab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
-        {selectedTab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
+        {tab === 'add_reward' && <AddRewardToken chainId={chainId} poolId={poolId} />}
+        {tab === 'deposit_reward' && <DepositReward chainId={chainId} poolId={poolId} />}
       </AppFormContentWrapper>
     </>
   )

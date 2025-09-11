@@ -10,13 +10,13 @@ import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveH
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
-const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation` }] as const
+const tabs = [{ value: 'manage', label: t`Manage soft-liquidation` }] as const
 
-const TABS_SUB = [
+const subTabs = [
   { value: 'improve-health', label: t`Improve health` },
   { value: 'close-position', label: t`Close position` },
 ] as const
-type SubTab = (typeof TABS_SUB)[number]['value']
+type SubTab = (typeof subTabs)[number]['value']
 
 export type Props = {
   actionInfos: ActionInfosProps
@@ -25,12 +25,12 @@ export type Props = {
 }
 
 export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePosition }: Props) => {
-  const [subTab, setSubTab] = useState<SubTab>(TABS_SUB[0].value)
+  const [subTab, setSubTab] = useState<SubTab>(subTabs[0].value)
 
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       <Stack>
-        <TabsSwitcher variant="contained" size="medium" value="manage" options={TABS_MAIN} />
+        <TabsSwitcher variant="contained" size="medium" value="manage" options={tabs} />
         <Box
           sx={{
             backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -42,7 +42,7 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePositio
             variant="underlined"
             size="small"
             value={subTab}
-            options={TABS_SUB}
+            options={subTabs}
             onChange={setSubTab}
             fullWidth
           />

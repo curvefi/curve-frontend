@@ -17,33 +17,34 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
+type FormType = 'deposit' | 'withdraw'
+
+const tabs: { value: FormType; label: string }[] = [
+  { value: 'deposit', label: t`Deposit` },
+  { value: 'withdraw', label: t`Withdraw` },
+] as const
+
+const tabsDeposit: { value: VaultDepositFormType; label: string }[] = [
+  { value: 'deposit', label: t`Deposit` },
+  { value: 'stake', label: t`Stake` },
+] as const
+
+const tabsWithdraw: { value: VaultWithdrawFormType; label: string }[] = [
+  { value: 'withdraw', label: t`Withdraw` },
+  { value: 'unstake', label: t`Unstake` },
+  { value: 'claim', label: t`Claim Rewards` },
+] as const
+
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, rChainId, params } = pageProps
   const push = useNavigate()
 
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  type FormType = 'deposit' | 'withdraw'
-  const FORM_TYPES: { value: FormType; label: string }[] = [
-    { value: 'deposit', label: t`Deposit` },
-    { value: 'withdraw', label: t`Withdraw` },
-  ]
+  type SubTab = VaultDepositFormType | VaultWithdrawFormType
+  const [subTab, setSubTab] = useState<SubTab>('deposit')
 
-  const DEPOSIT_TABS: { value: VaultDepositFormType; label: string }[] = [
-    { value: 'deposit', label: t`Deposit` },
-    { value: 'stake', label: t`Stake` },
-  ]
-
-  const WITHDRAW_TABS: { value: VaultWithdrawFormType; label: string }[] = [
-    { value: 'withdraw', label: t`Withdraw` },
-    { value: 'unstake', label: t`Unstake` },
-    { value: 'claim', label: t`Claim Rewards` },
-  ]
-
-  type Tabs = VaultDepositFormType | VaultWithdrawFormType
-  const [selectedTab, setSelectedTab] = useState<Tabs>('deposit')
-
-  const tabs = !rFormType || rFormType === 'deposit' ? DEPOSIT_TABS : WITHDRAW_TABS
+  const subTabs = !rFormType || rFormType === 'deposit' ? tabsDeposit : tabsWithdraw
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -59,25 +60,25 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
         size="medium"
         value={!rFormType ? 'deposit' : rFormType}
         onChange={(key) => push(getVaultPathname(params, rOwmId, key))}
-        options={FORM_TYPES}
+        options={tabs}
       />
 
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
-        onChange={setSelectedTab}
-        options={tabs}
+        value={subTab}
+        onChange={setSubTab}
+        options={subTabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />
 
       <AppFormContentWrapper>
-        {selectedTab === 'deposit' && <VaultDepositMint {...pageProps} rFormType="deposit" />}
-        {selectedTab === 'stake' && <VaultStake {...pageProps} rFormType="stake" />}
-        {selectedTab === 'withdraw' && <VaultWithdrawRedeem {...pageProps} rFormType="withdraw" />}
-        {selectedTab === 'unstake' && <VaultUnstake {...pageProps} rFormType="unstake" />}
-        {selectedTab === 'claim' && <VaultClaim {...pageProps} rFormType="claim" />}
+        {subTab === 'deposit' && <VaultDepositMint {...pageProps} rFormType="deposit" />}
+        {subTab === 'stake' && <VaultStake {...pageProps} rFormType="stake" />}
+        {subTab === 'withdraw' && <VaultWithdrawRedeem {...pageProps} rFormType="withdraw" />}
+        {subTab === 'unstake' && <VaultUnstake {...pageProps} rFormType="unstake" />}
+        {subTab === 'claim' && <VaultClaim {...pageProps} rFormType="claim" />}
       </AppFormContentWrapper>
     </AppFormContent>
   )

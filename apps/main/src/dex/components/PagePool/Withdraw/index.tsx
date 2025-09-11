@@ -9,6 +9,12 @@ import { AppFormContentWrapper } from '@ui/AppForm'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
+const tabs: { value: FormType; label: string }[] = [
+  { value: 'WITHDRAW', label: t`Withdraw` },
+  { value: 'UNSTAKE', label: t`Unstake` },
+  { value: 'CLAIM', label: t`Claim Rewards` },
+] as const
+
 const Withdraw = (transferProps: TransferProps) => {
   const { poolData } = transferProps
 
@@ -16,18 +22,12 @@ const Withdraw = (transferProps: TransferProps) => {
   const resetState = useStore((state) => state.poolWithdraw.resetState)
   const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
 
-  const TABS: { value: FormType; label: string }[] = [
-    { value: 'WITHDRAW', label: t`Withdraw` },
-    { value: 'UNSTAKE', label: t`Unstake` },
-    { value: 'CLAIM', label: t`Claim Rewards` },
-  ]
-
-  const [selectedTab, setSelectedTab] = useState<FormType>('WITHDRAW')
+  const [tab, setTab] = useState<FormType>('WITHDRAW')
 
   const handleTabChange = useCallback(
     (tab: FormType) => {
       setStateByKey('formType', tab)
-      setSelectedTab(tab)
+      setTab(tab)
     },
     [setStateByKey],
   )
@@ -44,9 +44,9 @@ const Withdraw = (transferProps: TransferProps) => {
       <TabsSwitcher
         variant="underlined"
         size="small"
-        value={selectedTab}
+        value={tab}
         onChange={handleTabChange}
-        options={TABS}
+        options={tabs}
         fullWidth
         sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
       />

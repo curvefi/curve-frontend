@@ -191,19 +191,15 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   )
 
   type Tab = { value: TransferFormType; label: string }
-  const ACTION_TABS: Tab[] = useMemo(() => {
-    const tabs: Tab[] = [
+  const tabs: Tab[] = useMemo(
+    (): Tab[] => [
       { value: 'deposit', label: t`Deposit` },
       { value: 'withdraw', label: t`Withdraw` },
       { value: 'swap', label: t`Swap` },
-    ]
-
-    if (isAvailableManageGauge) {
-      tabs.push({ value: 'manage-gauge', label: t`Gauge` })
-    }
-
-    return tabs
-  }, [isAvailableManageGauge])
+      ...(isAvailableManageGauge ? [{ value: 'manage-gauge' as const, label: t`Gauge` }] : []),
+    ],
+    [isAvailableManageGauge],
+  )
 
   const toggleForm = useCallback(
     (updatedFormType: TransferFormType) => {
@@ -263,7 +259,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               size="medium"
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
-              options={ACTION_TABS}
+              options={tabs}
             />
 
             {rFormType === 'swap' ? (

@@ -12,16 +12,16 @@ import VeCrvFees from './VeCrvFeesTable'
 
 type AnalyticsNavSelection = 'fees' | 'holders' | 'locks'
 
+const tabs = [
+  { value: 'fees', label: t`veCRV Fees` },
+  { value: 'holders', label: t`Holders` },
+  { value: 'locks', label: t`Locks` },
+] as const
+
 const Analytics = () => {
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const [navSelection, setNavSelection] = useState<AnalyticsNavSelection>('fees')
-
-  const navItems = [
-    { value: 'fees', label: t`veCRV Fees` },
-    { value: 'holders', label: t`Holders` },
-    { value: 'locks', label: t`Locks` },
-  ] as const
 
   useEffect(() => {
     if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
@@ -39,7 +39,7 @@ const Analytics = () => {
             size="medium"
             value={navSelection}
             onChange={setNavSelection}
-            options={navItems}
+            options={tabs}
           />
 
           <Container variant="secondary">

@@ -19,7 +19,7 @@ type MarketInformationTabsProps = {
  * for this market or with MarketDetails if there is no user position.
  */
 export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInformationTabsProps) => {
-  const TABS: { value: TabValue; label: string; href: string }[] = [
+  const tabs: { value: TabValue; label: string; href: string }[] = [
     { value: 'borrow', label: t`Borrow`, href: hrefs.borrow },
     { value: 'supply', label: t`Supply`, href: hrefs.supply },
   ]
@@ -27,7 +27,7 @@ export const MarketInformationTabs = ({ currentTab, hrefs, children }: MarketInf
 
   return (
     <Box>
-      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="medium" options={TABS} />
+      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="medium" options={tabs} />
       <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>{children}</Box>
     </Box>
   )

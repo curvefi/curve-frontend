@@ -18,6 +18,14 @@ type DepositWithdrawProps = {
   className?: string
 }
 
+const tabs = [
+  { value: 'deposit', label: 'Deposit' },
+  { value: 'withdraw', label: 'Withdraw' },
+  { value: 'swap', label: 'Swap' },
+] as const
+
+type Tab = (typeof tabs)[number]['value']
+
 const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
   const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const setStakingModule = useStore((state) => state.scrvusd.setStakingModule)
@@ -85,14 +93,6 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
     isDepositApprovalReady,
   ])
 
-  const TABS = [
-    { value: 'deposit', label: 'Deposit' },
-    { value: 'withdraw', label: 'Withdraw' },
-    { value: 'swap', label: 'Swap' },
-  ] as const
-
-  type Tab = (typeof TABS)[number]['value']
-
   const handleSelectTab = (tab: Tab) => {
     // Swapping opens a new browser tab for now, temp solution until it can be replaced with an actual tab and an Enzo zap in the future.
     if (tab === 'swap') {
@@ -104,7 +104,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 
   return (
     <Wrapper className={className}>
-      <TabsSwitcher variant="contained" size="medium" value={stakingModule} onChange={handleSelectTab} options={TABS} />
+      <TabsSwitcher variant="contained" size="medium" value={stakingModule} onChange={handleSelectTab} options={tabs} />
 
       <ModuleContainer>
         {stakingModule === 'deposit' ? <DepositModule /> : <WithdrawModule />}

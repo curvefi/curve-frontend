@@ -1,6 +1,5 @@
 import { useEffect, useMemo } from 'react'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
-import type { FormType } from '@/lend/components/PageLoanCreate/types'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
@@ -16,15 +15,13 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const resetState = useStore((state) => state.loanCreate.resetState)
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  // form tabs
-  const FORM_TYPES = useMemo(() => {
-    const forms: { value: FormType; label: string }[] = [{ value: 'create', label: t`Create Loan` }]
-
-    if (market?.leverage.hasLeverage()) {
-      forms.push({ value: 'leverage', label: t`Leverage` })
-    }
-    return forms
-  }, [market?.leverage])
+  const tabs = useMemo(
+    () => [
+      { value: 'create' as const, label: t`Create Loan` },
+      ...(market?.leverage.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+    ],
+    [market?.leverage],
+  )
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -43,7 +40,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           resetState({ rChainId, rOwmId, key })
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
-        options={FORM_TYPES}
+        options={tabs}
       />
 
       <AppFormContentWrapper>

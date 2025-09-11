@@ -9,16 +9,16 @@ import GaugesList from './GaugeList'
 import GaugeVoting from './GaugeVoting'
 import GaugeWeightDistribution from './GaugeWeightDistribution'
 
+const tabs = [
+  { value: 'gaugeList', label: t`Gauges` },
+  { value: 'gaugeVoting', label: t`Voting` },
+] as const
+
 const Gauges = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const { address: userAddress } = useAccount()
 
   const [navSelection, setNavSelection] = useState('gaugeList')
-
-  const navItems = [
-    { value: 'gaugeList', label: t`Gauges` },
-    { value: 'gaugeVoting', label: t`Voting` },
-  ]
 
   useEffect(() => {
     if (isMdUp && navSelection === 'gaugeWeightDistribution') {
@@ -36,7 +36,7 @@ const Gauges = () => {
             size="medium"
             value={navSelection}
             onChange={setNavSelection}
-            options={navItems}
+            options={tabs}
           />
 
           <Container variant="secondary">

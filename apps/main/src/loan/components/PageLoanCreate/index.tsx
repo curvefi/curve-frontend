@@ -26,7 +26,7 @@ const LoanCreate = ({
   const network = networks[rChainId]
   const [isBeta] = useBetaFlag()
 
-  const FORM_TYPES: { value: string; label: string }[] = [
+  const tabs: { value: string; label: string }[] = [
     { label: t`Create Loan`, value: 'create' },
     { label: t`Leverage`, value: 'leverage' },
     ...(isBeta ? [{ label: t`Beta`, value: 'borrow' }] : []),
@@ -53,7 +53,7 @@ const LoanCreate = ({
         size="medium"
         value={!rFormType ? 'create' : rFormType}
         onChange={(key) => handleTabClick(key as FormType)}
-        options={FORM_TYPES}
+        options={tabs}
       />
 
       <AppFormContentWrapper>
