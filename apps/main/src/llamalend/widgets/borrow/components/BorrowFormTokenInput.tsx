@@ -3,7 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import type { BorrowForm, Token } from '../borrow.types'
-import { setValueOptions } from '../borrow.util'
+import { setValueOptions } from '../llama.util'
 
 export const BorrowFormTokenInput = ({
   label,
