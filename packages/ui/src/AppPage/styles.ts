@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
-import BoxHeader from 'ui/src/Box/BoxHeader'
 import { breakpoints } from 'ui/src/utils'
 
 // PAGE STYLES
@@ -95,8 +94,4 @@ const TabContentWrapper = styled(Box)<{ variant?: 'secondary' }>`
 export const AppPageInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
-`
-
-export const AppPageInfoContentHeader = styled(BoxHeader)`
-  padding-left: 1rem;
 `
