@@ -1,6 +1,12 @@
 import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
-import { TabContentWrapper } from 'ui/src/Tab'
+
+const TabContentWrapper = styled(Box)<{ variant?: 'secondary' }>`
+  background-color: ${({ variant }) =>
+    variant === 'secondary'
+      ? `var(--tab-secondary--content--background-color)`
+      : `var(--tab--content--background-color)`};
+`
 
 export const AppFormContentWrapper = styled(TabContentWrapper)`
   align-items: flex-start;
