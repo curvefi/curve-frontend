@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 import TuneIcon from '@mui/icons-material/Tune'
-import { IconButton } from '@mui/material'
+import IconButton, { type IconButtonProps } from '@mui/material/IconButton'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import {
   SlippageSettingsModal,
@@ -8,26 +8,42 @@ import {
   type SlippageSettingsProps,
 } from './SlippageSettingsModal'
 
-type Props = Pick<SlippageSettingsProps, 'maxSlippage'> &
+type SlippageSettingsBaseProps = Pick<SlippageSettingsProps, 'maxSlippage'> &
   Pick<SlippageSettingsCallbacks, 'onSave'> & {
-    /** Custom button component to render instead of the default IconButton */
-    button?: (props: { maxSlippage?: string; onClick: () => void }) => ReactNode
-    /** Custom icon to use in the default IconButton (ignored if button prop is provided) */
-    buttonIcon?: ReactNode
     /** Whether the button should be disabled */
     disabled?: boolean
   }
 
-export const SlippageSettings = ({ disabled = false, button, buttonIcon, maxSlippage, onSave }: Props) => {
+type SlippageSettingsPropsWithButton = SlippageSettingsBaseProps & {
+  /** Custom button component to render instead of the default IconButton */
+  button?: (props: { maxSlippage?: string; onClick: () => void }) => ReactNode
+  /** If `button` is provided, the `buttonIcon` prop must not be provided */
+  buttonIcon?: never
+  /** If `button` is provided, the `buttonSize` prop must not be provided */
+  buttonSize?: never
+}
+
+type SlippageSettingsPropsWithButtonIcon = SlippageSettingsBaseProps & {
+  /** Custom icon to use in the default IconButton */
+  buttonIcon?: ReactNode
+  /** Size of the default `IconButton` (ignored if button prop is provided) */
+  buttonSize?: IconButtonProps['size']
+  /** If `buttonIcon` or `buttonSize` are provided, the `button` prop must not be provided */
+  button?: never
+}
+
+type Props = SlippageSettingsPropsWithButton | SlippageSettingsPropsWithButtonIcon
+
+export const SlippageSettings = ({ disabled = false, maxSlippage, onSave, ...props }: Props) => {
   const [isOpen, , closeModal, toggleModal] = useSwitch()
 
   return (
     <>
-      {button ? (
-        button({ maxSlippage, onClick: toggleModal })
+      {props.button ? (
+        props.button({ maxSlippage, onClick: toggleModal })
       ) : (
-        <IconButton onClick={toggleModal} disabled={disabled} size="small">
-          {buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
+        <IconButton onClick={toggleModal} disabled={disabled} size={props.buttonSize ?? 'small'}>
+          {props.buttonIcon || <TuneIcon color={disabled ? 'disabled' : 'action'} />}
         </IconButton>
       )}
 

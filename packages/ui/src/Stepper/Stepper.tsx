@@ -75,7 +75,7 @@ const Number = styled(Box)<{ status: StepStatus }>`
       return `
         margin-top: -1px;
 
-        color: var(--input--disabled--color);
+        color: var(--button--disabled--color);
         box-shadow: none;
         background-color: var(--button--disabled--background-color);
         border: 1px solid var(--button--disabled--background-color);
