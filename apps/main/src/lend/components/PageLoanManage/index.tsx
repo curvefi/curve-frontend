@@ -24,8 +24,6 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
   { value: 'collateral-decrease', label: t`Remove collateral` },
 ]
 
-const tabsLeverage: TabOption<LeverageFormType>[] = [{ value: 'leverage-borrow-more', label: t`Borrow more` }]
-
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rOwmId, rFormType, market, rChainId, params } = pageProps
   const push = useNavigate()
@@ -43,7 +41,14 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   )
 
   type SubTab = LoanFormType | CollateralFormType | LeverageFormType
-  const [subTab, setSubTab] = useState<SubTab>('loan-increase')
+  const [subTab, setSubTab] = useState<SubTab | undefined>('loan-increase')
+
+  const subTabs = useMemo(
+    () => (!rFormType || rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []),
+    [rFormType],
+  )
+
+  useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -51,15 +56,6 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
       initCampaignRewards(rChainId)
     }
   }, [initCampaignRewards, rChainId, initiated])
-
-  const subTabs =
-    !rFormType || rFormType === 'loan'
-      ? tabsLoan
-      : rFormType === 'collateral'
-        ? tabsCollateral
-        : rFormType === 'leverage'
-          ? tabsLeverage
-          : []
 
   return (
     <AppFormContent variant="primary">
@@ -88,7 +84,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
         {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
         {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
-        {subTab === 'leverage-borrow-more' && <LoanBorrowMore isLeverage {...pageProps} />}
+        {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
       </AppFormContentWrapper>
     </AppFormContent>
   )

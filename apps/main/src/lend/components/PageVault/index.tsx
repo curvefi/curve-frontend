@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import VaultClaim from '@/lend/components/PageVault/VaultClaim'
 import VaultDepositMint from '@/lend/components/PageVault/VaultDepositMint'
 import VaultStake from '@/lend/components/PageVault/VaultStake'
@@ -44,7 +44,8 @@ const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   type SubTab = VaultDepositFormType | VaultWithdrawFormType
   const [subTab, setSubTab] = useState<SubTab>('deposit')
 
-  const subTabs = !rFormType || rFormType === 'deposit' ? tabsDeposit : tabsWithdraw
+  const subTabs = useMemo(() => (!rFormType || rFormType === 'deposit' ? tabsDeposit : tabsWithdraw), [rFormType])
+  useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   // init campaignRewardsMapper
   useEffect(() => {

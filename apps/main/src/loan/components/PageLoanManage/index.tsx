@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -44,7 +44,12 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   type SubTab = LoanFormType | CollateralFormType
   const [subTab, setSubTab] = useState<SubTab>('loan-increase')
 
-  const subTabs = rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []
+  const subTabs = useMemo(
+    () => (rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []),
+    [rFormType],
+  )
+  useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
+
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
