@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
@@ -11,7 +12,7 @@ import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BorrowPreset, type LlamaMarketTemplate } from '../borrow.types'
+import { BorrowPreset, type LlamaMarketTemplate, type OnBorrowFormUpdate } from '../borrow.types'
 import { useBorrowForm } from '../useBorrowForm'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
@@ -21,12 +22,20 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
 
+/**
+ * The contents of the Borrow tab, including the form and all related components.
+ * @param market The market to borrow from.
+ * @param network The network configuration.
+ * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
+ */
 export const BorrowTabContents = ({
   market,
   network,
+  onUpdate,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<NetworkEnum, IChainId>
+  onUpdate: OnBorrowFormUpdate
 }) => {
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
   const {
@@ -47,7 +56,14 @@ export const BorrowTabContents = ({
     tooMuchDebt,
     tooMuchCollateral,
   } = useBorrowForm({ market, network, preset })
-  const setRange = (range: number) => form.setValue('range', range, setValueOptions)
+  const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
+
+  const { userCollateral, range, debt } = values
+  useEffect(
+    // callback the parent form to keep in sync with the chart and other components
+    () => void onUpdate({ userCollateral, debt, range }).then(() => {}),
+    [onUpdate, userCollateral, debt, range],
+  )
 
   return (
     <FormProvider {...form}>

@@ -19,6 +19,9 @@ export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
   debt: number | undefined
 }
 
+export type BorrowFormExternalFields = Pick<BorrowForm, 'range' | 'userCollateral' | 'debt'>
+export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
+
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
 export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
 

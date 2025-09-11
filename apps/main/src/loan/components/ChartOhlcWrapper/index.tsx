@@ -279,6 +279,14 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit],
   )
 
+  console.log({
+    activeKeyLiqRange: useStore((state) => state.loanCreate.activeKeyLiqRange),
+    liqRangesMapper,
+    formValues,
+    liqRanges: liqRangesMapper?.[formValues.n!],
+    isEditLiqRange: useStore((state) => state.loanCreate.isEditLiqRange),
+  })
+
   if (ohlcDataUnavailable) {
     setChartExpanded(false)
 
