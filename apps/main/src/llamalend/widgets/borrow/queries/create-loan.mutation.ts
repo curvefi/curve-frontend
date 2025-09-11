@@ -12,6 +12,7 @@ import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { userBalancesQueryKey } from '../queries/user-balances.query'
 import { borrowFormValidationSuite } from './borrow.validation'
+import { assert } from '@ui-kit/utils'
 
 type BorrowMutationContext = {
   chainId: IChainId
@@ -22,13 +23,6 @@ type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 
 type CreateLoanOptions = BorrowMutationContext & {
   reset: () => void
-}
-
-function assert<T>(value: T, message: string) {
-  if (!value) {
-    throw new Error(message)
-  }
-  return value
 }
 
 const getCreateMethods = (poolId: string, leverage: number | undefined) => {

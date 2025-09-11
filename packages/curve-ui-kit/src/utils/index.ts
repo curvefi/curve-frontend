@@ -43,3 +43,10 @@ export async function copyToClipboard(text: string) {
     return false
   }
 }
+
+export function assert<T>(value: T, message: string) {
+  if (!value) {
+    throw new Error(message)
+  }
+  return value
+}

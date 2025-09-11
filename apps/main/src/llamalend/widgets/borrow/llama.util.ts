@@ -1,22 +1,17 @@
-import { ZeroAddress } from 'ethers'
 import type { SetValueConfig } from 'react-hook-form'
+import { zeroAddress } from 'viem'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
+import { assert } from '@ui-kit/utils'
 import { BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
 
-export function getLlamaMarket(id: string): LlamaMarketTemplate {
-  const lib = requireLib('llamaApi')
-  const mintMarket = lib.getMintMarket(id)
-  if (mintMarket) return mintMarket
-  const lendMarket = lib.getLendMarket(id)
-  if (lendMarket) return lendMarket
-  throw new Error(`Market with ID ${id} not found`)
-}
+export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
+  assert(lib.getMintMarket(id) ?? lib.getLendMarket(id), `Market with ID ${id} not found`)
 
 export const hasLeverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate
     ? market.leverage.hasLeverage()
-    : market.leverageZap !== ZeroAddress || market.leverageV2.hasLeverage()
+    : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
 
 export const BORROW_PRESET_RANGES = {
   [BorrowPreset.Safe]: 50,
