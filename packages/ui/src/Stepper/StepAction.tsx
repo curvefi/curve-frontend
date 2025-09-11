@@ -38,13 +38,6 @@ const StepAction = ({ step }: { step: Step }) => {
         onClick={'onClick' in step ? step.onClick : overlayTriggerState.open}
         fullWidth
         size="medium"
-        sx={{
-          // Not the default disabled styling, but we gotta match it with the legacy stepper style for the time being
-          '&.Mui-disabled': {
-            color: 'var(--input--disabled--color)',
-            backgroundColor: 'var(--button--disabled--background-color)',
-          },
-        }}
       >
         {content}
       </Button>
