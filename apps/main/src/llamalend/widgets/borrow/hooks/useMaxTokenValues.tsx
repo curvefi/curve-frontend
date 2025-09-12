@@ -3,9 +3,9 @@ import type { UseFormReturn } from 'react-hook-form'
 import { type Address, formatUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import type { BorrowForm, BorrowFormQueryParams } from '@/llamalend/widgets/borrow/borrow.types'
-import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
 import { useMaxBorrowReceive } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import type { GetBalanceReturnType } from '@wagmi/core'
+import { setValueOptions } from '../llama.util'
 
 /** Convert user collateral from GetBalanceReturnType to number */
 const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
