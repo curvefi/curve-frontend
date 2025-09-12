@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import type { OnBorrowFormUpdate } from '@/llamalend/widgets/borrow/borrow.types'
 import { BorrowTabContents } from '@/llamalend/widgets/borrow/components/BorrowTabContents'
 import networks from '@/loan/networks'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
@@ -16,10 +17,12 @@ const MARKET_ID = 'lbtc'
 const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
+const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
+
 function BorrowTabTest() {
   const { llamaApi } = useConnection()
   const market = useMemo(() => llamaApi?.getMintMarket(MARKET_ID), [llamaApi])
-  return market ? <BorrowTabContents market={market} network={network} /> : <Skeleton />
+  return market ? <BorrowTabContents market={market} network={network} onUpdate={onUpdate} /> : <Skeleton />
 }
 
 describe('BorrowTabContents Component Tests', () => {
