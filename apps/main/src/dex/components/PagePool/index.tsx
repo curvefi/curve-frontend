@@ -81,6 +81,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
+  const fetchUserPoolList = useStore((state) => state.user.fetchUserPoolList)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
@@ -166,10 +167,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   // fetch user pool info
   useEffect(() => {
-    if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+    if (curve && !curve.isNoRPC && poolId && signerAddress) {
+      void fetchUserPoolList(curve).then(() => {
+        void fetchUserPoolInfo(curve, poolId)
+      })
     }
-  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
+  }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo, fetchUserPoolList])
 
   const isRewardsDistributor = useMemo(
     () =>
