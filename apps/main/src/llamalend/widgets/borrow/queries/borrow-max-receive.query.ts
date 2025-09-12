@@ -1,8 +1,8 @@
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { borrowFormValidationGroup } from './borrow.validation'
@@ -65,11 +65,11 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
     leverage,
     range,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
-    const [market, type] = getLlamaMarket(poolId)
+    const market = getLlamaMarket(poolId)
     if (!leverage) {
       return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
     }
-    if (type === LlamaMarketType.Lend) {
+    if (market instanceof LendMarketTemplate) {
       return convertNumbers(await market.leverage.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
     if (market.leverageV2.hasLeverage()) {
