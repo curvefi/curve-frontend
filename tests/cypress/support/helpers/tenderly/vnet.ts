@@ -20,6 +20,17 @@ import {
   type GetVirtualTestnetResponse,
 } from './vnet-get'
 
+/**
+ * Extracts the Admin and Public RPC URLs from a Tenderly virtual testnet response.
+ * @param vnet The virtual testnet response object
+ */
+export const getRpcUrls = (
+  vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse,
+) => ({
+  adminRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')!.url,
+  publicRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')!.url,
+})
+
 export function createTestWagmiConfigFromVNet({
   vnet,
   privateKey = generatePrivateKey(),
@@ -27,11 +38,7 @@ export function createTestWagmiConfigFromVNet({
   vnet: CreateVirtualTestnetResponse | GetVirtualTestnetResponse | ForkVirtualTestnetResponse
   privateKey?: Hex
 }) {
-  const rpcUrl = vnet.rpcs.find((rpc) => rpc.name === 'Admin RPC')?.url
-  const explorerUrl = vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')?.url
-
-  if (!rpcUrl) throw new Error('RPC URL is undefined')
-
+  const { adminRpcUrl: rpcUrl, publicRpcUrl: explorerUrl } = getRpcUrls(vnet)
   return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl })
 }
 

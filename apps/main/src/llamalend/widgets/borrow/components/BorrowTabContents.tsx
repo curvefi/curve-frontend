@@ -1,8 +1,7 @@
 import { useCallback, useEffect } from 'react'
+import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
-import { setValueOptions } from '@/llamalend/widgets/borrow/borrow.util'
-import { AdvancedBorrowOptions } from '@/llamalend/widgets/borrow/components/AdvancedBorrowOptions'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -13,7 +12,9 @@ import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPreset, type LlamaMarketTemplate, type OnBorrowFormUpdate } from '../borrow.types'
+import { setValueOptions } from '../llama.util'
 import { useBorrowForm } from '../useBorrowForm'
+import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
@@ -121,17 +122,7 @@ export const BorrowTabContents = ({
             txHash={txHash}
           />
 
-          <Box
-            // this box wraps around the accordion and makes it look like the accordion is out of the tab
-            // in the future we could move the info out of the card, but this is simpler during refactoring the old page
-            sx={{
-              backgroundColor: 'var(--page--background-color)',
-              marginInline: 'calc(-1 * var(--spacing-3))',
-              marginBlockEnd: 'calc(-1 * var(--spacing-3))',
-              paddingBlockStart: 'var(--spacing-3)',
-              position: 'relative',
-            }}
-          >
+          <OutOfCardBox>
             <BorrowActionInfoAccordion
               params={params}
               values={values}
@@ -139,9 +130,29 @@ export const BorrowTabContents = ({
               tooMuchDebt={tooMuchDebt}
               onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
             />
-          </Box>
+          </OutOfCardBox>
         </Stack>
       </form>
     </FormProvider>
   )
 }
+
+/**
+ * A box that visually breaks out of the card/tab it's contained in.
+ * Used to wrap the accordion at the bottom of the borrow form.
+ * We should move the accordion out of the card later, this is simpler during refactoring the old page
+ */
+export const OutOfCardBox = ({ children }: { children: ReactNode }) => (
+  <Box
+    sx={{
+      // we use the legacy variables to match what the parent <AppFormContentWrapper> is using
+      backgroundColor: 'var(--page--background-color)',
+      marginInline: 'calc(-1 * var(--spacing-3))',
+      marginBlockEnd: 'calc(-1 * var(--spacing-3))',
+      paddingBlockStart: 'var(--spacing-3)',
+      position: 'relative',
+    }}
+  >
+    {children}
+  </Box>
+)

@@ -4,6 +4,7 @@ import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
+import type { MakeOptional } from '@ui-kit/types/util'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
 export type CompleteBorrowForm = {
@@ -16,10 +17,7 @@ export type CompleteBorrowForm = {
 }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
-export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
-  userCollateral: number | undefined
-  debt: number | undefined
-}
+export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'>
 
 /** Fields of the borrow form that are passed back to the origin application for synchronization */
 export type BorrowFormExternalFields = Pick<BorrowForm, 'range' | 'userCollateral' | 'debt'>

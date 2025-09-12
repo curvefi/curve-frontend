@@ -1,8 +1,8 @@
-import { maxBorrowReceiveKey } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 export const { useQuery: useBorrowHealth } = queryFactory({
@@ -24,9 +24,9 @@ export const { useQuery: useBorrowHealth } = queryFactory({
     leverage,
     range,
   }: BorrowFormQuery): Promise<number> => {
-    const [market, type] = getLlamaMarket(poolId)
+    const market = getLlamaMarket(poolId)
     if (!leverage) return +(await market.createLoanHealth(userCollateral, debt, range))
-    if (type === LlamaMarketType.Lend) {
+    if (market instanceof LendMarketTemplate) {
       return +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
     }
     if (market.leverageV2.hasLeverage()) {
