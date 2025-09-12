@@ -1,24 +1,45 @@
+import type { SetValueConfig } from 'react-hook-form'
 import type { Address } from 'viem'
+import { zeroAddress } from 'viem'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
 import { LlamaMarketTemplate } from '@/llamalend/widgets/borrow/borrow.types'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { LlamaMarketType } from '@ui-kit/types/market'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { assert, CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { BorrowPreset } from './borrow.types'
 
-type MarketAndType =
-  | [market: MintMarketTemplate, type: LlamaMarketType.Mint]
-  | [market: LendMarketTemplate, type: LlamaMarketType.Lend]
+/**
+ * Gets a Llama market (either a mint or lend market) by its ID.
+ * Throws an error if no market is found with the given ID.
+ */
+export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
+  assert(lib.getMintMarket(id) ?? lib.getLendMarket(id), `Market with ID ${id} not found`)
 
-export function getLlamaMarket(id: string): MarketAndType {
-  const lib = requireLib('llamaApi')
-  const mintMarket = lib.getMintMarket(id)
-  if (mintMarket) return [mintMarket, LlamaMarketType.Mint] as const
-  const lendMarket = lib.getLendMarket(id)
-  if (lendMarket) return [lendMarket, LlamaMarketType.Lend] as const
-  throw new Error(`Market with ID ${id} not found`)
+/**
+ * Checks if a market supports leverage or not. A market supports leverage if:
+ * - Lend Market and its `leverage` property has leverage
+ * - Mint Market and either its `leverageZap` is not the zero address or its `leverageV2` property has leverage
+ */
+export const hasLeverage = (market: LlamaMarketTemplate) =>
+  market instanceof LendMarketTemplate
+    ? market.leverage.hasLeverage()
+    : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
+
+/**
+ * Predefined borrow preset ranges in percentage (previously N in the UI)
+ */
+export const BORROW_PRESET_RANGES = {
+  [BorrowPreset.Safe]: 50,
+  [BorrowPreset.MaxLtv]: 4,
+  [BorrowPreset.Custom]: 10,
 }
+
+/**
+ * Options to pass to react-hook-form's setValue to trigger validation, dirty and touch states.
+ */
+export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+
 export const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
   market instanceof MintMarketTemplate
     ? {

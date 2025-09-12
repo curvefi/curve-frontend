@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react'
+import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
@@ -8,7 +8,7 @@ export type Config = ResolvedRegister['config']
 
 type Props = {
   config: Config
-  children: ReactNode
+  children: ReactElement
   autoConnect: boolean
 }
 
@@ -24,7 +24,7 @@ export function ClientWrapper({ config, children, autoConnect }: Props) {
   // Create a minimal router for testing environment
   const router = createRouter({
     routeTree: createRootRoute({
-      component: () => children as React.ReactElement,
+      component: () => children,
     }),
     history: createMemoryHistory({
       initialEntries: ['/'],

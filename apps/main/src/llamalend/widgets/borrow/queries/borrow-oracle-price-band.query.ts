@@ -6,9 +6,6 @@ import { getLlamaMarket } from '../llama.util'
 export const { useQuery: useBorrowOraclePriceBand } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams<IChainId>) =>
     [...rootKeys.pool({ chainId, poolId }), 'borrow-oracle-price-band'] as const,
-  queryFn: async ({ poolId }: PoolQuery<IChainId>): Promise<number> => {
-    const [market] = getLlamaMarket(poolId)
-    return await market.oraclePriceBand()
-  },
+  queryFn: ({ poolId }: PoolQuery<IChainId>): Promise<number> => getLlamaMarket(poolId).oraclePriceBand(),
   validationSuite: llamaApiValidationSuite,
 })

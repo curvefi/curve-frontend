@@ -8,11 +8,12 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
+import { SLIPPAGE_PRESETS } from '@ui-kit/features/slippage-settings/ui/slippage.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { type BorrowForm, BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
-import { BORROW_PRESET_RANGES, DEFAULT_SLIPPAGE } from './borrow.util'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
+import { BORROW_PRESET_RANGES } from './llama.util'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { useCreateLoanMutation } from './queries/create-loan.mutation'
 
@@ -37,7 +38,7 @@ export function useBorrowForm({
       userBorrowed: 0,
       debt: undefined,
       leverage: undefined,
-      slippage: DEFAULT_SLIPPAGE,
+      slippage: SLIPPAGE_PRESETS.STABLE,
       range: BORROW_PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,

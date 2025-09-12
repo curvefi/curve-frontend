@@ -4,6 +4,7 @@ import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
+import type { MakeOptional } from '@ui-kit/types/util'
 
 export type CompleteBorrowForm = {
   userCollateral: number
@@ -14,12 +15,8 @@ export type CompleteBorrowForm = {
   leverage: number | undefined
 }
 
-export type BorrowForm = Omit<CompleteBorrowForm, 'debt' | 'userCollateral'> & {
-  userCollateral: number | undefined
-  debt: number | undefined
-  maxDebt: number | undefined
-  maxCollateral: number | undefined
-}
+type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
 export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>

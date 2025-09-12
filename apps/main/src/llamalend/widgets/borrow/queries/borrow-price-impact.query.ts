@@ -1,5 +1,5 @@
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { LlamaMarketType } from '@ui-kit/types/market'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { borrowQueryValidationSuite } from './borrow.validation'
@@ -23,10 +23,9 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
     debt = 0,
     leverage,
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
-    const [market, type] = getLlamaMarket(poolId)
+    const market = getLlamaMarket(poolId)
     if (!leverage) return 0 // no price impact without leverage
-    // todo: check if it's correct to pass userCollateral to the old markets and userBorrowed to the new ones
-    return type === LlamaMarketType.Lend
+    return market instanceof LendMarketTemplate
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))
       : market.leverageV2.hasLeverage()
         ? +(await market.leverageV2.createLoanPriceImpact(userBorrowed, debt))
