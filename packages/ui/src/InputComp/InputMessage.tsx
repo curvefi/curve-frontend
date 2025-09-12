@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useInputContext } from '@/InputComp/InputContext'
 import Icon from 'ui/src/Icon/Icon'
-import { useInputContext } from './InputProvider'
 import type { InputVariant } from './types'
 
 export interface InputMessageProps {

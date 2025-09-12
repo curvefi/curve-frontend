@@ -1,20 +1,6 @@
-import { createContext, Dispatch, ReactNode, SetStateAction, useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { styled } from 'styled-components'
-
-export type Position = { width: number; top: number }
-
-interface ContextProps extends TabSlideProps {
-  sliderPosition: Position
-  setSliderPosition: Dispatch<SetStateAction<Position>>
-}
-
-export const Context = createContext<ContextProps>(undefined!)
-
-type TabSlideProps = {
-  className?: string
-  activeIdx: number
-  disabled?: boolean
-}
+import { TabSlideContext, TabSlideProps, Position } from './TabSlideContext'
 
 type SlideTabsWrapperProps = TabSlideProps & { children: ReactNode }
 
@@ -22,7 +8,7 @@ const SlideTabsWrapper = ({ className, activeIdx, disabled, children }: SlideTab
   const [sliderPosition, setSliderPosition] = useState<Position>({ width: 0, top: 0 })
 
   const value = { activeIdx, className, disabled, sliderPosition, setSliderPosition }
-  return <Context.Provider value={value}>{children}</Context.Provider>
+  return <TabSlideContext value={value}>{children}</TabSlideContext>
 }
 
 export const Slider = styled.div`

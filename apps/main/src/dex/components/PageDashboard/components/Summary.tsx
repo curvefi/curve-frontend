@@ -12,20 +12,15 @@ import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import { SpinnerWrapper } from '@ui/Spinner'
 import Stats from '@ui/Stats'
-import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
-import type { TooltipProps } from '@ui/Tooltip/types'
+import SlideTab from '@ui/TabSlide/SlideTab'
+import SlideTabs from '@ui/TabSlide/SlideTabs'
+import TabSlide from '@ui/TabSlide/SlideTabsWrapper'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 
 type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
-
-export const tooltipProps: TooltipProps = {
-  placement: 'bottom-end',
-  textAlign: 'end',
-  noWrap: true,
-}
 
 const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()

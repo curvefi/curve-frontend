@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
-import { FormWarning } from '@/lend/components/AlertFormWarning'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -9,11 +8,11 @@ import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-detail
 import apiLending from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isGreaterThanOrEqualTo, setMissingProvider } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

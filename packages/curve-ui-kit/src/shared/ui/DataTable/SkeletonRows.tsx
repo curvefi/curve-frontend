@@ -3,8 +3,7 @@ import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
-import { getCellSx, getCellVariant } from '@ui-kit/shared/ui/DataTable/DataCell'
-import { type TableItem, type TanstackTable } from './data-table.utils'
+import { getCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
 
 export const SkeletonRows = <T extends TableItem>({
   table,

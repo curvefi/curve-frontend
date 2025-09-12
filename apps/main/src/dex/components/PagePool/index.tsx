@@ -9,11 +9,9 @@ import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/dex/components/PagePool/Swap'
 import type {
   DetailInfoTypes,
-  EstimatedGas,
   PageTransferProps,
   PoolInfoTab,
   Seed,
-  Slippage,
   TransferFormType,
 } from '@/dex/components/PagePool/types'
 import MySharesStats from '@/dex/components/PagePool/UserDetails'
@@ -53,16 +51,6 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-
-export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
-
-export const DEFAULT_SLIPPAGE: Slippage = {
-  loading: false,
-  slippage: null,
-  isHighSlippage: false,
-  isBonus: false,
-  error: '',
-}
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 

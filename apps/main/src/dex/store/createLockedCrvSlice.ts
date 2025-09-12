@@ -17,8 +17,9 @@ import {
   FnStepResponse,
 } from '@/dex/types/main.types'
 import { formatNumber, shortenAccount } from '@ui/utils'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { setMissingProvider } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
 import type { GetState, SetState } from 'zustand'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type {
   FormLpTokenExpected,
   FormStatus,
@@ -15,7 +14,12 @@ import {
   DEFAULT_FORM_VALUES,
 } from '@/dex/components/PagePool/Deposit/utils'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
-import { getAmountsError, parseAmountsForAPI } from '@/dex/components/PagePool/utils'
+import {
+  DEFAULT_ESTIMATED_GAS,
+  DEFAULT_SLIPPAGE,
+  getAmountsError,
+  parseAmountsForAPI,
+} from '@/dex/components/PagePool/utils'
 import type { Amount } from '@/dex/components/PagePool/utils'
 import curvejsApi from '@/dex/lib/curvejs'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
@@ -32,9 +36,10 @@ import {
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { setMissingProvider } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

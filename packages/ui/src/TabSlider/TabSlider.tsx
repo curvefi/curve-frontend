@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { SlideTab, SlideTabs } from '../TabSlide'
+import SlideTab from '@ui/TabSlide/SlideTab'
+import SlideTabs from '@ui/TabSlide/SlideTabs'
 import TabSlide from '../TabSlide/SlideTabsWrapper'
 
 export const StyledTabSlide = styled(TabSlide)`

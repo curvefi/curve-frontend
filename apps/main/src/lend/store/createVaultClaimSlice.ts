@@ -6,7 +6,8 @@ import { DEFAULT_FORM_STATUS } from '@/lend/components/PageVault/VaultClaim/util
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep, merge } = lodash

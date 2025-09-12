@@ -1,9 +1,8 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
-import { DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
-import type { Amount } from '@/dex/components/PagePool/utils'
+import { type Amount, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
 import { parseAmountsForAPI } from '@/dex/components/PagePool/utils'
 import type { FormStatus, FormType, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dex/components/PagePool/Withdraw/utils'
@@ -19,8 +18,8 @@ import {
   PoolData,
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
-import { shortenAddress } from '@ui-kit/utils'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider, shortenAddress } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

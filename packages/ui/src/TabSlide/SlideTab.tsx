@@ -1,7 +1,8 @@
 import { useContext, useEffect } from 'react'
 import { styled } from 'styled-components'
+import { TabSlideContext } from '@/TabSlide/TabSlideContext'
 import { breakpoints } from 'ui/src/utils/responsive'
-import { Context, Slider } from './SlideTabsWrapper'
+import { Slider } from './SlideTabsWrapper'
 
 type TabProps = {
   className?: string
@@ -15,7 +16,7 @@ type TabProps = {
 }
 
 export const SlideTab = ({ className, disabled, label, tabIdx, tabLeft, tabWidth, tabTop, onChange }: TabProps) => {
-  const { activeIdx, setSliderPosition } = useContext(Context)
+  const { activeIdx, setSliderPosition } = useContext(TabSlideContext)
   const checked = tabIdx === activeIdx
 
   useEffect(() => {

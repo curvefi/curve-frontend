@@ -9,7 +9,8 @@ import type { TransferProps } from '@/dex/components/PagePool/types'
 import useStore from '@/dex/store/useStore'
 import { isValidAddress } from '@/dex/utils'
 import AlertBox from '@ui/AlertBox'
-import { SlideTab, SlideTabs } from '@ui/TabSlide'
+import SlideTab from '@ui/TabSlide/SlideTab'
+import SlideTabs from '@ui/TabSlide/SlideTabs'
 import { t } from '@ui-kit/lib/i18n'
 
 const Deposit = ({ hasDepositAndStake, ...transferProps }: TransferProps & { hasDepositAndStake: boolean }) => {

@@ -4,7 +4,6 @@ import {
   SummaryTitle,
   SummaryInnerContent,
   SummarySpinnerWrapper,
-  tooltipProps,
 } from '@/dex/components/PageDashboard/components/Summary'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import Spinner from '@ui/Spinner'
@@ -12,6 +11,7 @@ import Stats from '@ui/Stats'
 import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { tooltipProps } from '../utils'
 
 type AllTotal = {
   totalUsd: number

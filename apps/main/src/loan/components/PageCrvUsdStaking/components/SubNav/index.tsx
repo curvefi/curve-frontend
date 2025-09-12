@@ -2,7 +2,7 @@ import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 
-export const SUB_NAV_ITEMS = [
+const SUB_NAV_ITEMS = [
   { key: 'deposit', label: 'Deposit' },
   { key: 'withdraw', label: 'Withdraw' },
   { key: 'swap', label: 'Swap' },
