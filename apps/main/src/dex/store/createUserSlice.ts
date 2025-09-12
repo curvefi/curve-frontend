@@ -151,6 +151,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         return fetchedWalletBalances
       } catch (error) {
         get()[sliceKey].setStateByKey('error', 'error-get-pool-wallet-balances')
+        get()[sliceKey].setStateByKey('walletBalancesLoading', false)
         return fetchedWalletBalances
       }
     },
