@@ -11,6 +11,7 @@ import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPreset, type LlamaMarketTemplate } from '../borrow.types'
+import { hasLeverage } from '../llama.util'
 import { setValueOptions } from '../llama.util'
 import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
@@ -18,6 +19,7 @@ import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
 import { InputDivider } from './InputDivider'
+import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing } = SizesAndSpaces
@@ -46,7 +48,7 @@ export const BorrowTabContents = ({
     tooMuchDebt,
   } = useBorrowForm({ market, network, preset })
   const setRange = (range: number) => form.setValue('range', range, setValueOptions)
-
+  const marketHasLeverage = market && hasLeverage(market)
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
@@ -74,6 +76,15 @@ export const BorrowTabContents = ({
             />
           </Stack>
 
+          {marketHasLeverage && (
+            <LeverageInput
+              leverageEnabled={values.leverageEnabled}
+              form={form}
+              params={params}
+              maxLeverage={maxTokenValues.maxLeverage}
+            />
+          )}
+
           <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
             <Collapse in={preset === BorrowPreset.Custom}>
               <AdvancedBorrowOptions
@@ -82,6 +93,9 @@ export const BorrowTabContents = ({
                 params={params}
                 setRange={setRange}
                 enabled={preset === BorrowPreset.Custom}
+                network={network.id}
+                collateralToken={collateralToken}
+                borrowToken={borrowToken}
               />
             </Collapse>
           </LoanPresetSelector>

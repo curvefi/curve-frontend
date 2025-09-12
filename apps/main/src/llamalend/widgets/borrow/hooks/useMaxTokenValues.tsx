@@ -3,6 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { type Address, formatUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import type { BorrowForm, BorrowFormQueryParams } from '@/llamalend/widgets/borrow/borrow.types'
+import { useMaxLeverage } from '@/llamalend/widgets/borrow/queries/borrow-max-leverage.query'
 import { useMaxBorrowReceive } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import type { GetBalanceReturnType } from '@wagmi/core'
 import { setValueOptions } from '../llama.util'
@@ -35,14 +36,26 @@ export function useMaxTokenValues(
     chainId: params.chainId || undefined,
   })
   const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
+  // const {
+  //   data: expectedCollateral,
+  //   isError: isErrorExpectedCollateral,
+  //   isLoading: isLoadingExpectedCollateral,
+  // } = useBorrowExpectedCollateral(params)
+  const {
+    data: maxTotalLeverage,
+    isError: isErrorMaxLeverage,
+    isLoading: isLoadingMaxLeverage,
+  } = useMaxLeverage(params)
 
-  const maxDebt = maxBorrow?.maxDebt
+  const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
   const maxCollateral =
-    userBalance && maxBorrow?.maxTotalCollateral
-      ? Math.min(convertBalance(userBalance ?? {}), maxBorrow?.maxTotalCollateral)
+    userBalance && maxTotalCollateral
+      ? Math.min(convertBalance(userBalance ?? {}), maxTotalCollateral)
       : userBalance
         ? convertBalance(userBalance ?? {})
-        : maxBorrow?.maxTotalCollateral
+        : maxTotalCollateral
+
+  const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 
   useEffect(() => form.setValue('maxDebt', maxDebt, setValueOptions), [form, maxDebt])
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
@@ -52,5 +65,8 @@ export function useMaxTokenValues(
     isDebtLoading: !collateralToken || isLoadingMaxBorrow,
     isCollateralError: isErrorMaxBorrow || isBalanceError,
     isDebtError: isErrorMaxBorrow,
+    isLeverageError: isErrorMaxLeverage || isErrorMaxBorrow,
+    isLeverageLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
+    maxLeverage,
   }
 }

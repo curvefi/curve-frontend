@@ -3,6 +3,7 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { assert } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { borrowFormValidationGroup } from './borrow.validation'
@@ -38,35 +39,42 @@ const convertNumbers = ({
 })
 
 export const maxReceiveValidation = createValidationSuite(
-  ({ chainId, userBorrowed, userCollateral, leverage, range, slippage }: BorrowMaxReceiveParams) => {
+  ({ chainId, userBorrowed, userCollateral, range, slippage }: BorrowMaxReceiveParams) => {
     chainValidationGroup({ chainId })
     llamaApiValidationGroup({ chainId })
     borrowFormValidationGroup(
-      { userBorrowed, userCollateral, debt: undefined, leverage, range, slippage },
+      { userBorrowed, userCollateral, debt: undefined, range, slippage },
       { debtRequired: false },
     )
   },
 )
 
 export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverage, range }: BorrowMaxReceiveParams) =>
+  queryKey: ({
+    chainId,
+    poolId,
+    userBorrowed = 0,
+    userCollateral = 0,
+    range,
+    leverageEnabled,
+  }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'max-borrow-receive-v1',
       { userBorrowed },
       { userCollateral },
-      { leverage },
       { range },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
-    leverage,
     range,
+    leverageEnabled,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
     const market = getLlamaMarket(poolId)
-    if (!leverage) {
+    if (!leverageEnabled) {
       return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
     }
     if (market instanceof LendMarketTemplate) {
@@ -76,9 +84,9 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
       return convertNumbers(await market.leverageV2.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
 
-    console.assert(userBorrowed === 0, `userBorrowed must be 0 for non-leverage mint markets`)
+    assert(userBorrowed === 0, `userBorrowed must be 0 for non-leverage mint markets`)
     const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
-    const { maxBorrowable, maxCollateral, leverage: currentLeverage, routeIdx } = result
+    const { maxBorrowable, maxCollateral, leverage, routeIdx } = result
     return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage: '9' })
   },
   staleTime: '1m',
