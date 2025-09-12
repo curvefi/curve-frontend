@@ -1,7 +1,7 @@
 import { styled } from 'styled-components'
 import networks from '@/lend/networks'
 import Box from '@ui/Box'
-import Tooltip from '@ui/Tooltip'
+import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
 import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'

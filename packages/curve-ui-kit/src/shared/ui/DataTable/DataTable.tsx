@@ -5,12 +5,12 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { SkeletonRows } from '@ui-kit/shared/ui/DataTable/SkeletonRows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
+import { SkeletonRows } from './SkeletonRows'
 
 function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
   const { columnFilters } = table.getState()

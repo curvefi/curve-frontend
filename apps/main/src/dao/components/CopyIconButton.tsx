@@ -1,5 +1,5 @@
 import Icon from '@ui/Icon'
-import TooltipButton from '@ui/Tooltip'
+import TooltipButton from '@ui/Tooltip/TooltipButton'
 import { copyToClipboard } from '@ui-kit/utils'
 
 type CopyIconButtonProps = {

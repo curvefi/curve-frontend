@@ -4,7 +4,8 @@ import Stack from '@mui/material/Stack'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { PegKeeperDetails, Pool } from '../types'
-import { PegChip, pegStatus } from './PegChip'
+import { pegStatus } from './peg-status.util'
+import { PegChip } from './PegChip'
 
 const { Spacing } = SizesAndSpaces
 

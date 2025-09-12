@@ -8,7 +8,8 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
 import { Chain } from '@ui-kit/utils'
 
 const network = networks[Chain.Ethereum]

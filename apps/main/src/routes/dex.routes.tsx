@@ -1,5 +1,4 @@
 import '@/global-extensions'
-import { use } from 'react'
 import { PageCompensation } from '@/dex/components/PageCompensation/Page'
 import { PageCreatePool } from '@/dex/components/PageCreatePool/Page'
 import { PageDashboard } from '@/dex/components/PageDashboard/Page'
@@ -8,17 +7,9 @@ import { PageIntegrations } from '@/dex/components/PageIntegrations/Page'
 import { PagePool } from '@/dex/components/PagePool/Page'
 import { PagePoolList } from '@/dex/components/PagePoolList/Page'
 import { PageRouterSwap } from '@/dex/components/PageRouterSwap/Page'
-import { useAutoRefresh } from '@/dex/hooks/useAutoRefresh'
-import { useFetchNetworks } from '@/dex/hooks/useFetchNetworks'
-import { getNetworkDefs } from '@/dex/lib/networks'
-import useStore from '@/dex/store/useStore'
-import type { UrlParams } from '@/dex/types/main.types'
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { DexLayout } from '@/dex/DexLayout'
 import Skeleton from '@mui/material/Skeleton'
-import { createRoute, Outlet } from '@tanstack/react-router'
-import { useParams } from '@ui-kit/hooks/router'
-import { useHydration } from '@ui-kit/hooks/useHydration'
-import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
+import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 import { rootRoute } from './root.routes'
@@ -26,21 +17,7 @@ import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
 
-function DexLayout() {
-  const networks = use(getNetworkDefs())
-  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
-  const isFetched = useFetchNetworks()
-  const hydrate = useStore((s) => s.hydrate)
-  const network = recordValues(networks).find((n) => n.id === networkId)!
-  const isHydrated = useHydration('curveApi', hydrate, network.chainId)
-
-  useRedirectToEth(network, networkId, isHydrated)
-  useAutoRefresh(network)
-
-  return isFetched && isHydrated && <Outlet />
-}
-
-export const dexLayoutRoute = createRoute({
+const dexLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'dex',
   component: DexLayout,

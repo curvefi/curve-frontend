@@ -1,6 +1,6 @@
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
-import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable'
+import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns.enum'
 

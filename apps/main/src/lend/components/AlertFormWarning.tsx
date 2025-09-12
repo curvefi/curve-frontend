@@ -1,17 +1,8 @@
 import { useMemo } from 'react'
-import { AlertType } from '@/lend/types/lend.types'
-import AlertBox from '@ui/AlertBox'
+import { AlertType, FormWarning } from '@/lend/types/lend.types'
+import AlertBox from '@ui/AlertBox/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
-
-export enum FormWarning {
-  // loan deleverage
-  FullRepaymentOnly = 'warning-full-repayment-only',
-
-  IsPayoffAmount = 'warning-is-payoff-amount',
-  NotInLiquidationMode = 'warning-not-in-liquidation-mode',
-  NotEnoughCrvusd = 'warning-not-enough-crvusd',
-}
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: FormWarning | string

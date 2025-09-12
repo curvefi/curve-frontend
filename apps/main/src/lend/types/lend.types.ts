@@ -263,3 +263,29 @@ export type Order = 'asc' | 'desc'
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
+
+export enum FormWarning {
+  // loan deleverage
+  FullRepaymentOnly = 'warning-full-repayment-only',
+
+  IsPayoffAmount = 'warning-is-payoff-amount',
+  NotInLiquidationMode = 'warning-not-in-liquidation-mode',
+  NotEnoughCrvusd = 'warning-not-enough-crvusd',
+}
+
+export enum FormError {
+  // vault
+
+  // repay
+  FullRepaymentRequired = 'error-full-repayment-required',
+
+  // all
+  API = 'error-api',
+  ExistingLoan = 'error-existing-loan',
+  EstGasApproval = 'error-est-gas-approval',
+  InvalidProvider = 'error-invalid-provider',
+  WalletBalances = 'error-wallet-balances',
+  StepApprove = 'error-step-approve',
+  LiquidationMode = 'error-liquidation-mode',
+  TotalSupply = 'error-total-supply',
+}

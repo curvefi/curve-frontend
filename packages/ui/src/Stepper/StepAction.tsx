@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import Spinner from 'ui/src/Spinner/Spinner'
-import { StepModal } from 'ui/src/Stepper'
+import StepModal from 'ui/src/Stepper/StepModal'
 import type { Step, StepStatus } from 'ui/src/Stepper/types'
 import { isInProgress, taskStepStatusStyles } from './helpers'
 

@@ -18,8 +18,9 @@ import {
 import { getErrorMessage } from '@/dao/utils'
 import { Address } from '@curvefi/prices-api'
 import { shortenAccount } from '@ui/utils'
-import { notify, requireLib, setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

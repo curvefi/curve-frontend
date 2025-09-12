@@ -1,3 +1,4 @@
+import type { EstimatedGas, Slippage } from '@/dex/components/PagePool/types'
 import { Balances } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 
@@ -35,3 +36,13 @@ export function tokensDescription(amounts: Amount[]) {
     .map((a) => `${a.token}`)
     .join(', ')
 }
+
+export const DEFAULT_SLIPPAGE: Slippage = {
+  loading: false,
+  slippage: null,
+  isHighSlippage: false,
+  isBonus: false,
+  error: '',
+}
+
+export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }

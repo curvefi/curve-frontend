@@ -25,7 +25,7 @@ enum ChainType {
  * @param networkId The new network ID
  * @returns The new pathname
  */
-export function getNetworkPathname(pathname: string, networkId: string) {
+function getNetworkPathname(pathname: string, networkId: string) {
   const [, appName = AppNames[0], , ...rest] = pathname.split('/')
   return ['', appName, networkId, ...rest].join('/')
 }

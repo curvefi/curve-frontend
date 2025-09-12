@@ -6,35 +6,15 @@ import { PageProposal } from '@/dao/components/PageProposal/Page'
 import { PageDao } from '@/dao/components/PageProposals/Page'
 import { PageUser } from '@/dao/components/PageUser/Page'
 import { PageVeCrv } from '@/dao/components/PageVeCrv/Page'
-import { useAutoRefresh } from '@/dao/hooks/useAutoRefresh'
-import networks, { networksIdMapper } from '@/dao/networks'
-import useStore from '@/dao/store/useStore'
-import { type UrlParams } from '@/dao/types/dao.types'
+import { DaoLayout } from '@/dao/DaoLayout'
 import Skeleton from '@mui/material/Skeleton'
-import { createRoute, Outlet } from '@tanstack/react-router'
-import { useParams } from '@ui-kit/hooks/router'
-import { useHydration } from '@ui-kit/hooks/useHydration'
-import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
-import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
-
-function DaoLayout() {
-  const { network = 'ethereum' } = useParams<Partial<UrlParams>>()
-  const hydrate = useStore((s) => s.hydrate)
-  const chainId = networksIdMapper[network]
-  const isHydrated = useHydration('curveApi', hydrate, chainId)
-
-  useRedirectToEth(networks[chainId], network, isHydrated)
-  useGasInfoAndUpdateLib({ chainId, networks })
-  useAutoRefresh(isHydrated)
-
-  return <Outlet />
-}
 
 const daoLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

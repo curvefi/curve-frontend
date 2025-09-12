@@ -3,7 +3,6 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"],
       "@ui": ["./index.tsx"],
       "@ui/*": ["./*"],
       "@external-rewards": ["../../external-rewards/src/index.ts"],

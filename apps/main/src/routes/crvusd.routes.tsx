@@ -5,33 +5,15 @@ import CreateLoan from '@/loan/components/PageLoanCreate/Page'
 import ManageLoan from '@/loan/components/PageLoanManage/Page'
 import MarketList from '@/loan/components/PageMarketList/Page'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
-import { networks, networksIdMapper } from '@/loan/networks'
-import useStore from '@/loan/store/useStore'
-import type { UrlParams } from '@/loan/types/loan.types'
+import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import Skeleton from '@mui/material/Skeleton'
-import { createRoute, Outlet } from '@tanstack/react-router'
-import { useParams } from '@ui-kit/hooks/router'
-import { useHydration } from '@ui-kit/hooks/useHydration'
-import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
-import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
 const { MinHeight } = SizesAndSpaces
-
-function CrvUsdClientLayout() {
-  const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
-  const chainId = networksIdMapper[networkId]
-  const hydrate = useStore((s) => s.hydrate)
-  const isHydrated = useHydration('llamaApi', hydrate, chainId)
-
-  useGasInfoAndUpdateLib({ chainId, networks })
-  useRedirectToEth(networks[chainId], networkId, isHydrated)
-
-  return isHydrated && <Outlet />
-}
 
 const crvusdLayoutRoute = createRoute({
   getParentRoute: () => rootRoute,

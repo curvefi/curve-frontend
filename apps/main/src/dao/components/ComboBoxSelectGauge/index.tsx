@@ -9,7 +9,7 @@ import { useUserGaugeWeightVotesQuery } from '@/dao/entities/user-gauge-weight-v
 import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { delayAction } from '@/dao/utils'
-import ModalDialog from '@ui/Dialog'
+import ModalDialog from '@ui/Dialog/ModalDialog'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain } from '@ui-kit/utils/network'

@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 're
 import AlertFormError from '@/dex/components/AlertFormError'
 import AlertSlippage from '@/dex/components/AlertSlippage'
 import DetailInfoEstGas from '@/dex/components/DetailInfoEstGas'
-import { DEFAULT_ESTIMATED_GAS, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool'
 import DetailInfoEstLpTokens from '@/dex/components/PagePool/components/DetailInfoEstLpTokens'
 import DetailInfoSlippage from '@/dex/components/PagePool/components/DetailInfoSlippage'
 import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
@@ -12,12 +11,17 @@ import FieldsDeposit from '@/dex/components/PagePool/Deposit/components/FieldsDe
 import type { FormStatus, FormValues, LoadMaxAmount, StepKey } from '@/dex/components/PagePool/Deposit/types'
 import { DEFAULT_FORM_LP_TOKEN_EXPECTED } from '@/dex/components/PagePool/Deposit/utils'
 import type { Slippage, TransferProps } from '@/dex/components/PagePool/types'
-import { amountsDescription, tokensDescription } from '@/dex/components/PagePool/utils'
+import {
+  amountsDescription,
+  DEFAULT_ESTIMATED_GAS,
+  DEFAULT_SLIPPAGE,
+  tokensDescription,
+} from '@/dex/components/PagePool/utils'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
-import Stepper from '@ui/Stepper'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { notify } from '@ui-kit/features/connect-wallet'
