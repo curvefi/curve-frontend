@@ -113,7 +113,7 @@ const LegendContent = ({ payload }: LegendContentProps) => (
             </svg>
           )}
         </Stack>
-        <Typography variant="bodySRegular" color={index ? 'text.secondary' : 'text.primary'}>
+        <Typography variant="bodySRegular" color="text.secondary">
           {value}
         </Typography>
       </Stack>
