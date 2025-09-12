@@ -17,6 +17,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MAX_RECOMMENDED_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_PRESETS } from './slippage.utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -28,16 +29,8 @@ type FormValues = {
   error?: Error
 }
 
-const SLIPPAGE_PRESETS = {
-  STABLE: 0.1,
-  CRYPTO: 0.5,
-}
-
-const MIN_SLIPPAGE = 0.01
-const MAX_RECOMMENDED_SLIPPAGE = 5
-
-const FORMATTED_01 = formatNumber(SLIPPAGE_PRESETS.STABLE, { style: 'percent', maximumFractionDigits: 1 })
-const FORMATTED_05 = formatNumber(SLIPPAGE_PRESETS.CRYPTO, { style: 'percent', maximumFractionDigits: 1 })
+const FORMATTED_STABLE = formatNumber(SLIPPAGE_PRESETS.STABLE, { style: 'percent', maximumFractionDigits: 1 })
+const FORMATTED_CRYPTO = formatNumber(SLIPPAGE_PRESETS.CRYPTO, { style: 'percent', maximumFractionDigits: 1 })
 
 const inputErrorMapper = {
   'too-high': {
@@ -216,8 +209,16 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
                 gap: Spacing.xs,
               }}
             >
-              <FormControlLabel value={SLIPPAGE_PRESETS.STABLE.toString()} label={FORMATTED_01} control={<Radio />} />
-              <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO.toString()} label={FORMATTED_05} control={<Radio />} />
+              <FormControlLabel
+                value={SLIPPAGE_PRESETS.STABLE.toString()}
+                label={FORMATTED_STABLE}
+                control={<Radio />}
+              />
+              <FormControlLabel
+                value={SLIPPAGE_PRESETS.CRYPTO.toString()}
+                label={FORMATTED_CRYPTO}
+                control={<Radio />}
+              />
             </RadioGroup>
 
             <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
