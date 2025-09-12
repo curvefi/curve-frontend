@@ -111,14 +111,14 @@ export function useBorrowForm<ChainId extends IChainId>({
     maxDebt != null &&
     values.debt &&
     values.debt > maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true, currency: borrowToken?.symbol })}`
+    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true, currency: borrowToken?.symbol })} ${borrowToken?.symbol ?? ''}`
 
   const maxCollateral = userCollateralBalance ?? maxBorrow.data?.maxTotalCollateral
   const maxCollateralError =
     maxCollateral != null &&
     values.userCollateral &&
     values.userCollateral > maxCollateral &&
-    t`Exceeds your balance of ${formatNumber(maxCollateral, { abbreviate: true, currency: collateralToken?.symbol })}`
+    t`Exceeds your balance of ${formatNumber(maxCollateral, { abbreviate: true, currency: collateralToken?.symbol })} ${collateralToken?.symbol ?? ''}`
 
   return {
     form,

@@ -1,0 +1,30 @@
+name: RPC Tests
+on:
+  workflow_dispatch:  # triggered manually
+env:
+  DO_NOT_TRACK: 1
+  IBM_TELEMETRY_DISABLED: true
+permissions:
+  contents: read
+jobs:
+  cypress-component-rpc:
+    name: Cypress component tests with RPC
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+
+      - run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, so we stick to electron
+        working-directory: tests
+        env:
+          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          NODE_ENV: test
+          CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ secrets.TENDERLY_ACCOUNT_SLUG }}
+          CYPRESS_TENDERLY_PROJECT_SLUG: ${{ secrets.TENDERLY_PROJECT_SLUG }}
+          CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}

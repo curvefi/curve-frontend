@@ -82,6 +82,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
           valueColor={getHealthValueColor(health ?? 100, theme)}
           error={healthError}
           loading={healthLoading}
+          testId="borrow-health"
         />
       }
       expanded={isOpen}
@@ -95,27 +96,33 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
           {...(isHighImpact && { valueColor: 'error' })}
           error={priceImpactPercentError}
           loading={priceImpactPercentLoading}
+          testId="borrow-price-impact"
         />
         <ActionInfo
           label={t`Band range`}
           value={bands ? `${bands[0]} to ${bands[1]}` : '?'}
           error={bandsError}
           loading={bandsLoading}
+          testId="borrow-band-range"
         />
         <ActionInfo
           label={t`Price range`}
           value={prices?.map((p) => formatNumber(p, { maximumSignificantDigits: 3 })).join(' - ') ?? '?'}
           error={pricesError}
           loading={pricesLoading}
+          testId="borrow-price-range"
         />
-        <ActionInfo label={t`N`} value={formatNumber(range)} />
+        <ActionInfo label={t`N`} value={formatNumber(range)} testId="borrow-n" />
         <ActionInfo
           label={t`Borrow APR`}
           value={formatPercent(rates?.borrowApr)}
           error={ratesError}
           loading={ratesLoading}
+          testId="borrow-apr"
         />
-        {loanToValue != null && <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} />}
+        {loanToValue != null && (
+          <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} testId="borrow-ltv" />
+        )}
         <ActionInfo
           label={t`Estimated tx cost (step 1 of 2)`}
           value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
@@ -124,7 +131,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
         />
         <ActionInfo
           label={t`Slippage tolerance`}
-          value={formatNumber(slippage)}
+          value={formatPercent(slippage)}
           valueRight={
             <SlippageSettings
               buttonSize="extraSmall"
@@ -133,6 +140,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
               onSave={onSlippageChange}
             />
           }
+          testId="borrow-slippage"
         />
       </Stack>
     </Accordion>
