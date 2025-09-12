@@ -30,6 +30,8 @@ export type TabsSwitcherProps<T> = Pick<TabsProps, 'sx'> & {
   value: T | undefined
   options: readonly TabOption<T>[]
   hideInactiveBorders?: boolean
+  /** Tabs make use of all available width (so they're not as small and compact as possible) */
+  fullWidth?: boolean
   onChange?: (value: T) => void
 }
 
@@ -42,6 +44,8 @@ export const TabsSwitcher = <T extends string | number>({
   value,
   textVariant,
   hideInactiveBorders = false,
+  fullWidth = false,
+  sx,
   ...props
 }: TabsSwitcherProps<T>) => (
   <Tabs
@@ -50,6 +54,7 @@ export const TabsSwitcher = <T extends string | number>({
     value={value ?? false}
     onChange={(_, newValue) => onChange?.(newValue)}
     className={`${TABS_VARIANT_CLASSES[variant]} ${TABS_HEIGHT_CLASSES[size]} ${hideInactiveBorders && HIDE_INACTIVE_BORDERS_CLASS}`}
+    sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
     {options.map(({ value, label, sx, href, ...props }) => (
@@ -57,7 +62,7 @@ export const TabsSwitcher = <T extends string | number>({
         key={value}
         value={value}
         label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-        sx={{ ...sx, whiteSpace: 'nowrap' }}
+        sx={sx}
         {...(href && { href, component: Link })}
         {...props}
       />

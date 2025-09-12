@@ -1,7 +1,5 @@
 import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
-import BoxHeader from 'ui/src/Box/BoxHeader'
-import { TabContentWrapper } from 'ui/src/Tab'
 import { breakpoints } from 'ui/src/utils'
 
 // PAGE STYLES
@@ -44,8 +42,6 @@ export const AppPageFormsWrapper = styled(Box)`
 
   @media (min-width: ${breakpoints.md}rem) {
     align-self: flex-start;
-    min-width: 23.3125rem;
-    max-width: 23.3125rem;
   }
 `
 
@@ -88,19 +84,14 @@ export const AppPageInfoWrapper = styled.div`
   }
 `
 
-export const AppPageInfoTabsWrapper = styled.header`
-  display: flex;
-  justify-content: space-between;
-
-  background-color: var(--box_header--primary--background-color);
-  border-bottom: var(--box_header--border);
+const TabContentWrapper = styled(Box)<{ variant?: 'secondary' }>`
+  background-color: ${({ variant }) =>
+    variant === 'secondary'
+      ? `var(--tab-secondary--content--background-color)`
+      : `var(--tab--content--background-color)`};
 `
 
 export const AppPageInfoContentWrapper = styled(TabContentWrapper)`
   min-height: 14.6875rem; // 235px
   position: relative;
-`
-
-export const AppPageInfoContentHeader = styled(BoxHeader)`
-  padding-left: 1rem;
 `
