@@ -77,6 +77,7 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
         {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
         {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+        {/** Leverage has no subtabs */}
         {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
       </AppFormContentWrapper>
     </Stack>

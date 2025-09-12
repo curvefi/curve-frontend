@@ -70,9 +70,10 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
         {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
         {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
-        {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
         {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
         {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
+        {/** Deleverage has no subtabs */}
+        {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
       </AppFormContentWrapper>
     </Stack>
   )
