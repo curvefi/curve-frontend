@@ -19,7 +19,7 @@ import {
 import { formatNumber, shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

@@ -26,7 +26,7 @@ import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import InputProvider from 'ui/src/InputComp'
 import Chip from 'ui/src/Typography/Chip'
-import { InputProviderProps } from '../InputComp/InputProvider'
+import { type InputProviderProps } from '../InputComp/InputContext'
 
 // See https://react-spectrum.adobe.com/react-aria/useDatePicker.html for details
 function Button(props: AriaButtonProps) {

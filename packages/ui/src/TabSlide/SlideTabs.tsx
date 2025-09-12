@@ -1,7 +1,7 @@
 import { forwardRef, ReactNode, useContext } from 'react'
 import { styled } from 'styled-components'
-import { TabSlideContext } from '@/TabSlide/TabSlideContext'
 import { Slider } from './SlideTabsWrapper'
+import { TabSlideContext } from './TabSlideContext'
 
 const SlideTabs = forwardRef<HTMLDivElement, { children: ReactNode }>(({ children }, ref) => {
   const { className = '', sliderPosition } = useContext(TabSlideContext)

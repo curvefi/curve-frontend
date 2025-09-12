@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { useInputContext } from '@/InputComp/InputContext'
 import Loader from 'ui/src/Loader'
+import { useInputContext } from './InputContext'
 import type { InputLabelProps } from './types'
 
 const InputLabel = ({

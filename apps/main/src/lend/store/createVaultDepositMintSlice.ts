@@ -13,7 +13,7 @@ import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/le
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 type FormType = string | null

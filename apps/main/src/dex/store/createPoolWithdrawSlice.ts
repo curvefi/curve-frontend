@@ -19,7 +19,8 @@ import {
 } from '@/dex/types/main.types'
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider, shortenAddress } from '@ui-kit/utils'
+import { shortenAddress } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

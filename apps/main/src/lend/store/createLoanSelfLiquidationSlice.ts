@@ -12,7 +12,8 @@ import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/type
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { isGreaterThanOrEqualTo, setMissingProvider } from '@ui-kit/utils'
+import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 

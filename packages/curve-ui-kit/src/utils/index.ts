@@ -10,7 +10,6 @@ export * from './network'
 export * from './number'
 export * from './searchText'
 export * from './mui'
-export * from '@ui-kit/utils/store.util'
 
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: unknown }).Cypress)
 export const isBetaDefault =

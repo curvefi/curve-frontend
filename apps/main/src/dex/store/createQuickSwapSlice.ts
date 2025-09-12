@@ -18,7 +18,7 @@ import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

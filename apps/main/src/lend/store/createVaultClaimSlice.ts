@@ -7,7 +7,7 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep, merge } = lodash

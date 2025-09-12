@@ -21,7 +21,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy } = lodash

@@ -1,14 +1,7 @@
 import { styled } from 'styled-components'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-
-const SUB_NAV_ITEMS = [
-  { key: 'deposit', label: 'Deposit' },
-  { key: 'withdraw', label: 'Withdraw' },
-  { key: 'swap', label: 'Swap' },
-] as const
-
-export type SubNavItem = (typeof SUB_NAV_ITEMS)[number]
+import { type SubNavItem } from './nav-items.util'
 
 interface SubNavProps {
   activeKey: string

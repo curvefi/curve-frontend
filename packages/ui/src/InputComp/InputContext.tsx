@@ -1,6 +1,6 @@
 import { createContext, type Dispatch, type ReactNode, type SetStateAction, useContext } from 'react'
-import type { BoxProps } from '@/Box/types'
-import type { InputMinHeight, InputVariant } from '@/InputComp/types'
+import type { BoxProps } from '../Box/types'
+import type { InputMinHeight, InputVariant } from './types'
 
 export interface InputProviderProps extends Omit<BoxProps, 'padding'> {
   children: ReactNode

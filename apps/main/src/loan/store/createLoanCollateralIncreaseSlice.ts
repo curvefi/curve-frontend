@@ -13,7 +13,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
-import { setMissingProvider } from '@ui-kit/utils'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

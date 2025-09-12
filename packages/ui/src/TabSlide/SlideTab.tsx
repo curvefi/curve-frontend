@@ -1,8 +1,8 @@
 import { useContext, useEffect } from 'react'
 import { styled } from 'styled-components'
-import { TabSlideContext } from '@/TabSlide/TabSlideContext'
 import { breakpoints } from 'ui/src/utils/responsive'
 import { Slider } from './SlideTabsWrapper'
+import { TabSlideContext } from './TabSlideContext'
 
 type TabProps = {
   className?: string
