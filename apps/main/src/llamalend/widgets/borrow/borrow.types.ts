@@ -12,10 +12,14 @@ export type CompleteBorrowForm = {
   debt: number
   range: number
   slippage: number
-  leverage: number | undefined
+  leverageEnabled: boolean
 }
 
-type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+type CalculatedValues = {
+  maxDebt: number | undefined
+  maxCollateral: number | undefined
+}
+
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm

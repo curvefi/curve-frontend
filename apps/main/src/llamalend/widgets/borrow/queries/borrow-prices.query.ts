@@ -1,3 +1,4 @@
+import { borrowExpectedCollateralQueryKey } from '@/llamalend/widgets/borrow/queries/borrow-expected-collateral.query'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
@@ -20,7 +21,7 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowPricesReceiveParams) =>
     [
@@ -29,7 +30,7 @@ export const { useQuery: useBorrowPrices } = queryFactory({
       { userCollateral },
       { userBorrowed },
       { debt },
-      { leverage },
+      { leverageEnabled },
       { range },
     ] as const,
   queryFn: async ({
@@ -37,11 +38,11 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
     const market = getLlamaMarket(poolId)
-    return !leverage
+    return !leverageEnabled
       ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
       : market instanceof LendMarketTemplate
         ? convertNumbers(await market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, range))
@@ -51,5 +52,8 @@ export const { useQuery: useBorrowPrices } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
+  dependencies: (params) => [
+    maxBorrowReceiveKey(params),
+    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+  ],
 })

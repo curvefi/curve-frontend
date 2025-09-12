@@ -8,30 +8,37 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 type BorrowBandsResult = Record<number, [number, number] | null>
 
 export const { useQuery: useBorrowBandsAllRanges } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0, leverage }: BorrowFormQueryParams) =>
+  queryKey: ({
+    chainId,
+    poolId,
+    userBorrowed = 0,
+    userCollateral = 0,
+    debt = 0,
+    leverageEnabled,
+  }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-bands',
       { userCollateral },
       { userBorrowed },
       { debt },
-      { leverage },
+      { leverageEnabled },
     ] as const,
   queryFn: async ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
   }: BorrowFormQuery): Promise<BorrowBandsResult> => {
     const market = getLlamaMarket(poolId)
-    return !leverage
-      ? market.createLoanBandsAllRanges(userCollateral, userBorrowed)
-      : market instanceof LendMarketTemplate
+    return leverageEnabled
+      ? market instanceof LendMarketTemplate
         ? market.leverage.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
         : market.leverageV2.hasLeverage()
           ? await market.leverageV2.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
           : await market.leverage.createLoanBandsAllRanges(userCollateral, debt)
+      : market.createLoanBandsAllRanges(userCollateral, userBorrowed)
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
