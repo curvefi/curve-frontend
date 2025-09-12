@@ -62,12 +62,7 @@ export const TabsSwitcher = <T extends string | number>({
         key={value}
         value={value}
         label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-        sx={{
-          whiteSpace: 'nowrap',
-          // Override MUI's 360px default max-width to prevent gaps when displaying fewer tabs than expected (dynamic tab list)
-          maxWidth: 'none',
-          ...sx,
-        }}
+        sx={sx}
         {...(href && { href, component: Link })}
         {...props}
       />
