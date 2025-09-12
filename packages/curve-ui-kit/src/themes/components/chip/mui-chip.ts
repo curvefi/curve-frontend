@@ -62,7 +62,7 @@ export const defineMuiChip = (
       borderRadius: Chips.BorderRadius.NonClickable,
       color: TextColors.Primary,
       backgroundColor: 'transparent',
-      ...handleBreakpoints({ padding: Spacing.xxs }),
+      ...handleBreakpoints({ paddingInline: Spacing.xxs }),
       '&:has(.MuiChip-icon)': {
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
