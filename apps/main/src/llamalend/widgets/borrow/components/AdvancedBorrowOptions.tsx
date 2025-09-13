@@ -9,7 +9,7 @@ import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces
 
-const chartHeight = 85
+const chartHeight = 185
 
 export const AdvancedBorrowOptions = ({
   params,
@@ -26,14 +26,20 @@ export const AdvancedBorrowOptions = ({
 }) => (
   <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
     <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
-    <Stack>
+    <Stack
+      sx={{
+        '--chart_reference_line--color': (t) => t.design.Color.Primary[500],
+        '--health_mode_healthy_darkBg--color': (t) => t.design.Text.TextColors.Feedback.Success,
+        '& .recharts-reference-line-line': { strokeDasharray: '6' },
+      }}
+    >
       <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
       <ChartLiquidationRange
         data={useLiquidationRangeChartData(params, enabled)}
         healthColorKey="healthy"
         height={chartHeight}
-        isDetailView={true}
-        isManage={true}
+        isDetailView
+        showLegend
       />
     </Stack>
   </Stack>
