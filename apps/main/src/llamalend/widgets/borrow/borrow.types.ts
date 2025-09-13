@@ -17,8 +17,8 @@ export type CompleteBorrowForm = {
 
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'>
 
-export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
-export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
+export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
+export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 export type Token = { symbol: string; address: string; chain: NetworkEnum }
 

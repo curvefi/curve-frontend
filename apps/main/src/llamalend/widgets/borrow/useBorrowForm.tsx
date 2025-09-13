@@ -60,13 +60,13 @@ const useUserBalance = (userAddress: Address | undefined, token: { address: Addr
   return parseInt(formatUnits(userCollateral?.value || 0n, userCollateral?.decimals || 18), 10)
 }
 
-export function useBorrowForm({
+export function useBorrowForm<ChainId extends IChainId>({
   market,
   network: { id: chain, chainId },
   preset,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  network: BaseConfig<NetworkEnum, ChainId>
   preset: BorrowPreset
 }) {
   const { address: userAddress } = useAccount()
@@ -111,14 +111,14 @@ export function useBorrowForm({
     maxDebt != null &&
     values.debt &&
     values.debt > maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })} ${borrowToken?.symbol ?? ''}`
+    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true, currency: borrowToken?.symbol })} ${borrowToken?.symbol ?? ''}`
 
   const maxCollateral = userCollateralBalance ?? maxBorrow.data?.maxTotalCollateral
   const maxCollateralError =
     maxCollateral != null &&
     values.userCollateral &&
     values.userCollateral > maxCollateral &&
-    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })} ${collateralToken?.symbol ?? ''}`
+    t`Exceeds your balance of ${formatNumber(maxCollateral, { abbreviate: true, currency: collateralToken?.symbol })} ${collateralToken?.symbol ?? ''}`
 
   return {
     form,
