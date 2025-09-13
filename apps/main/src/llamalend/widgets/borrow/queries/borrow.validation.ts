@@ -40,8 +40,27 @@ export const validateRange = (range: number | null | undefined, { MaxLtv, Safe }
   })
 }
 
+export const validateMaxDebt = (debt: number | undefined | null, maxDebt: number | undefined | null) => {
+  test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
+    if (debt != null && maxDebt != null) {
+      enforce(debt).lte(maxDebt)
+    }
+  })
+}
+
+export const validateMaxCollateral = (
+  userCollateral: number | undefined | null,
+  maxCollateral: number | undefined | null,
+) => {
+  test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
+    if (userCollateral != null && maxCollateral != null) {
+      enforce(userCollateral).lte(maxCollateral)
+    }
+  })
+}
+
 export const borrowFormValidationGroup = (
-  { userBorrowed, userCollateral, debt, leverage, range, slippage }: FieldsOf<BorrowForm>,
+  { userBorrowed, userCollateral, debt, leverage, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,
   { debtRequired = true }: { debtRequired?: boolean } = {},
 ) =>
   group('borrowFormValidationGroup', () => {
@@ -51,6 +70,8 @@ export const borrowFormValidationGroup = (
     validateLeverage(leverage)
     validateSlippage(slippage)
     validateRange(range)
+    validateMaxDebt(debt, maxDebt)
+    validateMaxCollateral(userCollateral, maxCollateral)
   })
 
 export const borrowFormValidationSuite = createValidationSuite(borrowFormValidationGroup)
