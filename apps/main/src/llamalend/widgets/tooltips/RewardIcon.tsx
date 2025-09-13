@@ -9,10 +9,21 @@ const RewardsImg = styled('img')({ border: '1px solid transparent', borderRadius
 
 type IconSize = keyof typeof IconSize
 
-export function RewardIcon({ imageId, size = 'xs', sx }: { imageId: string; size?: IconSize; sx?: SxProps }) {
+export function RewardIcon({
+  imageId,
+  size = 'xs',
+  className,
+  sx,
+}: {
+  imageId: string
+  size?: IconSize
+  sx?: SxProps
+  className?: string
+}) {
   const defaultSize = parseFloat(IconSize[size].mobile) * 16 // convert rem to px
   return (
     <RewardsImg
+      className={className}
       alt={imageId}
       src={`${CURVE_ASSETS_URL}/platforms/${imageId}`}
       width={defaultSize}

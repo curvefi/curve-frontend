@@ -126,13 +126,14 @@ export const defineMuiChip = (
       },
     },
 
-    ...Object.entries(chipSizes).map(([size, { font, iconSize, ...rest }]) => ({
+    ...Object.entries(chipSizes).map(([size, { font, iconSize, height }]) => ({
       props: { size: size as ChipSizes },
       style: {
-        ...handleBreakpoints({ ...typography[font], ...rest }),
-        '&:has(.MuiChip-icon)': {
-          '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
-        },
+        ...handleBreakpoints({ ...typography[font], height }),
+        '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
+        '&:has(.MuiChip-icon):has(.MuiChip-label:empty)': handleBreakpoints({
+          width: height, // force chips with only an icon to be a perfect circle
+        }),
       },
     })),
     ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, ...rest }]) => ({
