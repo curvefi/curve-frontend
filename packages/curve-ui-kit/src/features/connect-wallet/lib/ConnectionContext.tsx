@@ -6,7 +6,7 @@ import { AppLibs, globalLibs, isWalletMatching } from '@ui-kit/features/connect-
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
 import { isCypress } from '@ui-kit/utils'
-import { ConnectState, type CurveApi, type Libs, type LlamaApi, type Wallet } from './types'
+import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 import { type WagmiChainId } from './wagmi/wagmi-config'
 
 const { FAILURE, LOADING, SUCCESS } = ConnectState
@@ -32,11 +32,15 @@ const ConnectionContext = createContext<ConnectionContextValue>({
 /**
  * Separate hook to get the wallet and provider from wagmi.
  * This is moved here so that it's only used once in the context provider.
+ *
+ * Note: When using private key accounts in Cypress tests, wagmi doesn't automatically
+ * expose these accounts through eth_accounts RPC calls. This creates an incompatibility
+ * with ethers BrowserProvider, which relies on eth_accounts to determine the signer address.
  */
 function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
-  const { isReconnecting, isConnected, address: account } = useAccount()
+  const { isReconnecting, isConnected } = useAccount()
   return {
     // `useAccount` and `useClient` are not always in sync, so check both. `isReconnecting` is set when switching pages
     isReconnecting: !address && (isReconnecting || isConnected),
@@ -47,24 +51,43 @@ function useWagmiWallet() {
           account: { address }, // the ensName is set later when detected
           chainId: client.chain.id,
         }
+      hackSignerInCypress(wallet)
       return { wallet, provider: wallet ? new BrowserProvider(wallet.provider) : null }
     }, [address, client?.chain.id, client?.transport.request]) ?? null),
   }
 }
 
 /**
- * Hacks the signerAddress property of the library to match the wallet address in Cypress tests.
- * This is needed because the signer address in Cypress doesn't match the wallet's one when using a private key.
+ * Hacks the eth_accounts RPC method for Cypress tests to return the correct wallet address.
+ *
+ * **Problem**:
+ * - Wagmi with private key accounts (used in Cypress) doesn't expose accounts via eth_accounts
+ * - eth_accounts typically returns accounts managed by injected wallets (like MetaMask)
+ * - Private key accounts in wagmi/viem must be explicitly passed to actions, not hoisted to provider level
+ * - Our curve libraries use ethers BrowserProvider, which calls eth_accounts to determine signer address
+ * - This creates a mismatch where ethers can't find the correct signer address
+ *
+ * **Solution**:
+ * Override the provider's eth_accounts response to return the wallet address from the private key account.
+ * This bridges the incompatibility between wagmi's private key handling and ethers' expectation
+ * that accounts are available through the standard eth_accounts RPC method.
+ *
+ * @see https://wagmi.sh/vue/guides/viem#private-key-mnemonic-accounts
  */
-const hackSignerInCypress = (newLib: Libs[keyof Libs], wallet: Wallet | undefined) =>
-  isCypress &&
-  newLib?.signerAddress &&
-  wallet?.account.address &&
-  Object.defineProperty(newLib, 'signerAddress', {
-    get: () => wallet.account.address,
-    enumerable: true,
-    configurable: true,
-  })
+const hackSignerInCypress = (wallet: Wallet | undefined) => {
+  const provider = wallet?.provider
+
+  if (isCypress && provider) {
+    const originalRequest = provider.request.bind(provider)
+
+    provider.request = async (args: { method: string; [key: string]: any }) => {
+      if (args?.method === 'eth_accounts') {
+        return [wallet.account.address]
+      }
+      return originalRequest(args)
+    }
+  }
+}
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -140,8 +163,8 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
             ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
             : `First initialization`,
         )
+        hackSignerInCypress(wallet)
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
-        hackSignerInCypress(newLib, wallet)
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)

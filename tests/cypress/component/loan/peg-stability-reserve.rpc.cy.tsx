@@ -36,7 +36,7 @@ describe('Peg stability reserve', () => {
       .should('match', /11.48McrvUSD/i)
     cy.get('[data-testid="pegkeeper-metric-ceiling-value"]')
       .invoke('text')
-      .should('match', /45.00MUSDC/i)
+      .should('match', /45MUSDC/i)
 
     cy.get('[data-testid="pegkeeper-action-info-pool-value"]').invoke('text').should('eq', '0x4D...9E')
     cy.get('[data-testid="pegkeeper-action-info-contract-value"]').invoke('text').should('eq', '0x92...40')
