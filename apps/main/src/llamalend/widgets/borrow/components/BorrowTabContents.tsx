@@ -92,13 +92,7 @@ export const BorrowTabContents = ({
 
           <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
             <Collapse in={preset === BorrowPreset.Custom}>
-              <AdvancedBorrowOptions
-                market={market}
-                values={values}
-                params={params}
-                setRange={setRange}
-                enabled={preset === BorrowPreset.Custom}
-              />
+              <AdvancedBorrowOptions market={market} values={values} params={params} setRange={setRange} />
             </Collapse>
           </LoanPresetSelector>
 
