@@ -10,7 +10,7 @@ import type { PageTransferProps } from '@/dex/components/PagePool/types'
 import useStore from '@/dex/store/useStore'
 import { ChainId, type PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import InteralLinkButton from '@ui/InternalLinkButton'
+import Button from '@mui/material/Button'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -53,7 +53,7 @@ const AddGaugeLink = ({
 
   return (
     <AddGaugeWrapper>
-      <InteralLinkButton title={t`Add Gauge`} onClick={handleClick} />
+      <Button onClick={handleClick}>{t`Add Gauge`} </Button>
     </AddGaugeWrapper>
   )
 }

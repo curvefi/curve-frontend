@@ -2,9 +2,9 @@ import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
+import Button from '@mui/material/Button'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
-import InternalLinkButton from '@ui/InternalLinkButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -98,7 +98,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
             {/* TODO: `linkPoolAddress` is never set */}
             {deploymentStatus.mirror.status === 'SUCCESS' && linkPoolAddress !== '' && (
               <LinkContainer>
-                <InternalLinkButton onClick={() => push(linkPoolAddress)} title={t`Visit the pool`} />
+                <Button onClick={() => push(linkPoolAddress)}>{t`Visit the pool`}</Button>
               </LinkContainer>
             )}
           </Content>
