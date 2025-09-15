@@ -12,18 +12,11 @@ import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import { SpinnerWrapper } from '@ui/Spinner'
 import Stats from '@ui/Stats'
-import type { TooltipProps } from '@ui/Tooltip/types'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-
-export const tooltipProps: TooltipProps = {
-  placement: 'bottom-end',
-  textAlign: 'end',
-  noWrap: true,
-}
 
 type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
 const tabs: TabOption<Tab>[] = [

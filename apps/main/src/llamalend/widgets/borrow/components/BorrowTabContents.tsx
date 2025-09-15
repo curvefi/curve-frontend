@@ -19,7 +19,7 @@ import { BorrowFormTokenInput } from './BorrowFormTokenInput'
 import { InputDivider } from './InputDivider'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MinWidth } = SizesAndSpaces
 
 export const BorrowTabContents = <ChainId extends IChainId>({
   market,
@@ -128,14 +128,24 @@ export const BorrowTabContents = <ChainId extends IChainId>({
  */
 export const OutOfCardBox = ({ children }: { children: ReactNode }) => (
   <Box
-    sx={{
-      // we use the legacy variables to match what the parent <AppFormContentWrapper> is using
+    sx={(t) => ({
+      // match what the parent <DetailPageStack> is using
       backgroundColor: 'var(--page--background-color)',
-      marginInline: 'calc(-1 * var(--spacing-3))',
+      position: 'relative',
+      marginInline: 'calc(-50vw + 186px)',
       marginBlockEnd: 'calc(-1 * var(--spacing-3))',
       paddingBlockStart: 'var(--spacing-3)',
-      position: 'relative',
-    }}
+      [t.breakpoints.up('tablet')]: {
+        marginInline: 'calc(-50vw + 194px)',
+      },
+      [t.breakpoints.up(MinWidth.twoCardLayout)]: {
+        // force width since <AppFormContentWrapper> gives a fixed width too
+        width: '386px',
+        marginInline: '-22px',
+        marginBlockEnd: 'calc(-1 * var(--spacing-3))',
+        paddingBlockStart: 'var(--spacing-3)',
+      },
+    })}
   >
     {children}
   </Box>

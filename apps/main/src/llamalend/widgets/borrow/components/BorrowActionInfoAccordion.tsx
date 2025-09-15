@@ -1,7 +1,7 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details/utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { formatPercent } from '@/llamalend/utils'
-import { useBorrowEstimateGas } from '@/llamalend/widgets/borrow/queries/borrow-gas-estimate.query'
+import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -9,36 +9,16 @@ import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
+import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
-
-const { IconSize } = SizesAndSpaces
-
-const useLoanToValue = ({
-  chainId,
-  collateralToken,
-  debt,
-  userCollateral,
-}: {
-  chainId: IChainId
-  debt: number | undefined
-  userCollateral: number | undefined
-  collateralToken: Token | undefined
-}) => {
-  const tokenAddress = collateralToken?.address
-  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress })
-  const collateralValue = collateralUsdRate != null && userCollateral != null && userCollateral * collateralUsdRate
-  return collateralValue && debt != null ? (debt / collateralValue) * 100 : null
-}
 
 export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,

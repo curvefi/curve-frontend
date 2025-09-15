@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import { type LlamaMarketKey } from '@/llamalend/entities/llama-markets'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable'
+import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns.enum'
 
