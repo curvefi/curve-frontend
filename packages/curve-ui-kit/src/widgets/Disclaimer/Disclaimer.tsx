@@ -5,7 +5,7 @@ import Stack from '@mui/material/Stack'
 import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
 import { Footer } from './Footer'
@@ -18,16 +18,15 @@ import { SCrvUsd } from './Tabs/SCrvUsd'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
 
-const TABS = [
+type Tab = 'dex' | 'lend' | 'crvusd' | 'scrvusd'
+const TABS: TabOption<Tab>[] = [
   { value: 'dex', label: t`Dex` },
   { value: 'lend', label: t`LlamaLend` },
   { value: 'crvusd', label: t`crvUSD` },
   { value: 'scrvusd', label: t`Savings crvUSD` },
-] as const
+]
 
-type DisclaimerTab = (typeof TABS)[number]['value']
-
-const defaultTab: Record<AppName, DisclaimerTab> = {
+const defaultTab: Record<AppName, Tab> = {
   dao: 'dex',
   crvusd: 'crvusd',
   lend: 'lend',
