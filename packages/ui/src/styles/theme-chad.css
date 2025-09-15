@@ -68,6 +68,7 @@ body.theme-chad {
   --button_outlined--hover--background-color: var(--primary-400a10);
   --button_text_darkbg--hover--color: var(--white);
   --button_text_darkbg--color: var(--white);
+  --button_text--color: var(--primary-500);
 
   /*  Health Mode  */
   --health_mode_--color: var(--gray-500);

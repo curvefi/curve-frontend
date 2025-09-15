@@ -754,7 +754,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Primary: {
       Default: {
         Label: Grays[50],
-        Fill: Violet[500],
+        Fill: Violet[950],
       },
       Hover: {
         Label: Grays[50],
@@ -768,7 +768,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Secondary: {
       Default: {
         Label: Grays[50],
-        Fill: Violet[900],
+        Fill: Grays[900],
       },
       Hover: {
         Label: Grays[50],
