@@ -19,13 +19,14 @@ import { useCreateLoanMutation } from './queries/create-loan.mutation'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
-export function useBorrowForm({
+
+export function useBorrowForm<ChainId extends IChainId>({
   market,
   network: { id: chain, chainId },
   preset,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  network: BaseConfig<NetworkEnum, ChainId>
   preset: BorrowPreset
 }) {
   const { address: userAddress } = useAccount()

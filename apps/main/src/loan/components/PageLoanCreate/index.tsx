@@ -61,7 +61,7 @@ const LoanCreate = ({
 
       <AppFormContentWrapper>
         {rFormType === 'borrow' ? (
-          <BorrowTabContents network={network} market={llamma ?? undefined} />
+          <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} />
         ) : (
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />
         )}
