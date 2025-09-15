@@ -15,7 +15,8 @@ export type CompleteBorrowForm = {
   leverage: number | undefined
 }
 
-export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'>
+type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
@@ -29,3 +30,5 @@ export enum BorrowPreset {
 }
 
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
+
+export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]
