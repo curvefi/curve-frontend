@@ -41,7 +41,7 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
   queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt, slippage }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-expected-collateral',
+      'createLoanExpectedCollateral',
       { userCollateral },
       { userBorrowed },
       { debt },

@@ -13,7 +13,7 @@ type BorrowMaxLeverageParams = FieldsOf<BorrowMaxLeverageQuery>
 
 export const { useQuery: useMaxLeverage } = queryFactory({
   queryKey: ({ chainId, poolId, range }: BorrowMaxLeverageParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'max-leverage', { range }] as const,
+    [...rootKeys.pool({ chainId, poolId }), 'maxLeverage', { range }] as const,
   queryFn: async ({ poolId, range }: BorrowMaxLeverageQuery): Promise<number> => {
     const market = getLlamaMarket(poolId)
     return hasLeverage(market)

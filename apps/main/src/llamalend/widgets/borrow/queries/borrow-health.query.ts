@@ -10,7 +10,7 @@ export const { useQuery: useBorrowHealth } = queryFactory({
   queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverageEnabled, range }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-health',
+      'createLoanHealth',
       { userCollateral },
       { userBorrowed },
       { debt },

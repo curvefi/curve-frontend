@@ -20,7 +20,7 @@ export const { useQuery: useBorrowBands } = queryFactory({
   }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-bands',
+      'createLoanBands',
       { userCollateral },
       { userBorrowed },
       { debt },

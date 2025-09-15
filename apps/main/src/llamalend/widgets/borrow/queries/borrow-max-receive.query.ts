@@ -60,7 +60,7 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
   }: BorrowMaxReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'max-borrow-receive-v1',
+      'createLoanMaxRecv',
       { userBorrowed },
       { userCollateral },
       { range },

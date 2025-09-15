@@ -11,7 +11,7 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
   queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0 }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-price-impact',
+      'createLoanPriceImpact',
       { userCollateral },
       { userBorrowed },
       { debt },

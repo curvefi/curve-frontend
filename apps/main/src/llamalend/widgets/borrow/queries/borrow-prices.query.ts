@@ -26,7 +26,7 @@ export const { useQuery: useBorrowPrices } = queryFactory({
   }: BorrowPricesReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-prices',
+      'createLoanPrices',
       { userCollateral },
       { userBorrowed },
       { debt },
