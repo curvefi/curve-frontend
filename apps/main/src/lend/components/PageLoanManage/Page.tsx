@@ -14,6 +14,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import Stack from '@mui/material/Stack'
@@ -158,19 +159,7 @@ const Page = () => {
         </PriceAndTradesExpandedContainer>
       )}
 
-      <Stack
-        sx={(theme) => ({
-          marginRight: Spacing.md,
-          marginLeft: Spacing.md,
-          marginTop: Spacing.xl,
-          marginBottom: Spacing.xxl,
-          gap: Spacing.xl,
-          // 961px, matches old Action card breakpoint
-          [theme.breakpoints.up(961)]: {
-            flexDirection: 'row', // 1100px
-          },
-        })}
-      >
+      <DetailPageStack>
         <AppPageFormsWrapper>{rChainId && rOwmId && <LoanMange {...pageProps} />}</AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
@@ -197,7 +186,7 @@ const Page = () => {
             />
           </Stack>
         </Stack>
-      </Stack>
+      </DetailPageStack>
     </>
   )
 }
