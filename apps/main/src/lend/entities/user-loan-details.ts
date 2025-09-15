@@ -106,7 +106,7 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
       'v1',
     ] as const,
   queryFn: _getUserLoanDetails,
-  refetchInterval: '5m',
+  refetchInterval: '1m',
   validationSuite: createValidationSuite((params: UserLoanDetailsParams) => {
     chainValidationGroup(params)
     llamaApiValidationGroup(params)
