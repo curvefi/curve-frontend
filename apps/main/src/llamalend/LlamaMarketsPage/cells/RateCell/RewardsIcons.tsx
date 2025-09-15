@@ -1,28 +1,14 @@
 import lodash from 'lodash'
-import type { ReactElement } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
 import { useMarketExtraIncentives } from '@/llamalend/LlamaMarketsPage/hooks/useMarketExtraIncentives'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
-import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketRateType } from '@ui-kit/types/market'
 
 const { IconSize } = SizesAndSpaces
-
-const RewardChip = ({ icon }: { icon: ReactElement }) => (
-  <Chip
-    icon={icon}
-    size="small"
-    color="highlight"
-    sx={{
-      borderRadius: '100%', // Make reward chips border round, regardless of theme
-      '&:not(:last-child)': { marginInline: '-8px' },
-    }}
-  />
-)
 
 export const RewardsIcons = ({
   market: { rewards, type: marketType, rates },
@@ -35,12 +21,19 @@ export const RewardsIcons = ({
   const extraIncentives = useMarketExtraIncentives(rateType, rates.incentives, rates.lendCrvAprUnboosted)
   return (
     (filteredRewards.length > 0 || extraIncentives.length > 0) && (
-      <Stack direction="row" minWidth={IconSize.md} data-testid="rewards-icons">
+      <Stack
+        direction="row"
+        minWidth={IconSize.md}
+        data-testid="rewards-icons"
+        sx={{
+          '& svg, & img': { '&:not(:last-child)': { marginInline: '-8px' } },
+        }}
+      >
         {extraIncentives.map(({ title, address, blockchainId }) => (
-          <RewardChip key={title} icon={<TokenIcon blockchainId={blockchainId} address={address} size="mui-sm" />} />
+          <TokenIcon key={title} blockchainId={blockchainId} address={address} size="mui-sm" />
         ))}
         {lodash.uniq(filteredRewards.map((r) => r.platformImageId)).map((img) => (
-          <RewardChip key={img} icon={<RewardIcon size="sm" key={img} imageId={img} />} />
+          <RewardIcon size="sm" key={img} imageId={img} />
         ))}
       </Stack>
     )
