@@ -61,7 +61,7 @@ jobs:
 
   cypress-component-rpc:
     name: Cypress component tests with RPC
-    if: github.ref_name == 'main'  # only run on main branch
+    if: github.ref_name == 'main' || github.ref_name == 'feat/cypress-rpc'
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -74,11 +74,10 @@ jobs:
       - run: yarn install --immutable
 
       - name: Run RPC tests
-        if: env.CYPRESS_TENDERLY_ACCESS_KEY
         run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, so we stick to electron
         working-directory: tests
         env:
-          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
