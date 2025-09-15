@@ -50,7 +50,3 @@ export type TransferProps = {
   userPoolBalancesLoading: boolean
   tokensMapper: TokensMapper
 } & PageTransferProps
-
-export type DetailInfoTypes = 'user' | 'pool' | 'advanced' | 'gauge'
-
-export type PoolInfoTab = { key: DetailInfoTypes; label: string }

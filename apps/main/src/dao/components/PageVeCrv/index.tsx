@@ -1,70 +1,55 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { styled } from 'styled-components'
+import { useCallback, useEffect, useState } from 'react'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
 import FormWithdraw from '@/dao/components/PageVeCrv/components/FormWithdraw'
 import type { FormType, PageVecrv } from '@/dao/components/PageVeCrv/types'
 import useStore from '@/dao/store/useStore'
-import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
+import Stack from '@mui/material/Stack'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const TABS: { label: string; formType: FormType }[] = [
-  { label: t`Lock More`, formType: 'adjust_crv' },
-  { label: t`Extend Lock`, formType: 'adjust_date' },
-  { label: t`Withdraw`, formType: 'withdraw' },
-]
+const { Spacing } = SizesAndSpaces
 
 const FormCrvLocker = (pageProps: PageVecrv) => {
   const { curve, rFormType, vecrvInfo } = pageProps
-  const tabsRef = useRef<HTMLDivElement>(null)
-  const [selectedTab, setSelectedTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
   const { connectState } = useConnection()
   const isLoadingCurve = isLoading(connectState)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
-  const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, selectedTab)
   const signerAddress = curve?.signerAddress
   const { chainId } = curve ?? {}
   const canUnlock =
     +vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && vecrvInfo.lockedAmountAndUnlockTime.unlockTime < Date.now()
 
+  const tabs: TabOption<FormType>[] = [
+    { value: 'adjust_crv', label: t`Lock More`, disabled: canUnlock },
+    { value: 'adjust_date', label: t`Extend Lock`, disabled: canUnlock },
+    { value: 'withdraw', label: t`Withdraw` },
+  ]
+  const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
+
   const setData = useCallback(async () => {
-    setFormValues(curve, isLoadingCurve, selectedTab, {}, vecrvInfo, true)
-  }, [curve, isLoadingCurve, vecrvInfo, selectedTab, setFormValues])
-
-  useEffect(() => {
-    if (selectedTab === 'adjust_crv') {
-      setSelectedTabIdx(0)
-    } else if (selectedTab === 'adjust_date') {
-      setSelectedTabIdx(1)
-    } else if (selectedTab === 'withdraw') {
-      setSelectedTabIdx(2)
-    }
-  }, [selectedTab, setSelectedTabIdx])
-
-  const handleTabClick = (formType: FormType, idx: number) => {
-    setSelectedTab(formType)
-    setSelectedTabIdx(idx)
-  }
+    setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true)
+  }, [curve, isLoadingCurve, vecrvInfo, tab, setFormValues])
 
   useEffect(() => {
     if (canUnlock) {
-      setSelectedTab('withdraw')
+      setTab('withdraw')
     }
     // if user has no locked crv, and is not on the create tab, set the tab to create
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && selectedTab !== 'create') {
-      setSelectedTab('create')
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount === 0 && tab !== 'create') {
+      setTab('create')
     }
     // if user has locked crv, and is on the create tab, set the tab to adjust_crv
-    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && selectedTab === 'create') {
-      setSelectedTab('adjust_crv')
+    if (+vecrvInfo.lockedAmountAndUnlockTime.lockedAmount > 0 && tab === 'create') {
+      setTab('adjust_crv')
     }
-  }, [selectedTab, vecrvInfo, canUnlock])
+  }, [tab, vecrvInfo, canUnlock])
 
   // fetch locked crv data
   useEffect(() => {
@@ -72,36 +57,21 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, signerAddress, isPageVisible])
 
-  return selectedTab === 'adjust_crv' || selectedTab === 'adjust_date' || selectedTab === 'withdraw' ? (
+  return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (
     <>
-      <StyledTabSlide activeIdx={selectedTabIdx}>
-        <SlideTabs ref={tabsRef}>
-          {TABS.map(({ formType, label }, idx) => (
-            <SlideTab
-              key={label}
-              disabled={canUnlock && formType !== 'withdraw'} // disable other tabs if user can unlock
-              tabLeft={tabPositions[idx]?.left}
-              tabWidth={tabPositions[idx]?.width}
-              tabTop={tabPositions[idx]?.top}
-              onChange={() => handleTabClick(formType, idx)}
-              tabIdx={idx}
-              label={label}
-            />
-          ))}
-        </SlideTabs>
-      </StyledTabSlide>
+      <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} fullWidth />
 
-      {selectedTab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={selectedTab} />}
-      {selectedTab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={selectedTab} />}
-      {selectedTab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={selectedTab} />}
+      <Stack gap={Spacing.md} padding={Spacing.md} paddingBlockStart={Spacing.xs}>
+        {tab === 'adjust_crv' && <FormLockCrv {...pageProps} rFormType={tab} />}
+        {tab === 'adjust_date' && <FormLockDate {...pageProps} rFormType={tab} />}
+        {tab === 'withdraw' && <FormWithdraw {...pageProps} rFormType={tab} />}
+      </Stack>
     </>
   ) : (
-    <FormLockCreate {...pageProps} />
+    <Stack gap={Spacing.md} padding={Spacing.md}>
+      <FormLockCreate {...pageProps} />
+    </Stack>
   )
 }
-
-export const StyledTabSlide = styled(TabSlide)`
-  margin-bottom: var(--spacing-2);
-`
 
 export default FormCrvLocker

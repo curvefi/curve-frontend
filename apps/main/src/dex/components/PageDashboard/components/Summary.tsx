@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Item, Section } from 'react-stately'
 import { styled } from 'styled-components'
 import ComboBoxAddress from '@/dex/components/PageDashboard/components/ComboBoxAddress'
@@ -12,14 +12,12 @@ import useStore from '@/dex/store/useStore'
 import Box from '@ui/Box'
 import { SpinnerWrapper } from '@ui/Spinner'
 import Stats from '@ui/Stats'
-import TabSlide, { SlideTab, SlideTabs } from '@ui/TabSlide'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import { shortenAccount } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
-
-type SlideKey = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 export const tooltipProps: TooltipProps = {
   placement: 'bottom-end',
@@ -27,39 +25,21 @@ export const tooltipProps: TooltipProps = {
   noWrap: true,
 }
 
+type Tab = 'DAY_PROFITS' | 'CLAIMABLE_TOKENS'
+const tabs: TabOption<Tab>[] = [
+  { value: 'DAY_PROFITS', label: t`Daily Profits` },
+  { value: 'CLAIMABLE_TOKENS', label: t`Claimable Tokens` },
+]
+
 const Summary = () => {
   const { rChainId, formValues, updateFormValues } = useDashboardContext()
-  const tabsRef = useRef<HTMLDivElement>(null)
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const searchedWalletAddresses = useStore((state) => state.dashboard.searchedWalletAddresses)
 
-  const [tabPositions, setTabPositions] = useState<{ left: number; width: number; top: number }[]>([])
-  const [selectedTabSlideIdx, setSelectedTabSlideIdx] = useState(0)
   const networkHaveLockedCrv = rChainId === 1
 
-  const TABS: { label: string; key: SlideKey }[] = [
-    { label: t`Daily Profits`, key: 'DAY_PROFITS' },
-    { label: t`Claimable Tokens`, key: 'CLAIMABLE_TOKENS' },
-  ]
-
-  // tabs positions
-  useEffect(() => {
-    if (!tabsRef.current) return
-
-    const tabsNode = tabsRef.current
-    const tabsDOMRect = tabsNode.getBoundingClientRect()
-    const updatedTabPositions = Array.from(tabsNode.childNodes as NodeListOf<HTMLInputElement>)
-      .filter((n) => n.classList.contains('tab'))
-      .map((n, idx) => {
-        const domRect = n.getBoundingClientRect()
-        const left = idx ? domRect.left - tabsDOMRect.left : 0
-        const top = domRect.bottom - tabsDOMRect.top
-        return { left, width: domRect.width, top }
-      })
-
-    setTabPositions(updatedTabPositions)
-  }, [])
+  const [tab, setTab] = useState<Tab>('DAY_PROFITS')
 
   return (
     <div>
@@ -102,31 +82,15 @@ const Summary = () => {
         {isMdUp ? (
           <>
             <SummaryRecurrence title="Daily" />
-            <SummaryClaimable title={TABS[1].label} />
+            <SummaryClaimable title={tabs[1].label?.toString()} />
           </>
         ) : (
           <>
             <TabContentWrapper>
               <SummaryTitle>{t`Total Summary`}</SummaryTitle>
-              <StyledTabSlide activeIdx={selectedTabSlideIdx}>
-                <SlideTabs ref={tabsRef}>
-                  {TABS.map(({ key, label }, idx) => (
-                    <SlideTab
-                      key={key}
-                      tabLeft={tabPositions[idx]?.left}
-                      tabWidth={tabPositions[idx]?.width}
-                      tabTop={tabPositions[idx]?.top}
-                      onChange={() => setSelectedTabSlideIdx(idx)}
-                      tabIdx={idx}
-                      label={label}
-                    />
-                  ))}
-                </SlideTabs>
-              </StyledTabSlide>
-              <div>
-                {selectedTabSlideIdx === 0 && <SummaryRecurrence />}
-                {selectedTabSlideIdx === 1 && <SummaryClaimable />}
-              </div>
+              <TabsSwitcher variant="underlined" size="small" value={tab} onChange={setTab} options={tabs} />
+              {tab === 'DAY_PROFITS' && <SummaryRecurrence />}
+              {tab === 'CLAIMABLE_TOKENS' && <SummaryClaimable />}
             </TabContentWrapper>
           </>
         )}
@@ -150,18 +114,6 @@ const AddressSearchWrapper = styled.div`
 
 export const StyledStats = styled(Stats)`
   border-color: var(--summary_content--border-color);
-`
-
-const StyledTabSlide = styled(TabSlide)`
-  margin: 1rem 0;
-
-  label {
-    color: var(--page--text-color);
-  }
-
-  .tab-slider {
-    background: var(--page--text-color);
-  }
 `
 
 const TabContentWrapper = styled(Box)``
