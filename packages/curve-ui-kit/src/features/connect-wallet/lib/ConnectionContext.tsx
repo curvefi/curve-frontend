@@ -44,16 +44,10 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
  */
 const hackSignerInCypress = (wallet: Wallet | undefined) => {
   const provider = wallet?.provider
-
   if (isCypress && provider) {
     const originalRequest = provider.request.bind(provider)
-
-    provider.request = async (args: { method: string; [key: string]: any }) => {
-      if (args?.method === 'eth_accounts') {
-        return [wallet.account.address]
-      }
-      return originalRequest(args)
-    }
+    provider.request = async (args: { method: string; [key: string]: any }) =>
+      args?.method === 'eth_accounts' ? [wallet.account.address] : originalRequest(args)
   }
 }
 
