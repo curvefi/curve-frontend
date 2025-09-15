@@ -9,7 +9,7 @@ const { sum } = lodash
 export function useLlamalendAppStats(enabled: boolean) {
   const address = useConnection().wallet?.account.address
   const { data } = useLlamaMarkets(address, enabled)
-  const tvl = useMemo(() => sum(data?.markets?.map((market) => market.assets.collateral.balanceUsd ?? 0)), [data])
+  const tvl = useMemo(() => sum(data?.markets?.map((market) => market.tvl)), [data])
   return [
     {
       label: 'TVL',

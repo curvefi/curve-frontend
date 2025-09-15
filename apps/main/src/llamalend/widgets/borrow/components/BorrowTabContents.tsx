@@ -43,7 +43,7 @@ export const BorrowTabContents = ({
     values,
     onSubmit,
     isPending,
-    maxBorrow,
+    maxTokenValues,
     params,
     form,
     collateralToken,
@@ -51,11 +51,8 @@ export const BorrowTabContents = ({
     isCreated,
     creationError,
     txHash,
-    maxDebt,
-    maxCollateral,
     formErrors,
     tooMuchDebt,
-    tooMuchCollateral,
   } = useBorrowForm({ market, network, preset })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
 
@@ -76,9 +73,9 @@ export const BorrowTabContents = ({
               token={collateralToken}
               name="userCollateral"
               form={form}
-              isLoading={maxBorrow.isLoading || !market}
-              isError={maxBorrow.isError || tooMuchCollateral}
-              max={maxCollateral}
+              isLoading={maxTokenValues.isCollateralLoading}
+              isError={maxTokenValues.isCollateralError}
+              max={values.maxCollateral}
               testId="borrow-collateral-input"
             />
             <BorrowFormTokenInput
@@ -86,9 +83,9 @@ export const BorrowTabContents = ({
               token={borrowToken}
               name="debt"
               form={form}
-              isLoading={maxBorrow.isLoading || !market}
-              isError={maxBorrow.isError || tooMuchDebt}
-              max={maxDebt}
+              isLoading={maxTokenValues.isDebtLoading}
+              isError={maxTokenValues.isDebtError}
+              max={values.maxDebt}
               testId="borrow-debt-input"
             />
           </Stack>

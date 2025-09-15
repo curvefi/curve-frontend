@@ -16,8 +16,10 @@ export type CompleteBorrowForm = {
   leverage: number | undefined
 }
 
+type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
-export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'>
+export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 /** Fields of the borrow form that are passed back to the origin application for synchronization */
 export type BorrowFormExternalFields = Pick<BorrowForm, 'range' | 'userCollateral' | 'debt'>
@@ -47,3 +49,5 @@ export enum BorrowPreset {
  * We strive to keep the application independent of the market type as much as possible
  */
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
+
+export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]

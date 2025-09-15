@@ -1,9 +1,13 @@
 import type { SetValueConfig } from 'react-hook-form'
+import type { Address } from 'viem'
 import { zeroAddress } from 'viem'
+import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import { LlamaMarketTemplate } from '@/llamalend/widgets/borrow/borrow.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { assert } from '@ui-kit/utils'
-import { BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
+import { assert, CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { BorrowPreset } from './borrow.types'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -35,3 +39,34 @@ export const BORROW_PRESET_RANGES = {
  * Options to pass to react-hook-form's setValue to trigger validation, dirty and touch states.
  */
 export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
+
+export const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
+  market instanceof MintMarketTemplate
+    ? {
+        collateralToken: {
+          chain,
+          symbol: market.collateralSymbol,
+          address: market.collateral as Address,
+          decimals: market.collateralDecimals,
+        },
+        borrowToken: {
+          chain,
+          symbol: 'crvUSD',
+          address: CRVUSD_ADDRESS,
+          decimals: 18,
+        },
+      }
+    : {
+        collateralToken: {
+          chain,
+          symbol: market.collateral_token.symbol,
+          address: market.collateral_token.address as Address,
+          decimals: market.collateral_token.decimals,
+        },
+        borrowToken: {
+          chain,
+          symbol: market.borrowed_token.symbol,
+          address: market.borrowed_token.address as Address,
+          decimals: market.borrowed_token.decimals,
+        },
+      }

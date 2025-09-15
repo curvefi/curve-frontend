@@ -9,12 +9,13 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper } from '@ui/AppForm'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -55,11 +56,12 @@ const LoanCreate = ({
   const [isBeta] = useBetaFlag()
   const onUpdate = useOnFormUpdate(props)
 
-  const FORM_TYPES: { value: string; label: string }[] = [
-    { label: t`Create Loan`, value: 'create' },
-    { label: t`Leverage`, value: 'leverage' },
-    ...(isBeta ? [{ label: t`Beta`, value: 'borrow' }] : []),
-  ].filter((f) => f.value != 'leverage' || hasLeverage(llamma))
+  type Tab = 'create' | 'leverage' | 'borrow'
+  const tabs: TabOption<Tab>[] = [
+    { value: 'create' as const, label: t`Create Loan` },
+    ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+    ...(isBeta ? [{ value: 'borrow' as const, label: t`Beta` }] : []),
+  ]
 
   const handleTabClick = useCallback(
     (formType: FormType) => {
@@ -76,13 +78,14 @@ const LoanCreate = ({
   )
 
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
-        options={FORM_TYPES}
+        options={tabs}
+        fullWidth
       />
 
       <AppFormContentWrapper>
@@ -92,7 +95,7 @@ const LoanCreate = ({
           <LoanFormCreate {...props} collateralAlert={collateralAlert} />
         )}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 
