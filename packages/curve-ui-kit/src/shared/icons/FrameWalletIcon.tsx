@@ -1,6 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils'
-
-export const svg = (
+export const frameSvg = (
   <svg viewBox="0 0 153.42 152.94">
     <path
       fill="currentColor"
@@ -9,5 +7,3 @@ export const svg = (
     />
   </svg>
 )
-
-export const FrameWalletIcon = createSvgIcon(svg, 'FrameWallet')

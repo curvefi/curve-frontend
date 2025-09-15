@@ -52,8 +52,10 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
       position: 'relative',
       boxSizing: 'content-box',
       opacity: 1,
+      whiteSpace: 'nowrap',
       minHeight: '2rem', // Not responsive, but Sizing.md is ugly in mobile
       minWidth: 0, // It's 90px by default in Mui, but we want it smaller
+      maxWidth: 'none', // It's 360px by default in Mui, but that sometimes interferes when displaying fewer tabs than expected (dynamic tab list)
       '&::after': {
         content: '""',
         position: 'absolute',

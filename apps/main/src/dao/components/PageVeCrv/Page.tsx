@@ -8,13 +8,17 @@ import Settings from '@/dao/layout/Settings'
 import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { type VeCrvUrlParams } from '@/dao/types/dao.types'
+import Stack from '@mui/material/Stack'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { WrongNetwork } from './WrongNetwork'
+
+const { Spacing } = SizesAndSpaces
 
 export const PageVeCrv = () => {
   const { formType: rFormType, network } = useParams<VeCrvUrlParams>()
@@ -44,7 +48,7 @@ export const PageVeCrv = () => {
         </BoxHeader>
 
         {rChainId === 1 ? (
-          <Content grid gridRowGap={3} padding>
+          <Stack gap={Spacing.md}>
             {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
               <FormCrvLocker
                 curve={curveApi}
@@ -57,7 +61,7 @@ export const PageVeCrv = () => {
                 <Spinner />
               </SpinnerWrapper>
             )}
-          </Content>
+          </Stack>
         ) : (
           <WrongNetwork />
         )}
@@ -71,8 +75,4 @@ const Container = styled(Box)`
   margin: 1.5rem auto;
   max-width: var(--transfer-min-width);
   width: 100%;
-`
-
-const Content = styled(Box)`
-  align-content: flex-start;
 `

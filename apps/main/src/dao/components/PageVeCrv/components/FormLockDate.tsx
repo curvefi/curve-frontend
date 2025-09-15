@@ -12,8 +12,8 @@ import { CurveApi } from '@/dao/types/dao.types'
 import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
 import AlertBox from '@ui/AlertBox'
-import Stepper from '@ui/Stepper'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
@@ -208,7 +208,6 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       <div>
         {!!signerAddress && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             estimatedGas={formEstGas.estimatedGas}

@@ -55,7 +55,12 @@ type BalanceTextProps = {
 const BalanceText = ({ symbol, balance, loading = false }: BalanceTextProps) => (
   <WithSkeleton loading={loading}>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      <Typography className="balance" variant="highlightS" color={balance != null ? 'textPrimary' : 'textTertiary'}>
+      <Typography
+        className="balance"
+        variant="highlightS"
+        color={balance != null ? 'textPrimary' : 'textTertiary'}
+        data-testid="balance-value"
+      >
         {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
       </Typography>
 

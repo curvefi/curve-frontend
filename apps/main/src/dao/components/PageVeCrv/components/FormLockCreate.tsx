@@ -12,8 +12,8 @@ import useStore from '@/dao/store/useStore'
 import type { CurveApi } from '@/dao/types/dao.types'
 import { formatDisplayDate, toCalendarDate } from '@/dao/utils/utilsDates'
 import type { DateValue } from '@react-types/calendar'
-import Stepper from '@ui/Stepper'
 import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
+import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
@@ -244,7 +244,6 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       <div>
         {haveSigner && (
           <DetailInfoEstGas
-            curve={curve}
             chainId={rChainId}
             {...formEstGas}
             estimatedGas={formEstGas.estimatedGas}
