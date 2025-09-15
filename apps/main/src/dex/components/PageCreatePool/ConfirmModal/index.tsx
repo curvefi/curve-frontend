@@ -14,12 +14,12 @@ import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import MuiButton from '@mui/material/Button'
 import { useButton } from '@react-aria/button'
 import { useOverlayTriggerState } from '@react-stately/overlays'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
-import InternalLinkButton from '@ui/InternalLinkButton'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams, useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -163,13 +163,14 @@ const ConfirmModal = ({
                       <>
                         <SuccessInfo>{t`Visit the new pool to deposit liquidity.`}</SuccessInfo>
                         <StyledLinkButtonWrapper>
-                          <InternalLinkButton
+                          <MuiButton
                             onClick={() => {
                               push(getPath(params, `${ROUTE.PAGE_POOLS}/${poolId}/deposit`))
                               resetState()
                             }}
-                            title={t`Go to pool`}
-                          />
+                          >
+                            {t`Go to pool`}
+                          </MuiButton>
                         </StyledLinkButtonWrapper>
                       </>
                     )}
