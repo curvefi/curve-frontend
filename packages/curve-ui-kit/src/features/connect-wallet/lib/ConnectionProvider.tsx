@@ -2,28 +2,13 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { ConnectionContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
-import { ConnectState, type Libs, type Wallet } from '@ui-kit/features/connect-wallet/lib/types'
+import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
-import { isCypress } from '@ui-kit/utils'
 import { AppLibs, globalLibs, isWalletMatching } from './utils'
 import type { WagmiChainId } from './wagmi/wagmi-config'
 
 const { FAILURE, LOADING, SUCCESS } = ConnectState
-
-/**
- * Hacks the signerAddress property of the library to match the wallet address in Cypress tests.
- * This is needed because the signer address in Cypress doesn't match the wallet's one when using a private key.
- */
-const hackSignerInCypress = (newLib: Libs[keyof Libs], wallet: Wallet | undefined) =>
-  isCypress &&
-  newLib?.signerAddress &&
-  wallet?.account.address &&
-  Object.defineProperty(newLib, 'signerAddress', {
-    get: () => wallet.account.address,
-    enumerable: true,
-    configurable: true,
-  })
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
@@ -100,7 +85,6 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
             : `First initialization`,
         )
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
-        hackSignerInCypress(newLib, wallet)
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
