@@ -19,6 +19,7 @@ import { useCreateLoanMutation } from './queries/create-loan.mutation'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
+
 export function useBorrowForm<ChainId extends IChainId>({
   market,
   network: { id: chain, chainId },
@@ -63,20 +64,6 @@ export function useBorrowForm<ChainId extends IChainId>({
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
-
-  const maxDebt = maxBorrow.data?.maxDebt
-  const maxDebtError =
-    maxDebt != null &&
-    values.debt &&
-    values.debt > maxDebt &&
-    t`Exceeds maximum borrowable amount of ${formatNumber(maxDebt, { abbreviate: true })} ${borrowToken?.symbol ?? ''}`
-
-  const maxCollateral = userCollateralBalance ?? maxBorrow.data?.maxTotalCollateral
-  const maxCollateralError =
-    maxCollateral != null &&
-    values.userCollateral &&
-    values.userCollateral > maxCollateral &&
-    t`Exceeds maximum collateral of ${formatNumber(maxCollateral, { abbreviate: true })} ${collateralToken?.symbol ?? ''}`
 
   return {
     form,
