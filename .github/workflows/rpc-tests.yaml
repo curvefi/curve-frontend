@@ -20,10 +20,10 @@ jobs:
       - run: yarn set version stable
       - run: yarn install --immutable
 
-      - run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, so we stick to electron
+      - run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, stick to one browser
         working-directory: tests
         env:
-          ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
+          ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
           NODE_ENV: test
           CYPRESS_TENDERLY_ACCOUNT_SLUG: ${{ vars.TENDERLY_ACCOUNT_SLUG }}
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}

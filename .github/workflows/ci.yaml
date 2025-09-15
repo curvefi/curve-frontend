@@ -61,7 +61,7 @@ jobs:
 
   cypress-component-rpc:
     name: Cypress component tests with RPC
-    if: github.ref_name == 'main' || github.ref_name == 'feat/cypress-rpc'
+    if: github.ref_name == 'main'
     timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
@@ -74,7 +74,7 @@ jobs:
       - run: yarn install --immutable
 
       - name: Run RPC tests
-        run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, so we stick to electron
+        run: yarn run cy:run:rpc --browser electron # rpc tests are expensive, stick to one browser
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # Electron writes console to stdout
