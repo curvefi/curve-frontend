@@ -5,7 +5,7 @@ import { DebtChangeCell } from './cells/DebtChangeCell'
 import { EventTypeCell } from './cells/EventTypeCell'
 import { TimestampCell } from './cells/TimestampCell'
 import { UserPositionHistoryColumnId } from './columns.enum'
-import type { ParsedUserLendCollateralEvent } from './queries/user-lend-collateral-events'
+import type { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
 
 const columnHelper = createColumnHelper<ParsedUserLendCollateralEvent>()
 

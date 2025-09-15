@@ -74,6 +74,7 @@ export type UserCollateralEvent = {
   n1: number
   n2: number
   oraclePrice: number
+  isPositionClosed: boolean
 }
 
 export type UserCollateralEvents = {

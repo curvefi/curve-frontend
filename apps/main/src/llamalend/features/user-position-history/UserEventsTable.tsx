@@ -3,7 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { USER_POSITION_HISTORY_COLUMNS } from './columns'
-import { ParsedUserLendCollateralEvent } from './queries/user-lend-collateral-events'
+import { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
 
 type UserEventsTableProps = {
   events: ParsedUserLendCollateralEvent[]

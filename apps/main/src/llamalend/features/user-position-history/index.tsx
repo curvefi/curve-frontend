@@ -1,6 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
-import { ParsedUserLendCollateralEvent } from './queries/user-lend-collateral-events'
+import { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
 import { UserEventsTable } from './UserEventsTable'
 
 type UserPositionHistoryProps = {
@@ -10,7 +10,7 @@ type UserPositionHistoryProps = {
 }
 
 export const UserPositionHistory = ({ events, isLoading, isError }: UserPositionHistoryProps) => (
-  <Accordion title={t`Position History`} defaultExpanded={true}>
+  <Accordion title={t`Position History`} ghost defaultExpanded={true}>
     <UserEventsTable events={events} loading={isLoading} isError={isError} />
   </Accordion>
 )
