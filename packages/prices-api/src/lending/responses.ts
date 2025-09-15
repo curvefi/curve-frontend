@@ -88,6 +88,7 @@ export type GetUserCollateralEventsResponse = {
       n1: number
       n2: number
       oracle_price: number
+      is_position_closed: boolean
     },
   ]
 }
