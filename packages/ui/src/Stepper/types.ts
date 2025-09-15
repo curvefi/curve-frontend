@@ -1,4 +1,4 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react'
+import { type MouseEvent, ReactNode } from 'react'
 
 export type StepStatus = 'current' | 'pending' | 'in-progress' | 'succeeded' | 'failed'
 
@@ -31,7 +31,10 @@ export type StepActionModal = {
       label?: string | undefined
       onClick: () => void
     }
-    primaryBtnProps: ButtonHTMLAttributes<HTMLButtonElement>
+    primaryBtnProps: {
+      onClick: (event: MouseEvent<HTMLButtonElement>) => void
+      disabled?: boolean
+    }
     primaryBtnLabel: string
     testId?: string
   }
