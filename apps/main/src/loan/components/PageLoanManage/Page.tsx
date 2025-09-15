@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
@@ -148,20 +149,7 @@ const Page = () => {
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
-      <Stack
-        sx={(theme) => ({
-          marginRight: Spacing.md,
-          marginLeft: Spacing.md,
-          marginTop: Spacing.xl,
-          marginBottom: Spacing.xxl,
-          gap: Spacing.xl,
-          flexDirection: 'column',
-          // 961px, matches old Action card breakpoint
-          [theme.breakpoints.up(961)]: {
-            flexDirection: 'row', // 1100px
-          },
-        })}
-      >
+      <DetailPageStack>
         <AppPageFormsWrapper>
           {isValidRouterParams && (
             <LoanMange
@@ -195,7 +183,7 @@ const Page = () => {
             />
           </Stack>
         </Stack>
-      </Stack>
+      </DetailPageStack>
     </>
   ) : (
     <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">

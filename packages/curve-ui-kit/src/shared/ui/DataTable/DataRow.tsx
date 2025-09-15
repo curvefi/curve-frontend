@@ -3,12 +3,12 @@ import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { type ExpandedPanel, ExpansionRow } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
 import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './data-table.utils'
 import { DataCell } from './DataCell'
+import { type ExpandedPanel, ExpansionRow } from './ExpansionRow'
 
 const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row

@@ -17,7 +17,7 @@ import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 interface Props extends PageLoanManageProps {}
 

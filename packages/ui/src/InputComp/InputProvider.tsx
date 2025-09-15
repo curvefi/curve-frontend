@@ -1,25 +1,9 @@
-import type { Dispatch, ReactNode, SetStateAction } from 'react'
-import { createContext, useContext, useState } from 'react'
+import { useState } from 'react'
 import { styled } from 'styled-components'
 import Box from 'ui/src/Box/Box'
-import type { BoxProps } from 'ui/src/Box/types'
 import { focusVisible } from 'ui/src/utils/sharedStyles'
+import { type InputProviderProps, InputContext } from './InputContext'
 import type { InputMinHeight, InputVariant } from './types'
-
-export interface InputProviderProps extends Omit<BoxProps, 'padding'> {
-  children: ReactNode
-  disabled?: boolean
-  id: string
-  inputVariant?: InputVariant | ''
-  minHeight?: InputMinHeight
-  padding?: string
-}
-
-interface InputContextProps extends Pick<InputProviderProps, 'disabled' | 'id' | 'inputVariant'> {
-  setIsFocusVisible: Dispatch<SetStateAction<boolean>>
-}
-
-const InputContext = createContext<InputContextProps>(undefined!)
 
 const InputProvider = ({ className, children, disabled, id, inputVariant, ...boxProps }: InputProviderProps) => {
   const [isFocusVisible, setIsFocusVisible] = useState(false)
@@ -87,7 +71,3 @@ export const InputWrapper = styled(Box)<InputWrapperProps>`
 InputProvider.displayName = 'InputProvider'
 
 export default InputProvider
-
-export function useInputContext() {
-  return useContext(InputContext)
-}

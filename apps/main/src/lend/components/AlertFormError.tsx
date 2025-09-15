@@ -1,24 +1,8 @@
 import { useMemo } from 'react'
+import { FormError } from '@/lend/types/lend.types'
 import AlertBox from '@ui/AlertBox'
 import type { AlertBoxProps } from '@ui/AlertBox/types'
 import { t } from '@ui-kit/lib/i18n'
-
-export enum FormError {
-  // vault
-
-  // repay
-  FullRepaymentRequired = 'error-full-repayment-required',
-
-  // all
-  API = 'error-api',
-  ExistingLoan = 'error-existing-loan',
-  EstGasApproval = 'error-est-gas-approval',
-  InvalidProvider = 'error-invalid-provider',
-  WalletBalances = 'error-wallet-balances',
-  StepApprove = 'error-step-approve',
-  LiquidationMode = 'error-liquidation-mode',
-  TotalSupply = 'error-total-supply',
-}
 
 interface Props extends Omit<AlertBoxProps, 'alertType'> {
   errorKey: FormError | string

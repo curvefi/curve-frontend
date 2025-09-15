@@ -5,9 +5,9 @@ import { useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
-import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { getInsetShadow, getShadow } from '@ui-kit/themes/basic-theme/shadows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { TableItem } from './data-table.utils'
 
 const { Spacing } = SizesAndSpaces
 
