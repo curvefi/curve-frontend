@@ -13,6 +13,7 @@ yarn
 ### Cypress Tests
 
 Cypress tests require the necessary application to be started before running.
+
 ```sh
 yarn dev
 ```
