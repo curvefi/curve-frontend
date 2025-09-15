@@ -7,7 +7,7 @@ import PoolInfoData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper
 import PoolParameters from '@/dex/components/PagePool/PoolDetails/PoolParameters'
 import PoolStats from '@/dex/components/PagePool/PoolDetails/PoolStats'
 import Swap from '@/dex/components/PagePool/Swap'
-import type { EstimatedGas, PageTransferProps, Seed, Slippage, TransferFormType } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed, TransferFormType } from '@/dex/components/PagePool/types'
 import MySharesStats from '@/dex/components/PagePool/UserDetails'
 import Withdraw from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
@@ -42,17 +42,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-
-export const DEFAULT_ESTIMATED_GAS: EstimatedGas = { loading: false, estimatedGas: null, error: null }
-
-export const DEFAULT_SLIPPAGE: Slippage = {
-  loading: false,
-  slippage: null,
-  isHighSlippage: false,
-  isBonus: false,
-  error: '',
-}
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 

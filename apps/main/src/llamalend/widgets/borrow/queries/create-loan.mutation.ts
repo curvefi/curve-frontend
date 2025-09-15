@@ -7,12 +7,12 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
+import { assert } from '@ui-kit/utils'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { userBalancesQueryKey } from '../queries/user-balances.query'
 import { borrowFormValidationSuite } from './borrow.validation'
-import { assert } from '@ui-kit/utils'
 
 type BorrowMutationContext = {
   chainId: IChainId
