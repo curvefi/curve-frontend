@@ -3,13 +3,14 @@
 Curve-frontend is a user-interface application designed to connect to Curve's deployment of smart contracts.
 This UI application is designed for both the [Curve](https://curve.finance) dapp, and utilizes [curve-js](https://github.com/curvefi/curve-js) and [curve-llamalend-api](https://github.com/curvefi/curve-llamalend.js) to communicate with the blockchain.
 
-[![.github/workflows/ci.yaml](https://github.com/curvefi/curve-frontend/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/curvefi/curve-frontend/actions/workflows/ci.yaml)
+[![CI](https://github.com/curvefi/curve-frontend/actions/workflows/ci.yaml/badge.svg?event=push)](https://github.com/curvefi/curve-frontend/actions/workflows/ci.yaml)
+[![Storybook](https://github.com/curvefi/curve-frontend/actions/workflows/storybook.yaml/badge.svg?event=push)](https://curve-dapp-storybook-curvefi.vercel.app/)
 
 ## Prerequisites
 
 Before you begin, ensure you have met the following requirements:
 
-- [nodejs](https://nodejs.org/en/about/previous-releases) active version
+- [NodeJS](https://nodejs.org/en/about/previous-releases) Active LTS version
 - [yarn](https://yarnpkg.com/getting-started/install) version 4.x
 
 ## Installation
@@ -34,25 +35,14 @@ Access the application in a web browser:
 
 - http://localhost:3000
 
-## Forked Mainnet
-
-Testing with a forked mainnet is not generally necessary.
-However, if you want to do that, you can do so by copying `.env.sample` and updating environment variables:
-
-```bash
-cp apps/main/.env.sample apps/main/.env.development.local
-```
-
-Connect your wallet to the RPC URL that you used.
-
 ## Folder Structure
 
 This repository is organized as follows:
 
 - `/apps/main`: This application manages router swaps, pool-specific functions (deposit, withdraw, swap), and pool creation [React](https://react.dev/) application.
-- `/tests`: Cypress tests
 - `/packages/curve-ui-kit`: Shared UI kit created using Material UI, mapped as `@ui-kit`
 - `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`. Soon to be to separated its own NPM package.
+- `/tests`: Cypress tests
 
 ## Development Guide
 
@@ -60,15 +50,7 @@ For detailed information on development practices and usage of new libraries, pl
 
 ## Testing
 
-For testing the DApp application, follow these steps:
-
-1. Navigate to the `tests` directory:
-
-```bash
-cd tests
-```
-
-2. Follow the instructions in the `README` file located in the `tests` directory.
+Check the [README](./tests/README.md) in the `tests` directory for instructions on how to run end-to-end tests using Cypress.
 
 ## Troubleshooting
 
@@ -78,7 +60,7 @@ You may also submit an issue on our [GitHub Issue Tracker](https://github.com/cu
 
 ## Contributing
 
-To contribute to curve-frontend, follow these steps:
+To contribute to Curve Frontend, follow these steps:
 
 1. Fork this repository.
 2. Create a branch: `git checkout -b <branch_name>`.
@@ -86,7 +68,7 @@ To contribute to curve-frontend, follow these steps:
 4. Push to the original branch: `git push origin <project_name>/<location>`
 5. Create the pull request.
 
-Alternatively see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
+Alternatively, see the GitHub documentation on [creating a pull request](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 ## License
 
