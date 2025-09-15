@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ActionInfos, type Props as ActionInfosProps } from './ActionInfos'
 import { ClosePosition, type Props as ClosePositionProps } from './tabs/ClosePosition'
@@ -10,13 +10,13 @@ import { ImproveHealth, type Props as ImproveHealthProps } from './tabs/ImproveH
 
 const { Spacing, MaxWidth, MinWidth } = SizesAndSpaces
 
-const TABS_MAIN = [{ value: 'manage', label: t`Manage soft-liquidation` }] as const
+const tabs: TabOption<'manage'>[] = [{ value: 'manage', label: t`Manage soft-liquidation` }]
 
-const TABS_SUB = [
+type SubTab = 'improve-health' | 'close-position'
+const subTabs: TabOption<SubTab>[] = [
   { value: 'improve-health', label: t`Improve health` },
   { value: 'close-position', label: t`Close position` },
-] as const
-type SubTab = (typeof TABS_SUB)[number]['value']
+]
 
 export type Props = {
   actionInfos: ActionInfosProps
@@ -25,12 +25,12 @@ export type Props = {
 }
 
 export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePosition }: Props) => {
-  const [subTab, setSubTab] = useState<SubTab>(TABS_SUB[0].value)
+  const [subTab, setSubTab] = useState<SubTab>(subTabs[0].value)
 
   return (
     <Stack sx={{ gap: Spacing.sm }}>
       <Stack>
-        <TabsSwitcher variant="contained" size="medium" value="manage" options={TABS_MAIN} />
+        <TabsSwitcher variant="contained" size="medium" value="manage" options={tabs} fullWidth />
         <Box
           sx={{
             backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -42,9 +42,9 @@ export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePositio
             variant="underlined"
             size="small"
             value={subTab}
-            options={TABS_SUB}
+            options={subTabs}
             onChange={setSubTab}
-            sx={{ '& .MuiTab-root': { flexGrow: 1 } }}
+            fullWidth
           />
 
           {subTab === 'improve-health' && <ImproveHealth {...improveHealth} />}

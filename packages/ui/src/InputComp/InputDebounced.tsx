@@ -2,7 +2,7 @@ import { useDebounce } from 'curve-ui-kit/src/hooks/useDebounce'
 import Box from 'ui/src/Box/Box'
 import { InputLabel } from 'ui/src/InputComp'
 import Input from 'ui/src/InputComp/Input'
-import { useInputContext } from 'ui/src/InputComp/InputProvider'
+import { useInputContext } from './InputContext'
 import type { InputLabelProps, InputProps } from './types'
 
 const InputDebounced = ({

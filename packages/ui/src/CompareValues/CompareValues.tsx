@@ -29,7 +29,7 @@ const CompareValues = ({ children, prevVal, newVal }: Props) => {
   return <CompareValuesWrapper className={indicator}>{children}</CompareValuesWrapper>
 }
 
-export const positiveFadeIn = keyframes`
+const positiveFadeIn = keyframes`
   from {
     color: green;
   }
@@ -38,7 +38,7 @@ export const positiveFadeIn = keyframes`
   }
 `
 
-export const negativeFadeIn = keyframes`
+const negativeFadeIn = keyframes`
   from {
     color: red;
   }

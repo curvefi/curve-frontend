@@ -20,7 +20,7 @@ import { BorrowFormTokenInput } from './BorrowFormTokenInput'
 import { InputDivider } from './InputDivider'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MinWidth } = SizesAndSpaces
 
 export const BorrowTabContents = ({
   market,
@@ -34,7 +34,7 @@ export const BorrowTabContents = ({
     values,
     onSubmit,
     isPending,
-    maxBorrow,
+    maxTokenValues,
     params,
     form,
     collateralToken,
@@ -42,11 +42,8 @@ export const BorrowTabContents = ({
     isCreated,
     creationError,
     txHash,
-    maxDebt,
-    maxCollateral,
     formErrors,
     tooMuchDebt,
-    tooMuchCollateral,
   } = useBorrowForm({ market, network, preset })
   const setRange = (range: number) => form.setValue('range', range, setValueOptions)
 
@@ -60,9 +57,9 @@ export const BorrowTabContents = ({
               token={collateralToken}
               name="userCollateral"
               form={form}
-              isLoading={maxBorrow.isLoading || !market}
-              isError={maxBorrow.isError || tooMuchCollateral}
-              max={maxCollateral}
+              isLoading={maxTokenValues.isCollateralLoading}
+              isError={maxTokenValues.isCollateralError}
+              max={values.maxCollateral}
               testId="borrow-collateral-input"
             />
             <BorrowFormTokenInput
@@ -70,9 +67,9 @@ export const BorrowTabContents = ({
               token={borrowToken}
               name="debt"
               form={form}
-              isLoading={maxBorrow.isLoading || !market}
-              isError={maxBorrow.isError || tooMuchDebt}
-              max={maxDebt}
+              isLoading={maxTokenValues.isDebtLoading}
+              isError={maxTokenValues.isDebtError}
+              max={values.maxDebt}
               testId="borrow-debt-input"
             />
           </Stack>
@@ -128,14 +125,24 @@ export const BorrowTabContents = ({
  */
 export const OutOfCardBox = ({ children }: { children: ReactNode }) => (
   <Box
-    sx={{
-      // we use the legacy variables to match what the parent <AppFormContentWrapper> is using
+    sx={(t) => ({
+      // match what the parent <DetailPageStack> is using
       backgroundColor: 'var(--page--background-color)',
-      marginInline: 'calc(-1 * var(--spacing-3))',
+      position: 'relative',
+      marginInline: 'calc(-50vw + 186px)',
       marginBlockEnd: 'calc(-1 * var(--spacing-3))',
       paddingBlockStart: 'var(--spacing-3)',
-      position: 'relative',
-    }}
+      [t.breakpoints.up('tablet')]: {
+        marginInline: 'calc(-50vw + 194px)',
+      },
+      [t.breakpoints.up(MinWidth.twoCardLayout)]: {
+        // force width since <AppFormContentWrapper> gives a fixed width too
+        width: '386px',
+        marginInline: '-22px',
+        marginBlockEnd: 'calc(-1 * var(--spacing-3))',
+        paddingBlockStart: 'var(--spacing-3)',
+      },
+    })}
   >
     {children}
   </Box>
