@@ -71,7 +71,7 @@ export const TooltipItem = ({
           sx={{ marginLeft: Spacing.md }}
         />
       )}
-      {imageId && <RewardIcon size="md" imageId={imageId} sx={{ marginLeft: Spacing.md }} className="MuiChip-icon" />}
+      {imageId && <RewardIcon size="md" imageId={imageId} sx={{ marginLeft: Spacing.md }} />}
       <Typography
         color={titleTypographyColor[variant]}
         variant={titleTypographyVariant[variant]}
