@@ -118,7 +118,7 @@ export const PageRouterSwap = () => {
     <StyledQuickSwapWrapper variant="primary" shadowed>
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
-        <span style={{ color: 'white' }}>{t`Swap`}</span>
+        {t`Swap`}
         <IconButton testId="hidden" hidden />
       </BoxHeader>
 
