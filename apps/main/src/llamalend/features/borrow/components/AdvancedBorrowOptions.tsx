@@ -21,7 +21,6 @@ export const AdvancedBorrowOptions = ({
   values: { debt, userBorrowed, leverageEnabled, range },
   setRange,
   market,
-  enabled,
   collateralToken,
   borrowToken,
 }: {
@@ -30,7 +29,6 @@ export const AdvancedBorrowOptions = ({
   values: BorrowForm
   setRange: (n: number) => void
   market: LlamaMarketTemplate | undefined
-  enabled: boolean
   collateralToken: Token | undefined
   borrowToken: Token | undefined
 }) => {
@@ -57,7 +55,7 @@ export const AdvancedBorrowOptions = ({
       >
         <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
         <ChartLiquidationRange
-          data={useLiquidationRangeChartData(params, enabled)}
+          data={useLiquidationRangeChartData(params)}
           healthColorKey="healthy"
           height={chartHeight}
           isDetailView
