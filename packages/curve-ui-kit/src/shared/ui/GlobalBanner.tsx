@@ -2,12 +2,12 @@ import { useAccount, useChainId, useSwitchChain } from 'wagmi'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import { isFailure, useConnection, type WagmiChainId } from '@ui-kit/features/connect-wallet'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { isCypress } from '@ui-kit/utils'
+import { isCypress, ReleaseChannel } from '@ui-kit/utils'
 
 export type GlobalBannerProps = {
   networkId: string
@@ -20,9 +20,7 @@ const { IconSize } = SizesAndSpaces
 const maintenanceMessage = process.env.NEXT_PUBLIC_MAINTENANCE_MESSAGE
 
 export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
-  const [isBeta, setIsBeta] = useBetaFlag()
-  const showBetaBanner = isBeta && !isCypress
-
+  const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const { isConnected } = useAccount()
   const { switchChain } = useSwitchChain()
   const { connectState } = useConnection()
@@ -33,9 +31,9 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
   return (
     <Box>
-      {showBetaBanner && (
+      {releaseChannel === ReleaseChannel.Beta && !isCypress && (
         // ignore hydration warning because isBeta comes from localStorage and is not available on the server side
-        <Banner onClick={() => setIsBeta(false)} buttonText={t`Disable Beta Mode`}>
+        <Banner onClick={() => setReleaseChannel(ReleaseChannel.Stable)} buttonText={t`Disable Beta Mode`}>
           <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
         </Banner>
       )}

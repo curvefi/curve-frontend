@@ -8,12 +8,12 @@ import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
 import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
-import { isCypress } from '@ui-kit/utils'
+import { isCypress, ReleaseChannel } from '@ui-kit/utils'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
@@ -35,7 +35,7 @@ export const DesktopHeader = ({
   const setTheme = useUserProfileStore((state) => state.setTheme)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
-  const [isBeta] = useBetaFlag()
+  const [releaseChannel] = useReleaseChannel()
   return (
     <AppBar
       color="transparent"
@@ -56,7 +56,7 @@ export const DesktopHeader = ({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            {isBeta && !isCypress ? (
+            {releaseChannel === ReleaseChannel.Beta && !isCypress ? (
               <UserProfileButton />
             ) : (
               <>

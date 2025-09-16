@@ -11,13 +11,21 @@ export * from './number'
 export * from './searchText'
 export * from './mui'
 
+export enum ReleaseChannel {
+  Beta = 'Beta',
+  Stable = 'Stable',
+  Legacy = 'Legacy',
+}
+
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: unknown }).Cypress)
-export const isBetaDefault =
+const isDefaultBeta =
   process.env.NODE_ENV === 'development' ||
   (typeof window !== 'undefined' &&
     window.location.hostname !== 'curve.finance' &&
     window.location.hostname !== 'www.curve.finance')
-export const enableLogging = isBetaDefault
+
+export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
+export const enableLogging = isDefaultBeta
 
 /**
  * Copies text to clipboard with Ethereum address checksumming

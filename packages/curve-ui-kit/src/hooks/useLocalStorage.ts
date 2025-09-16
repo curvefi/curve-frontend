@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import type { ColumnFiltersState } from '@tanstack/table-core'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { isBetaDefault } from '@ui-kit/utils'
+import { ReleaseChannel, defaultReleaseChannel } from '@ui-kit/utils'
 import { type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
@@ -42,7 +42,14 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
-export const useBetaFlag = () => useLocalStorage<boolean>('beta', isBetaDefault)
+
+export const useReleaseChannel = () =>
+  useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
+    version: 1,
+    migrate: (oldValue) => (oldValue ? ReleaseChannel.Beta : ReleaseChannel.Stable),
+    oldKey: 'beta',
+  })
+
 export const useFilterExpanded = (tableTitle: string) =>
   useLocalStorage<boolean>(`filter-expanded-${kebabCase(tableTitle)}`, false)
 
