@@ -16,82 +16,16 @@ import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borr
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
-import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
-import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
+import { BorrowLeverageActionInfos } from './BorrowLeverageActionInfos'
 
-export const LeverageActionInfos = <ChainId extends IChainId>({
-  params,
-  collateralToken,
-  isOpen,
-  slippage,
-}: {
-  params: BorrowFormQueryParams<ChainId>
-  isOpen: boolean
-  collateralToken: Token | undefined
-  slippage: number
-}) => {
-  const {
-    data: expectedCollateral,
-    isLoading: expectedCollateralLoading,
-    error: expectedCollateralError,
-  } = useBorrowExpectedCollateral(params, isOpen)
-
-  const {
-    data: maxBorrowReceive,
-    isLoading: maxBorrowReceiveLoading,
-    error: maxBorrowReceiveError,
-  } = useMaxBorrowReceive(params, isOpen)
-
-  const { totalCollateral, leverage } = expectedCollateral ?? {}
-  const { avgPrice, maxLeverage } = maxBorrowReceive ?? {}
-
-  const {
-    data: priceImpactPercent,
-    isLoading: priceImpactPercentLoading,
-    error: priceImpactPercentError,
-  } = useBorrowPriceImpact(params, isOpen)
-  const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
-
-  return (
-    <>
-      <ActionInfo
-        label={t`Leverage`}
-        value={formatNumber(leverage, { defaultValue: '1', maximumFractionDigits: 0 })}
-        valueRight={
-          leverage != null && maxLeverage && ` (max ${formatNumber(maxLeverage, { maximumFractionDigits: 0 })})`
-        }
-        error={expectedCollateralError || maxBorrowReceiveError}
-        loading={expectedCollateralLoading || maxBorrowReceiveLoading}
-      />
-      <ActionInfo
-        label={t`Expected`}
-        value={formatNumber(totalCollateral, { currency: collateralToken?.symbol, defaultValue: '-' })}
-        error={expectedCollateralError}
-        loading={expectedCollateralLoading}
-      />
-      <ActionInfo
-        label={t`Expected avg. price`}
-        value={formatNumber(avgPrice, { defaultValue: '-' })}
-        error={maxBorrowReceiveError}
-        loading={maxBorrowReceiveLoading}
-      />
-      <ActionInfo
-        label={isHighImpact ? t`High price impact` : t`Price impact`}
-        value={formatNumber(priceImpactPercent, { defaultValue: '-' })}
-        valueRight={priceImpactPercent != null && '%'}
-        {...(isHighImpact && { valueColor: 'error' })}
-        error={priceImpactPercentError}
-        loading={priceImpactPercentLoading}
-        testId="borrow-price-impact"
-      />
-    </>
-  )
-}
-
+/**
+ * Accordion with action infos about the borrow action (like health, band range, price range, N, borrow APR, LTV, estimated gas, slippage)
+ * By default, only the health info is visible. The rest is visible when the accordion is expanded.
+ * When leverage is enabled, `BorrowLeverageActionInfos` is also included.
+ */
 export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,
   values: { range, slippage, debt, userCollateral, leverageEnabled },
@@ -137,7 +71,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
       >
         <Stack>
           {leverageEnabled && (
-            <LeverageActionInfos
+            <BorrowLeverageActionInfos
               isOpen={isOpen}
               collateralToken={collateralToken}
               params={params}
