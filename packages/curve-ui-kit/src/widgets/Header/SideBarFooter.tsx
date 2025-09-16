@@ -8,6 +8,7 @@ import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { AdvancedModeSwitch } from '@ui-kit/features/user-profile/settings/AdvancedModeSwitch'
 import { ThemeToggleButtons } from '@ui-kit/features/user-profile/settings/ThemeToggleButtons'
 import { t } from '@ui-kit/lib/i18n'
@@ -15,7 +16,7 @@ import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 const backgroundColor = 'background.paper'
 
@@ -30,6 +31,7 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
         backgroundColor,
       })}
     >
+      {/*<Box display="flex" paddingInline={4} marginBlockStart={Spacing.lg.mobile}>*/}
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator sx={{ flexGrow: 1 }} onConnect={onConnect} />
       </Box>
@@ -57,7 +59,10 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
         </AccordionDetails>
       </Accordion>
     </Box>
-    <Box minHeight={150} /> {/* To avoid the last item to be hidden by the connect indicator */}
+    {/* Avoid `SocialSidebarSection` to be hidden by `ConnectWalletIndicator` */}
+    <Box
+      minHeight={`calc(${useLayoutStore((state) => state.navHeight)}px + ${Spacing.lg.mobile} + ${ButtonSize.sm} + ${ButtonSize.md})`}
+    />
   </>
 )
 

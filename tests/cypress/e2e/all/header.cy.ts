@@ -134,11 +134,13 @@ describe('Header', () => {
 
     it('should switch themes', () => {
       cy.get(`[data-testid='menu-toggle']`).click()
+      cy.get(`[data-testid='social-buttons']`).scrollIntoView()
+      cy.get(`[data-testid='social-buttons']`).should('be.visible')
       cy.get(`[data-testid='sidebar-settings']`).click()
       cy.get(`[data-testid='sidebar-settings']`).then(($settings) => {
         const font1 = $settings.css('font-family')
-        cy.get(`[data-testid='theme-switcher-button-chad']`).click()
-        cy.get(`[data-testid='theme-switcher-button-chad']`).should('have.class', 'current')
+        cy.get(`[data-testid='theme-switch-button-chad']`).click()
+        cy.get(`[data-testid='theme-switch-button-chad']`).should('have.attr', 'aria-pressed', 'true')
 
         // check font change
         cy.get(`[data-testid='sidebar-settings']`).then(($el) => {

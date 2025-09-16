@@ -16,7 +16,7 @@ export const ThemeToggleButtons = (props: Partial<ToggleButtonGroupProps>) => {
       {...props}
     >
       {themes.map(({ type, Component }) => (
-        <ToggleButton key={type} value={type}>
+        <ToggleButton key={type} value={type} data-testid={`theme-switch-button-${type}`}>
           <Component size={18} />
         </ToggleButton>
       ))}
