@@ -88,19 +88,19 @@ export const useUserLendCollateralEvents = ({
     userAddress,
   })
 
-  const parsedData =
-    data?.events
-      .map((event, index) => ({
-        ...event,
-        type: parseEventType(event, data?.events[index - 1]),
-        url: event.txHash ? `#${event.txHash}` : '#',
-        borrowToken,
-        collateralToken,
-      }))
-      .reverse() || []
+  return useMemo(() => {
+    const parsedData =
+      data?.events
+        .map((event, index) => ({
+          ...event,
+          type: parseEventType(event, data?.events[index - 1]),
+          url: event.txHash ? `#${event.txHash}` : '#',
+          borrowToken,
+          collateralToken,
+        }))
+        .reverse() || []
 
-  return useMemo(
-    () => ({
+    return {
       data: data
         ? {
             ...data,
@@ -109,7 +109,6 @@ export const useUserLendCollateralEvents = ({
         : null,
       isLoading,
       isError,
-    }),
-    [data, parsedData, isLoading, isError],
-  )
+    }
+  }, [data, borrowToken, collateralToken, isLoading, isError])
 }

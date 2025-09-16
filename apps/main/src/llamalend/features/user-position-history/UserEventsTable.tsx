@@ -1,3 +1,4 @@
+import Box from '@mui/material/Box'
 import { useReactTable } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { DataTable, getTableOptions } from '@ui-kit/shared/ui/DataTable'
@@ -13,20 +14,31 @@ type UserEventsTableProps = {
 
 export const UserEventsTable = ({ events, loading, isError }: UserEventsTableProps) => {
   const table = useReactTable({
-    columns: USER_POSITION_HISTORY_COLUMNS,
     data: events,
+    columns: USER_POSITION_HISTORY_COLUMNS,
     ...getTableOptions(events),
   })
 
   return (
-    <DataTable
-      table={table}
-      emptyState={
-        <EmptyStateRow table={table}>{isError ? t`Could not load events` : t`No events found`}</EmptyStateRow>
-      }
-      loading={loading}
-      expandedPanel={() => null} // TODO: fix
-      shouldStickFirstColumn={false} // TODO: fix
-    />
+    <Box
+      sx={{
+        maxHeight: '462px',
+        overflow: 'scroll',
+        // Override sticky header positioning for scrollable container
+        '& thead': {
+          top: '0 !important',
+        },
+      }}
+    >
+      <DataTable
+        table={table}
+        emptyState={
+          <EmptyStateRow table={table}>{isError ? t`Could not load events` : t`No events found`}</EmptyStateRow>
+        }
+        loading={loading}
+        expandedPanel={() => null} // TODO: fix
+        shouldStickFirstColumn={false} // TODO: fix
+      />
+    </Box>
   )
 }

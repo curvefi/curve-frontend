@@ -10,7 +10,7 @@ type UserPositionHistoryProps = {
 }
 
 export const UserPositionHistory = ({ events, isLoading, isError }: UserPositionHistoryProps) => (
-  <Accordion title={t`Position History`} ghost defaultExpanded={true}>
+  <Accordion title={t`Position History`} ghost defaultExpanded={false}>
     <UserEventsTable events={events} loading={isLoading} isError={isError} />
   </Accordion>
 )
