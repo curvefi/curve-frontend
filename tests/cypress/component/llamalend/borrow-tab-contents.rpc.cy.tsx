@@ -8,10 +8,11 @@ import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
+import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
 import { Chain } from '@ui-kit/utils'
 
-const network = networks[Chain.Ethereum]
+const chainId = Chain.Ethereum
 const MARKET_ID = 'lbtc'
 const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
@@ -19,7 +20,7 @@ const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 function BorrowTabTest() {
   const { llamaApi } = useConnection()
   const market = useMemo(() => llamaApi?.getMintMarket(MARKET_ID), [llamaApi])
-  return market ? <BorrowTabContents market={market} network={network} /> : <Skeleton />
+  return market ? <BorrowTabContents market={market} networks={networks} chainId={chainId} /> : <Skeleton />
 }
 
 describe('BorrowTabContents Component Tests', () => {
@@ -43,7 +44,7 @@ describe('BorrowTabContents Component Tests', () => {
 
   const BorrowTabTestWrapper = () => (
     <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
-      <ConnectionProvider app="llamalend" network={network} onChainUnavailable={console.error}>
+      <ConnectionProvider app="llamalend" network={networks[chainId]} onChainUnavailable={console.error}>
         <Box sx={{ maxWidth: 500 }}>
           <BorrowTabTest />
         </Box>

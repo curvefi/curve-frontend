@@ -1,16 +1,11 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import { type Address, formatUnits } from 'viem'
-import { useBalance } from 'wagmi'
+import { type Address } from 'viem'
 import type { BorrowForm, BorrowFormQueryParams } from '@/llamalend/widgets/borrow/borrow.types'
 import { useMaxLeverage } from '@/llamalend/widgets/borrow/queries/borrow-max-leverage.query'
 import { useMaxBorrowReceive } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
-import type { GetBalanceReturnType } from '@wagmi/core'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { setValueOptions } from '../llama.util'
-
-/** Convert user collateral from GetBalanceReturnType to number */
-const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
-  parseInt(formatUnits(value || 0n, decimals || 18), 10)
 
 /**
  * Hook to fetch and set the maximum token values for collateral and debt in a borrow form.
@@ -30,11 +25,7 @@ export function useMaxTokenValues(
     data: userBalance,
     isError: isBalanceError,
     isLoading: isBalanceLoading,
-  } = useBalance({
-    address: params.userAddress,
-    token: collateralToken?.address,
-    chainId: params.chainId || undefined,
-  })
+  } = useTokenBalance(params, collateralToken)
   const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
   // const {
   //   data: expectedCollateral,
@@ -49,11 +40,9 @@ export function useMaxTokenValues(
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
   const maxCollateral =
-    userBalance && maxTotalCollateral
-      ? Math.min(convertBalance(userBalance ?? {}), maxTotalCollateral)
-      : userBalance
-        ? convertBalance(userBalance ?? {})
-        : maxTotalCollateral
+    userBalance && maxBorrow?.maxTotalCollateral
+      ? Math.min(userBalance, maxBorrow?.maxTotalCollateral)
+      : (userBalance ?? maxBorrow?.maxTotalCollateral)
 
   const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 

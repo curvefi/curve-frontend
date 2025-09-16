@@ -1,3 +1,4 @@
+import type { Theme } from '@mui/material/styles'
 import {
   type Column,
   getCoreRowModel,
@@ -7,6 +8,8 @@ import {
   type useReactTable,
 } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 /** css class to hide elements on desktop unless the row is hovered */
 export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
@@ -26,8 +29,6 @@ export const getAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
 /** Similar to `getAlignment`, but for the flex alignment. */
 export const getFlexAlignment = <T extends TableItem>({ columnDef }: Column<T>) =>
   columnDef.meta?.type == 'numeric' ? 'end' : 'start'
-
-const { Spacing } = SizesAndSpaces
 
 /**
  * In the figma design, the first and last columns seem to be aligned to the table title.
@@ -52,3 +53,42 @@ export const getTableOptions = <T>(result: T | undefined) => ({
   autoResetPageIndex: false, // autoreset causing stack too deep issues when receiving new data
   maxMultiSortColCount: 3, // allow 3 columns to be sorted at once while holding shift
 })
+
+/** Get the typography variant for the cell based on the column definition. */
+export const getCellVariant = <T>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
+
+/**
+ * Creates the styles for the table cell, including handling sticky columns and collapse icon.
+ * @param column the tanstack column
+ * @param showCollapseIcon whether to show the collapse icon (for mobile last column)
+ * @param isSticky whether the column is sticky (first column on tablet)
+ * @returns an array with the cell sx and the wrapper sx (empty object if no wrapper needed)
+ */
+export function getCellSx<T extends TableItem>({
+  column,
+  showCollapseIcon,
+  isSticky,
+}: {
+  column: Column<T>
+  showCollapseIcon?: boolean
+  isSticky: boolean
+}) {
+  // with the collapse icon there is an extra wrapper, so keep the sx separate
+  const wrapperSx = {
+    textAlign: getAlignment(column),
+    paddingInline: Spacing.sm,
+  }
+  const sx = {
+    ...(!showCollapseIcon && wrapperSx),
+    ...getExtraColumnPadding(column),
+    ...(isSticky && {
+      borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+      position: 'sticky',
+      left: 0,
+      zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
+      backgroundColor: (t: Theme) => t.design.Table.Row.Default,
+    }),
+    borderBlockEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+  }
+  return [sx, showCollapseIcon ? wrapperSx : {}]
+}

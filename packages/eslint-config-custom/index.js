@@ -46,7 +46,7 @@ module.exports = {
     '@typescript-eslint/no-wrapper-object-types': 'off',
     '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
-    'react-refresh/only-export-components': ['off', { allowConstantExport: true }],
+    'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
 
     'no-console': [
       'error', // use console.log only for debugging
@@ -79,7 +79,7 @@ module.exports = {
     'import/resolver': {
       typescript: {
         alwaysTryTypes: true,
-        project: ['./apps/*/tsconfig.json', './packages/*/tsconfig.json', './tests/tsconfig.json'],
+        project: ['./tsconfig.json'],
       },
     },
     'import/internal-regex': '^@(ui|ui-kit|curvefi/prices-api|external-rewards)',

@@ -1,5 +1,5 @@
-import { FormWarning } from '@/lend/components/AlertFormWarning'
 import type { FormStatus as Fs } from '@/lend/components/PageLoanManage/types'
+import { FormWarning } from '@/lend/types/lend.types'
 
 export type StepKey = 'APPROVAL' | 'SELF_LIQUIDATE' | ''
 

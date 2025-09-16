@@ -1,4 +1,5 @@
 import { getHealthValueColor } from '@/llamalend/features/market-position-details/utils'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { formatPercent } from '@/llamalend/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
@@ -8,43 +9,27 @@ import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../borrow.types'
+import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
+import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
 
-const useLoanToValue = ({
-  chainId,
-  collateralToken,
-  debt,
-  userCollateral,
-}: {
-  chainId: IChainId
-  debt: number | undefined
-  userCollateral: number | undefined
-  collateralToken: Token | undefined
-}) => {
-  const tokenAddress = collateralToken?.address
-  const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress })
-  const collateralValue = collateralUsdRate != null && userCollateral != null && userCollateral * collateralUsdRate
-  return collateralValue && debt != null ? (debt / collateralValue) * 100 : null
-}
-
-export const LeverageActionInfos = ({
+export const LeverageActionInfos = <ChainId extends IChainId>({
   params,
   collateralToken,
   isOpen,
   slippage,
 }: {
-  params: BorrowFormQueryParams
+  params: BorrowFormQueryParams<ChainId>
   isOpen: boolean
   collateralToken: Token | undefined
   slippage: number
@@ -107,26 +92,27 @@ export const LeverageActionInfos = ({
   )
 }
 
-type BorrowActionInfoAccordionProps = {
-  params: BorrowFormQueryParams
-  values: BorrowForm
-  collateralToken: Token | undefined
-  tooMuchDebt: boolean
-  onSlippageChange: (newSlippage: string) => void
-}
-
-export const BorrowActionInfoAccordion = ({
+export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,
   values: { range, slippage, debt, userCollateral, leverageEnabled },
   collateralToken,
   tooMuchDebt,
+  networks,
   onSlippageChange,
-}: BorrowActionInfoAccordionProps) => {
+}: {
+  params: BorrowFormQueryParams<ChainId>
+  values: BorrowForm
+  collateralToken: Token | undefined
+  tooMuchDebt: boolean
+  networks: NetworkDict<ChainId>
+  onSlippageChange: (newSlippage: string) => void
+}) => {
   const [isOpen, , , toggle] = useSwitch(false)
+  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
-  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
+  const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
 
@@ -183,7 +169,12 @@ export const BorrowActionInfoAccordion = ({
           {loanToValue != null && (
             <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} testId="borrow-ltv" />
           )}
-          {/*TODO <ActionInfo label={t`Estimated tx cost (step 1 of 2)`} value="~0.00 ETH" />*/}
+          <ActionInfo
+            label={t`Estimated tx cost (step 1 of 2)`}
+            value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
+            valueTooltip={gas?.createLoanApprove?.tooltip}
+            loading={gasLoading}
+          />
           <ActionInfo
             label={t`Slippage tolerance`}
             value={formatPercent(slippage)}

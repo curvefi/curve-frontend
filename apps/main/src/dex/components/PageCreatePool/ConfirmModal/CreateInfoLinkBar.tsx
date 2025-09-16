@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { default as ExternalIcon } from '@ui/images/external.svg'
+import { RCExternal } from '@ui/images'
 import ExternalLink from '@ui/Link/ExternalLink'
 
 type Props = {
@@ -20,7 +20,7 @@ const InfoLinkBar = ({ description, link, theme, className }: Props) => (
   </StyledExternalLink>
 )
 
-const StyledExternalIcon = styled(ExternalIcon)`
+const StyledExternalIcon = styled(RCExternal)`
   margin: auto 0;
   margin-left: var(--spacing-2);
   min-width: 24px;

@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -22,15 +21,18 @@ import { InputDivider } from './InputDivider'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MinWidth } = SizesAndSpaces
 
-export const BorrowTabContents = ({
+export const BorrowTabContents = <ChainId extends IChainId>({
   market,
-  network,
+  networks,
+  chainId,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
 }) => {
+  const network = networks[chainId]
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
   const {
     values,
@@ -123,6 +125,7 @@ export const BorrowTabContents = ({
               values={values}
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
+              networks={networks}
               onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
             />
           </OutOfCardBox>
@@ -139,14 +142,24 @@ export const BorrowTabContents = ({
  */
 export const OutOfCardBox = ({ children }: { children: ReactNode }) => (
   <Box
-    sx={{
-      // we use the legacy variables to match what the parent <AppFormContentWrapper> is using
+    sx={(t) => ({
+      // match what the parent <DetailPageStack> is using
       backgroundColor: 'var(--page--background-color)',
-      marginInline: 'calc(-1 * var(--spacing-3))',
+      position: 'relative',
+      marginInline: 'calc(-50vw + 186px)',
       marginBlockEnd: 'calc(-1 * var(--spacing-3))',
       paddingBlockStart: 'var(--spacing-3)',
-      position: 'relative',
-    }}
+      [t.breakpoints.up('tablet')]: {
+        marginInline: 'calc(-50vw + 194px)',
+      },
+      [t.breakpoints.up(MinWidth.twoCardLayout)]: {
+        // force width since <AppFormContentWrapper> gives a fixed width too
+        width: '386px',
+        marginInline: '-22px',
+        marginBlockEnd: 'calc(-1 * var(--spacing-3))',
+        paddingBlockStart: 'var(--spacing-3)',
+      },
+    })}
   >
     {children}
   </Box>

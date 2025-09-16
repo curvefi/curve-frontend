@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
@@ -12,7 +12,7 @@ import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 
 const tabsLoan: TabOption<LoanFormType>[] = [
   { value: 'loan-increase', label: t`Borrow more` },

@@ -1,45 +1,10 @@
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
-import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { type Cell, type Column, flexRender } from '@tanstack/react-table'
+import { type Cell, flexRender } from '@tanstack/react-table'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
-import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { getAlignment, getExtraColumnPadding, type TableItem } from './data-table.utils'
-
-const { Spacing } = SizesAndSpaces
-
-export function getCellSx<T extends TableItem>({
-  column,
-  showCollapseIcon,
-  isSticky,
-}: {
-  column: Column<T>
-  showCollapseIcon?: boolean
-  isSticky: boolean
-}) {
-  // with the collapse icon there is an extra wrapper, so keep the sx separate
-  const wrapperSx = {
-    textAlign: getAlignment(column),
-    paddingInline: Spacing.sm,
-  }
-  const sx = {
-    ...(!showCollapseIcon && wrapperSx),
-    ...getExtraColumnPadding(column),
-    ...(isSticky && {
-      borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
-      position: 'sticky',
-      left: 0,
-      zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
-      backgroundColor: (t: Theme) => t.design.Table.Row.Default,
-    }),
-    borderBlockEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
-  }
-  return [sx, showCollapseIcon ? wrapperSx : {}]
-}
-
-export const getCellVariant = <T,>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
+import { getCellSx, getCellVariant, type TableItem } from './data-table.utils'
+import { RotatableIcon } from './RotatableIcon'
 
 /**
  * DataCell component to render the data cell in the table.
