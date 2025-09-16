@@ -1,12 +1,12 @@
 import lodash from 'lodash'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
-import { useMarketExtraIncentives } from '@/llamalend/LlamaMarketsPage/hooks/useMarketExtraIncentives'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { MarketRateType } from '@ui-kit/types/market'
+import { useMarketExtraIncentives } from '../../hooks/useMarketExtraIncentives'
 
 const { IconSize } = SizesAndSpaces
 

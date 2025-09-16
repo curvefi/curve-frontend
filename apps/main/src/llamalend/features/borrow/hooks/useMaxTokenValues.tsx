@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
-import type { BorrowForm, BorrowFormQueryParams } from '@/llamalend/widgets/borrow/borrow.types'
-import { useMaxBorrowReceive } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import type { BorrowForm, BorrowFormQueryParams } from '../borrow.types'
 import { setValueOptions } from '../llama.util'
+import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 
 /**
  * Hook to fetch and set the maximum token values for collateral and debt in a borrow form.
