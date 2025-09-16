@@ -1,5 +1,5 @@
 import type { FilterFn } from '@tanstack/react-table'
-import type { Assets, LlamaMarket } from '../entities/llama-markets'
+import type { Assets, LlamaMarket } from '../../entities/llama-markets'
 
 export const multiFilterFn: FilterFn<LlamaMarket> = (row, columnId, filterValue?: string[]) =>
   !filterValue?.length || filterValue.includes(row.getValue(columnId))

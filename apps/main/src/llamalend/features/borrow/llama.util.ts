@@ -2,11 +2,11 @@ import type { SetValueConfig } from 'react-hook-form'
 import type { Address } from 'viem'
 import { zeroAddress } from 'viem'
 import type { NetworkEnum } from '@/llamalend/llamalend.types'
-import { LlamaMarketTemplate } from '@/llamalend/widgets/borrow/borrow.types'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { assert, CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { LlamaMarketTemplate } from './borrow.types'
 import { BorrowPreset } from './borrow.types'
 
 /**
