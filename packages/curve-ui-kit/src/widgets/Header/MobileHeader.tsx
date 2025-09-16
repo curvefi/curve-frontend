@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import AppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
@@ -83,13 +82,22 @@ export const MobileHeader = ({
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          slotProps={{ paper: { sx: { top, ...MOBILE_SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } } }}
+          slotProps={{
+            paper: {
+              sx: {
+                top,
+                ...MOBILE_SIDEBAR_WIDTH,
+                ...HIDE_SCROLLBAR,
+                height: `calc(100dvh - ${top}px)`,
+              },
+            },
+          }}
           sx={{ top }}
           variant="temporary"
           hideBackdrop
           data-testid="mobile-drawer"
         >
-          <Box>
+          <Stack sx={{ overflowY: 'auto', ...HIDE_SCROLLBAR }}>
             <Stack padding={4}>
               <HeaderStats appStats={appStats} />
             </Stack>
@@ -105,7 +113,7 @@ export const MobileHeader = ({
             ))}
 
             <SocialSidebarSection title={t`Community`} />
-          </Box>
+          </Stack>
 
           <SideBarFooter onConnect={closeSidebar} />
         </Drawer>
