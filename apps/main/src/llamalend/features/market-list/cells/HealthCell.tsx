@@ -1,7 +1,6 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { HealthBar } from '@/llamalend/features/market-position-details'
-import { LlamaMarketColumnId } from '@/llamalend/LlamaMarketsPage/columns.enum'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import { CellContext } from '@tanstack/react-table'
@@ -9,6 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+import { LlamaMarketColumnId } from '../columns.enum'
 import { ErrorCell } from './ErrorCell'
 
 const { Spacing } = SizesAndSpaces
