@@ -27,14 +27,13 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const walletChainId = useChainId()
   const showSwitchNetworkMessage = isConnected && chainId && walletChainId != chainId
   const showConnectApiErrorMessage = !showSwitchNetworkMessage && isFailure(connectState)
-
   const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
   return (
     <Box>
-      {releaseChannel === ReleaseChannel.Beta && !isCypress && (
+      {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
         // ignore hydration warning because isBeta comes from localStorage and is not available on the server side
-        <Banner onClick={() => setReleaseChannel(ReleaseChannel.Stable)} buttonText={t`Disable Beta Mode`}>
-          <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`BETA MODE ENABLED`}
+        <Banner onClick={() => setReleaseChannel(ReleaseChannel.Stable)} buttonText={t`Disable ${releaseChannel} Mode`}>
+          <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`${releaseChannel} Mode Enabled`}
         </Banner>
       )}
       {maintenanceMessage && (

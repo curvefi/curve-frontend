@@ -7,61 +7,78 @@ import CardHeader from '@mui/material/CardHeader'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
+
+const Text = {
+  [ReleaseChannel.Beta]: [
+    t`Get early access to upcoming features and UI experiments before they go live.`,
+    t`These are work-in-progress tools meant for testing, feedback, and iteration. You might experience minor bugs or visual inconsistencies — but your funds remain safe, and core functionality is unaffected.`,
+    t`By enabling beta mode, you help shape the future of the Curve interface.`,
+    t`You can turn this off at any time.`,
+  ],
+  [ReleaseChannel.Legacy]: [
+    t`Legacy Mode gives you access to older features and designs that are being phased out.`,
+    <>
+      t`Please note: Legacy Mode is <strong>not supported</strong> and will be <strong>retired soon</strong>. For the
+      best experience, we recommend using the default or beta modes.`
+    </>,
+    t`You can turn this off at any time.`,
+  ],
+}
 
 export const ReleaseChannelDialog = ({
-  isBeta,
-  setIsBeta,
+  channel,
   open,
-  openBetaSnackbar,
+  onChanged,
   onClose,
 }: {
+  channel: ReleaseChannel.Beta | ReleaseChannel.Legacy
   open: boolean
+  onChanged: (newValue: ReleaseChannel) => void
   onClose: () => void
-  isBeta: boolean
-  setIsBeta: (value: boolean) => void
-  openBetaSnackbar: () => void
-}) => (
-  <Dialog open={open} onClose={onClose}>
-    <Card sx={{ width: SizesAndSpaces.Width.modal.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}>
-      <CardHeader
-        action={
-          <IconButton onClick={onClose} size="extraSmall">
-            <CloseIcon />
-          </IconButton>
-        }
-        title={
-          <Typography variant="headingXsBold" color="textSecondary">
-            {isBeta ? t`Disable Beta Features` : t`Enable Beta Features`}
-          </Typography>
-        }
-      />
-      <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {[
-          t`Get early access to upcoming features and UI experiments before they go live.`,
-          t`These are work-in-progress tools meant for testing, feedback, and iteration. You might experience minor bugs or visual inconsistencies — but your funds remain safe, and core functionality is unaffected.`,
-          t`By enabling beta mode, you help shape the future of the Curve interface.`,
-          t`You can turn this off at any time.`,
-        ].map((p) => (
-          <Typography color="textSecondary" key={p}>
-            {p}
-          </Typography>
-        ))}
-      </CardContent>
-      <CardActions>
-        <Button
-          color={isBeta ? 'secondary' : 'primary'}
-          onClick={() => {
-            setIsBeta(!isBeta)
-            onClose()
-            openBetaSnackbar()
-          }}
-          sx={{ width: '100%' }}
-        >
-          {isBeta ? t`Disable Beta Features` : t`Enable Beta Features`}
-        </Button>
-      </CardActions>
-    </Card>
-  </Dialog>
-)
+}) => {
+  const [releaseChannel, setReleaseChannel] = useReleaseChannel()
+  const title = t`${releaseChannel === channel ? 'Disable' : 'Enable'} ${channel} Features`
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <Card sx={{ width: SizesAndSpaces.Width.modal.md, maxWidth: '100vw', display: 'flex', flexDirection: 'column' }}>
+        <CardHeader
+          action={
+            <IconButton onClick={onClose} size="extraSmall">
+              <CloseIcon />
+            </IconButton>
+          }
+          title={
+            <Typography variant="headingXsBold" color="textSecondary">
+              {title}
+            </Typography>
+          }
+        />
+        <CardContent sx={{ flexGrow: 1, overflowY: 'hidden', display: 'flex', flexDirection: 'column', gap: 4 }}>
+          {Text[channel]?.map((p, i) => (
+            <Typography color="textSecondary" key={i}>
+              {p}
+            </Typography>
+          ))}
+        </CardContent>
+        <CardActions>
+          <Button
+            color={releaseChannel === channel ? 'secondary' : 'primary'}
+            onClick={() => {
+              const newChannel = channel === releaseChannel ? ReleaseChannel.Stable : channel
+              setReleaseChannel(newChannel)
+              onClose()
+              onChanged(newChannel)
+            }}
+            sx={{ width: '100%' }}
+          >
+            {title}
+          </Button>
+        </CardActions>
+      </Card>
+    </Dialog>
+  )
+}
