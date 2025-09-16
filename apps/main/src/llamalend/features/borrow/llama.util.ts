@@ -1,7 +1,7 @@
 import type { SetValueConfig } from 'react-hook-form'
 import type { Address } from 'viem'
 import { zeroAddress } from 'viem'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
@@ -40,7 +40,7 @@ export const BORROW_PRESET_RANGES = {
  */
 export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
 
-export const getTokens = (market: LlamaMarketTemplate, chain: NetworkEnum) =>
+export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
   market instanceof MintMarketTemplate
     ? {
         collateralToken: {

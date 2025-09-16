@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -26,7 +26,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   preset,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, ChainId>
+  network: BaseConfig<INetworkName, ChainId>
   preset: BorrowPreset
 }) {
   const { address: userAddress } = useAccount()

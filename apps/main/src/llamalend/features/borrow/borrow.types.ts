@@ -1,5 +1,4 @@
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'
@@ -32,7 +31,7 @@ export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
-export type Token = { symbol: string; address: string; chain: NetworkEnum }
+export type Token = { symbol: string; address: string; chain: INetworkName }
 
 /**
  * Preset options for borrowing
