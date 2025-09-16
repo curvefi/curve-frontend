@@ -7,7 +7,8 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
-import { setMissingProvider, useWallet } from '@ui-kit/features/connect-wallet'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash

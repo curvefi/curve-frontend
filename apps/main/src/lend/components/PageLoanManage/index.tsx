@@ -1,74 +1,55 @@
-import { useCallback, useMemo, useRef, useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import LoanBorrowMore from '@/lend/components/PageLoanManage/LoanBorrowMore'
 import LoanCollateralAdd from '@/lend/components/PageLoanManage/LoanCollateralAdd'
 import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollateralRemove'
 import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
-import type {
-  CollateralFormType,
-  FormType,
-  LeverageFormType,
-  LoanFormType,
-} from '@/lend/components/PageLoanManage/types'
+import type { CollateralFormType, LeverageFormType, LoanFormType } from '@/lend/components/PageLoanManage/types'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
-import { AppFormContent, AppFormContentWrapper, AppFormSlideTab } from '@ui/AppForm'
-import SlideTabsWrapper, { SlideTabs } from '@ui/TabSlide'
+import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import useSlideTabState from '@ui-kit/hooks/useSlideTabState'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+
+const tabsLoan: TabOption<LoanFormType>[] = [
+  { value: 'loan-increase', label: t`Borrow more` },
+  { value: 'loan-decrease', label: t`Repay` },
+  { value: 'loan-liquidate', label: t`Self-liquidate` },
+]
+
+const tabsCollateral: TabOption<CollateralFormType>[] = [
+  { value: 'collateral-increase', label: t`Add collateral` },
+  { value: 'collateral-decrease', label: t`Remove collateral` },
+]
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rOwmId, rFormType, userActiveKey, market, rChainId, params } = pageProps
+  const { rOwmId, rFormType, market, rChainId, params } = pageProps
   const push = useNavigate()
-  const tabsRef = useRef<HTMLDivElement>(null)
-  const { selectedTabIdx, tabPositions, setSelectedTabIdx } = useSlideTabState(tabsRef, rFormType)
 
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
-  const FORM_TYPES = useMemo(() => {
-    const forms: { value: FormType; label: string }[] = [
-      { value: 'loan', label: t`Loan` },
-      { value: 'collateral', label: t`Collateral` },
-    ]
-
-    if (market?.leverage?.hasLeverage()) {
-      forms.push({ value: 'leverage', label: t`Leverage` })
-    }
-
-    return forms
-  }, [market?.leverage])
-
-  const TABS_LOAN: { label: string; formType: LoanFormType }[] = [
-    { label: t`Borrow more`, formType: 'loan-increase' },
-    { label: t`Repay`, formType: 'loan-decrease' },
-    { label: t`Self-liquidate`, formType: 'loan-liquidate' },
-    // { label: t`Add collateral`, formType: 'collateral-increase' },
-    // { label: t`Remove collateral`, formType: 'collateral-decrease' },
-  ]
-
-  const TABS_COLLATERAL: { label: string; formType: CollateralFormType }[] = [
-    { label: t`Add collateral`, formType: 'collateral-increase' },
-    { label: t`Remove collateral`, formType: 'collateral-decrease' },
-  ]
-
-  const TABS_LEVERAGE: { label: string; formType: LeverageFormType }[] = [
-    { label: t`Borrow more`, formType: 'leverage-borrow-more' },
-  ]
-
-  const handleTabClick = useCallback(
-    (cb: () => void) => {
-      if (typeof loanExistsResp !== 'undefined' && !loanExistsResp.loanExists) {
-        push(getLoanCreatePathname(params, rOwmId, 'create'))
-      } else if (typeof cb === 'function') {
-        cb()
-      }
-    },
-    [loanExistsResp, push, params, rOwmId],
+  type Tab = 'loan' | 'collateral' | 'leverage'
+  const tabs: TabOption<Tab>[] = useMemo(
+    () => [
+      { value: 'loan' as const, label: t`Loan` },
+      { value: 'collateral' as const, label: t`Collateral` },
+      ...(market?.leverage?.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+    ],
+    [market?.leverage],
   )
+
+  type SubTab = LoanFormType | CollateralFormType | LeverageFormType
+  const [subTab, setSubTab] = useState<SubTab | undefined>('loan-increase')
+
+  const subTabs = useMemo(
+    () => (!rFormType || rFormType === 'loan' ? tabsLoan : rFormType === 'collateral' ? tabsCollateral : []),
+    [rFormType],
+  )
+
+  useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   // init campaignRewardsMapper
   useEffect(() => {
@@ -77,63 +58,29 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
     }
   }, [initCampaignRewards, rChainId, initiated])
 
-  const tabs =
-    !rFormType || rFormType === 'loan'
-      ? TABS_LOAN
-      : rFormType === 'collateral'
-        ? TABS_COLLATERAL
-        : rFormType === 'leverage'
-          ? TABS_LEVERAGE
-          : []
-
   return (
-    <AppFormContent variant="primary">
+    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
-        options={FORM_TYPES}
+        options={tabs}
+        fullWidth
       />
 
-      <AppFormContentWrapper>
-        {/* FORMS SELECTOR */}
-        {tabs.length > 0 && (
-          <SlideTabsWrapper activeIdx={selectedTabIdx}>
-            <SlideTabs ref={tabsRef}>
-              {tabs.map(({ label }, idx) => (
-                <AppFormSlideTab
-                  key={label}
-                  disabled={selectedTabIdx === idx}
-                  tabLeft={tabPositions[idx]?.left}
-                  tabWidth={tabPositions[idx]?.width}
-                  tabTop={tabPositions[idx]?.top}
-                  onChange={() => handleTabClick(() => setSelectedTabIdx(idx))}
-                  tabIdx={idx}
-                  label={label}
-                />
-              ))}
-            </SlideTabs>
-          </SlideTabsWrapper>
-        )}
+      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
 
-        {/* FORMS */}
-        {!rFormType || rFormType === 'loan' ? (
-          <>
-            {selectedTabIdx === 0 && <LoanBorrowMore {...pageProps} />}
-            {selectedTabIdx === 1 && <LoanRepay {...pageProps} />}
-            {selectedTabIdx === 2 && <LoanSelfLiquidation {...pageProps} />}
-          </>
-        ) : rFormType === 'collateral' ? (
-          <>
-            {selectedTabIdx === 0 && <LoanCollateralAdd {...pageProps} />}
-            {selectedTabIdx === 1 && <LoanCollateralRemove {...pageProps} />}
-          </>
-        ) : rFormType === 'leverage' ? (
-          <>{selectedTabIdx === 0 && <LoanBorrowMore isLeverage {...pageProps} />}</>
-        ) : null}
+      <AppFormContentWrapper>
+        {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
+        {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+        {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
+        {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
+        {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+        {/** Leverage has no subtabs */}
+        {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
       </AppFormContentWrapper>
-    </AppFormContent>
+    </Stack>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useMarketExtraIncentives } from '@/llamalend/LlamaMarketsPage/hooks/useMarketExtraIncentives'
+import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
 import { formatPercent } from '@/llamalend/utils'
 import {
   TooltipDescription,

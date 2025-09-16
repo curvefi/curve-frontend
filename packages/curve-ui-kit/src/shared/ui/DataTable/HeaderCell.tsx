@@ -2,10 +2,10 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { flexRender, type Header } from '@tanstack/react-table'
 import { ArrowDownIcon } from '@ui-kit/shared/icons/ArrowDownIcon'
-import { RotatableIcon } from '@ui-kit/shared/ui/DataTable/RotatableIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Tooltip } from '../Tooltip'
 import { getAlignment, getExtraColumnPadding, getFlexAlignment, type TableItem } from './data-table.utils'
+import { RotatableIcon } from './RotatableIcon'
 
 const { Spacing, Sizing } = SizesAndSpaces
 

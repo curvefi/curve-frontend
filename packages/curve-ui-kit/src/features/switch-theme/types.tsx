@@ -1,4 +1,4 @@
-import { ChadImg, RCMoon, RCSun } from 'ui'
+import { ChadImg, RCMoon, RCSun } from '@ui/images'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 const DEFAULT_SIZE = 24

@@ -1,0 +1,39 @@
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
+import { getLlamaMarket } from '../llama.util'
+import { maxBorrowReceiveKey } from './borrow-max-receive.query'
+import { borrowQueryValidationSuite } from './borrow.validation'
+
+type BorrowBandsResult = Record<number, [number, number] | null>
+
+export const { useQuery: useBorrowBandsAllRanges } = queryFactory({
+  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0, leverage }: BorrowFormQueryParams) =>
+    [
+      ...rootKeys.pool({ chainId, poolId }),
+      'borrow-bands',
+      { userCollateral },
+      { userBorrowed },
+      { debt },
+      { leverage },
+    ] as const,
+  queryFn: async ({
+    poolId,
+    userBorrowed = 0,
+    userCollateral = 0,
+    debt = 0,
+    leverage,
+  }: BorrowFormQuery): Promise<BorrowBandsResult> => {
+    const market = getLlamaMarket(poolId)
+    return !leverage
+      ? market.createLoanBandsAllRanges(userCollateral, userBorrowed)
+      : market instanceof LendMarketTemplate
+        ? market.leverage.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
+        : market.leverageV2.hasLeverage()
+          ? await market.leverageV2.createLoanBandsAllRanges(userCollateral, userBorrowed, debt)
+          : await market.leverage.createLoanBandsAllRanges(userCollateral, debt)
+  },
+  staleTime: '1m',
+  validationSuite: borrowQueryValidationSuite,
+  dependencies: (params) => [maxBorrowReceiveKey(params)],
+})

@@ -1,8 +1,8 @@
 import { createSvgIcon } from '@mui/material/utils'
-import { svg as frameSvg } from './FrameWalletIcon'
-import { svg as metamaskSvg } from './MetamaskWalletIcon'
-import { svg as phantomSvg } from './PhantomWalletIcon'
-import { svg as rabbySvg } from './RabbyWalletIcon'
+import { rabbySvg } from '@ui-kit/shared/icons/RabbyWalletIcon'
+import { frameSvg } from './FrameWalletIcon'
+import { metamaskSvg } from './MetamaskWalletIcon'
+import { phantomSvg } from './PhantomWalletIcon'
 
 /**
  * An icon representing a browser wallet, combining icons from the different wallet plugins.
