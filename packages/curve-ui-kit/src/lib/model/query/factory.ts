@@ -36,7 +36,7 @@ export function queryFactory<
     queryOptions({
       queryKey: queryKey(params),
       queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
-        logQuery(queryKey, 'from-factory')
+        logQuery(queryKey)
         return runQuery(getParamsFromQueryKey(queryKey))
       },
       gcTime: REFRESH_INTERVAL[gcTime],

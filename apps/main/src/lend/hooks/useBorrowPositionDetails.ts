@@ -37,7 +37,7 @@ export const useBorrowPositionDetails = ({
   })
   const {
     bands,
-    healthFull,
+    health,
     leverage,
     pnl,
     prices: liquidationPrices,
@@ -94,7 +94,7 @@ export const useBorrowPositionDetails = ({
       hardLiquidation: status?.colorKey === 'hard_liquidation',
     },
     health: {
-      value: healthFull ? Number(healthFull) : null,
+      value: health ? Number(health) : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     borrowAPY: {

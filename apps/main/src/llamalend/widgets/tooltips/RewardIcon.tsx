@@ -5,23 +5,23 @@ import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { IconSize } = SizesAndSpaces
 
-const RewardsImg = styled('img')({ border: '1px solid transparent', borderRadius: '50%' })
+const RewardsImg = styled('img')``
 
 type IconSize = keyof typeof IconSize
 
-export function RewardIcon({ imageId, size = 'xs', sx }: { imageId: string; size?: IconSize; sx?: SxProps }) {
-  const defaultSize = parseFloat(IconSize[size].mobile) * 16 // convert rem to px
-  return (
-    <RewardsImg
-      alt={imageId}
-      src={`${CURVE_ASSETS_URL}/platforms/${imageId}`}
-      width={defaultSize}
-      height={defaultSize}
-      sx={(theme) => ({
-        width: IconSize[size],
-        height: IconSize[size],
-        ...applySxProps(sx, theme),
-      })}
-    />
-  )
-}
+// convert rem to px
+const getSize = (size: IconSize) => parseFloat(IconSize[size].mobile) * 16
+
+export const RewardIcon = ({ imageId, size = 'xs', sx }: { imageId: string; size: IconSize; sx?: SxProps }) => (
+  <RewardsImg
+    alt={imageId}
+    src={`${CURVE_ASSETS_URL}/platforms/${imageId}`}
+    width={getSize(size)}
+    height={getSize(size)}
+    sx={(theme) => ({
+      width: IconSize[size],
+      height: IconSize[size],
+      ...applySxProps(sx, theme),
+    })}
+  />
+)

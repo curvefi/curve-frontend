@@ -27,9 +27,9 @@ export type BorrowFormExternalFields = Pick<BorrowForm, 'range' | 'userCollatera
 export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
 
 /** Full query type for borrow creation queries, including pool identification and all form fields */
-export type BorrowFormQuery = PoolQuery<IChainId> & CompleteBorrowForm
+export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
 /** Fields of the borrow form query before validation */
-export type BorrowFormQueryParams = FieldsOf<BorrowFormQuery>
+export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
 export type Token = { symbol: string; address: string; chain: NetworkEnum }

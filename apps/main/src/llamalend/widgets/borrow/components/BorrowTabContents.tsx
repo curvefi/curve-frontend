@@ -1,13 +1,12 @@
 import { useCallback, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
-import type { BaseConfig } from '@ui/utils'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -29,15 +28,18 @@ const { Spacing, MinWidth } = SizesAndSpaces
  * @param network The network configuration.
  * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
  */
-export const BorrowTabContents = ({
+export const BorrowTabContents = <ChainId extends IChainId>({
   market,
-  network,
+  networks,
+  chainId,
   onUpdate,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, IChainId>
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
   onUpdate: OnBorrowFormUpdate
 }) => {
+  const network = networks[chainId]
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
   const {
     values,
@@ -119,6 +121,7 @@ export const BorrowTabContents = ({
               values={values}
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
+              networks={networks}
               onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
             />
           </OutOfCardBox>
