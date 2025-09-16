@@ -1,6 +1,4 @@
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
@@ -42,11 +40,5 @@ export enum BorrowPreset {
   MaxLtv = 'MaxLtv',
   Custom = 'Custom',
 }
-
-/**
- * Union type of the possible Llama market templates
- * We strive to keep the application independent of the market type as much as possible
- */
-export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
 
 export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]
