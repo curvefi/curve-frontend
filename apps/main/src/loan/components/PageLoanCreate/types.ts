@@ -11,7 +11,6 @@ export type FormValues = {
   collateralError: 'too-much' | string
   debt: string
   debtError: 'too-much' | string
-  liqRange: string
   n: number | null
 }
 

@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react'
 import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
@@ -9,7 +10,7 @@ import Stack from '@mui/material/Stack'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BorrowPreset, type LlamaMarketTemplate } from '../borrow.types'
+import { BorrowPreset, type LlamaMarketTemplate, type OnBorrowFormUpdate } from '../borrow.types'
 import { setValueOptions } from '../llama.util'
 import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
@@ -21,14 +22,22 @@ import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing, MinWidth } = SizesAndSpaces
 
+/**
+ * The contents of the Borrow tab, including the form and all related components.
+ * @param market The market to borrow from.
+ * @param network The network configuration.
+ * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
+ */
 export const BorrowTabContents = <ChainId extends IChainId>({
   market,
   networks,
   chainId,
+  onUpdate,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
+  onUpdate: OnBorrowFormUpdate
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
@@ -47,7 +56,14 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     formErrors,
     tooMuchDebt,
   } = useBorrowForm({ market, network, preset })
-  const setRange = (range: number) => form.setValue('range', range, setValueOptions)
+  const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
+
+  const { userCollateral, range, debt } = values
+  useEffect(
+    // callback the parent form to keep in sync with the chart and other components
+    () => void onUpdate({ userCollateral, debt, range }).then(() => {}),
+    [onUpdate, userCollateral, debt, range],
+  )
 
   return (
     <FormProvider {...form}>
@@ -78,13 +94,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
 
           <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
             <Collapse in={preset === BorrowPreset.Custom}>
-              <AdvancedBorrowOptions
-                market={market}
-                values={values}
-                params={params}
-                setRange={setRange}
-                enabled={preset === BorrowPreset.Custom}
-              />
+              <AdvancedBorrowOptions market={market} values={values} params={params} setRange={setRange} />
             </Collapse>
           </LoanPresetSelector>
 
