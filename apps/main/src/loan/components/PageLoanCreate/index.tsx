@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { BorrowTabContents } from '@/llamalend/widgets/borrow/components/BorrowTabContents'
+import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'

@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
-import { maxBorrowReceiveKey } from '@/llamalend/widgets/borrow/queries/borrow-max-receive.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
@@ -10,6 +9,7 @@ import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowGasEstimateQuery<T = IChainId> = BorrowFormQuery<T>
