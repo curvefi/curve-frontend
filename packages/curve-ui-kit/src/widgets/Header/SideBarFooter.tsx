@@ -57,17 +57,19 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
           </Typography>
         </AccordionSummary>
         <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
-          <SettingsOption label={t`Theme`}>
-            <ThemeToggleButtons size="small" compact />
-          </SettingsOption>
+          <Stack gap={Spacing.xs}>
+            <SettingsOption label={t`Theme`}>
+              <ThemeToggleButtons size="small" compact />
+            </SettingsOption>
 
-          <SettingsOption label={t`Mode`}>
-            <ReleaseChannelToggleButtons />
-          </SettingsOption>
+            <SettingsOption label={t`Mode`}>
+              <ReleaseChannelToggleButtons />
+            </SettingsOption>
 
-          <SettingsOption label={t`Advanced Mode`}>
-            <AdvancedModeSwitch />
-          </SettingsOption>
+            <SettingsOption label={t`Advanced Mode`}>
+              <AdvancedModeSwitch />
+            </SettingsOption>
+          </Stack>
         </AccordionDetails>
       </Accordion>
     </Box>

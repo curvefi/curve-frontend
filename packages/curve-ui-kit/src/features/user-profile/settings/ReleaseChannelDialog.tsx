@@ -8,7 +8,7 @@ import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
 
@@ -21,10 +21,10 @@ const Text = {
   ],
   [ReleaseChannel.Legacy]: [
     t`Legacy Mode gives you access to older features and designs that are being phased out.`,
-    <>
-      t`Please note: Legacy Mode is <strong>not supported</strong> and will be <strong>retired soon</strong>. For the
-      best experience, we recommend using the default or beta modes.`
-    </>,
+    <Trans key="ReleaseChannelDialog.legacyWarning">
+      Please note: Legacy Mode is <strong>not supported</strong> and will be <strong>retired soon</strong>. For the best
+      experience, we recommend using the default or beta modes.
+    </Trans>,
     t`You can turn this off at any time.`,
   ],
 }
@@ -68,7 +68,7 @@ export const ReleaseChannelDialog = ({
           <Button
             color={releaseChannel === channel ? 'secondary' : 'primary'}
             onClick={() => {
-              const newChannel = channel === releaseChannel ? ReleaseChannel.Stable : channel
+              const newChannel = releaseChannel === channel ? ReleaseChannel.Stable : channel
               setReleaseChannel(newChannel)
               onClose()
               onChanged(newChannel)
