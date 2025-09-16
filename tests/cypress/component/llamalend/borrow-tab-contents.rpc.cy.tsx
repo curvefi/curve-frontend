@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import networks from '@/loan/networks'
+import { oneBool } from '@cy/support/generators'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
 import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
@@ -62,6 +63,10 @@ describe('BorrowTabContents Component Tests', () => {
     getActionValue('borrow-health').should('have.text', '∞')
     cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type('100')
     getActionValue('borrow-health').should('not.contain.text', '∞')
+
+    if (oneBool()) {
+      cy.get('[data-testid="leverage-checkbox"]').click()
+    }
 
     // open borrow advanced settings and check all fields
     cy.contains('button', 'Health').click()

@@ -18,11 +18,15 @@ export const LeverageInput = ({
   leverageEnabled,
   params,
   maxLeverage,
+  isError,
+  isLoading,
 }: {
   leverageEnabled: boolean
   form: UseFormReturn<BorrowForm>
   params: BorrowFormQueryParams
   maxLeverage: number | undefined
+  isError: boolean
+  isLoading: boolean
 }) => {
   const { leverage } = useBorrowExpectedCollateral(params).data ?? {}
 
@@ -33,13 +37,17 @@ export const LeverageInput = ({
         label={
           <Stack gap={Spacing.sm}>
             <Typography variant="bodySBold">{t`Enable leverage`}</Typography>
-            <WithSkeleton loading={maxLeverage == null}>
-              <Typography variant="bodyXsRegular">{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
+            <WithSkeleton loading={isLoading}>
+              <Typography
+                {...(isError && { color: 'error.main' })}
+                variant="bodyXsRegular"
+              >{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
             </WithSkeleton>
           </Stack>
         }
         control={
           <Checkbox
+            data-testid="leverage-checkbox"
             size="small"
             disabled={!maxLeverage}
             checked={leverageEnabled}
@@ -47,7 +55,6 @@ export const LeverageInput = ({
           />
         }
       />
-      {/* todo: remove leverage for now */}
       <Input
         inputProps={{
           sx: { textAlign: 'right', paddingInline: Spacing.sm },
@@ -56,6 +63,7 @@ export const LeverageInput = ({
         value={formatNumber(leverage)}
         endAdornment={'x'}
         disabled
+        error={isError}
       />
     </Stack>
   )

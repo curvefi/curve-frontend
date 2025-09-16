@@ -84,6 +84,8 @@ export const BorrowTabContents = <ChainId extends IChainId>({
               form={form}
               params={params}
               maxLeverage={maxTokenValues.maxLeverage}
+              isError={maxTokenValues.isLeverageError}
+              isLoading={maxTokenValues.isLeverageLoading}
             />
           )}
 
@@ -108,7 +110,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
             disabled={formErrors.length > 0}
             data-testid="borrow-submit-button"
           >
-            {isPending ? t`Processing...` : t`Approve & Swap`}
+            {isPending ? t`Processing...` : t`Approve & Borrow`}
           </Button>
 
           <BorrowFormAlert

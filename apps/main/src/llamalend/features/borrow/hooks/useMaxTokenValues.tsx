@@ -27,11 +27,6 @@ export function useMaxTokenValues(
     isLoading: isBalanceLoading,
   } = useTokenBalance(params, collateralToken)
   const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
-  // const {
-  //   data: expectedCollateral,
-  //   isError: isErrorExpectedCollateral,
-  //   isLoading: isLoadingExpectedCollateral,
-  // } = useBorrowExpectedCollateral(params)
   const {
     data: maxTotalLeverage,
     isError: isErrorMaxLeverage,

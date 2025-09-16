@@ -47,7 +47,7 @@ export const BorrowFormAlert = ({
         )}
       </Alert>
     )}
-    {formErrors.length > 0 && (
+    {formErrors.some(([field]) => !handledErrors.includes(field)) && (
       <Alert severity="warning" data-testid="borrow-form-errors">
         <AlertTitle>{t`Please correct the errors`}</AlertTitle>
         {formErrors
