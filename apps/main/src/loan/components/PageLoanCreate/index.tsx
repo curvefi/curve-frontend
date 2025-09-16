@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { OnBorrowFormUpdate } from '@/llamalend/widgets/borrow/borrow.types'
+import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/borrow.types'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
@@ -52,7 +52,6 @@ const LoanCreate = ({
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
-  const network = networks[rChainId]
   const [isBeta] = useBetaFlag()
   const onUpdate = useOnFormUpdate(props)
 
