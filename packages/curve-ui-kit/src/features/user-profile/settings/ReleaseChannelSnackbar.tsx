@@ -5,7 +5,15 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 
-export const BetaSnackbar = ({ isBeta, open, onClose }: { open: boolean; onClose: () => void; isBeta: boolean }) => (
+export const ReleaseChannelSnackbar = ({
+  isBeta,
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+  isBeta: boolean
+}) => (
   <Snackbar
     open={open}
     onClose={onClose}

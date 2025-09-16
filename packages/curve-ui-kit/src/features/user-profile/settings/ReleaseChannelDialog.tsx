@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-export const BetaDialog = ({
+export const ReleaseChannelDialog = ({
   isBeta,
   setIsBeta,
   open,

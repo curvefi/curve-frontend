@@ -1,4 +1,5 @@
 import Stack from '@mui/material/Stack'
+import { ReleaseChannelToggleButtons } from '@ui-kit/features/user-profile/settings/ReleaseChannelToggleButtons'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AdvancedModeSwitch } from './AdvancedModeSwitch'
@@ -17,6 +18,10 @@ export const Settings = () => (
     <Setting>
       <SettingLabel>{t`Advanced Mode`}</SettingLabel>
       <AdvancedModeSwitch />
+    </Setting>
+    <Setting>
+      <SettingLabel>{t`Mode`}</SettingLabel>
+      <ReleaseChannelToggleButtons />
     </Setting>
     <Setting>
       <SettingLabel>{t`Hide Small Pools`}</SettingLabel>

@@ -8,8 +8,8 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
-import { BetaDialog } from './BetaDialog'
-import { BetaSnackbar } from './BetaSnackbar'
+import { ReleaseChannelDialog } from '../../features/user-profile/settings/ReleaseChannelDialog'
+import { ReleaseChannelSnackbar } from '../../features/user-profile/settings/ReleaseChannelSnackbar'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
@@ -83,7 +83,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           onClick={openBetaModal}
         />
         {isBetaModalOpen != null && (
-          <BetaDialog
+          <ReleaseChannelDialog
             open={isBetaModalOpen}
             onClose={closeBetaModal}
             isBeta={releaseChannel === ReleaseChannel.Beta}
@@ -93,7 +93,7 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
         )}
 
         {isBetaSnackbarVisible != null && (
-          <BetaSnackbar
+          <ReleaseChannelSnackbar
             open={isBetaSnackbarVisible}
             onClose={closeBetaSnackbar}
             isBeta={releaseChannel === ReleaseChannel.Beta}
