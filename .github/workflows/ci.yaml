@@ -83,6 +83,12 @@ jobs:
           CYPRESS_TENDERLY_PROJECT_SLUG: ${{ vars.TENDERLY_PROJECT_SLUG }}
           CYPRESS_TENDERLY_ACCESS_KEY: ${{ secrets.TENDERLY_ACCESS_KEY }}
 
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-rpc
+          path: tests/cypress/screenshots
+
   cypress-e2e:
     strategy:
       fail-fast: false
