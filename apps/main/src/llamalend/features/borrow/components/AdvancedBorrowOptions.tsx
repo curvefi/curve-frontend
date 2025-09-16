@@ -16,13 +16,11 @@ export const AdvancedBorrowOptions = ({
   values: { range },
   setRange,
   market,
-  enabled,
 }: {
   params: BorrowFormQueryParams
   values: BorrowForm
   setRange: (n: number) => void
   market: LlamaMarketTemplate | undefined
-  enabled: boolean
 }) => (
   <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
     <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
@@ -35,7 +33,7 @@ export const AdvancedBorrowOptions = ({
     >
       <Typography variant="bodyXsRegular">{t`Liquidation range`}</Typography>
       <ChartLiquidationRange
-        data={useLiquidationRangeChartData(params, enabled)}
+        data={useLiquidationRangeChartData(params)}
         healthColorKey="healthy"
         height={chartHeight}
         isDetailView

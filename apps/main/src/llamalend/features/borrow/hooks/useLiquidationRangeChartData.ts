@@ -6,13 +6,14 @@ import { useBorrowOraclePriceBand } from '../queries/borrow-oracle-price-band.qu
 import { useBorrowOraclePrice } from '../queries/borrow-oracle-price.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
 
-export const useLiquidationRangeChartData = (
-  params: BorrowFormQueryParams,
-  enabled: boolean,
-): LiquidationRangeData[] => {
-  const { data: prices } = useBorrowPrices(params, enabled)
-  const { data: oraclePrice } = useBorrowOraclePrice(params, enabled)
-  const { data: oraclePriceBand } = useBorrowOraclePriceBand(params, enabled)
+/**
+ * Retrieves the liquidation range chart data for the borrow form.
+ * Queries are always enabled since the data is used on the OHLC chart, even if the ChartLiquidationRange is invisible.
+ */
+export const useLiquidationRangeChartData = (params: BorrowFormQueryParams): LiquidationRangeData[] => {
+  const { data: prices } = useBorrowPrices(params)
+  const { data: oraclePrice } = useBorrowOraclePrice(params)
+  const { data: oraclePriceBand } = useBorrowOraclePriceBand(params)
   return useMemo(
     () => [
       {

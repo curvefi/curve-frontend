@@ -28,7 +28,6 @@ export const DEFAULT_FORM_VALUES: FormValues = {
   collateralError: '',
   debt: '',
   debtError: '',
-  liqRange: '',
   n: null,
 }
 
