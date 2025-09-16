@@ -38,10 +38,9 @@ export const LeverageInput = ({
           <Stack gap={Spacing.sm}>
             <Typography variant="bodySBold">{t`Enable leverage`}</Typography>
             <WithSkeleton loading={isLoading}>
-              <Typography
-                {...(isError && { color: 'error.main' })}
-                variant="bodyXsRegular"
-              >{t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}</Typography>
+              <Typography {...(isError && { color: 'error.main' })} variant="bodyXsRegular">
+                {t`up to ${formatNumber(maxLeverage, { maximumFractionDigits: 1 })}🔥`}
+              </Typography>
             </WithSkeleton>
           </Stack>
         }
@@ -56,9 +55,7 @@ export const LeverageInput = ({
         }
       />
       <Input
-        inputProps={{
-          sx: { textAlign: 'right', paddingInline: Spacing.sm },
-        }}
+        inputProps={{ sx: { textAlign: 'right', paddingInline: Spacing.sm } }}
         sx={{ paddingInlineEnd: Spacing.sm }}
         value={formatNumber(leverage)}
         endAdornment={'x'}
