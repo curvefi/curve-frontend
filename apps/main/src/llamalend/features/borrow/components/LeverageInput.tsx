@@ -1,5 +1,4 @@
 import type { UseFormReturn } from 'react-hook-form'
-import { useBorrowExpectedCollateral } from '@/llamalend/widgets/borrow/queries/borrow-expected-collateral.query'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Input from '@mui/material/Input'
@@ -10,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { BorrowForm, BorrowFormQueryParams } from '../borrow.types'
+import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 
 const { Spacing } = SizesAndSpaces
 

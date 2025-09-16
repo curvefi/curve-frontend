@@ -1,9 +1,9 @@
-import { borrowExpectedCollateralQueryKey } from '@/llamalend/widgets/borrow/queries/borrow-expected-collateral.query'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 

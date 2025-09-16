@@ -50,7 +50,7 @@ const { Spacing, MaxWidth, MinHeight } = SizesAndSpaces
 /**
  * Page for displaying the lending markets table.
  */
-export const LlamaMarketsPage = () => {
+export const LlamaMarketsList = () => {
   const { address } = useAccount()
   const { data, isError, isLoading, isFetching } = useLlamaMarkets(address)
   const [isReloading, onReload] = useOnReload({ address, isFetching })

@@ -2,7 +2,7 @@ import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarket } from '../entities/llama-markets'
+import { LlamaMarket } from '../../entities/llama-markets'
 import {
   CompactUsdCell,
   HealthCell,

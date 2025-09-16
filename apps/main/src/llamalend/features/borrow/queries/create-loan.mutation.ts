@@ -12,8 +12,8 @@ import { getBalanceQueryKey } from '@wagmi/core/query'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
 import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
-import { userBalancesQueryKey } from '../queries/user-balances.query'
 import { borrowFormValidationSuite } from './borrow.validation'
+import { userBalancesQueryKey } from './user-balances.query'
 
 type BorrowMutationContext = {
   chainId: IChainId

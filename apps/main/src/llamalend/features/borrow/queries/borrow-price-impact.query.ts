@@ -1,8 +1,8 @@
-import { borrowExpectedCollateralQueryKey } from '@/llamalend/widgets/borrow/queries/borrow-expected-collateral.query'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowPriceImpactResult = number // percentage

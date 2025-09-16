@@ -1,5 +1,4 @@
 import { group } from 'vest'
-import { validateRange } from '@/llamalend/widgets/borrow/queries/borrow.validation'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -7,6 +6,7 @@ import { type PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { hasLeverage, getLlamaMarket } from '../llama.util'
+import { validateRange } from './borrow.validation'
 
 type BorrowMaxLeverageQuery = PoolQuery<IChainId> & { range: number }
 type BorrowMaxLeverageParams = FieldsOf<BorrowMaxLeverageQuery>
