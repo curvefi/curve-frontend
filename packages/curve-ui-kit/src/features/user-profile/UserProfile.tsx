@@ -12,12 +12,14 @@ export const UserProfile = ({ open, onClose }: Props) => (
     open={open}
     anchor="right"
     onClose={onClose}
-    PaperProps={{
-      sx: {
-        minWidth: SizesAndSpaces.Width.modal.lg,
-        paddingInline: SizesAndSpaces.Spacing.md,
-        paddingBlock: SizesAndSpaces.Spacing.lg,
-        backgroundColor: (t) => t.design.Layer[1].Fill,
+    slotProps={{
+      paper: {
+        sx: {
+          minWidth: SizesAndSpaces.Width.modal.lg,
+          paddingInline: SizesAndSpaces.Spacing.md,
+          paddingBlock: SizesAndSpaces.Spacing.lg,
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+        },
       },
     }}
   >

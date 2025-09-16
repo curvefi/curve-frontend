@@ -4,10 +4,10 @@ import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
-import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
-import { ThemeSwitcherButton } from '@ui-kit/features/switch-theme'
-import { UserProfileButton, useUserProfileStore } from '@ui-kit/features/user-profile'
+import { UserProfileButton } from '@ui-kit/features/user-profile'
+import { AdvancedModeSwitch } from '@ui-kit/features/user-profile/settings/AdvancedModeSwitch'
+import { ThemeToggleButton } from '@ui-kit/features/user-profile/settings/ThemeToggleButton'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
@@ -31,10 +31,6 @@ export const DesktopHeader = ({
   isLite = false,
 }: HeaderImplementationProps) => {
   const [menu, setMenu] = useState<AppMenuOption>(currentMenu)
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
   const [releaseChannel] = useReleaseChannel()
   return (
     <AppBar
@@ -60,8 +56,8 @@ export const DesktopHeader = ({
               <UserProfileButton />
             ) : (
               <>
-                <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} label={t`Advanced`} />
-                <ThemeSwitcherButton theme={theme} onChange={setTheme} label={t`Mode`} />
+                <AdvancedModeSwitch label={t`Advanced`} />
+                <ThemeToggleButton label={t`Mode`} />
               </>
             )}
 

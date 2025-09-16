@@ -1,7 +1,7 @@
 import { useAccount } from 'wagmi'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Settings } from '../settings'
+import { Settings } from '../settings/Settings'
 import { UserProfileHeader } from './Header'
 
 const { Spacing } = SizesAndSpaces
