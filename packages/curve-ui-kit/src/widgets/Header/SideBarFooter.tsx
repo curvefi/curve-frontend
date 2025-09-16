@@ -19,19 +19,26 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing, ButtonSize } = SizesAndSpaces
 
 const backgroundColor = 'background.paper'
+const footerMargin = Spacing.lg.mobile
+const connectButtonHeight = ButtonSize.sm
+const accordionHeight = ButtonSize.md
+const footerHeight = `${footerMargin} + ${accordionHeight} + ${connectButtonHeight}`
+
+/**
+ * Calculates the height needed to prevent content from being hidden behind the fixed footer.
+ * Otherwise, the `SocialSidebarSection` is hidden by `ConnectWalletIndicator` & `AccordionSummary`.
+ *
+ * Since the drawer takes 100vh, we need to account for the header height as well.
+ */
+const useFillerHeight = () => `calc(${useLayoutStore((state) => state.navHeight)}px + ${footerHeight})`
 
 export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
   <>
     <Box
       position="fixed"
       bottom={0}
-      sx={(t) => ({
-        ...MOBILE_SIDEBAR_WIDTH,
-        zIndex: t.zIndex.drawer + 1,
-        backgroundColor,
-      })}
+      sx={(t) => ({ ...MOBILE_SIDEBAR_WIDTH, zIndex: t.zIndex.drawer + 1, backgroundColor })}
     >
-      {/*<Box display="flex" paddingInline={4} marginBlockStart={Spacing.lg.mobile}>*/}
       <Box display="flex" paddingX={4} marginTop={4}>
         <ConnectWalletIndicator sx={{ flexGrow: 1 }} onConnect={onConnect} />
       </Box>
@@ -59,10 +66,7 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
         </AccordionDetails>
       </Accordion>
     </Box>
-    {/* Avoid `SocialSidebarSection` to be hidden by `ConnectWalletIndicator` */}
-    <Box
-      minHeight={`calc(${useLayoutStore((state) => state.navHeight)}px + ${Spacing.lg.mobile} + ${ButtonSize.sm} + ${ButtonSize.md})`}
-    />
+    <Box minHeight={useFillerHeight()} />
   </>
 )
 

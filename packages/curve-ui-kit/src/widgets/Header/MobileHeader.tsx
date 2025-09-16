@@ -83,15 +83,7 @@ export const MobileHeader = ({
           anchor="left"
           onClose={closeSidebar}
           open={isSidebarOpen}
-          slotProps={{
-            paper: {
-              sx: {
-                top,
-                ...MOBILE_SIDEBAR_WIDTH,
-                ...HIDE_SCROLLBAR,
-              },
-            },
-          }}
+          slotProps={{ paper: { sx: { top, ...MOBILE_SIDEBAR_WIDTH, ...HIDE_SCROLLBAR } } }}
           sx={{ top }}
           variant="temporary"
           hideBackdrop
