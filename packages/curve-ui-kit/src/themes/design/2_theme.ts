@@ -970,7 +970,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
-  const InputBaseDefaultFill = Grays[200]
+  const InputBaseDefaultFill = Grays[100]
   const Inputs = {
     Base: {
       Default: {
