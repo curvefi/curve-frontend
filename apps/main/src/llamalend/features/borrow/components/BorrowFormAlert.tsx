@@ -1,4 +1,4 @@
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
@@ -30,7 +30,7 @@ export const BorrowFormAlert = ({
   network,
   formErrors,
 }: {
-  network: BaseConfig<NetworkEnum>
+  network: BaseConfig<INetworkName>
   isCreated: boolean
   creationError: Error | null
   txHash: undefined | string

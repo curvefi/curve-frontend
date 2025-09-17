@@ -2,7 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
@@ -10,7 +11,7 @@ import type { BaseConfig } from '@ui/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/features/slippage-settings/ui/slippage.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
-import { type BorrowForm, BorrowPreset, type LlamaMarketTemplate } from './borrow.types'
+import { type BorrowForm, BorrowPreset } from './borrow.types'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { getTokens } from './llama.util'
 import { BORROW_PRESET_RANGES } from './llama.util'
@@ -26,7 +27,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   preset,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkEnum, ChainId>
+  network: BaseConfig<INetworkName, ChainId>
   preset: BorrowPreset
 }) {
   const { address: userAddress } = useAccount()

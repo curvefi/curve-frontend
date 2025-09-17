@@ -3,7 +3,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { Spacing } = SizesAndSpaces
+const { ButtonSize, Spacing } = SizesAndSpaces
 
 export const SettingLabel = ({ children }: { children?: ReactNode }) => (
   <Typography variant="bodyMBold" color="text.secondary">
@@ -12,7 +12,7 @@ export const SettingLabel = ({ children }: { children?: ReactNode }) => (
 )
 
 export const Setting = ({ children }: { children?: ReactNode }) => (
-  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between" alignItems="center">
+  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between" alignItems="center" height={ButtonSize.sm}>
     {children}
   </Stack>
 )

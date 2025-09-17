@@ -1,4 +1,4 @@
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 
 export type Hop = {
   hops: { name: string; part: number; fromTokenAddress: string; toTokenAddress: string }[][]
@@ -14,7 +14,7 @@ export type Route = {
 export type BreakdownItem = { $opacity?: boolean; $isTotal?: boolean; $minWidth?: string }
 
 export type RouteDetailsProps = BreakdownItem & {
-  network: NetworkEnum
+  network: INetworkName
   loading: boolean
   swapFrom: { address: string; symbol: string } | undefined
   swapFromAmounts: { value: string | number; label: string }[]

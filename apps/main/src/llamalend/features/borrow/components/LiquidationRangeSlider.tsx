@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import Grid from '@mui/material/Grid'
 import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
@@ -6,7 +7,6 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { LlamaMarketTemplate } from '../borrow.types'
 import { BORROW_PRESET_RANGES } from '../llama.util'
 
 const { Spacing } = SizesAndSpaces

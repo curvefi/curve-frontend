@@ -1,10 +1,10 @@
 import ToggleButton from '@mui/material/ToggleButton'
-import ToggleButtonGroup, { ToggleButtonGroupProps } from '@mui/material/ToggleButtonGroup'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { t } from '@ui-kit/lib/i18n'
 import { useUserProfileStore } from '../store'
 import { themes } from './themes'
 
-export const ThemeToggleButtons = (props: Partial<ToggleButtonGroupProps>) => {
+export const ThemeToggleButtons = () => {
   const theme = useUserProfileStore((state) => state.theme)
   const setTheme = useUserProfileStore((state) => state.setTheme)
   return (
@@ -13,7 +13,7 @@ export const ThemeToggleButtons = (props: Partial<ToggleButtonGroupProps>) => {
       exclusive
       onChange={(_, value) => (value ? setTheme(value) : {})}
       aria-label={t`Theme selection`}
-      {...props}
+      size="smallSquare"
     >
       {themes.map(({ type, Component }) => (
         <ToggleButton key={type} value={type} data-testid={`theme-switch-button-${type}`}>
