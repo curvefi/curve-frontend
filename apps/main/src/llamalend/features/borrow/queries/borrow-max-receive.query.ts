@@ -1,11 +1,11 @@
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { assert } from '@ui-kit/utils'
-import type { BorrowFormQuery } from '../borrow.types'
-import { getLlamaMarket } from '../llama.util'
+import type { BorrowFormQuery } from '../types'
 import { borrowFormValidationGroup } from './borrow.validation'
 
 type BorrowMaxReceiveQuery = Omit<BorrowFormQuery, 'userCollateral' | 'debt'> & { userCollateral: number }

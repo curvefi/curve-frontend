@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/borrow.types'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import networks from '@/loan/networks'
 import { oneBool } from '@cy/support/generators'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'

@@ -1,5 +1,5 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { formatPercent } from '@/llamalend/utils'
+import { formatPercent } from '@/llamalend/format.utils'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

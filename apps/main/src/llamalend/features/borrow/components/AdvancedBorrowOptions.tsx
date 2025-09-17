@@ -6,10 +6,10 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { BorrowForm, BorrowFormQueryParams, Token } from '../borrow.types'
 import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowRouteImage } from '../queries/borrow-route-image.query'
+import type { BorrowForm, BorrowFormQueryParams, Token } from '../types'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
 const { Spacing } = SizesAndSpaces

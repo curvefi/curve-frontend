@@ -1,4 +1,4 @@
-import { formatPercent } from '@/llamalend/utils'
+import { formatPercent } from '@/llamalend/format.utils'
 import {
   TooltipItem,
   TooltipItems,
