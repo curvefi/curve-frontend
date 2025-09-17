@@ -1,8 +1,8 @@
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { assert } from '@ui-kit/utils'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
-import { getLlamaMarket } from '../llama.util'
+import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowExpectedCollateralResult = {

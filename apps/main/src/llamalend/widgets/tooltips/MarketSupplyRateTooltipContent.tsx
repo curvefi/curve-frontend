@@ -1,5 +1,5 @@
 import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
-import { formatPercent } from '@/llamalend/utils'
+import { formatPercent } from '@/llamalend/format.utils'
 import {
   TooltipDescription,
   TooltipItem,

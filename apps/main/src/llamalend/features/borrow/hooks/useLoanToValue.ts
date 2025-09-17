@@ -1,6 +1,6 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import type { Token } from '../borrow.types'
+import type { Token } from '../types'
 
 export const useLoanToValue = ({
   chainId,

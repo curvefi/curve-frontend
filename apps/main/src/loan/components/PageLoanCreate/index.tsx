@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
-import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/borrow.types'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_FORM_VALUES, hasLeverage } from '@/loan/components/PageLoanCreate/utils'

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 import type { LiquidationRangeData } from '@/llamalend/widgets/ChartLiquidationRange'
 import { t } from '@ui-kit/lib/i18n'
-import type { BorrowFormQueryParams } from '../borrow.types'
 import { useBorrowOraclePriceBand } from '../queries/borrow-oracle-price-band.query'
 import { useBorrowOraclePrice } from '../queries/borrow-oracle-price.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
+import type { BorrowFormQueryParams } from '../types'
 
 /**
  * Retrieves the liquidation range chart data for the borrow form.

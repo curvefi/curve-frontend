@@ -1,13 +1,10 @@
-import type { SetValueConfig } from 'react-hook-form'
-import type { Address } from 'viem'
-import { zeroAddress } from 'viem'
+import { type Address, zeroAddress } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { assert, CRVUSD_ADDRESS } from '@ui-kit/utils'
-import { BorrowPreset } from './borrow.types'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -25,20 +22,6 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate
     ? market.leverage.hasLeverage()
     : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
-
-/**
- * Predefined borrow preset ranges in percentage (previously N in the UI)
- */
-export const BORROW_PRESET_RANGES = {
-  [BorrowPreset.Safe]: 50,
-  [BorrowPreset.MaxLtv]: 4,
-  [BorrowPreset.Custom]: 10,
-}
-
-/**
- * Options to pass to react-hook-form's setValue to trigger validation, dirty and touch states.
- */
-export const setValueOptions: SetValueConfig = { shouldValidate: true, shouldDirty: true, shouldTouch: true }
 
 export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
   market instanceof MintMarketTemplate

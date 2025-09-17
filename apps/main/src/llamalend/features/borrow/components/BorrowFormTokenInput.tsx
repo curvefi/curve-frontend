@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import type { BorrowForm, Token } from '../borrow.types'
-import { setValueOptions } from '../llama.util'
+import { setValueOptions } from '../react-form.utils'
+import type { BorrowForm, Token } from '../types'
 
 const maxField = {
   debt: 'maxDebt',
