@@ -13,9 +13,10 @@ import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -52,14 +53,14 @@ const LoanCreate = ({
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
-  const [isBeta] = useBetaFlag()
+  const [releaseChannel] = useReleaseChannel()
   const onUpdate = useOnFormUpdate(props)
 
   type Tab = 'create' | 'leverage' | 'borrow'
   const tabs: TabOption<Tab>[] = [
     { value: 'create' as const, label: t`Create Loan` },
     ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
-    ...(isBeta ? [{ value: 'borrow' as const, label: t`Beta` }] : []),
+    ...(releaseChannel === ReleaseChannel.Beta ? [{ value: 'borrow' as const, label: t`Beta` }] : []),
   ]
 
   const handleTabClick = useCallback(

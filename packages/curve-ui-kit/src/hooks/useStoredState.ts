@@ -15,6 +15,12 @@ export type MigrationOptions<T> = {
    * If not provided, old values are simply removed.
    */
   migrate?: (oldValue: T, initialValue: T) => T | null
+
+  /**
+   * (Optional) old key format, if different from the new key format. Used to support migration from old key formats.
+   * If not provided, the old key is assumed to be `${key}-v${version - 1}` or `${key}` for v1.
+   */
+  oldKey?: string
 }
 
 type StoredStateOptions<T> = Partial<MigrationOptions<T>> & {
@@ -34,9 +40,9 @@ function runMigration<T>({
   set,
   version,
   migrate,
-}: StoredStateOptions<T> & Pick<MigrationOptions<T>, 'version'>) {
+  oldKey = `${key}${version <= 1 ? '' : `-v${version - 1}`}`, // we didn't have versions before v1
+}: StoredStateOptions<T> & Omit<MigrationOptions<T>, 'migrate'>) {
   const newKey = `${key}-v${version}`
-  const oldKey = `${key}${version <= 1 ? '' : `-v${version - 1}`}` // we didn't have versions before v1
   const oldValue = get(oldKey, initialValue)
   if (isEqual(oldValue, initialValue)) {
     return false // no previous value to migrate
@@ -59,6 +65,7 @@ export function useStoredState<T>({
   set,
   version,
   migrate,
+  oldKey,
 }: StoredStateOptions<T>): GetAndSet<T> {
   const fullKey = `${key}${version ? `-v${version}` : ''}`
   const [stateValue, setStateValue] = useState<T>(get(fullKey, initialValue))
@@ -74,13 +81,13 @@ export function useStoredState<T>({
 
   useEffect(() => {
     const listener = () => setStateValue(get(fullKey, initialValue))
-    if (version) runMigration({ key, initialValue, get, set, version, migrate })
+    if (version) runMigration({ key, initialValue, get, set, version, migrate, oldKey })
     listener() // update state if migration ran or if fullKey changes
 
     // Update state when other components update the local storage
     storageEvent.addEventListener(fullKey, listener)
     return () => storageEvent.removeEventListener(fullKey, listener)
-  }, [get, initialValue, fullKey, set, migrate, version, key])
+  }, [get, initialValue, fullKey, set, migrate, version, key, oldKey])
 
   return [stateValue, setValue]
 }

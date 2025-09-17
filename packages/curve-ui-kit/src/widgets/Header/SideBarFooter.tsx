@@ -1,78 +1,65 @@
+import type { ReactNode } from 'react'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import Accordion from '@mui/material/Accordion'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
-import Box, { type BoxProps } from '@mui/material/Box'
+import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
-import { AdvancedModeSwitcher } from '@ui-kit/features/switch-advanced-mode'
-import { ThemeSwitcherButtons } from '@ui-kit/features/switch-theme'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { AdvancedModeSwitch } from '@ui-kit/features/user-profile/settings/AdvancedModeSwitch'
+import { ThemeToggleButtons } from '@ui-kit/features/user-profile/settings/ThemeToggleButtons'
 import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 const backgroundColor = 'background.paper'
 
-export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => {
-  const theme = useUserProfileStore((state) => state.theme)
-  const setTheme = useUserProfileStore((state) => state.setTheme)
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const setAdvancedMode = useUserProfileStore((state) => state.setAdvancedMode)
+export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
+  <Stack sx={{ ...MOBILE_SIDEBAR_WIDTH, backgroundColor }}>
+    <ConnectWalletIndicator sx={{ flexGrow: 1, margin: Spacing.sm }} onConnect={onConnect} />
 
-  return (
-    <>
-      <Box
-        position="fixed"
-        bottom={0}
-        sx={(t) => ({
-          ...MOBILE_SIDEBAR_WIDTH,
-          zIndex: t.zIndex.drawer + 1,
-          backgroundColor,
-        })}
-      >
-        <Box display="flex" paddingX={4} marginTop={4}>
-          <ConnectWalletIndicator sx={{ flexGrow: 1 }} onConnect={onConnect} />
-        </Box>
+    <Accordion sx={{ backgroundColor }} disableGutters>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingInline: Spacing.sm }}>
+        <GearIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
+        <Typography
+          sx={{ marginLeft: Spacing.sm, alignContent: 'center' }}
+          variant="bodyMBold"
+          color="navigation"
+          data-testid="sidebar-settings"
+        >
+          {t`Settings`}
+        </Typography>
+      </AccordionSummary>
+      <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
+        <SettingsOption label={t`Theme`}>
+          <ThemeToggleButtons size="small" compact />
+        </SettingsOption>
 
-        <Accordion sx={{ backgroundColor }} disableGutters>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={{ backgroundColor, paddingInline: 4 }}>
-            <GearIcon sx={{ fontSize: 22, fill: 'transparent', stroke: 'currentColor' }} />
-            <Typography
-              sx={{ marginLeft: 1, alignContent: 'center' }}
-              variant="bodyMBold"
-              color="navigation"
-              data-testid="sidebar-settings"
-            >
-              {t`Settings`}
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails
-            sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}`, paddingBottom: 4 }}
-          >
-            <SettingsOption label={t`Mode`}>
-              <ThemeSwitcherButtons theme={theme} onChange={setTheme} label={t`Mode`} />
-            </SettingsOption>
+        <SettingsOption label={t`Advanced Mode`}>
+          <AdvancedModeSwitch />
+        </SettingsOption>
+      </AccordionDetails>
+    </Accordion>
+  </Stack>
+)
 
-            <SettingsOption label={t`Advanced Mode`}>
-              <AdvancedModeSwitcher advancedMode={[isAdvancedMode, setAdvancedMode]} />
-            </SettingsOption>
-          </AccordionDetails>
-        </Accordion>
-      </Box>
-      <Box minHeight={150} /> {/* To avoid the last item to be hidden by the connect indicator */}
-    </>
-  )
-}
-
-const SettingsOption = ({ label, children, ...props }: BoxProps & { label: string }) => (
-  <Box display="flex" flexDirection="row" justifyContent="space-between" {...props}>
-    <Typography variant="bodyMBold" color="navigation" marginLeft={2} sx={{ display: 'flex', alignItems: 'center' }}>
+const SettingsOption = ({ label, children }: { label: string; children: ReactNode }) => (
+  <Stack
+    height={ButtonSize.sm}
+    direction="row"
+    justifyContent="space-between"
+    alignItems="center"
+    marginInline={Spacing.sm}
+  >
+    <Typography variant="bodyMBold" color="navigation">
       {label}
     </Typography>
-    <Box display="flex" alignItems="center">
+    <Stack alignItems="center" justifyContent="center">
       {children}
-    </Box>
-  </Box>
+    </Stack>
+  </Stack>
 )

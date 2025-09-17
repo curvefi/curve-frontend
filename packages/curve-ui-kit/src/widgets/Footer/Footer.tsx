@@ -3,10 +3,11 @@ import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
-import { useBetaFlag } from '@ui-kit/hooks/useLocalStorage'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
 import { BetaDialog } from './BetaDialog'
 import { BetaSnackbar } from './BetaSnackbar'
 import { Description } from './Description'
@@ -26,7 +27,7 @@ type FooterProps = {
 export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
-  const [isBeta, setIsBeta] = useBetaFlag()
+  const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const isTiny = useIsTiny()
   return (
     <Box
@@ -85,14 +86,18 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           <BetaDialog
             open={isBetaModalOpen}
             onClose={closeBetaModal}
-            isBeta={isBeta}
-            setIsBeta={setIsBeta}
+            isBeta={releaseChannel === ReleaseChannel.Beta}
+            setIsBeta={(beta) => setReleaseChannel(beta ? ReleaseChannel.Beta : ReleaseChannel.Stable)}
             openBetaSnackbar={openBetaSnackbar}
           />
         )}
 
         {isBetaSnackbarVisible != null && (
-          <BetaSnackbar open={isBetaSnackbarVisible} onClose={closeBetaSnackbar} isBeta={isBeta} />
+          <BetaSnackbar
+            open={isBetaSnackbarVisible}
+            onClose={closeBetaSnackbar}
+            isBeta={releaseChannel === ReleaseChannel.Beta}
+          />
         )}
       </Grid>
     </Box>
