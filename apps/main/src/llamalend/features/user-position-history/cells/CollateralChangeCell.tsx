@@ -20,10 +20,10 @@ export const CollateralChangeCell = ({
       }
     >
       {collateralChange > 0 ? '+' : ''}
-      {collateralChange === 0 ? '-' : formatNumber(collateralChange, { currency: 'USD' })}{' '}
-      {collateralChange != null && collateralChangeUsd !== 0 && collateralToken?.symbol}
+      {collateralChange === 0 ? '-' : formatNumber(collateralChange)}{' '}
+      {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
     </Typography>
-    {collateralChangeUsd !== 0 && (
+    {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
       <Typography variant="bodyXsRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
     )}
   </Stack>
