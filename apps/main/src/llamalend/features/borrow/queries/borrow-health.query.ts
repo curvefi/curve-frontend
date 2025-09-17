@@ -2,18 +2,19 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 export const { useQuery: useBorrowHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverage, range }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverageEnabled, range }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'max-borrow-receive',
+      'createLoanHealth',
       { userCollateral },
       { userBorrowed },
       { debt },
-      { leverage },
+      { leverageEnabled },
       { range },
     ] as const,
   queryFn: async ({
@@ -21,20 +22,22 @@ export const { useQuery: useBorrowHealth } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<number> => {
     const market = getLlamaMarket(poolId)
-    if (!leverage) return +(await market.createLoanHealth(userCollateral, debt, range))
-    if (market instanceof LendMarketTemplate) {
-      return +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
-    }
-    if (market.leverageV2.hasLeverage()) {
-      return +(await market.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, range))
-    }
-    return +(await market.leverage.createLoanHealth(userCollateral, debt, range))
+    return leverageEnabled
+      ? market instanceof LendMarketTemplate
+        ? +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
+        : market.leverageV2.hasLeverage()
+          ? +(await market.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, range))
+          : +(await market.leverage.createLoanHealth(userCollateral, debt, range))
+      : +(await market.createLoanHealth(userCollateral, debt, range))
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
+  dependencies: (params) => [
+    maxBorrowReceiveKey(params),
+    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+  ],
 })

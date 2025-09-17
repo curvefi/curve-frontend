@@ -11,7 +11,7 @@ type UserBalancesParams = FieldsOf<UserBalancesQuery>
 
 export const { useQuery: useUserBalances, queryKey: userBalancesQueryKey } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserBalancesParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'user-balances', { userAddress }] as const,
+    [...rootKeys.pool({ chainId, poolId }), 'wallet-balances', { userAddress }] as const,
   queryFn: async ({ poolId }: UserBalancesQuery) => {
     const market = getLlamaMarket(poolId)
     if (market instanceof LendMarketTemplate) {

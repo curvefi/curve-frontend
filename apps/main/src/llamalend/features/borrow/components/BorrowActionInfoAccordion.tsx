@@ -1,6 +1,7 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import { formatPercent } from '@/llamalend/utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@ui/utils'
@@ -17,12 +18,17 @@ import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
 import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
-import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
+import { BorrowLeverageActionInfos } from './BorrowLeverageActionInfos'
 
+/**
+ * Accordion with action infos about the borrow action (like health, band range, price range, N, borrow APR, LTV, estimated gas, slippage)
+ * By default, only the health info is visible. The rest is visible when the accordion is expanded.
+ * When leverage is enabled, `BorrowLeverageActionInfos` is also included.
+ */
 export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,
-  values: { range, slippage, debt, userCollateral },
+  values: { range, slippage, debt, userCollateral, leverageEnabled },
   collateralToken,
   tooMuchDebt,
   networks,
@@ -37,11 +43,6 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
-  const {
-    data: priceImpactPercent,
-    isLoading: priceImpactPercentLoading,
-    error: priceImpactPercentError,
-  } = useBorrowPriceImpact(params, isOpen)
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
@@ -49,80 +50,80 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
 
-  const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
-
   return (
-    <Accordion
-      ghost
-      title={t`Health`}
-      info={
-        <ActionInfo
-          label=""
-          value={health == null ? '∞' : formatNumber(health)}
-          valueColor={getHealthValueColor(health ?? 100, theme)}
-          error={healthError}
-          loading={healthLoading}
-          testId="borrow-health"
-        />
-      }
-      expanded={isOpen}
-      toggle={toggle}
-    >
-      <Stack>
-        <ActionInfo
-          label={isHighImpact ? t`High price impact` : t`Price impact`}
-          value={formatNumber(priceImpactPercent, { defaultValue: '-' })}
-          valueRight={priceImpactPercent != null && '%'}
-          {...(isHighImpact && { valueColor: 'error' })}
-          error={priceImpactPercentError}
-          loading={priceImpactPercentLoading}
-          testId="borrow-price-impact"
-        />
-        <ActionInfo
-          label={t`Band range`}
-          value={bands ? `${bands[0]} to ${bands[1]}` : '?'}
-          error={bandsError}
-          loading={bandsLoading}
-          testId="borrow-band-range"
-        />
-        <ActionInfo
-          label={t`Price range`}
-          value={prices?.map((p) => formatNumber(p, { maximumSignificantDigits: 3 })).join(' - ') ?? '?'}
-          error={pricesError}
-          loading={pricesLoading}
-          testId="borrow-price-range"
-        />
-        <ActionInfo label={t`N`} value={formatNumber(range)} testId="borrow-n" />
-        <ActionInfo
-          label={t`Borrow APR`}
-          value={formatPercent(rates?.borrowApr)}
-          error={ratesError}
-          loading={ratesLoading}
-          testId="borrow-apr"
-        />
-        {loanToValue != null && (
-          <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} testId="borrow-ltv" />
-        )}
-        <ActionInfo
-          label={t`Estimated tx cost (step 1 of 2)`}
-          value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
-          valueTooltip={gas?.createLoanApprove?.tooltip}
-          loading={gasLoading}
-        />
-        <ActionInfo
-          label={t`Slippage tolerance`}
-          value={formatPercent(slippage)}
-          valueRight={
-            <SlippageSettings
-              buttonSize="extraSmall"
-              buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
-              maxSlippage={`${slippage}`}
-              onSave={onSlippageChange}
+    // error tooltip isn't displayed correctly because accordion takes the mouse focus. Use title for now.
+    <Box title={healthError?.message}>
+      <Accordion
+        ghost
+        title={t`Health`}
+        info={
+          <ActionInfo
+            label=""
+            value={health == null ? '∞' : formatNumber(health)}
+            valueColor={getHealthValueColor(health ?? 100, theme)}
+            error={healthError}
+            loading={healthLoading}
+            testId="borrow-health"
+          />
+        }
+        expanded={isOpen}
+        toggle={toggle}
+      >
+        <Stack>
+          {leverageEnabled && (
+            <BorrowLeverageActionInfos
+              isOpen={isOpen}
+              collateralToken={collateralToken}
+              params={params}
+              slippage={slippage}
             />
-          }
-          testId="borrow-slippage"
-        />
-      </Stack>
-    </Accordion>
+          )}
+          <ActionInfo
+            label={t`Band range`}
+            value={bands ? `${bands[0]} to ${bands[1]}` : '?'}
+            error={bandsError}
+            loading={bandsLoading}
+            testId="borrow-band-range"
+          />
+          <ActionInfo
+            label={t`Price range`}
+            value={prices?.map((p) => formatNumber(p, { maximumSignificantDigits: 3 })).join(' - ') ?? '?'}
+            error={pricesError}
+            loading={pricesLoading}
+            testId="borrow-price-range"
+          />
+          <ActionInfo label={t`N`} value={formatNumber(range)} testId="borrow-n" />
+          <ActionInfo
+            label={t`Borrow APR`}
+            value={formatPercent(rates?.borrowApr)}
+            error={ratesError}
+            loading={ratesLoading}
+            testId="borrow-apr"
+          />
+          {loanToValue != null && (
+            <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} testId="borrow-ltv" />
+          )}
+          <ActionInfo
+            label={t`Estimated tx cost (step 1 of 2)`}
+            value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
+            valueTooltip={gas?.createLoanApprove?.tooltip}
+            loading={gasLoading}
+          />
+          <ActionInfo
+            label={t`Slippage tolerance`}
+            value={formatPercent(slippage)}
+            valueRight={
+              <SlippageSettings
+                buttonSize="extraSmall"
+                buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
+                maxSlippage={`${slippage}`}
+                onSave={onSlippageChange}
+              />
+            }
+            testId="borrow-slippage"
+          />
+        </Stack>
+      </Accordion>
+    </Box>
   )
 }

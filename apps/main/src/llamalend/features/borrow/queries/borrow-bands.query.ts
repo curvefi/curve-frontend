@@ -2,6 +2,7 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
@@ -14,36 +15,39 @@ export const { useQuery: useBorrowBands } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-bands',
+      'createLoanBands',
       { userCollateral },
       { userBorrowed },
       { debt },
-      { leverage },
+      { leverageEnabled },
       { range },
     ] as const,
-  queryFn: async ({
+  queryFn: ({
     poolId,
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<BorrowBandsResult> => {
     const market = getLlamaMarket(poolId)
-    return !leverage
-      ? market.createLoanBands(userCollateral, userBorrowed, range)
-      : market instanceof LendMarketTemplate
+    return leverageEnabled
+      ? market instanceof LendMarketTemplate
         ? market.leverage.createLoanBands(userCollateral, userBorrowed, debt, range)
         : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
-          : await market.leverage.createLoanBands(userCollateral, debt, range)
+          ? market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
+          : market.leverage.createLoanBands(userCollateral, debt, range)
+      : market.createLoanBands(userCollateral, userBorrowed, range)
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
+  dependencies: (params) => [
+    maxBorrowReceiveKey(params),
+    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+  ],
 })

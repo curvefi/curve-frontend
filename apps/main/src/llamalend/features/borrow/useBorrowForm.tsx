@@ -38,7 +38,7 @@ export function useBorrowForm<ChainId extends IChainId>({
       userCollateral: undefined,
       userBorrowed: 0,
       debt: undefined,
-      leverage: undefined,
+      leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,
       range: BORROW_PRESET_RANGES[preset],
       maxDebt: undefined,

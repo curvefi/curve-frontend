@@ -3,6 +3,7 @@ import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
+import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
@@ -20,16 +21,16 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowPricesReceiveParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
-      'borrow-prices',
+      'createLoanPrices',
       { userCollateral },
       { userBorrowed },
       { debt },
-      { leverage },
+      { leverageEnabled },
       { range },
     ] as const,
   queryFn: async ({
@@ -37,11 +38,11 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     userBorrowed = 0,
     userCollateral = 0,
     debt = 0,
-    leverage,
+    leverageEnabled,
     range,
   }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
     const market = getLlamaMarket(poolId)
-    return !leverage
+    return !leverageEnabled
       ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
       : market instanceof LendMarketTemplate
         ? convertNumbers(await market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, range))
@@ -51,5 +52,8 @@ export const { useQuery: useBorrowPrices } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
+  dependencies: (params) => [
+    maxBorrowReceiveKey(params),
+    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+  ],
 })

@@ -11,6 +11,7 @@ import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BorrowPreset, type LlamaMarketTemplate, type OnBorrowFormUpdate } from '../borrow.types'
+import { hasLeverage } from '../llama.util'
 import { setValueOptions } from '../llama.util'
 import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
@@ -18,6 +19,7 @@ import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
 import { BorrowFormAlert } from './BorrowFormAlert'
 import { BorrowFormTokenInput } from './BorrowFormTokenInput'
 import { InputDivider } from './InputDivider'
+import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing, MinWidth } = SizesAndSpaces
@@ -64,7 +66,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     () => void onUpdate({ userCollateral, debt, range }).then(() => {}),
     [onUpdate, userCollateral, debt, range],
   )
-
+  const marketHasLeverage = market && hasLeverage(market)
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
@@ -92,9 +94,28 @@ export const BorrowTabContents = <ChainId extends IChainId>({
             />
           </Stack>
 
+          {marketHasLeverage && (
+            <LeverageInput
+              leverageEnabled={values.leverageEnabled}
+              form={form}
+              params={params}
+              maxLeverage={maxTokenValues.maxLeverage}
+              isError={maxTokenValues.isLeverageError}
+              isLoading={maxTokenValues.isLeverageLoading}
+            />
+          )}
+
           <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
             <Collapse in={preset === BorrowPreset.Custom}>
-              <AdvancedBorrowOptions market={market} values={values} params={params} setRange={setRange} />
+              <AdvancedBorrowOptions
+                market={market}
+                values={values}
+                params={params}
+                setRange={setRange}
+                network={network.id}
+                collateralToken={collateralToken}
+                borrowToken={borrowToken}
+              />
             </Collapse>
           </LoanPresetSelector>
 
@@ -104,7 +125,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
             disabled={formErrors.length > 0}
             data-testid="borrow-submit-button"
           >
-            {isPending ? t`Processing...` : t`Approve & Swap`}
+            {isPending ? t`Processing...` : t`Approve & Borrow`}
           </Button>
 
           <BorrowFormAlert
