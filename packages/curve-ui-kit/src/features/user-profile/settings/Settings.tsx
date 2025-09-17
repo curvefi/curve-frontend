@@ -10,18 +10,18 @@ import { ThemeToggleButtons } from './ThemeToggleButtons'
 const { Spacing } = SizesAndSpaces
 
 export const Settings = () => (
-  <Stack gap={Spacing.md}>
+  <Stack gap={Spacing.xs}>
     <Setting>
       <SettingLabel>{t`Theme`}</SettingLabel>
       <ThemeToggleButtons />
     </Setting>
     <Setting>
-      <SettingLabel>{t`Advanced Mode`}</SettingLabel>
-      <AdvancedModeSwitch />
+      <SettingLabel>{t`Release Channel`}</SettingLabel>
+      <ReleaseChannelToggleButtons />
     </Setting>
     <Setting>
-      <SettingLabel>{t`Mode`}</SettingLabel>
-      <ReleaseChannelToggleButtons />
+      <SettingLabel>{t`Advanced Mode`}</SettingLabel>
+      <AdvancedModeSwitch />
     </Setting>
     <Setting>
       <SettingLabel>{t`Hide Small Pools`}</SettingLabel>

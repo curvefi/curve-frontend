@@ -36,9 +36,9 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
-        <Stack gap={Spacing.xs}>
+        <Stack gap={Spacing.xs} paddingBlock={Spacing.md}>
           <SettingsOption label={t`Theme`}>
-            <ThemeToggleButtons size="small" compact />
+            <ThemeToggleButtons />
           </SettingsOption>
 
           <SettingsOption label={t`Mode`}>

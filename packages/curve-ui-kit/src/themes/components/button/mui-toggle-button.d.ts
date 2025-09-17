@@ -22,7 +22,7 @@ declare module '@mui/material/ToggleButton' {
 
 declare module '@mui/material/ToggleButtonGroup' {
   export interface ToggleButtonGroupProps {
-    compact?: boolean
+    compact?: boolean // todo: get rid of this property as it gets passed to the dom and causes errors
   }
 
   export interface ToggleButtonGroupPropsSizeOverrides {
