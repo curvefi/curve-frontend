@@ -5,6 +5,7 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 import MonitorHeartOutlinedIcon from '@mui/icons-material/MonitorHeartOutlined'
 import YouTubeIcon from '@mui/icons-material/YouTube'
 import { t } from '@ui-kit/lib/i18n'
+import { BrandAssetsIcon } from '@ui-kit/shared/icons/BrandAssetsIcon'
 import { CrvHubIcon } from '@ui-kit/shared/icons/CrvHubIcon'
 import { DiscordIcon } from '@ui-kit/shared/icons/DiscordIcon'
 import { DocsIcon } from '@ui-kit/shared/icons/DocsIcon'
@@ -106,6 +107,11 @@ export const getSections = (appName: AppName) => [
         label: t`Risk Disclaimers`,
         href: `disclaimer/${getDisclaimersTab(appName)}`,
         icon: <RiskDisclaimersIcon />,
+      },
+      {
+        label: t`Brand Assets`,
+        href: 'https://curvefinance.notion.site/Brand-Assets-1a6599aae064802fba11ce6a9e642d74',
+        icon: <BrandAssetsIcon />,
       },
     ],
   },

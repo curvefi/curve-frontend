@@ -1,5 +1,4 @@
 import { ChadImg, RCMoon, RCSun } from '@ui/images'
-import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 const DEFAULT_SIZE = 24
 export const themes = [
@@ -20,9 +19,3 @@ export const themes = [
     Component: ({ size = DEFAULT_SIZE }: { size?: number }) => <img width={size} src={ChadImg} alt="Fun theme" />,
   },
 ] as const
-
-export type ThemeSwitcherProps = {
-  theme: ThemeKey
-  onChange(themeType: ThemeKey): void
-  label: string
-}

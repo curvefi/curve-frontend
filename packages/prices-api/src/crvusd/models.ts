@@ -9,6 +9,7 @@ export type Market = {
   borrowed: number
   borrowedUsd: number
   borrowable: number
+  leverage: number
   collateralAmount: number
   collateralAmountUsd: number
   debtCeiling: number

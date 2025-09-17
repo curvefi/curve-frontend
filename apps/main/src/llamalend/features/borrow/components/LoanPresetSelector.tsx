@@ -43,7 +43,7 @@ export const LoanPresetSelector = ({
   setRange: (value: number) => void
   children: ReactNode
 }) => (
-  <Stack gap={Spacing.sm}>
+  <Stack>
     <ToggleButtonGroup
       exclusive
       compact
@@ -56,7 +56,7 @@ export const LoanPresetSelector = ({
         [setPreset, setRange],
       )}
       aria-label={t`Loan Preset`}
-      sx={{ width: '100%' }}
+      sx={{ width: '100%', paddingBottom: Spacing.sm }}
     >
       {Object.values(BorrowPreset).map((p) => (
         <ToggleButton
@@ -68,12 +68,12 @@ export const LoanPresetSelector = ({
         </ToggleButton>
       ))}
     </ToggleButtonGroup>
-    {children}
     {preset && (
-      <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none' }}>
+      <Alert severity="info" variant="outlined" sx={{ boxShadow: 'none', paddingBottom: Spacing.sm }}>
         <AlertTitle>{PRESETS[preset].title}</AlertTitle>
         {PRESETS[preset].description}
       </Alert>
     )}
+    {children}
   </Stack>
 )

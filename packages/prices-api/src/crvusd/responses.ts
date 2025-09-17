@@ -11,6 +11,7 @@ export type GetMarketsResponse = {
     n_loans: number
     debt_ceiling: number
     borrowable: number
+    leverage: number
     pending_fees: number
     collected_fees: number
     collateral_amount: number

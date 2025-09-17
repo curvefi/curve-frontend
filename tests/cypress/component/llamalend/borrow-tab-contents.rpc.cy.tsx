@@ -1,11 +1,14 @@
 import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/borrow.types'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import networks from '@/loan/networks'
+import { oneBool } from '@cy/support/generators'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
 import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
+import { LOAD_TIMEOUT } from '@cy/support/ui'
 import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
@@ -17,10 +20,16 @@ const MARKET_ID = 'lbtc'
 const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
+const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
+
 function BorrowTabTest() {
   const { llamaApi } = useConnection()
   const market = useMemo(() => llamaApi?.getMintMarket(MARKET_ID), [llamaApi])
-  return market ? <BorrowTabContents market={market} networks={networks} chainId={chainId} /> : <Skeleton />
+  return market ? (
+    <BorrowTabContents market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} />
+  ) : (
+    <Skeleton />
+  )
 }
 
 describe('BorrowTabContents Component Tests', () => {
@@ -52,7 +61,7 @@ describe('BorrowTabContents Component Tests', () => {
     </ClientWrapper>
   )
 
-  const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`)
+  const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
   it('calculates max debt and health', () => {
     cy.mount(<BorrowTabTestWrapper />)
@@ -63,13 +72,18 @@ describe('BorrowTabContents Component Tests', () => {
     cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type('100')
     getActionValue('borrow-health').should('not.contain.text', '∞')
 
+    const leverageEnabled = oneBool() // test with and without leverage
+    if (leverageEnabled) {
+      cy.get('[data-testid="leverage-checkbox"]').click()
+    }
+
     // open borrow advanced settings and check all fields
     cy.contains('button', 'Health').click()
 
     getActionValue('borrow-price-impact').contains('%')
     getActionValue('borrow-band-range').should('exist') // bands are giving an error for now, don't check the content
     getActionValue('borrow-price-range')
-      .invoke('text')
+      .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?)( - )(\d(\.\d+)?)/)
     getActionValue('borrow-apr').contains('%')
     getActionValue('borrow-ltv').contains('%')

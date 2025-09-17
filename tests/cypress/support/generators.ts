@@ -18,6 +18,7 @@ export const range = (lengthOrStart: number, length?: number) =>
     : Array.from({ length }, (_, i) => i + lengthOrStart)
 
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
+export const oneBool = () => oneOf(true, false)
 
 export const oneAddress = (): Address =>
   `0x${range(4) // create separate ints otherwise they aren't large enough

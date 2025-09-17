@@ -11,13 +11,21 @@ export * from './number'
 export * from './searchText'
 export * from './mui'
 
+export enum ReleaseChannel {
+  Beta = 'Beta',
+  Stable = 'Stable',
+  Legacy = 'Legacy',
+}
+
 export const isCypress = typeof window !== 'undefined' && Boolean((window as { Cypress?: unknown }).Cypress)
-export const isBetaDefault =
+const isDefaultBeta =
   process.env.NODE_ENV === 'development' ||
   (typeof window !== 'undefined' &&
     window.location.hostname !== 'curve.finance' &&
     window.location.hostname !== 'www.curve.finance')
-export const enableLogging = isBetaDefault
+
+export const defaultReleaseChannel = isDefaultBeta ? ReleaseChannel.Beta : ReleaseChannel.Stable
+export const enableLogging = isDefaultBeta
 
 /**
  * Copies text to clipboard with Ethereum address checksumming
@@ -44,11 +52,13 @@ export async function copyToClipboard(text: string) {
   }
 }
 
+type Falsey = null | undefined | 0 | false | ''
+
 /**
  * Asserts that a value is truthy, and returns the value if so.
  * Throws an error with the provided message if the value is falsy.
  */
-export function assert<T>(value: T, message: string) {
+export function assert<T>(value: T | Falsey, message: string) {
   if (!value) {
     throw new Error(message)
   }

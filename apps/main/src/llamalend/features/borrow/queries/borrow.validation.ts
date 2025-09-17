@@ -22,13 +22,6 @@ const validateDebt = (debt: number | undefined | null, required: boolean) =>
     }
   })
 
-const validateLeverage = (leverage: number | undefined | null) =>
-  test('leverage', 'Leverage must be a number greater than or equal to 1', () => {
-    if (leverage != null) {
-      enforce(leverage).isNumeric().gte(1)
-    }
-  })
-
 const validateSlippage = (slippage: number | null | undefined) =>
   test('slippage', 'Slippage must be a number between 0 and 100', () => {
     enforce(slippage).isNumeric().gte(0).lte(100)
@@ -60,14 +53,13 @@ export const validateMaxCollateral = (
 }
 
 export const borrowFormValidationGroup = (
-  { userBorrowed, userCollateral, debt, leverage, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,
+  { userBorrowed, userCollateral, debt, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,
   { debtRequired = true }: { debtRequired?: boolean } = {},
 ) =>
   group('borrowFormValidationGroup', () => {
     validateUserBorrowed(userBorrowed)
     validateUserCollateral(userCollateral)
     validateDebt(debt, debtRequired)
-    validateLeverage(leverage)
     validateSlippage(slippage)
     validateRange(range)
     validateMaxDebt(debt, maxDebt)
