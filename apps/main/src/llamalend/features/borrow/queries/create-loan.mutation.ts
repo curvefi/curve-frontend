@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
-import { useAccount } from 'wagmi'
+import { useAccount, useConfig } from 'wagmi'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useMutation } from '@tanstack/react-query'
-import { notify, useWallet } from '@ui-kit/features/connect-wallet'
+import { notify } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
-import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
-import { assert } from '@ui-kit/utils'
+import { Address } from '@ui-kit/utils'
+import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import type { BorrowForm, BorrowFormQuery } from '../borrow.types'
 import { getLlamaMarket } from '../llama.util'
@@ -43,8 +43,8 @@ const getCreateMethods = (poolId: string, leverage: number | undefined) => {
 }
 
 export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) => {
+  const config = useConfig()
   const { address: userAddress } = useAccount()
-  const { provider } = useWallet()
   const mutationKey = ['create-loan', { chainId, poolId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
@@ -52,21 +52,20 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
-        const signerProvider = assert(provider, t`Wallet provider unavailable`)
         const { userCollateral, userBorrowed, debt, leverage, slippage, range } = mutation
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverage)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
-          const approvalTxHashes = await createLoanApprove(userCollateral, userBorrowed)
-          await waitForTransactions(approvalTxHashes, signerProvider)
+          const approvalTxHashes = (await createLoanApprove(userCollateral, userBorrowed)) as Address[]
+          await Promise.all(approvalTxHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
           notify(t`Approved loan creation`, 'success')
         }
 
-        const loanTxHash = await createLoan(userCollateral, userBorrowed, debt, range, slippage)
-        await waitForTransaction(loanTxHash, signerProvider)
+        const loanTxHash = (await createLoan(userCollateral, userBorrowed, debt, range, slippage)) as Address
+        await waitForTransactionReceipt(config, { hash: loanTxHash })
         return loanTxHash
       },
-      [poolId, provider],
+      [poolId, config],
     ),
     onSuccess: (tx, _mutation) => {
       logSuccess(mutationKey, tx)
