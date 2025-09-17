@@ -219,18 +219,11 @@ const Page = () => {
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
               {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
-                <Stack
-                  paddingLeft={Spacing.md}
-                  paddingRight={Spacing.md}
-                  paddingBottom={Spacing.md}
-                  sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-                >
-                  <UserPositionHistory
-                    events={userCollateralEvents.data.events}
-                    isLoading={userCollateralEvents.isLoading}
-                    isError={userCollateralEvents.isError}
-                  />
-                </Stack>
+                <UserPositionHistory
+                  events={userCollateralEvents.data.events}
+                  isLoading={userCollateralEvents.isLoading}
+                  isError={userCollateralEvents.isError}
+                />
               )}
             </Stack>
           )}
