@@ -3,9 +3,10 @@ import { useAccount } from 'wagmi'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useMutation } from '@tanstack/react-query'
-import { notify } from '@ui-kit/features/connect-wallet'
+import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
+import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { assert } from '@ui-kit/utils'
 import { getBalanceQueryKey } from '@wagmi/core/query'
@@ -43,6 +44,7 @@ const getCreateMethods = (poolId: string, leverage: number | undefined) => {
 
 export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) => {
   const { address: userAddress } = useAccount()
+  const { provider } = useWallet()
   const mutationKey = ['create-loan', { chainId, poolId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
@@ -50,18 +52,21 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
+        const signerProvider = assert(provider, t`Wallet provider unavailable`)
         const { userCollateral, userBorrowed, debt, leverage, slippage, range } = mutation
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverage)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
-          const approvalTx = await createLoanApprove(userCollateral, userBorrowed)
-          assert(approvalTx, t`Failed to approve loan creation`)
+          const approvalTxHashes = await createLoanApprove(userCollateral, userBorrowed)
+          await waitForTransactions(approvalTxHashes, signerProvider)
           notify(t`Approved loan creation`, 'success')
         }
-        const loanTx = await createLoan(userCollateral, userBorrowed, debt, range, slippage)
-        return assert(loanTx, t`Failed to create loan`)
+
+        const loanTxHash = await createLoan(userCollateral, userBorrowed, debt, range, slippage)
+        await waitForTransaction(loanTxHash, signerProvider)
+        return loanTxHash
       },
-      [poolId],
+      [poolId, provider],
     ),
     onSuccess: (tx, _mutation) => {
       logSuccess(mutationKey, tx)
