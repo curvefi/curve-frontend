@@ -189,6 +189,7 @@ const convertMintMarket = (
     borrowedUsd,
     borrowable,
     debtCeiling,
+    leverage,
     chain,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
@@ -246,7 +247,7 @@ const convertMintMarket = (
     ),
     isFavorite: favoriteMarkets.has(llamma),
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
-    leverage: 0,
+    leverage,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
   }
 }
