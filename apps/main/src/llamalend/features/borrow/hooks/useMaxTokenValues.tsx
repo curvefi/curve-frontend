@@ -4,6 +4,7 @@ import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import type { BorrowForm, BorrowFormQueryParams } from '../borrow.types'
 import { setValueOptions } from '../llama.util'
+import { useMaxLeverage } from '../queries/borrow-max-leverage.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 
 /**
@@ -26,12 +27,19 @@ export function useMaxTokenValues(
     isLoading: isBalanceLoading,
   } = useTokenBalance(params, collateralToken)
   const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
+  const {
+    data: maxTotalLeverage,
+    isError: isErrorMaxLeverage,
+    isLoading: isLoadingMaxLeverage,
+  } = useMaxLeverage(params)
 
-  const maxDebt = maxBorrow?.maxDebt
+  const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
   const maxCollateral =
     userBalance && maxBorrow?.maxTotalCollateral
       ? Math.min(userBalance, maxBorrow?.maxTotalCollateral)
       : (userBalance ?? maxBorrow?.maxTotalCollateral)
+
+  const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 
   useEffect(() => form.setValue('maxDebt', maxDebt, setValueOptions), [form, maxDebt])
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
@@ -41,5 +49,8 @@ export function useMaxTokenValues(
     isDebtLoading: !collateralToken || isLoadingMaxBorrow,
     isCollateralError: isErrorMaxBorrow || isBalanceError,
     isDebtError: isErrorMaxBorrow,
+    isLeverageError: isErrorMaxLeverage || isErrorMaxBorrow,
+    isLeverageLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
+    maxLeverage,
   }
 }

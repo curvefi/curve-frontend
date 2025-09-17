@@ -5,7 +5,7 @@ import { getLlamaMarket } from '../llama.util'
 
 export const { useQuery: useBorrowOraclePrice } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams<IChainId>) =>
-    [...rootKeys.pool({ chainId, poolId }), 'borrow-oracle-price'] as const,
+    [...rootKeys.pool({ chainId, poolId }), 'oraclePrice'] as const,
   queryFn: ({ poolId }: PoolQuery<IChainId>): Promise<string> => getLlamaMarket(poolId).oraclePrice(),
   validationSuite: llamaApiValidationSuite,
 })

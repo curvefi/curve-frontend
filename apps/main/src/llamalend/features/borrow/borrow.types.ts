@@ -13,7 +13,7 @@ export type CompleteBorrowForm = {
   debt: number
   range: number
   slippage: number
-  leverage: number | undefined
+  leverageEnabled: boolean
 }
 
 type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
