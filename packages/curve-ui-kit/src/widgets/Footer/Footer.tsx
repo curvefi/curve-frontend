@@ -3,13 +3,12 @@ import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
-import { BetaDialog } from './BetaDialog'
-import { BetaSnackbar } from './BetaSnackbar'
+import { ReleaseChannelDialog } from '../../features/user-profile/settings/ReleaseChannelDialog'
+import { ReleaseChannelSnackbar } from '../../features/user-profile/settings/ReleaseChannelSnackbar'
 import { Description } from './Description'
 import { Section } from './Section'
 import { getSections } from './Sections'
@@ -27,7 +26,6 @@ type FooterProps = {
 export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
   const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
-  const [releaseChannel, setReleaseChannel] = useReleaseChannel()
   const isTiny = useIsTiny()
   return (
     <Box
@@ -83,20 +81,18 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
           onClick={openBetaModal}
         />
         {isBetaModalOpen != null && (
-          <BetaDialog
+          <ReleaseChannelDialog
             open={isBetaModalOpen}
             onClose={closeBetaModal}
-            isBeta={releaseChannel === ReleaseChannel.Beta}
-            setIsBeta={(beta) => setReleaseChannel(beta ? ReleaseChannel.Beta : ReleaseChannel.Stable)}
-            openBetaSnackbar={openBetaSnackbar}
+            channel={ReleaseChannel.Beta}
+            onChanged={openBetaSnackbar}
           />
         )}
-
         {isBetaSnackbarVisible != null && (
-          <BetaSnackbar
+          <ReleaseChannelSnackbar
             open={isBetaSnackbarVisible}
             onClose={closeBetaSnackbar}
-            isBeta={releaseChannel === ReleaseChannel.Beta}
+            channel={ReleaseChannel.Beta}
           />
         )}
       </Grid>

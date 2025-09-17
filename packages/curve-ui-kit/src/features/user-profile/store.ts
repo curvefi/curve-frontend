@@ -104,5 +104,3 @@ const cache: PersistOptions<Store> = {
 
 export const useUserProfileStore =
   process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
-
-export default useUserProfileStore

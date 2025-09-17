@@ -8,6 +8,7 @@ import type { Theme } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { AdvancedModeSwitch } from '@ui-kit/features/user-profile/settings/AdvancedModeSwitch'
+import { ReleaseChannelToggleButtons } from '@ui-kit/features/user-profile/settings/ReleaseChannelToggleButtons'
 import { ThemeToggleButtons } from '@ui-kit/features/user-profile/settings/ThemeToggleButtons'
 import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
@@ -35,13 +36,19 @@ export const SideBarFooter = ({ onConnect }: { onConnect: () => void }) => (
         </Typography>
       </AccordionSummary>
       <AccordionDetails sx={{ backgroundColor, borderTop: (t: Theme) => `1px solid ${t.palette.text.secondary}` }}>
-        <SettingsOption label={t`Theme`}>
-          <ThemeToggleButtons size="small" compact />
-        </SettingsOption>
+        <Stack gap={Spacing.xs} paddingBlock={Spacing.md}>
+          <SettingsOption label={t`Theme`}>
+            <ThemeToggleButtons />
+          </SettingsOption>
 
-        <SettingsOption label={t`Advanced Mode`}>
-          <AdvancedModeSwitch />
-        </SettingsOption>
+          <SettingsOption label={t`Mode`}>
+            <ReleaseChannelToggleButtons />
+          </SettingsOption>
+
+          <SettingsOption label={t`Advanced Mode`}>
+            <AdvancedModeSwitch />
+          </SettingsOption>
+        </Stack>
       </AccordionDetails>
     </Accordion>
   </Stack>

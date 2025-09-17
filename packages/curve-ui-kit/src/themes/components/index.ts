@@ -80,11 +80,7 @@ export const createComponents = (
   },
   MuiToggleButton: defineMuiToggleButton(design),
   MuiToggleButtonGroup: {
-    styleOverrides: {
-      root: ({ ownerState }) => ({
-        gap: ownerState.compact ? '0rem' : '0.25rem',
-      }),
-    },
+    styleOverrides: { root: ({ ownerState }) => ({ columnGap: ownerState.compact ? '0rem' : '2px' }) },
   },
   MuiInputBase: defineMuiInputBase(design, typography),
   MuiInputLabel: {

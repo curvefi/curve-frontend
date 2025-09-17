@@ -1,4 +1,5 @@
 import Stack from '@mui/material/Stack'
+import { ReleaseChannelToggleButtons } from '@ui-kit/features/user-profile/settings/ReleaseChannelToggleButtons'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { AdvancedModeSwitch } from './AdvancedModeSwitch'
@@ -9,10 +10,14 @@ import { ThemeToggleButtons } from './ThemeToggleButtons'
 const { Spacing } = SizesAndSpaces
 
 export const Settings = () => (
-  <Stack gap={Spacing.md}>
+  <Stack gap={Spacing.xs}>
     <Setting>
       <SettingLabel>{t`Theme`}</SettingLabel>
       <ThemeToggleButtons />
+    </Setting>
+    <Setting>
+      <SettingLabel>{t`Release Channel`}</SettingLabel>
+      <ReleaseChannelToggleButtons />
     </Setting>
     <Setting>
       <SettingLabel>{t`Advanced Mode`}</SettingLabel>
