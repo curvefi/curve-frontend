@@ -22,7 +22,7 @@ const RewardsBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBann
 )
 
 const Wrapper = styled.div`
-  background-color: var(--primary-400);
+  background-color: var(--primary-200);
   padding: var(--spacing-3);
   display: flex;
   align-items: center;

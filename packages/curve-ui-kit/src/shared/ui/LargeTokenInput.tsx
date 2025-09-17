@@ -20,11 +20,18 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
       backgroundColor: (t) => t.design.Layer[3].Fill,
       paddingBlock: Spacing.sm,
       paddingInlineStart: Spacing.sm,
-      ...(isError && { outline: (t) => `1px solid ${t.design.Layer.Feedback.Error}` }),
+      ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
     }}
   >
     {typeof message === 'string' ? (
-      <Typography variant="bodyXsRegular" color={isError ? 'error' : 'textTertiary'}>
+      <Typography
+        variant="bodyXsRegular"
+        // todo: replace with alert component and add filledfeedback colors to alert component.
+        sx={{
+          color: (t) =>
+            isError ? t.design.Text.TextColors.FilledFeedback.Warning.Primary : t.design.Text.TextColors.Tertiary,
+        }}
+      >
         {message}
       </Typography>
     ) : (
@@ -241,7 +248,8 @@ export const LargeTokenInput = ({
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         padding: Spacing.md,
-        outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+        outline: (t) =>
+          `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
       <Stack gap={Spacing.xs}>

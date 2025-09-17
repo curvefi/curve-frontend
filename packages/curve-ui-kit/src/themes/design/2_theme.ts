@@ -38,6 +38,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Highlight: Light.Text.Highlight,
       Disabled: Light.Text.Disabled,
       Feedback: Light.Text.Feedback,
+      FilledFeedback: { ...Light.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -269,12 +270,13 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
+  const InputBaseDefaultFill = Grays[100]
   const Inputs = {
     Base: {
       Default: {
-        Fill: Grays[100],
+        Fill: InputBaseDefaultFill,
         Border: {
-          Default: Grays[400],
+          Default: Grays[200],
           Active: Light.Text.Highlight,
           Filled: Grays[850],
           Error: Reds[500],
@@ -293,7 +295,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Large: {
       Default: {
-        Fill: Grays[100],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-white.svg',
@@ -416,6 +418,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Highlight: Dark.Text.Highlight,
       Disabled: Dark.Text.Disabled,
       Feedback: Dark.Text.Feedback,
+      FilledFeedback: { ...Dark.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -647,12 +650,13 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
+  const InputBaseDefaultFill = color[900]
   const Inputs = {
     Base: {
       Default: {
-        Fill: color[850],
+        Fill: InputBaseDefaultFill,
         Border: {
-          Default: color[600],
+          Default: color[800],
           Active: Dark.Text.Highlight,
           Filled: color[75],
           Error: Reds[500],
@@ -671,7 +675,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Large: {
       Default: {
-        Fill: color[950],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-black.svg',
@@ -737,6 +741,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Highlight: Chad.Text.Highlight,
       Disabled: Chad.Text.Disabled,
       Feedback: Chad.Text.Feedback,
+      FilledFeedback: { ...Chad.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Minecraft',
@@ -752,7 +757,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Primary: {
       Default: {
         Label: Grays[50],
-        Fill: Violet[500],
+        Fill: Violet[950],
       },
       Hover: {
         Label: Grays[50],
@@ -766,7 +771,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Secondary: {
       Default: {
         Label: Grays[50],
-        Fill: Violet[900],
+        Fill: Grays[900],
       },
       Hover: {
         Label: Grays[50],
@@ -968,31 +973,32 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
+  const InputBaseDefaultFill = Grays[100]
   const Inputs = {
     Base: {
       Default: {
-        Fill: Violet[50],
+        Fill: InputBaseDefaultFill,
         Border: {
-          Default: Violet[200],
-          Active: Chad.Text.Highlight,
-          Filled: Violet[400],
+          Default: Grays[200],
+          Active: Violet[400],
+          Filled: Violet[600],
           Error: Reds[500],
         },
       },
       Nested: {
-        Nested: Violet[50],
+        Nested: Grays[50],
         Fill: Violet[50],
         Border: {
-          Default: Violet[200],
-          Active: Chad.Text.Highlight,
-          Filled: Violet[400],
+          Default: Grays[200],
+          Active: Violet[400],
+          Filled: Violet[600],
           Error: Reds[500],
         },
       },
     },
     Large: {
       Default: {
-        Fill: Violet[50],
+        Fill: InputBaseDefaultFill,
       },
     },
     SliderThumbImage: '/mui/slider-thumb-white.svg',

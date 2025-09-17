@@ -61,6 +61,7 @@ const TopBox = styled(Box)`
   align-items: center;
   background: var(--box_header--primary--background-color);
   padding: var(--spacing-normal);
+  color: var(--box_header--primary--color);
   h2 {
     font-size: var(--font-size-4);
     color: var(--box--primary--color);
