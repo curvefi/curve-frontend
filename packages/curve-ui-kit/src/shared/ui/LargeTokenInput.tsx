@@ -241,7 +241,8 @@ export const LargeTokenInput = ({
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         padding: Spacing.md,
-        outline: isError ? (t) => `1px solid ${t.design.Layer.Feedback.Error}` : 'none',
+        outline: (t) =>
+          `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
       <Stack gap={Spacing.xs}>

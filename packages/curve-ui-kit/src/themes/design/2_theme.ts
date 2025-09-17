@@ -983,12 +983,12 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         },
       },
       Nested: {
-        Nested: Violet[50],
+        Nested: Grays[50],
         Fill: Violet[50],
         Border: {
-          Default: Violet[200],
-          Active: Chad.Text.Highlight,
-          Filled: Violet[400],
+          Default: Grays[200],
+          Active: Violet[400],
+          Filled: Violet[600],
           Error: Reds[500],
         },
       },
