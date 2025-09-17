@@ -38,6 +38,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Highlight: Light.Text.Highlight,
       Disabled: Light.Text.Disabled,
       Feedback: Light.Text.Feedback,
+      FilledFeedback: { ...Light.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -417,6 +418,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       Highlight: Dark.Text.Highlight,
       Disabled: Dark.Text.Disabled,
       Feedback: Dark.Text.Feedback,
+      FilledFeedback: { ...Dark.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Mona Sans',
@@ -739,6 +741,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       Highlight: Chad.Text.Highlight,
       Disabled: Chad.Text.Disabled,
       Feedback: Chad.Text.Feedback,
+      FilledFeedback: { ...Chad.Text.FilledFeedback },
     },
     FontFamily: {
       Heading: 'Minecraft',
