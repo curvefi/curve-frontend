@@ -1,11 +1,12 @@
-import type { NetworkEnum } from '@/llamalend/llamalend.types'
+import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { ChartLiquidationRange } from '@/llamalend/widgets/ChartLiquidationRange'
 import RouteDetails from '@/llamalend/widgets/RouteDetails'
+import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { BorrowForm, BorrowFormQueryParams, LlamaMarketTemplate, Token } from '../borrow.types'
+import type { BorrowForm, BorrowFormQueryParams, Token } from '../borrow.types'
 import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowRouteImage } from '../queries/borrow-route-image.query'
@@ -24,7 +25,7 @@ export const AdvancedBorrowOptions = ({
   collateralToken,
   borrowToken,
 }: {
-  network: NetworkEnum
+  network: INetworkName
   params: BorrowFormQueryParams
   values: BorrowForm
   setRange: (n: number) => void
