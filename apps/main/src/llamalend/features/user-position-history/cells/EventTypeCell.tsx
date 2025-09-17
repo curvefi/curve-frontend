@@ -10,11 +10,11 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { ParsedUserLendCollateralEvent, UserLendCollateralEventType } from '../hooks/useUserLendCollateralEvents'
+import type { ParsedUserCollateralEvent, UserCollateralEventType } from '../hooks/useUserCollateralEvents'
 
 const { Spacing } = SizesAndSpaces
 
-const icons: Record<UserLendCollateralEventType, ReactNode> = {
+const icons: Record<UserCollateralEventType, ReactNode> = {
   'Open Position': <AutoAwesomeIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
   Borrow: <UploadIcon />,
   'Borrow More': <UploadIcon />,
@@ -31,7 +31,7 @@ export const EventTypeCell = ({
   row: {
     original: { type },
   },
-}: CellContext<ParsedUserLendCollateralEvent, any>) => (
+}: CellContext<ParsedUserCollateralEvent, any>) => (
   <Stack
     flexDirection="row"
     alignItems="center"

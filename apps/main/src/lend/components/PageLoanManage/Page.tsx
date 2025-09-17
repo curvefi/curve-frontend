@@ -18,7 +18,7 @@ import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
-import { useUserLendCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserLendCollateralEvents'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -69,7 +69,8 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
-  const userCollateralEvents = useUserLendCollateralEvents({
+  const userCollateralEvents = useUserCollateralEvents({
+    app: 'lend',
     chainId: rChainId,
     controllerAddress: market?.addresses?.controller,
     userAddress: signerAddress,
@@ -184,7 +185,12 @@ const Page = () => {
               </Stack>
             )}
             {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
-              <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <Stack
+                paddingLeft={Spacing.md}
+                paddingRight={Spacing.md}
+                paddingBottom={Spacing.md}
+                sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              >
                 <UserPositionHistory
                   events={userCollateralEvents.data.events}
                   isLoading={userCollateralEvents.isLoading}

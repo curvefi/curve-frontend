@@ -1,10 +1,10 @@
 import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
-import { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
+import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { UserEventsTable } from './UserEventsTable'
 
 type UserPositionHistoryProps = {
-  events: ParsedUserLendCollateralEvent[]
+  events: ParsedUserCollateralEvent[]
   isLoading: boolean
   isError: boolean
 }

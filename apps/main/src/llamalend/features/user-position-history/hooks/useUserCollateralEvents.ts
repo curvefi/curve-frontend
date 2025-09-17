@@ -1,8 +1,19 @@
 import { useMemo } from 'react'
 import { Address } from 'viem'
+import { useUserCrvUsdCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { UserCollateralEvent, UserCollateralEvents } from '@curvefi/prices-api/lending'
+import {
+  UserCollateralEvent as CrvUsdUserCollateralEvent,
+  UserCollateralEvents as CrvUsdUserCollateralEvents,
+} from '@curvefi/prices-api/crvusd'
+import {
+  UserCollateralEvent as LendingUserCollateralEvent,
+  UserCollateralEvents as LendingUserCollateralEvents,
+} from '@curvefi/prices-api/lending'
+
+type UserCollateralEvent = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
+type UserCollateralEvents = LendingUserCollateralEvents | CrvUsdUserCollateralEvents
 
 /**
  * Types:
@@ -12,7 +23,7 @@ import { UserCollateralEvent, UserCollateralEvents } from '@curvefi/prices-api/l
  * Borrow more = "Borrow" type when debt increases but collateral doesn't.
  * Repay and Close = "Repay" when debt goes to 0.
  */
-export type UserLendCollateralEventType =
+export type UserCollateralEventType =
   | 'Open Position'
   | 'Borrow'
   | 'Liquidate'
@@ -24,8 +35,8 @@ export type UserLendCollateralEventType =
   | 'Self Liquidation'
   | 'Hard Liquidation'
 
-export type ParsedUserLendCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
-  type: UserLendCollateralEventType
+export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
+  type: UserCollateralEventType
   url: Address
   borrowToken:
     | {
@@ -44,14 +55,14 @@ export type ParsedUserLendCollateralEvent = Omit<UserCollateralEvent, 'type'> & 
       }
     | undefined
 }
-export type ParsedUserLendCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
-  events: ParsedUserLendCollateralEvent[]
+export type ParsedUserCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
+  events: ParsedUserCollateralEvent[]
 }
 
 const parseEventType = (
   event: UserCollateralEvent,
   previousEvent: UserCollateralEvent | undefined,
-): UserLendCollateralEventType => {
+): UserCollateralEventType => {
   const { type, loanChange, collateralChange, liquidation, user, isPositionClosed } = event
   // if previous event == null it's the first event (must be open position).
   // if previous event is isPositionClosed === true, the next 'Borrow' must be open position.
@@ -64,10 +75,11 @@ const parseEventType = (
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'
   if (type === 'Repay') return 'Repay'
   if (type === 'RemoveCollateral') return 'Remove Collateral'
-  return type as UserLendCollateralEventType
+  return type as UserCollateralEventType
 }
 
-type UseUserLendCollateralEventsProps = {
+type UseUserCollateralEventsProps = {
+  app: 'lend' | 'crvusd'
   userAddress: string | undefined
   controllerAddress: string | undefined
   chainId: IChainId
@@ -89,24 +101,42 @@ type UseUserLendCollateralEventsProps = {
     | undefined
 }
 
-export const useUserLendCollateralEvents = ({
+export const useUserCollateralEvents = ({
+  app,
   userAddress,
   controllerAddress,
   chainId,
   collateralToken,
   borrowToken,
-}: UseUserLendCollateralEventsProps): {
-  data: ParsedUserLendCollateralEvents | null
+}: UseUserCollateralEventsProps): {
+  data: ParsedUserCollateralEvents | null
   isLoading: boolean
   isError: boolean
 } => {
-  const { data, isLoading, isError } = useUserLendCollateralEventsQuery({
+  const {
+    data: lendData,
+    isLoading: lendLoading,
+    isError: lendError,
+  } = useUserLendCollateralEventsQuery({
+    chainId,
+    controllerAddress,
+    userAddress,
+  })
+  const {
+    data: crvUsdData,
+    isLoading: crvUsdLoading,
+    isError: crvUsdError,
+  } = useUserCrvUsdCollateralEventsQuery({
     chainId,
     controllerAddress,
     userAddress,
   })
 
   return useMemo(() => {
+    const data = app === 'lend' ? lendData : crvUsdData
+    const isLoading = app === 'lend' ? lendLoading : crvUsdLoading
+    const isError = app === 'lend' ? lendError : crvUsdError
+
     const parsedData =
       data?.events
         .map((event, index) => ({
@@ -123,5 +153,5 @@ export const useUserLendCollateralEvents = ({
       isLoading,
       isError,
     }
-  }, [data, borrowToken, collateralToken, isLoading, isError])
+  }, [app, lendData, crvUsdData, lendLoading, crvUsdLoading, lendError, crvUsdError, borrowToken, collateralToken])
 }

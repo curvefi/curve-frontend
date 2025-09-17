@@ -3,7 +3,7 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { ParsedUserLendCollateralEvent } from '../hooks/useUserLendCollateralEvents'
+import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
 
 const { Spacing } = SizesAndSpaces
 
@@ -11,7 +11,7 @@ export const CollateralChangeCell = ({
   row: {
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
-}: CellContext<ParsedUserLendCollateralEvent, any>) => (
+}: CellContext<ParsedUserCollateralEvent, any>) => (
   <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
     <Typography
       variant="tableCellSBold"

@@ -16,6 +16,8 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -55,11 +57,20 @@ const Page = () => {
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const rOwmId = market?.id ?? ''
+  const { signerAddress } = api ?? {}
 
   const marketDetails = useMarketDetails({
     chainId: rChainId,
     llamma: market,
     llammaId: rOwmId,
+  })
+  const userCollateralEvents = useUserCollateralEvents({
+    app: 'lend',
+    chainId: rChainId,
+    controllerAddress: market?.addresses?.controller,
+    userAddress: signerAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
   })
 
   useEffect(() => {
@@ -164,6 +175,20 @@ const Page = () => {
           <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
+              {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
+                <Stack
+                  paddingLeft={Spacing.md}
+                  paddingRight={Spacing.md}
+                  paddingBottom={Spacing.md}
+                  sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+                >
+                  <UserPositionHistory
+                    events={userCollateralEvents.data.events}
+                    isLoading={userCollateralEvents.isLoading}
+                    isError={userCollateralEvents.isError}
+                  />
+                </Stack>
+              )}
             </Stack>
           </MarketInformationTabs>
           <Stack>

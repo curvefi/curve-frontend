@@ -5,10 +5,10 @@ import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { USER_POSITION_HISTORY_COLUMNS } from './columns'
-import { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
+import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
 type UserEventsTableProps = {
-  events: ParsedUserLendCollateralEvent[]
+  events: ParsedUserCollateralEvent[]
   isError: boolean
   loading: boolean
 }

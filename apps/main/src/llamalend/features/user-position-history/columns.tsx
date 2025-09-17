@@ -5,9 +5,9 @@ import { DebtChangeCell } from './cells/DebtChangeCell'
 import { EventTypeCell } from './cells/EventTypeCell'
 import { TimestampCell } from './cells/TimestampCell'
 import { UserPositionHistoryColumnId } from './columns.enum'
-import type { ParsedUserLendCollateralEvent } from './hooks/useUserLendCollateralEvents'
+import type { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 
-const columnHelper = createColumnHelper<ParsedUserLendCollateralEvent>()
+const columnHelper = createColumnHelper<ParsedUserCollateralEvent>()
 
 const headers = {
   [UserPositionHistoryColumnId.Type]: t`Type`,
