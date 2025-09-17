@@ -275,7 +275,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       Default: {
         Fill: InputBaseDefaultFill,
         Border: {
-          Default: Grays[400],
+          Default: Grays[200],
           Active: Light.Text.Highlight,
           Filled: Grays[850],
           Error: Reds[500],
@@ -648,13 +648,13 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
-  const InputBaseDefaultFill = color[850]
+  const InputBaseDefaultFill = color[900]
   const Inputs = {
     Base: {
       Default: {
         Fill: InputBaseDefaultFill,
         Border: {
-          Default: color[600],
+          Default: color[800],
           Active: Dark.Text.Highlight,
           Filled: color[75],
           Error: Reds[500],
@@ -970,15 +970,15 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
-  const InputBaseDefaultFill = Violet[50]
+  const InputBaseDefaultFill = Grays[200]
   const Inputs = {
     Base: {
       Default: {
         Fill: InputBaseDefaultFill,
         Border: {
-          Default: Violet[200],
-          Active: Chad.Text.Highlight,
-          Filled: Violet[400],
+          Default: Grays[200],
+          Active: Violet[400],
+          Filled: Violet[600],
           Error: Reds[500],
         },
       },
