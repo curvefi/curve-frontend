@@ -24,7 +24,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
     <Box
       sx={{
         maxHeight: '462px',
-        overflow: 'scroll',
+        overflowY: 'scroll',
         // Override sticky header positioning for scrollable container
         '& thead': {
           top: '0 !important',
