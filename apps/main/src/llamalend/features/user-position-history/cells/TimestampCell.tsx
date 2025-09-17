@@ -7,8 +7,12 @@ import type { ParsedUserLendCollateralEvent } from '../hooks/useUserLendCollater
 
 const { Spacing } = SizesAndSpaces
 
-export const TimestampCell = ({ row }: CellContext<ParsedUserLendCollateralEvent, any>) => (
+export const TimestampCell = ({
+  row: {
+    original: { timestamp },
+  },
+}: CellContext<ParsedUserLendCollateralEvent, any>) => (
   <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
-    <Typography variant="tableCellSBold">{formatDate(row.original.timestamp, 'long')}</Typography>
+    <Typography variant="tableCellSBold">{formatDate(timestamp, 'long')}</Typography>
   </Stack>
 )

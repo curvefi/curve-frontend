@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { Address } from 'viem'
 import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { UserCollateralEvent, UserCollateralEvents } from '@curvefi/prices-api/lending'
@@ -25,15 +26,23 @@ export type UserLendCollateralEventType =
 
 export type ParsedUserLendCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   type: UserLendCollateralEventType
-  url: string
-  borrowToken: {
-    symbol: string
-    address: string
-  }
-  collateralToken: {
-    symbol: string
-    address: string
-  }
+  url: Address
+  borrowToken:
+    | {
+        symbol: string
+        address: string
+        decimals: number
+        name: string
+      }
+    | undefined
+  collateralToken:
+    | {
+        symbol: string
+        address: string
+        decimals: number
+        name: string
+      }
+    | undefined
 }
 export type ParsedUserLendCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
   events: ParsedUserLendCollateralEvent[]
@@ -49,26 +58,35 @@ const parseEventType = (
   if (type === 'Borrow' && (previousEvent == null || previousEvent?.isPositionClosed)) return 'Open Position'
   if (type === 'Borrow' && loanChange > 0 && collateralChange === 0) return 'Borrow More'
   if (type === 'Borrow' && collateralChange > 0 && loanChange === 0) return 'Add Collateral'
+  if (type === 'Borrow') return 'Borrow'
   if (type === 'Liquidate' && liquidation?.liquidator === user) return 'Self Liquidation'
-  if (type === 'Liquidate' && liquidation?.liquidator !== user) return 'Hard Liquidation'
+  if (type === 'Liquidate') return 'Hard Liquidation'
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'
-  if (type === 'Repay' && collateralChange === 0) return 'Repay'
+  if (type === 'Repay') return 'Repay'
   if (type === 'RemoveCollateral') return 'Remove Collateral'
   return type as UserLendCollateralEventType
 }
 
 type UseUserLendCollateralEventsProps = {
-  userAddress: string
-  controllerAddress: string
+  userAddress: string | undefined
+  controllerAddress: string | undefined
   chainId: IChainId
-  collateralToken: {
-    symbol: string
-    address: string
-  }
-  borrowToken: {
-    symbol: string
-    address: string
-  }
+  collateralToken:
+    | {
+        symbol: string
+        address: string
+        decimals: number
+        name: string
+      }
+    | undefined
+  borrowToken:
+    | {
+        symbol: string
+        address: string
+        decimals: number
+        name: string
+      }
+    | undefined
 }
 
 export const useUserLendCollateralEvents = ({
@@ -94,19 +112,14 @@ export const useUserLendCollateralEvents = ({
         .map((event, index) => ({
           ...event,
           type: parseEventType(event, data?.events[index - 1]),
-          url: event.txHash ? `#${event.txHash}` : '#',
+          url: event.txHash,
           borrowToken,
           collateralToken,
         }))
         .reverse() || []
 
     return {
-      data: data
-        ? {
-            ...data,
-            events: parsedData,
-          }
-        : null,
+      data: data ? { ...data, events: parsedData } : null,
       isLoading,
       isError,
     }

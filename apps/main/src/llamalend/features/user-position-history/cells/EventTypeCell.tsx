@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircleOutlined'
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesomeOutlined'
 import CancelIcon from '@mui/icons-material/CancelOutlined'
@@ -13,31 +14,24 @@ import type { ParsedUserLendCollateralEvent, UserLendCollateralEventType } from 
 
 const { Spacing } = SizesAndSpaces
 
-const getIcon = (type: UserLendCollateralEventType) => {
-  if (type === 'Open Position') {
-    return <AutoAwesomeIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />
-  }
-  if (type === 'Borrow' || type === 'Borrow More') {
-    return <UploadIcon />
-  }
-  if (type === 'Add Collateral') {
-    return <AddCircleIcon />
-  }
-  if (type === 'Liquidate' || type === 'Hard Liquidation') {
-    return <WarningAmberIcon sx={(t) => ({ color: t.design.Text.TextColors.Feedback.Error })} />
-  }
-  if (type === 'Repay') {
-    return <DownloadIcon />
-  }
-  if (type === 'Repay and Close' || type === 'Self Liquidation') {
-    return <CancelIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />
-  }
-  if (type === 'Remove Collateral') {
-    return <RemoveCircleIcon />
-  }
+const icons: Record<UserLendCollateralEventType, ReactNode> = {
+  'Open Position': <AutoAwesomeIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
+  Borrow: <UploadIcon />,
+  'Borrow More': <UploadIcon />,
+  'Add Collateral': <AddCircleIcon />,
+  Liquidate: <WarningAmberIcon sx={(t) => ({ color: t.design.Text.TextColors.Feedback.Error })} />,
+  'Hard Liquidation': <WarningAmberIcon sx={(t) => ({ color: t.design.Text.TextColors.Feedback.Error })} />,
+  Repay: <DownloadIcon />,
+  'Repay and Close': <CancelIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
+  'Self Liquidation': <CancelIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
+  'Remove Collateral': <RemoveCircleIcon />,
 }
 
-export const EventTypeCell = ({ row }: CellContext<ParsedUserLendCollateralEvent, any>) => (
+export const EventTypeCell = ({
+  row: {
+    original: { type },
+  },
+}: CellContext<ParsedUserLendCollateralEvent, any>) => (
   <Stack
     flexDirection="row"
     alignItems="center"
@@ -46,7 +40,7 @@ export const EventTypeCell = ({ row }: CellContext<ParsedUserLendCollateralEvent
     paddingBottom={Spacing.sm}
     paddingRight={Spacing.sm}
   >
-    {getIcon(row.original.type)}
-    <Typography variant="tableCellSBold">{row.original.type}</Typography>
+    {icons[type]}
+    <Typography variant="tableCellSBold">{type}</Typography>
   </Stack>
 )

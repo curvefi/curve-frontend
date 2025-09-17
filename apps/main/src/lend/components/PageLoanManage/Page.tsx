@@ -71,20 +71,10 @@ const Page = () => {
   })
   const userCollateralEvents = useUserLendCollateralEvents({
     chainId: rChainId,
-    controllerAddress: market?.addresses?.controller || '',
-    userAddress: signerAddress || '',
-    collateralToken: market?.collateral_token
-      ? {
-          symbol: market.collateral_token.symbol || '',
-          address: market.collateral_token.address || '',
-        }
-      : { symbol: '', address: '' },
-    borrowToken: market?.borrowed_token
-      ? {
-          symbol: market.borrowed_token.symbol || '',
-          address: market.borrowed_token.address || '',
-        }
-      : { symbol: '', address: '' },
+    controllerAddress: market?.addresses?.controller,
+    userAddress: signerAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
   })
 
   // set tabs

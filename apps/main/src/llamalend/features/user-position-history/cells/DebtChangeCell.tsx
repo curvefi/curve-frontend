@@ -7,20 +7,19 @@ import type { ParsedUserLendCollateralEvent } from '../hooks/useUserLendCollater
 
 const { Spacing } = SizesAndSpaces
 
-export const DebtChangeCell = ({ row }: CellContext<ParsedUserLendCollateralEvent, any>) => (
+export const DebtChangeCell = ({
+  row: {
+    original: { loanChange, borrowToken },
+  },
+}: CellContext<ParsedUserLendCollateralEvent, any>) => (
   <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
     <Typography
       variant="tableCellSBold"
-      color={
-        row.original.loanChange === 0 || row.original.loanChange == null
-          ? 'textPrimary'
-          : row.original.loanChange > 0
-            ? 'error'
-            : 'success'
-      }
+      color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
     >
-      {row.original.loanChange > 0 ? '+' : ''}
-      {formatNumber(row.original.loanChange)} {row.original.loanChange != null && row.original.borrowToken.symbol}
+      {loanChange > 0 ? '+' : ''}
+      {loanChange !== 0 ? formatNumber(loanChange) : '-'}{' '}
+      {loanChange != null && loanChange !== 0 && borrowToken?.symbol}
     </Typography>
   </Stack>
 )
