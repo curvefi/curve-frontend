@@ -44,7 +44,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
+import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -70,6 +70,7 @@ const LoanRepay = ({
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
+  const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
   const setFormValues = useStore((state) => state.loanRepay.setFormValues)
   const resetState = useStore((state) => state.loanRepay.resetState)
 
@@ -390,11 +391,15 @@ const LoanRepay = ({
                 inpError={formValues.stateCollateralError}
                 inpDisabled={disable}
                 inpLabelLoading={loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
+                inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
                 inpValue={formValues.stateCollateral}
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(userState?.collateral, { defaultValue: '-' })}
                 handleInpChange={setStateCollateral}
+                handleMaxClick={() =>
+                  updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
+                }
               />
 
               <InpToken
@@ -404,11 +409,15 @@ const LoanRepay = ({
                 inpError={formValues.userCollateralError}
                 inpDisabled={disable}
                 inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
+                inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
                 inpValue={formValues.userCollateral}
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
                 tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
                 handleInpChange={setUserCollateral}
+                handleMaxClick={() =>
+                  updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
+                }
               />
             </Stack>
           )}
@@ -419,6 +428,7 @@ const LoanRepay = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disable || (!hasLeverage && !userState)}
             inpLabelLoading={!!signerAddress && typeof userBalances?.borrowed === 'undefined'}
+            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
@@ -442,6 +452,35 @@ const LoanRepay = ({
               },
               [borrowedTokenDecimals, hasExpectedBorrowed, updateFormValues, userState?.borrowed, userState?.debt],
             )}
+            handleMaxClick={async () => {
+              if (+userBalances.borrowed === 0) {
+                updateFormValues({ userBorrowed: '', isFullRepay: false })
+                return
+              }
+
+              if (expectedBorrowed) {
+                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                return
+              }
+
+              if (api && market && userBalances && userState?.debt && borrowedTokenDecimals) {
+                const { userLoanDetailsResp } = await fetchAllUserDetails(api, market, true)
+                const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
+                  userLoanDetailsResp?.details?.state ?? {}
+
+                const amountNeeded = sum([stateDebt, stateBorrowed], borrowedTokenDecimals)
+                const amountNeededWithInterestRate = amountNeeded + getPercentage(amountNeeded, 1n)
+
+                if (isGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
+                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                  return
+                }
+
+                updateFormValues({ userBorrowed: '', isFullRepay: true })
+                return
+              }
+              updateFormValues({ userBorrowed: '', isFullRepay: false })
+            }}
           />
         </FieldsWrapper>
         <StyledInpChip size="xs">

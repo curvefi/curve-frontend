@@ -330,6 +330,7 @@ const LoanCreate = ({
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
+          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.userCollateral}
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
@@ -338,6 +339,7 @@ const LoanCreate = ({
             (userCollateral: string) => updateFormValues({ userCollateral }),
             [updateFormValues],
           )}
+          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
         {isLeverage && (
@@ -347,11 +349,13 @@ const LoanCreate = ({
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
+            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             handleInpChange={setUserBorrowed}
+            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
       </FieldsWrapper>
