@@ -4,14 +4,14 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { assert, CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
  * Throws an error if no market is found with the given ID.
  */
 export const getLlamaMarket = (id: string, lib = requireLib('llamaApi')): LlamaMarketTemplate =>
-  assert(lib.getMintMarket(id) ?? lib.getLendMarket(id), `Market with ID ${id} not found`)
+  id.startsWith('one-way') ? lib.getLendMarket(id) : lib.getMintMarket(id)
 
 /**
  * Checks if a market supports leverage or not. A market supports leverage if:
