@@ -146,7 +146,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         resp.hash,
       )
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-      if (!loanExists.loanExists) {
+      if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
       get()[sliceKey].setStateByKeys({
@@ -160,7 +160,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
         },
         liquidationAmt: '',
       })
-      return { ...resp, loanExists: loanExists.loanExists }
+      return { ...resp, loanExists }
     },
 
     // slice helpers

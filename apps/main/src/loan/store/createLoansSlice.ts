@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
+import { fetchLoanExists } from '@/llamalend/queries/loan-exists'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
@@ -8,19 +9,18 @@ import {
   LlamaApi,
   Llamma,
   LoanDetails,
-  LoanExists,
   LoanPriceInfo,
   UserLoanDetails,
   UserWalletBalances,
 } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
+import type { Address } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   detailsMapper: { [collateralId: string]: Partial<LoanDetails> }
-  existsMapper: { [collateralId: string]: LoanExists }
   priceInfoMapper: { [collateralId: string]: LoanPriceInfo }
   userDetailsMapper: { [collateralId: string]: UserLoanDetails }
   userWalletBalancesMapper: { [collateralId: string]: UserWalletBalances }
@@ -32,7 +32,7 @@ const sliceKey = 'loans'
 export type LoansSlice = {
   [sliceKey]: SliceState & {
     fetchLoansDetails(curve: LlamaApi, collateralDatas: CollateralData[]): Promise<void>
-    fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: LoanExists }>
+    fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
     fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
     resetUserDetailsState(llamma: Llamma): void
@@ -47,7 +47,6 @@ export type LoansSlice = {
 
 const DEFAULT_STATE: SliceState = {
   detailsMapper: {},
-  existsMapper: {},
   priceInfoMapper: {},
   userDetailsMapper: {},
   userWalletBalancesMapper: {},
@@ -67,25 +66,17 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
         .handleError((error, { llamma }) => {
           log(`Unable to get details ${llamma.id}, ${error}`)
         })
-        .process(async ({ llamma }) =>
-          Promise.all([
-            networks[chainId].api.detailInfo.loanPartialInfo(llamma),
-            networks[chainId].api.loanCreate.exists(llamma, curve.signerAddress),
-          ]),
-        )
+        .process(async ({ llamma }) => Promise.all([networks[chainId].api.detailInfo.loanPartialInfo(llamma)]))
 
       // mapper
       const loansDetailsMapper = lodash.cloneDeep(get()[sliceKey].detailsMapper ?? {})
-      const loansExistsMapper = lodash.cloneDeep(get()[sliceKey].existsMapper ?? {})
 
       for (const idx in results) {
-        const [{ collateralId, ...rest }, loanExists] = results[idx]
+        const [{ collateralId, ...rest }] = results[idx]
         loansDetailsMapper[collateralId] = rest
-        loansExistsMapper[collateralId] = loanExists
       }
 
       get()[sliceKey].setStateByKey('detailsMapper', loansDetailsMapper)
-      get()[sliceKey].setStateByKey('existsMapper', loansExistsMapper)
     },
     fetchLoanDetails: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId as ChainId
@@ -98,18 +89,17 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
         networks[chainId].api.detailInfo.priceInfo(llamma),
-        networks[chainId].api.loanCreate.exists(llamma, curve.signerAddress),
+        fetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress as Address }),
       ])
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }
 
       get()[sliceKey].setStateByActiveKey('detailsMapper', collateralId, fetchedLoanDetails)
-      get()[sliceKey].setStateByActiveKey('existsMapper', collateralId, loanExists)
 
       if (curve.signerAddress) {
         void get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
 
-        if (loanExists.loanExists) {
+        if (loanExists) {
           void get()[sliceKey].fetchUserLoanDetails(curve, llamma)
         }
       }

@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanMange from '@/loan/components/PageLoanManage/index'
@@ -43,13 +45,14 @@ const Page = () => {
   const pageLoaded = !isLoading(connectState)
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
+  const { address } = useAccount()
 
   const { llamma } = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
   const llammaId = llamma?.id || ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId])
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -75,7 +78,7 @@ const Page = () => {
       } else if (curve.signerAddress && llamma) {
         void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
-          if (!fetchedLoanDetails.loanExists.loanExists) {
+          if (!fetchedLoanDetails.loanExists) {
             resetUserDetailsState(llamma)
             push(getLoanCreatePathname(params, rCollateralId))
           }
@@ -89,7 +92,7 @@ const Page = () => {
   }, [isReady, pageLoaded, rFormType])
 
   useEffect(() => {
-    if (!loaded && loanExists && !loanExists.loanExists) {
+    if (!loaded && loanExists === false) {
       resetUserDetailsState(llamma)
       push(getLoanCreatePathname(params, rCollateralId))
     }
@@ -163,7 +166,7 @@ const Page = () => {
           )}
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
-          {loanExists?.loanExists ? (
+          {loanExists ? (
             <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <BorrowPositionDetails {...positionDetails} />
             </Stack>

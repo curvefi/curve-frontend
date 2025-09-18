@@ -173,7 +173,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         } else {
           // re-fetch loan info
           const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
-          loanExists = respLoanDetails.loanExists.loanExists
+          loanExists = respLoanDetails.loanExists
 
           if (!loanExists) {
             get().loans.resetUserDetailsState(llamma)

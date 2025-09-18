@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
+import { fetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -20,6 +21,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import type { Address } from '@ui-kit/utils'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -217,7 +219,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
       maxSlippage: string,
     ) => {
       const chainId = curve.chainId as ChainId
-      const signerAddress = curve.signerAddress
+      const signerAddress = curve.signerAddress as Address
       // stored values
       const prevActiveKey = get()[sliceKey].activeKey
       const storedFormEstGas = get()[sliceKey].formEstGas
@@ -227,8 +229,8 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
 
       const clonedFormValues = lodash.cloneDeep(formValues)
 
-      // check if loan exists
-      const loanExists = get().loans.existsMapper[llamma.id]?.loanExists
+      const loanExists = await fetchLoanExists({ chainId, marketId: llamma.id, userAddress: signerAddress })
+
       if (loanExists) {
         get()[sliceKey].setStateByKeys({
           formValues: clonedFormValues,
@@ -436,8 +438,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
 
           // re-fetch loan info
           const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-          if (!loanExists.loanExists) {
+          if (!loanExists) {
             get().loans.resetUserDetailsState(llamma)
           }
 
@@ -457,7 +458,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
             maxRecv: {},
           })
 
-          return { ...resp, loanExists: loanExists.loanExists }
+          return { ...resp, loanExists }
         }
       }
     },

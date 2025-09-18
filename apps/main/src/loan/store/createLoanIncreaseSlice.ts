@@ -230,7 +230,7 @@ const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
 
       // re-fetch loan info
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-      if (!loanExists.loanExists) {
+      if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
 
