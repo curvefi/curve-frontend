@@ -348,6 +348,7 @@ const StyledSpinner = styled(Spinner)`
 const TitleWrapper = styled(Box)`
   padding: var(--spacing-normal) var(--spacing-wide);
   background: var(--box_header--primary--background-color);
+  color: var(--box_header--primary--color);
   justify-content: space-between;
   display: none;
   @media (min-width: 39.375rem) {
@@ -409,6 +410,8 @@ const NavButtonsBoxFixed = styled.div<{ $navHeight: number }>`
   width: 100%;
   padding: var(--spacing-narrow) var(--spacing-normal);
   background: var(--box_header--primary--background-color);
+  color: var(--box_header--primary--color);
+
   @media (min-width: 39.375rem) {
     display: none;
   }
@@ -428,6 +431,7 @@ const NavButtonsBox = styled.div`
     position: static;
     padding: var(--spacing-3) var(--spacing-wide);
     background: var(--box_header--primary--background-color);
+    color: var(--box_header--primary--color);
   }
   .next {
     margin-left: auto;

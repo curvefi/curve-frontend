@@ -1,6 +1,6 @@
-import { useCallback } from 'react'
-import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/borrow.types'
+import { useCallback, useMemo } from 'react'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_FORM_VALUES, hasLeverage } from '@/loan/components/PageLoanCreate/utils'
@@ -11,7 +11,6 @@ import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -20,15 +19,11 @@ import { ReleaseChannel } from '@ui-kit/utils'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
- * @param curve
- * @param llamma
- * @param rFormType
  */
-const useOnFormUpdate = ({ curve, llamma, rFormType }: PageLoanCreateProps): OnBorrowFormUpdate =>
+const useOnFormUpdate = ({ curve, llamma }: PageLoanCreateProps): OnBorrowFormUpdate =>
   useCallback(
-    async ({ debt, userCollateral, range }) => {
+    async ({ debt, userCollateral, range, slippage, leverageEnabled }) => {
       if (!curve || !llamma) return
-      const { maxSlippage } = useUserProfileStore.getState()
       const { setFormValues, setStateByKeys } = useStore.getState().loanCreate
       const formValues: FormValues = {
         ...DEFAULT_FORM_VALUES,
@@ -36,11 +31,10 @@ const useOnFormUpdate = ({ curve, llamma, rFormType }: PageLoanCreateProps): OnB
         debt: `${debt ?? ''}`,
         collateral: `${userCollateral ?? ''}`,
       }
-      const isLeverage = rFormType === 'leverage'
-      await setFormValues(curve, isLeverage, llamma, formValues, maxSlippage.crypto)
+      await setFormValues(curve, leverageEnabled, llamma, formValues, `${slippage}`)
       setStateByKeys({ isEditLiqRange: true })
     },
-    [curve, llamma, rFormType],
+    [curve, llamma],
   )
 
 const LoanCreate = ({
@@ -56,12 +50,18 @@ const LoanCreate = ({
   const [releaseChannel] = useReleaseChannel()
   const onUpdate = useOnFormUpdate(props)
 
-  type Tab = 'create' | 'leverage' | 'borrow'
-  const tabs: TabOption<Tab>[] = [
-    { value: 'create' as const, label: t`Create Loan` },
-    ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
-    ...(releaseChannel === ReleaseChannel.Beta ? [{ value: 'borrow' as const, label: t`Beta` }] : []),
-  ]
+  type Tab = 'create' | 'leverage'
+  const tabs: TabOption<Tab>[] = useMemo(
+    () =>
+      releaseChannel === ReleaseChannel.Beta
+        ? // the new borrow form contains both create and leverage functionality
+          [{ value: 'create' as const, label: t`Borrow` }]
+        : [
+            { value: 'create' as const, label: t`Create Loan` },
+            ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+          ],
+    [llamma, releaseChannel],
+  )
 
   const handleTabClick = useCallback(
     (formType: FormType) => {
@@ -78,24 +78,30 @@ const LoanCreate = ({
   )
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth
+        fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
-
-      <AppFormContentWrapper>
-        {rFormType === 'borrow' ? (
-          <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
-        ) : (
-          <LoanFormCreate {...props} collateralAlert={collateralAlert} />
-        )}
-      </AppFormContentWrapper>
-    </Stack>
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <AppFormContentWrapper>
+          {releaseChannel === ReleaseChannel.Beta ? (
+            <BorrowTabContents
+              networks={networks}
+              chainId={rChainId}
+              market={llamma ?? undefined}
+              onUpdate={onUpdate}
+            />
+          ) : (
+            <LoanFormCreate {...props} collateralAlert={collateralAlert} />
+          )}
+        </AppFormContentWrapper>
+      </Stack>
+    </>
   )
 }
 

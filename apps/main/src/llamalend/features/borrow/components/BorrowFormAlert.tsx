@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import type { BorrowFormErrors } from '../borrow.types'
+import type { BorrowFormErrors } from '../types'
 
 /** List of fields that show their own error messages, those will be omitted from the general error alert */
 const handledErrors: BorrowFormErrors[number][0][] = ['userCollateral', 'debt', 'maxDebt', 'userCollateral']

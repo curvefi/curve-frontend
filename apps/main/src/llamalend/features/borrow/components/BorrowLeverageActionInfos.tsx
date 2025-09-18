@@ -2,10 +2,10 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import type { BorrowFormQueryParams, Token } from '../borrow.types'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
+import type { BorrowFormQueryParams, Token } from '../types'
 
 /**
  * Action infos displayed when leverage is enabled in the borrow form accordion.

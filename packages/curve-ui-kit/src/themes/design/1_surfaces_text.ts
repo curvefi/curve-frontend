@@ -14,6 +14,28 @@ function createLightSurfaces() {
       Error: Reds[500],
       Inverted: Grays[50],
     },
+    FilledFeedback: {
+      Info: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+      Highlight: {
+        Primary: Grays[50],
+        Secondary: Grays[200],
+      },
+      Warning: {
+        Primary: Grays[50],
+        Secondary: Grays[700],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+      Success: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+    },
   } as const
 
   const Layer = {
@@ -92,6 +114,28 @@ function createDarkSurfaces() {
       Error: Reds[500],
       Inverted: Grays[950],
     },
+    FilledFeedback: {
+      Info: {
+        Primary: Blues[300],
+        Secondary: Grays[300],
+      },
+      Highlight: {
+        Primary: Blues[500],
+        Secondary: Grays[700],
+      },
+      Warning: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Success: {
+        Primary: Grays[950],
+        Secondary: Grays[700],
+      },
+    },
   } as const
 
   const Layer = {
@@ -169,6 +213,28 @@ function createChadSurfaces() {
       Danger: Reds[400],
       Error: Reds[500],
       Inverted: Grays[50],
+    },
+    FilledFeedback: {
+      Info: {
+        Primary: Violet[500],
+        Secondary: Grays[700],
+      },
+      Highlight: {
+        Primary: Blues[50],
+        Secondary: Grays[300],
+      },
+      Warning: {
+        Primary: Grays[950],
+        Secondary: Grays[700],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+      Success: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
     },
   } as const
   const Layer = {
@@ -271,6 +337,28 @@ function createLightInvertedSurfaces() {
       Error: Reds[500],
       Inverted: Grays[950],
     },
+    FilledFeedback: {
+      Info: {
+        Primary: Blues[300],
+        Secondary: Grays[300],
+      },
+      Highlight: {
+        Primary: Blues[500],
+        Secondary: Grays[700],
+      },
+      Warning: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Success: {
+        Primary: Grays[950],
+        Secondary: Grays[700],
+      },
+    },
   } as const
   return {
     Text,
@@ -319,6 +407,28 @@ function createDarkInvertedSurfaces() {
       Warning: Reds[400],
       Error: Reds[500],
       Inverted: Grays[50],
+    },
+    FilledFeedback: {
+      Info: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+      Highlight: {
+        Primary: Grays[50],
+        Secondary: Grays[200],
+      },
+      Warning: {
+        Primary: Grays[950],
+        Secondary: Grays[700],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
+      Success: {
+        Primary: Grays[50],
+        Secondary: Grays[300],
+      },
     },
   } as const
   const Layer = {
@@ -393,6 +503,28 @@ function createChadInvertedSurfaces() {
       Warning: Reds[300],
       Error: Reds[500],
       Inverted: Grays[950],
+    },
+    FilledFeedback: {
+      Info: {
+        Primary: Blues[300],
+        Secondary: Grays[300],
+      },
+      Highlight: {
+        Primary: Blues[500],
+        Secondary: Grays[700],
+      },
+      Warning: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Alert: {
+        Primary: Grays[50],
+        Secondary: Grays[150],
+      },
+      Success: {
+        Primary: Grays[950],
+        Secondary: Grays[700],
+      },
     },
   } as const
   const Layer = {

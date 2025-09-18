@@ -3,7 +3,7 @@ import { styled } from 'styled-components'
 import AlertBox from '@ui/AlertBox'
 import Checkbox from '@ui/Checkbox'
 import { formatNumber } from '@ui/utils'
-import { Trans } from '@ui-kit/lib/i18n'
+import { t, Trans } from '@ui-kit/lib/i18n'
 
 type SharedProps = {
   confirmed: boolean
@@ -85,7 +85,7 @@ function WarningModal({
       </StyledAlertBox>
 
       <StyledCheckbox isSelected={confirmed} onChange={handleSlippageChange}>
-        <Trans>Confirm warning to proceed.</Trans>
+        {t`Confirm warning to proceed.`}
       </StyledCheckbox>
     </>
   )
