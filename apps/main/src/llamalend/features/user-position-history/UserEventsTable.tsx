@@ -31,7 +31,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
         disableStickyHeader: true,
       }}
       expandedPanel={() => null} // TODO: fix
-      shouldStickFirstColumn={false} // TODO: fix
+      shouldStickFirstColumn={false}
     />
   )
 }
