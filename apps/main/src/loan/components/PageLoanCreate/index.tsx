@@ -78,24 +78,30 @@ const LoanCreate = ({
   )
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth
+        fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
-
-      <AppFormContentWrapper>
-        {releaseChannel === ReleaseChannel.Beta ? (
-          <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
-        ) : (
-          <LoanFormCreate {...props} collateralAlert={collateralAlert} />
-        )}
-      </AppFormContentWrapper>
-    </Stack>
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <AppFormContentWrapper>
+          {releaseChannel === ReleaseChannel.Beta ? (
+            <BorrowTabContents
+              networks={networks}
+              chainId={rChainId}
+              market={llamma ?? undefined}
+              onUpdate={onUpdate}
+            />
+          ) : (
+            <LoanFormCreate {...props} collateralAlert={collateralAlert} />
+          )}
+        </AppFormContentWrapper>
+      </Stack>
+    </>
   )
 }
 

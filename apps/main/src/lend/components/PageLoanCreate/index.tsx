@@ -65,7 +65,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   }, [initCampaignRewards, rChainId, initiated])
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <>
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -75,19 +75,25 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
-        fullWidth
+        fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
-
-      <AppFormContentWrapper>
-        {releaseChannel === ReleaseChannel.Beta ? (
-          <BorrowTabContents networks={networks} chainId={rChainId} market={market ?? undefined} onUpdate={onUpdate} />
-        ) : rFormType === 'leverage' ? (
-          <LoanFormCreate isLeverage {...pageProps} />
-        ) : (
-          <LoanFormCreate {...pageProps} />
-        )}
-      </AppFormContentWrapper>
-    </Stack>
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <AppFormContentWrapper>
+          {releaseChannel === ReleaseChannel.Beta ? (
+            <BorrowTabContents
+              networks={networks}
+              chainId={rChainId}
+              market={market ?? undefined}
+              onUpdate={onUpdate}
+            />
+          ) : rFormType === 'leverage' ? (
+            <LoanFormCreate isLeverage {...pageProps} />
+          ) : (
+            <LoanFormCreate {...pageProps} />
+          )}
+        </AppFormContentWrapper>
+      </Stack>
+    </>
   )
 }
 
