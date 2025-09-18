@@ -1,5 +1,4 @@
 import { useMemo } from 'react'
-import { Address } from 'viem'
 import { useUserCrvUsdCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
 import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -37,7 +36,6 @@ export type UserCollateralEventType =
 
 export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   type: UserCollateralEventType
-  url: Address
   borrowToken:
     | {
         symbol: string
@@ -142,7 +140,6 @@ export const useUserCollateralEvents = ({
         .map((event, index) => ({
           ...event,
           type: parseEventType(event, data?.events[index - 1]),
-          url: event.txHash,
           borrowToken,
           collateralToken,
         }))
