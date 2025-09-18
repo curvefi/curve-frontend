@@ -9,10 +9,6 @@ interface CustomError extends Error {
 
 export const isDevelopment = process.env.NODE_ENV === 'development'
 
-export function isHighSlippage(slippage: number, maxSlippage: string) {
-  return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
-}
-
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
     console.info(`curve-frontend -> ${fnName}:`, ...args)
@@ -56,19 +52,6 @@ export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 export function sleep(ms?: number) {
   const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
   return new Promise((resolve) => setTimeout(resolve, parsedMs))
-}
-
-export function shortenTokenName(token: string) {
-  const tokenLength = token.length
-  if (tokenLength > 30) {
-    return `${token.slice(0, 10)}...`
-  } else {
-    return token
-  }
-}
-
-export function _showContent(show: boolean | undefined) {
-  return typeof show === 'undefined' || (typeof show !== 'undefined' && show)
 }
 
 export function _parseStepTokensList(list: { value: string | number; symbol: string }[]) {
