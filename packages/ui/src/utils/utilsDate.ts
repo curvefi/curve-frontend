@@ -72,6 +72,24 @@ export const formatDate = (date: Date | string | number, variant: 'short' | 'lon
   ).format(typeof date === 'object' ? date : new Date(date))
 
 /**
+ * Formats a timestamp into HH:MM:SS time format (24-hour clock).
+ *
+ * @param timestamp - The timestamp to format. Can be a Date object or a Unix timestamp in seconds.
+ * @returns A formatted time string in HH:MM:SS format (e.g., "14:30:25")
+ *
+ * @example
+ * formatTime(1677649423) // "14:30:23" from Unix timestamp
+ * formatTime(new Date()) // "14:30:23" from Date object
+ */
+export const formatTime = (timestamp: number | Date) =>
+  new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(typeof timestamp === 'number' ? new Date(timestamp * 1000) : timestamp)
+
+/**
  * Converts a Unix timestamp to a formatted date string.
  *
  * @param unixTime - The Unix timestamp in seconds (not milliseconds)

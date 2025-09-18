@@ -14,7 +14,7 @@ export const CollateralChangeCell = ({
 }: CellContext<ParsedUserCollateralEvent, any>) => (
   <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
     <Typography
-      variant="tableCellSBold"
+      variant="tableCellMBold"
       color={
         collateralChange === 0 || collateralChange == null ? 'textPrimary' : collateralChange > 0 ? 'success' : 'error'
       }
@@ -24,7 +24,7 @@ export const CollateralChangeCell = ({
       {collateralChange != null && collateralChange !== 0 && collateralChangeUsd !== 0 && collateralToken?.symbol}
     </Typography>
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
-      <Typography variant="bodyXsRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
+      <Typography variant="bodySRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
     )}
   </Stack>
 )

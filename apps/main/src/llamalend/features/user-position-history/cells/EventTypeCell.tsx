@@ -41,6 +41,6 @@ export const EventTypeCell = ({
     paddingRight={Spacing.sm}
   >
     {icons[type]}
-    <Typography variant="tableCellSBold">{type}</Typography>
+    <Typography variant="tableCellMBold">{type}</Typography>
   </Stack>
 )

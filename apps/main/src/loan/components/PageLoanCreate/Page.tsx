@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
@@ -10,6 +11,7 @@ import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
+import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -20,6 +22,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -72,8 +75,9 @@ const Page = () => {
   const userCollateralEvents = useUserCollateralEvents({
     app: 'crvusd',
     chainId: rChainId,
-    controllerAddress: llamma?.controller,
-    userAddress: curve?.signerAddress,
+    chain: networks[rChainId].id as Chain,
+    controllerAddress: llamma?.controller as Address,
+    userAddress: curve?.signerAddress as Address,
     collateralToken: {
       symbol: llamma?.collateralSymbol,
       address: llamma?.collateral,
@@ -86,6 +90,7 @@ const Page = () => {
       decimals: 18,
       name: 'crvUSD',
     },
+    scanTxPath: networks[rChainId].scanTxPath,
   })
 
   const fetchInitial = useCallback(

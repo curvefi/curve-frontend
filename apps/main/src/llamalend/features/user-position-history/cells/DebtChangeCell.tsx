@@ -14,7 +14,7 @@ export const DebtChangeCell = ({
 }: CellContext<ParsedUserCollateralEvent, any>) => (
   <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
     <Typography
-      variant="tableCellSBold"
+      variant="tableCellMBold"
       color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
     >
       {loanChange > 0 ? '+' : ''}

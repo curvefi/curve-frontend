@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -18,6 +19,7 @@ import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -67,10 +69,12 @@ const Page = () => {
   const userCollateralEvents = useUserCollateralEvents({
     app: 'lend',
     chainId: rChainId,
-    controllerAddress: market?.addresses?.controller,
-    userAddress: signerAddress,
+    chain: networks[rChainId].id as Chain,
+    controllerAddress: market?.addresses?.controller as Address,
+    userAddress: signerAddress as Address,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
+    scanTxPath: networks[rChainId].scanTxPath,
   })
 
   useEffect(() => {
