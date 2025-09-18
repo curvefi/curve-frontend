@@ -12,11 +12,12 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -32,6 +33,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Address } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -46,14 +48,18 @@ const Page = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey])?.loanExists
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const { provider, connect } = useWallet()
 
   const { signerAddress } = api ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress as Address,
+  })
 
   const [isLoaded, setLoaded] = useState(false)
 
@@ -75,13 +81,11 @@ const Page = () => {
   }
 
   useEffect(() => {
-    const fetchInitial = async (api: Api, market: OneWayMarketTemplate) => {
-      const loanExists = api.signerAddress ? (await fetchUserLoanExists(api, market, true))?.loanExists : false
+    if (api && market && isPageVisible) {
       if (loanExists) setMarketsStateKey('marketDetailsView', 'user')
       setLoaded(true)
     }
-    if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchUserLoanExists, isPageVisible, market, setMarketsStateKey])
+  }, [api, isPageVisible, loanExists, market, setMarketsStateKey])
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first

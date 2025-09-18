@@ -17,6 +17,7 @@ import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { fetchLoanExists, invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -323,7 +324,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       )
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
+        wallet?.account?.address ?? '',
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
@@ -334,8 +335,14 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
           sliceState.setStateByKey('formStatus', { ...formStatus, isInProgress: false, step: '', stepError: error })
           return { ...resp, error }
         } else {
-          const loanExits = (await user.fetchUserLoanExists(api, market, true))?.loanExists
-          if (loanExits) {
+          const loanExistsParams = {
+            chainId,
+            marketId: market.id,
+            userAddress: wallet?.account?.address,
+          }
+          invalidateLoanExists(loanExistsParams)
+          const loanExists = await fetchLoanExists(loanExistsParams)
+          if (loanExists) {
             // api calls
             await user.fetchAll(api, market, true)
             void markets.fetchAll(api, market, true)

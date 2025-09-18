@@ -10,7 +10,7 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
@@ -49,7 +49,6 @@ const Page = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
@@ -68,16 +67,6 @@ const Page = () => {
       push(getCollateralListPathname(params))
     }
   }, [isSuccess, market, params, push, rMarket])
-
-  useEffect(() => {
-    const fetchInitial = async (api: Api, market: OneWayMarketTemplate) => {
-      if (api.signerAddress) {
-        await fetchUserLoanExists(api, market, true).catch(console.error)
-      }
-      setLoaded(true)
-    }
-    if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchUserLoanExists, isPageVisible, market])
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
