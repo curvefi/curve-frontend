@@ -13,7 +13,7 @@ type MarketCapAndAvailable = {
   available: number
 }
 type MarketMaxLeverage = {
-  maxLeverage: string
+  maxLeverage: string | null
 }
 type MarketCollateralAmounts = {
   collateralAmount: number
@@ -46,7 +46,7 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
  * */
 const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketMaxLeverage> => {
   const market = getLendMarket(marketId)
-  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
+  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
   return { maxLeverage }
 }
 
