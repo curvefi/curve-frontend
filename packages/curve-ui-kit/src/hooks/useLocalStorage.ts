@@ -11,7 +11,7 @@ const { kebabCase } = lodash
 // old keys that are not used anymore - clean them up
 window.localStorage.removeItem('isNewDomainNotificationSeen')
 
-export function getFromLocalStorage<T>(storageKey: string): T | null {
+function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
     return null
   }
