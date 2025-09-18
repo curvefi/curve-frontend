@@ -1,6 +1,5 @@
 import { type Address, zeroAddress } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { requireLib } from '@ui-kit/features/connect-wallet'
@@ -23,17 +22,15 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
     ? market.leverage.hasLeverage()
     : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
 
-export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
+export const getTokens = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate
     ? {
         collateralToken: {
-          chain,
           symbol: market.collateralSymbol,
           address: market.collateral as Address,
           decimals: market.collateralDecimals,
         },
         borrowToken: {
-          chain,
           symbol: 'crvUSD',
           address: CRVUSD_ADDRESS,
           decimals: 18,
@@ -41,13 +38,11 @@ export const getTokens = (market: LlamaMarketTemplate, chain: INetworkName) =>
       }
     : {
         collateralToken: {
-          chain,
           symbol: market.collateral_token.symbol,
           address: market.collateral_token.address as Address,
           decimals: market.collateral_token.decimals,
         },
         borrowToken: {
-          chain,
           symbol: market.borrowed_token.symbol,
           address: market.borrowed_token.address as Address,
           decimals: market.borrowed_token.decimals,
