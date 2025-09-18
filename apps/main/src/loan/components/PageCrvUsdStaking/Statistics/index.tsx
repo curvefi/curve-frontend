@@ -1,6 +1,6 @@
 import type { StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
-import { useScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
-import { useScrvUsdYield } from '@/loan/entities/scrvusdYield'
+import { useScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
+import { useScrvUsdYield } from '@/loan/entities/scrvusd-yield'
 import useStore from '@/loan/store/useStore'
 import { Stack, Card, CardHeader, Box } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery'
