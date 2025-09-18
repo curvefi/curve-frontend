@@ -256,3 +256,24 @@ export const formatNumber = (value: number, options: NumberFormatOptions) => {
 
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
+
+/**
+ * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
+ */
+export const stringToNumber = (value: string | undefined | null): number | undefined => {
+  if (value != null && value !== '') {
+    const number = Number(value)
+    if (Number.isFinite(number)) {
+      return number
+    }
+  }
+}
+
+/**
+ * This function works similar to toFixed, but it doesn't round the number up, it just truncates it down.
+ * It's useful when you want to guarantee that the number will never be higher than the original number.
+ */
+export function truncateToDecimals(num: number, dec = 2) {
+  const calcDec = Math.pow(10, dec)
+  return Math.trunc(num * calcDec) / calcDec
+}

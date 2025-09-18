@@ -3,6 +3,7 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { truncateToDecimals } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -44,11 +45,12 @@ type BalanceTextFieldProps = {
   balance: number | undefined
   maxBalance?: number
   isError: boolean
+  disabled?: boolean
   onCommit: (balance: number | undefined) => void
   name: string
 }
 
-const BalanceTextField = ({ balance, name, isError, onCommit }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
@@ -68,6 +70,7 @@ const BalanceTextField = ({ balance, name, isError, onCommit }: BalanceTextField
       },
     }}
     onChange={onCommit}
+    disabled={disabled}
   />
 )
 
@@ -96,6 +99,12 @@ type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValueUsd'
 
 type Props = {
   ref?: Ref<LargeTokenInputRef>
+
+  /**
+   * The current balance value of the input.
+   * If undefined, the input is considered uncontrolled.
+   */
+  balance?: number | undefined
 
   /**
    * The token selector UI element to be rendered.
@@ -144,6 +153,12 @@ type Props = {
   isError?: boolean
 
   /**
+   * Whether the input is disabled.
+   * @default false
+   */
+  disabled?: boolean
+
+  /**
    * Number of decimal places to round balance values to when calculating from percentage.
    * @default 4
    */
@@ -164,12 +179,23 @@ export const LargeTokenInput = ({
   label,
   name,
   isError = false,
+  disabled,
   balanceDecimals = 4,
-  onBalance,
+  onBalance: onBalanceSet,
+  balance,
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
-  const [balance, setBalance] = useState<number | undefined>(undefined)
+  const [internalBalance, setInternalBalance] = useState<number | undefined>(balance)
+  balance ??= internalBalance
+
+  const setBalance = useCallback(
+    (newBalance: number | undefined) => {
+      onBalanceSet(newBalance)
+      setInternalBalance(newBalance)
+    },
+    [onBalanceSet],
+  )
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
@@ -184,20 +210,17 @@ export const LargeTokenInput = ({
 
       if (newPercentage == null) {
         setBalance(undefined)
-        onBalance(undefined)
         return
       }
 
       let newBalance = (maxBalance.balance * newPercentage) / 100
       if (balanceDecimals != null) {
-        // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
-        newBalance = Math.min(+newBalance.toFixed(balanceDecimals), maxBalance.balance)
+        newBalance = truncateToDecimals(newBalance, balanceDecimals)
       }
 
       setBalance(newBalance)
-      onBalance(newBalance)
     },
-    [maxBalance, balanceDecimals, onBalance],
+    [maxBalance?.balance, balanceDecimals, setBalance],
   )
 
   const handleBalanceChange = useCallback(
@@ -205,7 +228,6 @@ export const LargeTokenInput = ({
       if (newBalance == null) return
 
       setBalance(newBalance)
-      onBalance(newBalance)
 
       if (maxBalance?.balance && newBalance) {
         // Calculate percentage based on new balance and round to 2 decimal places
@@ -216,7 +238,7 @@ export const LargeTokenInput = ({
         setPercentage(undefined)
       }
     },
-    [maxBalance, onBalance],
+    [maxBalance?.balance, setBalance],
   )
 
   /**
@@ -230,13 +252,12 @@ export const LargeTokenInput = ({
   useEffect(() => {
     handleBalanceChange(balance)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxBalance])
+  }, [handleBalanceChange])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
     setBalance(undefined)
-    onBalance(undefined)
-  }, [onBalance])
+  }, [setBalance])
 
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
@@ -263,6 +284,7 @@ export const LargeTokenInput = ({
         {/** Second row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
+            disabled={disabled}
             balance={balance}
             name={name}
             maxBalance={maxBalance?.balance}
@@ -285,6 +307,7 @@ export const LargeTokenInput = ({
           >
             {showBalance && (
               <Balance
+                disabled={disabled}
                 symbol={maxBalance.symbol ?? ''}
                 balance={maxBalance.balance}
                 notionalValueUsd={maxBalance.notionalValueUsd}
@@ -297,6 +320,7 @@ export const LargeTokenInput = ({
 
             {showSlider && (
               <TradingSlider
+                disabled={disabled}
                 percentage={percentage}
                 onChange={handlePercentageChange}
                 onCommit={handlePercentageChange}

@@ -16,16 +16,18 @@ type MaxButtonProps = {
   sx?: SxProps
   onClick?: () => void
   loading?: boolean
+  disabled?: boolean
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick, loading }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick, loading, disabled }: MaxButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
     size="extraSmall"
     onClick={onClick}
     loading={loading}
+    disabled={disabled}
     sx={{
       /**
        * Remove any properties that cause the total height component to change
@@ -94,9 +96,21 @@ export type Props = {
   onMax?: () => void
   /** Whether the balance is loading */
   loading?: boolean
+  /** Whether the max button is disabled */
+  disabled?: boolean
 }
 
-export const Balance = ({ symbol, max, loading = false, balance, notionalValueUsd, hideIcon, sx, onMax }: Props) => (
+export const Balance = ({
+  symbol,
+  max,
+  loading = false,
+  balance,
+  notionalValueUsd,
+  hideIcon,
+  sx,
+  onMax,
+  disabled,
+}: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
@@ -116,7 +130,7 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValueUs
 
     {max === 'button' && balance != null && (
       // Right-align without flex grow for precise click area
-      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }}>
+      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled}>
         {t`Max`}
       </MaxButton>
     )}
