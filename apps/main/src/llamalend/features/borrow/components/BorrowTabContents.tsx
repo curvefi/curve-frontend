@@ -74,6 +74,9 @@ export const BorrowTabContents = <ChainId extends IChainId>({
   useFormSync(values, onUpdate)
 
   const marketHasLeverage = market && hasLeverage(market)
+  const collateralTokenWithChain = collateralToken && { ...collateralToken, chain: network.id }
+  const borrowTokenWithChain = borrowToken && { ...borrowToken, chain: network.id }
+
   return (
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
@@ -81,7 +84,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
           <Stack divider={<InputDivider />}>
             <BorrowFormTokenInput
               label={t`Collateral`}
-              token={collateralToken}
+              token={collateralTokenWithChain}
               name="userCollateral"
               form={form}
               isLoading={maxTokenValues.isCollateralLoading}
@@ -91,7 +94,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
             />
             <BorrowFormTokenInput
               label={t`Borrow`}
-              token={borrowToken}
+              token={borrowTokenWithChain}
               name="debt"
               form={form}
               isLoading={maxTokenValues.isDebtLoading}
@@ -120,8 +123,8 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                 params={params}
                 setRange={setRange}
                 network={network.id}
-                collateralToken={collateralToken}
-                borrowToken={borrowToken}
+                collateralToken={collateralTokenWithChain}
+                borrowToken={borrowTokenWithChain}
               />
             </Collapse>
           </LoanPresetSelector>
@@ -147,7 +150,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
             <BorrowActionInfoAccordion
               params={params}
               values={values}
-              collateralToken={collateralToken}
+              collateralToken={collateralTokenWithChain}
               tooMuchDebt={tooMuchDebt}
               networks={networks}
               onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
