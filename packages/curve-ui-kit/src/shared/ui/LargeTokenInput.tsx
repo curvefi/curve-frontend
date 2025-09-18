@@ -3,7 +3,6 @@ import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { truncateToDecimals } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -92,7 +91,9 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading'>> & {
+type MaxBalanceProps = Partial<
+  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId'>
+> & {
   showBalance?: boolean
   showSlider?: boolean
 }
@@ -215,7 +216,8 @@ export const LargeTokenInput = ({
 
       let newBalance = (maxBalance.balance * newPercentage) / 100
       if (balanceDecimals != null) {
-        newBalance = truncateToDecimals(newBalance, balanceDecimals)
+        // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
+        newBalance = Math.min(+newBalance.toFixed(balanceDecimals), maxBalance.balance)
       }
 
       setBalance(newBalance)

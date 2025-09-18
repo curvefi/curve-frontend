@@ -319,37 +319,39 @@ const LoanCreate = ({
 
   const disabled = !!formStatus.step
 
+  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
+          network={networks[rChainId]}
           id="userCollateral"
           {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.userCollateral}
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
-          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+          handleInpChange={useCallback(
+            (userCollateral: string) => updateFormValues({ userCollateral }),
+            [updateFormValues],
+          )}
         />
 
         {isLeverage && (
           <InpToken
+            network={networks[rChainId]}
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
             inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-            inpLabelDescription={formatNumber(userBalances?.borrowed, { defaultValue: '-' })}
             inpValue={formValues.userBorrowed}
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
-            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
-            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
+            handleInpChange={setUserBorrowed}
           />
         )}
       </FieldsWrapper>

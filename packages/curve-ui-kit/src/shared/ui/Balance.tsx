@@ -17,10 +17,11 @@ type MaxButtonProps = {
   onClick?: () => void
   loading?: boolean
   disabled?: boolean
+  testId?: string
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick, loading, disabled }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId }: MaxButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
@@ -28,6 +29,7 @@ const MaxButton = ({ children, underline, sx, onClick, loading, disabled }: MaxB
     onClick={onClick}
     loading={loading}
     disabled={disabled}
+    data-testid={testId}
     sx={{
       /**
        * Remove any properties that cause the total height component to change
@@ -98,6 +100,8 @@ export type Props = {
   loading?: boolean
   /** Whether the max button is disabled */
   disabled?: boolean
+  /** Optional test ID for the button */
+  maxTestId?: string
 }
 
 export const Balance = ({
@@ -110,12 +114,13 @@ export const Balance = ({
   sx,
   onMax,
   disabled,
+  maxTestId,
 }: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
-      <MaxButton underline onClick={onMax} loading={loading}>
+      <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
         <BalanceText symbol={symbol} balance={balance} loading={loading} />
       </MaxButton>
     ) : (
@@ -130,7 +135,7 @@ export const Balance = ({
 
     {max === 'button' && balance != null && (
       // Right-align without flex grow for precise click area
-      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled}>
+      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled} testId={maxTestId}>
         {t`Max`}
       </MaxButton>
     )}

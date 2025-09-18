@@ -268,12 +268,3 @@ export const stringToNumber = (value: string | undefined | null): number | undef
     }
   }
 }
-
-/**
- * This function works similar to toFixed, but it doesn't round the number up, it just truncates it down.
- * It's useful when you want to guarantee that the number will never be higher than the original number.
- */
-export function truncateToDecimals(num: number, dec = 2) {
-  const calcDec = Math.pow(10, dec)
-  return Math.trunc(num * calcDec) / calcDec
-}

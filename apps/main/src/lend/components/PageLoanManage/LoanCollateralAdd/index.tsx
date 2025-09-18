@@ -24,7 +24,6 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -181,17 +180,16 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
     <>
       <div>
         <InpToken
+          network={networks[rChainId]}
           id="collateral"
           inpError={formValues.collateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
-          inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.collateral}
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(collateral) => updateFormValues({ collateral })}
-          handleMaxClick={() => updateFormValues({ collateral: userBalances?.collateral ?? '' })}
+          handleInpChange={useCallback((collateral) => updateFormValues({ collateral }), [updateFormValues])}
         />
       </div>
 

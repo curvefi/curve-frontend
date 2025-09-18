@@ -241,7 +241,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
           balance: stringToNumber(maxRemovable),
           symbol: market?.collateral_token?.symbol,
           showBalance: true,
-          notionalValueUsd: usdRate != null && formValues.collateral ? usdRate * +formValues.collateral : undefined,
+          notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
         }}
         label={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
         balance={stringToNumber(formValues.collateral)}
