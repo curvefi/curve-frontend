@@ -1,4 +1,4 @@
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 
 export type DepositWithdrawModule = 'deposit' | 'withdraw'
 

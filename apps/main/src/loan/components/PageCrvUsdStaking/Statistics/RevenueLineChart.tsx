@@ -1,7 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { priceLineLabels } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
 import RevenueChartTooltip from '@/loan/components/PageCrvUsdStaking/Statistics/RevenueChartTooltip'
-import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusdYield'
+import type { ScrvUsdYieldWithAverages } from '@/loan/entities/scrvusd-yield'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatDate } from '@ui/utils'
