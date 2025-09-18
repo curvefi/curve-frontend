@@ -94,6 +94,8 @@ const LoanCreate = ({
     [setFormValues, isLoaded, api, market, maxSlippage, isLeverage],
   )
 
+  const network = networks[rChainId]
+
   const handleClickCreate = useCallback(
     async (
       payloadActiveKey: string,
@@ -108,12 +110,12 @@ const LoanCreate = ({
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txMessage} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
     },
-    [activeKey, fetchStepCreate, rChainId],
+    [activeKey, fetchStepCreate, network],
   )
 
   const getSteps = useCallback(
@@ -324,7 +326,7 @@ const LoanCreate = ({
     <>
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
-          network={networks[rChainId]}
+          network={network}
           id="userCollateral"
           {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
@@ -344,7 +346,7 @@ const LoanCreate = ({
 
         {isLeverage && (
           <InpToken
-            network={networks[rChainId]}
+            network={network}
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
@@ -361,6 +363,7 @@ const LoanCreate = ({
       </FieldsWrapper>
 
       <InpTokenBorrow
+        network={network}
         id="debt"
         {...(isLeverage ? { inpTopLabel: t`Borrow amount:` } : {})}
         inpError={formValues.debtError}

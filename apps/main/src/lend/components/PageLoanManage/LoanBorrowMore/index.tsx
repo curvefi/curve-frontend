@@ -349,11 +349,13 @@ const LoanBorrowMore = ({
   }
 
   const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
+  const network = networks[rChainId]
+
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
-          network={networks[rChainId]}
+          network={network}
           id="userCollateral"
           inpTopLabel={t`Add from wallet:`}
           inpError={formValues.userCollateralError}
@@ -370,7 +372,7 @@ const LoanBorrowMore = ({
 
         {isLeverage && (
           <InpToken
-            network={networks[rChainId]}
+            network={network}
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
@@ -387,6 +389,7 @@ const LoanBorrowMore = ({
       </FieldsWrapper>
 
       <InpTokenBorrow
+        network={network}
         id="debt"
         inpTopLabel={t`Borrow amount:`}
         inpError={formValues.debtError}
@@ -395,7 +398,7 @@ const LoanBorrowMore = ({
         tokenAddress={market?.borrowed_token?.address}
         tokenSymbol={market?.borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })

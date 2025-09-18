@@ -111,7 +111,7 @@ const InpToken = ({
         balance: stringToNumber(tokenBalance),
         symbol: tokenSymbol,
         showBalance: true,
-        notionalValueUsd: usdRate != null && tokenBalance ? usdRate * +tokenBalance : undefined,
+        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
         maxTestId,
       }}
       label={inpTopLabel}
