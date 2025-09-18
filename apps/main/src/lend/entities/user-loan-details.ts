@@ -9,16 +9,13 @@ import {
 import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
 import type { Address } from '@curvefi/prices-api'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { ChainQuery } from '@ui-kit/lib/model/query'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
+import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
+import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 
-type UserLoanDetailsQuery = ChainQuery<ChainId> & { marketId: string; userAddress: Address }
-type UserLoanDetailsParams = FieldsOf<UserLoanDetailsQuery>
+type UserLoanDetailsQuery = UserMarketQuery<Address>
+type UserLoanDetailsParams = UserMarketParams<Address>
 
 type UserLoanDetails = {
   health: string
@@ -97,21 +94,10 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
 }
 
 export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetails } = queryFactory({
-  queryKey: (params: UserLoanDetailsParams) =>
-    [
-      'userLoanDetails',
-      { chainId: params.chainId },
-      { marketId: params.marketId },
-      { userAddress: params.userAddress },
-      'v1',
-    ] as const,
+  queryKey: (params: UserLoanDetailsParams) => [...rootKeys.userMarket(params), 'userLoanDetails', 'v1'] as const,
   queryFn: _getUserLoanDetails,
   refetchInterval: '1m',
-  validationSuite: createValidationSuite((params: UserLoanDetailsParams) => {
-    chainValidationGroup(params)
-    llamaApiValidationGroup(params)
-    userAddressValidationGroup(params)
-  }),
+  validationSuite: userMarketValidationSuite,
 })
 
 export const invalidateAllUserBorrowDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {

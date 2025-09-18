@@ -1,12 +1,8 @@
-import { ChainId } from '@/loan/types/loan.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { ChainQuery } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
-
-type MarketQuery = ChainQuery<ChainId> & { marketId: string }
-type MarketParams = FieldsOf<MarketQuery>
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
+import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 
 /**
  * The purpose of this query is to allow fetching market max leverage on chain
@@ -27,8 +23,7 @@ const _getMintMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<num
 }
 
 export const { useQuery: useMintMarketMaxLeverage } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['mintMarketMaxLeverage', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'mintMarketMaxLeverage', 'v1'] as const,
   queryFn: _getMintMarketMaxLeverage,
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
