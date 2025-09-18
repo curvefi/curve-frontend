@@ -110,7 +110,6 @@ const InpToken = ({
         loading: inpLabelLoading,
         balance: stringToNumber(tokenBalance),
         symbol: tokenSymbol,
-        showBalance: true,
         notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
         maxTestId,
       }}
