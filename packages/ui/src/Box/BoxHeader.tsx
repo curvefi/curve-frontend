@@ -8,7 +8,7 @@ export const BoxHeader = styled.header`
   min-height: var(--box_header--height);
   width: 100%;
 
-  color: var(--box--primary--color);
+  color: var(--box_header--primary--color);
   background-color: var(--box_header--primary--background-color);
 
   font-size: var(--box_header--font-size);

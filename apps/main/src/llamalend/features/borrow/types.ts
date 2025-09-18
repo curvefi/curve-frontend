@@ -19,7 +19,7 @@ type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | u
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
 
 /** Fields of the borrow form that are passed back to the origin application for synchronization */
-export type BorrowFormExternalFields = Pick<BorrowForm, 'range' | 'userCollateral' | 'debt'>
+export type BorrowFormExternalFields = Omit<BorrowForm, keyof CalculatedValues>
 /** Callback type to pass on the external fields of the borrow form */
 export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
 

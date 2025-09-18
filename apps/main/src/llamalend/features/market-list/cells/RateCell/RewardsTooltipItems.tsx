@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { formatPercent } from '@/llamalend/utils'
+import { formatPercent } from '@/llamalend/format.utils'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import { TooltipItem } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'

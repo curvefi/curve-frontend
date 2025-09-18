@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { formatPercent } from '@/llamalend/utils'
+import { formatPercent } from '@/llamalend/format.utils'
 import { TooltipItem, TooltipItems } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'

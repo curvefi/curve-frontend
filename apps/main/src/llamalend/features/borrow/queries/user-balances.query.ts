@@ -1,10 +1,10 @@
+import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type PoolQuery, queryFactory, rootKeys, type UserQuery } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { getLlamaMarket } from '../llama.util'
 
 type UserBalancesQuery = UserQuery & PoolQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
