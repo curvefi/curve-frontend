@@ -3,7 +3,6 @@ import CrvStaking from '@/loan/components/PageCrvUsdStaking/Page'
 import Integrations from '@/loan/components/PageIntegrations/Page'
 import CreateLoan from '@/loan/components/PageLoanCreate/Page'
 import ManageLoan from '@/loan/components/PageLoanManage/Page'
-import MarketList from '@/loan/components/PageMarketList/Page'
 import { Page as PegKeepersPage } from '@/loan/components/PagePegKeepers'
 import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import Skeleton from '@mui/material/Skeleton'
@@ -61,10 +60,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: MarketList,
-    head: () => ({
-      meta: [{ title: 'Markets - Curve' }],
-    }),
+    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
     ...layoutProps,
   }),
   createRoute({
