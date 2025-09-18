@@ -6,7 +6,6 @@ import DetailInfoEstimateGas from '@/lend/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/lend/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/lend/components/DetailInfoLiqRange'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
-import InpTokenRemove from '@/lend/components/InpTokenRemove'
 import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanCollateralRemove/types'
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
@@ -29,6 +28,10 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { stringToNumber } from '@ui-kit/utils'
 
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -47,6 +50,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: market?.collateral_token?.address })
 
   const [{ confirmedWarning }, setConfirmWarning] = useState(DEFAULT_CONFIRM_WARNING)
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -217,21 +221,42 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
 
+  const inpError = formValues.collateralError
+
   return (
     <>
-      <InpTokenRemove
-        id="collateral"
-        inpError={formValues.collateralError}
-        inpDisabled={disabled}
-        inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-        inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-        inpValue={formValues.collateral}
-        maxRemovable={maxRemovable}
-        tokenAddress={market?.collateral_token?.address}
-        tokenSymbol={market?.collateral_token?.symbol}
-        tokenBalance={userBalances?.collateral}
-        handleInpChange={(collateral) => updateFormValues({ collateral })}
-        handleMaxClick={() => updateFormValues({ collateral: maxRemovable ?? '' })}
+      <LargeTokenInput
+        name="collateral"
+        isError={!!inpError}
+        message={
+          inpError === 'too-much'
+            ? t`Amount > wallet balance ${formatNumber(userBalances?.collateral)}`
+            : inpError === 'too-much-max'
+              ? t`Amount > max removable ${formatNumber(maxRemovable)}`
+              : undefined
+        }
+        disabled={disabled}
+        maxBalance={{
+          loading: userBalances == null,
+          balance: stringToNumber(maxRemovable),
+          symbol: market?.collateral_token?.symbol,
+          showBalance: true,
+          notionalValueUsd: usdRate != null && formValues.collateral ? usdRate * +formValues.collateral : undefined,
+        }}
+        label={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+        balance={stringToNumber(formValues.collateral)}
+        tokenSelector={
+          <TokenLabel
+            blockchainId={network.name}
+            tooltip={market?.collateral_token?.symbol}
+            address={market?.collateral_token?.address}
+            label={market?.collateral_token?.symbol ?? '?'}
+          />
+        }
+        onBalance={useCallback(
+          (collateral) => updateFormValues({ collateral: collateral == null ? undefined : `${collateral}` }),
+          [updateFormValues],
+        )}
       />
 
       {/* detail info */}
