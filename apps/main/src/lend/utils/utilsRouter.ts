@@ -6,7 +6,7 @@ import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('lend', network, route)
 
-export const getCollateralListPathname = ({network}: NetworkUrlParams) =>
+export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
   getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
 
 export const getLoanCreatePathname = (params: UrlParams, owmId: string, formType: string) =>
