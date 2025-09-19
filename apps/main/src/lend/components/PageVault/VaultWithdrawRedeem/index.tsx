@@ -22,7 +22,10 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -47,6 +50,7 @@ const VaultWithdrawRedeem = ({
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
+  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -185,62 +189,88 @@ const VaultWithdrawRedeem = ({
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
+  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
 
   return (
     <>
-      <div>
-        {/* input amount */}
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.amountError ? 'error' : undefined}
-            disabled={disabled}
-            id="amount"
-          >
-            <InputDebounced
-              id="inpCollateral"
-              type="number"
-              labelProps={{
-                label: t`Vault balance Avail.`,
-                descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                description: formatNumber(userBalances?.vaultSharesConverted, { defaultValue: '-' }),
-              }}
-              value={formValues.amount}
-              onChange={(amount) => {
-                handleFormChange({ amount, isFullWithdraw: false })
-              }}
-            />
-            <InputMaxBtn
-              onClick={() => {
-                let amount = ''
-                let isFullWithdraw = false
+      {releaseChannel === ReleaseChannel.Legacy ? (
+        <div>
+          {/* input amount */}
+          <Box grid gridRowGap={1}>
+            <InputProvider
+              grid
+              gridTemplateColumns="1fr auto"
+              padding="4px 8px"
+              inputVariant={formValues.amountError ? 'error' : undefined}
+              disabled={disabled}
+              id="amount"
+            >
+              <InputDebounced
+                id="inpCollateral"
+                type="number"
+                labelProps={{
+                  label: t`Vault balance Avail.`,
+                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
+                  description: formatNumber(userBalances?.vaultSharesConverted, { defaultValue: '-' }),
+                }}
+                value={formValues.amount}
+                onChange={(amount) => {
+                  handleFormChange({ amount, isFullWithdraw: false })
+                }}
+              />
+              <InputMaxBtn
+                onClick={() => {
+                  let amount = ''
+                  let isFullWithdraw = false
 
-                if (typeof max !== 'undefined' || typeof userBalances?.vaultSharesConverted !== 'undefined') {
-                  if (+max < +userBalances.vaultSharesConverted) {
-                    amount = max
-                  } else {
-                    isFullWithdraw = true
+                  if (typeof max !== 'undefined' || typeof userBalances?.vaultSharesConverted !== 'undefined') {
+                    if (+max < +userBalances.vaultSharesConverted) {
+                      amount = max
+                    } else {
+                      isFullWithdraw = true
+                    }
                   }
-                }
 
-                handleFormChange({ amount, isFullWithdraw })
-              }}
-            />
-          </InputProvider>
-          {formValues.amountError === 'too-much-max' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              {t`Amount > max`} {_isWithdraw(rFormType) ? t`withdraw amount` : t`redeem amount`}{' '}
-              {formatNumber(max ?? '')}
-            </StyledInpChip>
-          ) : (
-            <StyledInpChip size="xs" isDarkBg>
-              {t`Max`} {_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} {formatNumber(max, { defaultValue: '-' })}
-            </StyledInpChip>
-          )}
-        </Box>
-      </div>
+                  handleFormChange({ amount, isFullWithdraw })
+                }}
+              />
+            </InputProvider>
+            {formValues.amountError === 'too-much-max' ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                {t`Amount > max`} {_isWithdraw(rFormType) ? t`withdraw amount` : t`redeem amount`}{' '}
+                {formatNumber(max ?? '')}
+              </StyledInpChip>
+            ) : (
+              <StyledInpChip size="xs" isDarkBg>
+                {t`Max`} {_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} {formatNumber(max, { defaultValue: '-' })}
+              </StyledInpChip>
+            )}
+          </Box>
+        </div>
+      ) : (
+        <LargeTokenInput
+          name="amount"
+          disabled={disabled}
+          balance={stringToNumber(formValues.amount)}
+          isError={!!formValues.amountError}
+          message={
+            formValues.amountError === 'too-much-wallet'
+              ? t`Amount > wallet balance ${formatNumber(userBalances?.vaultSharesConverted ?? '')}`
+              : formValues.amountError === 'too-much-max'
+                ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
+                : undefined
+          }
+          maxBalance={{
+            balance: stringToNumber(max),
+            loading: !!signerAddress && userBalances == null,
+            showSlider: false,
+            notionalValueUsd: stringToNumber(userBalances?.vaultSharesConverted),
+            symbol: t`Vault shares`,
+          }}
+          onBalance={onBalance}
+          testId="inpCollateral"
+        />
+      )}
 
       <Checkbox
         isDisabled={disableWithdrawInFull}

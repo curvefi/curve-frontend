@@ -105,7 +105,7 @@ const InpTokenRemove = ({
         loading: tokenBalance == null,
         balance: stringToNumber(maxRemovable),
         symbol: tokenSymbol,
-        showBalance: true,
+        showSlider: false,
         notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
       }}
       label={formatNumber(inpValue, { defaultValue: '-' })}

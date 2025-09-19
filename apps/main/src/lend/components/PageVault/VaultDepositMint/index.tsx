@@ -253,6 +253,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
             loading: !!signerAddress && typeof userBalances === 'undefined',
             balance: +(userBalances?.borrowed ?? 0),
             symbol: borrowed_token?.symbol,
+            showSlider: false,
             notionalValueUsd:
               usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
           }}

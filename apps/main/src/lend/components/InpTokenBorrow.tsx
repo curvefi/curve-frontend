@@ -86,10 +86,11 @@ const InpTokenBorrow = ({
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
       maxBalance={{
+        loading: maxRecv == null,
         balance: stringToNumber(maxRecv),
         symbol: tokenSymbol,
-        showBalance: true,
         notionalValueUsd: usdRate != null && maxRecv != null ? usdRate * +maxRecv : undefined,
+        showSlider: false,
       }}
       label={t`Borrow amount:`}
       balance={stringToNumber(inpValue)}

@@ -123,7 +123,7 @@ type Props = {
    * Note: We'll likely create a new 'feature' component that combines this LargeTokenInput component with
    * a token selector and other required app interactions.
    */
-  tokenSelector: ReactNode
+  tokenSelector?: ReactNode
 
   /**
    * Maximum balance configuration for the input.

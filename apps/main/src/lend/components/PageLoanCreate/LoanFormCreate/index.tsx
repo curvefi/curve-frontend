@@ -372,7 +372,7 @@ const LoanCreate = ({
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })
