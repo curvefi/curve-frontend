@@ -9,11 +9,15 @@ export type ContractQuery<T = Chain> = ChainNameQuery<T> & { contractAddress: Ad
 export type PoolQuery<T = number> = ChainQuery<T> & { poolId: string }
 export type GaugeQuery<T = number> = PoolQuery<T>
 export type TokenQuery = ChainQuery & { tokenAddress: string }
+export type MarketQuery = ChainQuery & { marketId: string }
+export type UserMarketQuery<T = Address> = MarketQuery & UserQuery<T>
 
 export type ChainParams<T = number> = FieldsOf<ChainQuery<T>>
 export type UserParams<T = Address> = FieldsOf<UserQuery<T>>
 export type ChainNameParams<T = Chain> = FieldsOf<ChainNameQuery<T>>
 
+export type MarketParams = FieldsOf<MarketQuery>
+export type UserMarketParams<T = Address> = FieldsOf<UserMarketQuery<T>>
 export type ContractParams = FieldsOf<ContractQuery>
 export type PoolParams<T = number> = FieldsOf<PoolQuery<T>>
 export type GaugeParams<T = number> = FieldsOf<GaugeQuery<T>>
@@ -29,4 +33,7 @@ export const rootKeys = {
   gauge: <T = number>({ chainId, poolId }: GaugeParams<T>) => [...rootKeys.pool({ chainId, poolId }), 'gauge'] as const,
   token: ({ chainId, tokenAddress }: TokenParams) =>
     [...rootKeys.chain({ chainId }), 'token', { tokenAddress }] as const,
+  market: ({ chainId, marketId }: MarketParams) => [...rootKeys.chain({ chainId }), 'market', { marketId }] as const,
+  userMarket: <T = Address>({ chainId, marketId, userAddress }: UserMarketParams<T>) =>
+    [...rootKeys.market({ chainId, marketId }), 'user', { userAddress }] as const,
 } as const

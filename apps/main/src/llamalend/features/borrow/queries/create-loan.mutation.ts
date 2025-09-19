@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { useAccount, useConfig } from 'wagmi'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { userBalancesQueryKey } from '@/llamalend/queries/user-balances.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useMutation } from '@tanstack/react-query'
@@ -14,7 +15,6 @@ import { getBalanceQueryKey } from '@wagmi/core/query'
 import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
 import type { BorrowForm, BorrowFormQuery } from '../types'
 import { borrowFormValidationSuite } from './borrow.validation'
-import { userBalancesQueryKey } from './user-balances.query'
 
 type BorrowMutationContext = {
   chainId: IChainId

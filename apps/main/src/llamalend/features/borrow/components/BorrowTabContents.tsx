@@ -12,7 +12,7 @@ import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { setValueOptions } from '../react-form.utils'
-import { BorrowPreset, type OnBorrowFormUpdate } from '../types'
+import { type BorrowFormExternalFields, BorrowPreset, type OnBorrowFormUpdate } from '../types'
 import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
 import { BorrowActionInfoAccordion } from './BorrowActionInfoAccordion'
@@ -23,6 +23,18 @@ import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
 const { Spacing, MinWidth } = SizesAndSpaces
+
+/**
+ * Hook to call the parent form to keep in sync with the chart and other components
+ */
+function useFormSync(
+  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: BorrowFormExternalFields,
+  onUpdate: OnBorrowFormUpdate,
+) {
+  useEffect(() => {
+    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
+  }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled])
+}
 
 /**
  * The contents of the Borrow tab, including the form and all related components.
@@ -59,13 +71,8 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     tooMuchDebt,
   } = useBorrowForm({ market, network, preset })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
+  useFormSync(values, onUpdate)
 
-  const { userCollateral, range, debt } = values
-  useEffect(
-    // callback the parent form to keep in sync with the chart and other components
-    () => void onUpdate({ userCollateral, debt, range }).then(() => {}),
-    [onUpdate, userCollateral, debt, range],
-  )
   const marketHasLeverage = market && hasLeverage(market)
   return (
     <FormProvider {...form}>
