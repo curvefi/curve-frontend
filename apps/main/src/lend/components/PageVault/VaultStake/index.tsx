@@ -171,10 +171,9 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
   const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
 
-  const network = networks[rChainId]
   return (
     <>
-      {releaseChannel === ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>

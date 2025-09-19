@@ -155,10 +155,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   const disabled = !!formStatus.step
   const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
 
-  const network = networks[rChainId]
   return (
     <>
-      {releaseChannel === ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
