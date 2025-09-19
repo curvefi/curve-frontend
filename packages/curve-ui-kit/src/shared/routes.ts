@@ -1,5 +1,5 @@
 import { t } from '@ui-kit/lib/i18n'
-import type { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
+import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
 export const PAGE_DISCLAIMER = '/disclaimer'
 export const PAGE_INTEGRATIONS = '/integrations'
@@ -67,8 +67,6 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
     label: 'Llamalend',
     routes: [
       { app: 'llamalend', route: LLAMALEND_ROUTES.PAGE_MARKETS, label: () => t`Markets` },
-      { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_MARKETS, label: () => t`crvUSD`, deprecate: true },
-      { app: 'lend', route: LEND_ROUTES.PAGE_MARKETS, label: () => t`Lend`, deprecate: true },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_CRVUSD_STAKING, label: () => t`Savings crvUSD` },
       { app: 'crvusd', route: CRVUSD_ROUTES.PAGE_PSR, label: () => t`Peg Stability Reserves` },
     ],

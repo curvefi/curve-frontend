@@ -6,7 +6,6 @@ import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/createCollateralListSlice'
 import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanCollateralDecrease, {
@@ -30,7 +29,6 @@ export type State = CacheSlice &
   ChartBandsSlice &
   CollateralsSlice &
   LoansSlice &
-  CollateralListSlice &
   LoanCreateSlice &
   LoanCollateralDecreaseSlice &
   LoanCollateralIncreaseSlice &
@@ -50,7 +48,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createChartBandsSlice(set, get),
   ...createCollateralsSlice(set, get),
   ...createLoansSlice(set, get),
-  ...createCollateralListSlice(set, get),
   ...createLoanCreate(set, get),
   ...createLoanCollateralDecrease(set, get),
   ...createLoanCollateralIncrease(set, get),

@@ -7,11 +7,7 @@ async function _fetchAppDailyVolume(): Promise<number> {
   return data.totalVolume
 }
 
-export const {
-  useQuery: useAppStatsDailyVolume,
-  setQueryData: setAppStatsDailyVolume,
-  fetchQuery: fetchAppStatsDailyVolume,
-} = queryFactory({
+export const { useQuery: useAppStatsDailyVolume } = queryFactory({
   queryKey: () => ['appStatsDailyVolume'] as const,
   queryFn: _fetchAppDailyVolume,
   validationSuite: EmptyValidationSuite,

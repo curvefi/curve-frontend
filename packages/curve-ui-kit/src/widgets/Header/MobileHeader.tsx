@@ -5,12 +5,10 @@ import Stack from '@mui/material/Stack'
 import Toolbar from '@mui/material/Toolbar'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { usePathname } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, routeToPage } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { MOBILE_SIDEBAR_WIDTH } from '@ui-kit/themes/components'
-import { ReleaseChannel } from '@ui-kit/utils'
 import { HeaderStats } from './HeaderStats'
 import { MobileTopBar } from './MobileTopBar'
 import { SideBarFooter } from './SideBarFooter'
@@ -42,7 +40,6 @@ export const MobileHeader = ({
   const closeSidebar = useCallback(() => setSidebarOpen(false), [])
   const toggleSidebar = useCallback(() => setSidebarOpen((isOpen) => !isOpen), [])
   const pathname = usePathname()
-  const [releaseChannel] = useReleaseChannel()
   const top = useLayoutStore((state) => state.navHeight)
 
   useEffect(() => () => closeSidebar(), [pathname, closeSidebar]) // close when URL changes due to clicking a link
@@ -54,12 +51,9 @@ export const MobileHeader = ({
         .map(([appName, { label, routes }]) => ({
           appName,
           title: label,
-          pages: routes
-            .filter((x) => !x.betaFeature || releaseChannel == ReleaseChannel.Beta)
-            .filter((x) => !x.deprecate)
-            .map((p) => routeToPage(p, { networkId, pathname })),
+          pages: routes.map((p) => routeToPage(p, { networkId, pathname })),
         })),
-    [currentMenu, releaseChannel, networkId, pathname],
+    [currentMenu, networkId, pathname],
   )
   return (
     <AppBar

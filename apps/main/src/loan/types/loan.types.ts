@@ -50,7 +50,6 @@ export type CollateralDataCache = {
   displayName: string
 }
 export type CollateralDataCacheMapper = { [collateralId: string]: CollateralDataCache }
-export type CollateralDataCacheOrApi = CollateralDataCache | CollateralData
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {
   percent: string

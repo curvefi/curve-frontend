@@ -35,7 +35,6 @@ export type LoansSlice = {
     fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: LoanExists }>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
     fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
-    fetchUserLoanPartialDetails(curve: LlamaApi, llamma: Llamma): Promise<Partial<UserLoanDetails>>
     resetUserDetailsState(llamma: Llamma): void
 
     // steps helper
@@ -142,14 +141,6 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
         loading: false,
       })
       return { ...resp, loading: false }
-    },
-    fetchUserLoanPartialDetails: async (curve: LlamaApi, llamma: Llamma) => {
-      const chainId = curve.chainId as ChainId
-      const userLoanPartialInfoFn = networks[chainId].api.detailInfo.userLoanPartialInfo
-      const resp = await userLoanPartialInfoFn(llamma, curve.signerAddress)
-
-      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, resp)
-      return resp
     },
     resetUserDetailsState: (llamma: Llamma) => {
       const clonedUserDetailsMapper = lodash.cloneDeep(get()[sliceKey].userDetailsMapper)

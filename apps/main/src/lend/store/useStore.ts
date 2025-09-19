@@ -15,7 +15,6 @@ import createLoanCollateralRemoveSlice, {
 import createLoanCreate, { LoanCreateSlice } from '@/lend/store/createLoanCreateSlice'
 import createLoanRepaySlice, { LoanRepaySlice } from '@/lend/store/createLoanRepaySlice'
 import createLoanSelfLiquidationSlice, { LoanSelfLiquidationSlice } from '@/lend/store/createLoanSelfLiquidationSlice'
-import createMarketListSlice, { MarketListSlice } from '@/lend/store/createMarketListSlice'
 import createMarketsSlice, { MarketsSlice } from '@/lend/store/createMarketsSlice'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/lend/store/createOhlcChartSlice'
 import createUserSlice, { UserSlice } from '@/lend/store/createUserSlice'
@@ -31,7 +30,6 @@ export type State = CacheSlice &
   ChartBandsSlice &
   UserSlice &
   MarketsSlice &
-  MarketListSlice &
   LoanCreateSlice &
   LoanCollateralRemoveSlice &
   LoanCollateralAddSlice &
@@ -52,7 +50,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),
   ...createUserSlice(set, get),
-  ...createMarketListSlice(set, get),
   ...createLoanCreate(set, get),
   ...createLoanCollateralRemoveSlice(set, get),
   ...createLoanCollateralAddSlice(set, get),

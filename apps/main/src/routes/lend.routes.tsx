@@ -2,7 +2,6 @@ import '@/global-extensions'
 import PageIntegrations from '@/lend/components/PageIntegrations/Page'
 import PageLoanCreate from '@/lend/components/PageLoanCreate/Page'
 import PageLoanManage from '@/lend/components/PageLoanManage/Page'
-import PageMarkets from '@/lend/components/PageMarketList/Page'
 import PageVault from '@/lend/components/PageVault/Page'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
@@ -54,10 +53,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/markets',
-    component: PageMarkets,
-    head: () => ({
-      meta: [{ title: 'Markets - Curve Lend' }],
-    }),
+    loader: ({ params: { network } }) => redirectTo(`/llamalend/${network}/markets/`),
     ...layoutProps,
   }),
   createRoute({

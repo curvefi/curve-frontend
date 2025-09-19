@@ -13,8 +13,6 @@ export type AppRoute = {
   route: string // this is a route inside the app, with leading slash, does not include the app name and the network
   label: () => string // lazy evaluation for translations
   target?: '_self' | '_blank'
-  betaFeature?: boolean
-  deprecate?: boolean // when we want to deprecate a page, we want to hide the page from navbar, but not remove routing in case of emergency
 }
 
 export type AppRoutes = {

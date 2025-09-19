@@ -6,15 +6,7 @@ interface CustomError extends Error {
   data?: { message: string }
 }
 
-export function isNumber<T>(val: T) {
-  return !(typeof val === 'undefined' || val === null)
-}
-
 export const isDevelopment = process.env.NODE_ENV === 'development'
-
-export function isHighSlippage(slippage: number, maxSlippage: string) {
-  return slippage < 0 && Math.abs(slippage) > Number(maxSlippage)
-}
 
 export function log(fnName: string, ...args: unknown[]) {
   if (isDevelopment) {
@@ -45,11 +37,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
     return null
   }
 }
-
-export const shortenAccount = (account: string, visibleLength = 4): string =>
-  account.slice(0, account.startsWith('0x') ? visibleLength + 2 : visibleLength) +
-  '…' +
-  account.slice(account.length - visibleLength)
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 

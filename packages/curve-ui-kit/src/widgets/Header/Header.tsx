@@ -6,7 +6,6 @@ import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
-import { ReleaseChannel } from '@ui-kit/utils'
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
@@ -17,12 +16,8 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const pathname = usePathname()
   const { networkId, currentMenu } = props
   const pages = useMemo(
-    () =>
-      routes[currentMenu]
-        .filter((props) => !props.betaFeature || releaseChannel === ReleaseChannel.Beta)
-        .filter((props) => !props.deprecate)
-        .map((props) => routeToPage(props, { networkId, pathname })),
-    [currentMenu, releaseChannel, networkId, pathname, routes],
+    () => routes[currentMenu].map((props) => routeToPage(props, { networkId, pathname })),
+    [currentMenu, networkId, pathname, routes],
   )
   const sections = useMemo(() => getSections(currentApp, props.networkId), [currentApp, props.networkId])
   return (

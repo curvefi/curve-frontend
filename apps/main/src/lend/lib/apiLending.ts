@@ -23,7 +23,6 @@ import {
   MarketStatCapAndAvailable,
   MarketStatParameters,
   MarketStatTotals,
-  MarketsTotalCollateralValueMapper,
   MarketTotalLiquidity,
   MaxRecvLeverageResp,
   ParsedBandsBalances,
@@ -310,47 +309,6 @@ const market = {
       .process(async (market) => {
         const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
         results[market.id] = { maxLeverage, error: '' }
-      })
-
-    return results
-  },
-  fetchMarketsTotalCollateralValue: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    const results: MarketsTotalCollateralValueMapper = {}
-    const useMultiCall = markets.length > 1
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { total: null, tooltipContent: [], error }
-      })
-      .process(async (marketData) => {
-        const market = marketData
-        const { collateral_token, borrowed_token } = market
-
-        const [ammBalance, collateralUsdRate, borrowedUsdRate] = await Promise.all([
-          market.stats.ammBalances(useMultiCall, USE_API),
-          api.getUsdRate(collateral_token.address),
-          api.getUsdRate(borrowed_token.address),
-        ])
-
-        if (collateralUsdRate.toString() === 'NaN' || borrowedUsdRate.toString() === 'NaN') {
-          results[market.id] = { total: null, tooltipContent: [], error: 'Unable to get usd rate' }
-          return
-        }
-
-        const borrowedUsd = +ammBalance.borrowed * +borrowedUsdRate
-        const collateralUsd = +ammBalance.collateral * +collateralUsdRate
-        const total = +borrowedUsd + +collateralUsd
-
-        let tooltipContent: { label: string; value: string }[] = []
-        if (total !== 0)
-          tooltipContent = [
-            { label: collateral_token?.symbol, value: ammBalance.collateral },
-            { label: borrowed_token?.symbol, value: ammBalance.borrowed },
-          ]
-
-        results[market.id] = { total, tooltipContent, error: '' }
       })
 
     return results

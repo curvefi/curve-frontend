@@ -15,12 +15,10 @@ import {
   MarketsStatsCapAndAvailableMapper,
   MarketsStatsParametersMapper,
   MarketsStatsTotalsMapper,
-  MarketsTotalCollateralValueMapper,
   MarketsTotalLiquidityMapper,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
-import { getLib } from '@ui-kit/features/connect-wallet'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -37,8 +35,6 @@ type SliceState = {
   totalLiquidityMapper: { [chainId: string]: MarketsTotalLiquidityMapper }
   marketDetailsView: MarketDetailsView
   vaultPricePerShare: { [chainId: string]: { [owmId: string]: { pricePerShare: string; error: string } } }
-  totalCollateralValuesMapper: { [chainId: string]: MarketsTotalCollateralValueMapper }
-  error: string
 }
 
 const sliceKey = 'markets'
@@ -52,7 +48,6 @@ export type MarketsSlice = {
     // individual
     fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
     fetchVaultPricePerShare(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchTotalCollateralValue(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -74,8 +69,6 @@ const DEFAULT_STATE: SliceState = {
   totalLiquidityMapper: {},
   marketDetailsView: '',
   vaultPricePerShare: {},
-  totalCollateralValuesMapper: {},
-  error: '',
 }
 
 const createMarketsSlice = (set: SetState<State>, get: GetState<State>): MarketsSlice => ({
@@ -97,7 +90,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
         rewardsMapper: apiLending.market.fetchMarketsVaultsRewards,
         totalLiquidityMapper: apiLending.market.fetchMarketsVaultsTotalLiquidity,
         maxLeverageMapper: apiLending.market.fetchMarketsMaxLeverage,
-        totalCollateralValuesMapper: apiLending.market.fetchMarketsTotalCollateralValue,
       }
 
       // stored
@@ -107,10 +99,7 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
 
       if (missing.length === 0 && !shouldRefetch) return
 
-      const resp =
-        k === 'totalCollateralValuesMapper'
-          ? await fnMapper[k](api, shouldRefetch ? markets : missing)
-          : await fnMapper[k](shouldRefetch ? markets : missing)
+      const resp = await fnMapper[k](shouldRefetch ? markets : missing)
       const cMapper = { ...storedMapper }
       Object.keys(resp).forEach((owmId) => {
         cMapper[owmId] = resp[owmId]
@@ -159,21 +148,6 @@ const createMarketsSlice = (set: SetState<State>, get: GetState<State>): Markets
           [owm.id]: resp,
         })
       }
-    },
-    fetchTotalCollateralValue: async (chainId, market, shouldRefetch) => {
-      const api = getLib('llamaApi')
-      const { totalCollateralValuesMapper, ...sliceState } = get()[sliceKey]
-
-      const totalCollateralValue = totalCollateralValuesMapper[chainId]?.[market.id]
-
-      if (!api || (typeof totalCollateralValue !== 'undefined' && !shouldRefetch)) return
-
-      const resp = (await apiLending.market.fetchMarketsTotalCollateralValue(api, [market]))[market.id]
-
-      sliceState.setStateByActiveKey('totalCollateralValuesMapper', `${chainId}`, {
-        ...(get()[sliceKey].totalCollateralValuesMapper[chainId] ?? {}),
-        [market.id]: resp,
-      })
     },
 
     // slice helpers

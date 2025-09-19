@@ -40,14 +40,6 @@ export const StyledStats = styled(Box)<StatsProps>`
   }}
 `
 
-export const Wrapper = styled.div`
-  @media (min-width: ${breakpoints.sm}rem) {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    min-height: 14.6875rem;
-  }
-`
-
 export const ContentStats = styled.div`
   @media (min-width: ${breakpoints.sm}rem) {
     align-items: flex-start;
@@ -69,18 +61,6 @@ export const ContentWrapper = styled.div<{ paddingTop?: boolean; isBorderBottom?
       return `border-bottom: 1px solid var(--border-600);`
     }
   }};
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding-left: var(--spacing-normal);
-    padding-right: var(--spacing-normal);
-  }
-`
-
-export const DarkContent = styled(ContentWrapper)`
-  background-color: var(--box--secondary--content--background-color);
-  padding: var(--spacing-narrow);
-  padding-bottom: var(--spacing-normal);
-  padding-top: var(--spacing-wide);
 
   @media (min-width: ${breakpoints.sm}rem) {
     padding-left: var(--spacing-normal);
