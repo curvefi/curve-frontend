@@ -606,26 +606,44 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
+            const oracleUpdatedData = [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data]
+              .sort((a, b) => a.time - b.time)
+              .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time)
+
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
-              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              data: oracleUpdatedData,
               borrowedToken: oracleData.borrowedToken,
               collateralToken: oracleData.collateralToken,
-              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
-              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
               refetchingCapped: oracleData.refetchingCapped,
-              lastFetchEndTime: oracleData.lastFetchEndTime,
+              lastFetchEndTime: oracleUpdatedData[0]?.time || oracleData.lastFetchEndTime,
               dataDisabled: false,
             }
 
+            const llammaUpdatedData = [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data]
+              .sort((a, b) => a.time - b.time)
+              .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time)
+
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
-              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
-              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
-              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
-              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
+              data: llammaUpdatedData,
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
               refetchingCapped: llammaData.refetchingCapped,
-              lastFetchEndTime: llammaData.lastFetchEndTime,
+              lastFetchEndTime: llammaUpdatedData[0]?.time || llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
           }),
@@ -641,11 +659,17 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
           produce((state: State) => {
             state[sliceKey].chartOraclePoolOhlc = {
               fetchStatus: 'READY',
-              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data],
+              data: [...oracleData.ohlcData, ...state[sliceKey].chartOraclePoolOhlc.data]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
               borrowedToken: oracleData.borrowedToken,
               collateralToken: oracleData.collateralToken,
-              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData],
-              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData],
+              oraclePriceData: [...oracleData.oracleData, ...state[sliceKey].chartOraclePoolOhlc.oraclePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              baselinePriceData: [...oracleData.baselineData, ...state[sliceKey].chartOraclePoolOhlc.baselinePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
               refetchingCapped: oracleData.refetchingCapped,
               lastFetchEndTime: oracleData.lastFetchEndTime,
               dataDisabled: false,
@@ -661,14 +685,24 @@ const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
 
         set(
           produce((state: State) => {
+            const llammaUpdatedData = [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data]
+              .sort((a, b) => a.time - b.time)
+              .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time)
+
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
-              data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
-              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
-              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
-              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
+              data: llammaUpdatedData,
+              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
+              baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData]
+                .sort((a, b) => a.time - b.time)
+                .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time),
               refetchingCapped: llammaData.refetchingCapped,
-              lastFetchEndTime: llammaData.lastFetchEndTime,
+              lastFetchEndTime: llammaUpdatedData[0]?.time || llammaData.lastFetchEndTime,
               dataDisabled: false,
             }
           }),

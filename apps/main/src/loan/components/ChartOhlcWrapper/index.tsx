@@ -270,13 +270,24 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   }, [llamma, refetchPricesData])
 
   const fetchMoreChartData = useCallback(
-    (lastFetchEndTime: number) => {
-      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+    (passedLastFetchEndTime: number) => {
+      // Get current values from store to avoid stale closure issues
+      const currentState = useStore.getState().ohlcCharts
+      const currentChart = selectedChartIndex === 0 ? currentState.chartOraclePoolOhlc : currentState.chartLlammaOhlc
+      const currentRefetchingCapped = currentChart.refetchingCapped
+      const currentLastFetchEndTime = currentChart.lastFetchEndTime || passedLastFetchEndTime
+
+      // Don't fetch if we've already reached the end of available data
+      if (currentRefetchingCapped) {
+        return
+      }
+
+      const endTime = subtractTimeUnit(timeOption, currentLastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       void fetchMoreData(rChainId, controller, address, chartInterval, timeUnit, +startTime, endTime)
     },
-    [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit],
+    [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit, selectedChartIndex],
   )
 
   if (ohlcDataUnavailable) {

@@ -129,8 +129,18 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
   ])
 
   const fetchMoreChartData = useCallback(
-    (lastFetchEndTime: number) => {
-      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+    (passedLastFetchEndTime: number) => {
+      // Get current values from store to avoid stale closure issues
+      const currentState = useStore.getState().pools.pricesApiState
+      const currentRefetchingCapped = currentState.refetchingCapped
+      const currentLastFetchEndTime = currentState.lastFetchEndTime || passedLastFetchEndTime
+
+      // Don't fetch if we've already reached the end of available data
+      if (currentRefetchingCapped) {
+        return
+      }
+
+      const endTime = subtractTimeUnit(timeOption, currentLastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       fetchMorePricesApiCharts(

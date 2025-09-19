@@ -708,18 +708,23 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
           }
           if (filteredLpPriceData) {
-            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
+            const existingData = get().pools.pricesApiState.chartOhlcData
+            const newData = filteredLpPriceData.data
+
+            const updatedData = [...newData, ...existingData]
+              .sort((a, b) => a.time - b.time)
+              .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time)
 
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = updatedData
                 state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 299
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
+                state.pools.pricesApiState.lastFetchEndTime = updatedData[0]?.time || lpPriceDataResponse.data[0].time
               }),
             )
           }
         } catch (error) {
-          console.warn(error)
+          console.warn('DEX API Error (LP data):', error)
         }
       } else {
         try {
@@ -743,13 +748,18 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               .map((data: LpPriceOhlcData) => ({ ...data, time: convertToLocaleTimestamp(data.time) as UTCTimestamp })),
           }
           if (filteredLpPriceData) {
-            const updatedData = [...filteredLpPriceData.data, ...get().pools.pricesApiState.chartOhlcData]
+            const existingData = get().pools.pricesApiState.chartOhlcData
+            const newData = filteredLpPriceData.data
+
+            const updatedData = [...newData, ...existingData]
+              .sort((a, b) => a.time - b.time)
+              .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time)
 
             set(
               produce((state: State) => {
                 state.pools.pricesApiState.chartOhlcData = updatedData
                 state.pools.pricesApiState.refetchingCapped = filteredLpPriceData.data.length < 299
-                state.pools.pricesApiState.lastFetchEndTime = lpPriceDataResponse.data[0].time
+                state.pools.pricesApiState.lastFetchEndTime = updatedData[0]?.time || lpPriceDataResponse.data[0].time
               }),
             )
           }

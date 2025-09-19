@@ -311,8 +311,19 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   }, [market, refetchPricesData])
 
   const fetchMoreChartData = useCallback(
-    (lastFetchEndTime: number) => {
-      const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
+    (passedLastFetchEndTime: number) => {
+      // Get current values from store to avoid stale closure issues
+      const currentState = useStore.getState().ohlcCharts
+      const currentChart = selectedChartIndex === 0 ? currentState.chartOraclePoolOhlc : currentState.chartLlammaOhlc
+      const currentRefetchingCapped = currentChart.refetchingCapped
+      const currentLastFetchEndTime = currentChart.lastFetchEndTime || passedLastFetchEndTime
+
+      // Don't fetch if we've already reached the end of available data
+      if (currentRefetchingCapped) {
+        return
+      }
+
+      const endTime = subtractTimeUnit(timeOption, currentLastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       if (market?.addresses.controller && market?.addresses.amm) {
@@ -327,7 +338,16 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
         )
       }
     },
-    [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],
+    [
+      timeOption,
+      fetchMoreData,
+      rChainId,
+      market?.addresses.amm,
+      market?.addresses.controller,
+      chartInterval,
+      timeUnit,
+      selectedChartIndex,
+    ],
   )
 
   if (ohlcDataUnavailable) {
