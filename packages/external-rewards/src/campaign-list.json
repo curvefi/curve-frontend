@@ -115,5 +115,8 @@
   },
   {
     "campaign": "MezoUSD.json"
+  },
+  {
+    "campaign": "Liquity.json"
   }
 ]
