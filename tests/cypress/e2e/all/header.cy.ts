@@ -168,8 +168,8 @@ describe('Header', () => {
   function waitIsLoaded(appPath: AppPath) {
     const testId = {
       dao: 'proposal-title',
-      crvusd: 'btn-connect-prompt',
-      lend: 'btn-connect-prompt',
+      crvusd: 'data-table-head',
+      lend: 'data-table-head',
       llamalend: 'data-table-head',
       dex: 'inp-search-pools',
     }[appPath || 'dex']
