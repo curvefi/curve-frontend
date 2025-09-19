@@ -78,8 +78,8 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['crvusd', 'dao'].includes(appPath)) {
-        // apps that only support Ethereum
+      if (['dao'].includes(appPath)) {
+        // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
@@ -153,7 +153,8 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['crvusd', 'dao'].includes(appPath)) {
+      if (['dao'].includes(appPath)) {
+        // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
