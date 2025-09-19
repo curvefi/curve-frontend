@@ -20,6 +20,7 @@ import Hyperwave from './Hyperwave.json'
 import Infinifi from './Infinifi.json'
 import Kelpdao from './Kelpdao.json'
 import LevelMoney from './LevelMoney.json'
+import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Mellow from './Mellow.json'
@@ -78,4 +79,5 @@ export {
   Aegis,
   Ebisu,
   MezoUSD,
+  Liquity,
 }
