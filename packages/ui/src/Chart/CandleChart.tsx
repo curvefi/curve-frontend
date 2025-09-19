@@ -12,6 +12,7 @@ import {
 import lodash from 'lodash'
 import { useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { calculateSmartVisibleRange, shouldApplySmartScaling } from './outlierUtils'
 import type {
   LpPriceOhlcDataFormatted,
   ChartHeight,
@@ -97,10 +98,19 @@ const CandleChart = ({
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
   const [fetchingMore, setFetchingMore] = useState(false)
+  const lastTimeOptionRef = useRef(timeOption)
 
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
   }, [lastFetchEndTime])
+
+  // Clear time position when time option changes (new data period)
+  useEffect(() => {
+    if (lastTimeOptionRef.current !== timeOption) {
+      setLastTimescale(null) // Clear saved time position for new time period
+      lastTimeOptionRef.current = timeOption
+    }
+  }, [timeOption])
 
   const debouncedFetchMoreChartData = useRef(
     lodash.debounce(
@@ -130,7 +140,7 @@ const CandleChart = ({
         timeVisible: timeOption !== 'day',
       },
       rightPriceScale: {
-        autoScale: true,
+        autoScale: false,
         alignLabels: true,
         borderVisible: false,
         scaleMargins: {
@@ -447,8 +457,23 @@ const CandleChart = ({
       candlestickSeriesRef.current.setData(ohlcData)
       setFetchingMore(false)
 
+      // Restore user's time position when loading historical data
       if (lastTimescale) {
         timeScale.setVisibleRange(lastTimescale)
+      }
+
+      // Apply smart scaling to focus on main price range and avoid outliers
+      // This works on the Y-axis (price) while lastTimescale works on X-axis (time)
+      if (shouldApplySmartScaling(ohlcData)) {
+        const smartRange = calculateSmartVisibleRange(ohlcData)
+        if (smartRange && chartRef.current) {
+          // Use a slight delay to ensure the chart is fully initialized
+          setTimeout(() => {
+            if (chartRef.current && isMounted.current) {
+              chartRef.current.priceScale('right').setVisibleRange(smartRange)
+            }
+          }, 100)
+        }
       }
     }
 
@@ -514,6 +539,7 @@ const CandleChart = ({
     ohlcData,
     oraclePriceData,
     refetchingCapped,
+    timeOption,
     volumeData,
   ])
 
