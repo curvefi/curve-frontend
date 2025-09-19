@@ -25,13 +25,16 @@ export const USER_POSITION_HISTORY_COLUMNS = [
   columnHelper.accessor(UserPositionHistoryColumnId.Collateral, {
     header: headers[UserPositionHistoryColumnId.Collateral],
     cell: CollateralChangeCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor(UserPositionHistoryColumnId.Debt, {
     header: headers[UserPositionHistoryColumnId.Debt],
     cell: DebtChangeCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor(UserPositionHistoryColumnId.Time, {
     header: headers[UserPositionHistoryColumnId.Time],
     cell: TimestampCell,
+    meta: { type: 'numeric' },
   }),
 ]

@@ -33,12 +33,12 @@ export const EventTypeCell = ({
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
   <Stack
+    height={Spacing.xl}
+    paddingY={Spacing.xxs}
+    paddingX={Spacing.sm}
     flexDirection="row"
     alignItems="center"
     gap={Spacing.xs}
-    paddingTop={Spacing.sm}
-    paddingBottom={Spacing.sm}
-    paddingRight={Spacing.sm}
   >
     {icons[type]}
     <Typography variant="tableCellMBold">{type}</Typography>

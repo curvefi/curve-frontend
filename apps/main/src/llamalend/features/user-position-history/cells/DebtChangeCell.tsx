@@ -12,7 +12,7 @@ export const DebtChangeCell = ({
     original: { loanChange, borrowToken },
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
-  <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
+  <Stack height={Spacing.xl} paddingY={Spacing.xxs} paddingX={Spacing.sm}>
     <Typography
       variant="tableCellMBold"
       color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}

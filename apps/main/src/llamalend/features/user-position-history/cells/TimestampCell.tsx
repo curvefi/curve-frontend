@@ -20,14 +20,14 @@ export const TimestampCell = ({
 
   return (
     <Stack
-      paddingTop={Spacing.sm}
-      paddingBottom={Spacing.sm}
-      paddingRight={Spacing.sm}
+      height={Spacing.xl}
+      paddingY={Spacing.xxs}
+      paddingX={Spacing.sm}
       onClick={handleClick}
       sx={{ cursor: 'pointer' }}
     >
       <Typography variant="tableCellMBold">{formatDate(timestamp, 'short')}</Typography>
-      <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+      <Stack direction="row" alignItems="center" justifyContent="end" gap={Spacing.xs}>
         <Typography variant="bodySBold" sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}>
           {formatTime(timestamp)}
         </Typography>

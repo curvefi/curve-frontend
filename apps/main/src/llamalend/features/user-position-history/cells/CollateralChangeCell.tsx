@@ -12,7 +12,7 @@ export const CollateralChangeCell = ({
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
-  <Stack paddingTop={Spacing.sm} paddingBottom={Spacing.sm} paddingRight={Spacing.sm}>
+  <Stack height={Spacing.xl} paddingY={Spacing.xxs} paddingX={Spacing.sm}>
     <Typography
       variant="tableCellMBold"
       color={
