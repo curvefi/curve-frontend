@@ -2,6 +2,8 @@ import { type Ref, type ReactNode, useCallback, useEffect, useImperativeHandle, 
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useDebounce } from '@ui-kit/hooks/useDebounce'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
@@ -155,6 +157,7 @@ type Props = {
 
   /**
    * Whether the input is disabled.
+   * IMPORTANT: Whatever in tokenSelector will not be disabled by this component, it needs to be disabled separately.
    * @default false
    */
   disabled?: boolean
@@ -182,21 +185,12 @@ export const LargeTokenInput = ({
   isError = false,
   disabled,
   balanceDecimals = 4,
-  onBalance: onBalanceSet,
-  balance,
+  onBalance,
+  balance: externalBalance,
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
-  const [internalBalance, setInternalBalance] = useState<number | undefined>(balance)
-  balance ??= internalBalance
-
-  const setBalance = useCallback(
-    (newBalance: number | undefined) => {
-      onBalanceSet(newBalance)
-      setInternalBalance(newBalance)
-    },
-    [onBalanceSet],
-  )
+  const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
@@ -249,7 +243,7 @@ export const LargeTokenInput = ({
    *
    * Changing the percentage changes the balance, which in turn triggers this useEffect,
    * which in turn changes the percentage again. While I am using the current balance,
-   * I really only care about triggering it when maxBalance changes.
+   * I really only care about triggering it when maxBalance changes (handleBalanceChange depends on maxBalance).
    */
   useEffect(() => {
     handleBalanceChange(balance)
