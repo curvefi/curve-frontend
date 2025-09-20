@@ -117,12 +117,7 @@ const InpToken = ({
       label={inpTopLabel}
       balance={stringToNumber(inpValue)}
       tokenSelector={
-        <TokenLabel
-          blockchainId={network.name}
-          tooltip={tokenSymbol}
-          address={tokenAddress}
-          label={tokenSymbol ?? '?'}
-        />
+        <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }
       onBalance={onBalance}
     />

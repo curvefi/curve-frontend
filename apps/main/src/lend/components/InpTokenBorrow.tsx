@@ -95,12 +95,7 @@ const InpTokenBorrow = ({
       label={t`Borrow amount:`}
       balance={stringToNumber(inpValue)}
       tokenSelector={
-        <TokenLabel
-          blockchainId={network.name}
-          tooltip={tokenSymbol}
-          address={tokenAddress}
-          label={tokenSymbol ?? '?'}
-        />
+        <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }
       onBalance={onBalance}
     />
