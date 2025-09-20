@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
-import { fetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
@@ -89,7 +89,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
         networks[chainId].api.detailInfo.priceInfo(llamma),
-        fetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress as Address }),
+        refetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress as Address }),
       ])
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }

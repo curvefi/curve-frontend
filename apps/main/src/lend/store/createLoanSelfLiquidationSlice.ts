@@ -9,7 +9,7 @@ import apiLending from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { fetchLoanExists, invalidateLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -180,13 +180,11 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       )
 
       if (resp) {
-        const loanExistsParams = {
+        const loanExists = await refetchLoanExists({
           chainId,
           marketId: market.id,
           userAddress: wallet?.account?.address,
-        }
-        invalidateLoanExists(loanExistsParams)
-        const loanExists = await fetchLoanExists(loanExistsParams)
+        })
 
         if (error) {
           sliceState.setStateByKey('formStatus', {

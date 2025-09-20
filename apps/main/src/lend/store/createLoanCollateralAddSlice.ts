@@ -10,7 +10,7 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
-import { fetchLoanExists, invalidateLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
@@ -189,13 +189,11 @@ const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): Loan
           return { ...resp, error, loanExists: true }
         } else {
           // api calls
-          const loanExistsParams = {
+          const loanExists = await refetchLoanExists({
             chainId,
             marketId: market.id,
             userAddress: wallet?.account?.address,
-          }
-          invalidateLoanExists(loanExistsParams)
-          const loanExists = await fetchLoanExists(loanExistsParams)
+          })
           if (loanExists) {
             void user.fetchAll(api, market, true)
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })

@@ -5,9 +5,8 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 
 export const {
   useQuery: useLoanExists,
-  fetchQuery: fetchLoanExists,
+  refetchQuery: refetchLoanExists,
   getQueryData: getLoanExists,
-  invalidate: invalidateLoanExists,
 } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'loan-exists'] as const,
   queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
-import { fetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -229,7 +229,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
 
       const clonedFormValues = lodash.cloneDeep(formValues)
 
-      const loanExists = await fetchLoanExists({ chainId, marketId: llamma.id, userAddress: signerAddress })
+      const loanExists = await refetchLoanExists({ chainId, marketId: llamma.id, userAddress: signerAddress })
 
       if (loanExists) {
         get()[sliceKey].setStateByKeys({
