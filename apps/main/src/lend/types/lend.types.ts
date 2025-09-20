@@ -236,8 +236,6 @@ export type UserLoanDetails = {
   error: string
 }
 export type UsersLoansDetailsMapper = { [userActiveKey: string]: UserLoanDetails }
-export type UserLoanExists = { loanExists: boolean; error: string }
-export type UsersLoansExistsMapper = { [userActiveKey: string]: UserLoanExists }
 export type UserMarketBalances = {
   collateral: string
   borrowed: string

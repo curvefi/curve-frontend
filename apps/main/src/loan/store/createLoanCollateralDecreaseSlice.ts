@@ -173,7 +173,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       )
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-      if (!loanExists.loanExists) {
+      if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)
       }
       if (resp.activeKey === get()[sliceKey].activeKey) {

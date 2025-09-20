@@ -21,6 +21,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, HealthMode, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -33,6 +34,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import type { Address } from '@ui-kit/utils'
 
 const LoanBorrowMore = ({
   rChainId,
@@ -52,7 +54,6 @@ const LoanBorrowMore = ({
   const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
@@ -71,6 +72,12 @@ const LoanBorrowMore = ({
 
   const { signerAddress } = api ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress as Address,
+  })
 
   const updateFormValues = useCallback(
     (

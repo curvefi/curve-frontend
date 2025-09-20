@@ -193,7 +193,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
 
-        if (!loanExists.loanExists) {
+        if (!loanExists) {
           get().loans.resetUserDetailsState(llamma)
         }
 
@@ -210,7 +210,7 @@ const createLoanCollateralIncrease = (set: SetState<State>, get: GetState<State>
           },
         })
 
-        return { ...resp, loanExists: loanExists.loanExists }
+        return { ...resp, loanExists }
       }
     },
 

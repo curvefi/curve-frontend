@@ -20,6 +20,7 @@ import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlic
 import useStore from '@/lend/store/useStore'
 import { Api, HealthMode, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -29,6 +30,7 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import type { Address } from '@ui-kit/utils'
 
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -39,7 +41,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const formStatus = useStore((state) => state.loanCollateralRemove.formStatus)
   const formValues = useStore((state) => state.loanCollateralRemove.formValues)
   const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
@@ -54,6 +55,12 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress as Address,
+  })
 
   const network = networks[rChainId]
 

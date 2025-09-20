@@ -63,5 +63,6 @@ export type QueryFactoryOutput<
   setQueryData: (params: TParams, data: TData) => void
   prefetchQuery: (params: TParams, staleTime?: number) => Promise<void>
   fetchQuery: (params: TParams, options?: Partial<FetchQueryOptions<TData, TError, TData, TKey>>) => Promise<TData>
+  refetchQuery: (params: TParams) => Promise<TData>
   invalidate: (params: TParams) => void
 }

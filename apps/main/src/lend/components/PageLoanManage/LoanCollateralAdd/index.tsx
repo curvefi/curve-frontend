@@ -19,6 +19,7 @@ import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralAddSlice'
 import useStore from '@/lend/store/useStore'
 import { Api, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -28,6 +29,7 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import type { Address } from '@ui-kit/utils'
 
 const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -37,7 +39,6 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const formEstGas = useStore((state) => state.loanCollateralAdd.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCollateralAdd.formStatus)
   const formValues = useStore((state) => state.loanCollateralAdd.formValues)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanCollateralAdd.fetchStepApprove)
@@ -52,6 +53,12 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress as Address,
+  })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {

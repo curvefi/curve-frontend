@@ -63,7 +63,6 @@ export type LiqRange = {
   prices: string[]
   bands: [number, number]
 }
-export type LoanExists = { loanExists: boolean; error: string }
 export type LoanPriceInfo = {
   oraclePrice: string
   oraclePriceBand: number | null

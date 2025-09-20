@@ -27,6 +27,7 @@ import {
 } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
@@ -42,7 +43,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
+import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum, type Address } from '@ui-kit/utils'
 
 const LoanRepay = ({
   rChainId,
@@ -61,7 +62,6 @@ const LoanRepay = ({
   const formStatus = useStore((state) => state.loanRepay.formStatus)
   const formValues = useStore((state) => state.loanRepay.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
@@ -81,6 +81,12 @@ const LoanRepay = ({
   const { borrowed_token, collateral_token } = market ?? {}
   const { decimals: borrowedTokenDecimals } = borrowed_token ?? {}
   const { expectedBorrowed } = detailInfoLeverage ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress as Address,
+  })
 
   const updateFormValues = useCallback(
     (
@@ -374,7 +380,7 @@ const LoanRepay = ({
                 inpTopLabel={t`Repay from collateral:`}
                 inpError={formValues.stateCollateralError}
                 inpDisabled={disable}
-                inpLabelLoading={loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
+                inpLabelLoading={!!loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
                 inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
                 inpValue={formValues.stateCollateral}
                 tokenAddress={collateral_token?.address}
