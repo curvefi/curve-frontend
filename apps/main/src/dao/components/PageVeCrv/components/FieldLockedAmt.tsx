@@ -1,13 +1,17 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FormType, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { CurveApi } from '@/dao/types/dao.types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { CRV_ADDRESS, ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const FieldLockedAmt = ({
   curve,
@@ -41,13 +45,14 @@ const FieldLockedAmt = ({
     [curve, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime],
   )
 
-  return (
+  const [releaseChannel] = useReleaseChannel()
+  const onBalance = useCallback(
+    (balance: number | undefined) => handleInpLockedAmt(`${balance ?? ''}`),
+    [handleInpLockedAmt],
+  )
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <div>
-      <StyledInputProvider
-        id="lockedAmt"
-        disabled={disabled || typeof vecrvInfo === 'undefined'}
-        inputVariant={lockedAmtError && 'error'}
-      >
+      <StyledInputProvider id="lockedAmt" disabled={disabled} inputVariant={lockedAmtError && 'error'}>
         <InputDebounced
           id="inpLockedAmt"
           labelProps={{
@@ -77,6 +82,37 @@ const FieldLockedAmt = ({
         <Chip size="xs">{t`CRV Locked: ${formatNumber(lockedAmount)}`}</Chip>
       ) : null}
     </div>
+  ) : (
+    <LargeTokenInput
+      name="lockedAmt"
+      disabled={disabled}
+      balance={stringToNumber(lockedAmt)}
+      isError={!!lockedAmtError}
+      message={
+        !!crv && lockedAmtError ? (
+          <>
+            Amount is greater than balance ({formatNumber(crv)}). Get more{' '}
+            <RouterLink
+              sx={{ color: (t) => t.design.Text.TextColors.FilledFeedback.Warning.Primary }}
+              href={getInternalUrl('dex', 'ethereum', DEX_ROUTES.PAGE_SWAP)}
+            >
+              here
+            </RouterLink>
+            .
+          </>
+        ) : isAdjustCrv ? (
+          t`CRV Locked: ${formatNumber(lockedAmount)}`
+        ) : undefined
+      }
+      onBalance={onBalance}
+      maxBalance={{
+        balance: stringToNumber(crv),
+        loading: haveSigner && crv === '',
+        showSlider: false,
+        symbol: 'CRV',
+      }}
+      tokenSelector={<TokenLabel blockchainId="ethereum" address={CRV_ADDRESS} label="CRV" />}
+    />
   )
 }
 

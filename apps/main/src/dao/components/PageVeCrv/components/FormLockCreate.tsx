@@ -223,7 +223,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={(lockedAmt) => updateFormValues({ lockedAmt }, false)}
+          handleInpLockedAmt={useCallback((lockedAmt) => updateFormValues({ lockedAmt }, false), [updateFormValues])}
           {...formValues}
         />
 
