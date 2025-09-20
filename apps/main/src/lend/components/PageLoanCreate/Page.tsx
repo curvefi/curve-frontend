@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -42,7 +42,6 @@ const Page = () => {
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
-  const [isLoaded, setLoaded] = useState(false)
   const push = useNavigate()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
@@ -71,14 +70,14 @@ const Page = () => {
   useEffect(() => {
     // delay fetch rest after form details are fetched first
     const timer = setTimeout(async () => {
-      if (!api || !market || !isPageVisible || !isLoaded) return
+      if (!api || !market || !isPageVisible) return
       await fetchAllMarketDetails(api, market, true)
       if (api.signerAddress) {
         await fetchUserMarketBalances(api, market, true)
       }
     }, REFRESH_INTERVAL['3s'])
     return () => clearTimeout(timer)
-  }, [api, fetchAllMarketDetails, fetchUserMarketBalances, isLoaded, isPageVisible, market])
+  }, [api, fetchAllMarketDetails, fetchUserMarketBalances, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
@@ -97,11 +96,11 @@ const Page = () => {
     rChainId,
     rOwmId,
     rFormType,
-    isLoaded,
     api,
     market,
     titleMapper,
     userActiveKey,
+    isLoaded: true,
   }
   const positionDetailsHrefs = {
     borrow: '',
