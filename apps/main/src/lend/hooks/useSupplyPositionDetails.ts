@@ -4,7 +4,6 @@ import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
 import { useUserSupplyBoost } from '@/lend/entities/user-supply-boost'
 import { useUserSupplyClaimable } from '@/lend/entities/user-supply-claimable'
 import networks from '@/lend/networks'
-import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import type { Address, Chain } from '@curvefi/prices-api'
@@ -29,7 +28,6 @@ export const useSupplyPositionDetails = ({
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const { data: campaigns } = useCampaigns({})
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
-  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
     chainId,
     marketId,
@@ -82,7 +80,7 @@ export const useSupplyPositionDetails = ({
   )
 
   const rebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take the most recent rebasing yield
-  const supplyApyValue = onChainRates?.rates?.lendApy ?? marketRate?.rates?.lendApy
+  const supplyApyValue = onChainRates?.rates?.lendApy
   const supplyApy = supplyApyValue === null ? null : Number(supplyApyValue)
   const supplyAprCrvMinBoost = onChainRates?.crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
   const supplyAprCrvMaxBoost = onChainRates?.crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
