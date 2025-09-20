@@ -42,7 +42,7 @@ const InpToken = ({
   inpValue: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
-  tokenBalance: string
+  tokenBalance: string | undefined
   debt?: string
   handleInpChange(inpValue: string): void
   handleMaxClick(): void

@@ -108,7 +108,6 @@ const InpTokenRemove = ({
         showSlider: false,
         notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
       }}
-      label={formatNumber(inpValue, { defaultValue: '-' })}
       balance={stringToNumber(inpValue)}
       tokenSelector={
         <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
