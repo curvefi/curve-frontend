@@ -42,7 +42,7 @@ const InpToken = ({
   inpValue: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
-  tokenBalance: string
+  tokenBalance: string | undefined
   debt?: string
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
@@ -117,12 +117,7 @@ const InpToken = ({
       label={inpTopLabel}
       balance={stringToNumber(inpValue)}
       tokenSelector={
-        <TokenLabel
-          blockchainId={network.name}
-          tooltip={tokenSymbol}
-          address={tokenAddress}
-          label={tokenSymbol ?? '?'}
-        />
+        <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }
       onBalance={onBalance}
     />

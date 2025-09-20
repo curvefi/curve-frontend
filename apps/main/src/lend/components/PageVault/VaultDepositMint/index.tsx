@@ -260,7 +260,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
           balance={+formValues.amount}
           tokenSelector={
             <TokenLabel
-              blockchainId={networks[rChainId].name}
+              blockchainId={networks[rChainId].id}
               address={borrowed_token?.address}
               tooltip={borrowed_token?.symbol}
               label={borrowed_token?.symbol ?? ''}

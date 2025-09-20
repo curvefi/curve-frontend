@@ -395,7 +395,7 @@ const LoanRepay = ({
                 inpValue={formValues.stateCollateral}
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
-                tokenBalance={formatNumber(userState?.collateral, { defaultValue: '-' })}
+                tokenBalance={userState?.collateral}
                 handleInpChange={setStateCollateral}
                 handleMaxClick={() =>
                   updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
@@ -413,7 +413,7 @@ const LoanRepay = ({
                 inpValue={formValues.userCollateral}
                 tokenAddress={collateral_token?.address}
                 tokenSymbol={collateral_token?.symbol}
-                tokenBalance={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+                tokenBalance={userBalances?.collateral}
                 handleInpChange={setUserCollateral}
                 handleMaxClick={() =>
                   updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
