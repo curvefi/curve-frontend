@@ -1,5 +1,6 @@
 /// <reference types="./DataTable.d.ts" />
 import { ReactNode, useEffect, useMemo } from 'react'
+import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
@@ -31,6 +32,7 @@ export const DataTable = <T extends TableItem>({
   emptyState,
   children,
   loading,
+  options,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -38,6 +40,10 @@ export const DataTable = <T extends TableItem>({
   children?: ReactNode // passed to <FilterRow />
   minRowHeight?: number
   loading: boolean
+  options?: {
+    maxHeight: string | number // also sets overflowY to 'auto'
+    disableStickyHeader?: boolean
+  }
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { rows } = table.getRowModel()
   const { shouldStickFirstColumn } = rowProps
@@ -46,7 +52,7 @@ export const DataTable = <T extends TableItem>({
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)
 
-  return (
+  const TableComponent = (
     <Table
       sx={{
         backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -93,5 +99,23 @@ export const DataTable = <T extends TableItem>({
         )}
       </TableBody>
     </Table>
+  )
+
+  return options ? (
+    <Box
+      sx={{
+        maxHeight: options.maxHeight,
+        ...(options.maxHeight && { overflowY: 'auto' }),
+        ...(options.disableStickyHeader && {
+          '& thead': {
+            top: '0 !important',
+          },
+        }),
+      }}
+    >
+      {TableComponent}
+    </Box>
+  ) : (
+    TableComponent
   )
 }

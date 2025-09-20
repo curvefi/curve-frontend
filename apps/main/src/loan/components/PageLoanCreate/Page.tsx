@@ -1,13 +1,17 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
+import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -18,6 +22,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -33,6 +38,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils/address'
 
 const { Spacing } = SizesAndSpaces
 
@@ -66,6 +72,26 @@ const Page = () => {
   const isLeverage = rFormType === 'leverage'
 
   const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
+  const userCollateralEvents = useUserCollateralEvents({
+    app: 'crvusd',
+    chainId: rChainId,
+    chain: networks[rChainId].id as Chain,
+    controllerAddress: llamma?.controller as Address,
+    userAddress: curve?.signerAddress as Address,
+    collateralToken: {
+      symbol: llamma?.collateralSymbol,
+      address: llamma?.collateral,
+      decimals: llamma?.collateralDecimals,
+      name: llamma?.collateralSymbol,
+    },
+    borrowToken: {
+      symbol: 'crvUSD',
+      address: CRVUSD_ADDRESS,
+      decimals: 18,
+      name: 'crvUSD',
+    },
+    scanTxPath: networks[rChainId].scanTxPath,
+  })
 
   const fetchInitial = useCallback(
     (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
@@ -197,6 +223,13 @@ const Page = () => {
           {!loanExists && (
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
+              {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
+                <UserPositionHistory
+                  events={userCollateralEvents.data.events}
+                  isLoading={userCollateralEvents.isLoading}
+                  isError={userCollateralEvents.isError}
+                />
+              )}
             </Stack>
           )}
           <Stack>

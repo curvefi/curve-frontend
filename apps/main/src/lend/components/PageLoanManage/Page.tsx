@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -17,6 +18,9 @@ import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/h
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -66,6 +70,16 @@ const Page = () => {
     chainId: rChainId,
     llamma: market,
     llammaId: rOwmId,
+  })
+  const userCollateralEvents = useUserCollateralEvents({
+    app: 'lend',
+    chainId: rChainId,
+    chain: networks[rChainId].id as Chain,
+    controllerAddress: market?.addresses?.controller as Address,
+    userAddress: signerAddress as Address,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
+    scanTxPath: networks[rChainId].scanTxPath,
   })
 
   // set tabs
@@ -172,6 +186,20 @@ const Page = () => {
             ) : (
               <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
                 <NoPosition type="borrow" />
+              </Stack>
+            )}
+            {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
+              <Stack
+                paddingLeft={Spacing.md}
+                paddingRight={Spacing.md}
+                paddingBottom={Spacing.md}
+                sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              >
+                <UserPositionHistory
+                  events={userCollateralEvents.data.events}
+                  isLoading={userCollateralEvents.isLoading}
+                  isError={userCollateralEvents.isError}
+                />
               </Stack>
             )}
           </MarketInformationTabs>
