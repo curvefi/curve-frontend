@@ -17,7 +17,6 @@ describe(`Peg Stability Reserves`, () => {
     ;[width, height] = oneViewport()
 
     cy.viewport(width, height)
-    cy.setCookie('cypress', 'true') // disable server data fetching to speed testing up, it's not needed anyway
     cy.visit('/crvusd/ethereum/psr/', {
       onBeforeLoad: (window) => window.localStorage.clear(),
       ...LOAD_TIMEOUT,

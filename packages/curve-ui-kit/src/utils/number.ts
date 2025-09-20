@@ -256,3 +256,15 @@ export const formatNumber = (value: number, options: NumberFormatOptions) => {
 
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
+
+/**
+ * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
+ */
+export const stringToNumber = (value: string | undefined | null): number | undefined => {
+  if (!['', null, undefined, '-', '?'].includes(value)) {
+    const number = Number(value)
+    if (Number.isFinite(number)) {
+      return number
+    }
+  }
+}

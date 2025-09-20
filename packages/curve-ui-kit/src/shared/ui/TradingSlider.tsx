@@ -19,9 +19,11 @@ type Props = {
   step?: number
   /** Text alignment for the input field */
   textAlign?: Property.TextAlign
+  /** Whether the slider and input are disabled */
+  disabled?: boolean
 }
 
-export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAlign = 'left' }: Props) => (
+export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAlign = 'left', disabled }: Props) => (
   <Stack
     direction="row"
     alignItems="center"
@@ -40,6 +42,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       min={0}
       max={100}
       step={step}
+      disabled={disabled}
       sx={{
         [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200],
         '&.MuiSlider-root::after': {
@@ -58,6 +61,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       max={100}
       onChange={(newPercentage) => onChange?.(newPercentage)}
       onBlur={(newPercentage) => onCommit?.(newPercentage)}
+      disabled={disabled}
       slotProps={{
         input: {
           sx: { '& input': { textAlign } },

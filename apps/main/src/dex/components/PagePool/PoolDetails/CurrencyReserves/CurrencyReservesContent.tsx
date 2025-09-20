@@ -28,7 +28,7 @@ const CurrencyReservesContent = ({
     <Box flex flexAlignItems="center" gridGap={1}>
       <TokenIcon
         size="sm"
-        blockchainId={network?.networkId ?? ''}
+        blockchainId={network?.id}
         tooltip={token}
         address={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
       />

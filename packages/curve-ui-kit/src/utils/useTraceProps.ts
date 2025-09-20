@@ -11,7 +11,7 @@ export function useTraceProps<T extends Record<string, unknown>>(name: string, p
     )
     if (Object.keys(changedProps).length) {
       console.info(
-        `useTraceUpdate ${name} ${new Date().toISOString()}: Changed props`,
+        `useTraceProps ${name} ${new Date().toISOString()}: Changed props`,
         Object.entries(changedProps).map(([key, [prev, curr]]) => `${key}: ${toString(prev)} -> ${toString(curr)}`),
       )
     }

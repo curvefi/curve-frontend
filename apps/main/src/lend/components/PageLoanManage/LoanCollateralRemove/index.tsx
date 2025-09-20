@@ -220,6 +220,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   return (
     <>
       <InpTokenRemove
+        network={networks[rChainId]}
         id="collateral"
         inpError={formValues.collateralError}
         inpDisabled={disabled}
@@ -230,7 +231,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
         tokenAddress={market?.collateral_token?.address}
         tokenSymbol={market?.collateral_token?.symbol}
         tokenBalance={userBalances?.collateral}
-        handleInpChange={(collateral) => updateFormValues({ collateral })}
+        handleInpChange={useCallback((collateral) => updateFormValues({ collateral }), [updateFormValues])}
         handleMaxClick={() => updateFormValues({ collateral: maxRemovable ?? '' })}
       />
 
