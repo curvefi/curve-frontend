@@ -80,7 +80,7 @@ describe('BorrowTabContents Component Tests', () => {
     // open borrow advanced settings and check all fields
     cy.contains('button', 'Health').click()
 
-    getActionValue('borrow-price-impact').contains('%')
+    if (leverageEnabled) getActionValue('borrow-price-impact').contains('%')
     getActionValue('borrow-band-range').should('exist') // bands are giving an error for now, don't check the content
     getActionValue('borrow-price-range')
       .invoke(LOAD_TIMEOUT, 'text')

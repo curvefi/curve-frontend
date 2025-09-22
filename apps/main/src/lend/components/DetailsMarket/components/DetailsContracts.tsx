@@ -11,47 +11,30 @@ import { t } from '@ui-kit/lib/i18n'
 
 type ContractItems = { label: ReactNode; address: string | undefined; invalidText?: string }[]
 
-const DetailsContracts = ({
-  rChainId,
-  market,
-  type,
-}: Pick<PageContentProps, 'rChainId' | 'market'> & {
-  type: 'borrow' | 'supply'
-}) => {
+const DetailsContracts = ({ rChainId, market }: Pick<PageContentProps, 'rChainId' | 'market'>) => {
   const { addresses, borrowed_token, collateral_token } = market ?? {}
 
   // prettier-ignore
-  const contracts: { borrow: ContractItems[]; supply: ContractItems[] } = {
-    borrow: [
+  const contracts: ContractItems[] =
+    [
       [
         { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
         { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
       ],
       [
         { label: 'AMM', address: addresses?.amm },
+        { label: t`Vault`, address: addresses?.vault },
         { label: t`Controller`, address: addresses?.controller },
+        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' },
         { label: t`Monetary policy`, address: addresses?.monetary_policy },
       ],
-    ],
-    supply: [
-      [
-        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={borrowed_token} />, address: addresses?.borrowed_token },
-        { label: <TokenLabel isDisplayOnly rChainId={rChainId} token={collateral_token} />, address: addresses?.collateral_token },
-      ],
-      [
-        { label: t`Vault`, address: addresses?.vault },
-        { label: t`Gauge`, address: addresses?.gauge, invalidText: addresses?.gauge === zeroAddress ? t`No gauge` : '' },
-        { label: 'AMM', address: addresses?.amm },
-        { label: t`Controller`, address: addresses?.controller },
-      ],
     ]
-  }
 
   return (
     <>
       <SubTitle>{t`Contracts`}</SubTitle>
       <Box grid gridRowGap={3}>
-        {contracts[type].map((contracts, idx) => (
+        {contracts.map((contracts, idx) => (
           <div key={`contracts-${idx}`}>
             {contracts.map(({ label, address, invalidText }, idx) => {
               const key = `${address}-${idx}`
