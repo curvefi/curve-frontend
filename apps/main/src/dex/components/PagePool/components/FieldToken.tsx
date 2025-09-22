@@ -1,18 +1,23 @@
+import { useCallback } from 'react'
 import { ethAddress } from 'viem'
 import { shortenTokenName } from '@/dex/utils'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { formatNumber } from '@ui/utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
-import { shortenAddress } from '@ui-kit/utils'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, shortenAddress, stringToNumber } from '@ui-kit/utils'
 
 type Props = {
   idx: number
   amount: string
   balance: string | undefined
   balanceLoading: boolean
-  disableMaxButton: boolean
-  disableInput: boolean
+  disabled: boolean
   hasError: boolean
   haveSameTokenName?: boolean
   haveSigner: boolean
@@ -23,16 +28,15 @@ type Props = {
   token: string
   tokenAddress: string
   handleAmountChange: (val: string, idx: number) => void
-  handleMaxClick: () => void
+  afterMaxClick?: (idx: number) => void
 }
 
 const FieldToken = ({
   idx,
   amount,
-  disableMaxButton,
   balance,
   balanceLoading,
-  disableInput,
+  disabled,
   haveSameTokenName,
   hideMaxButton = false,
   hasError,
@@ -43,47 +47,77 @@ const FieldToken = ({
   token,
   tokenAddress,
   handleAmountChange,
-  handleMaxClick,
+  afterMaxClick,
 }: Props) => {
-  const value = typeof amount === 'undefined' ? '' : amount
-  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
   const showAvailableBalance = haveSigner && !isWithdraw
+  const [releaseChannel] = useReleaseChannel()
+  const onBalance = useCallback((val?: number) => handleAmountChange(`${val ?? ''}`, idx), [handleAmountChange, idx])
 
-  return (
+  const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
+  const onMax = useCallback(() => {
+    handleAmountChange(balance!, idx)
+    afterMaxClick?.(idx)
+  }, [idx, afterMaxClick, handleAmountChange, balance])
+
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <InputProvider
       grid
       gridTemplateColumns={hideMaxButton ? '1fr auto' : '1fr auto auto'}
       padding="var(--spacing-1) var(--spacing-2)"
       id={token}
-      disabled={disableInput}
+      disabled={disabled}
       inputVariant={hasError ? 'error' : undefined}
     >
       <InputDebounced
         id={`input-${token}-amount`}
         autoComplete="off"
         type="number"
-        value={value}
+        value={amount == null ? '' : amount}
         labelProps={{
-          label: `${shortenTokenName(token)} ${haveSameTokenName ? shortenAddress(tokenAddress) : ''} ${
-            showAvailableBalance ? `${t`Avail.`} ` : ''
-          }`,
+          label: notFalsy(
+            shortenTokenName(token),
+            haveSameTokenName && shortenAddress(tokenAddress),
+            showAvailableBalance && t`Avail.`,
+          ).join(' '),
           descriptionLoading: showAvailableBalance && balanceLoading,
-          description: showAvailableBalance ? balance : '',
+          description: showAvailableBalance ? formatNumber(balance) : '',
         }}
         onChange={(val) => handleAmountChange(val, idx)}
       />
       {!hideMaxButton && (
-        <InputMaxBtn
-          isNetworkToken={isNetworkToken}
-          loading={isMaxLoading}
-          disabled={disableMaxButton}
-          onClick={handleMaxClick}
-        />
+        <InputMaxBtn isNetworkToken={isNetworkToken} loading={isMaxLoading} disabled={disabled} onClick={onMax} />
       )}
       <Box flex flexAlignItems="center">
         <TokenIcon blockchainId={blockchainId} tooltip={token} address={tokenAddress} />
       </Box>
     </InputProvider>
+  ) : (
+    <LargeTokenInput
+      name={token}
+      disabled={disabled}
+      isError={hasError}
+      {...(!hideMaxButton && {
+        maxBalance: {
+          balance: stringToNumber(balance),
+          loading: isMaxLoading,
+          onMax,
+          showBalance: showAvailableBalance,
+          showSlider: false,
+          symbol: token,
+        },
+      })}
+      tokenSelector={
+        <TokenLabel
+          blockchainId={blockchainId}
+          label={token}
+          tooltip={isNetworkToken ? t`Balance minus estimated gas` : (tokenAddress ?? '')}
+          address={tokenAddress}
+        />
+      }
+      {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}
+      balance={stringToNumber(amount)}
+      onBalance={onBalance}
+    />
   )
 }
 
