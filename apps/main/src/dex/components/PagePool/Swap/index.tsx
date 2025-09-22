@@ -35,6 +35,7 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { TokenSelector } from '@ui-kit/features/select-token'
+import { LargeSxProps } from '@ui-kit/features/select-token/ui/TokenSelector'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -44,9 +45,6 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
-
-// todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
-const sxProps = { minWidth: '120px' }
 
 const Swap = ({
   chainIdPoolId,
@@ -447,7 +445,7 @@ const Swap = ({
                       '',
                     )
                   }
-                  sx={sxProps}
+                  sx={LargeSxProps}
                 />
               }
               {...(formValues.fromError && {
@@ -575,7 +573,7 @@ const Swap = ({
                     '',
                   )
                 }
-                sx={sxProps}
+                sx={LargeSxProps}
               />
             }
             maxBalance={{

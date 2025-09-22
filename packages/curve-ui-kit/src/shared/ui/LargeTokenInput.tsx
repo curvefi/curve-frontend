@@ -243,12 +243,12 @@ export const LargeTokenInput = ({
    *
    * Changing the percentage changes the balance, which in turn triggers this useEffect,
    * which in turn changes the percentage again. While I am using the current balance,
-   * I really only care about triggering it when maxBalance changes (handleBalanceChange depends on maxBalance).
+   * I really only care about triggering it when maxBalance changes
    */
   useEffect(() => {
     handleBalanceChange(balance)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleBalanceChange])
+  }, [maxBalance?.balance])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
