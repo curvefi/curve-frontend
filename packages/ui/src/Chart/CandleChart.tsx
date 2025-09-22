@@ -1,4 +1,4 @@
-import type { IChartApi, Time, ISeriesApi } from 'lightweight-charts'
+import type { IChartApi, Time, ISeriesApi, LineWidth } from 'lightweight-charts'
 import {
   createChart,
   ColorType,
@@ -10,7 +10,7 @@ import {
   LineSeries,
 } from 'lightweight-charts'
 import lodash from 'lodash'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type {
   LpPriceOhlcDataFormatted,
@@ -39,6 +39,45 @@ function hslaToRgb(hsla: string) {
     return `rgb(${Math.round(255 * f(0))}, ${Math.round(255 * f(8))}, ${Math.round(255 * f(4))})`
   })
 }
+
+/**
+ * Creates a price formatter configuration for Lightweight Charts
+ * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
+ * @returns Price format configuration object
+ */
+function createPriceFormatter(totalDecimalPlacesRef: React.MutableRefObject<number>) {
+  return {
+    type: 'custom' as const,
+    formatter: (price: any) => {
+      const [, fraction] = price.toString().split('.')
+
+      if (!fraction) {
+        return price.toFixed(4)
+      }
+
+      const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+
+      // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
+      // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
+      totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
+
+      return price.toFixed(totalDecimalPlacesRef.current)
+    },
+    minMove: 0.0000001,
+  }
+}
+
+/**
+ * Shared configuration for liquidation range area series
+ */
+const SL_RANGE_AREA_SERIES_DEFAULTS = {
+  lineWidth: 1 as LineWidth,
+  lineStyle: 3,
+  crosshairMarkerVisible: false,
+  pointMarkersVisible: false,
+  lineVisible: false,
+  priceLineStyle: 2,
+} as const
 
 type Props = {
   chartHeight: ChartHeight
@@ -98,6 +137,29 @@ const CandleChart = ({
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
   const [fetchingMore, setFetchingMore] = useState(false)
 
+  // Memoize colors to prevent unnecessary re-renders
+  const memoizedColors = useMemo(() => colors, [colors])
+
+  // Memoized visible range change handler
+  const handleVisibleLogicalRangeChange = useCallback(() => {
+    if (fetchingMore || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+      return
+    }
+
+    const timeScale = chartRef.current.timeScale()
+    const logicalRange = timeScale.getVisibleLogicalRange()
+
+    if (!logicalRange) {
+      return
+    }
+
+    const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+    if (barsInfo && barsInfo.barsBefore < 50) {
+      debouncedFetchMoreChartData.current()
+      setLastTimescale(timeScale.getVisibleRange())
+    }
+  }, [fetchingMore, refetchingCapped])
+
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
   }, [lastFetchEndTime])
@@ -116,16 +178,15 @@ const CandleChart = ({
     ),
   )
 
+  // Chart initialization effect - only run once
   useEffect(() => {
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: hslaToRgb(colors.backgroundColor) },
-        textColor: hslaToRgb(colors.textColor),
+        background: { type: ColorType.Solid, color: '#ffffff' }, // Default color, will be updated by separate effect
+        textColor: '#000000', // Default color, will be updated by separate effect
       },
-      width: wrapperRef.current.clientWidth,
-      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
       timeScale: {
         timeVisible: timeOption !== 'day',
       },
@@ -147,9 +208,77 @@ const CandleChart = ({
         },
       },
       crosshair: {
+        mode: CrosshairMode.Normal, // Default, will be updated by separate effect
+        vertLine: {
+          width: 4 as LineWidth,
+          color: '#C3BCDB44',
+          style: LineStyle.Solid,
+          labelBackgroundColor: '#9B7DFF',
+        },
+        horzLine: {
+          color: '#9B7DFF',
+          labelBackgroundColor: '#9B7DFF',
+        },
+      },
+      width: wrapperRef.current.clientWidth,
+      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+    })
+    chartRef.current.timeScale()
+    isMounted.current = true
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.remove()
+        chartRef.current = null
+      }
+    }
+  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, timeOption, wrapperRef])
+
+  // Update chart colors when they change
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      layout: {
+        background: { type: ColorType.Solid, color: hslaToRgb(memoizedColors.backgroundColor) },
+        textColor: hslaToRgb(memoizedColors.textColor),
+      },
+    })
+  }, [memoizedColors.backgroundColor, memoizedColors.textColor])
+
+  // Update chart magnet setting when it changes
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      crosshair: {
+        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
+      },
+    })
+  }, [magnet])
+
+  // Update chart dimensions when they change
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      width: wrapperRef.current.clientWidth,
+      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+    })
+  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperRef])
+
+  // Update chart settings when they change
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      timeScale: {
+        timeVisible: timeOption !== 'day',
+      },
+      crosshair: {
         mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
-          width: 4,
+          width: 4 as LineWidth,
           color: '#C3BCDB44',
           style: LineStyle.Solid,
           labelBackgroundColor: '#9B7DFF',
@@ -160,362 +289,463 @@ const CandleChart = ({
         },
       },
     })
-    chartRef.current.timeScale()
-    isMounted.current = true
+  }, [timeOption, magnet])
 
-    // liquidation range series
-    const addCurrentSeries = () => {
-      if (chartRef.current) {
-        currentAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-          topColor: colors.rangeColorA25,
-          bottomColor: colors.rangeColorA25,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-          visible: liqRangeCurrentVisible,
-          priceFormat: {
-            type: 'custom',
-            formatter: (price: any) => {
-              const [, fraction] = price.toString().split('.')
+  // Volume series effect - only create once when chart is ready
+  useEffect(() => {
+    if (!chartRef.current || volumeSeriesRef.current) return
 
-              if (!fraction) {
-                return price.toFixed(4)
-              }
-
-              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
-
-              // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-              // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-              totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-              return price.toFixed(totalDecimalPlacesRef.current)
-            },
-            minMove: 0.0000001,
-          },
-        })
-        currentAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-          visible: liqRangeCurrentVisible,
-          priceFormat: {
-            type: 'custom',
-            formatter: (price: any) => {
-              const [, fraction] = price.toString().split('.')
-
-              if (!fraction) {
-                return price.toFixed(4)
-              }
-
-              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
-
-              // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-              // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-              totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-              return price.toFixed(totalDecimalPlacesRef.current)
-            },
-            minMove: 0.0000001,
-          },
-        })
-      }
-    }
-    const addNewSeries = () => {
-      if (chartRef.current) {
-        newAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-          topColor: colors.rangeColorA25,
-          bottomColor: colors.rangeColorA25,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-          visible: liqRangeNewVisible,
-          priceFormat: {
-            type: 'custom',
-            formatter: (price: any) => {
-              const [, fraction] = price.toString().split('.')
-
-              if (!fraction) {
-                return price.toFixed(4)
-              }
-
-              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
-
-              // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-              // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-              totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-              return price.toFixed(totalDecimalPlacesRef.current)
-            },
-            minMove: 0.0000001,
-          },
-        })
-        newAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColor,
-          lineWidth: 1,
-          lineStyle: 3,
-          crosshairMarkerVisible: false,
-          pointMarkersVisible: false,
-          lineVisible: false,
-          priceLineStyle: 2,
-          visible: liqRangeNewVisible,
-          priceFormat: {
-            type: 'custom',
-            formatter: (price: any) => {
-              const [, fraction] = price.toString().split('.')
-
-              if (!fraction) {
-                return price.toFixed(4)
-              }
-
-              const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
-
-              // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-              // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-              totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-              return price.toFixed(totalDecimalPlacesRef.current)
-            },
-            minMove: 0.0000001,
-          },
-        })
-      }
-    }
-    // both ranges
-    if (liquidationRange && liquidationRange.current && liquidationRange.new) {
-      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
-
-      if (addNewFirst) {
-        addNewSeries()
-        addCurrentSeries()
-      } else {
-        addCurrentSeries()
-        addNewSeries()
-      }
-    }
-    // only new
-    if (liquidationRange && !liquidationRange.current && liquidationRange.new && !newAreaSeriesRef.current) {
-      addNewSeries()
-    }
-    // only current
-    if (liquidationRange && liquidationRange.current && !liquidationRange.new && !currentAreaSeriesRef.current) {
-      addCurrentSeries()
-    }
-
-    // ohlc series
-    if (ohlcData && !candlestickSeriesRef.current) {
-      candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-        priceLineStyle: 2,
-        upColor: '#26a69a',
-        downColor: '#ef5350',
-        borderVisible: false,
-        wickUpColor: '#26a69a',
-        wickDownColor: '#ef5350',
-        priceFormat: {
-          type: 'custom',
-          formatter: (price: any) => {
-            const [, fraction] = price.toString().split('.')
-
-            if (!fraction) {
-              return price.toFixed(4)
-            }
-
-            const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
-
-            // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-            // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-            totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-            return price.toFixed(totalDecimalPlacesRef.current)
-          },
-          minMove: 0.0000001,
-        },
-      })
-    }
-
-    if (volumeData && !volumeSeriesRef.current) {
-      volumeSeriesRef.current = chartRef.current.addSeries(HistogramSeries, {
-        priceFormat: {
-          type: 'volume',
-        },
-        priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-      })
-      volumeSeriesRef.current.priceScale().applyOptions({
-        scaleMargins: {
-          top: 0.7,
-          bottom: 0,
-        },
-      })
-    }
-
-    if (oraclePriceData && !oraclePriceSeriesRef.current) {
-      oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
-        color: colors.chartOraclePrice,
-        lineWidth: 2,
-        priceLineStyle: 2,
-        visible: oraclePriceVisible,
-      })
-    }
-
-    const handleVisibleLogicalRangeChange = () => {
-      if (fetchingMore || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
-        return
-      }
-
-      const timeScale = chartRef.current.timeScale()
-      const logicalRange = timeScale.getVisibleLogicalRange()
-
-      if (!logicalRange) {
-        return
-      }
-
-      const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
-      if (barsInfo && barsInfo.barsBefore < 50) {
-        debouncedFetchMoreChartData.current()
-
-        setLastTimescale(timeScale.getVisibleRange())
-      }
-    }
-
-    const timeScale = chartRef.current.timeScale()
-
-    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+    volumeSeriesRef.current = chartRef.current.addSeries(HistogramSeries, {
+      priceFormat: {
+        type: 'volume',
+      },
+      priceScaleId: '', // set as an overlay by setting a blank priceScaleId
+    })
+    volumeSeriesRef.current.priceScale().applyOptions({
+      scaleMargins: {
+        top: 0.7,
+        bottom: 0,
+      },
+    })
 
     return () => {
-      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
-
-      candlestickSeriesRef.current = null
-
-      if (chartRef.current) {
-        chartRef.current.remove()
-        chartRef.current = null
-      }
-
-      newAreaSeriesRef.current = null
-      newAreaBgSeriesRef.current = null
-      currentAreaSeriesRef.current = null
-      currentAreaBgSeriesRef.current = null
-      candlestickSeriesRef.current = null
       volumeSeriesRef.current = null
+    }
+  }, [])
+
+  // Liquidation range series effect - create/destroy series based on visibility
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    // Clean up existing series first
+    if (currentAreaSeriesRef.current) {
+      chartRef.current.removeSeries(currentAreaSeriesRef.current)
+      currentAreaSeriesRef.current = null
+    }
+    if (currentAreaBgSeriesRef.current) {
+      chartRef.current.removeSeries(currentAreaBgSeriesRef.current)
+      currentAreaBgSeriesRef.current = null
+    }
+    if (newAreaSeriesRef.current) {
+      chartRef.current.removeSeries(newAreaSeriesRef.current)
+      newAreaSeriesRef.current = null
+    }
+    if (newAreaBgSeriesRef.current) {
+      chartRef.current.removeSeries(newAreaBgSeriesRef.current)
+      newAreaBgSeriesRef.current = null
+    }
+
+    // Create current range series only if visible
+    if (liqRangeCurrentVisible) {
+      currentAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
+        ...SL_RANGE_AREA_SERIES_DEFAULTS,
+        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      })
+      currentAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
+        ...SL_RANGE_AREA_SERIES_DEFAULTS,
+        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      })
+    }
+
+    // Create new range series only if visible
+    if (liqRangeNewVisible) {
+      newAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
+        ...SL_RANGE_AREA_SERIES_DEFAULTS,
+        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      })
+      newAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
+        ...SL_RANGE_AREA_SERIES_DEFAULTS,
+        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      })
+    }
+
+    // Set data for newly created series if liquidation range data exists
+    if (liquidationRange) {
+      // both ranges
+      if (liquidationRange.current && liquidationRange.new) {
+        const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+
+        if (addNewFirst) {
+          if (newAreaSeriesRef.current) {
+            newAreaSeriesRef.current.setData(liquidationRange.new.price2)
+          }
+          if (newAreaBgSeriesRef.current) {
+            newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
+          }
+          if (currentAreaSeriesRef.current) {
+            currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
+          }
+          if (currentAreaBgSeriesRef.current) {
+            currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
+          }
+        } else {
+          if (currentAreaSeriesRef.current) {
+            currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
+          }
+          if (currentAreaBgSeriesRef.current) {
+            currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
+          }
+          if (newAreaSeriesRef.current) {
+            newAreaSeriesRef.current.setData(liquidationRange.new.price2)
+          }
+          if (newAreaBgSeriesRef.current) {
+            newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
+          }
+        }
+      }
+      // only new
+      else if (!liquidationRange.current && liquidationRange.new) {
+        if (newAreaSeriesRef.current) {
+          newAreaSeriesRef.current.setData(liquidationRange.new.price2)
+        }
+        if (newAreaBgSeriesRef.current) {
+          newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
+        }
+      }
+      // only current
+      else if (liquidationRange.current && !liquidationRange.new) {
+        if (currentAreaSeriesRef.current) {
+          currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
+        }
+        if (currentAreaBgSeriesRef.current) {
+          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
+        }
+      }
+    }
+
+    return () => {
+      if (currentAreaSeriesRef.current) {
+        chartRef.current?.removeSeries(currentAreaSeriesRef.current)
+        currentAreaSeriesRef.current = null
+      }
+      if (currentAreaBgSeriesRef.current) {
+        chartRef.current?.removeSeries(currentAreaBgSeriesRef.current)
+        currentAreaBgSeriesRef.current = null
+      }
+      if (newAreaSeriesRef.current) {
+        chartRef.current?.removeSeries(newAreaSeriesRef.current)
+        newAreaSeriesRef.current = null
+      }
+      if (newAreaBgSeriesRef.current) {
+        chartRef.current?.removeSeries(newAreaBgSeriesRef.current)
+        newAreaBgSeriesRef.current = null
+      }
+    }
+  }, [liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange])
+
+  // OHLC series effect - only create once when chart is ready
+  useEffect(() => {
+    if (!chartRef.current || candlestickSeriesRef.current) return
+
+    candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
+      priceLineStyle: 2,
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+      priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+    })
+
+    return () => {
+      candlestickSeriesRef.current = null
+    }
+  }, [])
+
+  // Oracle price series effect - only create once when chart is ready
+  useEffect(() => {
+    if (!chartRef.current || oraclePriceSeriesRef.current) return
+
+    oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
+      color: '#000000', // Default color, will be updated by separate effect
+      lineWidth: 2 as LineWidth,
+      priceLineStyle: 2,
+      visible: false, // Default visibility, will be updated by separate effect
+    })
+
+    return () => {
       oraclePriceSeriesRef.current = null
     }
-  }, [
-    chartExpanded,
-    chartHeight.expanded,
-    chartHeight.standard,
-    colors.backgroundColor,
-    colors.chartOraclePrice,
-    colors.rangeColor,
-    colors.rangeColorA25,
-    colors.textColor,
-    fetchingMore,
-    lastTimescale,
-    liqRangeCurrentVisible,
-    liqRangeNewVisible,
-    liquidationRange,
-    magnet,
-    ohlcData,
-    oraclePriceData,
-    oraclePriceVisible,
-    refetchingCapped,
-    timeOption,
-    volumeData,
-    wrapperRef,
-  ])
+  }, [])
 
+  // Update OHLC data when it changes
+  useEffect(() => {
+    if (!candlestickSeriesRef.current || !ohlcData) return
+
+    candlestickSeriesRef.current.setData(ohlcData)
+  }, [ohlcData])
+
+  // Update volume data when it changes
+  useEffect(() => {
+    if (!volumeSeriesRef.current || !volumeData) return
+
+    volumeSeriesRef.current.setData(volumeData)
+  }, [volumeData])
+
+  // Update oracle price data when it changes
+  useEffect(() => {
+    if (!oraclePriceSeriesRef.current || !oraclePriceData) return
+
+    oraclePriceSeriesRef.current.setData(oraclePriceData)
+  }, [oraclePriceData])
+
+  // Update oracle price series visibility and color when they change
+  useEffect(() => {
+    if (!oraclePriceSeriesRef.current) return
+
+    oraclePriceSeriesRef.current.applyOptions({
+      color: memoizedColors.chartOraclePrice,
+      visible: oraclePriceVisible,
+    })
+  }, [memoizedColors.chartOraclePrice, oraclePriceVisible])
+
+  // Event subscription effect
   useEffect(() => {
     if (!chartRef.current) return
 
     const timeScale = chartRef.current.timeScale()
+    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
 
-    if (candlestickSeriesRef.current) {
-      candlestickSeriesRef.current.setData(ohlcData)
-      setFetchingMore(false)
+    return () => {
+      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+    }
+  }, [handleVisibleLogicalRangeChange])
 
-      if (lastTimescale) {
-        timeScale.setVisibleRange(lastTimescale)
+  useEffect(() => {
+    if (!volumeSeriesRef.current || !volumeData) return
+
+    volumeSeriesRef.current.setData(volumeData)
+  }, [volumeData])
+
+  // Update liquidation range data when it changes
+  useEffect(() => {
+    if (!liquidationRange) return
+
+    // both ranges
+    if (liquidationRange.current && liquidationRange.new) {
+      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+
+      if (addNewFirst) {
+        if (newAreaSeriesRef.current) {
+          newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+        }
+        if (newAreaBgSeriesRef.current) {
+          newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
+        }
+        if (currentAreaSeriesRef.current) {
+          currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+        }
+        if (currentAreaBgSeriesRef.current) {
+          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
+        }
+      } else {
+        if (currentAreaSeriesRef.current) {
+          currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+        }
+        if (currentAreaBgSeriesRef.current) {
+          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
+        }
+        if (newAreaSeriesRef.current) {
+          newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+        }
+        if (newAreaBgSeriesRef.current) {
+          newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
+        }
       }
     }
-
-    if (volumeSeriesRef.current && volumeData !== undefined) {
-      volumeSeriesRef.current.setData(volumeData)
-    }
-
-    if (oraclePriceSeriesRef.current && oraclePriceData !== undefined) {
-      oraclePriceSeriesRef.current.setData(oraclePriceData)
-    }
-
-    if (liquidationRange !== undefined) {
-      if (liquidationRange.new && newAreaSeriesRef.current && newAreaBgSeriesRef.current) {
+    // only new
+    else if (!liquidationRange.current && liquidationRange.new) {
+      if (newAreaSeriesRef.current) {
         newAreaSeriesRef.current.setData(liquidationRange.new.price1)
+      }
+      if (newAreaBgSeriesRef.current) {
         newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
       }
-
-      if (liquidationRange.current && currentAreaSeriesRef.current && currentAreaBgSeriesRef.current) {
-        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
+    }
+    // only current
+    else if (liquidationRange.current && !liquidationRange.new) {
+      if (currentAreaBgSeriesRef.current) {
         currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
       }
-      if (
-        currentAreaSeriesRef.current &&
-        currentAreaBgSeriesRef.current &&
-        liquidationRange &&
-        liquidationRange.current &&
-        liquidationRange.new
-      ) {
-        currentAreaSeriesRef.current.applyOptions({
-          topColor: colors.rangeColorA25Old,
-          bottomColor: colors.rangeColorA25Old,
-          lineColor: colors.rangeColorOld,
-        })
-        currentAreaBgSeriesRef.current.applyOptions({
-          topColor: colors.backgroundColor,
-          bottomColor: colors.backgroundColor,
-          lineColor: colors.rangeColorOld,
-        })
+      if (currentAreaSeriesRef.current) {
+        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
       }
     }
+  }, [liquidationRange])
 
-    // update latest oracle price from more recent data source to ensure most recent data is displayed
+  useEffect(() => {
+    if (!candlestickSeriesRef.current || !ohlcData) return
+
+    candlestickSeriesRef.current.setData(ohlcData)
+    setFetchingMore(false)
+  }, [ohlcData])
+
+  useEffect(() => {
+    if (!oraclePriceSeriesRef.current || !oraclePriceData) return
+
+    oraclePriceSeriesRef.current.setData(oraclePriceData)
+  }, [oraclePriceData])
+
+  // Update liquidation range series colors when they change
+  useEffect(() => {
+    // Update current range series if they exist and are visible
+    if (liqRangeCurrentVisible && currentAreaSeriesRef.current) {
+      currentAreaSeriesRef.current.applyOptions({
+        topColor: memoizedColors.rangeColorA25,
+        bottomColor: memoizedColors.rangeColorA25,
+        lineColor: memoizedColors.rangeColor,
+      })
+    }
+    if (liqRangeCurrentVisible && currentAreaBgSeriesRef.current) {
+      currentAreaBgSeriesRef.current.applyOptions({
+        topColor: memoizedColors.backgroundColor,
+        bottomColor: memoizedColors.backgroundColor,
+        lineColor: memoizedColors.rangeColor,
+      })
+    }
+
+    // Update new range series if they exist and are visible
+    if (liqRangeNewVisible && newAreaSeriesRef.current) {
+      newAreaSeriesRef.current.applyOptions({
+        topColor: memoizedColors.rangeColorA25,
+        bottomColor: memoizedColors.rangeColorA25,
+        lineColor: memoizedColors.rangeColor,
+      })
+    }
+    if (liqRangeNewVisible && newAreaBgSeriesRef.current) {
+      newAreaBgSeriesRef.current.applyOptions({
+        topColor: memoizedColors.backgroundColor,
+        bottomColor: memoizedColors.backgroundColor,
+        lineColor: memoizedColors.rangeColor,
+      })
+    }
+
+    // Update "old" colors for current range if both current and new exist
     if (
-      latestOraclePrice &&
-      oraclePriceSeriesRef.current &&
-      oraclePriceData &&
-      oraclePriceData[oraclePriceData.length - 1].value !== +latestOraclePrice
+      liqRangeCurrentVisible &&
+      currentAreaSeriesRef.current &&
+      currentAreaBgSeriesRef.current &&
+      liquidationRange &&
+      liquidationRange.current &&
+      liquidationRange.new
     ) {
-      oraclePriceSeriesRef.current.update({
-        time: oraclePriceData[oraclePriceData.length - 1].time,
-        value: +latestOraclePrice,
+      currentAreaSeriesRef.current.applyOptions({
+        topColor: memoizedColors.rangeColorA25Old,
+        bottomColor: memoizedColors.rangeColorA25Old,
+        lineColor: memoizedColors.rangeColorOld,
+      })
+      currentAreaBgSeriesRef.current.applyOptions({
+        topColor: memoizedColors.backgroundColor,
+        bottomColor: memoizedColors.backgroundColor,
+        lineColor: memoizedColors.rangeColorOld,
       })
     }
   }, [
-    colors.backgroundColor,
-    colors.rangeColorA25Old,
-    colors.rangeColorOld,
-    fetchMoreChartData,
-    fetchingMore,
-    lastTimescale,
-    latestOraclePrice,
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    memoizedColors.rangeColorA25,
+    memoizedColors.rangeColor,
+    memoizedColors.backgroundColor,
+    memoizedColors.rangeColorA25Old,
+    memoizedColors.rangeColorOld,
     liquidationRange,
-    ohlcData,
-    oraclePriceData,
-    refetchingCapped,
-    volumeData,
   ])
+
+  // Update timescale when lastTimescale changes
+  useEffect(() => {
+    if (!chartRef.current || !lastTimescale) return
+
+    const timeScale = chartRef.current.timeScale()
+    timeScale.setVisibleRange(lastTimescale)
+  }, [lastTimescale])
+
+  // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
+  useEffect(() => {
+    if (
+      !latestOraclePrice ||
+      !oraclePriceSeriesRef.current ||
+      !oraclePriceData ||
+      oraclePriceData[oraclePriceData.length - 1].value === +latestOraclePrice
+    )
+      return
+
+    oraclePriceSeriesRef.current.update({
+      time: oraclePriceData[oraclePriceData.length - 1].time,
+      value: +latestOraclePrice,
+    })
+  }, [latestOraclePrice, oraclePriceData])
+
+  // Set series order effect - ensure proper layering
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    let order = 0
+
+    // Liquidation range series (behind OHLC)
+    // Order should match the data setting logic
+    if (liquidationRange && liquidationRange.current && liquidationRange.new) {
+      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+
+      if (addNewFirst) {
+        // New range first
+        if (newAreaSeriesRef.current) {
+          newAreaSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (newAreaBgSeriesRef.current) {
+          newAreaBgSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (currentAreaSeriesRef.current) {
+          currentAreaSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (currentAreaBgSeriesRef.current) {
+          currentAreaBgSeriesRef.current.setSeriesOrder(order++)
+        }
+      } else {
+        // Current range first
+        if (currentAreaSeriesRef.current) {
+          currentAreaSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (currentAreaBgSeriesRef.current) {
+          currentAreaBgSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (newAreaSeriesRef.current) {
+          newAreaSeriesRef.current.setSeriesOrder(order++)
+        }
+        if (newAreaBgSeriesRef.current) {
+          newAreaBgSeriesRef.current.setSeriesOrder(order++)
+        }
+      }
+    } else {
+      // Only one range or no ranges - use default order
+      if (currentAreaSeriesRef.current) {
+        currentAreaSeriesRef.current.setSeriesOrder(order++)
+      }
+      if (currentAreaBgSeriesRef.current) {
+        currentAreaBgSeriesRef.current.setSeriesOrder(order++)
+      }
+      if (newAreaSeriesRef.current) {
+        newAreaSeriesRef.current.setSeriesOrder(order++)
+      }
+      if (newAreaBgSeriesRef.current) {
+        newAreaBgSeriesRef.current.setSeriesOrder(order++)
+      }
+    }
+
+    // Volume series (bottom layer)
+    if (volumeSeriesRef.current) {
+      volumeSeriesRef.current.setSeriesOrder(order++)
+    }
+
+    // OHLC series (main layer)
+    if (candlestickSeriesRef.current) {
+      candlestickSeriesRef.current.setSeriesOrder(order++)
+    }
+
+    // Oracle price series (top layer)
+    if (oraclePriceSeriesRef.current) {
+      oraclePriceSeriesRef.current.setSeriesOrder(order++)
+    }
+  }, [liquidationRange])
 
   useEffect(() => {
     wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
