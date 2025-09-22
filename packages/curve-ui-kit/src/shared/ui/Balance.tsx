@@ -16,16 +16,20 @@ type MaxButtonProps = {
   sx?: SxProps
   onClick?: () => void
   loading?: boolean
+  disabled?: boolean
+  testId?: string
 }
 
 /** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick, loading }: MaxButtonProps) => (
+const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId }: MaxButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
     size="extraSmall"
     onClick={onClick}
     loading={loading}
+    disabled={disabled}
+    data-testid={testId}
     sx={{
       /**
        * Remove any properties that cause the total height component to change
@@ -94,14 +98,29 @@ export type Props = {
   onMax?: () => void
   /** Whether the balance is loading */
   loading?: boolean
+  /** Whether the max button is disabled */
+  disabled?: boolean
+  /** Optional test ID for the button */
+  maxTestId?: string
 }
 
-export const Balance = ({ symbol, max, loading = false, balance, notionalValueUsd, hideIcon, sx, onMax }: Props) => (
+export const Balance = ({
+  symbol,
+  max,
+  loading = false,
+  balance,
+  notionalValueUsd,
+  hideIcon,
+  sx,
+  onMax,
+  disabled,
+  maxTestId,
+}: Props) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
     {max === 'balance' && balance != null ? (
-      <MaxButton underline onClick={onMax} loading={loading}>
+      <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
         <BalanceText symbol={symbol} balance={balance} loading={loading} />
       </MaxButton>
     ) : (
@@ -116,7 +135,7 @@ export const Balance = ({ symbol, max, loading = false, balance, notionalValueUs
 
     {max === 'button' && balance != null && (
       // Right-align without flex grow for precise click area
-      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }}>
+      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled} testId={maxTestId}>
         {t`Max`}
       </MaxButton>
     )}

@@ -348,10 +348,14 @@ const LoanBorrowMore = ({
     setHealthMode,
   }
 
+  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
+  const network = networks[rChainId]
+
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
+          network={network}
           id="userCollateral"
           inpTopLabel={t`Add from wallet:`}
           inpError={formValues.userCollateralError}
@@ -362,12 +366,13 @@ const LoanBorrowMore = ({
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+          handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
         {isLeverage && (
           <InpToken
+            network={network}
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
@@ -377,13 +382,14 @@ const LoanBorrowMore = ({
             tokenAddress={market?.borrowed_token?.address}
             tokenSymbol={market?.borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
-            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
+            handleInpChange={setUserBorrowed}
             handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
       </FieldsWrapper>
 
       <InpTokenBorrow
+        network={network}
         id="debt"
         inpTopLabel={t`Borrow amount:`}
         inpError={formValues.debtError}
@@ -392,7 +398,7 @@ const LoanBorrowMore = ({
         tokenAddress={market?.borrowed_token?.address}
         tokenSymbol={market?.borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })

@@ -342,7 +342,6 @@ describe(`LlamaLend Storage Migration`, () => {
 
 function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {
   cy.viewport(width, height)
-  cy.setCookie('cypress', 'true') // disable server data fetching so the app can use the mocks
   cy.visit('/llamalend/ethereum/markets/', {
     onBeforeLoad: ({ localStorage }) => localStorage.clear(),
     ...LOAD_TIMEOUT,
