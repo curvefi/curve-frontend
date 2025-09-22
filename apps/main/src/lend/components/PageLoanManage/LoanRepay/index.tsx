@@ -8,10 +8,9 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import DetailInfo from '@/lend/components/PageLoanManage/LoanRepay/components/DetailInfo'
 import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
-import { StyledDetailInfoWrapper, StyledInpChip } from '@/lend/components/PageLoanManage/styles'
+import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
-import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
@@ -28,8 +27,8 @@ import {
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
-import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
 import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
@@ -379,47 +378,51 @@ const LoanRepay = ({
   )
 
   return (
-    <>
-      <Box grid gridGap={1}>
-        <FieldsWrapper $showBorder={hasLeverage}>
-          {hasLeverage && (
-            <Stack gap={Spacing.xl}>
-              <InpToken
-                network={network}
-                id="stateCollateral"
-                inpTopLabel={t`Repay from collateral:`}
-                inpError={formValues.stateCollateralError}
-                inpDisabled={disable}
-                inpLabelLoading={loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
-                inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
-                inpValue={formValues.stateCollateral}
-                tokenAddress={collateral_token?.address}
-                tokenSymbol={collateral_token?.symbol}
-                tokenBalance={userState?.collateral}
-                handleInpChange={setStateCollateral}
-                handleMaxClick={() =>
-                  updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
-                }
-              />
+    <Stack gap={Spacing.lg}>
+      {hasLeverage && (
+        <Stack gap={Spacing.sm}>
+          <Typography variant="headingXsMedium"> {t`Repay from collateral:`} </Typography>
 
-              <InpToken
-                network={network}
-                id="userCollateral"
-                inpTopLabel={t`Repay from wallet:`}
-                inpError={formValues.userCollateralError}
-                inpDisabled={disable}
-                inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
-                inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
-                inpValue={formValues.userCollateral}
-                tokenAddress={collateral_token?.address}
-                tokenSymbol={collateral_token?.symbol}
-                tokenBalance={userBalances?.collateral}
-                handleInpChange={setUserCollateral}
-                handleMaxClick={() =>
-                  updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
-                }
-              />
-            </Stack>
+          <InpToken
+            network={network}
+            id="stateCollateral"
+            inpError={formValues.stateCollateralError}
+            inpDisabled={disable}
+            inpLabelLoading={loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
+            inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
+            inpValue={formValues.stateCollateral}
+            tokenAddress={collateral_token?.address}
+            tokenSymbol={collateral_token?.symbol}
+            tokenBalance={userState?.collateral}
+            handleInpChange={setStateCollateral}
+            handleMaxClick={() =>
+              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
+            }
+          />
+        </Stack>
+      )}
+
+      <Stack gap={Spacing.sm}>
+        <Typography variant="headingXsMedium">{t`Repay from wallet:`}</Typography>
+
+        <Stack gap={Spacing.md}>
+          {hasLeverage && (
+            <InpToken
+              network={network}
+              id="userCollateral"
+              inpError={formValues.userCollateralError}
+              inpDisabled={disable}
+              inpLabelLoading={!!signerAddress && typeof userBalances?.collateral === 'undefined'}
+              inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
+              inpValue={formValues.userCollateral}
+              tokenAddress={collateral_token?.address}
+              tokenSymbol={collateral_token?.symbol}
+              tokenBalance={userBalances?.collateral}
+              handleInpChange={setUserCollateral}
+              handleMaxClick={() =>
+                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
+              }
+            />
           )}
 
           <InpToken
@@ -482,11 +485,12 @@ const LoanRepay = ({
               updateFormValues({ userBorrowed: '', isFullRepay: false })
             }}
           />
-        </FieldsWrapper>
-        <StyledInpChip size="xs">
-          {t`Debt balance`} {formatNumber(userState?.debt, { defaultValue: '-' })} {borrowed_token?.symbol}
-        </StyledInpChip>
-      </Box>
+        </Stack>
+      </Stack>
+
+      <Typography variant="headingXsMedium">
+        {t`Debt balance`} {formatNumber(userState?.debt, { defaultValue: '-' })} {borrowed_token?.symbol}
+      </Typography>
 
       <Checkbox
         isDisabled={disableCheckbox}
@@ -541,7 +545,7 @@ const LoanRepay = ({
           {steps && <Stepper steps={steps} />}
         </LoanFormConnect>
       )}
-    </>
+    </Stack>
   )
 }
 
