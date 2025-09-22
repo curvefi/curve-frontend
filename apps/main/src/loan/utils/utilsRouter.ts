@@ -1,13 +1,14 @@
 import type { FormType as ManageFormType } from '@/loan/components/PageLoanManage/types'
 import { ROUTE } from '@/loan/constants'
 import { ChainId, type CollateralUrlParams, type NetworkUrlParams, type UrlParams } from '@/loan/types/loan.types'
-import { getInternalUrl } from '@ui-kit/shared/routes'
+import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils'
 
 /** Get the path for the given route in this app */
 export const getPath = ({ network }: UrlParams, route: string) => getInternalUrl('crvusd', network, route)
 
-export const getCollateralListPathname = (params: NetworkUrlParams) => getPath(params, ROUTE.PAGE_MARKETS)
+export const getCollateralListPathname = ({ network }: NetworkUrlParams) =>
+  getInternalUrl('llamalend', network, LLAMALEND_ROUTES.PAGE_MARKETS)
 
 export const useChainId = ({ network }: NetworkUrlParams) =>
   ({
