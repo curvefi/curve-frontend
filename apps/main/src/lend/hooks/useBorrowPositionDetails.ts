@@ -44,7 +44,6 @@ export const useBorrowPositionDetails = ({
     status,
     state: { collateral, borrowed, debt } = {},
   } = userLoanDetails ?? {}
-  const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[marketId])
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
   const { data: campaigns } = useCampaigns({})
@@ -76,7 +75,7 @@ export const useBorrowPositionDetails = ({
     [lendSnapshots],
   )
 
-  const borrowApy = onChainRatesData?.rates?.borrowApy ?? marketRate?.rates?.borrowApy ?? null
+  const borrowApy = onChainRatesData?.rates?.borrowApy ?? null
   const collateralTotalValue = useMemo(() => {
     if (!collateralUsdRate || !collateral || !borrowed) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
