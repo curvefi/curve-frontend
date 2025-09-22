@@ -441,7 +441,6 @@ const QuickSwap = ({
                 loading: userBalancesLoading || isMaxLoading,
                 balance: stringToNumber(userFromBalance),
                 symbol: fromToken?.symbol || '',
-                showSlider: false,
                 ...(fromUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
                 ...(searchedParams.fromAddress === ethAddress && {
@@ -534,7 +533,6 @@ const QuickSwap = ({
               loading: userBalancesLoading,
               balance: stringToNumber(userToBalance),
               symbol: toToken?.symbol || '',
-              showSlider: false,
               ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
               max: 'off',
             }}
