@@ -180,12 +180,6 @@ export type MarketTotalLiquidity = {
   error: string
 }
 export type MarketsTotalLiquidityMapper = { [owmId: string]: MarketTotalLiquidity }
-export type MarketTotalCollateralValue = {
-  total: number | null
-  tooltipContent: { label: string; value: string }[]
-  error: string
-}
-export type MarketsTotalCollateralValueMapper = { [owmId: string]: MarketTotalCollateralValue }
 export type RewardOther = {
   apy: number
   decimals?: number
@@ -259,7 +253,6 @@ export type FutureRates = {
   borrowApy: string
   lendApy: string
 }
-export type Order = 'asc' | 'desc'
 export type MarketDetailsView = 'user' | 'market' | ''
 export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
