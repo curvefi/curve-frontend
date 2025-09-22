@@ -15,7 +15,6 @@ import {
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  collateralDatas: { [chainId: string]: CollateralData[] }
   collateralDatasMapper: { [chainId: string]: CollateralDatasMapper }
 }
 
@@ -34,7 +33,6 @@ export type CollateralsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  collateralDatas: {},
   collateralDatasMapper: {},
 }
 
@@ -58,7 +56,6 @@ const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => (
       }
 
       const collateralDatas = Object.entries(collateralDatasMapper).map(([_, v]) => v)
-      get()[sliceKey].setStateByActiveKey('collateralDatas', chainId.toString(), collateralDatas)
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
 
       // add to cache

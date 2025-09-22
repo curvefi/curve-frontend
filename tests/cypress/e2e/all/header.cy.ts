@@ -19,6 +19,8 @@ const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
 
+const llamalendApps: AppPath[] = ['llamalend', 'lend', 'crvusd']
+
 describe('Header', () => {
   let viewport: readonly [number, number]
 
@@ -76,8 +78,8 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['crvusd', 'dao'].includes(appPath)) {
-        // apps that only support Ethereum
+      if (['dao'].includes(appPath)) {
+        // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get("[data-testid='app-link-dex']").invoke('attr', 'href').should('include', `/dex/ethereum`)
@@ -124,7 +126,7 @@ describe('Header', () => {
 
       cy.url().then((url) => {
         const pathname = new URL(url).pathname
-        const index = appPath === 'llamalend' ? 1 : 0 // LlamaLend's first option is the default page
+        const index = llamalendApps.includes(appPath) ? 1 : 0 // LlamaLend's first option is the default page
         cy.get('[data-testid^="sidebar-item-"]').eq(index).should('have.attr', 'href').and('not.equal', pathname)
         cy.get('[data-testid^="sidebar-item-"]').eq(index).click()
         cy.url(LOAD_TIMEOUT).should('not.equal', url)
@@ -151,7 +153,8 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['crvusd', 'dao'].includes(appPath)) {
+      if (['dao'].includes(appPath)) {
+        // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
         cy.get(`[data-testid='menu-toggle']`).click()
@@ -166,14 +169,10 @@ describe('Header', () => {
   })
 
   function waitIsLoaded(appPath: AppPath) {
-    const testId = {
-      dao: 'proposal-title',
-      crvusd: 'btn-connect-prompt',
-      lend: 'btn-connect-prompt',
-      llamalend: 'data-table-head',
-      dex: 'inp-search-pools',
-    }[appPath || 'dex']
-    cy.get(`[data-testid='${testId}']`, API_LOAD_TIMEOUT).should('be.visible')
+    const app = appPath || 'dex'
+    const llamalend = 'data-table-head'
+    const id = { dao: 'proposal-title', crvusd: llamalend, lend: llamalend, llamalend, dex: 'inp-search-pools' }[app]
+    cy.get(`[data-testid='${id}']`, API_LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {
