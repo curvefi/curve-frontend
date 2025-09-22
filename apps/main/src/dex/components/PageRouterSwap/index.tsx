@@ -35,8 +35,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
-import { LargeSxProps } from '@ui-kit/features/select-token/ui/TokenSelector'
+import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -442,6 +441,7 @@ const QuickSwap = ({
                 loading: userBalancesLoading || isMaxLoading,
                 balance: stringToNumber(userFromBalance),
                 symbol: fromToken?.symbol || '',
+                showSlider: false,
                 ...(fromUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
                 ...(searchedParams.fromAddress === ethAddress && {
@@ -467,9 +467,13 @@ const QuickSwap = ({
                   }}
                 />
               }
-              {...(formValues.fromError && {
-                message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
-              })}
+              message={
+                formValues.fromError ? (
+                  t`Amount > wallet balance ${formatNumber(userFromBalance)}`
+                ) : (
+                  <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+                )
+              }
             />
           )}
 
@@ -530,9 +534,11 @@ const QuickSwap = ({
               loading: userBalancesLoading,
               balance: stringToNumber(userToBalance),
               symbol: toToken?.symbol || '',
+              showSlider: false,
               ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
+              max: 'off',
             }}
-            isError={false}
+            message={<FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />}
             disabled={isDisable}
             testId="to-amount"
             tokenSelector={

@@ -1,12 +1,9 @@
 import { SxProps } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
-import { tokenOptionEquals, type TokenOption } from '../types'
+import { type TokenOption, tokenOptionEquals } from '../types'
 import type { TokenListCallbacks, TokenListProps } from './modal/TokenList'
 import { TokenSelectorModal, type TokenSelectorModalProps } from './modal/TokenSelectorModal'
 import { TokenSelectButton } from './TokenSelectButton'
-
-// todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
-export const LargeSxProps = { minWidth: '120px' }
 
 type Props = Partial<TokenListProps> &
   Partial<TokenListCallbacks> &

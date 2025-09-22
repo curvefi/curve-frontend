@@ -94,7 +94,7 @@ export interface LargeTokenInputRef {
  *                                       When false, hides the slider but still allows direct input.
  */
 type MaxBalanceProps = Partial<
-  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'onMax'>
+  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
@@ -310,10 +310,10 @@ export const LargeTokenInput = ({
             {showBalance && (
               <Balance
                 disabled={disabled}
-                symbol={maxBalance.symbol ?? ''}
-                balance={maxBalance.balance}
-                notionalValueUsd={maxBalance.notionalValueUsd}
-                max={maxBalance ? 'button' : 'off'}
+                symbol={maxBalance?.symbol ?? ''}
+                balance={maxBalance?.balance}
+                notionalValueUsd={maxBalance?.notionalValueUsd}
+                max={maxBalance.max ?? 'button'}
                 onMax={onMax}
                 // Stretch the balance component if there's no slider so the max button can reach the end
                 sx={{ ...(!showSlider && { flexGrow: 1 }) }}
