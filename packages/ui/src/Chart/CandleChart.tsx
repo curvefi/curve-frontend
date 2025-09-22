@@ -184,11 +184,11 @@ const CandleChart = ({
 
     chartRef.current = createChart(chartContainerRef.current, {
       layout: {
-        background: { type: ColorType.Solid, color: '#ffffff' }, // Default color, will be updated by separate effect
-        textColor: '#000000', // Default color, will be updated by separate effect
+        background: { type: ColorType.Solid, color: '#ffffff' },
+        textColor: '#000000',
       },
       timeScale: {
-        timeVisible: timeOption !== 'day',
+        timeVisible: true, // Default, will be updated by separate effect
       },
       rightPriceScale: {
         autoScale: true,
@@ -208,7 +208,7 @@ const CandleChart = ({
         },
       },
       crosshair: {
-        mode: CrosshairMode.Normal, // Default, will be updated by separate effect
+        mode: CrosshairMode.Normal,
         vertLine: {
           width: 4 as LineWidth,
           color: '#C3BCDB44',
@@ -220,8 +220,6 @@ const CandleChart = ({
           labelBackgroundColor: '#9B7DFF',
         },
       },
-      width: wrapperRef.current.clientWidth,
-      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
     })
     chartRef.current.timeScale()
     isMounted.current = true
@@ -232,7 +230,24 @@ const CandleChart = ({
         chartRef.current = null
       }
     }
-  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, timeOption, wrapperRef])
+  }, [])
+
+  // Initialize chart dimensions after creation
+  useEffect(() => {
+    if (!chartRef.current || !wrapperRef.current) return
+
+    // Use a small delay to ensure the chart is fully initialized
+    const timeoutId = setTimeout(() => {
+      if (chartRef.current && wrapperRef.current) {
+        chartRef.current.applyOptions({
+          width: wrapperRef.current.clientWidth,
+          height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+        })
+      }
+    }, 0)
+
+    return () => clearTimeout(timeoutId)
+  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperRef])
 
   // Update chart colors when they change
   useEffect(() => {
@@ -246,17 +261,6 @@ const CandleChart = ({
     })
   }, [memoizedColors.backgroundColor, memoizedColors.textColor])
 
-  // Update chart magnet setting when it changes
-  useEffect(() => {
-    if (!chartRef.current) return
-
-    chartRef.current.applyOptions({
-      crosshair: {
-        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
-      },
-    })
-  }, [magnet])
-
   // Update chart dimensions when they change
   useEffect(() => {
     if (!chartRef.current) return
@@ -267,7 +271,7 @@ const CandleChart = ({
     })
   }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperRef])
 
-  // Update chart settings when they change
+  // Update timeScale visibility when timeOption changes
   useEffect(() => {
     if (!chartRef.current) return
 
@@ -275,6 +279,14 @@ const CandleChart = ({
       timeScale: {
         timeVisible: timeOption !== 'day',
       },
+    })
+  }, [timeOption])
+
+  // Update crosshair settings when magnet changes
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
       crosshair: {
         mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
         vertLine: {
@@ -289,7 +301,7 @@ const CandleChart = ({
         },
       },
     })
-  }, [timeOption, magnet])
+  }, [magnet])
 
   // Volume series effect - only create once when chart is ready
   useEffect(() => {
