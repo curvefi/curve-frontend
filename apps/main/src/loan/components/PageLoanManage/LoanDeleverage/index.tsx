@@ -42,9 +42,14 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -80,6 +85,10 @@ const LoanDeleverage = ({
   const { chainId, haveSigner } = curveProps(curve)
   const { userState } = userLoanDetails ?? {}
   const { collateral: collateralName } = getTokenName(llamma)
+  const [releaseChannel] = useReleaseChannel()
+  const network = networks[rChainId]
+  const collateralAddress = llamma?.coinAddresses?.[1] ?? llamma?.collateral
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
@@ -100,6 +109,11 @@ const LoanDeleverage = ({
       )
     },
     [curve, llamma, llammaId, maxSlippage, setFormValues],
+  )
+
+  const onCollateralChanged = useCallback(
+    (val?: number) => updateFormValues({ collateral: `${val ?? ''}` }, '', false),
+    [updateFormValues],
   )
 
   const handleBtnClickRepay = useCallback(
@@ -281,38 +295,70 @@ const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.collateralError ? 'error' : undefined}
+      {releaseChannel !== ReleaseChannel.Beta ? (
+        <Box grid gridRowGap={1}>
+          <InputProvider
+            grid
+            gridTemplateColumns="1fr auto"
+            padding="4px 8px"
+            inputVariant={formValues.collateralError ? 'error' : undefined}
+            disabled={disable}
+            id="collateral"
+          >
+            <InputDebounced
+              id="inpCollateral"
+              type="number"
+              labelProps={{
+                label: t`LLAMMA ${collateralName} Avail.`,
+                descriptionLoading: userWalletBalancesLoading,
+                description: formatNumber(userState?.collateral, { defaultValue: '-' }),
+              }}
+              value={formValues.collateral}
+              onChange={(collateral) => updateFormValues({ collateral }, '', false)}
+            />
+            <InputMaxBtn onClick={() => updateFormValues({ collateral: userState?.collateral }, '', false)} />
+          </InputProvider>
+          {formValues.collateralError === 'too-much' ? (
+            <StyledInpChip size="xs" isDarkBg isError>
+              {t`Amount must be <= ${formatNumber(userState?.collateral)}`}
+            </StyledInpChip>
+          ) : (
+            <StyledInpChip size="xs">
+              {t`Debt`} {userState?.debt ? `${formatNumber(userState.debt)}` : '-'}
+            </StyledInpChip>
+          )}
+        </Box>
+      ) : (
+        <LargeTokenInput
+          name="collateral"
+          testId="inpCollateral"
+          isError={!!formValues.collateralError}
+          message={
+            formValues.collateralError === 'too-much'
+              ? t`Amount must be <= ${formatNumber(userState?.collateral)}`
+              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
+          }
           disabled={disable}
-          id="collateral"
-        >
-          <InputDebounced
-            id="inpCollateral"
-            type="number"
-            labelProps={{
-              label: t`LLAMMA ${collateralName} Avail.`,
-              descriptionLoading: userWalletBalancesLoading,
-              description: formatNumber(userState?.collateral, { defaultValue: '-' }),
-            }}
-            value={formValues.collateral}
-            onChange={(collateral) => updateFormValues({ collateral }, '', false)}
-          />
-          <InputMaxBtn onClick={() => updateFormValues({ collateral: userState?.collateral }, '', false)} />
-        </InputProvider>
-        {formValues.collateralError === 'too-much' ? (
-          <StyledInpChip size="xs" isDarkBg isError>
-            {t`Amount must be <= ${formatNumber(userState?.collateral)}`}
-          </StyledInpChip>
-        ) : (
-          <StyledInpChip size="xs">
-            {t`Debt`} {userState?.debt ? `${formatNumber(userState.debt)}` : '-'}
-          </StyledInpChip>
-        )}
-      </Box>
+          maxBalance={{
+            loading: userWalletBalancesLoading,
+            balance: stringToNumber(userState?.collateral),
+            symbol: collateralName,
+            showSlider: false,
+            ...(collateralUsdRate != null &&
+              userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
+          }}
+          balance={stringToNumber(formValues.collateral)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={collateralName}
+              address={collateralAddress}
+              label={collateralName}
+            />
+          }
+          onBalance={onCollateralChanged}
+        />
+      )}
 
       {/* detail info */}
       <StyledDetailInfoWrapper>

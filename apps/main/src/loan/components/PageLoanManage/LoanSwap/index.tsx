@@ -27,7 +27,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -60,6 +65,12 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
+  const network = networks[rChainId]
+  const [releaseChannel] = useReleaseChannel()
+  const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
+  const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
+  const usdRates = [stablecoinUsdRate, collateralUsdRate]
 
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
@@ -81,18 +92,22 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
     [formStatus, setStateByKey],
   )
 
-  const handleInpChange = (val: string, inpNum: 0 | 1) => {
-    reset(false, formStatus.isComplete)
+  const handleInpChange = useCallback(
+    (val: string, inpNum: 0 | 1) => {
+      reset(false, formStatus.isComplete)
+      updateFormValues({
+        ...useStore.getState().loanSwap.formValues,
+        item1: [val, ''][inpNum],
+        item1Error: '',
+        item2: ['', val][inpNum],
+        item2Error: '',
+      })
+    },
+    [formStatus.isComplete, reset, updateFormValues],
+  )
 
-    const updatedFormValues = {
-      ...formValues,
-      item1: inpNum === 0 ? val : '',
-      item1Error: '',
-      item2: inpNum === 1 ? val : '',
-      item2Error: '',
-    }
-    updateFormValues(updatedFormValues)
-  }
+  const onBalance1Changed = useCallback((val?: number) => handleInpChange(`${val ?? ''}`, 0), [handleInpChange])
+  const onBalance2Changed = useCallback((val?: number) => handleInpChange(`${val ?? ''}`, 1), [handleInpChange])
 
   const handleBtnClickSwapCoins = () => {
     if (chainId && llamma) {
@@ -229,39 +244,71 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
       <Box grid gridRowGap={2}>
         <Box grid gridRowGap={1}>
           {/* input item1 */}
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.item1Error ? 'error' : undefined}
-            disabled={disabled}
-            id="item1Key"
-          >
-            <InputDebounced
-              id="inpItem1Key"
-              type="number"
-              labelProps={{
-                label: formValues.item1Key === '0' ? stablecoinLabel : collateralLabel,
-              }}
-              delay={700}
-              value={formValues.item1 || detailInfo.amount}
-              onChange={(val) => handleInpChange(val, 0)}
-            />
-            <InputMaxBtn onClick={() => handleInpChange(maxSwappable, 0)} />
-          </InputProvider>
-          {formValues.item1Error ? (
-            <StyledInpChip isError size="xs">
-              Amount cannot be greater than {maxSwappable}
-            </StyledInpChip>
+          {releaseChannel !== ReleaseChannel.Beta ? (
+            <>
+              <InputProvider
+                grid
+                gridTemplateColumns="1fr auto"
+                padding="4px 8px"
+                inputVariant={formValues.item1Error ? 'error' : undefined}
+                disabled={disabled}
+                id="item1Key"
+              >
+                <InputDebounced
+                  id="inpItem1Key"
+                  type="number"
+                  labelProps={{
+                    label: formValues.item1Key === '0' ? stablecoinLabel : collateralLabel,
+                  }}
+                  delay={700}
+                  value={formValues.item1 || detailInfo.amount}
+                  onChange={(val) => handleInpChange(val, 0)}
+                />
+                <InputMaxBtn onClick={() => handleInpChange(maxSwappable, 0)} />
+              </InputProvider>
+              {formValues.item1Error ? (
+                <StyledInpChip isError size="xs">
+                  Amount cannot be greater than {maxSwappable}
+                </StyledInpChip>
+              ) : (
+                <StyledInpChip size="xs">
+                  Max swappable{' '}
+                  {maxSlippage
+                    ? formValues.item1Key === '0'
+                      ? formatNumber(maxSwappable)
+                      : formatNumber(maxSwappable)
+                    : '-'}
+                </StyledInpChip>
+              )}
+            </>
           ) : (
-            <StyledInpChip size="xs">
-              Max swappable{' '}
-              {maxSlippage
-                ? formValues.item1Key === '0'
-                  ? formatNumber(maxSwappable)
-                  : formatNumber(maxSwappable)
-                : '-'}
-            </StyledInpChip>
+            <LargeTokenInput
+              name="item1"
+              isError={!!formValues.item1Error}
+              {...(formValues.item1Error && { message: t`Amount cannot be greater than ${maxSwappable}` })}
+              disabled={disabled}
+              maxBalance={{
+                loading: maxSwappable == '' || maxSwappable == null,
+                balance: stringToNumber(maxSwappable),
+                symbol: llamma?.coins[formValues.item1Key],
+                ...(maxSwappable != null &&
+                  usdRates[formValues.item1Key] != null && {
+                    notionalValueUsd: usdRates[formValues.item1Key]! * +maxSwappable,
+                  }),
+                showSlider: false,
+              }}
+              label={formValues.item1Key === '0' ? stablecoinLabel : collateralLabel}
+              balance={stringToNumber(formValues.item1 || detailInfo.amount)}
+              tokenSelector={
+                <TokenLabel
+                  blockchainId={network.id}
+                  tooltip={llamma?.coins[formValues.item1Key]}
+                  address={llamma?.coinAddresses[formValues.item1Key]}
+                  label={llamma?.coins[formValues.item1Key] ?? ''}
+                />
+              }
+              onBalance={onBalance1Changed}
+            />
           )}
 
           <Box flex flexJustifyContent="center">
@@ -271,24 +318,43 @@ const Swap = ({ curve, llamma, llammaId, rChainId }: Props) => {
           </Box>
         </Box>
 
-        <InputProvider
-          grid
-          padding="4px 8px"
-          inputVariant={formValues.item2Error ? 'error' : undefined}
-          disabled={disabled}
-          id="item2Key"
-        >
-          <InputDebounced
-            id="inpItem2Key"
-            type="number"
-            labelProps={{
-              label: formValues.item2Key === '1' ? collateralLabel : stablecoinLabel,
-            }}
-            delay={700}
-            value={formValues.item2 || detailInfo.amount}
-            onChange={(val) => handleInpChange(val, 1)}
+        {releaseChannel !== ReleaseChannel.Beta ? (
+          <InputProvider
+            grid
+            padding="4px 8px"
+            inputVariant={formValues.item2Error ? 'error' : undefined}
+            disabled={disabled}
+            id="item2Key"
+          >
+            <InputDebounced
+              id="inpItem2Key"
+              type="number"
+              labelProps={{
+                label: formValues.item2Key === '1' ? collateralLabel : stablecoinLabel,
+              }}
+              delay={700}
+              value={formValues.item2 || detailInfo.amount}
+              onChange={(val) => handleInpChange(val, 1)}
+            />
+          </InputProvider>
+        ) : (
+          <LargeTokenInput
+            name="item2"
+            isError={!!formValues.item2Error}
+            disabled={disabled}
+            label={[stablecoinLabel, collateralLabel][formValues.item2Key]}
+            balance={stringToNumber(formValues.item2 || detailInfo.amount)}
+            tokenSelector={
+              <TokenLabel
+                blockchainId={network.id}
+                tooltip={llamma?.coins[formValues.item2Key]}
+                address={llamma?.coinAddresses[formValues.item2Key]}
+                label={llamma?.coins[formValues.item2Key] ?? ''}
+              />
+            }
+            onBalance={onBalance2Changed}
           />
-        </InputProvider>
+        )}
       </Box>
 
       {/* detail info */}
