@@ -14,7 +14,7 @@ import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
-import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import useStore from '@/dex/store/useStore'
@@ -44,6 +44,9 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
+
+// todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
+const sxProps = { minWidth: '120px' }
 
 const Swap = ({
   chainIdPoolId,
@@ -170,7 +173,6 @@ const Swap = ({
       actionActiveKey: string,
       curve: CurveApi,
       poolData: PoolData,
-      formEstGas: FormEstGas,
       formValues: FormValues,
       formStatus: FormStatus,
       exchangeOutput: ExchangeOutput,
@@ -300,7 +302,6 @@ const Swap = ({
         activeKey,
         curve,
         poolData,
-        formEstGas,
         formValues,
         formStatus,
         exchangeOutput,
@@ -345,68 +346,6 @@ const Swap = ({
     [updateFormValues],
   )
 
-  // todo: the LargeTokenInput balance is taking 100%, so the token selector takes its minWidth
-  const sxProps = releaseChannel === ReleaseChannel.Beta && { sx: { minWidth: '120px' } }
-
-  const tokenSelectorTo = (
-    <TokenSelector
-      selectedToken={toToken}
-      tokens={selectList}
-      disabled={isDisabled || selectList.length === 0}
-      showSearch={false}
-      showManageList={false}
-      compact
-      onToken={(token) => {
-        const val = token.address
-        const cFormValues = cloneDeep(formValues)
-        if (val === formValues.fromAddress) {
-          cFormValues.fromAddress = formValues.toAddress
-          cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
-        }
-
-        cFormValues.toAddress = val
-        cFormValues.toToken = swapTokensMapper[val].symbol
-
-        if (formValues.isFrom || formValues.isFrom === null) {
-          cFormValues.toAmount = ''
-        } else {
-          cFormValues.fromAmount = ''
-        }
-        updateFormValues(cFormValues, null, '')
-      }}
-      {...sxProps}
-    />
-  )
-  const tokenSelectorFrom = (
-    <TokenSelector
-      selectedToken={fromToken}
-      tokens={selectList}
-      disabled={isDisabled || selectList.length === 0}
-      showSearch={false}
-      showManageList={false}
-      compact
-      onToken={(token) => {
-        const val = token.address
-        const cFormValues = cloneDeep(formValues)
-        if (val === formValues.toAddress) {
-          cFormValues.toAddress = formValues.fromAddress
-          cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
-        }
-
-        cFormValues.fromAddress = val
-        cFormValues.fromToken = swapTokensMapper[val].symbol
-
-        if (formValues.isFrom || formValues.isFrom === null) {
-          cFormValues.toAmount = ''
-        } else {
-          cFormValues.fromAmount = ''
-        }
-
-        updateFormValues(cFormValues, null, '')
-      }}
-      {...sxProps}
-    />
-  )
   return (
     <>
       {/* input fields */}
@@ -444,7 +383,35 @@ const Swap = ({
                     updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
                   }}
                 />
-                {tokenSelectorFrom}
+                {
+                  <TokenSelector
+                    selectedToken={fromToken}
+                    tokens={selectList}
+                    disabled={isDisabled || selectList.length === 0}
+                    showSearch={false}
+                    showManageList={false}
+                    compact
+                    onToken={(token) => {
+                      const val = token.address
+                      const cFormValues = cloneDeep(formValues)
+                      if (val === formValues.toAddress) {
+                        cFormValues.toAddress = formValues.fromAddress
+                        cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
+                      }
+
+                      cFormValues.fromAddress = val
+                      cFormValues.fromToken = swapTokensMapper[val].symbol
+
+                      if (formValues.isFrom || formValues.isFrom === null) {
+                        cFormValues.toAmount = ''
+                      } else {
+                        cFormValues.fromAmount = ''
+                      }
+
+                      updateFormValues(cFormValues, null, '')
+                    }}
+                  />
+                }
               </StyledInputProvider>
               <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
               {formValues.fromError && (
@@ -458,7 +425,31 @@ const Swap = ({
               name="fromAmount"
               onBalance={setFromAmount}
               balance={stringToNumber(formValues.fromAmount)}
-              tokenSelector={tokenSelectorFrom}
+              tokenSelector={
+                <TokenSelector
+                  selectedToken={fromToken}
+                  tokens={selectList}
+                  disabled={isDisabled || selectList.length === 0}
+                  compact
+                  onToken={({ address, symbol }) =>
+                    updateFormValues(
+                      {
+                        ...formValues,
+                        ...(address === formValues.toAddress && {
+                          toAddress: formValues.fromAddress,
+                          toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                        }),
+                        fromAddress: address,
+                        fromToken: symbol,
+                        ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                      },
+                      null,
+                      '',
+                    )
+                  }
+                  sx={sxProps}
+                />
+              }
               {...(formValues.fromError && {
                 isError: true,
                 message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
@@ -525,8 +516,32 @@ const Swap = ({
                   updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
                 }}
               />
+              <TokenSelector
+                selectedToken={toToken}
+                tokens={selectList}
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                compact
+                onToken={(token) => {
+                  const address = token.address
+                  const cFormValues = cloneDeep(formValues)
+                  if (address === formValues.fromAddress) {
+                    cFormValues.fromAddress = formValues.toAddress
+                    cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
+                  }
 
-              {tokenSelectorTo}
+                  cFormValues.toAddress = address
+                  cFormValues.toToken = swapTokensMapper[address].symbol
+
+                  if (formValues.isFrom || formValues.isFrom === null) {
+                    cFormValues.toAmount = ''
+                  } else {
+                    cFormValues.fromAmount = ''
+                  }
+                  updateFormValues(cFormValues, null, '')
+                }}
+              />
             </StyledInputProvider>
             <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
           </div>
@@ -536,7 +551,33 @@ const Swap = ({
             onBalance={setToAmount}
             balance={stringToNumber(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            tokenSelector={tokenSelectorTo}
+            tokenSelector={
+              <TokenSelector
+                selectedToken={toToken}
+                tokens={selectList}
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                compact
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.fromAddress && {
+                        fromAddress: formValues.toAddress,
+                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                      }),
+                      toAddress: address,
+                      toToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
+                }
+                sx={sxProps}
+              />
+            }
             maxBalance={{
               balance: stringToNumber(userToBalance),
               loading: userPoolBalancesLoading,
