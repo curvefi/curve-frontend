@@ -28,7 +28,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -62,6 +67,9 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const network = networks[rChainId]
   const { chainId, haveSigner } = curveProps(curve)
+  const [releaseChannel] = useReleaseChannel()
+  const [, collateralAddress] = llamma?.coinAddresses ?? []
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = (updatedFormValues: FormValues) => {
     if (chainId && llamma) {
@@ -92,6 +100,19 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     updatedFormValues.collateralError = ''
     updateFormValues(updatedFormValues)
   }
+
+  const onCollateralChanged = useCallback(
+    (val?: number) => {
+      const collateral = `${val ?? ''}`
+      reset(!!formStatus.error, formStatus.isComplete)
+      updateFormValues({
+        ...useStore.getState().loanCollateralDecrease.formValues,
+        collateral: collateral,
+        collateralError: '',
+      })
+    },
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues],
+  )
 
   const handleBtnClickRemove = useCallback(
     async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
@@ -211,32 +232,68 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     <>
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.collateralError ? 'error' : undefined}
-          disabled={disabled}
-          id="collateral"
-        >
-          <InputDebounced
-            id="inpCollateral"
-            type="number"
-            labelProps={{
-              label: t`${getTokenName(llamma).collateral} Avail. ${formatNumber(userWalletBalances.collateral)}`,
-            }}
-            delay={700}
-            value={formValues.collateral}
-            onChange={handleInpChangeCollateral}
-          />
-          <InputMaxBtn onClick={() => handleInpChangeCollateral(maxRemovable)} />
-        </InputProvider>
-        {formValues.collateralError === 'too-much' && maxRemovable ? (
-          <StyledInpChip size="xs" isDarkBg isError>
-            Cannot be greater than {maxRemovable ? formatNumber(maxRemovable) : '0'}
-          </StyledInpChip>
+        {releaseChannel !== ReleaseChannel.Beta ? (
+          <>
+            <InputProvider
+              grid
+              gridTemplateColumns="1fr auto"
+              padding="4px 8px"
+              inputVariant={formValues.collateralError ? 'error' : undefined}
+              disabled={disabled}
+              id="collateral"
+            >
+              <InputDebounced
+                id="inpCollateral"
+                type="number"
+                labelProps={{
+                  label: t`${getTokenName(llamma).collateral} Avail. ${formatNumber(userWalletBalances.collateral)}`,
+                }}
+                delay={700}
+                value={formValues.collateral}
+                onChange={handleInpChangeCollateral}
+              />
+              <InputMaxBtn onClick={() => handleInpChangeCollateral(maxRemovable)} />
+            </InputProvider>
+            {formValues.collateralError === 'too-much' && maxRemovable ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                Cannot be greater than {maxRemovable ? formatNumber(maxRemovable) : '0'}
+              </StyledInpChip>
+            ) : (
+              <StyledInpChip size="xs">Max removable {formatNumber(maxRemovable, { defaultValue: '-' })}</StyledInpChip>
+            )}
+          </>
         ) : (
-          <StyledInpChip size="xs">Max removable {formatNumber(maxRemovable, { defaultValue: '-' })}</StyledInpChip>
+          <>
+            <LargeTokenInput
+              name="collateral"
+              testId="inpCollateral"
+              isError={!!formValues.collateralError}
+              message={
+                formValues.collateralError === 'too-much'
+                  ? t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`
+                  : t`Max removable ${formatNumber(maxRemovable, { defaultValue: '-' })}`
+              }
+              disabled={disabled}
+              maxBalance={{
+                balance: stringToNumber(maxRemovable),
+                symbol: getTokenName(llamma).collateral,
+                showSlider: false,
+                ...(collateralUsdRate != null &&
+                  maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
+              }}
+              label={t`${getTokenName(llamma).collateral} Avail. ${formatNumber(userWalletBalances.collateral)}`}
+              balance={stringToNumber(formValues.collateral)}
+              tokenSelector={
+                <TokenLabel
+                  blockchainId={network.id}
+                  tooltip={getTokenName(llamma).collateral}
+                  address={collateralAddress}
+                  label={getTokenName(llamma).collateral}
+                />
+              }
+              onBalance={onCollateralChanged}
+            />
+          </>
         )}
       </Box>
       {/* detail info */}
