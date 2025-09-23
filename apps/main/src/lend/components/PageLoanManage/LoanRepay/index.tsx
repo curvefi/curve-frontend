@@ -86,7 +86,7 @@ const LoanRepay = ({
   const { expectedBorrowed } = detailInfoLeverage ?? {}
   const hasExpectedBorrowed = !!expectedBorrowed
 
-  const { data: loanExists } = useLoanExists({
+  const { data: loanExists, isFetching: loanExistsLoading } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
     userAddress: signerAddress as Address,
@@ -394,7 +394,7 @@ const LoanRepay = ({
             id="stateCollateral"
             inpError={formValues.stateCollateralError}
             inpDisabled={disable}
-            inpLabelLoading={!!loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
+            inpLabelLoading={loanExistsLoading && !!signerAddress && typeof userState?.collateral === 'undefined'}
             inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
             inpValue={formValues.stateCollateral}
             tokenAddress={collateral_token?.address}
