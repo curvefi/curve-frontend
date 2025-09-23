@@ -24,7 +24,7 @@
   --width: 96rem; /* 1536px */
 
   /* Swap, Deposit, Withdraw */
-  --transfer-min-width: 23.3125rem;
+  --transfer-min-width: 27.5rem; /* 440px */
 
   /* DAO layout */
   --dao-sidebar-width: 15rem;
