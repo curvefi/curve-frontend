@@ -1,0 +1,33 @@
+{
+  "campaignName": "Friendly Fork Program",
+  "platform": "Liquity",
+  "description": "Points for providing liquidity.",
+  "platformImageId": "liquity.png",
+  "dashboardLink": "https://www.liquity.org/forks/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity earns you additional rewards from 15+ friendly forks. For more information please visit issuer.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0xEFc6516323FbD28e80B85A497B65A86243a54B3E",
+      "network": "ethereum",
+      "multiplier": "15+",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity earns you additional rewards from 15+ friendly forks. For more information please visit issuer.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x7ED17e037B7d88A8270c89B3aFA9C38e5218F12b",
+      "network": "ethereum",
+      "multiplier": "15+",
+      "tags": ["points"],
+      "lock": "false"
+    }
+  ]
+}

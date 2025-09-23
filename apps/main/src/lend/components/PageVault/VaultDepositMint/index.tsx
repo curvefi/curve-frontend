@@ -22,7 +22,12 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -61,6 +66,10 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
     },
     [updateFormValues],
   )
+
+  const [releaseChannel] = useReleaseChannel()
+  const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
+  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
 
   const handleInpAmountChange = (amount: string) => {
     reset({ amount })
@@ -180,53 +189,86 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   return (
     <>
-      <div>
-        {/* input amount */}
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.amountError ? 'error' : undefined}
-            disabled={disabled}
-            id="amount"
-          >
-            <InputDebounced
-              id="inpCollateral"
-              type="number"
-              labelProps={{
-                label: t`${borrowed_token?.symbol} Avail.`,
-                descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                description: formatNumber(userBalances?.borrowed, { defaultValue: '-' }),
-              }}
-              value={formValues.amount}
-              onChange={handleInpAmountChange}
+      {releaseChannel !== ReleaseChannel.Beta ? (
+        <div>
+          {/* input amount */}
+          <Box grid gridRowGap={1}>
+            <InputProvider
+              grid
+              gridTemplateColumns="1fr auto"
+              padding="4px 8px"
+              inputVariant={formValues.amountError ? 'error' : undefined}
+              disabled={disabled}
+              id="amount"
+            >
+              <InputDebounced
+                id="inpCollateral"
+                type="number"
+                labelProps={{
+                  label: t`${borrowed_token?.symbol} Avail.`,
+                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
+                  description: formatNumber(userBalances?.borrowed, { defaultValue: '-' }),
+                }}
+                value={formValues.amount}
+                onChange={handleInpAmountChange}
+              />
+              <InputMaxBtn
+                onClick={() => {
+                  const userBorrowedBal = userBalances?.borrowed ?? ''
+                  const max = maxResp?.max ?? ''
+                  handleInpAmountChange(+userBorrowedBal < +max ? userBorrowedBal : max)
+                }}
+              />
+            </InputProvider>
+            <InpChipUsdRate address={borrowed_token?.address} amount={formValues.amount} />
+            {formValues.amountError === 'too-much-wallet' ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                {t`Amount > wallet balance`} {formatNumber(userBalances?.borrowed ?? '')}
+              </StyledInpChip>
+            ) : formValues.amountError === 'too-much-max' ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                {t`Amount > max deposit amount`} {formatNumber(maxResp?.max ?? '')}
+              </StyledInpChip>
+            ) : (
+              <StyledInpChip size="xs" isDarkBg>
+                {t`Max`} {_isDeposit(rFormType) ? t`deposit` : t`mint`}{' '}
+                {formatNumber(maxResp?.max, { defaultValue: '-' })}
+              </StyledInpChip>
+            )}
+          </Box>
+        </div>
+      ) : (
+        <LargeTokenInput
+          name="inpCollateral"
+          isError={!!formValues.amountError}
+          message={
+            formValues.amountError === 'too-much-wallet'
+              ? t`Amount > wallet balance ${formatNumber(userBalances?.borrowed ?? '')}`
+              : formValues.amountError === 'too-much-max'
+                ? t`Amount > max deposit amount ${formatNumber(maxResp?.max ?? '')}`
+                : undefined
+          }
+          disabled={disabled}
+          maxBalance={{
+            loading: !!signerAddress && typeof userBalances === 'undefined',
+            balance: stringToNumber(userBalances?.borrowed),
+            symbol: borrowed_token?.symbol,
+            showSlider: false,
+            notionalValueUsd:
+              usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
+          }}
+          balance={+formValues.amount}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={networks[rChainId].id}
+              address={borrowed_token?.address}
+              tooltip={borrowed_token?.symbol}
+              label={borrowed_token?.symbol ?? ''}
             />
-            <InputMaxBtn
-              onClick={() => {
-                const userBorrowedBal = userBalances?.borrowed ?? ''
-                const max = maxResp?.max ?? ''
-                handleInpAmountChange(+userBorrowedBal < +max ? userBorrowedBal : max)
-              }}
-            />
-          </InputProvider>
-          <InpChipUsdRate address={borrowed_token?.address} amount={formValues.amount} />
-          {formValues.amountError === 'too-much-wallet' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              {t`Amount > wallet balance`} {formatNumber(userBalances?.borrowed ?? '')}
-            </StyledInpChip>
-          ) : formValues.amountError === 'too-much-max' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              {t`Amount > max deposit amount`} {formatNumber(maxResp?.max ?? '')}
-            </StyledInpChip>
-          ) : (
-            <StyledInpChip size="xs" isDarkBg>
-              {t`Max`} {_isDeposit(rFormType) ? t`deposit` : t`mint`}{' '}
-              {formatNumber(maxResp?.max, { defaultValue: '-' })}
-            </StyledInpChip>
-          )}
-        </Box>
-      </div>
+          }
+          onBalance={onBalance}
+        />
+      )}
 
       {/* detail info */}
       <StyledDetailInfoWrapper>

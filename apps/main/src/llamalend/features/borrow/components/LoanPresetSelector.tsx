@@ -13,20 +13,18 @@ const PRESETS = {
   [BorrowPreset.Safe]: {
     title: t`Safe`,
     description:
-      t`Sets up your Llamalend loan to offer the maximum safety by spreading your liquidity across fewer bands. ` +
-      `This does not protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
+      t`Sets up your Llamalend loan to offer the maximum safety by spreading your liquidity across more bands. ` +
+      `This does not fully protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
   },
   [BorrowPreset.MaxLtv]: {
     title: t`Max LTV`,
     description:
-      t`Sets up your Llamalend loan to offer the maximum borrowing power by spreading your liquidity across more bands. ` +
-      `This does not protect you from liquidation, but could give you more time to repay or close your loan in case of sudden price movements.`,
+      t`Sets up your Llamalend loan to offer the maximum LTV (highest loan to value ratio) against your collateral. ` +
+      `This implies higher risks.`,
   },
   [BorrowPreset.Custom]: {
     title: t`Custom`,
-    description:
-      t`Allows you to manually set the range for your Llamalend loan. ` +
-      `This gives you the most flexibility, but also requires more knowledge about how Llamalend works.`,
+    description: t`Setup you borrow as you like it.`,
   },
 }
 

@@ -188,6 +188,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
     <>
       <div>
         <InpToken
+          network={networks[rChainId]}
           id="collateral"
           inpError={formValues.collateralError}
           inpDisabled={disabled}

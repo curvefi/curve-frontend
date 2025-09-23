@@ -20,7 +20,6 @@ import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/loan/store/cre
 import createLoanIncrease, { LoanIncreaseSlice } from '@/loan/store/createLoanIncreaseSlice'
 import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoanLiquidate'
 import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
-import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
@@ -35,7 +34,6 @@ export type State = CacheSlice &
   LoanDecreaseSlice &
   LoanDeleverageSlice &
   LoanIncreaseSlice &
-  LoanSwapSlice &
   LoanLiquidateSlice &
   IntegrationsSlice &
   OhlcChartSlice &
@@ -54,7 +52,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createLoanDecrease(set, get),
   ...createLoanDeleverageSlice(set, get),
   ...createLoanIncrease(set, get),
-  ...createLoanSwap(set, get),
   ...createLoanLiquidate(set, get),
   ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),

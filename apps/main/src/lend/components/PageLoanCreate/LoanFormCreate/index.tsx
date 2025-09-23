@@ -101,6 +101,8 @@ const LoanCreate = ({
     [setFormValues, isLoaded, api, market, maxSlippage, isLeverage],
   )
 
+  const network = networks[rChainId]
+
   const handleClickCreate = useCallback(
     async (
       payloadActiveKey: string,
@@ -115,12 +117,12 @@ const LoanCreate = ({
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={networks[rChainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txMessage} txHash={network.scanTxPath(resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
     },
-    [activeKey, fetchStepCreate, rChainId],
+    [activeKey, fetchStepCreate, network],
   )
 
   const getSteps = useCallback(
@@ -326,10 +328,12 @@ const LoanCreate = ({
 
   const disabled = !!formStatus.step
 
+  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
         <InpToken
+          network={network}
           id="userCollateral"
           {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
@@ -340,12 +344,16 @@ const LoanCreate = ({
           tokenAddress={collateral_token?.address}
           tokenSymbol={collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
-          handleInpChange={(userCollateral) => updateFormValues({ userCollateral })}
+          handleInpChange={useCallback(
+            (userCollateral: string) => updateFormValues({ userCollateral }),
+            [updateFormValues],
+          )}
           handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
         />
 
         {isLeverage && (
           <InpToken
+            network={network}
             id="userBorrowed"
             inpError={formValues.userBorrowedError}
             inpDisabled={disabled}
@@ -355,13 +363,14 @@ const LoanCreate = ({
             tokenAddress={borrowed_token?.address}
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
-            handleInpChange={(userBorrowed) => updateFormValues({ userBorrowed })}
+            handleInpChange={setUserBorrowed}
             handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
           />
         )}
       </FieldsWrapper>
 
       <InpTokenBorrow
+        network={network}
         id="debt"
         {...(isLeverage ? { inpTopLabel: t`Borrow amount:` } : {})}
         inpError={formValues.debtError}
@@ -370,7 +379,7 @@ const LoanCreate = ({
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={(debt) => updateFormValues({ debt })}
+        handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
           updateFormValues({ debt })

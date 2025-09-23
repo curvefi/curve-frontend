@@ -19,7 +19,10 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -33,6 +36,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const fetchStepStake = useStore((state) => state.vaultStake.fetchStepStake)
   const setFormValues = useStore((state) => state.vaultStake.setFormValues)
   const resetState = useStore((state) => state.vaultStake.resetState)
+  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -164,44 +168,68 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
+  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
   const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
 
   return (
     <>
-      <div>
-        {/* input amount */}
-        <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.amountError ? 'error' : undefined}
-            disabled={disabled}
-            id="amount"
-          >
-            <InputDebounced
-              id="inpVaultShares"
-              type="number"
-              labelProps={{
-                label: t`Vault shares Avail.`,
-                descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
-                description: formatNumber(userBalances?.vaultShares, { defaultValue: '-' }),
-              }}
-              value={formValues.amount}
-              onChange={handleInpAmountChange}
-            />
-            <InputMaxBtn onClick={() => handleInpAmountChange(userBalances?.vaultShares ?? '')} />
-          </InputProvider>
-          <InpChipVaultSharesUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
-          <StyledInpChip size="xs" isDarkBg isError>
-            {formValues.amountError === 'too-much-wallet' && (
-              <>
-                {t`Amount > wallet balance`} {formatNumber(userBalances?.vaultShares ?? '')}
-              </>
-            )}
-          </StyledInpChip>
-        </Box>
-      </div>
+      {releaseChannel !== ReleaseChannel.Beta ? (
+        <div>
+          {/* input amount */}
+          <Box grid gridRowGap={1}>
+            <InputProvider
+              grid
+              gridTemplateColumns="1fr auto"
+              padding="4px 8px"
+              inputVariant={formValues.amountError ? 'error' : undefined}
+              disabled={disabled}
+              id="amount"
+            >
+              <InputDebounced
+                id="inpVaultShares"
+                type="number"
+                labelProps={{
+                  label: t`Vault shares Avail.`,
+                  descriptionLoading: !!signerAddress && typeof userBalances === 'undefined',
+                  description: formatNumber(userBalances?.vaultShares, { defaultValue: '-' }),
+                }}
+                value={formValues.amount}
+                onChange={handleInpAmountChange}
+              />
+              <InputMaxBtn onClick={() => handleInpAmountChange(userBalances?.vaultShares ?? '')} />
+            </InputProvider>
+            <InpChipVaultSharesUsdRate rChainId={rChainId} rOwmId={rOwmId} amount={formValues?.amount} />
+            <StyledInpChip size="xs" isDarkBg isError>
+              {formValues.amountError === 'too-much-wallet' && (
+                <>
+                  {t`Amount > wallet balance`} {formatNumber(userBalances?.vaultShares ?? '')}
+                </>
+              )}
+            </StyledInpChip>
+          </Box>
+        </div>
+      ) : (
+        <LargeTokenInput
+          name="amount"
+          disabled={disabled}
+          balance={stringToNumber(formValues.amount)}
+          isError={!!formValues.amountError}
+          message={
+            formValues.amountError === 'too-much-wallet'
+              ? t`Amount > wallet balance ${formatNumber(userBalances?.vaultShares ?? '')}`
+              : undefined
+          }
+          maxBalance={{
+            balance: stringToNumber(userBalances?.vaultShares),
+            loading: !!signerAddress && userBalances == null,
+            showSlider: false,
+            notionalValueUsd: stringToNumber(formValues?.amount),
+            symbol: t`Vault shares`,
+          }}
+          onBalance={onBalance}
+          testId="inpVaultShares"
+        />
+      )}
 
       {/* detail info */}
       {(detailInfoCrvIncentivesComp || signerAddress) && (
