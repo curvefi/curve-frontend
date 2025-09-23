@@ -50,7 +50,7 @@ const InpTokenRemove = ({
   const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const onBalance = useCallback((val?: number) => handleInpChange(`${val ?? ''}`), [handleInpChange])
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return releaseChannel == ReleaseChannel.Legacy ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider

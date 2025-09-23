@@ -249,7 +249,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <div>
         {/* input collateral */}
         <Box grid gridRowGap={1}>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {releaseChannel == ReleaseChannel.Legacy ? (
             <>
               <InputProvider
                 grid

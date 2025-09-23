@@ -38,14 +38,21 @@ export const ReleaseChannelToggleButtons = () => {
           open
           onClose={() => setReleaseChannelDialog(undefined)}
           channel={releaseChannelDialog}
-          onChanged={(newChannel) => newChannel != ReleaseChannel.Stable && setReleaseChannelSnackbar(newChannel)}
+          onChanged={(newChannel) =>
+            setReleaseChannelSnackbar(
+              (newChannel === ReleaseChannel.Stable ? releaseChannel : newChannel) as
+                | ReleaseChannel.Beta
+                | ReleaseChannel.Legacy,
+            )
+          }
         />
       )}
-      {releaseChannelSnackbar != null && (
+      {releaseChannelSnackbar && (
         <ReleaseChannelSnackbar
           open
           onClose={() => setReleaseChannelSnackbar(undefined)}
           channel={releaseChannelSnackbar}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         />
       )}
     </>

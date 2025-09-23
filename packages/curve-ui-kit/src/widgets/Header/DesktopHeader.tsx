@@ -6,10 +6,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfileButton } from '@ui-kit/features/user-profile'
-import { AdvancedModeSwitch } from '@ui-kit/features/user-profile/settings/AdvancedModeSwitch'
-import { ThemeToggleButton } from '@ui-kit/features/user-profile/settings/ThemeToggleButton'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
-import { t } from '@ui-kit/lib/i18n'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
@@ -52,15 +49,8 @@ export const DesktopHeader = ({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            {releaseChannel === ReleaseChannel.Beta && !isCypress ? (
-              <UserProfileButton />
-            ) : (
-              <>
-                <AdvancedModeSwitch label={t`Advanced`} />
-                <ThemeToggleButton label={t`Mode`} />
-              </>
-            )}
-
+            {/* TODO: update cypress tests to support UserProfileButton */}
+            <UserProfileButton visible={releaseChannel !== ReleaseChannel.Legacy && !isCypress} />
             <ChainSwitcher chainId={chainId} networks={supportedNetworks} />
             <ConnectWalletIndicator />
           </Box>
