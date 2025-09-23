@@ -70,9 +70,7 @@ const Page = () => {
 
   useEffect(() => {
     if (curve && pageLoaded) {
-      if (!rChainId || !rCollateralId || !rFormType) {
-        push(getCollateralListPathname(params))
-      } else if (curve.signerAddress && llamma) {
+      if (rChainId && rCollateralId && rFormType && curve.signerAddress && llamma) {
         void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists.loanExists) {
@@ -82,6 +80,8 @@ const Page = () => {
           setLoaded(true)
         })()
       } else {
+        const args = { rChainId, rCollateralId, rFormType, signer: curve.signerAddress, llamma }
+        console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, args)
         push(getCollateralListPathname(params))
       }
     }
