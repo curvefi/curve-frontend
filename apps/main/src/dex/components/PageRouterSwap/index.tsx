@@ -35,12 +35,15 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const QuickSwap = ({
   pageLoaded,
@@ -339,7 +342,7 @@ const QuickSwap = ({
   }, [isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
-  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['15s'], isPageVisible)
+  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'], isPageVisible)
 
   // steps
   useEffect(() => {
@@ -361,64 +364,117 @@ const QuickSwap = ({
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing
   const routesAndOutputLoading = !pageLoaded || _isRoutesAndOutputLoading(routesAndOutput, formValues, formStatus)
+  const [releaseChannel] = useReleaseChannel()
+
+  const setFromAmount = useCallback(
+    (fromAmount?: number) => updateFormValues({ isFrom: true, fromAmount: `${fromAmount ?? ''}`, toAmount: '' }),
+    [updateFormValues],
+  )
+  const setToAmount = useCallback(
+    (toAmount?: number) => updateFormValues({ isFrom: false, toAmount: `${toAmount ?? ''}`, fromAmount: '' }),
+    [updateFormValues],
+  )
 
   return (
     <>
       {/* inputs */}
       <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          <Box grid gridGap={1}>
-            <InputProvider
-              id="fromAmount"
-              grid
-              gridTemplateColumns="1fr auto 38%"
-              inputVariant={formValues.fromError ? 'error' : undefined}
-              disabled={isDisable}
-            >
-              <InputDebounced
-                id="inpFromAmount"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userBalancesLoading,
-                    description: formatNumber(userFromBalance),
-                  }
-                }
-                testId="from-amount"
-                value={isMaxLoading ? '' : formValues.fromAmount}
-                onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
-              />
-              <InputMaxBtn
-                loading={isMaxLoading}
+          {releaseChannel !== ReleaseChannel.Beta ? (
+            <Box grid gridGap={1}>
+              <InputProvider
+                id="fromAmount"
+                grid
+                gridTemplateColumns="1fr auto 38%"
+                inputVariant={formValues.fromError ? 'error' : undefined}
                 disabled={isDisable}
-                isNetworkToken={searchedParams.fromAddress === ethAddress}
-                testId="max"
-                onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
-              />
+              >
+                <InputDebounced
+                  id="inpFromAmount"
+                  type="number"
+                  labelProps={
+                    haveSigner && {
+                      label: t`Avail.`,
+                      descriptionLoading: userBalancesLoading,
+                      description: formatNumber(userFromBalance),
+                    }
+                  }
+                  testId="from-amount"
+                  value={isMaxLoading ? '' : formValues.fromAmount}
+                  onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
+                />
+                <InputMaxBtn
+                  loading={isMaxLoading}
+                  disabled={isDisable}
+                  isNetworkToken={searchedParams.fromAddress === ethAddress}
+                  testId="max"
+                  onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
+                />
 
-              <TokenSelector
-                selectedToken={fromToken}
-                tokens={tokens}
-                balances={userBalancesMapper}
-                disabled={isDisable || !fromToken}
-                tokenPrices={usdRatesMapper}
-                onToken={(token) => {
-                  const fromAddress = token.address
-                  const toAddress =
-                    fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
-                  resetFormErrors()
-                  redirect(toAddress, fromAddress)
-                }}
-              />
-            </InputProvider>
-            <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-            {formValues.fromError && (
-              <ChipInpHelper size="xs" isDarkBg isError>
-                {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-              </ChipInpHelper>
-            )}
-          </Box>
+                <TokenSelector
+                  selectedToken={fromToken}
+                  tokens={tokens}
+                  balances={userBalancesMapper}
+                  disabled={isDisable || !fromToken}
+                  tokenPrices={usdRatesMapper}
+                  onToken={(token) => {
+                    const fromAddress = token.address
+                    const toAddress =
+                      fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                    resetFormErrors()
+                    redirect(toAddress, fromAddress)
+                  }}
+                />
+              </InputProvider>
+              <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+              {formValues.fromError && (
+                <ChipInpHelper size="xs" isDarkBg isError>
+                  {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+                </ChipInpHelper>
+              )}
+            </Box>
+          ) : (
+            <LargeTokenInput
+              onBalance={setFromAmount}
+              name="fromAmount"
+              maxBalance={{
+                loading: userBalancesLoading || isMaxLoading,
+                balance: stringToNumber(userFromBalance),
+                symbol: fromToken?.symbol || '',
+                ...(fromUsdRate != null &&
+                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
+                ...(searchedParams.fromAddress === ethAddress && {
+                  tooltip: t`'Balance minus estimated gas'`,
+                }),
+              }}
+              isError={!!formValues.fromError}
+              disabled={isDisable}
+              testId="from-amount"
+              tokenSelector={
+                <TokenSelector
+                  sx={LargeSxProps}
+                  selectedToken={fromToken}
+                  tokens={tokens}
+                  balances={userBalancesMapper}
+                  disabled={isDisable || !fromToken}
+                  tokenPrices={usdRatesMapper}
+                  onToken={({ address: fromAddress }) => {
+                    const toAddress =
+                      fromAddress === searchedParams.toAddress ? searchedParams.fromAddress : searchedParams.toAddress
+                    resetFormErrors()
+                    redirect(toAddress, fromAddress)
+                  }}
+                />
+              }
+              message={
+                formValues.fromError ? (
+                  t`Amount > wallet balance ${formatNumber(userFromBalance)}`
+                ) : (
+                  <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+                )
+              }
+            />
+          )}
 
           {/* SWAP ICON */}
           <Box flex flexJustifyContent="center">
@@ -433,41 +489,75 @@ const QuickSwap = ({
           </Box>
         </div>
 
-        <div>
-          {/* SWAP TO */}
-          <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
-            <InputDebounced
-              id="inpTo"
-              type="number"
-              labelProps={
-                haveSigner && {
-                  label: t`Avail.`,
-                  descriptionLoading: userBalancesLoading,
-                  description: formatNumber(userToBalance),
+        {/* SWAP TO */}
+        {releaseChannel !== ReleaseChannel.Beta ? (
+          <div>
+            <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
+              <InputDebounced
+                id="inpTo"
+                type="number"
+                labelProps={
+                  haveSigner && {
+                    label: t`Avail.`,
+                    descriptionLoading: userBalancesLoading,
+                    description: formatNumber(userToBalance),
+                  }
                 }
-              }
-              testId="to-amount"
-              value={formValues.toAmount}
-              onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
-            />
-            <TokenSelector
-              selectedToken={toToken}
-              tokens={tokens}
-              balances={userBalancesMapper}
-              disabled={isDisable || !toToken}
-              tokenPrices={usdRatesMapper}
-              disableMyTokens={true}
-              onToken={(token) => {
-                const toAddress = token.address
-                const fromAddress =
-                  toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
-                resetFormErrors()
-                redirect(toAddress, fromAddress)
-              }}
-            />
-          </InputProvider>
-          <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-        </div>
+                testId="to-amount"
+                value={formValues.toAmount}
+                onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
+              />
+              <TokenSelector
+                selectedToken={toToken}
+                tokens={tokens}
+                balances={userBalancesMapper}
+                disabled={isDisable || !toToken}
+                tokenPrices={usdRatesMapper}
+                disableMyTokens={true}
+                onToken={(token) => {
+                  const toAddress = token.address
+                  const fromAddress =
+                    toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+                  resetFormErrors()
+                  redirect(toAddress, fromAddress)
+                }}
+              />
+            </InputProvider>
+            <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
+          </div>
+        ) : (
+          <LargeTokenInput
+            onBalance={setToAmount}
+            name="toAmount"
+            maxBalance={{
+              loading: userBalancesLoading,
+              balance: stringToNumber(userToBalance),
+              symbol: toToken?.symbol || '',
+              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
+              max: 'off',
+            }}
+            message={<FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />}
+            disabled={isDisable}
+            testId="to-amount"
+            tokenSelector={
+              <TokenSelector
+                sx={LargeSxProps}
+                selectedToken={toToken}
+                tokens={tokens}
+                balances={userBalancesMapper}
+                disabled={isDisable || !toToken}
+                tokenPrices={usdRatesMapper}
+                disableMyTokens={true}
+                onToken={({ address: toAddress }) => {
+                  const fromAddress =
+                    toAddress === searchedParams.fromAddress ? searchedParams.toAddress : searchedParams.fromAddress
+                  resetFormErrors()
+                  redirect(toAddress, fromAddress)
+                }}
+              />
+            }
+          />
+        )}
       </Box>
 
       {/* detail info */}

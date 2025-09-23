@@ -94,7 +94,7 @@ export interface LargeTokenInputRef {
  *                                       When false, hides the slider but still allows direct input.
  */
 type MaxBalanceProps = Partial<
-  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId'>
+  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
@@ -201,7 +201,7 @@ export const LargeTokenInput = ({
     (newPercentage: number | undefined) => {
       setPercentage(newPercentage)
 
-      if (!maxBalance?.balance) return
+      if (maxBalance?.balance == null) return
 
       if (newPercentage == null) {
         setBalance(undefined)
@@ -243,12 +243,12 @@ export const LargeTokenInput = ({
    *
    * Changing the percentage changes the balance, which in turn triggers this useEffect,
    * which in turn changes the percentage again. While I am using the current balance,
-   * I really only care about triggering it when maxBalance changes (handleBalanceChange depends on maxBalance).
+   * I really only care about triggering it when maxBalance changes
    */
   useEffect(() => {
     handleBalanceChange(balance)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [handleBalanceChange])
+  }, [maxBalance?.balance])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
@@ -257,6 +257,12 @@ export const LargeTokenInput = ({
 
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
+
+  const onMax = useCallback(() => {
+    const callback = maxBalance?.onMax
+    handlePercentageChange(100)
+    callback?.()
+  }, [handlePercentageChange, maxBalance?.onMax])
 
   return (
     <Stack
@@ -304,11 +310,11 @@ export const LargeTokenInput = ({
             {showBalance && (
               <Balance
                 disabled={disabled}
-                symbol={maxBalance.symbol ?? ''}
-                balance={maxBalance.balance}
-                notionalValueUsd={maxBalance.notionalValueUsd}
-                max={maxBalance ? 'button' : 'off'}
-                onMax={() => handlePercentageChange(100)}
+                symbol={maxBalance?.symbol ?? ''}
+                balance={maxBalance?.balance}
+                notionalValueUsd={maxBalance?.notionalValueUsd}
+                max={maxBalance.max ?? 'button'}
+                onMax={onMax}
                 // Stretch the balance component if there's no slider so the max button can reach the end
                 sx={{ ...(!showSlider && { flexGrow: 1 }) }}
               />
