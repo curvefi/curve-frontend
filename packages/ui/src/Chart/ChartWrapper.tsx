@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import Button from 'ui/src/Button/Button'
 import CandleChart from 'ui/src/Chart/CandleChart'
@@ -98,7 +98,7 @@ const ChartWrapper = ({
   latestOraclePrice,
 }: ChartWrapperProps) => {
   const [magnet, setMagnet] = useState(false)
-  const clonedOhlcData = [...ohlcData]
+  const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
 
   const wrapperRef = useRef(null)
 
