@@ -385,7 +385,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                   notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
                 }),
             }}
-            label={t`${getTokenName(llamma).collateral} Avail.`}
+            label={t`Collateral amount:`}
             balance={stringToNumber(formValues.collateral)}
             tokenSelector={
               <TokenLabel

@@ -89,7 +89,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey],
+    [formStatus.isApproved, setStateByKey],
   )
 
   const handleInpChangeCollateral = (collateral: string) => {
@@ -103,15 +103,13 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const onCollateralChanged = useCallback(
     (val?: number) => {
+      const { formValues, formStatus } = useStore.getState().loanCollateralDecrease
       const collateral = `${val ?? ''}`
+      if (collateral === formValues.collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({
-        ...useStore.getState().loanCollateralDecrease.formValues,
-        collateral: collateral,
-        collateralError: '',
-      })
+      updateFormValues({ ...formValues, collateral: collateral, collateralError: '' })
     },
-    [formStatus.error, formStatus.isComplete, reset, updateFormValues],
+    [reset, updateFormValues],
   )
 
   const handleBtnClickRemove = useCallback(
@@ -266,13 +264,10 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
           <>
             <LargeTokenInput
               name="collateral"
-              testId="inpCollateral"
               isError={!!formValues.collateralError}
-              message={
-                formValues.collateralError === 'too-much'
-                  ? t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`
-                  : t`Max removable ${formatNumber(maxRemovable, { defaultValue: '-' })}`
-              }
+              {...(formValues.collateralError === 'too-much' && {
+                message: t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`,
+              })}
               disabled={disabled}
               maxBalance={{
                 balance: stringToNumber(maxRemovable),
@@ -281,7 +276,6 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
                 ...(collateralUsdRate != null &&
                   maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
               }}
-              label={t`${getTokenName(llamma).collateral} Avail. ${formatNumber(userWalletBalances.collateral)}`}
               balance={stringToNumber(formValues.collateral)}
               tokenSelector={
                 <TokenLabel

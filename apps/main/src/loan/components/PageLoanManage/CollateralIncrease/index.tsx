@@ -94,7 +94,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey],
+    [formStatus.isApproved, setStateByKey],
   )
 
   const handleInpChangeCollateral = (collateral: string) => {
@@ -108,15 +108,13 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
   const onCollateralChanged = useCallback(
     (val?: number) => {
+      const { formStatus, formValues } = useStore.getState().loanCollateralIncrease
       const collateral = `${val ?? ''}`
+      if (formValues.collateral === collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({
-        ...useStore.getState().loanCollateralIncrease.formValues,
-        collateral,
-        collateralError: '',
-      })
+      updateFormValues({ ...formValues, collateral, collateralError: '' })
     },
-    [formStatus.error, formStatus.isComplete, reset, updateFormValues],
+    [reset, updateFormValues],
   )
 
   const handleBtnClickAdd = useCallback(

@@ -84,10 +84,10 @@ const LoanDeleverage = ({
 
   const { chainId, haveSigner } = curveProps(curve)
   const { userState } = userLoanDetails ?? {}
-  const { collateral: collateralName } = getTokenName(llamma)
+  const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)
   const [releaseChannel] = useReleaseChannel()
   const network = networks[rChainId]
-  const collateralAddress = llamma?.coinAddresses?.[1] ?? llamma?.collateral
+  const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
@@ -336,7 +336,7 @@ const LoanDeleverage = ({
           message={
             formValues.collateralError === 'too-much'
               ? t`Amount must be <= ${formatNumber(userState?.collateral)}`
-              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
+              : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
           }
           disabled={disable}
           maxBalance={{
