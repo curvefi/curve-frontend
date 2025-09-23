@@ -33,7 +33,6 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Address } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -60,7 +59,7 @@ const Page = () => {
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
   })
 
   const supplyPositionDetails = useSupplyPositionDetails({

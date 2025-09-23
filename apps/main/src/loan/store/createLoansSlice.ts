@@ -15,7 +15,6 @@ import {
 } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
-import type { Address } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -89,7 +88,7 @@ const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
       const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
         networks[chainId].api.detailInfo.priceInfo(llamma),
-        refetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress as Address }),
+        refetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress }),
       ])
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }

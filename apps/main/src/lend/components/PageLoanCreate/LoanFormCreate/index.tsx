@@ -37,7 +37,6 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import type { Address } from '@ui-kit/utils'
 
 const LoanCreate = ({
   isLeverage = false,
@@ -81,7 +80,7 @@ const LoanCreate = ({
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
   })
 
   const updateFormValues = useCallback(

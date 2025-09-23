@@ -30,7 +30,6 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
-import type { Address } from '@ui-kit/utils'
 
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -59,7 +58,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
   })
 
   const network = networks[rChainId]

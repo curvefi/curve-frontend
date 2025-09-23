@@ -36,7 +36,6 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Address } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -80,7 +79,7 @@ const LoanBorrowMore = ({
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
   })
 
   const updateFormValues = useCallback(

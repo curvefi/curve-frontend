@@ -36,7 +36,6 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
-import type { Address } from '@ui-kit/utils'
 
 const LoanSelfLiquidation = ({
   rChainId,
@@ -69,7 +68,7 @@ const LoanSelfLiquidation = ({
   const { data: loanExists } = useLoanExists({
     chainId: rChainId,
     marketId: market?.id,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
   })
 
   const reset = useCallback(() => {

@@ -15,7 +15,6 @@ import {
 } from '@/lend/types/lend.types'
 import { getLoanExists } from '@/llamalend/queries/loan-exists'
 import { log } from '@ui-kit/lib/logging'
-import type { Address } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -110,7 +109,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
         const loanExists = getLoanExists({
           chainId: api.chainId,
           marketId: market.id,
-          userAddress: api.signerAddress as Address,
+          userAddress: api.signerAddress,
         })
         return loanExists && typeof storedMapper[userActiveKey] === 'undefined'
       })
@@ -125,7 +124,7 @@ const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice 
           getLoanExists({
             chainId: api.chainId,
             marketId: market.id,
-            userAddress: api.signerAddress as Address,
+            userAddress: api.signerAddress,
           }),
         )
       }
