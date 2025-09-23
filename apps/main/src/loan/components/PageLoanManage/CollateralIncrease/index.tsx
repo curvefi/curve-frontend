@@ -29,7 +29,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -62,6 +67,11 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
+  const network = chainId && networks[chainId]
+  const [releaseChannel] = useReleaseChannel()
+
+  const [, collateralAddress] = llamma?.coinAddresses ?? []
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
@@ -84,7 +94,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
       }
     },
-    [formStatus, setStateByKey],
+    [formStatus.isApproved, setStateByKey],
   )
 
   const handleInpChangeCollateral = (collateral: string) => {
@@ -95,6 +105,17 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     updatedFormValues.collateralError = ''
     updateFormValues(updatedFormValues)
   }
+
+  const onCollateralChanged = useCallback(
+    (val?: number) => {
+      const { formStatus, formValues } = useStore.getState().loanCollateralIncrease
+      const collateral = `${val ?? ''}`
+      if (formValues.collateral === collateral) return
+      reset(!!formStatus.error, formStatus.isComplete)
+      updateFormValues({ ...formValues, collateral, collateralError: '' })
+    },
+    [reset, updateFormValues],
+  )
 
   const handleBtnClickAdd = useCallback(
     async (payloadActiveKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
@@ -228,32 +249,66 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <div>
         {/* input collateral */}
         <Box grid gridRowGap={1}>
-          <InputProvider
-            grid
-            gridTemplateColumns="1fr auto"
-            padding="4px 8px"
-            inputVariant={formValues.collateralError ? 'error' : undefined}
-            disabled={disabled}
-            id="collateral"
-          >
-            <InputDebounced
-              id="inpCollateral"
-              type="number"
-              labelProps={{
-                label: t`${getTokenName(llamma).collateral} Avail.`,
-                descriptionLoading: userWalletBalancesLoading,
-                description: formatNumber(userWalletBalances.collateral),
+          {releaseChannel !== ReleaseChannel.Beta ? (
+            <>
+              <InputProvider
+                grid
+                gridTemplateColumns="1fr auto"
+                padding="4px 8px"
+                inputVariant={formValues.collateralError ? 'error' : undefined}
+                disabled={disabled}
+                id="collateral"
+              >
+                <InputDebounced
+                  id="inpCollateral"
+                  type="number"
+                  labelProps={{
+                    label: t`${getTokenName(llamma).collateral} Avail.`,
+                    descriptionLoading: userWalletBalancesLoading,
+                    description: formatNumber(userWalletBalances.collateral),
+                  }}
+                  value={formValues.collateral}
+                  onChange={handleInpChangeCollateral}
+                />
+                <InputMaxBtn onClick={() => handleInpChangeCollateral(userWalletBalances.collateral)} />
+              </InputProvider>
+              <StyledInpChip size="xs" isDarkBg isError>
+                {formValues.collateralError === 'too-much' && (
+                  <>Collateral is greater than {formatNumber(userWalletBalances.collateral)}</>
+                )}
+              </StyledInpChip>
+            </>
+          ) : (
+            <LargeTokenInput
+              name="collateral"
+              testId="inpCollateral"
+              isError={!!formValues.collateralError}
+              {...(formValues.collateralError === 'too-much' && {
+                message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
+              })}
+              disabled={disabled}
+              maxBalance={{
+                loading: userWalletBalancesLoading,
+                balance: stringToNumber(userWalletBalances.collateral),
+                symbol: getTokenName(llamma).collateral,
+                showSlider: false,
+                ...(collateralUsdRate != null &&
+                  userWalletBalances.collateral != null && {
+                    notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
+                  }),
               }}
-              value={formValues.collateral}
-              onChange={handleInpChangeCollateral}
+              balance={stringToNumber(formValues.collateral)}
+              tokenSelector={
+                <TokenLabel
+                  blockchainId={network?.id}
+                  tooltip={getTokenName(llamma).collateral}
+                  address={collateralAddress}
+                  label={getTokenName(llamma).collateral}
+                />
+              }
+              onBalance={onCollateralChanged}
             />
-            <InputMaxBtn onClick={() => handleInpChangeCollateral(userWalletBalances.collateral)} />
-          </InputProvider>
-          <StyledInpChip size="xs" isDarkBg isError>
-            {formValues.collateralError === 'too-much' && (
-              <>Collateral is greater than {formatNumber(userWalletBalances.collateral)}</>
-            )}
-          </StyledInpChip>
+          )}
         </Box>
 
         {/* detail info */}

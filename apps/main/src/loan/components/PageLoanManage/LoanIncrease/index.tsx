@@ -32,7 +32,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -69,6 +74,12 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
+  const resolvedChainId = (chainId ?? 1) as ChainId
+  const network = networks[resolvedChainId]
+  const [releaseChannel] = useReleaseChannel()
+  const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
+  const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
+  const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
 
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
@@ -94,15 +105,24 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     [formStatus, setStateByKey],
   )
 
-  const handleInpChange = (name: 'collateral' | 'debt', value: string) => {
-    reset(!!formStatus.error, formStatus.isComplete)
+  const handleInpChange = useCallback(
+    (name: 'collateral' | 'debt', value: string) => {
+      reset(!!formStatus.error, formStatus.isComplete)
+      updateFormValues({
+        ...useStore.getState().loanIncrease.formValues,
+        [name]: value,
+        collateralError: '',
+        debtError: '',
+      })
+    },
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues],
+  )
 
-    const updatedFormValues = { ...formValues }
-    updatedFormValues[name] = value
-    updatedFormValues.collateralError = ''
-    updatedFormValues.debtError = ''
-    updateFormValues(updatedFormValues)
-  }
+  const onDebtChanged = useCallback((val?: number) => handleInpChange('debt', `${val ?? ''}`), [handleInpChange])
+  const onCollateralChanged = useCallback(
+    (val?: number) => handleInpChange('collateral', `${val ?? ''}`),
+    [handleInpChange],
+  )
 
   const handleBtnClickBorrow = useCallback(
     async (payloadActiveKey: string, curve: LlamaApi, formValues: FormValues, llamma: Llamma) => {
@@ -254,66 +274,134 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   return (
     <>
       {/* field debt */}
-      <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.debtError ? 'error' : undefined}
+      {releaseChannel !== ReleaseChannel.Beta ? (
+        <Box grid gridRowGap={1}>
+          <InputProvider
+            grid
+            gridTemplateColumns="1fr auto"
+            padding="4px 8px"
+            inputVariant={formValues.debtError ? 'error' : undefined}
+            disabled={disabled}
+            id="debt"
+          >
+            <InputDebounced
+              id="inpDebt"
+              type="number"
+              labelProps={{
+                label: t`${getTokenName(llamma).stablecoin} borrow amount`,
+              }}
+              value={formValues.debt}
+              onChange={(val) => handleInpChange('debt', val)}
+            />
+            <InputMaxBtn disabled={disabled} onClick={() => handleInpChange('debt', maxRecv)} />
+          </InputProvider>
+          {formValues.debtError === 'too-much' ? (
+            <StyledInpChip size="xs" isDarkBg isError>
+              Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more
+            </StyledInpChip>
+          ) : (
+            <StyledInpChip size="xs">
+              Max borrow amount {isReady && maxRecv ? formatNumber(maxRecv) : '-'}
+            </StyledInpChip>
+          )}
+        </Box>
+      ) : (
+        <LargeTokenInput
+          label={t`Borrow amount:`}
+          name="debt"
+          isError={!!formValues.debtError}
+          message={
+            formValues.debtError === 'too-much'
+              ? t`Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more`
+              : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
+          }
           disabled={disabled}
-          id="debt"
-        >
-          <InputDebounced
-            id="inpDebt"
-            type="number"
-            labelProps={{
-              label: t`${getTokenName(llamma).stablecoin} borrow amount`,
-            }}
-            value={formValues.debt}
-            onChange={(val) => handleInpChange('debt', val)}
-          />
-          <InputMaxBtn disabled={disabled} onClick={() => handleInpChange('debt', maxRecv)} />
-        </InputProvider>
-        {formValues.debtError === 'too-much' ? (
-          <StyledInpChip size="xs" isDarkBg isError>
-            Borrow amount is greater than ${formatNumber(maxRecv)}, increase collateral to borrow more
-          </StyledInpChip>
-        ) : (
-          <StyledInpChip size="xs">Max borrow amount {isReady && maxRecv ? formatNumber(maxRecv) : '-'}</StyledInpChip>
-        )}
-      </Box>
+          maxBalance={{
+            loading: maxRecv == null || maxRecv == '',
+            balance: stringToNumber(maxRecv),
+            symbol: getTokenName(llamma).stablecoin,
+            notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
+            showSlider: false,
+          }}
+          balance={stringToNumber(formValues.debt)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={getTokenName(llamma).stablecoin}
+              address={stablecoinAddress}
+              label={getTokenName(llamma).stablecoin}
+            />
+          }
+          onBalance={onDebtChanged}
+        />
+      )}
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.collateralError ? 'error' : undefined}
-          disabled={disabled}
-          id="collateral"
-        >
-          <InputDebounced
-            id="inpCollateral"
-            type="number"
-            labelProps={{
-              label: t`${getTokenName(llamma).collateral} Avail.`,
-              descriptionLoading: userWalletBalancesLoading,
-              description: formatNumber(userWalletBalances.collateral),
-            }}
-            value={formValues.collateral}
-            onChange={(val) => handleInpChange('collateral', val)}
-          />
-          <InputMaxBtn
+        {releaseChannel !== ReleaseChannel.Beta ? (
+          <>
+            <InputProvider
+              grid
+              gridTemplateColumns="1fr auto"
+              padding="4px 8px"
+              inputVariant={formValues.collateralError ? 'error' : undefined}
+              disabled={disabled}
+              id="collateral"
+            >
+              <InputDebounced
+                id="inpCollateral"
+                type="number"
+                labelProps={{
+                  label: t`${getTokenName(llamma).collateral} Avail.`,
+                  descriptionLoading: userWalletBalancesLoading,
+                  description: formatNumber(userWalletBalances.collateral),
+                }}
+                value={formValues.collateral}
+                onChange={(val) => handleInpChange('collateral', val)}
+              />
+              <InputMaxBtn
+                disabled={disabled}
+                onClick={() => handleInpChange('collateral', userWalletBalances.collateral)}
+              />
+            </InputProvider>
+            <StyledInpChip size="xs" isDarkBg isError>
+              {formValues.collateralError === 'too-much' && userWalletBalances?.collateral && (
+                <>Collateral is greater than {+userWalletBalances.collateral}</>
+              )}
+            </StyledInpChip>
+          </>
+        ) : (
+          <LargeTokenInput
+            name="collateral"
+            isError={!!formValues.collateralError}
             disabled={disabled}
-            onClick={() => handleInpChange('collateral', userWalletBalances.collateral)}
+            maxBalance={{
+              loading: userWalletBalancesLoading,
+              balance: stringToNumber(userWalletBalances.collateral),
+              symbol: getTokenName(llamma).collateral,
+              showSlider: false,
+              ...(collateralUsdRate != null &&
+                userWalletBalances.collateral != null && {
+                  notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
+                }),
+            }}
+            label={t`Collateral amount:`}
+            balance={stringToNumber(formValues.collateral)}
+            tokenSelector={
+              <TokenLabel
+                blockchainId={network.id}
+                tooltip={getTokenName(llamma).collateral}
+                address={collateralAddress}
+                label={getTokenName(llamma).collateral}
+              />
+            }
+            onBalance={onCollateralChanged}
+            {...(formValues.collateralError === 'too-much' &&
+              userWalletBalances?.collateral && {
+                message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
+              })}
           />
-        </InputProvider>
-        <StyledInpChip size="xs" isDarkBg isError>
-          {formValues.collateralError === 'too-much' && userWalletBalances?.collateral && (
-            <>Collateral is greater than {+userWalletBalances.collateral}</>
-          )}
-        </StyledInpChip>
+        )}
 
         {/* detail info */}
         <StyledDetailInfoWrapper>
