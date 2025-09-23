@@ -17,6 +17,7 @@ import { parseMarketParams, getLoanCreatePathname, getLoanManagePathname } from 
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { SupplyPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -46,16 +47,20 @@ const Page = () => {
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const { signerAddress } = api ?? {}
   const [isLoaded, setLoaded] = useState(false)
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress,
+  })
 
   const supplyPositionDetails = useSupplyPositionDetails({
     chainId: rChainId,
@@ -85,7 +90,6 @@ const Page = () => {
         void fetchAllMarketDetails(api, market, true)
 
         if (signerAddress) {
-          const loanExists = (await fetchUserLoanExists(api, market, true))?.loanExists
           if (loanExists) {
             void fetchAllUserMarketDetails(api, market, true)
           } else {
@@ -94,7 +98,7 @@ const Page = () => {
         }
       }, REFRESH_INTERVAL['3s'])
     },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserLoanExists, fetchUserMarketBalances],
+    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserMarketBalances, loanExists],
   )
 
   useEffect(() => {

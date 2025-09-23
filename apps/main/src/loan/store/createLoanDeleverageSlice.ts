@@ -157,12 +157,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
       // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
-        networks[chainId].id,
-        llamma.controller,
-        resp.hash,
-      )
+      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
         const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
@@ -173,7 +168,7 @@ const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): 
         } else {
           // re-fetch loan info
           const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
-          loanExists = respLoanDetails.loanExists.loanExists
+          loanExists = respLoanDetails.loanExists
 
           if (!loanExists) {
             get().loans.resetUserDetailsState(llamma)

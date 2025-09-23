@@ -19,6 +19,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { Api, HealthMode, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -54,7 +55,6 @@ const LoanCreate = ({
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExistsResp = useStore((state) => state.user.loansExistsMapper[userActiveKey])
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
@@ -76,6 +76,12 @@ const LoanCreate = ({
   const { signerAddress } = api ?? {}
   const { expectedCollateral } = detailInfoLeverage ?? {}
   const { borrowed_token, collateral_token } = market ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress,
+  })
 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
@@ -409,7 +415,7 @@ const LoanCreate = ({
       {marketAlert && <AlertBox alertType={marketAlert.alertType}>{marketAlert.message}</AlertBox>}
 
       {/* actions */}
-      {signerAddress && typeof loanExistsResp !== 'undefined' && loanExistsResp.loanExists && !formStatus.isComplete ? (
+      {signerAddress && loanExists && !formStatus.isComplete ? (
         <>
           <AlertBox alertType="info">{t`A loan has been found for this market.`}</AlertBox>
           <Button
