@@ -55,6 +55,12 @@ export function queryFactory<
     setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
     prefetchQuery: (params, staleTime = 0) => queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
     fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
+    /**
+     * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
+     * Primary use case is for Zustand stores where want to both use queries and ensure freshness.
+     * I suspect this will be the only case, and once Zustand refactoring to Tanstack is complete, we may delete this.
+     */
+    refetchQuery: (params) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options, staleTime: 0 }),
     useQuery: (params, condition) => useQuery(getQueryOptions(params, condition)),
     invalidate: (params) => queryClient.invalidateQueries({ queryKey: queryKey(params) }),
   }

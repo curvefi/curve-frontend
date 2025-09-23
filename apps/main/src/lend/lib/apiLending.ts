@@ -316,25 +316,6 @@ const market = {
 }
 
 const user = {
-  fetchLoansExists: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchUserLoansExists', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: { owmId: string; loanExists: boolean; error: string } } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        results[userActiveKey] = { owmId: market.id, loanExists: false, error }
-      })
-      .process(async (market) => {
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        const loanExists = await market.userLoanExists()
-        results[userActiveKey] = { owmId: market.id, loanExists, error: '' }
-      })
-
-    return results
-  },
   fetchLoansDetailsHealth: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetailsHealth', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserLoanHealth } = {}

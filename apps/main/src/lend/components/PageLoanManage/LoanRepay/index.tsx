@@ -26,6 +26,7 @@ import {
 } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import AlertBox from '@ui/AlertBox'
@@ -64,7 +65,6 @@ const LoanRepay = ({
   const formStatus = useStore((state) => state.loanRepay.formStatus)
   const formValues = useStore((state) => state.loanRepay.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
@@ -85,6 +85,12 @@ const LoanRepay = ({
   const { decimals: borrowedTokenDecimals } = borrowed_token ?? {}
   const { expectedBorrowed } = detailInfoLeverage ?? {}
   const hasExpectedBorrowed = !!expectedBorrowed
+
+  const { data: loanExists, isFetching: loanExistsLoading } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress,
+  })
 
   const updateFormValues = useCallback(
     (
@@ -388,7 +394,7 @@ const LoanRepay = ({
             id="stateCollateral"
             inpError={formValues.stateCollateralError}
             inpDisabled={disable}
-            inpLabelLoading={loanExists && !!signerAddress && typeof userState?.collateral === 'undefined'}
+            inpLabelLoading={loanExistsLoading && !!signerAddress && typeof userState?.collateral === 'undefined'}
             inpLabelDescription={formatNumber(userState?.collateral, { defaultValue: '-' })}
             inpValue={formValues.stateCollateral}
             tokenAddress={collateral_token?.address}

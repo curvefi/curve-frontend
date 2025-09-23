@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -227,8 +228,8 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
 
       const clonedFormValues = lodash.cloneDeep(formValues)
 
-      // check if loan exists
-      const loanExists = get().loans.existsMapper[llamma.id]?.loanExists
+      const loanExists = await refetchLoanExists({ chainId, marketId: llamma.id, userAddress: signerAddress })
+
       if (loanExists) {
         get()[sliceKey].setStateByKeys({
           formValues: clonedFormValues,
@@ -421,12 +422,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
         // update user events api
-        void getUserMarketCollateralEvents(
-          wallet?.account.address ?? '',
-          networks[chainId].id,
-          llamma.controller,
-          resp.hash,
-        )
+        void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({
@@ -436,8 +432,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
 
           // re-fetch loan info
           const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-          if (!loanExists.loanExists) {
+          if (!loanExists) {
             get().loans.resetUserDetailsState(llamma)
           }
 
@@ -457,7 +452,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
             maxRecv: {},
           })
 
-          return { ...resp, loanExists: loanExists.loanExists }
+          return { ...resp, loanExists }
         }
       }
     },

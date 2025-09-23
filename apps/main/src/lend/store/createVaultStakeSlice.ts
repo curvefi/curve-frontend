@@ -140,7 +140,7 @@ const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStak
       const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,

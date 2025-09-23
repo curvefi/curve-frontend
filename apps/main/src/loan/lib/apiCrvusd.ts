@@ -301,20 +301,6 @@ const detailInfo = {
 const initialGas = 0 as TGas
 
 const loanCreate = {
-  exists: async (llamma: Llamma, signerAddress: string) => {
-    log('loanExists', llamma.collateralSymbol)
-    const resp = { loanExists: false, error: '' }
-    try {
-      if (signerAddress) {
-        resp.loanExists = await llamma.loanExists(signerAddress)
-      }
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-loan-exists')
-      return resp
-    }
-  },
   estGasApproval: async (
     activeKey: string,
     llamma: Llamma,
