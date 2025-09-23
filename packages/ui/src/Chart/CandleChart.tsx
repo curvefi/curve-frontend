@@ -513,56 +513,39 @@ const CandleChart = ({
   useEffect(() => {
     if (!liquidationRange) return
 
-    // both ranges
-    if (liquidationRange.current && liquidationRange.new) {
-      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+    const setSeriesData = (series: ISeriesApi<'Area'> | null, data: any) => {
+      if (series) series.setData(data)
+    }
 
-      if (addNewFirst) {
-        if (newAreaSeriesRef.current) {
-          newAreaSeriesRef.current.setData(liquidationRange.new.price1)
-        }
-        if (newAreaBgSeriesRef.current) {
-          newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
-        }
-        if (currentAreaSeriesRef.current) {
-          currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
-        }
-        if (currentAreaBgSeriesRef.current) {
-          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
-        }
-      } else {
-        if (currentAreaSeriesRef.current) {
-          currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
-        }
-        if (currentAreaBgSeriesRef.current) {
-          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
-        }
-        if (newAreaSeriesRef.current) {
-          newAreaSeriesRef.current.setData(liquidationRange.new.price1)
-        }
-        if (newAreaBgSeriesRef.current) {
-          newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
-        }
-      }
+    const ranges = []
+    if (liquidationRange.current && liquidationRange.new) {
+      ranges.push(
+        { series: newAreaSeriesRef.current, bgSeries: newAreaBgSeriesRef.current, data: liquidationRange.new },
+        {
+          series: currentAreaSeriesRef.current,
+          bgSeries: currentAreaBgSeriesRef.current,
+          data: liquidationRange.current,
+        },
+      )
+    } else if (liquidationRange.new) {
+      ranges.push({
+        series: newAreaSeriesRef.current,
+        bgSeries: newAreaBgSeriesRef.current,
+        data: liquidationRange.new,
+      })
+    } else if (liquidationRange.current) {
+      ranges.push({
+        series: currentAreaSeriesRef.current,
+        bgSeries: currentAreaBgSeriesRef.current,
+        data: liquidationRange.current,
+      })
     }
-    // only new
-    else if (!liquidationRange.current && liquidationRange.new) {
-      if (newAreaSeriesRef.current) {
-        newAreaSeriesRef.current.setData(liquidationRange.new.price1)
-      }
-      if (newAreaBgSeriesRef.current) {
-        newAreaBgSeriesRef.current.setData(liquidationRange.new.price2)
-      }
-    }
-    // only current
-    else if (liquidationRange.current && !liquidationRange.new) {
-      if (currentAreaBgSeriesRef.current) {
-        currentAreaBgSeriesRef.current.setData(liquidationRange.current.price2)
-      }
-      if (currentAreaSeriesRef.current) {
-        currentAreaSeriesRef.current.setData(liquidationRange.current.price1)
-      }
-    }
+
+    // Set data for all ranges
+    ranges.forEach(({ series, bgSeries, data }) => {
+      setSeriesData(series, data.price1)
+      setSeriesData(bgSeries, data.price2)
+    })
   }, [liquidationRange])
 
   useEffect(() => {
@@ -580,56 +563,45 @@ const CandleChart = ({
 
   // Update liquidation range series colors when they change
   useEffect(() => {
-    // Update current range series if they exist and are visible
-    if (liqRangeCurrentVisible && currentAreaSeriesRef.current) {
-      currentAreaSeriesRef.current.applyOptions({
-        topColor: memoizedColors.rangeColorA25,
-        bottomColor: memoizedColors.rangeColorA25,
-        lineColor: memoizedColors.rangeColor,
-      })
-    }
-    if (liqRangeCurrentVisible && currentAreaBgSeriesRef.current) {
-      currentAreaBgSeriesRef.current.applyOptions({
-        topColor: memoizedColors.backgroundColor,
-        bottomColor: memoizedColors.backgroundColor,
-        lineColor: memoizedColors.rangeColor,
-      })
+    const applySeriesOptions = (
+      series: ISeriesApi<'Area'> | null,
+      colors: { top: string; bottom: string; line: string },
+    ) => {
+      if (series) {
+        series.applyOptions({
+          topColor: colors.top,
+          bottomColor: colors.bottom,
+          lineColor: colors.line,
+        })
+      }
     }
 
-    // Update new range series if they exist and are visible
-    if (liqRangeNewVisible && newAreaSeriesRef.current) {
-      newAreaSeriesRef.current.applyOptions({
-        topColor: memoizedColors.rangeColorA25,
-        bottomColor: memoizedColors.rangeColorA25,
-        lineColor: memoizedColors.rangeColor,
-      })
-    }
-    if (liqRangeNewVisible && newAreaBgSeriesRef.current) {
-      newAreaBgSeriesRef.current.applyOptions({
-        topColor: memoizedColors.backgroundColor,
-        bottomColor: memoizedColors.backgroundColor,
-        lineColor: memoizedColors.rangeColor,
-      })
+    const isBothRanges = liquidationRange?.current && liquidationRange?.new
+    const currentColors = isBothRanges
+      ? {
+          top: memoizedColors.rangeColorA25Old,
+          bottom: memoizedColors.backgroundColor,
+          line: memoizedColors.rangeColorOld,
+        }
+      : { top: memoizedColors.rangeColorA25, bottom: memoizedColors.backgroundColor, line: memoizedColors.rangeColor }
+
+    // Update current range series
+    if (liqRangeCurrentVisible) {
+      applySeriesOptions(currentAreaSeriesRef.current, currentColors)
+      applySeriesOptions(currentAreaBgSeriesRef.current, { ...currentColors, top: currentColors.bottom })
     }
 
-    // Update "old" colors for current range if both current and new exist
-    if (
-      liqRangeCurrentVisible &&
-      currentAreaSeriesRef.current &&
-      currentAreaBgSeriesRef.current &&
-      liquidationRange &&
-      liquidationRange.current &&
-      liquidationRange.new
-    ) {
-      currentAreaSeriesRef.current.applyOptions({
-        topColor: memoizedColors.rangeColorA25Old,
-        bottomColor: memoizedColors.rangeColorA25Old,
-        lineColor: memoizedColors.rangeColorOld,
+    // Update new range series
+    if (liqRangeNewVisible) {
+      applySeriesOptions(newAreaSeriesRef.current, {
+        top: memoizedColors.rangeColorA25,
+        bottom: memoizedColors.rangeColorA25,
+        line: memoizedColors.rangeColor,
       })
-      currentAreaBgSeriesRef.current.applyOptions({
-        topColor: memoizedColors.backgroundColor,
-        bottomColor: memoizedColors.backgroundColor,
-        lineColor: memoizedColors.rangeColorOld,
+      applySeriesOptions(newAreaBgSeriesRef.current, {
+        top: memoizedColors.backgroundColor,
+        bottom: memoizedColors.backgroundColor,
+        line: memoizedColors.rangeColor,
       })
     }
   }, [
