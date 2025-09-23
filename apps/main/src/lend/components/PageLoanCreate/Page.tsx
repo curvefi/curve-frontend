@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
@@ -11,7 +11,7 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
+import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
@@ -46,14 +46,12 @@ const Page = () => {
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
-  const [isLoaded, setLoaded] = useState(false)
   const push = useNavigate()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
-  const fetchUserLoanExists = useStore((state) => state.user.fetchUserLoanExists)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
@@ -85,26 +83,16 @@ const Page = () => {
   }, [isSuccess, market, params, push, rMarket])
 
   useEffect(() => {
-    const fetchInitial = async (api: Api, market: OneWayMarketTemplate) => {
-      if (api.signerAddress) {
-        await fetchUserLoanExists(api, market, true).catch(console.error)
-      }
-      setLoaded(true)
-    }
-    if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchUserLoanExists, isPageVisible, market])
-
-  useEffect(() => {
     // delay fetch rest after form details are fetched first
     const timer = setTimeout(async () => {
-      if (!api || !market || !isPageVisible || !isLoaded) return
+      if (!api || !market || !isPageVisible) return
       await fetchAllMarketDetails(api, market, true)
       if (api.signerAddress) {
         await fetchUserMarketBalances(api, market, true)
       }
     }, REFRESH_INTERVAL['3s'])
     return () => clearTimeout(timer)
-  }, [api, fetchAllMarketDetails, fetchUserMarketBalances, isLoaded, isPageVisible, market])
+  }, [api, fetchAllMarketDetails, fetchUserMarketBalances, isPageVisible, market])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
@@ -123,11 +111,11 @@ const Page = () => {
     rChainId,
     rOwmId,
     rFormType,
-    isLoaded,
     api,
     market,
     titleMapper,
     userActiveKey,
+    isLoaded: true,
   }
   const positionDetailsHrefs = {
     borrow: '',

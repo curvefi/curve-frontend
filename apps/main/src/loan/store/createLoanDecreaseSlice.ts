@@ -210,17 +210,12 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
       const repayFn = networks[chainId].api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
       // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
-        networks[chainId].id,
-        llamma.controller,
-        resp.hash,
-      )
+      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
 
-        if (!loanExists.loanExists) {
+        if (!loanExists) {
           get().loans.resetUserDetailsState(llamma)
         }
 
@@ -238,7 +233,7 @@ const createLoanDecrease = (set: SetState<State>, get: GetState<State>) => ({
           formValues: DEFAULT_FORM_VALUES,
         })
 
-        return { ...resp, loanExists: loanExists.loanExists }
+        return { ...resp, loanExists }
       }
     },
 

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import type { Address } from 'viem'
+import { useAccount } from 'wagmi'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
@@ -49,6 +51,7 @@ const Page = () => {
   const { connectState, llamaApi: curve = null } = useConnection()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
+  const { address } = useAccount()
   const [loaded, setLoaded] = useState(false)
 
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
@@ -56,7 +59,7 @@ const Page = () => {
   const { llamma, llamma: { id: llammaId = '' } = {}, displayName } = collateralDatasMapper?.[rCollateralId] ?? {}
 
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const loanExists = useStore((state) => state.loans.existsMapper[rCollateralId]?.loanExists)
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)

@@ -48,7 +48,7 @@ export async function getOracle(
 }
 
 export async function getUserMarketCollateralEvents(
-  userAddr: string,
+  userAddr: Address | '' = '',
   chain: Chain,
   marketController: string,
   txHash?: string,

@@ -12,6 +12,7 @@ import type {
   Libs,
   LlamaNetworkId,
   LlamaChainId,
+  CurveApi,
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
 
@@ -63,7 +64,7 @@ const initLib: {
     } else {
       await curveApi.init('NoRPC', 'NoRPC', { chainId })
     }
-    return curveApi
+    return curveApi as CurveApi
   },
 }
 

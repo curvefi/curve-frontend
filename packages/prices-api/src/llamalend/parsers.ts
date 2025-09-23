@@ -1,4 +1,3 @@
-import type { Address } from '../index'
 import { fromEntries, recordEntries } from '../objects.util'
 import { toDate } from '../timestamp'
 import type * as Models from './models'
@@ -152,7 +151,7 @@ export const parseUserMarketStats = (x: Responses.GetUserMarketStatsResponse) =>
 })
 
 export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsResponse): Models.UserMarketEarnings => ({
-  user: x.user as Address,
+  user: x.user,
   earnings: parseFloat(x.earnings),
   deposited: parseFloat(x.deposited),
   withdrawn: parseFloat(x.withdrawn),

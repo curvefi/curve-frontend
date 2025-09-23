@@ -24,6 +24,7 @@ import {
 } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertBox from '@ui/AlertBox'
 import InputReadOnly from '@ui/InputReadOnly'
 import InternalLink from '@ui/Link/InternalLink'
@@ -50,7 +51,6 @@ const LoanSelfLiquidation = ({
   const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
-  const loanExists = useStore((state) => state.user.loansExistsMapper[userActiveKey]?.loanExists)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
@@ -64,6 +64,12 @@ const LoanSelfLiquidation = ({
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { signerAddress } = api ?? {}
+
+  const { data: loanExists } = useLoanExists({
+    chainId: rChainId,
+    marketId: market?.id,
+    userAddress: signerAddress,
+  })
 
   const reset = useCallback(() => {
     setTxInfoBar(null)

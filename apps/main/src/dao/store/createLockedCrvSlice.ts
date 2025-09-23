@@ -16,7 +16,6 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { getErrorMessage } from '@/dao/utils'
-import { Address } from '@curvefi/prices-api'
 import { shortenAccount } from '@ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -207,7 +206,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           }
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -245,7 +244,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -285,7 +284,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
           })
 
           // re-fetch user vecrv info
-          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
+          invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
           const { wallet } = useWallet.getState()
           if (wallet) {
             get().user.updateUserData(curve, wallet)
@@ -333,7 +332,7 @@ const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): Locke
         )
 
         // re-fetch user vecrv info
-        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress as Address })
+        invalidateLockerVecrvInfo({ chainId: curve.chainId, userAddress: curve.signerAddress })
 
         dismissNotificationHandler()
         notify(t`CRV withdrawal successful.`, 'success', 15000)
