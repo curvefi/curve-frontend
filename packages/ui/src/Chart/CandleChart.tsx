@@ -10,7 +10,7 @@ import {
   LineSeries,
 } from 'lightweight-charts'
 import lodash from 'lodash'
-import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo, RefObject } from 'react'
 import { styled } from 'styled-components'
 import type {
   LpPriceOhlcDataFormatted,
@@ -23,31 +23,28 @@ import type {
 import { hslaToRgb } from './utils'
 
 /**
- * Creates a price formatter configuration for Lightweight Charts
  * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
  * @returns Price format configuration object
  */
-function createPriceFormatter(totalDecimalPlacesRef: React.MutableRefObject<number>) {
-  return {
-    type: 'custom' as const,
-    formatter: (price: any) => {
-      const [, fraction] = price.toString().split('.')
+const createPriceFormatter = (totalDecimalPlacesRef: RefObject<number>) => ({
+  type: 'custom' as const,
+  formatter: (price: number) => {
+    const [, fraction] = price.toString().split('.')
 
-      if (!fraction) {
-        return price.toFixed(4)
-      }
+    if (!fraction) {
+      return price.toFixed(4)
+    }
 
-      const nonZeroIndex = fraction.split('').findIndex((char: any) => char !== '0')
+    const nonZeroIndex = fraction.split('').findIndex((char: string) => char !== '0')
 
-      // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-      // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-      totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
+    // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
+    // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
+    totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
 
-      return price.toFixed(totalDecimalPlacesRef.current)
-    },
-    minMove: 0.0000001,
-  }
-}
+    return price.toFixed(totalDecimalPlacesRef.current)
+  },
+  minMove: 0.0000001,
+})
 
 /**
  * Shared configuration for liquidation range area series
@@ -118,9 +115,27 @@ const CandleChart = ({
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
   const [fetchingMore, setFetchingMore] = useState(false)
+  const [wrapperDimensions, setWrapperDimensions] = useState({ width: 0, height: 0 })
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
+
+  // Debounced update of wrapper dimensions
+  const debouncedUpdateDimensions = useRef(
+    lodash.debounce(() => {
+      if (wrapperRef.current) {
+        setWrapperDimensions({
+          width: wrapperRef.current.clientWidth,
+          height: wrapperRef.current.clientHeight,
+        })
+      }
+    }, 16), // ~60fps
+  )
+
+  // Update wrapper dimensions when wrapperRef changes
+  useEffect(() => {
+    debouncedUpdateDimensions.current()
+  }, [wrapperRef])
 
   // Memoized visible range change handler
   const handleVisibleLogicalRangeChange = useCallback(() => {
@@ -214,23 +229,6 @@ const CandleChart = ({
     }
   }, [])
 
-  // Initialize chart dimensions after creation
-  useEffect(() => {
-    if (!chartRef.current || !wrapperRef.current) return
-
-    // Use a small delay to ensure the chart is fully initialized
-    const timeoutId = setTimeout(() => {
-      if (chartRef.current && wrapperRef.current) {
-        chartRef.current.applyOptions({
-          width: wrapperRef.current.clientWidth,
-          height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
-        })
-      }
-    }, 0)
-
-    return () => clearTimeout(timeoutId)
-  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperRef])
-
   // Update chart colors when they change
   useEffect(() => {
     if (!chartRef.current) return
@@ -245,13 +243,13 @@ const CandleChart = ({
 
   // Update chart dimensions when they change
   useEffect(() => {
-    if (!chartRef.current) return
+    if (!chartRef.current || wrapperDimensions.width === 0) return
 
     chartRef.current.applyOptions({
-      width: wrapperRef.current.clientWidth,
+      width: wrapperDimensions.width,
       height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
     })
-  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperRef])
+  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperDimensions.width])
 
   // Update timeScale visibility when timeOption changes
   useEffect(() => {
@@ -675,70 +673,53 @@ const CandleChart = ({
 
     let order = 0
 
-    // Liquidation range series (behind OHLC)
-    // Order should match the data setting logic
-    if (liquidationRange && liquidationRange.current && liquidationRange.new) {
+    // Define series refs and their order based on liquidation range logic
+    const getLiquidationRangeSeries = () => {
+      if (!liquidationRange || !liquidationRange.current || !liquidationRange.new) {
+        // Only one range or no ranges - use default order
+        return [
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+        ]
+      }
+
       const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
 
       if (addNewFirst) {
         // New range first
-        if (newAreaSeriesRef.current) {
-          newAreaSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (newAreaBgSeriesRef.current) {
-          newAreaBgSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (currentAreaSeriesRef.current) {
-          currentAreaSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (currentAreaBgSeriesRef.current) {
-          currentAreaBgSeriesRef.current.setSeriesOrder(order++)
-        }
+        return [
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+        ]
       } else {
         // Current range first
-        if (currentAreaSeriesRef.current) {
-          currentAreaSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (currentAreaBgSeriesRef.current) {
-          currentAreaBgSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (newAreaSeriesRef.current) {
-          newAreaSeriesRef.current.setSeriesOrder(order++)
-        }
-        if (newAreaBgSeriesRef.current) {
-          newAreaBgSeriesRef.current.setSeriesOrder(order++)
-        }
-      }
-    } else {
-      // Only one range or no ranges - use default order
-      if (currentAreaSeriesRef.current) {
-        currentAreaSeriesRef.current.setSeriesOrder(order++)
-      }
-      if (currentAreaBgSeriesRef.current) {
-        currentAreaBgSeriesRef.current.setSeriesOrder(order++)
-      }
-      if (newAreaSeriesRef.current) {
-        newAreaSeriesRef.current.setSeriesOrder(order++)
-      }
-      if (newAreaBgSeriesRef.current) {
-        newAreaBgSeriesRef.current.setSeriesOrder(order++)
+        return [
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+        ]
       }
     }
 
-    // Volume series (bottom layer)
-    if (volumeSeriesRef.current) {
-      volumeSeriesRef.current.setSeriesOrder(order++)
-    }
+    // Define all series in order: liquidation ranges, volume, OHLC, oracle price
+    const allSeries = [
+      ...getLiquidationRangeSeries(),
+      volumeSeriesRef.current,
+      candlestickSeriesRef.current,
+      oraclePriceSeriesRef.current,
+    ]
 
-    // OHLC series (main layer)
-    if (candlestickSeriesRef.current) {
-      candlestickSeriesRef.current.setSeriesOrder(order++)
-    }
-
-    // Oracle price series (top layer)
-    if (oraclePriceSeriesRef.current) {
-      oraclePriceSeriesRef.current.setSeriesOrder(order++)
-    }
+    // Set order for all series that exist
+    allSeries.forEach((series) => {
+      if (series) {
+        series.setSeriesOrder(order++)
+      }
+    })
   }, [liquidationRange])
 
   useEffect(() => {
@@ -748,14 +729,21 @@ const CandleChart = ({
       const { width, height } = entries[0].contentRect
       if (width <= -1) return
 
+      // Update state with new dimensions (debounced)
+      setWrapperDimensions({ width: width - 1, height })
+
+      // Apply dimensions immediately for smooth resizing
       chartRef.current?.applyOptions({ width: width - 1, height })
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 
     wrapperRef.current.observe(chartContainerRef.current)
 
+    const debouncedUpdate = debouncedUpdateDimensions.current
+
     return () => {
       setIsUnmounting(true)
+      debouncedUpdate.cancel()
 
       wrapperRef?.current && wrapperRef.current.disconnect()
     }
