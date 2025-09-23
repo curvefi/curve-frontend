@@ -44,7 +44,7 @@ const LoanCreate = ({
   loanExists: boolean | undefined
   fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => void
 }) => {
-  const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
+  const { curve, llamma, loanExists, params, rMarket, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
   const [releaseChannel] = useReleaseChannel()
@@ -66,15 +66,15 @@ const LoanCreate = ({
   const handleTabClick = useCallback(
     (formType: FormType) => {
       if (loanExists) {
-        push(getLoanManagePathname(params, rCollateralId, 'loan'))
+        push(getLoanManagePathname(params, rMarket, 'loan'))
       } else {
         if (curve && llamma) {
           fetchInitial(curve, formType === 'leverage', llamma)
         }
-        push(getLoanCreatePathname(params, rCollateralId, formType))
+        push(getLoanCreatePathname(params, rMarket, formType))
       }
     },
-    [curve, fetchInitial, llamma, loanExists, push, params, rCollateralId],
+    [curve, fetchInitial, llamma, loanExists, push, params, rMarket],
   )
 
   return (

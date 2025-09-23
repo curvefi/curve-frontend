@@ -64,34 +64,34 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/create/$formType',
+    path: '$network/markets/$market/create/$formType',
     component: CreateLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Create - ${params.market} - Curve` }],
     }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/create',
+    path: '$network/markets/$market/create',
     component: CreateLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Create - ${params.market} - Curve` }],
     }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/manage/$formType',
+    path: '$network/markets/$market/manage/$formType',
     component: ManageLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Manage - ${params.market} - Curve` }],
     }),
     ...layoutProps,
   }),
   createRoute({
-    path: '$network/markets/$collateralId/manage',
+    path: '$network/markets/$market/manage',
     component: ManageLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Manage - ${params.market} - Curve` }],
     }),
     ...layoutProps,
   }),

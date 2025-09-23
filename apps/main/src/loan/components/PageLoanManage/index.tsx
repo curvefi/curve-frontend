@@ -32,7 +32,7 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
   { value: 'collateral-decrease', label: t`Remove` },
 ]
 
-const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
+const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rMarket, rFormType }: Props) => {
   const push = useNavigate()
 
   type Tab = 'loan' | 'collateral' | 'deleverage'
@@ -59,7 +59,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         variant="contained"
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
-        onChange={(key) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
+        onChange={(key) => push(getLoanManagePathname(params, rMarket, key as FormType))}
         options={tabs}
         fullWidth
       />

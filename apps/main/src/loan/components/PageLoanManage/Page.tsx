@@ -15,11 +15,11 @@ import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import useStore from '@/loan/store/useStore'
-import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import type { MarketUrlParams } from '@/loan/types/loan.types'
 import {
   getCollateralListPathname,
   getLoanCreatePathname,
-  parseCollateralParams,
+  parseMarketParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
@@ -39,8 +39,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 const Page = () => {
-  const params = useParams<CollateralUrlParams>()
-  const { rFormType, rCollateralId } = parseCollateralParams(params)
+  const params = useParams<MarketUrlParams>()
+  const { rFormType, rMarket } = parseMarketParams(params)
   const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()
   const pageLoaded = !isLoading(connectState)
@@ -48,12 +48,13 @@ const Page = () => {
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
-  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rMarket })
   const marketId = market?.id ?? ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
+
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -62,8 +63,8 @@ const Page = () => {
 
   const [loaded, setLoaded] = useState(false)
 
-  const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!market
+  const isValidRouterParams = !!rChainId && !!rMarket && !!rFormType
 
   const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
   const positionDetails = useLoanPositionDetails({
@@ -74,18 +75,18 @@ const Page = () => {
 
   useEffect(() => {
     if (curve && pageLoaded) {
-      if (rChainId && rCollateralId && rFormType && curve.signerAddress && market) {
+      if (rChainId && rMarket && rFormType && curve.signerAddress && market) {
         void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, market)
           if (!fetchedLoanDetails.loanExists) {
             resetUserDetailsState(market)
-            push(getLoanCreatePathname(params, rCollateralId))
+            push(getLoanCreatePathname(params, rMarket))
           }
           setLoaded(true)
         })()
       } else {
-        const args = { rChainId, rCollateralId, rFormType, signer: curve.signerAddress, market }
-        console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, args)
+        const args = { rChainId, rMarket, rFormType, signer: curve.signerAddress, market }
+        console.warn(`Cannot find market ${rMarket}, redirecting to list`, args)
         push(getCollateralListPathname(params))
       }
     }
@@ -152,7 +153,7 @@ const Page = () => {
               {...formProps}
               params={params}
               rChainId={rChainId}
-              rCollateralId={rCollateralId}
+              rMarket={rMarket}
               rFormType={rFormType as FormType}
               titleMapper={titleMapper}
             />

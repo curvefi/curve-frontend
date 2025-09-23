@@ -12,14 +12,9 @@ import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useStore from '@/loan/store/useStore'
-import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { type MarketUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
-import {
-  getLoanCreatePathname,
-  getLoanManagePathname,
-  parseCollateralParams,
-  useChainId,
-} from '@/loan/utils/utilsRouter'
+import { getLoanCreatePathname, getLoanManagePathname, parseMarketParams, useChainId } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -39,8 +34,8 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 const Page = () => {
-  const params = useParams<CollateralUrlParams>()
-  const { rFormType = null, rCollateralId } = parseCollateralParams(params)
+  const params = useParams<MarketUrlParams>()
+  const { rFormType = null, rMarket } = parseMarketParams(params)
   const push = useNavigate()
   const { connectState, llamaApi: curve = null } = useConnection()
   const rChainId = useChainId(params)
@@ -48,7 +43,7 @@ const Page = () => {
   const { address } = useAccount()
   const [loaded, setLoaded] = useState(false)
 
-  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rMarket })
   const marketId = market?.id ?? ''
   const pageLoaded = !isLoading(connectState)
 
@@ -170,7 +165,7 @@ const Page = () => {
       )}
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {rChainId && rCollateralId && (
+          {rChainId && rMarket && (
             <LoanCreate
               curve={curve}
               isReady={isReady}
@@ -180,7 +175,7 @@ const Page = () => {
               llammaId={marketId}
               params={params}
               rChainId={rChainId}
-              rCollateralId={rCollateralId}
+              rMarket={rMarket}
               rFormType={rFormType}
               fetchInitial={fetchInitial}
             />

@@ -1,6 +1,6 @@
 import type { FormType as ManageFormType } from '@/loan/components/PageLoanManage/types'
 import { ROUTE } from '@/loan/constants'
-import { ChainId, type CollateralUrlParams, type NetworkUrlParams, type UrlParams } from '@/loan/types/loan.types'
+import { ChainId, type MarketUrlParams, type NetworkUrlParams, type UrlParams } from '@/loan/types/loan.types'
 import { getInternalUrl, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 import { Chain } from '@ui-kit/utils'
 
@@ -17,18 +17,18 @@ export const useChainId = ({ network }: NetworkUrlParams) =>
 
 export const getLoanCreatePathname = (
   params: NetworkUrlParams,
-  collateralId: string,
+  market: string,
   formType?: 'create' | 'leverage' | 'borrow',
 ) =>
   getPath(
     params,
-    `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_CREATE}${formType && formType !== 'create' ? `/${formType}` : ''}`,
+    `${ROUTE.PAGE_MARKETS}/${market}${ROUTE.PAGE_CREATE}${formType && formType !== 'create' ? `/${formType}` : ''}`,
   )
 
-export const getLoanManagePathname = (params: NetworkUrlParams, collateralId: string, formType: ManageFormType) =>
-  getPath(params, `${ROUTE.PAGE_MARKETS}/${collateralId}${ROUTE.PAGE_MANAGE}/${formType}`)
+export const getLoanManagePathname = (params: NetworkUrlParams, market: string, formType: ManageFormType) =>
+  getPath(params, `${ROUTE.PAGE_MARKETS}/${market}${ROUTE.PAGE_MANAGE}/${formType}`)
 
-export const parseCollateralParams = ({ collateralId, formType: rFormType }: CollateralUrlParams) => ({
+export const parseMarketParams = ({ market, formType: rFormType }: MarketUrlParams) => ({
   rFormType: rFormType ?? '',
-  rCollateralId: collateralId.toLowerCase(),
+  rMarket: market.toLowerCase(),
 })
