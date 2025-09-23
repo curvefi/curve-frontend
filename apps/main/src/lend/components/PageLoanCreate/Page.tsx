@@ -4,7 +4,7 @@ import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
-import { useOneWayMarket } from '@/lend/entities/chain'
+import { useLendMarket } from '@/lend/entities/lend-markets'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -38,7 +38,7 @@ const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
 
-  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
+  const { data: market, isSuccess } = useLendMarket({ chainId: rChainId, marketId: rMarket })
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
