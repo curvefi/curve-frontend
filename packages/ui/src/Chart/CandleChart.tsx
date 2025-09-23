@@ -309,121 +309,40 @@ const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current) return
 
-    // Clean up existing series first
-    if (currentAreaSeriesRef.current) {
-      chartRef.current.removeSeries(currentAreaSeriesRef.current)
-      currentAreaSeriesRef.current = null
-    }
-    if (currentAreaBgSeriesRef.current) {
-      chartRef.current.removeSeries(currentAreaBgSeriesRef.current)
-      currentAreaBgSeriesRef.current = null
-    }
-    if (newAreaSeriesRef.current) {
-      chartRef.current.removeSeries(newAreaSeriesRef.current)
-      newAreaSeriesRef.current = null
-    }
-    if (newAreaBgSeriesRef.current) {
-      chartRef.current.removeSeries(newAreaBgSeriesRef.current)
-      newAreaBgSeriesRef.current = null
-    }
+    const seriesConfigs = [
+      { ref: currentAreaSeriesRef, visible: liqRangeCurrentVisible },
+      { ref: currentAreaBgSeriesRef, visible: liqRangeCurrentVisible },
+      { ref: newAreaSeriesRef, visible: liqRangeNewVisible },
+      { ref: newAreaBgSeriesRef, visible: liqRangeNewVisible },
+    ]
 
-    // Create current range series only if visible
-    if (liqRangeCurrentVisible) {
-      currentAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-        ...SL_RANGE_AREA_SERIES_DEFAULTS,
-        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
-      })
-      currentAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-        ...SL_RANGE_AREA_SERIES_DEFAULTS,
-        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
-      })
-    }
-
-    // Create new range series only if visible
-    if (liqRangeNewVisible) {
-      newAreaSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-        ...SL_RANGE_AREA_SERIES_DEFAULTS,
-        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
-      })
-      newAreaBgSeriesRef.current = chartRef.current.addSeries(AreaSeries, {
-        ...SL_RANGE_AREA_SERIES_DEFAULTS,
-        priceFormat: createPriceFormatter(totalDecimalPlacesRef),
-      })
-    }
-
-    // Set data for newly created series if liquidation range data exists
-    if (liquidationRange) {
-      // both ranges
-      if (liquidationRange.current && liquidationRange.new) {
-        const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
-
-        if (addNewFirst) {
-          if (newAreaSeriesRef.current) {
-            newAreaSeriesRef.current.setData(liquidationRange.new.price2)
-          }
-          if (newAreaBgSeriesRef.current) {
-            newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
-          }
-          if (currentAreaSeriesRef.current) {
-            currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
-          }
-          if (currentAreaBgSeriesRef.current) {
-            currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
-          }
-        } else {
-          if (currentAreaSeriesRef.current) {
-            currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
-          }
-          if (currentAreaBgSeriesRef.current) {
-            currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
-          }
-          if (newAreaSeriesRef.current) {
-            newAreaSeriesRef.current.setData(liquidationRange.new.price2)
-          }
-          if (newAreaBgSeriesRef.current) {
-            newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
-          }
-        }
+    // Clean up existing series
+    seriesConfigs.forEach(({ ref }) => {
+      if (ref.current && chartRef.current) {
+        chartRef.current.removeSeries(ref.current)
+        ref.current = null
       }
-      // only new
-      else if (!liquidationRange.current && liquidationRange.new) {
-        if (newAreaSeriesRef.current) {
-          newAreaSeriesRef.current.setData(liquidationRange.new.price2)
-        }
-        if (newAreaBgSeriesRef.current) {
-          newAreaBgSeriesRef.current.setData(liquidationRange.new.price1)
-        }
+    })
+
+    // Create series only if visible
+    seriesConfigs.forEach(({ ref, visible }) => {
+      if (visible && chartRef.current) {
+        ref.current = chartRef.current.addSeries(AreaSeries, {
+          ...SL_RANGE_AREA_SERIES_DEFAULTS,
+          priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+        })
       }
-      // only current
-      else if (liquidationRange.current && !liquidationRange.new) {
-        if (currentAreaSeriesRef.current) {
-          currentAreaSeriesRef.current.setData(liquidationRange.current.price2)
-        }
-        if (currentAreaBgSeriesRef.current) {
-          currentAreaBgSeriesRef.current.setData(liquidationRange.current.price1)
-        }
-      }
-    }
+    })
 
     return () => {
-      if (currentAreaSeriesRef.current) {
-        chartRef.current?.removeSeries(currentAreaSeriesRef.current)
-        currentAreaSeriesRef.current = null
-      }
-      if (currentAreaBgSeriesRef.current) {
-        chartRef.current?.removeSeries(currentAreaBgSeriesRef.current)
-        currentAreaBgSeriesRef.current = null
-      }
-      if (newAreaSeriesRef.current) {
-        chartRef.current?.removeSeries(newAreaSeriesRef.current)
-        newAreaSeriesRef.current = null
-      }
-      if (newAreaBgSeriesRef.current) {
-        chartRef.current?.removeSeries(newAreaBgSeriesRef.current)
-        newAreaBgSeriesRef.current = null
-      }
+      seriesConfigs.forEach(({ ref }) => {
+        if (ref.current) {
+          chartRef.current?.removeSeries(ref.current)
+          ref.current = null
+        }
+      })
     }
-  }, [liqRangeCurrentVisible, liqRangeNewVisible, liquidationRange])
+  }, [liqRangeCurrentVisible, liqRangeNewVisible])
 
   // OHLC series effect - only create once when chart is ready
   useEffect(() => {
