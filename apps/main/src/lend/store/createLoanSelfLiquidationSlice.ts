@@ -173,7 +173,7 @@ const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<Stat
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account?.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,

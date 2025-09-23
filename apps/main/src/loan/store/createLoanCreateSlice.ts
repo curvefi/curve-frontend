@@ -422,12 +422,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
         // update user events api
-        void getUserMarketCollateralEvents(
-          wallet?.account.address ?? '',
-          networks[chainId].id,
-          llamma.controller,
-          resp.hash,
-        )
+        void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({

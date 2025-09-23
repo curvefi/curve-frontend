@@ -304,7 +304,7 @@ const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBor
 
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account?.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,

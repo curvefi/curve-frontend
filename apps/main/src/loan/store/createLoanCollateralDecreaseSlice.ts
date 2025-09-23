@@ -165,12 +165,7 @@ const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
       // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
-        networks[chainId].id,
-        llamma.controller,
-        resp.hash,
-      )
+      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {

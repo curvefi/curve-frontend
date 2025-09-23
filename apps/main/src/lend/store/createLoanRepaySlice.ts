@@ -263,7 +263,7 @@ const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanR
       )
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account?.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,

@@ -139,12 +139,7 @@ const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)
       // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
-        networks[chainId].id,
-        llamma.controller,
-        resp.hash,
-      )
+      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)

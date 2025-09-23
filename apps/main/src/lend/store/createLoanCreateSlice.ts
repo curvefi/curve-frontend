@@ -324,7 +324,7 @@ const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreat
       )
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account?.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
