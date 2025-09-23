@@ -2,9 +2,7 @@ import { useMemo } from 'react'
 import type { ExtraIncentiveItem } from '@/llamalend/widgets/tooltips/RewardTooltipItems'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
-import { defaultNumberFormatter } from '@ui-kit/utils'
-
-const CRV_ADDRESS = '0xd533a949740bb3306d119cc777fa900ba034cd52'
+import { CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
 
 export const useMarketExtraIncentives = (
   type: MarketRateType,
