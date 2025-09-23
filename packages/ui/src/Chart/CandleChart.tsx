@@ -114,8 +114,8 @@ const CandleChart = ({
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
-  const [fetchingMore, setFetchingMore] = useState(false)
   const [wrapperDimensions, setWrapperDimensions] = useState({ width: 0, height: 0 })
+  const fetchingMoreRef = useRef(false)
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
@@ -139,7 +139,7 @@ const CandleChart = ({
 
   // Memoized visible range change handler
   const handleVisibleLogicalRangeChange = useCallback(() => {
-    if (fetchingMore || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+    if (fetchingMoreRef.current || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
       return
     }
 
@@ -152,10 +152,10 @@ const CandleChart = ({
 
     const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
     if (barsInfo && barsInfo.barsBefore < 50) {
-      debouncedFetchMoreChartData.current()
+      void debouncedFetchMoreChartData.current()
       setLastTimescale(timeScale.getVisibleRange())
     }
-  }, [fetchingMore, refetchingCapped])
+  }, [refetchingCapped])
 
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
@@ -164,11 +164,19 @@ const CandleChart = ({
   const debouncedFetchMoreChartData = useRef(
     lodash.debounce(
       () => {
-        if (fetchingMore || refetchingCapped) {
+        // Check current state at execution time using ref
+        if (fetchingMoreRef.current || refetchingCapped) {
           return
         }
-        setFetchingMore(true)
+        fetchingMoreRef.current = true
+
         fetchMoreChartData(lastFetchEndTimeRef.current)
+
+        // Reset the flag after the debounce delay to ensure no overlapping calls
+        // This prevents multiple calls while still allowing the operation to complete
+        setTimeout(() => {
+          fetchingMoreRef.current = false
+        }, 500)
       },
       500,
       { leading: true, trailing: false },
@@ -243,11 +251,14 @@ const CandleChart = ({
 
   // Update chart dimensions when they change
   useEffect(() => {
-    if (!chartRef.current || wrapperDimensions.width === 0) return
+    if (!chartRef.current || wrapperDimensions.width <= 0) return
+
+    const width = Math.max(1, wrapperDimensions.width) // Ensure width is at least 1
+    const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
 
     chartRef.current.applyOptions({
-      width: wrapperDimensions.width,
-      height: chartExpanded ? chartHeight.expanded : chartHeight.standard,
+      width,
+      height,
     })
   }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperDimensions.width])
 
@@ -471,7 +482,6 @@ const CandleChart = ({
     if (!candlestickSeriesRef.current || !ohlcData) return
 
     candlestickSeriesRef.current.setData(ohlcData)
-    setFetchingMore(false)
   }, [ohlcData])
 
   useEffect(() => {
@@ -618,13 +628,16 @@ const CandleChart = ({
       if (isUnmounting) return
 
       const { width, height } = entries[0].contentRect
-      if (width <= -1) return
+      if (width <= 0) return
+
+      const adjustedWidth = Math.max(1, width - 1) // Ensure width is at least 1
+      const adjustedHeight = Math.max(1, height) // Ensure height is at least 1
 
       // Update state with new dimensions (debounced)
-      setWrapperDimensions({ width: width - 1, height })
+      setWrapperDimensions({ width: adjustedWidth, height: adjustedHeight })
 
       // Apply dimensions immediately for smooth resizing
-      chartRef.current?.applyOptions({ width: width - 1, height })
+      chartRef.current?.applyOptions({ width: adjustedWidth, height: adjustedHeight })
       chartRef.current?.timeScale().getVisibleLogicalRange()
     })
 
