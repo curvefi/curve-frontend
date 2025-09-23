@@ -91,14 +91,6 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, pageLoaded, rFormType])
 
-  useEffect(() => {
-    if (!loaded && loanExists === false) {
-      resetUserDetailsState(llamma)
-      push(getLoanCreatePathname(params, rCollateralId))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, loanExists])
-
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
     if (llamma && rFormType === 'deleverage' && !hasDeleverage(llamma)) {
