@@ -13,7 +13,7 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
   hydrate: (lib: Libs[K], prevLib: Libs[K], wallet?: Wallet) => Promise<void>,
   chainId: ChainId,
 ) => {
-  const [hydrated, setHydrated] = useState(false)
+  const [hydrated, setHydrated] = useState<Libs[K] | true>() // hydrated=true when no lib, otherwise the lib instance when hydrated
   const connection = useConnection()
   const { wallet } = connection
   const prev = useRef<Libs[K]>(undefined)
@@ -21,7 +21,7 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
 
   useEffect(() => {
     if (lib && !isWalletMatching(wallet, lib, chainId)) {
-      return setHydrated(false)
+      return setHydrated(undefined)
     }
 
     const abort = new AbortController()
@@ -33,16 +33,18 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
         console.error(`Error during ${libKey} hydration`, error)
       } finally {
         if (!abort.signal.aborted) {
-          setHydrated(true)
+          setHydrated(lib ?? true)
         }
       }
     })()
-    return () => abort.abort()
+    return () => {
+      abort.abort()
+    }
   }, [chainId, hydrate, lib, libKey, wallet])
 
   useEffect(() => {
     prev.current = lib
   }, [lib])
 
-  return hydrated
+  return (hydrated === true && !lib) || hydrated === lib
 }
