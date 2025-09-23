@@ -141,14 +141,8 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         balance={haveSigner ? formatNumber(balGauge) : ''}
         hasError={+formValues.stakedLpToken > +balGauge}
         haveSigner={haveSigner}
-        handleAmountChange={(stakedLpToken) => {
-          updateFormValues({ stakedLpToken })
-        }}
-        disabledMaxButton={isDisabled}
-        disableInput={isDisabled}
-        handleMaxClick={() => {
-          updateFormValues({ stakedLpToken: (userPoolBalances?.gauge as string) ?? '0' })
-        }}
+        handleAmountChange={useCallback((stakedLpToken) => updateFormValues({ stakedLpToken }), [updateFormValues])}
+        disabled={isDisabled}
       />
 
       {haveSigner && (

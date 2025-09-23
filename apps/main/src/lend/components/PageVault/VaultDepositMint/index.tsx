@@ -27,7 +27,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel } from '@ui-kit/utils'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -251,7 +251,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
           disabled={disabled}
           maxBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
-            balance: +(userBalances?.borrowed ?? 0),
+            balance: stringToNumber(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
             showSlider: false,
             notionalValueUsd:

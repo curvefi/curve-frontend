@@ -178,9 +178,9 @@ const Container = styled(Box)`
   width: 100%;
   background-color: var(--box--primary--content--background-color);
   margin-bottom: auto;
-  @media (min-width: 25rem) {
+  @media (min-width: 28rem) {
     width: inherit;
-    min-width: var(--transfer-min-width);
+    min-width: 23.3125rem;
   }
   @media (min-width: 39.375rem) {
     margin-right: var(--spacing-3);
