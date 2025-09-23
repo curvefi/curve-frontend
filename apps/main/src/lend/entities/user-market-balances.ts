@@ -1,12 +1,9 @@
-import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { FieldsOf } from '@ui-kit/lib'
-import type { ChainQuery } from '@ui-kit/lib/model/query'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
+import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 
-type UserMarketBalancesQuery = ChainQuery<ChainId> & { marketId: string }
-type UserMarketBalancesParams = FieldsOf<UserMarketBalancesQuery>
 type UserMarketBalances = {
   collateral: string
   borrowed: string
@@ -15,7 +12,7 @@ type UserMarketBalances = {
   gauge: string
 }
 
-const _fetchUserMarketBalances = async ({ marketId }: UserMarketBalancesQuery): Promise<UserMarketBalances> => {
+const _fetchUserMarketBalances = async ({ marketId }: MarketQuery): Promise<UserMarketBalances> => {
   const api = requireLib('llamaApi')
   const market = api.getLendMarket(marketId)
   const balances = await market.wallet.balances()
@@ -29,9 +26,8 @@ const _fetchUserMarketBalances = async ({ marketId }: UserMarketBalancesQuery): 
 }
 
 export const { useQuery: useUserMarketBalances, invalidate: invalidateUserMarketBalances } = queryFactory({
-  queryKey: (params: UserMarketBalancesParams) =>
-    ['userMarketBalances', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userMarketBalances', 'v1'] as const,
   queryFn: _fetchUserMarketBalances,
   refetchInterval: '1m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })

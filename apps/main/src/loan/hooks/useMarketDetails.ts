@@ -92,7 +92,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     maxLeverage: {
-      value: maxLeverage ?? null,
+      value: maxLeverage,
       loading: isMarketMaxLeverageLoading,
     },
     availableLiquidity: {

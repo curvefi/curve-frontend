@@ -6,7 +6,6 @@ import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
 import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createCollateralListSlice, { CollateralListSlice } from '@/loan/store/createCollateralListSlice'
 import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanCollateralDecrease, {
@@ -21,7 +20,6 @@ import createLoanDeleverageSlice, { LoanDeleverageSlice } from '@/loan/store/cre
 import createLoanIncrease, { LoanIncreaseSlice } from '@/loan/store/createLoanIncreaseSlice'
 import createLoanLiquidate, { LoanLiquidateSlice } from '@/loan/store/createLoanLiquidate'
 import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
-import createLoanSwap, { LoanSwapSlice } from '@/loan/store/createLoanSwap'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
@@ -30,14 +28,12 @@ export type State = CacheSlice &
   ChartBandsSlice &
   CollateralsSlice &
   LoansSlice &
-  CollateralListSlice &
   LoanCreateSlice &
   LoanCollateralDecreaseSlice &
   LoanCollateralIncreaseSlice &
   LoanDecreaseSlice &
   LoanDeleverageSlice &
   LoanIncreaseSlice &
-  LoanSwapSlice &
   LoanLiquidateSlice &
   IntegrationsSlice &
   OhlcChartSlice &
@@ -50,14 +46,12 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createChartBandsSlice(set, get),
   ...createCollateralsSlice(set, get),
   ...createLoansSlice(set, get),
-  ...createCollateralListSlice(set, get),
   ...createLoanCreate(set, get),
   ...createLoanCollateralDecrease(set, get),
   ...createLoanCollateralIncrease(set, get),
   ...createLoanDecrease(set, get),
   ...createLoanDeleverageSlice(set, get),
   ...createLoanIncrease(set, get),
-  ...createLoanSwap(set, get),
   ...createLoanLiquidate(set, get),
   ...createIntegrationsSlice(set, get),
   ...createOhlcChartSlice(set, get),

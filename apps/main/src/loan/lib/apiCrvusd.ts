@@ -1,6 +1,5 @@
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
-import type { FormValues as SwapFormValues } from '@/loan/components/PageLoanManage/LoanSwap/types'
 import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
@@ -1006,81 +1005,6 @@ const swap = {
     } catch (error) {
       console.error(error)
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
-      return resp
-    }
-  },
-  detailInfoExpected: async (activeKey: string, llamma: Llamma, formValues: SwapFormValues) => {
-    const { item1Key, item2Key, item1, item2 } = formValues
-    const isExpected = +item1 > 0 // determine if the input value is coming from the FROM textField or To textField
-    const amount = isExpected ? item1 : item2
-    log('expected, price impact', llamma.collateralSymbol, item1Key, item2Key, amount)
-
-    const [swapExpectedResult, swapPriceImpactResult] = await Promise.allSettled([
-      isExpected
-        ? llamma.swapExpected(+item1Key, +item2Key, amount)
-        : llamma.swapRequired(+item1Key, +item2Key, amount),
-      llamma.swapPriceImpact(+item1Key, +item2Key, amount),
-    ])
-
-    const swapExpected = fulfilledValue(swapExpectedResult) ?? ''
-    const swapPriceImpact = fulfilledValue(swapPriceImpactResult) ?? ''
-
-    return {
-      activeKey,
-      resp: {
-        isExpected,
-        amount: swapExpected,
-        swapPriceImpact: swapPriceImpact === 'NaN' ? '0' : swapPriceImpact,
-      },
-    }
-  },
-  max: async (llamma: Llamma, formValues: SwapFormValues) => {
-    const { item1Key, item2Key } = formValues
-    log('swapMax', llamma.collateralSymbol, item1Key, item2Key)
-    const resp = { maxSwappable: '', error: '' }
-
-    try {
-      resp.maxSwappable = await llamma.maxSwappable(+item1Key, +item2Key)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-max-amount')
-      return resp
-    }
-  },
-  approve: async (activeKey: string, provider: Provider, llamma: Llamma, formValues: SwapFormValues) => {
-    const { item1Key, item1 } = formValues
-    log('swapApprove', llamma.collateralSymbol, item1Key, item1)
-    const resp = { activeKey, hashes: [] as string[], error: '' }
-
-    try {
-      resp.hashes = await llamma.swapApprove(+item1Key, item1)
-      await helpers.waitForTransactions(resp.hashes, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-approve')
-      return resp
-    }
-  },
-  swap: async (
-    activeKey: string,
-    provider: Provider,
-    llamma: Llamma,
-    formValues: SwapFormValues,
-    maxSlippage: string,
-  ) => {
-    const { item1Key, item2Key, item1 } = formValues
-    log('swap', llamma.collateralSymbol, item1Key, item2Key, item1, maxSlippage)
-    const resp = { activeKey, hash: '', error: '' }
-
-    try {
-      resp.hash = await llamma.swap(+item1Key, +item2Key, item1, +maxSlippage)
-      await helpers.waitForTransaction(resp.hash, provider)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-step-swap')
       return resp
     }
   },

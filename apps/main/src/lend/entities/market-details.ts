@@ -1,22 +1,19 @@
 import { USE_API } from '@/lend/shared/config'
 import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
-import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { ChainQuery } from '@ui-kit/lib/model/query'
-import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
+import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
 
 const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
-
-type MarketQuery = ChainQuery<ChainId> & { marketId: string }
-type MarketParams = FieldsOf<MarketQuery>
 
 type MarketCapAndAvailable = {
   cap: number
   available: number
 }
 type MarketMaxLeverage = {
-  maxLeverage: string
+  maxLeverage: string | null
 }
 type MarketCollateralAmounts = {
   collateralAmount: number
@@ -37,11 +34,10 @@ const _getMarketCapAndAvailable = async ({ marketId }: MarketQuery): Promise<Mar
 }
 
 export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketCapAndAvailable } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['marketCapAndAvailable', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCapAndAvailable', 'v1'] as const,
   queryFn: _getMarketCapAndAvailable,
   refetchInterval: '1m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
 
 /**
@@ -50,15 +46,14 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
  * */
 const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketMaxLeverage> => {
   const market = getLendMarket(marketId)
-  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : ''
+  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
   return { maxLeverage }
 }
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['marketMaxLeverage', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketMaxLeverage', 'v1'] as const,
   queryFn: _getMarketMaxLeverage,
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
 
 /**
@@ -75,11 +70,10 @@ const _getMarketCollateralAmounts = async ({ marketId }: MarketQuery): Promise<M
 }
 
 export const { useQuery: useMarketCollateralAmounts, invalidate: invalidateMarketCollateralAmounts } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['marketCollateralAmounts', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketCollateralAmounts', 'v1'] as const,
   queryFn: _getMarketCollateralAmounts,
   refetchInterval: '1m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
 
 const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
@@ -94,11 +88,10 @@ const _fetchOnChainMarketRate = async ({ marketId }: MarketQuery) => ({
  * The api data can have a few minutes delay.
  * */
 export const { useQuery: useMarketOnChainRates, invalidate: invalidateMarketOnChainRates } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['marketOnchainData', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketOnchainData', 'v1'] as const,
   queryFn: _fetchOnChainMarketRate,
   refetchInterval: '1m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
 
 const _fetchMarketPricePerShare = async ({ marketId }: MarketQuery) => {
@@ -110,11 +103,10 @@ const _fetchMarketPricePerShare = async ({ marketId }: MarketQuery) => {
  * Fetches the price per share of a market on chain
  */
 export const { useQuery: useMarketPricePerShare, invalidate: invalidateMarketPricePerShare } = queryFactory({
-  queryKey: (params: MarketParams) =>
-    ['marketPricePerShare', { chainId: params.chainId }, { marketId: params.marketId }, 'v1'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketPricePerShare', 'v1'] as const,
   queryFn: _fetchMarketPricePerShare,
   refetchInterval: '1m',
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: marketIdValidationSuite,
 })
 
 export const invalidateMarketDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {

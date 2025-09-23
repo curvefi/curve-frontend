@@ -14,7 +14,7 @@ import WarningModal from '@/dex/components/PagePool/components/WarningModal'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
-import type { EstimatedGas as FormEstGas, PageTransferProps, Seed } from '@/dex/components/PagePool/types'
+import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
 import useStore from '@/dex/store/useStore'
@@ -34,11 +34,14 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { TokenSelector } from '@ui-kit/features/select-token'
+import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -82,6 +85,7 @@ const Swap = ({
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const [releaseChannel] = useReleaseChannel()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -166,7 +170,6 @@ const Swap = ({
       actionActiveKey: string,
       curve: CurveApi,
       poolData: PoolData,
-      formEstGas: FormEstGas,
       formValues: FormValues,
       formStatus: FormStatus,
       exchangeOutput: ExchangeOutput,
@@ -296,7 +299,6 @@ const Swap = ({
         activeKey,
         curve,
         poolData,
-        formEstGas,
         formValues,
         formStatus,
         exchangeOutput,
@@ -332,78 +334,137 @@ const Swap = ({
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
+  const setFromAmount = useCallback(
+    (value?: number) => updateFormValues({ isFrom: true, fromAmount: `${value ?? ''}`, toAmount: '' }, null, null),
+    [updateFormValues],
+  )
+  const setToAmount = useCallback(
+    (value?: number) => updateFormValues({ isFrom: false, toAmount: `${value ?? ''}`, fromAmount: '' }, null, null),
+    [updateFormValues],
+  )
+
   return (
     <>
       {/* input fields */}
       <FieldsWrapper>
         <div>
-          <Box grid gridGap={1}>
-            <StyledInputProvider
-              id="fromAmount"
-              grid
-              gridTemplateColumns="1fr auto 38%"
-              inputVariant={formValues.fromError ? 'error' : undefined}
-              disabled={isDisabled}
-            >
-              <InputDebounced
-                id="inpFromAmount"
-                type="number"
-                labelProps={
-                  haveSigner && {
-                    label: t`Avail.`,
-                    descriptionLoading: userPoolBalancesLoading,
-                    description: formatNumber(userFromBalance),
+          {releaseChannel !== ReleaseChannel.Beta ? (
+            <Box grid gridGap={1}>
+              <StyledInputProvider
+                id="fromAmount"
+                grid
+                gridTemplateColumns="1fr auto 38%"
+                inputVariant={formValues.fromError ? 'error' : undefined}
+                disabled={isDisabled}
+              >
+                <InputDebounced
+                  id="inpFromAmount"
+                  type="number"
+                  labelProps={
+                    haveSigner && {
+                      label: t`Avail.`,
+                      descriptionLoading: userPoolBalancesLoading,
+                      description: formatNumber(userFromBalance),
+                    }
                   }
+                  value={formValues.fromAmount}
+                  onChange={(fromAmount) => {
+                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
+                  }}
+                />
+                <InputMaxBtn
+                  disabled={isDisabled || isMaxLoading}
+                  loading={isMaxLoading}
+                  isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
+                  onClick={() => {
+                    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
+                  }}
+                />
+                {
+                  <TokenSelector
+                    selectedToken={fromToken}
+                    tokens={selectList}
+                    disabled={isDisabled || selectList.length === 0}
+                    showSearch={false}
+                    showManageList={false}
+                    compact
+                    onToken={(token) => {
+                      const val = token.address
+                      const cFormValues = cloneDeep(formValues)
+                      if (val === formValues.toAddress) {
+                        cFormValues.toAddress = formValues.fromAddress
+                        cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
+                      }
+
+                      cFormValues.fromAddress = val
+                      cFormValues.fromToken = swapTokensMapper[val].symbol
+
+                      if (formValues.isFrom || formValues.isFrom === null) {
+                        cFormValues.toAmount = ''
+                      } else {
+                        cFormValues.fromAmount = ''
+                      }
+
+                      updateFormValues(cFormValues, null, '')
+                    }}
+                  />
                 }
-                value={formValues.fromAmount}
-                onChange={(fromAmount) => {
-                  updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
-                }}
-              />
-              <InputMaxBtn
-                disabled={isDisabled || isMaxLoading}
-                loading={isMaxLoading}
-                isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
-                onClick={() => {
-                  updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
-                }}
-              />
-
-              <TokenSelector
-                selectedToken={fromToken}
-                tokens={selectList}
-                disabled={isDisabled || selectList.length === 0}
-                showSearch={false}
-                showManageList={false}
-                compact={true}
-                onToken={(token) => {
-                  const val = token.address
-                  const cFormValues = cloneDeep(formValues)
-                  if (val === formValues.toAddress) {
-                    cFormValues.toAddress = formValues.fromAddress
-                    cFormValues.toToken = swapTokensMapper[formValues.fromAddress].symbol
+              </StyledInputProvider>
+              <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
+              {formValues.fromError && (
+                <ChipInpHelper size="xs" isDarkBg isError>
+                  {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
+                </ChipInpHelper>
+              )}
+            </Box>
+          ) : (
+            <LargeTokenInput
+              name="fromAmount"
+              onBalance={setFromAmount}
+              balance={stringToNumber(formValues.fromAmount)}
+              tokenSelector={
+                <TokenSelector
+                  selectedToken={fromToken}
+                  tokens={selectList}
+                  disabled={isDisabled || selectList.length === 0}
+                  compact
+                  onToken={({ address, symbol }) =>
+                    updateFormValues(
+                      {
+                        ...formValues,
+                        ...(address === formValues.toAddress && {
+                          toAddress: formValues.fromAddress,
+                          toToken: swapTokensMapper[formValues.fromAddress].symbol,
+                        }),
+                        fromAddress: address,
+                        fromToken: symbol,
+                        ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                      },
+                      null,
+                      '',
+                    )
                   }
-
-                  cFormValues.fromAddress = val
-                  cFormValues.fromToken = swapTokensMapper[val].symbol
-
-                  if (formValues.isFrom || formValues.isFrom === null) {
-                    cFormValues.toAmount = ''
-                  } else {
-                    cFormValues.fromAmount = ''
-                  }
-
-                  updateFormValues(cFormValues, null, '')
-                }}
-              />
-            </StyledInputProvider>
-            <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-            {formValues.fromError && (
-              <ChipInpHelper size="xs" isDarkBg isError>
-                {t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
-              </ChipInpHelper>
-            )}
-          </Box>
+                  sx={LargeSxProps}
+                />
+              }
+              {...(formValues.fromError && {
+                isError: true,
+                message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
+              })}
+              disabled={isDisabled}
+              maxBalance={{
+                balance: stringToNumber(userFromBalance),
+                loading: userPoolBalancesLoading || isMaxLoading,
+                symbol: fromToken?.symbol,
+                showSlider: false,
+                ...(toUsdRate != null &&
+                  userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
+                ...(formValues.fromAddress.toLowerCase() === ethAddress && {
+                  tooltip: t`'Balance minus estimated gas'`,
+                }),
+              }}
+            />
+          )}
 
           <Box flex flexJustifyContent="center">
             <IconButton
@@ -428,59 +489,102 @@ const Swap = ({
         </div>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        <div>
-          <StyledInputProvider
-            id="toAmount"
-            inputVariant={formValues.toError ? 'error' : undefined}
+        {releaseChannel !== ReleaseChannel.Beta ? (
+          <div>
+            <StyledInputProvider
+              id="toAmount"
+              inputVariant={formValues.toError ? 'error' : undefined}
+              disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
+              grid
+              gridTemplateColumns="1fr 38%"
+            >
+              <InputDebounced
+                id="inpToAmount"
+                type="number"
+                labelProps={
+                  haveSigner && {
+                    label: t`Avail.`,
+                    descriptionLoading: userPoolBalancesLoading,
+                    description: formatNumber(userToBalance),
+                  }
+                }
+                value={formValues.toAmount}
+                onChange={(toAmount) => {
+                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
+                }}
+              />
+              <TokenSelector
+                selectedToken={toToken}
+                tokens={selectList}
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                compact
+                onToken={(token) => {
+                  const address = token.address
+                  const cFormValues = cloneDeep(formValues)
+                  if (address === formValues.fromAddress) {
+                    cFormValues.fromAddress = formValues.toAddress
+                    cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
+                  }
+
+                  cFormValues.toAddress = address
+                  cFormValues.toToken = swapTokensMapper[address].symbol
+
+                  if (formValues.isFrom || formValues.isFrom === null) {
+                    cFormValues.toAmount = ''
+                  } else {
+                    cFormValues.fromAmount = ''
+                  }
+                  updateFormValues(cFormValues, null, '')
+                }}
+              />
+            </StyledInputProvider>
+            <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
+          </div>
+        ) : (
+          <LargeTokenInput
+            name="toAmount"
+            onBalance={setToAmount}
+            balance={stringToNumber(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
-            grid
-            gridTemplateColumns="1fr 38%"
-          >
-            <InputDebounced
-              id="inpToAmount"
-              type="number"
-              labelProps={
-                haveSigner && {
-                  label: t`Avail.`,
-                  descriptionLoading: userPoolBalancesLoading,
-                  description: formatNumber(userToBalance),
+            tokenSelector={
+              <TokenSelector
+                selectedToken={toToken}
+                tokens={selectList}
+                disabled={isDisabled || selectList.length === 0}
+                showSearch={false}
+                showManageList={false}
+                compact
+                onToken={({ address, symbol }) =>
+                  updateFormValues(
+                    {
+                      ...formValues,
+                      ...(address === formValues.fromAddress && {
+                        fromAddress: formValues.toAddress,
+                        fromToken: swapTokensMapper[formValues.toAddress].symbol,
+                      }),
+                      toAddress: address,
+                      toToken: symbol,
+                      ...(formValues.isFrom === false ? { fromAmount: '' } : { toAmount: '' }),
+                    },
+                    null,
+                    '',
+                  )
                 }
-              }
-              value={formValues.toAmount}
-              onChange={(toAmount) => {
-                updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
-              }}
-            />
-
-            <TokenSelector
-              selectedToken={toToken}
-              tokens={selectList}
-              disabled={isDisabled || selectList.length === 0}
-              showSearch={false}
-              showManageList={false}
-              compact={true}
-              onToken={(token) => {
-                const val = token.address
-                const cFormValues = cloneDeep(formValues)
-                if (val === formValues.fromAddress) {
-                  cFormValues.fromAddress = formValues.toAddress
-                  cFormValues.fromToken = swapTokensMapper[formValues.toAddress].symbol
-                }
-
-                cFormValues.toAddress = val
-                cFormValues.toToken = swapTokensMapper[val].symbol
-
-                if (formValues.isFrom || formValues.isFrom === null) {
-                  cFormValues.toAmount = ''
-                } else {
-                  cFormValues.fromAmount = ''
-                }
-                updateFormValues(cFormValues, null, '')
-              }}
-            />
-          </StyledInputProvider>
-          <FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />
-        </div>
+                sx={LargeSxProps}
+              />
+            }
+            maxBalance={{
+              balance: stringToNumber(userToBalance),
+              loading: userPoolBalancesLoading,
+              symbol: toToken?.symbol,
+              showSlider: false,
+              ...(toUsdRate != null &&
+                userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
+            }}
+          />
+        )}
 
         {poolDataCacheOrApi.hasWrapped && formValues.isWrapped !== null && (
           <div>

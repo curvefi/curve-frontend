@@ -193,7 +193,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
               profitsTotalUsd:
                 +(baseProfit?.day ?? 0) +
                 +(crvProfit?.day ?? 0) * (crvProfit?.price ?? 0) +
-                (tokensProfit ?? []).reduce((total, { day, price }) => total + +day + price, 0),
+                (tokensProfit ?? []).reduce((total, { day, price }) => total + +day * price, 0),
               claimableCrv: claimables.filter(({ symbol, amount }) => symbol === 'CRV' && +amount > 0),
               claimableOthers: claimables.filter(({ symbol, amount }) => symbol !== 'CRV' && +amount > 0),
               claimablesTotalUsd: claimables.reduce((total, { amount, price }) => total + +amount * price, 0),

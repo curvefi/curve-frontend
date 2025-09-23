@@ -287,6 +287,7 @@ export const defaultNetworks = Object.entries({
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
+    pricesApi: true,
   },
   [Chain.Fraxtal]: {
     poolFilters: ['all', 'usd', 'btc', 'eth', 'crypto', 'crvusd', 'tricrypto', 'others', 'stableng', 'user'],

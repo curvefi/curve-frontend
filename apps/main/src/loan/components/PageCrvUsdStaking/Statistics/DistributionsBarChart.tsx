@@ -1,5 +1,5 @@
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
+import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { Stack, Box } from '@mui/material'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber, formatDate } from '@ui/utils'

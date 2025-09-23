@@ -1,35 +1,38 @@
+import { useCallback } from 'react'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 const FieldLpToken = ({
   amount,
   balance,
   balanceLoading,
-  disabledMaxButton,
-  disableInput,
+  disabled,
   hasError,
   haveSigner,
   handleAmountChange,
-  handleMaxClick,
 }: {
   amount: string
   balance: string
   balanceLoading: boolean
-  disabledMaxButton?: boolean
-  disableInput: boolean
+  disabled?: boolean
   hasError: boolean
   haveSigner: boolean
   handleAmountChange: (val: string) => void
-  handleMaxClick?: () => void
 }) => {
-  const value = typeof amount === 'undefined' ? '' : amount
+  const [releaseChannel] = useReleaseChannel()
+  const onBalance = useCallback((val?: number) => handleAmountChange(`${val ?? ''}`), [handleAmountChange])
 
-  return (
+  const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
+
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <InputProvider
       id="lpTokens"
       grid
       gridTemplateColumns="1fr auto"
-      disabled={disableInput}
+      disabled={disabled}
       inputVariant={hasError ? 'error' : undefined}
       padding="var(--spacing-1) var(--spacing-2)"
     >
@@ -42,11 +45,25 @@ const FieldLpToken = ({
           descriptionLoading: haveSigner ? balanceLoading : false,
           description: haveSigner ? balance : '',
         }}
-        value={value}
+        value={typeof amount === 'undefined' ? '' : amount}
         onChange={handleAmountChange}
       />
-      {handleMaxClick && <InputMaxBtn disabled={disabledMaxButton} onClick={handleMaxClick} />}
+      {balance && <InputMaxBtn disabled={disabled} onClick={onMax} />}
     </InputProvider>
+  ) : (
+    <LargeTokenInput
+      name="lpTokens"
+      disabled={disabled}
+      isError={hasError}
+      maxBalance={{
+        balance: stringToNumber(balance),
+        symbol: t`LP Tokens`,
+        showSlider: false,
+        loading: balanceLoading,
+      }}
+      balance={stringToNumber(amount)}
+      onBalance={onBalance}
+    />
   )
 }
 

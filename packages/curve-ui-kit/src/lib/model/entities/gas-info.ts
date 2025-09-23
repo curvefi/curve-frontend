@@ -1,4 +1,4 @@
-import { formatNumber, getEthereumCustomFeeDataValues } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { getLib, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { type ChainQuery, queryFactory, rootKeys } from '@ui-kit/lib/model/query'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib/validation'
@@ -146,6 +146,17 @@ const { useQuery: useGasInfoAndUpdateLibBase, fetchQuery: fetchGasInfoAndUpdateL
     providerValidationGroup()
   }),
 })
+
+function getEthereumCustomFeeDataValues(gasInfo: { max: number[]; prio: number[] } | undefined) {
+  if (gasInfo) {
+    const maxFeePerGas = gasInfo.max[1] ? weiToGwei(gasInfo.max[1]) : null
+    const maxPriorityFeePerGas = gasInfo.prio[1] ? weiToGwei(gasInfo.prio[1]) : null
+    if (maxFeePerGas && maxPriorityFeePerGas) {
+      return { maxFeePerGas, maxPriorityFeePerGas }
+    }
+  }
+  return null
+}
 
 async function fetchCustomGasFees(curve: CurveApi) {
   const resp: { customFeeData: Record<string, number | null> | null; error: string } = {

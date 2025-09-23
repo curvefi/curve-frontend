@@ -167,12 +167,8 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           balanceLoading={balancesLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
           haveSigner={haveSigner}
-          handleAmountChange={(lpToken) => updateFormValues({ lpToken })}
-          disabledMaxButton={disableForm || !haveSigner}
-          disableInput={disableForm}
-          handleMaxClick={() => {
-            updateFormValues({ lpToken: (userPoolBalances?.lpToken as string) ?? '0' })
-          }}
+          handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
+          disabled={disableForm}
         />
       </FieldsWrapper>
 

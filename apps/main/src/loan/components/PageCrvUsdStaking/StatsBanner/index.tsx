@@ -1,5 +1,5 @@
 import { oneMonthProjectionYield, oneYearProjectionYield } from '@/loan/components/PageCrvUsdStaking/utils'
-import { useScrvUsdStatistics } from '@/loan/entities/scrvusdStatistics'
+import { useScrvUsdStatistics } from '@/loan/entities/scrvusd-statistics'
 import { Typography } from '@mui/material'
 import { Stack } from '@mui/material'
 import { useTheme } from '@mui/material/styles'

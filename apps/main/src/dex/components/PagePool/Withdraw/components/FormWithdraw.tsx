@@ -289,6 +289,16 @@ const FormWithdraw = ({
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
   const balLpToken = (userPoolBalances?.lpToken as string) ?? '0'
 
+  const handleAmountChange = useCallback(
+    (val: string, idx: number) => {
+      const { amounts } = useStore.getState().poolWithdraw.formValues
+      const clonedAmounts = [...amounts]
+      clonedAmounts[idx] = { ...clonedAmounts[idx], value: val }
+      updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
+    },
+    [updateFormValues],
+  )
+
   return (
     <>
       <FieldLpToken
@@ -297,27 +307,12 @@ const FormWithdraw = ({
         balanceLoading={haveSigner ? typeof userPoolBalances === 'undefined' : false}
         hasError={haveSigner && +formValues.lpToken > +balLpToken}
         haveSigner={haveSigner}
-        handleAmountChange={(val) => {
-          updateFormValues(
-            {
-              amounts: resetFormAmounts(formValues),
-              lpToken: val,
-            },
-            null,
-          )
-        }}
-        disableInput={isDisabled}
-        disabledMaxButton={isDisabled}
-        handleMaxClick={() => {
-          updateFormValues(
-            {
-              amounts: resetFormAmounts(formValues),
-              lpToken: (userPoolBalances?.lpToken as string) ?? '0',
-            },
-
-            null,
-          )
-        }}
+        handleAmountChange={useCallback(
+          (lpToken: string) =>
+            updateFormValues({ amounts: resetFormAmounts(useStore.getState().poolWithdraw.formValues), lpToken }, null),
+          [updateFormValues],
+        )}
+        disabled={isDisabled}
       />
 
       {/* input fields */}
@@ -404,7 +399,6 @@ const FormWithdraw = ({
                   poolDataCacheOrApi.tokens.map((token, idx) => {
                     const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
                     const amount = formValues.amounts[idx]
-
                     return (
                       <FieldToken
                         key={tokenAddress}
@@ -412,8 +406,7 @@ const FormWithdraw = ({
                         amount={amount?.value || ''}
                         balance={''}
                         balanceLoading={false}
-                        disableInput={isDisabled}
-                        disableMaxButton={isDisabled}
+                        disabled={isDisabled}
                         hasError={false}
                         haveSigner={haveSigner}
                         haveSameTokenName={poolDataCacheOrApi?.tokensCountBy[token] > 1}
@@ -421,13 +414,8 @@ const FormWithdraw = ({
                         blockchainId={blockchainId}
                         token={token}
                         tokenAddress={tokensMapper[tokenAddress]?.ethAddress || tokenAddress}
-                        handleAmountChange={(val) => {
-                          const clonedAmounts = lodash.cloneDeep(formValues.amounts)
-                          clonedAmounts[idx].value = val
-                          updateFormValues({ lpToken: '', amounts: clonedAmounts }, null)
-                        }}
+                        handleAmountChange={handleAmountChange}
                         hideMaxButton
-                        handleMaxClick={() => {}}
                       />
                     )
                   })}

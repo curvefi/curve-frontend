@@ -1,7 +1,7 @@
 import { TooltipProps } from 'recharts'
 import type { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent'
 import { TOOLTIP_MAX_WIDTH, TOOLTIP_MAX_WIDTH_MOBILE } from '@/loan/components/PageCrvUsdStaking/Statistics/constants'
-import type { ScrvUsdRevenue } from '@/loan/entities/scrvusdRevenue'
+import type { ScrvUsdRevenue } from '@/loan/entities/scrvusd-revenue'
 import { Paper, Stack, Typography } from '@mui/material'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

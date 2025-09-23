@@ -117,20 +117,18 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (pageLoaded) {
-      if (curve) {
-        if (llamma) {
-          resetUserDetailsState(llamma)
-          fetchInitial(curve, isLeverage, llamma)
-          void fetchLoanDetails(curve, llamma)
-          setLoaded(true)
-        } else if (collateralDatasMapper) {
-          console.warn(
-            `Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`,
-            collateralDatasMapper,
-          )
-          push(getCollateralListPathname(params))
-        }
+    if (pageLoaded && curve) {
+      if (llamma) {
+        resetUserDetailsState(llamma)
+        fetchInitial(curve, isLeverage, llamma)
+        void fetchLoanDetails(curve, llamma)
+        setLoaded(true)
+      } else if (collateralDatasMapper) {
+        console.warn(
+          `Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`,
+          collateralDatasMapper,
+        )
+        push(getCollateralListPathname(params))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
