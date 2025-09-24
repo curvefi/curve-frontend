@@ -1,6 +1,6 @@
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
-import useCampaignRewardsMapper from '@/lend/hooks/useCampaignRewardsMapper'
 import { t } from '@ui-kit/lib/i18n'
+import useStore from '../store/useStore'
 
 interface CampaignRewardsBannerProps {
   borrowAddress: string
@@ -8,8 +8,9 @@ interface CampaignRewardsBannerProps {
 }
 
 const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
-  const supplyCampaignRewardsPool = useCampaignRewardsMapper()[supplyAddress]
-  const borrowCampaignRewardsPool = useCampaignRewardsMapper()[borrowAddress]
+  const campaigns = useStore((state) => state.campaigns.campaignRewardsMapper)
+  const supplyCampaignRewardsPool = campaigns[supplyAddress]
+  const borrowCampaignRewardsPool = campaigns[borrowAddress]
 
   if (!supplyCampaignRewardsPool && !borrowCampaignRewardsPool) return null
 
