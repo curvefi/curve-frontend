@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import { styled } from '@mui/material/styles'
 import { LlamaImg } from '@ui/images'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { AppName } from '@ui-kit/shared/routes'
@@ -25,8 +27,9 @@ type FooterProps = {
 
 export const Footer = ({ appName, networkId }: FooterProps) => {
   const [isBetaModalOpen, openBetaModal, closeBetaModal] = useSwitch()
-  const [isBetaSnackbarVisible, openBetaSnackbar, closeBetaSnackbar] = useSwitch()
+  const [releaseChannelSnackbar, setReleaseChannelSnackbar] = useState<ReleaseChannel.Beta | ReleaseChannel.Legacy>()
   const isTiny = useIsTiny()
+  const navHeight = useLayoutStore((state) => state.navHeight)
   return (
     <Box
       component="footer"
@@ -85,14 +88,22 @@ export const Footer = ({ appName, networkId }: FooterProps) => {
             open={isBetaModalOpen}
             onClose={closeBetaModal}
             channel={ReleaseChannel.Beta}
-            onChanged={openBetaSnackbar}
+            onChanged={(newChannel, oldChannel) => {
+              setReleaseChannelSnackbar(
+                (newChannel === ReleaseChannel.Stable ? oldChannel : newChannel) as
+                  | ReleaseChannel.Beta
+                  | ReleaseChannel.Legacy,
+              )
+            }}
           />
         )}
-        {isBetaSnackbarVisible != null && (
+        {releaseChannelSnackbar && (
           <ReleaseChannelSnackbar
-            open={isBetaSnackbarVisible}
-            onClose={closeBetaSnackbar}
-            channel={ReleaseChannel.Beta}
+            open
+            onClose={() => setReleaseChannelSnackbar(undefined)}
+            channel={releaseChannelSnackbar}
+            anchorOrigin={{ horizontal: 'right', vertical: 'top' }}
+            sx={{ top: navHeight, left: 'unset' }} // unset the left otherwise it will take the whole width
           />
         )}
       </Grid>

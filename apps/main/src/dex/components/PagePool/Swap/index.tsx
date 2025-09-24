@@ -348,7 +348,7 @@ const Swap = ({
       {/* input fields */}
       <FieldsWrapper>
         <div>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {releaseChannel == ReleaseChannel.Legacy ? (
             <Box grid gridGap={1}>
               <StyledInputProvider
                 id="fromAmount"
@@ -489,7 +489,7 @@ const Swap = ({
         </div>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {releaseChannel == ReleaseChannel.Legacy ? (
           <div>
             <StyledInputProvider
               id="toAmount"
