@@ -9,10 +9,13 @@ import { calculateChainTvl } from './tvl'
 
 /** Todo: we should replace this entire hook with prices API some day, there should be an endpoint available */
 export const useTvl = (chainId: ChainId | undefined): PartialQueryResult<number> => {
-  const { llamaApi: api = null } = useConnection()
+  const { llamaApi: api } = useConnection()
 
-  const { data: marketMapping = [] } = useLendMarketMapping({ chainId })
-  const markets = useMemo(() => (api ? Object.values(marketMapping).map(api.getLendMarket) : []), [api, marketMapping])
+  const marketMapping = useLendMarketMapping({ chainId })
+  const markets = useMemo(
+    () => (api && marketMapping ? Object.values(marketMapping).map(api.getLendMarket) : []),
+    [api, marketMapping],
+  )
   const marketsCollateralMapper = useStore((state) => chainId && state.markets.statsAmmBalancesMapper[chainId])
   const marketsTotalSupplyMapper = useStore((state) => chainId && state.markets.totalLiquidityMapper[chainId])
   const marketsTotalDebtMapper = useStore((state) => chainId && state.markets.statsTotalsMapper[chainId])
