@@ -48,7 +48,7 @@ const Page = () => {
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
-  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)

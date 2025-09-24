@@ -49,7 +49,7 @@ const Page = () => {
   const { address } = useAccount()
   const [loaded, setLoaded] = useState(false)
 
-  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
   const marketId = market?.id ?? ''
   const pageLoaded = !isLoading(connectState)
 

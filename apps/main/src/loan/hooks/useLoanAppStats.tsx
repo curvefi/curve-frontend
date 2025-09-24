@@ -5,15 +5,23 @@ import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crv
 import useStore from '@/loan/store/useStore'
 import type { ChainId } from '@/loan/types/loan.types'
 import { formatNumber } from '@ui/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { useMintMarkets } from '../entities/mint-markets'
+import { useMintMarketMapping } from '../entities/mint-markets'
 
 const hasKeys = <K extends keyof any, V>(obj: Record<K, V> | undefined | null): obj is Record<K, V> =>
   !!obj && Object.keys(obj).length > 0
 
+/** Todo: we should replace this entire hook with prices API some day, there should be an endpoint available */
 function useTvl(chainId: ChainId | undefined) {
-  const { data: markets = [] } = useMintMarkets({ chainId })
+  const { llamaApi: api } = useConnection()
+
+  const marketMapping = useMintMarketMapping({ chainId })
+  const markets = useMemo(
+    () => (api && marketMapping ? Object.values(marketMapping).map(api.getMintMarket) : []),
+    [api, marketMapping],
+  )
   const loansDetailsMapper = useStore((state) => state.loans.detailsMapper)
 
   const collateralTokenAddresses = useMemo(
