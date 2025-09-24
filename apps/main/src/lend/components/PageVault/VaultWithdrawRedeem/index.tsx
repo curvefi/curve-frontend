@@ -193,7 +193,7 @@ const VaultWithdrawRedeem = ({
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {releaseChannel == ReleaseChannel.Legacy ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
