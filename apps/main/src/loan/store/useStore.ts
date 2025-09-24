@@ -1,12 +1,9 @@
-import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
-import { devtools, persist, type PersistOptions } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
-import createCacheSlice, { CacheSlice } from '@/loan/store/createCacheSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/loan/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/loan/store/createChartBandsStore'
-import createCollateralsSlice, { CollateralsSlice } from '@/loan/store/createCollateralsSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/loan/store/createIntegrationsSlice'
 import createLoanCollateralDecrease, {
   LoanCollateralDecreaseSlice,
@@ -23,10 +20,8 @@ import createLoansSlice, { LoansSlice } from '@/loan/store/createLoansSlice'
 import createOhlcChartSlice, { OhlcChartSlice } from '@/loan/store/createOhlcChartSlice'
 import createScrvUsdSlice, { ScrvUsdSlice } from '@/loan/store/createScrvUsdSlice'
 
-export type State = CacheSlice &
-  AppSlice &
+export type State = AppSlice &
   ChartBandsSlice &
-  CollateralsSlice &
   LoansSlice &
   LoanCreateSlice &
   LoanCollateralDecreaseSlice &
@@ -41,10 +36,8 @@ export type State = CacheSlice &
   CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
-  ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
   ...createChartBandsSlice(set, get),
-  ...createCollateralsSlice(set, get),
   ...createLoansSlice(set, get),
   ...createLoanCreate(set, get),
   ...createLoanCollateralDecrease(set, get),
@@ -59,17 +52,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCampaignRewardsSlice(set, get),
 })
 
-// cache all items in CacheSlice store
-
-const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
-  name: 'crvusd-app-store-cache',
-  partialize: ({ storeCache }: State) => ({ storeCache }),
-  // @ts-ignore
-  merge: (persistedState, currentState) => lodash.merge(persistedState, currentState),
-  version: 2, // update version number to prevent UI from using cache
-}
-
-const useStore =
-  process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
+const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)
 
 export default useStore

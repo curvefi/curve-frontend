@@ -10,6 +10,7 @@ import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { FormType } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
@@ -47,12 +48,12 @@ const Page = () => {
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
-  const { llamma } = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
-  const llammaId = llamma?.id || ''
+  const { data: market } = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
+  const marketId = market?.id ?? ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -62,28 +63,28 @@ const Page = () => {
   const [loaded, setLoaded] = useState(false)
 
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
-  const isReady = !!curve?.signerAddress && !!llamma
+  const isReady = !!curve?.signerAddress && !!market
 
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
   const positionDetails = useLoanPositionDetails({
     chainId: rChainId,
-    llamma,
-    llammaId,
+    llamma: market,
+    llammaId: marketId,
   })
 
   useEffect(() => {
     if (curve && pageLoaded) {
-      if (rChainId && rCollateralId && rFormType && curve.signerAddress && llamma) {
+      if (rChainId && rCollateralId && rFormType && curve.signerAddress && market) {
         void (async () => {
-          const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
+          const fetchedLoanDetails = await fetchLoanDetails(curve, market)
           if (!fetchedLoanDetails.loanExists) {
-            resetUserDetailsState(llamma)
+            resetUserDetailsState(market)
             push(getLoanCreatePathname(params, rCollateralId))
           }
           setLoaded(true)
         })()
       } else {
-        const args = { rChainId, rCollateralId, rFormType, signer: curve.signerAddress, llamma }
+        const args = { rChainId, rCollateralId, rFormType, signer: curve.signerAddress, market }
         console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, args)
         push(getCollateralListPathname(params))
       }
@@ -93,17 +94,17 @@ const Page = () => {
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
-    if (llamma && rFormType === 'deleverage' && !hasDeleverage(llamma)) {
-      push(getLoanCreatePathname(params, llamma.id))
+    if (market && rFormType === 'deleverage' && !hasDeleverage(market)) {
+      push(getLoanCreatePathname(params, market.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, rFormType, llamma])
+  }, [loaded, rFormType, market])
 
   usePageVisibleInterval(
     () => {
-      if (isPageVisible && curve && !!curve.signerAddress && llamma && loanExists) {
-        void fetchLoanDetails(curve, llamma)
-        void fetchUserLoanDetails(curve, llamma)
+      if (isPageVisible && curve && !!curve.signerAddress && market && loanExists) {
+        void fetchLoanDetails(curve, market)
+        void fetchUserLoanDetails(curve, market)
       }
     },
     REFRESH_INTERVAL['1m'],
@@ -118,9 +119,9 @@ const Page = () => {
 
   const formProps = {
     curve,
-    isReady: !!curve?.signerAddress && !!llamma,
-    llamma,
-    llammaId,
+    isReady: !!curve?.signerAddress && !!market,
+    llamma: market ?? null,
+    llammaId: marketId,
     rChainId,
   }
 
@@ -140,7 +141,7 @@ const Page = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} llammaId={marketId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -169,13 +170,15 @@ const Page = () => {
           )}
           <Stack>
             <MarketDetails {...marketDetails} />
-            <MarketInformationComp
-              llamma={llamma}
-              llammaId={llammaId}
-              chainId={rChainId}
-              chartExpanded={chartExpanded}
-              page="manage"
-            />
+            {market && (
+              <MarketInformationComp
+                llamma={market}
+                llammaId={marketId}
+                chainId={rChainId}
+                chartExpanded={chartExpanded}
+                page="manage"
+              />
+            )}
           </Stack>
         </Stack>
       </DetailPageStack>
