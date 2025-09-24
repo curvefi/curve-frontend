@@ -26,7 +26,6 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
 import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -303,7 +302,7 @@ const FormWithdraw = ({
     <>
       <FieldLpToken
         amount={formValues.lpToken}
-        balance={haveSigner ? formatNumber(balLpToken) : ''}
+        balance={haveSigner ? balLpToken : ''}
         balanceLoading={haveSigner ? typeof userPoolBalances === 'undefined' : false}
         hasError={haveSigner && +formValues.lpToken > +balLpToken}
         haveSigner={haveSigner}

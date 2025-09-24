@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
+import { formatNumber } from '@ui/utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -43,7 +44,7 @@ const FieldLpToken = ({
         labelProps={{
           label: haveSigner ? t`LP Tokens Avail.` : t`LP Tokens`,
           descriptionLoading: haveSigner ? balanceLoading : false,
-          description: haveSigner ? balance : '',
+          description: haveSigner ? formatNumber(balance) : '',
         }}
         value={typeof amount === 'undefined' ? '' : amount}
         onChange={handleAmountChange}

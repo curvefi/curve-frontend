@@ -17,7 +17,6 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -163,7 +162,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       <FieldsWrapper>
         <FieldLpToken
           amount={formValues.lpToken}
-          balance={formatNumber(balLpToken)}
+          balance={balLpToken}
           balanceLoading={balancesLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
           haveSigner={haveSigner}
