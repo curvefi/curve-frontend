@@ -1,9 +1,7 @@
-import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
-import { devtools, persist, type PersistOptions } from 'zustand/middleware'
+import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/lend/store/createAppSlice'
-import createCacheSlice, { CacheSlice } from '@/lend/store/createCacheSlice'
 import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/lend/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/lend/store/createChartBandsStore'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/lend/store/createIntegrationsSlice'
@@ -24,8 +22,7 @@ import createVaultStakeSlice, { VaultStakeSlice } from '@/lend/store/createVault
 import createVaultUnstakeSlice, { VaultUnstakeSlice } from '@/lend/store/createVaultUnstakeSlice'
 import createVaultWithdrawRedeemSlice, { VaultWithdrawRedeemSlice } from '@/lend/store/createVaultWithdrawRedeemSlice'
 
-export type State = CacheSlice &
-  AppSlice &
+export type State = AppSlice &
   IntegrationsSlice &
   ChartBandsSlice &
   UserSlice &
@@ -45,7 +42,6 @@ export type State = CacheSlice &
   CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
-  ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),
@@ -66,17 +62,6 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCampaignRewardsSlice(set, get),
 })
 
-// cache all items in CacheSlice store
-
-const cache: PersistOptions<State, Pick<State, 'storeCache'>> = {
-  name: 'lending-app-store-cache',
-  partialize: ({ storeCache }: State) => ({ storeCache }),
-  // @ts-ignore
-  merge: (persistedState, currentState) => lodash.merge(persistedState, currentState),
-  version: 4, // update version number to prevent UI from using cache
-}
-
-const useStore =
-  process.env.NODE_ENV === 'development' ? create(devtools(persist(store, cache))) : create(persist(store, cache))
+const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)
 
 export default useStore
