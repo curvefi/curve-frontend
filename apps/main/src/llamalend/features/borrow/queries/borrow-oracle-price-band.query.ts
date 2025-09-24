@@ -7,5 +7,5 @@ export const { useQuery: useBorrowOraclePriceBand } = queryFactory({
   queryKey: ({ chainId, poolId }: PoolParams<IChainId>) =>
     [...rootKeys.pool({ chainId, poolId }), 'oraclePriceBand'] as const,
   queryFn: ({ poolId }: PoolQuery<IChainId>): Promise<number> => getLlamaMarket(poolId).oraclePriceBand(),
-  validationSuite: llamaApiValidationSuite(),
+  validationSuite: llamaApiValidationSuite,
 })
