@@ -8,5 +8,5 @@ import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-valid
 export const { useQuery: useAppStatsTotalCrvusdSupply } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsTotalCrvusdSupply', { chainId: params.chainId }] as const,
   queryFn: ({ chainId }: ChainQuery<ChainId>) => networks[chainId].api.helpers.getTotalSupply(requireLib('llamaApi')),
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: llamaApiValidationSuite(),
 })

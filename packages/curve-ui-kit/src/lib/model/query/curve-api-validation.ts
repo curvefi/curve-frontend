@@ -20,18 +20,29 @@ export const curveApiValidationSuite = createValidationSuite(
   },
 )
 
+type ApiValidationParams = {
+  /** The API should be fully hydrated. */
+  beHydrated?: boolean
+}
+
 export const llamaApiValidationGroup = <TChainId extends number, TLib extends { chainId: TChainId }>({
   chainId,
-}: ChainParams<TChainId>) =>
+  beHydrated,
+}: ChainParams<TChainId> & ApiValidationParams) =>
   group('apiValidation', () => {
     test('api', 'API chain ID mismatch', () => {
       enforce(getLib('llamaApi')?.chainId).message('Chain ID should be loaded').equals(chainId)
     })
+
+    if (beHydrated) {
+      test('apiHydrated', 'API should be hydrated', () => {
+        enforce(getLib('llamaApi')?.hydrated).message('API should be hydrated').isTrue()
+      })
+    }
   })
 
-export const llamaApiValidationSuite = createValidationSuite(
-  <TChainId extends number>(params: ChainParams<TChainId>) => {
+export const llamaApiValidationSuite = (apiValidationParams: ApiValidationParams = { beHydrated: false }) =>
+  createValidationSuite(<TChainId extends number>(params: ChainParams<TChainId>) => {
     chainValidationGroup(params)
-    llamaApiValidationGroup(params)
-  },
-)
+    llamaApiValidationGroup({ ...params, ...apiValidationParams })
+  })

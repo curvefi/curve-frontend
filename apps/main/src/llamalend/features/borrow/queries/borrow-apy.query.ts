@@ -37,6 +37,6 @@ export const { useQuery: useMarketRates } = queryFactory({
       ? convertRates(await market.stats.rates())
       : convertRates({ borrowApr: (await market.stats.parameters()).rate })
   },
-  validationSuite: llamaApiValidationSuite,
+  validationSuite: llamaApiValidationSuite(),
   dependencies: (params) => [maxBorrowReceiveKey(params)],
 })
