@@ -10,7 +10,13 @@ const FormConnectWallet = ({ loading, children }: { loading: boolean; children: 
   return (
     <>
       {!isLoading(connectState) && !loading && !curveApi?.signerAddress ? (
-        <Button fillWidth size="large" variant="filled" onClick={() => connectWallet()}>
+        <Button
+          fillWidth
+          size="large"
+          variant="filled"
+          onClick={() => connectWallet()}
+          loading={isLoading(connectState)}
+        >
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

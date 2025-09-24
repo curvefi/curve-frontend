@@ -72,7 +72,7 @@ const Page = () => {
   })
 
   useEffect(() => {
-    if (curve && pageLoaded) {
+    if (curve?.hydrated && pageLoaded) {
       if (rChainId && rCollateralId && rFormType && curve.signerAddress && llamma) {
         void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)

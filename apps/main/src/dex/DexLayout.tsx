@@ -21,5 +21,5 @@ export function DexLayout() {
   useRedirectToEth(network, networkId, isHydrated)
   useAutoRefresh(network)
 
-  return isFetched && isHydrated && <Outlet />
+  return isFetched && <Outlet />
 }

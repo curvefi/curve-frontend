@@ -15,7 +15,7 @@ export const useOneWayMarketMapping = (params: ChainParams<ChainId>) => {
   const data: Record<string, OneWayMarketTemplate> | undefined = useMemo(
     () =>
       // note: only during hydration `api` internally retrieves all the markets, and we can call `getOneWayMarket`
-      marketNames && api && chainId == apiChainId && hydratedChainId === chainId
+      marketNames && api?.hydrated && chainId == apiChainId && hydratedChainId === chainId
         ? Object.fromEntries(
             marketNames
               .filter((marketName) => !networks[chainId!].hideMarketsInUI[marketName])

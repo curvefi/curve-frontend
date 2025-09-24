@@ -17,8 +17,8 @@ export enum ConnectState {
   FAILURE = 'failure',
 }
 
-export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: Address }
-export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress?: Address }
+export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: Address; hydrated?: boolean }
+export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address; hydrated?: boolean }
 
 export type LibChainId = {
   curveApi: CurveChainId
