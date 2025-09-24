@@ -16,5 +16,5 @@ export function CrvUsdClientLayout() {
   useGasInfoAndUpdateLib({ chainId, networks })
   useRedirectToEth(networks[chainId], networkId, isHydrated)
 
-  return isHydrated && <Outlet />
+  return <Outlet />
 }

@@ -14,7 +14,7 @@ import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
@@ -37,7 +37,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
   const sidechainNav = useStore((state) => state.deployGauge.sidechainNav)
   const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
   const deployGauge = useStore((state) => state.deployGauge.deployGauge)
-  const { connect: connectWallet } = useWallet()
+  const { connectState, connect: connectWallet } = useWallet()
   const isLoadingApi = !pageLoaded
   const restFullPathname = useRestFullPathname()
 
@@ -86,7 +86,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
         </StyledSpinnerWrapper>
       ) // no signer
     ) : !haveSigner ? (
-      <StyledButton variant="filled" onClick={() => connectWallet()}>
+      <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
         {t`Connect Wallet`}
       </StyledButton>
     ) : (
@@ -167,7 +167,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
       </StyledSpinnerWrapper>
     )
   ) : !haveSigner ? (
-    <StyledButton variant="filled" onClick={() => connectWallet()}>
+    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

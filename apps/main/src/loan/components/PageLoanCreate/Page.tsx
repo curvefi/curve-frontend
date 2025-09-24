@@ -120,7 +120,7 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (pageLoaded && curve) {
+    if (pageLoaded && curve?.hydrated) {
       if (llamma) {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
@@ -135,7 +135,7 @@ const Page = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded && curve && llamma])
+  }, [pageLoaded && curve?.hydrated && llamma])
 
   // redirect if loan exists
   useEffect(() => {

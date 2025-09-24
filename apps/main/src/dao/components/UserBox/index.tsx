@@ -5,7 +5,7 @@ import { ConnectEthereum } from '@/dao/components/ConnectEthereum'
 import { ActiveProposal, SnapshotVotingPower } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import UserInformation from './UserInformation'
 
@@ -20,7 +20,7 @@ type Props = {
 const UserBox = ({ className, children, votingPower, snapshotVotingPower, activeProposal }: Props) => {
   const { address } = useAccount()
   const chainId = useChainId()
-  const { connect } = useWallet()
+  const { connectState, connect } = useWallet()
 
   return (
     <Wrapper className={className}>
@@ -36,7 +36,7 @@ const UserBox = ({ className, children, votingPower, snapshotVotingPower, active
       ) : chainId === 1 ? (
         <Box flex flexColumn flexGap="var(--spacing-2)">
           <p>{t`Please connect a wallet to see user information.`}</p>
-          <StyledButton variant="outlined" onClick={() => connect()}>
+          <StyledButton variant="outlined" onClick={() => connect()} loading={isLoading(connectState)}>
             {t`Connect Wallet`}
           </StyledButton>
         </Box>

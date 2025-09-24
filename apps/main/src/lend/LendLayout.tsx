@@ -16,5 +16,5 @@ export function LendLayout() {
   useRedirectToEth(networks[chainId], networkId, isHydrated)
   useGasInfoAndUpdateLib({ chainId, networks })
 
-  return isHydrated && <Outlet />
+  return <Outlet />
 }
