@@ -61,11 +61,11 @@ const Page = () => {
   })
 
   useEffect(() => {
-    if (!market) {
+    if (api?.hydrated && !market) {
       console.warn(`Market ${rMarket} not found. Redirecting to market list.`)
       push(getCollateralListPathname(params))
     }
-  }, [market, params, push, rMarket])
+  }, [api?.hydrated, market, params, push, rMarket])
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
