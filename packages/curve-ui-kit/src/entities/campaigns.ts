@@ -40,7 +40,11 @@ const REWARDS: Record<string, CampaignPoolRewards[]> = campaigns.reduce(
   {},
 )
 
-export const { useQuery: useCampaigns, getQueryOptions: getCampaignOptions } = queryFactory({
+export const {
+  useQuery: useCampaigns,
+  getQueryOptions: getCampaignOptions,
+  getQueryData: getCampaigns,
+} = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,
   queryFn: async (): Promise<Record<string, CampaignPoolRewards[]>> => {
     const now = Date.now() // refresh is handled by refetchInterval

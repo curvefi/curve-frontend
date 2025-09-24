@@ -23,7 +23,7 @@ import {
   VolumeMapper,
   type ValueMapperCached,
 } from '@/dex/types/main.types'
-import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
+import { getCampaigns } from '@ui-kit/entities/campaigns'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -63,10 +63,10 @@ export type PoolListSlice = {
     filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
     filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper | ValueMapperCached, chainId: ChainId): P[]
-    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, campaignRewardsMapper: CampaignRewardsMapper, isCrvRewardsEnabled: boolean): P[]
-    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPoolList: UserPoolListMapper, campaignRewardsMapper: CampaignRewardsMapper): Promise<void>
+    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, isCrvRewardsEnabled: boolean): P[]
+    setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPoolList: UserPoolListMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
-    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined, campaignRewardsMapper: CampaignRewardsMapper): void
+    setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -161,16 +161,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
       return result
     },
-    sortFn: (
-      sortKey,
-      order,
-      poolDatas,
-      rewardsApyMapper,
-      tvlMapper,
-      volumeMapper,
-      campaignRewardsMapper,
-      isCrvRewardsEnabled,
-    ) => {
+    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled) => {
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
@@ -205,7 +196,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         return orderBy(
           poolDatas,
           ({ pool }) => {
-            const campaignRewards = campaignRewardsMapper[pool.address.toLowerCase()]
+            const campaignRewards = getCampaigns({})?.[pool.address.toLowerCase()]
             if (campaignRewards && campaignRewards.length > 0) {
               // Pools with campaign rewards get a high priority value
               return Number(campaignRewards[0].multiplier)
@@ -228,7 +219,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       volumeMapper,
       tvlMapper,
       userPoolList,
-      campaignRewardsMapper,
     ) => {
       const {
         pools,
@@ -276,7 +266,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           rewardsApyMapper,
           tvlMapper,
           volumeMapper,
-          campaignRewardsMapper,
           isCrvRewardsEnabled,
         )
       }
@@ -339,7 +328,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       tvlMapper = {},
       tvlMapperCached = {},
       userPoolList = {},
-      campaignRewardsMapper,
     ) => {
       const state = get()
       const { formValues, result: storedResults, ...sliceState } = state[sliceKey]
@@ -392,7 +380,6 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           Object.keys(volumeMapper).length ? volumeMapper : volumeMapperCached,
           Object.keys(tvlMapper).length ? tvlMapper : tvlMapperCached,
           userPoolList,
-          campaignRewardsMapper,
         )
         return
       }
