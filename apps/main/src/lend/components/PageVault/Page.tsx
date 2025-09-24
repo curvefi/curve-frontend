@@ -5,7 +5,7 @@ import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import Vault from '@/lend/components/PageVault/index'
-import { useOneWayMarket } from '@/lend/entities/chain'
+import { useLendMarket } from '@/lend/entities/lend-markets'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
@@ -42,7 +42,7 @@ const Page = () => {
   const { connect, provider } = useWallet()
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
-  const market = useOneWayMarket(rChainId, rMarket).data
+  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rMarket })
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)

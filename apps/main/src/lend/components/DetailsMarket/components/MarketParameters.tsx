@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from 'react'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import { useOneWayMarket } from '@/lend/entities/chain'
+import { useLendMarket } from '@/lend/entities/lend-markets'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
@@ -20,7 +20,7 @@ const MarketParameters = ({
   rOwmId: string
   type: 'borrow' | 'supply'
 }) => {
-  const owm = useOneWayMarket(rChainId, rOwmId).data
+  const { data: owm } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
