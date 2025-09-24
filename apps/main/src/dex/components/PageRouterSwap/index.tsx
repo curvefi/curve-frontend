@@ -527,15 +527,12 @@ const QuickSwap = ({
           </div>
         ) : (
           <LargeTokenInput
+            balance={stringToNumber(formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
-            maxBalance={{
-              loading: userBalancesLoading,
-              balance: stringToNumber(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              max: 'off',
-            }}
+            {...(userToBalance != null && {
+              label: `Avail. ${formatNumber(userToBalance)} ${toToken?.symbol || ''}`,
+            })}
             message={<FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />}
             disabled={isDisable}
             testId="to-amount"
