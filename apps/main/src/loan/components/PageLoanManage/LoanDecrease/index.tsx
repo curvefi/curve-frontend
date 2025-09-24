@@ -30,7 +30,12 @@ import { formatNumber } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
+import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
+import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -64,13 +69,20 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
 
   const { chainId, haveSigner } = curveProps(curve)
+  const network = networks[rChainId]
+  const [releaseChannel] = useReleaseChannel()
+  const [stablecoinAddress] = llamma?.coinAddresses ?? []
+  const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
   const { userState } = userLoanDetails ?? {}
 
-  const updateFormValues = (updatedFormValues: FormValues) => {
-    if (chainId && llamma) {
-      void setFormValues(chainId, llamma, updatedFormValues)
-    }
-  }
+  const updateFormValues = useCallback(
+    (updatedFormValues: FormValues) => {
+      if (chainId && llamma) {
+        void setFormValues(chainId, llamma, updatedFormValues)
+      }
+    },
+    [chainId, llamma, setFormValues],
+  )
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
@@ -94,6 +106,20 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
     updatedFormValues.debtError = ''
     updateFormValues(updatedFormValues)
   }
+
+  const onDebtChanged = useCallback(
+    (value?: number) => {
+      reset(!!formStatus.error, formStatus.isComplete)
+      const debt = `${value ?? ''}`
+      updateFormValues({
+        ...useStore.getState().loanDecrease.formValues,
+        debt,
+        debtError: '',
+        isFullRepay: stringToNumber(userWalletBalances.stablecoin) == value,
+      })
+    },
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
+  )
 
   const handleInpChangeFullRepay = (isFullRepay: boolean) => {
     reset(true, false)
@@ -213,53 +239,87 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   return (
     <>
       {/* input debt */}
-      <Box grid gridRowGap={1}>
-        <InputProvider
-          grid
-          gridTemplateColumns="1fr auto"
-          padding="4px 8px"
-          inputVariant={formValues.debtError ? 'error' : undefined}
+      {releaseChannel == ReleaseChannel.Legacy ? (
+        <Box grid gridRowGap={1}>
+          <InputProvider
+            grid
+            gridTemplateColumns="1fr auto"
+            padding="4px 8px"
+            inputVariant={formValues.debtError ? 'error' : undefined}
+            disabled={disable || formValues.isFullRepay}
+            id="debt"
+          >
+            <InputDebounced
+              id="inpDebt"
+              type="number"
+              labelProps={{
+                label: t`${getTokenName(llamma).stablecoin} Avail.`,
+                descriptionLoading: userWalletBalancesLoading,
+                description: formatNumber(userWalletBalances.stablecoin),
+              }}
+              value={formValues.debt}
+              onChange={handleInpChangeDebt}
+            />
+            <InputMaxBtn
+              onClick={() => {
+                if (+userWalletBalances?.stablecoin < +(userState?.debt ?? 0)) {
+                  handleInpChangeDebt(userWalletBalances.stablecoin)
+                } else {
+                  handleInpChangeFullRepay(true)
+                }
+              }}
+            />
+          </InputProvider>
+          {formValues.debtError ? (
+            formValues.debtError === 'too-much' ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                The specified amount exceeds your total debt. Your debt balance is {formatNumber(userState?.debt ?? 0)}.
+              </StyledInpChip>
+            ) : formValues.debtError === 'not-enough' ? (
+              <StyledInpChip size="xs" isDarkBg isError>
+                The specified amount exceeds the current balance in the wallet.
+              </StyledInpChip>
+            ) : null
+          ) : (
+            <StyledInpChip size="xs">
+              {t`Debt`} {formatNumber(userState?.debt, { defaultValue: '-' })}
+            </StyledInpChip>
+          )}
+        </Box>
+      ) : (
+        <LargeTokenInput
+          name="debt"
+          isError={!!formValues.debtError}
+          message={
+            formValues.debtError === 'too-much'
+              ? t`The specified amount exceeds your total debt. Your debt balance is ${formatNumber(userState?.debt ?? 0)}.`
+              : formValues.debtError === 'not-enough'
+                ? t`The specified amount exceeds the current balance in the wallet.`
+                : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
+          }
           disabled={disable || formValues.isFullRepay}
-          id="debt"
-        >
-          <InputDebounced
-            id="inpDebt"
-            type="number"
-            labelProps={{
-              label: t`${getTokenName(llamma).stablecoin} Avail.`,
-              descriptionLoading: userWalletBalancesLoading,
-              description: formatNumber(userWalletBalances.stablecoin),
-            }}
-            value={formValues.debt}
-            onChange={handleInpChangeDebt}
-          />
-          <InputMaxBtn
-            onClick={() => {
-              // if wallet balance < debt, use wallet balance, else use full repay.
-              if (+userWalletBalances?.stablecoin < +(userState?.debt ?? 0)) {
-                handleInpChangeDebt(userWalletBalances.stablecoin)
-              } else {
-                handleInpChangeFullRepay(true)
-              }
-            }}
-          />
-        </InputProvider>
-        {formValues.debtError ? (
-          formValues.debtError === 'too-much' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              The specified amount exceeds your total debt. Your debt balance is {formatNumber(userState?.debt ?? 0)}.
-            </StyledInpChip>
-          ) : formValues.debtError === 'not-enough' ? (
-            <StyledInpChip size="xs" isDarkBg isError>
-              The specified amount exceeds the current balance in the wallet.
-            </StyledInpChip>
-          ) : null
-        ) : (
-          <StyledInpChip size="xs">
-            {t`Debt`} {formatNumber(userState?.debt, { defaultValue: '-' })}
-          </StyledInpChip>
-        )}
-      </Box>
+          maxBalance={{
+            loading: userWalletBalancesLoading,
+            balance: stringToNumber(userWalletBalances.stablecoin),
+            symbol: getTokenName(llamma).stablecoin,
+            showSlider: false,
+            ...(stablecoinUsdRate != null &&
+              userWalletBalances.stablecoin != null && {
+                notionalValueUsd: stablecoinUsdRate * +userWalletBalances.stablecoin,
+              }),
+          }}
+          balance={stringToNumber(formValues.debt)}
+          tokenSelector={
+            <TokenLabel
+              blockchainId={network.id}
+              tooltip={getTokenName(llamma).stablecoin}
+              address={stablecoinAddress}
+              label={getTokenName(llamma).stablecoin}
+            />
+          }
+          onBalance={onDebtChanged}
+        />
+      )}
 
       <Checkbox
         isDisabled={

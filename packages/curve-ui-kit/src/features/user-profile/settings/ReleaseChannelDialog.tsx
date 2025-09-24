@@ -37,7 +37,7 @@ export const ReleaseChannelDialog = ({
 }: {
   channel: ReleaseChannel.Beta | ReleaseChannel.Legacy
   open: boolean
-  onChanged: (newValue: ReleaseChannel) => void
+  onChanged: (newValue: ReleaseChannel, oldValue: ReleaseChannel) => void
   onClose: () => void
 }) => {
   const [releaseChannel, setReleaseChannel] = useReleaseChannel()
@@ -70,8 +70,8 @@ export const ReleaseChannelDialog = ({
             onClick={() => {
               const newChannel = releaseChannel === channel ? ReleaseChannel.Stable : channel
               setReleaseChannel(newChannel)
+              onChanged(newChannel, releaseChannel)
               onClose()
-              onChanged(newChannel)
             }}
             sx={{ width: '100%' }}
           >

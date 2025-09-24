@@ -115,7 +115,7 @@ const createVaultUnstake = (set: SetState<State>, get: GetState<State>): VaultUn
       const resp = await apiLending.vaultUnstake.unstake(activeKey, provider, market, amount)
       // update user events api
       void getUserMarketCollateralEvents(
-        wallet?.account.address ?? '',
+        wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,

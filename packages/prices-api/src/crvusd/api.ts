@@ -1,4 +1,4 @@
-import { getHost, type Options, type Chain } from '..'
+import { getHost, type Options, type Chain, type Address } from '..'
 import { fetchJson as fetch, addQueryString } from '../fetch'
 import { getTimeRange } from '../timestamp'
 import * as Parsers from './parsers'
@@ -108,7 +108,7 @@ export async function getUserMarketSnapshots(
 }
 
 export async function getUserMarketCollateralEvents(
-  userAddr: string,
+  userAddr: Address | '' = '',
   chain: Chain,
   marketController: string,
   txHash?: string,

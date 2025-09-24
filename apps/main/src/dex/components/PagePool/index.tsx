@@ -155,13 +155,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       !!rewardDistributors &&
       !!signerAddress &&
       Object.values(rewardDistributors).some((distributorId) =>
-        isAddressEqual(distributorId as Address, signerAddress as Address),
+        isAddressEqual(distributorId as Address, signerAddress),
       ),
     [rewardDistributors, signerAddress],
   )
 
   const isGaugeManager = useMemo(
-    () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress as Address),
+    () => !!gaugeManager && !!signerAddress && isAddressEqual(gaugeManager, signerAddress),
     [gaugeManager, signerAddress],
   )
 

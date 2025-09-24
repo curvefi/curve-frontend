@@ -85,7 +85,7 @@ const LoanCreate = ({
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth={releaseChannel !== ReleaseChannel.Beta}
+        fullWidth={releaseChannel == ReleaseChannel.Legacy}
       />
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         <AppFormContentWrapper>

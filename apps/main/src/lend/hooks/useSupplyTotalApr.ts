@@ -1,14 +1,14 @@
 import { useMemo } from 'react'
 import { zeroAddress } from 'viem'
-import { useOneWayMarket } from '@/lend/entities/chain'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId, MarketRates, RewardOther, MarketRewards } from '@/lend/types/lend.types'
 import { getTotalApr } from '@/lend/utils/utilsRewards'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useLendMarket } from '../entities/lend-markets'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const market = useOneWayMarket(rChainId, rOwmId).data
+  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
   const {
