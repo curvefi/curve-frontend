@@ -36,10 +36,10 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
 export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
-  const { isReconnecting, isConnected } = useAccount()
+  const { isReconnecting, isConnected, isConnecting } = useAccount()
   return {
     // `useAccount` and `useClient` are not always in sync, so check both. `isReconnecting` is set when switching pages
-    isReconnecting: !address && (isReconnecting || isConnected),
+    isReconnecting: !address && (isConnecting || isReconnecting || isConnected),
     ...(useMemo(() => {
       const wallet = address &&
         client?.transport.request && {
