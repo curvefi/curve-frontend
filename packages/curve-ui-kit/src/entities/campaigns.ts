@@ -3,18 +3,18 @@ import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
-export type PoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
+export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
   Pick<CampaignPool, 'action' | 'multiplier' | 'tags' | 'address'> & {
     description: CampaignPool['description'] | null
     period?: readonly [Date, Date]
     lock: boolean
   }
 
-const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
+const REWARDS: Record<string, CampaignPoolRewards[]> = campaigns.reduce(
   (campaigns, { pools, campaignName, platform, platformImageId, dashboardLink, ...campaign }) => ({
     ...campaigns,
     ...pools.reduce(
-      (pools: Record<string, PoolRewards[]>, { address, campaignStart, campaignEnd, ...pool }) => ({
+      (pools: Record<string, CampaignPoolRewards[]>, { address, campaignStart, campaignEnd, ...pool }) => ({
         ...pools,
         [address.toLowerCase()]: [
           ...(pools[address.toLowerCase()] ?? []),
@@ -42,7 +42,7 @@ const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
 
 export const { useQuery: useCampaigns, getQueryOptions: getCampaignOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,
-  queryFn: async (): Promise<Record<string, PoolRewards[]>> => {
+  queryFn: async (): Promise<Record<string, CampaignPoolRewards[]>> => {
     const now = Date.now() // refresh is handled by refetchInterval
     return Object.fromEntries(
       Object.entries(REWARDS).map(([address, rewards]) => [
