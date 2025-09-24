@@ -20,7 +20,7 @@ const MarketParameters = ({
   rOwmId: string
   type: 'borrow' | 'supply'
 }) => {
-  const { data: owm } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const owm = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])

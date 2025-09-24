@@ -38,7 +38,7 @@ const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
 
-  const { data: market, isSuccess } = useLendMarket({ chainId: rChainId, marketId: rMarket })
+  const market = useLendMarket({ chainId: rChainId, marketId: rMarket })
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
@@ -61,11 +61,11 @@ const Page = () => {
   })
 
   useEffect(() => {
-    if (isSuccess && !market) {
+    if (!market) {
       console.warn(`Market ${rMarket} not found. Redirecting to market list.`)
       push(getCollateralListPathname(params))
     }
-  }, [isSuccess, market, params, push, rMarket])
+  }, [market, params, push, rMarket])
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first

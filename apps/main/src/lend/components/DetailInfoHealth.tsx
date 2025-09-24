@@ -44,7 +44,7 @@ const DetailInfoHealth = ({
   loading: boolean
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
 }) => {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const oraclePriceBand = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices?.oraclePriceBand)
   const {
     healthFull: healthFullCurrent,

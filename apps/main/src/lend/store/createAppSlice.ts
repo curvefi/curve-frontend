@@ -4,7 +4,6 @@ import type { GetState, SetState } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
 import { log } from '@ui-kit/lib/logging'
-import { prefetchLendMarkets } from '../entities/lend-markets'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -69,8 +68,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       state.user.resetState()
     }
 
-    // unfortunately, we cannot use markets from the cache as that leaves curve-lending-js in an inconsistent state
-    await prefetchLendMarkets({ chainId: api.chainId })
+    const useAPI = api.chainId !== 146 // disable API for sonic
+    await api.lendMarkets.fetchMarkets(useAPI)
 
     log('Hydrating Lend - Complete')
   },

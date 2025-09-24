@@ -30,7 +30,7 @@ const DetailInfoCrvIncentives = ({
   lpTokenAmount: string
 }) => {
   const { tooltipValues } = useSupplyTotalApr(rChainId, rOwmId)
-  const gaugeAddress = useLendMarket({ chainId: rChainId, marketId: rOwmId }).data?.addresses?.gauge
+  const gaugeAddress = useLendMarket({ chainId: rChainId, marketId: rOwmId })?.addresses?.gauge
   const gaugeTotalSupply = useAbiTotalSupply(rChainId, gaugeAddress)
   const isGaugeAddressInvalid = gaugeAddress === zeroAddress
 

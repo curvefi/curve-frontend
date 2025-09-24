@@ -18,7 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)

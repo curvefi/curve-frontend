@@ -41,7 +41,7 @@ const Page = () => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rMarket })
+  const market = useLendMarket({ chainId: rChainId, marketId: rMarket })
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isMdUp = useLayoutStore((state) => state.isMdUp)

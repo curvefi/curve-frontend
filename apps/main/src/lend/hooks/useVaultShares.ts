@@ -12,7 +12,7 @@ function formatNumberWithPrecision(value: number, precisionDigits: number) {
 }
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })

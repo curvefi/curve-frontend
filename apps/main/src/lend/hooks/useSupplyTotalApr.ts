@@ -8,7 +8,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useLendMarket } from '../entities/lend-markets'
 
 function useSupplyTotalApr(rChainId: ChainId, rOwmId: string) {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useLendMarket({ chainId: rChainId, marketId: rOwmId })
   const marketRewardsResp = useStore((state) => state.markets.rewardsMapper[rChainId]?.[rOwmId])
   const marketRatesResp = useStore((state) => state.markets.ratesMapper[rChainId]?.[rOwmId])
   const {
