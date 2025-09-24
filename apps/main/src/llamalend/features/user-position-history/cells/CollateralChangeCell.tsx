@@ -1,18 +1,15 @@
-import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ParsedUserCollateralEvent } from '../hooks/useUserCollateralEvents'
-
-const { Spacing } = SizesAndSpaces
+import { HistoryTableCell } from './HistoryTableCell'
 
 export const CollateralChangeCell = ({
   row: {
     original: { collateralChange, collateralChangeUsd, collateralToken },
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
-  <Stack height={Spacing.xl} paddingY={Spacing.xxs} paddingX={Spacing.sm}>
+  <HistoryTableCell>
     <Typography
       variant="tableCellMBold"
       color={
@@ -26,5 +23,5 @@ export const CollateralChangeCell = ({
     {collateralChangeUsd !== 0 && collateralChangeUsd !== null && (
       <Typography variant="bodySRegular">{formatNumber(collateralChangeUsd, { currency: 'USD' })}</Typography>
     )}
-  </Stack>
+  </HistoryTableCell>
 )

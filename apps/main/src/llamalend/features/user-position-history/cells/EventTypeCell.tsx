@@ -11,6 +11,7 @@ import { RewardsIcon } from '@ui-kit/shared/icons/RewardsIcon'
 import { UploadIcon } from '@ui-kit/shared/icons/UploadIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ParsedUserCollateralEvent, UserCollateralEventType } from '../hooks/useUserCollateralEvents'
+import { HistoryTableCell } from './HistoryTableCell'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,15 +33,10 @@ export const EventTypeCell = ({
     original: { type },
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
-  <Stack
-    height={Spacing.xl}
-    paddingY={Spacing.xxs}
-    paddingX={Spacing.sm}
-    flexDirection="row"
-    alignItems="center"
-    gap={Spacing.xs}
-  >
-    {icons[type]}
-    <Typography variant="tableCellMBold">{type}</Typography>
-  </Stack>
+  <HistoryTableCell>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+      {icons[type]}
+      <Typography variant="tableCellMBold">{type}</Typography>
+    </Stack>
+  </HistoryTableCell>
 )

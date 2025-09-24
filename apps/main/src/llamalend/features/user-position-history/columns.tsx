@@ -18,23 +18,31 @@ const headers = {
 }
 
 export const USER_POSITION_HISTORY_COLUMNS = [
-  columnHelper.accessor(UserPositionHistoryColumnId.Type, {
+  columnHelper.accessor('type', {
+    id: UserPositionHistoryColumnId.Type,
     header: headers[UserPositionHistoryColumnId.Type],
     cell: EventTypeCell,
   }),
-  columnHelper.accessor(UserPositionHistoryColumnId.Collateral, {
+  columnHelper.accessor('collateralChange', {
+    id: UserPositionHistoryColumnId.Collateral,
     header: headers[UserPositionHistoryColumnId.Collateral],
     cell: CollateralChangeCell,
     meta: { type: 'numeric' },
+    sortUndefined: 'last',
   }),
-  columnHelper.accessor(UserPositionHistoryColumnId.Debt, {
+  columnHelper.accessor('loanChange', {
+    id: UserPositionHistoryColumnId.Debt,
     header: headers[UserPositionHistoryColumnId.Debt],
     cell: DebtChangeCell,
     meta: { type: 'numeric' },
+    sortUndefined: 'last',
   }),
-  columnHelper.accessor(UserPositionHistoryColumnId.Time, {
+  columnHelper.accessor('timestamp', {
+    id: UserPositionHistoryColumnId.Time,
     header: headers[UserPositionHistoryColumnId.Time],
     cell: TimestampCell,
     meta: { type: 'numeric' },
   }),
 ]
+
+export const DEFAULT_SORT = [{ id: UserPositionHistoryColumnId.Time, desc: true }]

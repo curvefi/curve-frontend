@@ -1,10 +1,13 @@
-import { useReactTable } from '@tanstack/react-table'
+import { useState } from 'react'
+import { useReactTable, SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
-import { USER_POSITION_HISTORY_COLUMNS } from './columns'
+import { USER_POSITION_HISTORY_COLUMNS, DEFAULT_SORT } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
+import { useUserPositionHistoryVisibility } from './hooks/useUserPositionHistoryVisibility'
+import { RowExpandedPanel } from './RowExpandedPanel'
 
 type UserEventsTableProps = {
   events: ParsedUserCollateralEvent[]
@@ -13,9 +16,14 @@ type UserEventsTableProps = {
 }
 
 export const UserEventsTable = ({ events, loading, isError }: UserEventsTableProps) => {
+  const { columnVisibility } = useUserPositionHistoryVisibility()
+  const [sorting, setSorting] = useState<SortingState>(DEFAULT_SORT)
+
   const table = useReactTable({
     data: events,
     columns: USER_POSITION_HISTORY_COLUMNS,
+    state: { columnVisibility, sorting },
+    onSortingChange: setSorting,
     ...getTableOptions(events),
   })
 
@@ -30,7 +38,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
         maxHeight: '462px',
         disableStickyHeader: true,
       }}
-      expandedPanel={() => null} // TODO: fix
+      expandedPanel={RowExpandedPanel}
       shouldStickFirstColumn={false}
     />
   )
