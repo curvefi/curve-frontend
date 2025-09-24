@@ -1,0 +1,33 @@
+ {
+  "campaignName": "XPL",
+  "platform": "Plasma",
+  "description": "Tokens for providing liquidity.",
+  "platformImageId": "plasma.png",
+  "dashboardLink": "https://app.merkl.xyz/users/",
+  "pools": [
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for XPL rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2D84D79C852f6842AbE0304b70bBaA1506AdD457",
+      "network": "plasma",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "Providing liquidity in this pool makes you eligible for XPL rewards. Visit Merkl to view and claim them.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1E8D78e9b3f0152D54d32904B7933f1cFE439Df1",
+      "network": "plasma",
+      "multiplier": "",
+      "tags": ["tokens"],
+      "lock": "false"
+    }
+  ]
+}
