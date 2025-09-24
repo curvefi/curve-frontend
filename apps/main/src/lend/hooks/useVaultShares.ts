@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
-import { useLendMarket } from '../entities/lend-markets'
 
 function formatNumberWithPrecision(value: number, precisionDigits: number) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
@@ -12,7 +12,7 @@ function formatNumberWithPrecision(value: number, precisionDigits: number) {
 }
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })
