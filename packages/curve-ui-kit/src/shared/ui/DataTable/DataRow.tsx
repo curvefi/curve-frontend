@@ -10,13 +10,9 @@ import { ClickableInRowClass, DesktopOnlyHoverClass, type TableItem } from './da
 import { DataCell } from './DataCell'
 import { type ExpandedPanel, ExpansionRow } from './ExpansionRow'
 
-const onCellClick = (target: EventTarget, url: string | null | undefined, routerNavigate: (href: string) => void) => {
+const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: string) => void) => {
   // ignore clicks on elements that should be clickable inside the row
   if (hasParentWithClass(target, ClickableInRowClass, { untilTag: 'TR' })) {
-    return
-  }
-  // do nothing if URL is not provided or is empty/whitespace (disabled click behavior)
-  if (!url?.trim()) {
     return
   }
   if (url.startsWith('http')) {
@@ -45,8 +41,8 @@ export const DataRow = <T extends TableItem>({
   const url = row.original.url
   const hasUrl = Boolean(url?.trim())
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),
-    [url, push],
+    (e: MouseEvent<HTMLTableRowElement>) => hasUrl && url && onCellClick(e.target, url, push),
+    [url, push, hasUrl],
   )
   const visibleCells = row.getVisibleCells()
 

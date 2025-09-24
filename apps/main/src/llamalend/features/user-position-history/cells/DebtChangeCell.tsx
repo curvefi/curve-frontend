@@ -15,8 +15,7 @@ export const DebtChangeCell = ({
       color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
     >
       {loanChange > 0 ? '+' : ''}
-      {loanChange !== 0 ? formatNumber(loanChange) : '-'}{' '}
-      {loanChange != null && loanChange !== 0 && borrowToken?.symbol}
+      {loanChange ? `${formatNumber(loanChange)} ${borrowToken?.symbol}` : '-'}
     </Typography>
   </HistoryTableCell>
 )

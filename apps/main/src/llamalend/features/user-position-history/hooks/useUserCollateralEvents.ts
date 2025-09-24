@@ -36,26 +36,19 @@ export type UserCollateralEventType =
   | 'Self Liquidation'
   | 'Hard Liquidation'
 
+type CollateralEventToken = {
+  symbol: string
+  address: string
+  decimals: number
+  name: string
+}
+
 export type ParsedUserCollateralEvent = Omit<UserCollateralEvent, 'type'> & {
   type: UserCollateralEventType
   txUrl: string
   url?: string | null
-  borrowToken:
-    | {
-        symbol: string
-        address: string
-        decimals: number
-        name: string
-      }
-    | undefined
-  collateralToken:
-    | {
-        symbol: string
-        address: string
-        decimals: number
-        name: string
-      }
-    | undefined
+  borrowToken: CollateralEventToken | undefined
+  collateralToken: CollateralEventToken | undefined
 }
 export type ParsedUserCollateralEvents = Omit<UserCollateralEvents, 'events'> & {
   events: ParsedUserCollateralEvent[]
@@ -71,12 +64,9 @@ const parseEventType = (
   if (type === 'Borrow' && (previousEvent == null || previousEvent?.isPositionClosed)) return 'Open Position'
   if (type === 'Borrow' && loanChange > 0 && collateralChange === 0) return 'Borrow More'
   if (type === 'Borrow' && collateralChange > 0 && loanChange === 0) return 'Add Collateral'
-  if (type === 'Borrow') return 'Borrow'
   if (type === 'Liquidate' && liquidation?.liquidator === user) return 'Self Liquidation'
   if (type === 'Liquidate') return 'Hard Liquidation'
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'
-  if (type === 'Repay') return 'Repay'
-  if (type === 'RemoveCollateral') return 'Remove Collateral'
   return type as UserCollateralEventType
 }
 
@@ -86,22 +76,8 @@ type UseUserCollateralEventsProps = {
   controllerAddress: Address | undefined
   chainId: IChainId
   chain: Chain
-  collateralToken:
-    | {
-        symbol: string
-        address: string
-        decimals: number
-        name: string
-      }
-    | undefined
-  borrowToken:
-    | {
-        symbol: string
-        address: string
-        decimals: number
-        name: string
-      }
-    | undefined
+  collateralToken: CollateralEventToken | undefined
+  borrowToken: CollateralEventToken | undefined
   scanTxPath: (txHash: string) => string
 }
 
@@ -120,32 +96,28 @@ export const useUserCollateralEvents = ({
   isError: boolean
   scanTxPath: (txHash: string) => string
 } => {
-  const {
-    data: lendData,
-    isLoading: lendLoading,
-    isError: lendError,
-  } = useUserLendCollateralEventsQuery({
-    chainId,
-    chain,
-    controllerAddress,
-    userAddress,
-  })
-  const {
-    data: crvUsdData,
-    isLoading: crvUsdLoading,
-    isError: crvUsdError,
-  } = useUserCrvUsdCollateralEventsQuery({
-    chainId,
-    chain,
-    controllerAddress,
-    userAddress,
-  })
+  const { data, isLoading, isError } = {
+    lend: useUserLendCollateralEventsQuery(
+      {
+        chainId,
+        chain,
+        controllerAddress,
+        userAddress,
+      },
+      app == 'lend',
+    ),
+    crvusd: useUserCrvUsdCollateralEventsQuery(
+      {
+        chainId,
+        chain,
+        controllerAddress,
+        userAddress,
+      },
+      app == 'crvusd',
+    ),
+  }[app]
 
   return useMemo(() => {
-    const data = app === 'lend' ? lendData : crvUsdData
-    const isLoading = app === 'lend' ? lendLoading : crvUsdLoading
-    const isError = app === 'lend' ? lendError : crvUsdError
-
     const parsedData =
       data?.events
         .map((event, index) => ({
@@ -163,16 +135,5 @@ export const useUserCollateralEvents = ({
       isError,
       scanTxPath,
     }
-  }, [
-    app,
-    lendData,
-    crvUsdData,
-    lendLoading,
-    crvUsdLoading,
-    lendError,
-    crvUsdError,
-    borrowToken,
-    collateralToken,
-    scanTxPath,
-  ])
+  }, [data, isLoading, isError, scanTxPath, borrowToken, collateralToken])
 }

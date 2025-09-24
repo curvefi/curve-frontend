@@ -81,7 +81,7 @@ const Page = () => {
     chainId: rChainId,
     chain: networks[rChainId].id as Chain,
     controllerAddress: market?.addresses?.controller as Address,
-    userAddress: signerAddress as Address,
+    userAddress: signerAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
     scanTxPath: networks[rChainId].scanTxPath,

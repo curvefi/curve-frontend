@@ -1,6 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
 import { ReactNode, useEffect, useMemo } from 'react'
-import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
@@ -57,14 +56,17 @@ export const DataTable = <T extends TableItem>({
       sx={{
         backgroundColor: (t) => t.design.Layer[1].Fill,
         borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        ...(options?.maxHeight && {
+          maxHeight: options.maxHeight,
+          overflowY: 'auto',
+        }),
       }}
       data-testid={!loading && 'data-table'}
     >
       <TableHead
         sx={(t) => ({
           zIndex: t.zIndex.tableHeader,
-          position: 'sticky',
-          top,
+          ...(options?.disableStickyHeader ? { position: 'static' } : { position: 'sticky', top }),
           backgroundColor: t.design.Table.Header.Fill,
           marginBlock: Sizing['sm'],
         })}
@@ -101,21 +103,5 @@ export const DataTable = <T extends TableItem>({
     </Table>
   )
 
-  return options ? (
-    <Box
-      sx={{
-        maxHeight: options.maxHeight,
-        ...(options.maxHeight && { overflowY: 'auto' }),
-        ...(options.disableStickyHeader && {
-          '& thead': {
-            top: '0 !important',
-          },
-        }),
-      }}
-    >
-      {TableComponent}
-    </Box>
-  ) : (
-    TableComponent
-  )
+  return TableComponent
 }
