@@ -149,6 +149,7 @@ const Page = () => {
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
+      {/** TODO: generalize or re-use existing market counting technique, see `createCountMarket` in llama-markets.ts */}
       <Title>{market?.id === 'sfrxeth2' ? 'sfrxETH v2' : getTokenName(market).collateral}</Title>
     </AppPageFormTitleWrapper>
   )
