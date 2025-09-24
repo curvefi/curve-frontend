@@ -1,24 +1,4 @@
-export interface CampaignRewardsItem {
-  campaignName: string
-  platform: string
-  description: string
-  platformImageId: string
-  dashboardLink: string
-  pools: CampaignRewardsPool[]
-}
-
-export interface CampaignRewardsPool {
-  id: string
-  action: RewardsAction
-  description: string
-  campaignStart: string
-  campaignEnd: string
-  address: string
-  network: string
-  multiplier: string
-  tags: RewardsTags[]
-  lock: string
-}
+import type { RewardsAction, RewardsTags } from '@external-rewards'
 
 export interface RewardsPool {
   campaignName: string
@@ -50,6 +30,3 @@ export interface CampaignRewardsBannerCompProps {
   campaignRewardsPool: RewardsPool[]
   message: string
 }
-
-export type RewardsTags = 'points' | 'merkle' | 'tokens'
-export type RewardsAction = 'supply' | 'borrow' | 'lp' | 'loan'

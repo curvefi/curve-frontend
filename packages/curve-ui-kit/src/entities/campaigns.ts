@@ -1,26 +1,21 @@
 import lodash from 'lodash'
-import { CampaignRewardsItem, type CampaignRewardsPool, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
-import campaigns from '@external-rewards'
+import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
-export type PoolRewards = {
-  action: RewardsAction
-  multiplier: string // usually formatted like '1x', but it might be just a string
-  tags: RewardsTags[]
-  description: string | null
-  platformImageId: string
-  period?: readonly [Date, Date]
-  dashboardLink: string
-}
+export type PoolRewards = Pick<Campaign, 'platformImageId' | 'dashboardLink'> &
+  Pick<CampaignPool, 'action' | 'multiplier' | 'tags'> & {
+    description: string | null
+    period?: readonly [Date, Date]
+  }
 
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
-  (result, { pools, platformImageId, dashboardLink }: CampaignRewardsItem) => ({
+  (result, { pools, platformImageId, dashboardLink }) => ({
     ...result,
     ...pools.reduce(
       (
         result: Record<string, PoolRewards[]>,
-        { address, multiplier, tags, action, description, campaignStart, campaignEnd }: CampaignRewardsPool,
+        { address, multiplier, tags, action, description, campaignStart, campaignEnd },
       ) => ({
         ...result,
         [address.toLowerCase()]: [

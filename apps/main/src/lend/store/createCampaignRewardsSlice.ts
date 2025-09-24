@@ -1,11 +1,11 @@
 import { produce } from 'immer'
-import { CampaignRewardsItem, CampaignRewardsPool, CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
+import { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import type { GetState, SetState } from 'zustand'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { CURVE_ASSETS_URL } from '@ui/utils'
-import campaigns from '@external-rewards'
+import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -41,8 +41,8 @@ const createCampaignsSlice = (set: SetState<State>, get: GetState<State>): Campa
       const network = networks[chainId].id
 
       // compile a list of pool/markets using pool/vault address as key
-      campaigns.forEach((campaign: CampaignRewardsItem) => {
-        campaign.pools.forEach((pool: CampaignRewardsPool) => {
+      campaigns.forEach((campaign: Campaign) => {
+        campaign.pools.forEach((pool: CampaignPool) => {
           if (pool.network.toLowerCase() === network.toLowerCase()) {
             if (!campaignRewardsMapper[pool.address.toLowerCase()]) {
               campaignRewardsMapper[pool.address.toLowerCase()] = []

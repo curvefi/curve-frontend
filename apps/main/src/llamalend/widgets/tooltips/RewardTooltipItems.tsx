@@ -2,11 +2,11 @@ import { formatPercent } from '@/llamalend/format.utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
-import type { RewardsAction } from '@ui/CampaignRewards/types'
 import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
