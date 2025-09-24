@@ -10,21 +10,16 @@ export type PoolRewards = Pick<Campaign, 'platformImageId' | 'dashboardLink'> &
   }
 
 const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
-  (result, { pools, platformImageId, dashboardLink }) => ({
-    ...result,
+  (campaigns, { pools, platformImageId, dashboardLink }) => ({
+    ...campaigns,
     ...pools.reduce(
-      (
-        result: Record<string, PoolRewards[]>,
-        { address, multiplier, tags, action, description, campaignStart, campaignEnd },
-      ) => ({
-        ...result,
+      (pools: Record<string, PoolRewards[]>, { address, description, campaignStart, campaignEnd, ...pool }) => ({
+        ...pools,
         [address.toLowerCase()]: [
-          ...(result[address.toLowerCase()] ?? []),
+          ...(pools[address.toLowerCase()] ?? []),
           {
+            ...pool,
             dashboardLink,
-            multiplier,
-            tags,
-            action,
             description: description === 'null' ? null : description,
             platformImageId,
             ...(+campaignStart &&
