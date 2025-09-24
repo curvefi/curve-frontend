@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { UserProfile } from './UserProfile'
 
 export const UserProfileButton = ({ visible }: { visible: boolean }) => {
-  const [isOpen, open, close] = useSwitch(visible)
+  const [isOpen, open, close] = useSwitch(false)
   return (
     <>
       {visible ? (
