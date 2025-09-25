@@ -10,26 +10,29 @@ export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | '
     lock: boolean
   }
 
-const REWARDS: Record<string, CampaignPoolRewards[]> = campaigns.reduce(
-  (campaigns, { pools, campaignName, platform, platformImageId, dashboardLink, ...campaign }) => ({
+const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
+  (campaigns, campaign) => ({
     ...campaigns,
-    ...pools.reduce(
-      (pools: Record<string, CampaignPoolRewards[]>, { address, campaignStart, campaignEnd, ...pool }) => ({
+    ...campaign.pools.reduce<Record<string, CampaignPoolRewards[]>>(
+      (pools, pool) => ({
         ...pools,
-        [address.toLowerCase()]: [
-          ...(pools[address.toLowerCase()] ?? []),
+        [pool.address.toLowerCase()]: [
+          ...(pools[pool.address.toLowerCase()] ?? []),
           {
-            campaignName,
-            platform,
-            platformImageId,
-            dashboardLink,
+            // Campaign specific properties
+            campaignName: campaign.campaignName,
+            platform: campaign.platform,
+            platformImageId: campaign.platformImageId,
+            dashboardLink: campaign.dashboardLink,
+
+            // Pool specific properties
             ...pool,
             description: pool.description !== 'null' ? pool.description : campaign.description,
             lock: pool.lock === 'true',
-            address: address.toLowerCase(),
-            ...(+campaignStart &&
-              +campaignEnd && {
-                period: [new Date(1000 * +campaignStart), new Date(1000 * +campaignEnd)] as const,
+            address: pool.address.toLowerCase(),
+            ...(+pool.campaignStart &&
+              +pool.campaignEnd && {
+                period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,
               }),
           },
         ],
