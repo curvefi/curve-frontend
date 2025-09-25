@@ -4,6 +4,7 @@ import VaultDepositMint from '@/lend/components/PageVault/VaultDepositMint'
 import VaultStake from '@/lend/components/PageVault/VaultStake'
 import VaultUnstake from '@/lend/components/PageVault/VaultUnstake'
 import VaultWithdrawRedeem from '@/lend/components/PageVault/VaultWithdrawRedeem'
+import useStore from '@/lend/store/useStore'
 import {
   type MarketUrlParams,
   PageContentProps,
@@ -36,14 +37,23 @@ const tabsWithdraw: TabOption<VaultWithdrawFormType>[] = [
 ]
 
 const Vault = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rOwmId, rFormType, params } = pageProps
+  const { rOwmId, rFormType, rChainId, params } = pageProps
   const push = useNavigate()
+
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   type SubTab = VaultDepositFormType | VaultWithdrawFormType
   const [subTab, setSubTab] = useState<SubTab>('deposit')
 
   const subTabs = useMemo(() => (!rFormType || rFormType === 'deposit' ? tabsDeposit : tabsWithdraw), [rFormType])
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

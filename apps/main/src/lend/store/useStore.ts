@@ -2,6 +2,7 @@ import type { GetState, SetState } from 'zustand'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/lend/store/createAppSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/lend/store/createCampaignRewardsSlice'
 import createChartBandsSlice, { ChartBandsSlice } from '@/lend/store/createChartBandsStore'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/lend/store/createIntegrationsSlice'
 import createLoanBorrowMoreSlice, { LoanBorrowMoreSlice } from '@/lend/store/createLoanBorrowMoreSlice'
@@ -37,7 +38,8 @@ export type State = AppSlice &
   VaultWithdrawRedeemSlice &
   VaultUnstakeSlice &
   VaultClaimSlice &
-  OhlcChartSlice
+  OhlcChartSlice &
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createAppSlice(set, get),
@@ -57,6 +59,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createIntegrationsSlice(set, get),
   ...createVaultClaimSlice(set, get),
   ...createOhlcChartSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 const useStore = process.env.NODE_ENV === 'development' ? create(devtools(store)) : create(store)

@@ -86,6 +86,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.userBalances.resetState()
       state.lockedCrv.resetState()
       state.createPool.resetState()
+      state.campaigns.resetState()
       state.dashboard.resetState()
     }
 

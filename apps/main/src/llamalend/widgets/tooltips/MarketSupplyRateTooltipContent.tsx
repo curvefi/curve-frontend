@@ -7,7 +7,7 @@ import {
   TooltipWrapper,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
 import { RewardsTooltipItems } from './RewardTooltipItems'
@@ -16,7 +16,7 @@ export type MarketSupplyRateTooltipContentProps = {
   supplyRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: PoolRewards[]
   extraIncentives: ExtraIncentive[]
   minBoostApr: number | null | undefined
   maxBoostApr: number | null | undefined

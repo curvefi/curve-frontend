@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { t } from '@ui-kit/lib/i18n'
 
 interface CampaignRewardsBannerProps {
@@ -8,8 +8,7 @@ interface CampaignRewardsBannerProps {
 }
 
 const CampaignRewardsBanner = ({ address }: CampaignRewardsBannerProps) => {
-  const { data: campaigns } = useCampaigns({})
-  const campaignRewardsPool = campaigns?.[address]
+  const campaignRewardsPool = useCampaignRewardsMapper()[address]
 
   if (!campaignRewardsPool) return null
 

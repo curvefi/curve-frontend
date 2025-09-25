@@ -1,20 +1,11 @@
 import { styled } from 'styled-components'
-import { CURVE_ASSETS_URL } from '@ui/utils'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
+import type { CampaignRewardsCompProps } from 'ui/src/CampaignRewards/types'
 import Icon from 'ui/src/Icon'
 import Tooltip from 'ui/src/Tooltip/TooltipButton'
 
-type CampaignRewardsCompProps = {
-  rewardsPool: CampaignPoolRewards
-  highContrast?: boolean
-  mobile?: boolean
-  banner?: boolean
-}
-
 const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
-  const { platform, multiplier, platformImageId } = rewardsPool
-  const platformImageSrc = `${CURVE_ASSETS_URL}/platforms/${platformImageId}`
+  const { platform, multiplier, platformImageSrc } = rewardsPool
 
   const hasMultiplier = !!multiplier
 
@@ -28,7 +19,7 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        {hasMultiplier && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
+        {hasMultiplier && <Multiplier highContrast={highContrast}>{`${multiplier}`}</Multiplier>}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
       </Container>
     </Tooltip>
