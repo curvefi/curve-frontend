@@ -48,24 +48,6 @@ const DEFAULT_PARAMETERS = {
 }
 
 const helpers = {
-  getLlammaObj: (api: LlamaApi, token: string) => {
-    log('getLlammaObj', token)
-    return api.getMintMarket(token)
-  },
-  getLlammas: (curve: LlamaApi) => {
-    log('getCollaterals', curve.chainId)
-    const collaterals = curve.mintMarkets.getMarketList()
-
-    // set mappers
-    const llammasMapper: { [llammaId: string]: Llamma } = {}
-    for (const idx in collaterals) {
-      const collateralName = collaterals[idx]
-      const llamma = curve.getMintMarket(collateralName)
-      llammasMapper[llamma.id] = llamma
-    }
-
-    return llammasMapper
-  },
   getUsdRate: async (api: LlamaApi, tokenAddress: string) => {
     log('getUsdRate', tokenAddress)
     const resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }

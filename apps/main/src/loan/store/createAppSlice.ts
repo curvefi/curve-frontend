@@ -44,7 +44,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (curveApi, prevCurveApi, wallet) => {
     if (!curveApi) return
 
-    const { loans, campaigns, collaterals } = get()
+    const { loans, campaigns } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -60,9 +60,8 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    // Check if curveApi is actually a Curve instance and not a LendingApi
-    const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
-    await loans.fetchLoansDetails(curveApi, collateralDatas)
+    const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))
+    await loans.fetchLoansDetails(curveApi, markets)
 
     if (!prevCurveApi || isNetworkSwitched) {
       campaigns.initCampaignRewards(curveApi.chainId as ChainId)

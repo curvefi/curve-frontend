@@ -10,7 +10,7 @@ export function parseHealthPercent(healthPercent: string) {
   return formatNumber(healthPercent, { style: 'percent', maximumFractionDigits: 2 })
 }
 
-export function getTokenName(llamma: Llamma | null) {
+export function getTokenName(llamma: Llamma | null | undefined) {
   const [stablecoin, collateral] = llamma?.coins ?? ['', '']
   return { stablecoin, collateral }
 }
