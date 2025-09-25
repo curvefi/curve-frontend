@@ -136,14 +136,14 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       ),
     })
     const yieldbasisAlert = (): PoolAlert => ({
-      alertType: 'info',
+      alertType: 'warning',
       isDisableDeposit: true,
       isInformationOnly: true,
       isCloseOnTooltipOnly: true,
       message: (
         <MessageWrapper>
           <div>
-            This pool is managed by Yieldbasis. Only deposits done from from the Yieldbasis UI earn from fees and
+            This pool is managed by <b>Yieldbasis</b>. Only deposits done from from the Yieldbasis UI earn from fees and
             rewards. <br /> Go to{' '}
             <ExternalLink $noStyles href="https://yieldbasis.com">
               yieldbasis.com
