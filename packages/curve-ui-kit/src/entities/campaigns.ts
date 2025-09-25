@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { Chain } from '@curvefi/prices-api'
+import { mapRecord } from '@curvefi/prices-api/objects.util'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
@@ -61,18 +62,16 @@ export const {
   queryKey: () => ['external-rewards'] as const,
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
-    return Object.fromEntries(
-      Object.entries(REWARDS).map(([address, rewards]) => [
-        address,
-        rewards.filter(({ period }) => {
-          if (!period) return true
-          const [start, end] = period
-          return lodash.inRange(now, start.getTime(), end.getTime())
-        }),
-      ]),
+
+    return mapRecord(REWARDS, (_, rewards) =>
+      rewards.filter(({ period }) => {
+        if (!period) return true
+        const [start, end] = period
+        return lodash.inRange(now, start.getTime(), end.getTime())
+      }),
     )
   },
-  validationSuite: EmptyValidationSuite, //
+  validationSuite: EmptyValidationSuite,
   refetchInterval: '10m',
 })
 
@@ -83,12 +82,7 @@ export const useCampaignsByNetwork = (blockchainId?: Chain) => {
     if (!blockchainId) return allCampaigns
     if (!allCampaigns) return undefined
 
-    return Object.fromEntries(
-      Object.entries(allCampaigns).map(([address, rewards]) => [
-        address,
-        rewards.filter(({ network }) => network === blockchainId),
-      ]),
-    )
+    return mapRecord(allCampaigns, (_, rewards) => rewards.filter(({ network }) => network === blockchainId))
   }, [allCampaigns, blockchainId])
 
   return { data: filteredCampaigns, ...rest }

@@ -198,14 +198,15 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       } else if (sortKey === 'volume') {
         return orderBy(poolDatas, ({ pool }) => Number(volumeMapper[pool.id]?.value ?? 0), [order])
       } else if (sortKey === 'points') {
+        const blockchainId = networks[chainId].networkId as Chain
         return orderBy(
           poolDatas,
           ({ pool }) =>
             Math.max(
               0,
-              ...(
-                getCampaigns({ blockchainId: networks[chainId].networkId as Chain })?.[pool.address.toLowerCase()] ?? []
-              ).map((x) => (x.multiplier && typeof x.multiplier === 'number' ? x.multiplier : 0)),
+              ...(getCampaigns({})?.[pool.address.toLowerCase()] ?? [])
+                .filter((x) => x.network === blockchainId)
+                .map((x) => (x.multiplier && typeof x.multiplier === 'number' ? x.multiplier : 0)),
             ),
           [order],
         )
