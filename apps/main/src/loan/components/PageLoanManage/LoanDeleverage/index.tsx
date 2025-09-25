@@ -295,7 +295,7 @@ const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid

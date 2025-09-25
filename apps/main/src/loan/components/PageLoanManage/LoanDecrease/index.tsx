@@ -239,7 +239,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   return (
     <>
       {/* input debt */}
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
