@@ -292,7 +292,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
           {isMdUp && !chartExpanded && <TitleComp />}
           {poolAddress && (
             <Box>
-              <CampaignRewardsBanner address={poolAddress} />
+              <CampaignRewardsBanner chainId={rChainId} address={poolAddress} />
             </Box>
           )}
           {!isLite && pricesApiPoolData && pricesApi && !chartExpanded && (

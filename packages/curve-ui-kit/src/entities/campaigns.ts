@@ -1,10 +1,10 @@
 import lodash from 'lodash'
-import { EmptyValidationSuite } from '@ui-kit/lib'
-import { queryFactory } from '@ui-kit/lib/model'
+import { queryFactory, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
+import { chainNameValidationSuite } from '@ui-kit/lib/model/query/chain-name-validation'
 import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
 export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
-  Pick<CampaignPool, 'action' | 'tags' | 'address'> & {
+  Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
     description: CampaignPool['description'] | null
     lock: boolean
     multiplier?: number
@@ -51,20 +51,22 @@ export const {
   getQueryOptions: getCampaignOptions,
   getQueryData: getCampaigns,
 } = queryFactory({
-  queryKey: () => ['external-rewards', 'v2'] as const,
-  queryFn: async () => {
+  queryKey: ({ blockchainId }: ChainNameParams) => ['external-rewards', { blockchainId }] as const,
+  queryFn: async ({ blockchainId }: ChainNameQuery) => {
     const now = Date.now() // refresh is handled by refetchInterval
     return Object.fromEntries(
       Object.entries(REWARDS).map(([address, rewards]) => [
         address,
-        rewards.filter(({ period }) => {
-          if (!period) return true
-          const [start, end] = period
-          return lodash.inRange(now, start.getTime(), end.getTime())
-        }),
+        rewards
+          .filter(({ period }) => {
+            if (!period) return true
+            const [start, end] = period
+            return lodash.inRange(now, start.getTime(), end.getTime())
+          })
+          .filter(({ network }) => network === blockchainId),
       ]),
     )
   },
-  validationSuite: EmptyValidationSuite,
+  validationSuite: chainNameValidationSuite,
   refetchInterval: '10m',
 })

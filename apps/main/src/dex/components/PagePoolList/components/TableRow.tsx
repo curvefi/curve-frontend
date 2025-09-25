@@ -10,6 +10,7 @@ import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/Page
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
 import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
 import { useCampaigns } from '@ui-kit/entities/campaigns'
@@ -57,7 +58,7 @@ const TableRow = ({
 }: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const { data: campaigns } = useCampaigns({})
+  const { data: campaigns } = useCampaigns({ blockchainId: blockchainId as Chain })
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>

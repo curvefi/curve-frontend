@@ -8,6 +8,7 @@ import useStore from '@/dex/store/useStore'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -29,7 +30,8 @@ type RewardsProps = {
 const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
-  const { data: campaigns } = useCampaigns({})
+  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: campaigns } = useCampaigns({ blockchainId: network.networkId as Chain })
   const campaignRewardsPool = campaigns?.[poolData.pool.address]
   const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
 

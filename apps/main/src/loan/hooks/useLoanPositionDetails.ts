@@ -30,7 +30,8 @@ export const useLoanPositionDetails = ({
   llamma,
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
-  const { data: campaigns } = useCampaigns({})
+  const blockchainId = networks[chainId]?.id
+  const { data: campaigns } = useCampaigns({ blockchainId })
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,
@@ -72,7 +73,7 @@ export const useLoanPositionDetails = ({
     tokenAddress: CRVUSD_ADDRESS,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
-    blockchainId: networks[chainId as keyof typeof networks].id,
+    blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs

@@ -11,6 +11,7 @@ import { LazyItem, type TableRowProps } from '@/dex/components/PagePoolList/comp
 import type { PoolListTableLabel } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import Icon from '@ui/Icon'
@@ -50,7 +51,7 @@ const TableRowMobile = ({
   handleCellClick,
   setShowDetail,
 }: TableRowMobileProps) => {
-  const { data: campaigns } = useCampaigns({})
+  const { data: campaigns } = useCampaigns({ blockchainId: blockchainId as Chain })
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId

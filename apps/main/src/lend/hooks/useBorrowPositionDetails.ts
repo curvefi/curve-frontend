@@ -46,7 +46,8 @@ export const useBorrowPositionDetails = ({
   } = userLoanDetails ?? {}
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
-  const { data: campaigns } = useCampaigns({})
+  const blockchainId = networks[chainId].id as Chain
+  const { data: campaigns } = useCampaigns({ blockchainId })
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
     chainId,
     marketId,
@@ -60,7 +61,7 @@ export const useBorrowPositionDetails = ({
     tokenAddress: market?.addresses?.borrowed_token,
   })
   const { data: lendSnapshots, isLoading: isLendSnapshotsLoading } = useLendingSnapshots({
-    blockchainId: networks[chainId].id as Chain,
+    blockchainId,
     contractAddress: market?.addresses?.controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs

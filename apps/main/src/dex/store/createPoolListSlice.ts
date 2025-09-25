@@ -23,6 +23,7 @@ import {
   VolumeMapper,
   type ValueMapperCached,
 } from '@/dex/types/main.types'
+import type { Chain } from '@curvefi/prices-api'
 import { getCampaigns } from '@ui-kit/entities/campaigns'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 
@@ -63,7 +64,7 @@ export type PoolListSlice = {
     filterByKey<P extends PartialPoolData>(key: FilterKey, poolDatas: P[], userPoolList: { [p: string]: boolean } | undefined): P[]
     filterBySearchText<P extends PartialPoolData>(searchText: string, poolDatas: P[], highlightResult?: boolean): P[]
     filterSmallTvl<P extends PartialPoolData>(poolDatas: P[], tvlMapper: TvlMapper | ValueMapperCached, chainId: ChainId): P[]
-    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, isCrvRewardsEnabled: boolean): P[]
+    sortFn<P extends PartialPoolData>(sortKey: SortKey, order: Order, poolDatas: P[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, isCrvRewardsEnabled: boolean, chainId: ChainId): P[]
     setSortAndFilterData(rChainId: ChainId, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[], rewardsApyMapper: RewardsApyMapper, volumeMapper: VolumeMapper | ValueMapperCached, tvlMapper: TvlMapper | ValueMapperCached, userPoolList: UserPoolListMapper): Promise<void>
     setSortAndFilterCachedData(rChainId: ChainId, searchParams: SearchParams, poolDatasCached: PoolDataCache[], volumeMapperCached: { [poolId:string]: { value: string } }, tvlMapperCached: { [poolId:string]: { value: string } }): void
     setFormValues(rChainId: ChainId, isLite: boolean, searchParams: SearchParams, hideSmallPools: boolean, poolDatas: PoolData[] | undefined, poolDatasCached: PoolDataCache[] | undefined, rewardsApyMapper: RewardsApyMapper | undefined, volumeMapper: VolumeMapper | undefined, volumeMapperCached: ValueMapperCached | undefined, tvlMapper: TvlMapper | undefined, tvlMapperCached: ValueMapperCached | undefined, userPoolList: UserPoolListMapper | undefined): void
@@ -161,7 +162,11 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
 
       return result
     },
-    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled) => {
+    sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled, chainId) => {
+      const {
+        networks: { networks },
+      } = get()
+
       if (poolDatas.length === 0) {
         return poolDatas
       } else if (sortKey === 'name') {
@@ -196,7 +201,12 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         return orderBy(
           poolDatas,
           ({ pool }) =>
-            Math.max(0, ...(getCampaigns({})?.[pool.address.toLowerCase()] ?? []).map((x) => x.multiplier ?? 0)),
+            Math.max(
+              0,
+              ...(
+                getCampaigns({ blockchainId: networks[chainId].networkId as Chain })?.[pool.address.toLowerCase()] ?? []
+              ).map((x) => x.multiplier ?? 0),
+            ),
           [order],
         )
       }
@@ -259,6 +269,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
           tvlMapper,
           volumeMapper,
           isCrvRewardsEnabled,
+          rChainId,
         )
       }
 
