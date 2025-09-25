@@ -10,23 +10,24 @@ import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
+import { fromPrecise, PreciseNumber } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketSupplyRateTooltipContentProps = {
-  supplyRate: number | null | undefined
-  averageRate: number | null | undefined
+  supplyRate: PreciseNumber | null | undefined
+  averageRate: PreciseNumber | null | undefined
   periodLabel: string
   extraRewards: PoolRewards[]
   extraIncentives: ExtraIncentive[]
-  minBoostApr: number | null | undefined
-  maxBoostApr: number | null | undefined
-  userBoost?: number | null | undefined
-  userTotalCurrentSupplyApr?: number | null | undefined
-  totalSupplyRateMinBoost: number | null | undefined
-  totalSupplyRateMaxBoost: number | null | undefined
-  totalAverageSupplyRateMinBoost: number | null | undefined
-  totalAverageSupplyRateMaxBoost: number | null | undefined
-  rebasingYield: number | null | undefined
+  minBoostApr: PreciseNumber | null | undefined
+  maxBoostApr: PreciseNumber | null | undefined
+  userBoost?: PreciseNumber | null | undefined
+  userTotalCurrentSupplyApr?: PreciseNumber | null | undefined
+  totalSupplyRateMinBoost: PreciseNumber | null | undefined
+  totalSupplyRateMaxBoost: PreciseNumber | null | undefined
+  totalAverageSupplyRateMinBoost: PreciseNumber | null | undefined
+  totalAverageSupplyRateMaxBoost: PreciseNumber | null | undefined
+  rebasingYield: PreciseNumber | null | undefined
   rebasingSymbol?: string | null | undefined
   isLoading: boolean
 }
@@ -102,12 +103,12 @@ export const MarketSupplyRateTooltipContent = ({
             </TooltipItem>
           </TooltipItems>
         )}
-        {(maxBoostApr ?? 0) > 0 && (
+        {fromPrecise(maxBoostApr ?? 0) > 0 && (
           <TooltipItems secondary extraMargin>
             <TooltipItem title={t`Max veCRV Boost (2.5x)`}>{formatPercent(maxBoostApr)}</TooltipItem>
           </TooltipItems>
         )}
-        {(maxBoostApr ?? 0) > 0 && (
+        {fromPrecise(maxBoostApr ?? 0) > 0 && (
           <TooltipItems borderTop>
             <TooltipItem variant="primary" title={`${t`Total max boosted APR`}`}>
               {formatPercent(totalSupplyRateMaxBoost)}

@@ -2,6 +2,7 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { fromPrecise, type PreciseNumber } from '@ui-kit/utils'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
@@ -19,7 +20,7 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
   params: BorrowFormQueryParams<ChainId>
   isOpen: boolean
   collateralToken: Token | undefined
-  slippage: number
+  slippage: PreciseNumber
 }) => {
   const {
     data: expectedCollateral,
@@ -41,7 +42,7 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
     isLoading: priceImpactPercentLoading,
     error: priceImpactPercentError,
   } = useBorrowPriceImpact(params, isOpen)
-  const isHighImpact = priceImpactPercent != null && priceImpactPercent > slippage
+  const isHighImpact = priceImpactPercent != null && priceImpactPercent > fromPrecise(slippage)
 
   return (
     <>

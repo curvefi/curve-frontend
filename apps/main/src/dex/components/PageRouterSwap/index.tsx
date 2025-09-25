@@ -43,7 +43,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, type PreciseNumber, ReleaseChannel, stringNumber, stringToPrecise } from '@ui-kit/utils'
 
 const QuickSwap = ({
   pageLoaded,
@@ -367,11 +367,12 @@ const QuickSwap = ({
   const [releaseChannel] = useReleaseChannel()
 
   const setFromAmount = useCallback(
-    (fromAmount?: number) => updateFormValues({ isFrom: true, fromAmount: `${fromAmount ?? ''}`, toAmount: '' }),
+    (fromAmount?: PreciseNumber) =>
+      updateFormValues({ isFrom: true, fromAmount: stringNumber(fromAmount), toAmount: '' }),
     [updateFormValues],
   )
   const setToAmount = useCallback(
-    (toAmount?: number) => updateFormValues({ isFrom: false, toAmount: `${toAmount ?? ''}`, fromAmount: '' }),
+    (toAmount?: PreciseNumber) => updateFormValues({ isFrom: false, toAmount: stringNumber(toAmount), fromAmount: '' }),
     [updateFormValues],
   )
 
@@ -439,10 +440,9 @@ const QuickSwap = ({
               name="fromAmount"
               maxBalance={{
                 loading: userBalancesLoading || isMaxLoading,
-                balance: stringToNumber(userFromBalance),
+                balance: stringToPrecise(userFromBalance),
                 symbol: fromToken?.symbol || '',
-                ...(fromUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
+                notionalValueUsd: multiplyPrecise(fromUsdRate, userFromBalance),
                 ...(searchedParams.fromAddress === ethAddress && {
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
@@ -528,7 +528,7 @@ const QuickSwap = ({
           </div>
         ) : (
           <LargeTokenInput
-            balance={stringToNumber(formValues.toAmount)}
+            balance={stringToPrecise(formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
             {...(userToBalance != null && {

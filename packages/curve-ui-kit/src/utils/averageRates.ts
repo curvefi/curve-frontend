@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import { fromPrecise, type PreciseNumber, toPrecise } from '@ui-kit/utils/precise-number'
 const { meanBy } = lodash
 
 /**
@@ -11,9 +12,9 @@ const { meanBy } = lodash
  */
 export function calculateAverageRates<
   T extends { timestamp: string | number | Date },
-  K extends Record<string, (snapshot: T) => number | null | undefined>,
->(snapshots: T[] | undefined, daysBack: number, extractors: K): { [P in keyof K]: number | null } | null {
-  if (!snapshots) return null
+  K extends Record<string, (snapshot: T) => PreciseNumber | null | undefined>,
+>(snapshots: T[] | undefined, daysBack: number, extractors: K): { [P in keyof K]?: PreciseNumber } | undefined {
+  if (!snapshots) return
 
   // Filter snapshots to only include recent ones
   const cutoffDate = new Date()
@@ -21,14 +22,14 @@ export function calculateAverageRates<
 
   const recentSnapshots = snapshots.filter((snapshot) => new Date(snapshot.timestamp) > cutoffDate)
 
-  if (recentSnapshots.length === 0) return null
+  if (recentSnapshots.length === 0) return
 
   // Calculate averages for each extractor
-  const result = {} as { [P in keyof K]: number | null }
+  const result = {} as { [P in keyof K]?: PreciseNumber }
 
   for (const [key, extractor] of Object.entries(extractors)) {
-    const average = meanBy(recentSnapshots, extractor)
-    result[key as keyof K] = isNaN(average) ? null : average
+    const average = meanBy(recentSnapshots, (snapshot) => fromPrecise(extractor(snapshot)))
+    if (!isNaN(average)) result[key as keyof K] = toPrecise(average)
   }
 
   return result

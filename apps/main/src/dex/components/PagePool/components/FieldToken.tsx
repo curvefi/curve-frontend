@@ -10,7 +10,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, shortenAddress, stringToNumber } from '@ui-kit/utils'
+import { type PreciseNumber, stringNumber, ReleaseChannel, shortenAddress, stringToPrecise } from '@ui-kit/utils'
 
 type Props = {
   idx: number
@@ -51,7 +51,10 @@ const FieldToken = ({
 }: Props) => {
   const showAvailableBalance = haveSigner && !isWithdraw
   const [releaseChannel] = useReleaseChannel()
-  const onBalance = useCallback((val?: number) => handleAmountChange(`${val ?? ''}`, idx), [handleAmountChange, idx])
+  const onBalance = useCallback(
+    (val?: PreciseNumber) => handleAmountChange(stringNumber(val), idx),
+    [handleAmountChange, idx],
+  )
 
   const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
   const onMax = useCallback(() => {
@@ -98,7 +101,7 @@ const FieldToken = ({
       isError={hasError}
       {...(!hideMaxButton && {
         maxBalance: {
-          balance: stringToNumber(balance),
+          balance: stringToPrecise(balance),
           loading: isMaxLoading,
           onMax,
           showBalance: showAvailableBalance,
@@ -115,7 +118,7 @@ const FieldToken = ({
         />
       }
       {...(haveSameTokenName && { label: `${token} ${shortenAddress(tokenAddress)}` })}
-      balance={stringToNumber(amount)}
+      balance={stringToPrecise(amount)}
       onBalance={onBalance}
     />
   )

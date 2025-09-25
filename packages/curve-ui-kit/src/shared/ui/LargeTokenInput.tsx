@@ -1,3 +1,4 @@
+import { BigNumber } from 'bignumber.js'
 import { type Ref, type ReactNode, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -5,6 +6,7 @@ import Typography from '@mui/material/Typography'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { type PreciseNumber, stringNumber, toPrecise } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -43,11 +45,11 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
 )
 
 type BalanceTextFieldProps = {
-  balance: number | undefined
-  maxBalance?: number
+  balance: PreciseNumber | undefined
+  maxBalance?: PreciseNumber
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: number | undefined) => void
+  onCommit: (balance: PreciseNumber | undefined) => void
   name: string
 }
 
@@ -107,7 +109,7 @@ type Props = {
    * The current balance value of the input.
    * If undefined, the input is considered uncontrolled.
    */
-  balance?: number | undefined
+  balance?: PreciseNumber | undefined
 
   /**
    * The token selector UI element to be rendered.
@@ -172,7 +174,7 @@ type Props = {
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
-  onBalance: (balance: number | undefined) => void
+  onBalance: (balance: PreciseNumber | undefined) => void
 }
 
 export const LargeTokenInput = ({
@@ -208,27 +210,30 @@ export const LargeTokenInput = ({
         return
       }
 
-      let newBalance = (maxBalance.balance * newPercentage) / 100
+      const maxBalanceBN = new BigNumber(maxBalance.balance.number)
+      let newBalance = maxBalanceBN.times(newPercentage).div(100)
       if (balanceDecimals != null) {
         // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
-        newBalance = Math.min(+newBalance.toFixed(balanceDecimals), maxBalance.balance)
+        newBalance = BigNumber.min(newBalance.toFixed(balanceDecimals), maxBalanceBN)
       }
 
-      setBalance(newBalance)
+      setBalance(toPrecise(newBalance))
     },
     [maxBalance?.balance, balanceDecimals, setBalance],
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: number | undefined) => {
+    (newBalance: PreciseNumber | undefined) => {
       if (newBalance == null) return
 
       setBalance(newBalance)
 
       if (maxBalance?.balance && newBalance) {
         // Calculate percentage based on new balance and round to 2 decimal places
-        const calculatedPercentage = (newBalance / maxBalance.balance) * 100
-        const newPercentage = Math.min(Math.round(calculatedPercentage * 100) / 100, 100)
+        const calculatedPercentage = new BigNumber(stringNumber(newBalance))
+          .div(stringNumber(maxBalance.balance))
+          .times(100)
+        const newPercentage = +BigNumber.min(100, calculatedPercentage).toFixed(2)
         setPercentage(newPercentage)
       } else {
         setPercentage(undefined)

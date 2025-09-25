@@ -6,6 +6,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { stringNumber } from '@ui-kit/utils'
 import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useBorrowRouteImage } from '../queries/borrow-route-image.query'
@@ -74,13 +75,16 @@ export const AdvancedBorrowOptions = ({
             { value: `${debt ?? 0}`, label: t`Debt` },
             { value: `${userBorrowed ?? 0}`, label: t`Wallet` },
           ]}
-          swapToAmounts={[expectedCollateral?.collateralFromDebt, expectedCollateral?.collateralFromUserBorrowed]}
+          swapToAmounts={[
+            stringNumber(expectedCollateral?.collateralFromDebt),
+            stringNumber(expectedCollateral?.collateralFromUserBorrowed),
+          ]}
           nonSwapAmount={{
-            value: expectedCollateral?.userCollateral,
+            value: stringNumber(expectedCollateral?.userCollateral),
             label: '',
           }}
-          total={expectedCollateral?.totalCollateral}
-          avgPrice={expectedCollateral?.avgPrice}
+          total={stringNumber(expectedCollateral?.totalCollateral)}
+          avgPrice={stringNumber(expectedCollateral?.avgPrice)}
           type="collateral"
           routeImage={routeImage}
         />

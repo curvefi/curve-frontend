@@ -27,7 +27,14 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import {
+  multiplyPrecise,
+  type PreciseNumber,
+  stringNumber,
+  ReleaseChannel,
+  stringToPrecise,
+  toPrecise,
+} from '@ui-kit/utils'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -69,7 +76,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
-  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
+  const onBalance = useCallback((amount?: PreciseNumber) => reset({ amount: stringNumber(amount) }), [reset])
 
   const handleInpAmountChange = (amount: string) => {
     reset({ amount })
@@ -251,13 +258,12 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
           disabled={disabled}
           maxBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
-            balance: stringToNumber(userBalances?.borrowed),
+            balance: stringToPrecise(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
             showSlider: false,
-            notionalValueUsd:
-              usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
+            notionalValueUsd: multiplyPrecise(userBalances?.borrowed, usdRate),
           }}
-          balance={+formValues.amount}
+          balance={toPrecise(formValues.amount)}
           tokenSelector={
             <TokenLabel
               blockchainId={networks[rChainId].id}

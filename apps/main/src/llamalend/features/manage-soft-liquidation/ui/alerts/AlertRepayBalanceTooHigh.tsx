@@ -4,15 +4,16 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { PreciseNumber } from '@ui-kit/utils'
 import { formatTokens } from '../action-infos/util'
 
 const { Spacing } = SizesAndSpaces
 
 type Props = {
   symbol: string
-  input: number
-  userBalance: number | undefined
-  debt: number | undefined
+  input: PreciseNumber
+  userBalance: PreciseNumber | undefined
+  debt: PreciseNumber | undefined
 }
 
 export const AlertRepayBalanceTooHigh = ({ symbol, input, userBalance, debt }: Props) => {

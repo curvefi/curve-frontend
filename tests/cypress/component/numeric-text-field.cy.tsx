@@ -1,19 +1,27 @@
 import React, { useState } from 'react'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
+import { type PreciseNumber, toPrecise } from '@ui-kit/utils'
 
 function TestComponent({ initialValue = 5, max }: { initialValue?: number; max?: number }) {
-  const [value, setValue] = useState<number | undefined>(initialValue)
-  const [tempValue, setTempValue] = useState<number | undefined>(initialValue)
+  const initial = toPrecise(initialValue)
+  const [value, setValue] = useState<PreciseNumber | undefined>(initial)
+  const [tempValue, setTempValue] = useState<PreciseNumber | undefined>(initial)
 
   return (
     <>
-      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} min={-Infinity} max={max} />
+      <NumericTextField
+        value={value}
+        onBlur={setValue}
+        onChange={setTempValue}
+        min={toPrecise(-Infinity)}
+        max={toPrecise(max)}
+      />
       <div>
-        Comitted value: <span data-testid="state-value">{value}</span>
+        Comitted value: <span data-testid="state-value">{value?.number}</span>
       </div>
 
       <div>
-        Temp value: <span data-testid="state-temp-value">{tempValue}</span>
+        Temp value: <span data-testid="state-temp-value">{tempValue?.number}</span>
       </div>
     </>
   )

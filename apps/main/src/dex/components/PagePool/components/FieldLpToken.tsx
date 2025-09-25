@@ -4,7 +4,7 @@ import { formatNumber } from '@ui/utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { type PreciseNumber, stringNumber, ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 const FieldLpToken = ({
   amount,
@@ -24,7 +24,7 @@ const FieldLpToken = ({
   handleAmountChange: (val: string) => void
 }) => {
   const [releaseChannel] = useReleaseChannel()
-  const onBalance = useCallback((val?: number) => handleAmountChange(`${val ?? ''}`), [handleAmountChange])
+  const onBalance = useCallback((val?: PreciseNumber) => handleAmountChange(stringNumber(val)), [handleAmountChange])
 
   const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
 
@@ -57,12 +57,12 @@ const FieldLpToken = ({
       disabled={disabled}
       isError={hasError}
       maxBalance={{
-        balance: stringToNumber(balance),
+        balance: stringToPrecise(balance),
         symbol: t`LP Tokens`,
         showSlider: false,
         loading: balanceLoading,
       }}
-      balance={stringToNumber(amount)}
+      balance={stringToPrecise(amount)}
       onBalance={onBalance}
     />
   )

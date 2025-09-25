@@ -10,6 +10,7 @@ export * from './network'
 export * from './number'
 export * from './searchText'
 export * from './mui'
+export * from './precise-number'
 
 export enum ReleaseChannel {
   Beta = 'Beta',

@@ -9,17 +9,18 @@ import Stack from '@mui/material/Stack'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { PreciseNumber } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketBorrowRateTooltipContentProps = {
   marketType: LlamaMarketType
-  borrowRate: number | null | undefined
-  totalBorrowRate: number | null | undefined
-  totalAverageBorrowRate: number | null | undefined
-  averageRate: number | null | undefined
+  borrowRate: PreciseNumber | null | undefined
+  totalBorrowRate: PreciseNumber | null | undefined
+  totalAverageBorrowRate: PreciseNumber | null | undefined
+  averageRate: PreciseNumber | null | undefined
   periodLabel: string // e.g. "7D", "30D"
   extraRewards: PoolRewards[]
-  rebasingYield: number | null | undefined
+  rebasingYield: PreciseNumber | null | undefined
   collateralSymbol: string | null | undefined
   isLoading?: boolean
 }

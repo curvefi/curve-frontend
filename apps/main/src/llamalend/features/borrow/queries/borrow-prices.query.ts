@@ -2,6 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { type PreciseNumber, stringNumber, toPrecise, Zero } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../types'
 import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
@@ -10,17 +11,17 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 type BorrowPricesReceiveQuery = BorrowFormQuery
 type BorrowPricesReceiveParams = FieldsOf<BorrowPricesReceiveQuery>
 
-type BorrowPricesResult = [number, number]
+type BorrowPricesResult = [PreciseNumber, PreciseNumber]
 
-const convertNumbers = (prices: string[]): BorrowPricesResult => [+prices[0], +prices[1]]
+const convertNumbers = ([first, second]: string[]): BorrowPricesResult => [toPrecise(first), toPrecise(second)]
 
 export const { useQuery: useBorrowPrices } = queryFactory({
   queryKey: ({
     chainId,
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = Zero,
+    userCollateral = Zero,
+    debt = Zero,
     leverageEnabled,
     range,
   }: BorrowPricesReceiveParams) =>
@@ -35,20 +36,36 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = Zero,
+    userCollateral = Zero,
+    debt = Zero,
     leverageEnabled,
     range,
   }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
     const market = getLlamaMarket(poolId)
     return !leverageEnabled
-      ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
+      ? convertNumbers(await market.createLoanPrices(stringNumber(userCollateral), stringNumber(debt), range))
       : market instanceof LendMarketTemplate
-        ? convertNumbers(await market.leverage.createLoanPrices(userCollateral, userBorrowed, debt, range))
+        ? convertNumbers(
+            await market.leverage.createLoanPrices(
+              stringNumber(userCollateral),
+              stringNumber(userBorrowed),
+              stringNumber(debt),
+              range,
+            ),
+          )
         : market.leverageV2.hasLeverage()
-          ? convertNumbers(await market.leverageV2.createLoanPrices(userCollateral, userBorrowed, debt, range))
-          : convertNumbers(await market.leverage.createLoanPrices(userCollateral, debt, range))
+          ? convertNumbers(
+              await market.leverageV2.createLoanPrices(
+                stringNumber(userCollateral),
+                stringNumber(userBorrowed),
+                stringNumber(debt),
+                range,
+              ),
+            )
+          : convertNumbers(
+              await market.leverage.createLoanPrices(stringNumber(userCollateral), stringNumber(debt), range),
+            )
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

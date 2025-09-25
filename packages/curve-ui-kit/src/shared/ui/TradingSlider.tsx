@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CLASS_BORDERLESS, SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { fromPrecise, toPrecise } from '@ui-kit/utils'
 import { NumericTextField } from './NumericTextField'
 
 const { Spacing } = SizesAndSpaces
@@ -56,11 +57,11 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       placeholder="0"
       size="tiny"
       variant="standard"
-      value={percentage}
-      min={0}
-      max={100}
-      onChange={(newPercentage) => onChange?.(newPercentage)}
-      onBlur={(newPercentage) => onCommit?.(newPercentage)}
+      value={toPrecise(percentage)}
+      min={toPrecise(0)}
+      max={toPrecise(100)}
+      onChange={(newPercentage) => onChange?.(fromPrecise(newPercentage))}
+      onBlur={(newPercentage) => onCommit?.(fromPrecise(newPercentage))}
       disabled={disabled}
       slotProps={{
         input: {

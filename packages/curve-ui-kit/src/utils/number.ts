@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js'
+import { type PreciseNumber, toPrecise } from '@ui-kit/utils/precise-number'
 import { getUnitOptions, type Unit } from './units'
 
 // Sometimes API returns overflowed USD values. Don't show them!
@@ -21,9 +23,9 @@ const LOCALE = 'en-US'
  * log10Exp(123) // Returns 0 (less than 1000)
  * log10Exp(-1000000) // Returns 2 (uses absolute value)
  */
-export function log10Exp(value: number): number {
-  return Math.floor(Math.log10(Math.abs(value)) / 3)
-}
+export const log10Exp = (value: PreciseNumber): PreciseNumber =>
+  // BigNumber.js doesn't support logarithms, use normal numbers for now
+  ({ number: Math.floor(Math.log10(Math.abs(+value.number)) / 3).toString() })
 
 /**
  * Returns the appropriate unit suffix for a given number value.
@@ -40,16 +42,14 @@ export function log10Exp(value: number): number {
  * scaleSuffix(-1000000) // Returns 'm'
  * scaleSuffix(0) // Returns ''
  */
-export function scaleSuffix(value: number): string {
+export function scaleSuffix(value: PreciseNumber): string {
   const units = ['', 'k', 'm', 'b', 't']
   const exp = log10Exp(value)
 
   // Handle NaN case
-  if (isNaN(exp)) return ''
-
-  const index = Math.max(0, Math.min(units.length - 1, exp))
-
-  return units[index]
+  if (exp.number == 'NaN') return ''
+  const index = BigNumber.max(0, BigNumber.min(units.length - 1, exp.number))
+  return units[index.toNumber()]
 }
 
 /**
@@ -61,12 +61,11 @@ export function scaleSuffix(value: number): string {
  * abbreviateNumber(2500000000) // Returns 2.5 (goes with suffix "b")
  * abbreviateNumber(500) // Returns 500 (goes with suffix "")
  */
-export function abbreviateNumber(value: number): number {
-  const exp = log10Exp(value) * 3
+export function abbreviateNumber(value: PreciseNumber): PreciseNumber {
+  const exp = new BigNumber(log10Exp(value).number).times(3)
   // Only apply the scaling if exp is positive
-  value /= exp > 0 ? 10 ** exp : 1
-
-  return value
+  const result = new BigNumber(value.number).div(exp.isPositive() ? BigNumber(10).exponentiatedBy(exp) : 1)
+  return { number: result.toString() }
 }
 
 /**
@@ -101,18 +100,18 @@ const formatterReset = { style: undefined, currency: undefined, notation: undefi
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
-  value: number,
+  value: PreciseNumber,
   { decimals = 2, trailingZeroDisplay = 'stripIfInteger', ...options }: Partial<NumberFormatOptions> = {},
 ): string => {
-  if (isNaN(value)) return 'NaN'
-  if (value === Infinity) return '∞'
-  if (value === -Infinity) return '-∞'
-  if (value === 0) return '0'
+  const number = new BigNumber(value.number)
+  if (number.isNaN()) return 'NaN'
+  if (!number.isFinite()) return number.isPositive() ? '∞' : '-∞'
+  if (number.isZero()) return '0'
 
-  const absValue = Math.abs(value)
-  if (absValue > 0 && absValue < 0.00001) return value > 0 ? '<0.00001' : '>-0.00001'
+  const absValue = number.abs()
+  if (absValue.isPositive() && absValue.lt(0.00001)) return number.isPositive() ? '<0.00001' : '>-0.00001'
 
-  const formatted = value.toLocaleString(LOCALE, {
+  const formatted = number.toNumber().toLocaleString(LOCALE, {
     minimumFractionDigits: Math.min(decimals, options.maximumFractionDigits ?? Infinity),
     maximumFractionDigits: decimals,
     trailingZeroDisplay,
@@ -132,8 +131,8 @@ export const defaultNumberFormatter = (
    * - formatNumber(1.0001, { decimals: 2 }) would show "1.00" but we want "1.0001"
    * - formatNumber(1.0001, { decimals: 0 }) would show "1" but we want "1.0001"
    */
-  if (value !== 0 && /^-?[01](?:\.0+)?$/.test(formatted)) {
-    return value.toLocaleString(LOCALE, {
+  if (!number.isZero() && /^-?[01](?:\.0+)?$/.test(formatted)) {
+    return number.toNumber().toLocaleString(LOCALE, {
       maximumSignificantDigits: 6,
       ...options,
       ...formatterReset,
@@ -164,7 +163,7 @@ export type NumberFormatOptions = {
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
   /** Optional formatter for value */
-  formatter?: (value: number) => string
+  formatter?: (value: PreciseNumber) => string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation'>
 
 /**
@@ -193,14 +192,14 @@ export type NumberFormatOptions = {
  * - Logs a warning to console when USD overflow occurs
  * - Uses default formatting options when not specified
  */
-export const decomposeNumber = (value: number, options: NumberFormatOptions): DecomposedNumber => {
+export const decomposeNumber = (value: PreciseNumber, options: NumberFormatOptions): DecomposedNumber => {
   const { abbreviate, formatter, unit } = options
   const { symbol = '', position = 'suffix' } = getUnitOptions(unit) ?? {}
 
   // Check for USD overflow
-  const hasOverflowError = symbol === '$' && value > MAX_USD_VALUE
+  const hasOverflowError = symbol === '$' && +value.number > MAX_USD_VALUE
   if (hasOverflowError) {
-    console.warn(`USD value is too large: ${value}`)
+    console.warn(`USD value is too large: ${value.number}`)
 
     return {
       prefix: '',
@@ -251,20 +250,8 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
  * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.0000"
  */
-export const formatNumber = (value: number, options: NumberFormatOptions) => {
-  const decomposed = decomposeNumber(value, options)
-
-  return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
-}
-
-/**
- * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
- */
-export const stringToNumber = (value: string | undefined | null): number | undefined => {
-  if (!['', null, undefined, '-', '?'].includes(value)) {
-    const number = Number(value)
-    if (Number.isFinite(number)) {
-      return number
-    }
-  }
+export const formatNumber = (value: number | PreciseNumber, options: NumberFormatOptions) => {
+  const nr = typeof value == 'number' ? toPrecise(value)! : value
+  const { mainValue, prefix, scaleSuffix, suffix } = decomposeNumber(nr, options)
+  return [prefix, mainValue, scaleSuffix, suffix].filter(Boolean).join('')
 }

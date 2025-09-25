@@ -49,7 +49,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -341,13 +341,12 @@ const LoanDeleverage = ({
           disabled={disable}
           maxBalance={{
             loading: userWalletBalancesLoading,
-            balance: stringToNumber(userState?.collateral),
+            balance: stringToPrecise(userState?.collateral),
             symbol: collateralName,
             showSlider: false,
-            ...(collateralUsdRate != null &&
-              userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
+            notionalValueUsd: multiplyPrecise(collateralUsdRate, userState.collateral),
           }}
-          balance={stringToNumber(formValues.collateral)}
+          balance={stringToPrecise(formValues.collateral)}
           tokenSelector={
             <TokenLabel
               blockchainId={network.id}

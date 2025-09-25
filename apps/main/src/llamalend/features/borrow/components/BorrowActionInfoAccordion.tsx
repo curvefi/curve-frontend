@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { formatPercent } from '@/llamalend/format.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -11,6 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { type PreciseNumber, stringNumber } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
@@ -39,7 +41,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   collateralToken: Token | undefined
   tooMuchDebt: boolean
   networks: NetworkDict<ChainId>
-  onSlippageChange: (newSlippage: string) => void
+  onSlippageChange: (newSlippage: PreciseNumber) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
@@ -116,8 +118,8 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
               <SlippageSettings
                 buttonSize="extraSmall"
                 buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
-                maxSlippage={`${slippage}`}
-                onSave={onSlippageChange}
+                maxSlippage={stringNumber(slippage)}
+                onSave={useCallback((number) => onSlippageChange({ number }), [onSlippageChange])}
               />
             }
             testId="borrow-slippage"

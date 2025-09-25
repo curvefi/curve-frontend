@@ -41,7 +41,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, PreciseNumber, ReleaseChannel, stringNumber, stringToPrecise } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -335,11 +335,13 @@ const Swap = ({
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const setFromAmount = useCallback(
-    (value?: number) => updateFormValues({ isFrom: true, fromAmount: `${value ?? ''}`, toAmount: '' }, null, null),
+    (value?: PreciseNumber) =>
+      updateFormValues({ isFrom: true, fromAmount: stringNumber(value), toAmount: '' }, null, null),
     [updateFormValues],
   )
   const setToAmount = useCallback(
-    (value?: number) => updateFormValues({ isFrom: false, toAmount: `${value ?? ''}`, fromAmount: '' }, null, null),
+    (value?: PreciseNumber) =>
+      updateFormValues({ isFrom: false, toAmount: stringNumber(value), fromAmount: '' }, null, null),
     [updateFormValues],
   )
 
@@ -421,7 +423,7 @@ const Swap = ({
             <LargeTokenInput
               name="fromAmount"
               onBalance={setFromAmount}
-              balance={stringToNumber(formValues.fromAmount)}
+              balance={stringToPrecise(formValues.fromAmount)}
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
@@ -453,12 +455,11 @@ const Swap = ({
               })}
               disabled={isDisabled}
               maxBalance={{
-                balance: stringToNumber(userFromBalance),
+                balance: stringToPrecise(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
                 showSlider: false,
-                ...(toUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
+                notionalValueUsd: multiplyPrecise(userFromBalance, fromUsdRate),
                 ...(formValues.fromAddress.toLowerCase() === ethAddress && {
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
@@ -546,7 +547,7 @@ const Swap = ({
           <LargeTokenInput
             name="toAmount"
             onBalance={setToAmount}
-            balance={stringToNumber(formValues.toAmount)}
+            balance={stringToPrecise(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
               <TokenSelector
@@ -576,12 +577,11 @@ const Swap = ({
               />
             }
             maxBalance={{
-              balance: stringToNumber(userToBalance),
+              balance: stringToPrecise(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
               showSlider: false,
-              ...(toUsdRate != null &&
-                userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
+              notionalValueUsd: multiplyPrecise(userToBalance, toUsdRate),
             }}
           />
         )}

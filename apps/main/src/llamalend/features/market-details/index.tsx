@@ -8,7 +8,8 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType, type ExtraIncentive } from '@ui-kit/types/market'
-import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils/number'
+import { abbreviateNumber, fromPrecise, multiplyPrecise, PreciseNumber, scaleSuffix, toPrecise } from '@ui-kit/utils'
+import { dividePrecise } from '@ui-kit/utils/precise-number'
 import { AvailableLiquidityTooltip } from './tooltips/AvailableLiquidityTooltip'
 import { CollateralTokenTooltip } from './tooltips/CollateralTokenTooltip'
 import { DebtTokenTooltip } from './tooltips/DebtTokenTooltip'
@@ -19,60 +20,60 @@ import { UtilizationTooltip } from './tooltips/UtilizationTooltip'
 const { Spacing } = SizesAndSpaces
 
 type Collateral = {
-  total: number | undefined | null
-  totalUsdValue: number | undefined | null
-  symbol: string | undefined | null
-  tokenAddress: string | undefined | null
-  usdRate: number | undefined | null
+  total: PreciseNumber | undefined
+  totalUsdValue: PreciseNumber | undefined
+  symbol: string | undefined
+  tokenAddress: string | undefined
+  usdRate: PreciseNumber | undefined
   loading: boolean
 }
 type BorrowToken = {
-  total?: number | undefined | null
-  totalUsdValue?: number | undefined | null
-  symbol: string | undefined | null
-  tokenAddress: string | undefined | null
-  usdRate: number | undefined | null
+  total?: PreciseNumber | undefined
+  totalUsdValue?: PreciseNumber | undefined
+  symbol: string | undefined
+  tokenAddress: string | undefined
+  usdRate: PreciseNumber | undefined
   loading: boolean
 }
 type BorrowAPY = {
-  rate: number | undefined | null
-  averageRate: number | undefined | null
+  rate: PreciseNumber | undefined
+  averageRate: PreciseNumber | undefined
   averageRateLabel: string
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  rebasingYield: PreciseNumber | undefined
+  averageRebasingYield: PreciseNumber | undefined
   // total = rate - rebasingYield
-  totalBorrowRate: number | null
-  totalAverageBorrowRate: number | null
+  totalBorrowRate: PreciseNumber | undefined
+  totalAverageBorrowRate: PreciseNumber | undefined
   extraRewards: PoolRewards[]
   loading: boolean
 }
 type SupplyAPY = {
-  rate: number | undefined | null
-  averageRate: number | undefined | null
+  rate: PreciseNumber | undefined
+  averageRate: PreciseNumber | undefined
   averageRateLabel: string
-  supplyAprCrvMinBoost: number | undefined | null
-  supplyAprCrvMaxBoost: number | undefined | null
-  averageSupplyAprCrvMinBoost: number | undefined | null
-  averageSupplyAprCrvMaxBoost: number | undefined | null
-  rebasingYield: number | null
-  averageRebasingYield: number | null
+  supplyAprCrvMinBoost: PreciseNumber | undefined
+  supplyAprCrvMaxBoost: PreciseNumber | undefined
+  averageSupplyAprCrvMinBoost: PreciseNumber | undefined
+  averageSupplyAprCrvMaxBoost: PreciseNumber | undefined
+  rebasingYield: PreciseNumber | undefined
+  averageRebasingYield: PreciseNumber | undefined
   // total = rate - rebasingYield + combined extra incentives + boosted (min or max) yield
-  totalSupplyRateMinBoost: number | null
-  totalSupplyRateMaxBoost: number | null
-  totalAverageSupplyRateMinBoost: number | null
-  totalAverageSupplyRateMaxBoost: number | null
+  totalSupplyRateMinBoost: PreciseNumber | undefined
+  totalSupplyRateMaxBoost: PreciseNumber | undefined
+  totalAverageSupplyRateMinBoost: PreciseNumber | undefined
+  totalAverageSupplyRateMaxBoost: PreciseNumber | undefined
   extraIncentives: ExtraIncentive[]
-  averageTotalExtraIncentivesApr: number | undefined | null
+  averageTotalExtraIncentivesApr: PreciseNumber | undefined
   extraRewards: PoolRewards[]
   loading: boolean
 }
 type AvailableLiquidity = {
-  value: number | undefined | null
-  max: number | undefined | null
+  value: PreciseNumber | undefined
+  max: PreciseNumber | undefined
   loading: boolean
 }
 type MaxLeverage = {
-  value: number | undefined | null
+  value: PreciseNumber | undefined
   loading: boolean
 }
 
@@ -87,7 +88,7 @@ export type MarketDetailsProps = {
   marketType: LlamaMarketType
 }
 
-const formatLiquidity = (value: number) =>
+const formatLiquidity = (value: PreciseNumber) =>
   `${formatNumber(abbreviateNumber(value), { ...FORMAT_OPTIONS.USD })}${scaleSuffix(value).toUpperCase()}`
 
 const TooltipOptions = {
@@ -101,6 +102,14 @@ const MarketTypeSuffix: Record<LlamaMarketType, string> = {
   [LlamaMarketType.Mint]: t`(Mint Markets)`,
 }
 
+function calculateUtilization({ max, value }: AvailableLiquidity) {
+  if (value == null || !max) {
+    return [undefined, undefined]
+  }
+  const ratio = toPrecise(fromPrecise(max) - fromPrecise(value))
+  return [multiplyPrecise(dividePrecise(ratio, max), 100), `${formatLiquidity(ratio)}/${formatLiquidity(max)}`] as const
+}
+
 export const MarketDetails = ({
   collateral,
   borrowToken,
@@ -111,14 +120,7 @@ export const MarketDetails = ({
   blockchainId,
   marketType,
 }: MarketDetailsProps) => {
-  const utilization =
-    availableLiquidity?.value && availableLiquidity.max
-      ? ((availableLiquidity.max - availableLiquidity.value) / availableLiquidity.max) * 100
-      : undefined
-  const utilizationBreakdown =
-    availableLiquidity?.value && availableLiquidity.max
-      ? `${formatLiquidity(availableLiquidity.max - availableLiquidity.value)}/${formatLiquidity(availableLiquidity.max)}`
-      : undefined
+  const [utilization, utilizationBreakdown] = calculateUtilization(availableLiquidity)
 
   return (
     <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

@@ -11,7 +11,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { CRV_ADDRESS, type PreciseNumber, stringNumber, ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 const FieldLockedAmt = ({
   curve,
@@ -47,7 +47,7 @@ const FieldLockedAmt = ({
 
   const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback(
-    (balance: number | undefined) => handleInpLockedAmt(`${balance ?? ''}`),
+    (balance: PreciseNumber | undefined) => handleInpLockedAmt(stringNumber(balance)),
     [handleInpLockedAmt],
   )
   return releaseChannel == ReleaseChannel.Legacy ? (
@@ -86,7 +86,7 @@ const FieldLockedAmt = ({
     <LargeTokenInput
       name="lockedAmt"
       disabled={disabled}
-      balance={stringToNumber(lockedAmt)}
+      balance={stringToPrecise(lockedAmt)}
       isError={!!lockedAmtError}
       message={
         !!crv && lockedAmtError ? (
@@ -106,7 +106,7 @@ const FieldLockedAmt = ({
       }
       onBalance={onBalance}
       maxBalance={{
-        balance: stringToNumber(crv),
+        balance: stringToPrecise(crv),
         loading: haveSigner && crv === '',
         showSlider: false,
         symbol: 'CRV',

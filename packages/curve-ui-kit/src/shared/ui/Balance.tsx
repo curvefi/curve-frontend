@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, SxProps } from '@ui-kit/utils'
+import { formatNumber, type PreciseNumber, SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -52,7 +52,7 @@ const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId
 
 type BalanceTextProps = {
   symbol: string
-  balance?: number
+  balance?: PreciseNumber
   loading?: boolean
 }
 
@@ -88,9 +88,9 @@ export type Props = {
    */
   max: 'balance' | 'button' | 'off'
   /** The token balance amount (optional, in case of loading) */
-  balance?: number
+  balance?: PreciseNumber
   /** The USD value of the balance (optional) */
-  notionalValueUsd?: number
+  notionalValueUsd?: PreciseNumber
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
   sx?: SxProps

@@ -1,4 +1,4 @@
-import { abbreviateNumber, scaleSuffix } from '@ui-kit/utils'
+import { abbreviateNumber, fromPrecise, scaleSuffix } from '@ui-kit/utils'
 import type { TokenAmount } from './types'
 
 /**
@@ -47,7 +47,7 @@ export const formatTokens = (tokens: TokenAmount | TokenAmount[], decimals: numb
   (Array.isArray(tokens) ? tokens : [tokens])
     .map((x) => {
       const amountAbbreviated = abbreviateNumber(x.amount)
-      const amountRounded = amountAbbreviated.toLocaleString(undefined, {
+      const amountRounded = fromPrecise(amountAbbreviated).toLocaleString(undefined, {
         minimumFractionDigits: 0,
         maximumFractionDigits: decimals,
       })

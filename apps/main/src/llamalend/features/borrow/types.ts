@@ -2,18 +2,19 @@ import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfac
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
+import type { PreciseNumber } from '@ui-kit/utils'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
 export type CompleteBorrowForm = {
-  userCollateral: number
-  userBorrowed: number // currently hidden and always 0
-  debt: number
+  userCollateral: PreciseNumber
+  userBorrowed: PreciseNumber // currently hidden and always 0
+  debt: PreciseNumber
   range: number
-  slippage: number
+  slippage: PreciseNumber
   leverageEnabled: boolean
 }
 
-type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+type CalculatedValues = { maxDebt: PreciseNumber | undefined; maxCollateral: PreciseNumber | undefined }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues

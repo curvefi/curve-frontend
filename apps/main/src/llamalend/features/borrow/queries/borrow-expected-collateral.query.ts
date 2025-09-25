@@ -1,17 +1,17 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { assert } from '@ui-kit/utils'
+import { assert, fromPrecise, type PreciseNumber, stringNumber, toPrecise, Zero } from '@ui-kit/utils'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowExpectedCollateralResult = {
-  totalCollateral: number
-  leverage: number
-  userCollateral: number
-  collateralFromUserBorrowed: number | undefined
-  collateralFromDebt: number | undefined
-  avgPrice: number | undefined
+  totalCollateral: PreciseNumber
+  leverage: PreciseNumber
+  userCollateral: PreciseNumber
+  collateralFromUserBorrowed: PreciseNumber | undefined
+  collateralFromDebt: PreciseNumber | undefined
+  avgPrice: PreciseNumber | undefined
 }
 
 const convertNumbers = ({
@@ -29,16 +29,16 @@ const convertNumbers = ({
   collateralFromDebt?: string
   avgPrice?: string
 }): BorrowExpectedCollateralResult => ({
-  totalCollateral: +totalCollateral,
-  leverage: +leverage,
-  userCollateral: +userCollateral,
-  avgPrice: avgPrice == null ? undefined : +avgPrice,
-  collateralFromUserBorrowed: collateralFromUserBorrowed == null ? undefined : +collateralFromUserBorrowed,
-  collateralFromDebt: collateralFromDebt == null ? undefined : +collateralFromDebt,
+  totalCollateral: toPrecise(totalCollateral),
+  leverage: toPrecise(leverage),
+  userCollateral: toPrecise(userCollateral),
+  avgPrice: toPrecise(avgPrice),
+  collateralFromUserBorrowed: toPrecise(collateralFromUserBorrowed),
+  collateralFromDebt: toPrecise(collateralFromDebt),
 })
 
 export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCollateralQueryKey } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt, slippage }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = Zero, userCollateral = Zero, debt, slippage }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'createLoanExpectedCollateral',
@@ -49,26 +49,28 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
+    userBorrowed = Zero,
+    userCollateral = Zero,
     debt,
     slippage,
   }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
     const market = getLlamaMarket(poolId)
+    const [collateral, borrowed, userDebt] = [userCollateral, userBorrowed, debt].map(stringNumber)
+    const slip = fromPrecise(slippage)
     if (market instanceof LendMarketTemplate) {
-      return convertNumbers(
-        await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, slippage),
-      )
+      return convertNumbers(await market.leverage.createLoanExpectedCollateral(collateral, borrowed, userDebt, slip))
     }
     if (market.leverageV2.hasLeverage()) {
-      return convertNumbers(
-        await market.leverageV2.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, slippage),
-      )
+      return convertNumbers(await market.leverageV2.createLoanExpectedCollateral(collateral, borrowed, userDebt, slip))
     }
 
-    assert(userBorrowed == 0, `userBorrowed must be 0 for non-leverage mint markets`)
-    const { collateral, leverage, routeIdx } = await market.leverage.createLoanCollateral(userCollateral, debt)
-    return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
+    assert(!fromPrecise(userBorrowed), `userBorrowed must be 0 for non-leverage mint markets`)
+    const {
+      collateral: totalCollateral,
+      leverage,
+      routeIdx,
+    } = await market.leverage.createLoanCollateral(collateral, userDebt)
+    return convertNumbers({ userCollateral: collateral, leverage, totalCollateral })
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

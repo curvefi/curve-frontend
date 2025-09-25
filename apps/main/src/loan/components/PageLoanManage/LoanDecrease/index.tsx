@@ -35,7 +35,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -115,7 +115,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         ...useStore.getState().loanDecrease.formValues,
         debt,
         debtError: '',
-        isFullRepay: stringToNumber(userWalletBalances.stablecoin) == value,
+        isFullRepay: stringToPrecise(userWalletBalances.stablecoin) == value,
       })
     },
     [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
@@ -300,7 +300,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           disabled={disable || formValues.isFullRepay}
           maxBalance={{
             loading: userWalletBalancesLoading,
-            balance: stringToNumber(userWalletBalances.stablecoin),
+            balance: stringToPrecise(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
             showSlider: false,
             ...(stablecoinUsdRate != null &&
@@ -308,7 +308,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
                 notionalValueUsd: stablecoinUsdRate * +userWalletBalances.stablecoin,
               }),
           }}
-          balance={stringToNumber(formValues.debt)}
+          balance={stringToPrecise(formValues.debt)}
           tokenSelector={
             <TokenLabel
               blockchainId={network.id}

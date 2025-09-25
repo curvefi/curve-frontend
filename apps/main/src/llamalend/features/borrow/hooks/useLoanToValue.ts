@@ -1,5 +1,7 @@
+import { BigNumber } from 'bignumber.js'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { multiplyPrecise, type PreciseNumber, stringNumber } from '@ui-kit/utils'
 import type { Token } from '../types'
 
 export const useLoanToValue = ({
@@ -9,12 +11,14 @@ export const useLoanToValue = ({
   userCollateral,
 }: {
   chainId: IChainId
-  debt: number | undefined
-  userCollateral: number | undefined
+  debt: PreciseNumber | undefined
+  userCollateral: PreciseNumber | undefined
   collateralToken: Token | undefined
 }) => {
   const tokenAddress = collateralToken?.address
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId, tokenAddress })
-  const collateralValue = collateralUsdRate != null && userCollateral != null && userCollateral * collateralUsdRate
-  return collateralValue && debt != null ? (debt / collateralValue) * 100 : null
+  const collateralValue = multiplyPrecise(collateralUsdRate, userCollateral)
+  return collateralValue && debt != null
+    ? { number: new BigNumber(stringNumber(debt)).div(collateralValue.number).times(100).toString() }
+    : null
 }

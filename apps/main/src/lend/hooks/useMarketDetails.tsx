@@ -10,6 +10,7 @@ import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { fromPrecise, multiplyPrecise, negate, sumPrecise, toPrecise } from '@ui-kit/utils'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 
 const { sum } = lodash
@@ -40,7 +41,7 @@ export const useMarketDetails = ({
     blockchainId: networks[chainId]?.id as Chain,
     contractAddress: controller as Address,
     agg: 'day',
-    limit: 30, // fetch last 30 days for 30 day average calcs
+    limit: 30, // fetch last 30 days for 30-day average
   })
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -63,31 +64,25 @@ export const useMarketDetails = ({
   } = useMemo(
     () =>
       calculateAverageRates(lendingSnapshots, averageMultiplier, {
-        borrowApy: ({ borrowApy }) => Number(borrowApy) * 100,
-        lendApy: ({ lendApy }) => Number(lendApy) * 100,
-        borrowRebasingYield: ({ collateralToken }) => collateralToken.rebasingYield,
-        supplyRebasingYield: ({ borrowedToken }) => borrowedToken.rebasingYield,
-        averageSupplyAprCrvMinBoost: ({ lendAprCrv0Boost }) => lendAprCrv0Boost,
-        averageSupplyAprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => lendAprCrvMaxBoost,
-        averageTotalExtraIncentivesApr: ({ extraRewardApr }) => extraRewardApr.reduce((acc, r) => acc + r.rate, 0),
-      }) ?? {
-        borrowApy: null,
-        lendApy: null,
-        borrowRebasingYield: null,
-        supplyRebasingYield: null,
-        averageSupplyAprCrvMinBoost: null,
-        averageSupplyAprCrvMaxBoost: null,
-        averageTotalExtraIncentivesApr: null,
-      },
+        borrowApy: ({ borrowApy }) => multiplyPrecise(borrowApy, 100),
+        lendApy: ({ lendApy }) => multiplyPrecise(lendApy, 100),
+        borrowRebasingYield: ({ collateralToken }) => toPrecise(collateralToken.rebasingYield),
+        supplyRebasingYield: ({ borrowedToken }) => toPrecise(borrowedToken.rebasingYield),
+        averageSupplyAprCrvMinBoost: ({ lendAprCrv0Boost }) => toPrecise(lendAprCrv0Boost),
+        averageSupplyAprCrvMaxBoost: ({ lendAprCrvMaxBoost }) => toPrecise(lendAprCrvMaxBoost),
+        averageTotalExtraIncentivesApr: ({ extraRewardApr }) => sumPrecise(...extraRewardApr.map((r) => r.rate)),
+      }) ?? {},
     [lendingSnapshots],
   )
 
-  const borrowApy = rates?.borrowApy ?? marketRate?.rates?.borrowApy
-  const supplyApy = rates?.lendApy ?? marketRate?.rates?.lendApy
-  const supplyAprCrvMinBoost = crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost ?? 0
-  const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
-  const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
-  const borrowRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
+  const borrowApy = toPrecise(rates?.borrowApy ?? marketRate?.rates?.borrowApy)
+  const supplyApy = toPrecise(rates?.lendApy ?? marketRate?.rates?.lendApy)
+  const supplyAprCrvMinBoost = toPrecise(crvRates?.[0] ?? lendingSnapshots?.[0]?.lendAprCrv0Boost)
+  const supplyAprCrvMaxBoost = toPrecise(crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost)
+  const collateralRebasingYield = toPrecise(
+    lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield,
+  ) // take only most recent rebasing yield
+  const borrowRebasingYield = toPrecise(lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield) // take only most recent rebasing yield
   const campaignRewards =
     campaigns && vault && controller
       ? [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
@@ -95,73 +90,79 @@ export const useMarketDetails = ({
   const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
   const totalSupplyRateMinBoost =
     supplyApy == null
-      ? null
-      : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMinBoost ?? 0)
+      ? undefined
+      : sumPrecise(supplyApy, borrowRebasingYield, extraIncentivesTotalApr, supplyAprCrvMinBoost)
   const totalSupplyRateMaxBoost =
     supplyApy == null
-      ? null
-      : Number(supplyApy) + (borrowRebasingYield ?? 0) + extraIncentivesTotalApr + (supplyAprCrvMaxBoost ?? 0)
-  const totalAverageBorrowRate = averageBorrowApy == null ? null : averageBorrowApy - (averageBorrowRebasingYield ?? 0)
+      ? undefined
+      : sumPrecise(supplyApy, borrowRebasingYield, extraIncentivesTotalApr, supplyAprCrvMaxBoost)
+  const totalAverageBorrowRate = toPrecise(
+    averageBorrowApy == null ? undefined : fromPrecise(averageBorrowApy) - fromPrecise(averageBorrowRebasingYield ?? 0),
+  )
   const totalAverageSupplyRateMinBoost =
     averageLendApy == null
-      ? null
-      : averageLendApy +
-        (averageSupplyRebasingYield ?? 0) +
-        (averageTotalExtraIncentivesApr ?? 0) +
-        (averageSupplyAprCrvMinBoost ?? 0)
+      ? undefined
+      : sumPrecise(
+          averageLendApy,
+          averageSupplyRebasingYield,
+          averageTotalExtraIncentivesApr,
+          averageSupplyAprCrvMinBoost,
+        )
   const totalAverageSupplyRateMaxBoost =
     averageLendApy == null
-      ? null
-      : averageLendApy +
-        (averageSupplyRebasingYield ?? 0) +
-        (averageTotalExtraIncentivesApr ?? 0) +
-        (averageSupplyAprCrvMaxBoost ?? 0)
+      ? undefined
+      : sumPrecise(
+          averageLendApy,
+          averageSupplyRebasingYield,
+          averageTotalExtraIncentivesApr,
+          averageSupplyAprCrvMaxBoost,
+        )
 
   return {
     marketType: LlamaMarketType.Lend,
     blockchainId: networks[chainId]?.id as Chain,
     collateral: {
-      symbol: collateral_token?.symbol ?? null,
+      symbol: collateral_token?.symbol,
       tokenAddress: collateral_token?.address,
-      total: collateralAmount ?? null,
-      totalUsdValue: collateralAmount && collateralUsdRate ? collateralAmount * collateralUsdRate : null,
-      usdRate: collateralUsdRate ?? null,
+      total: collateralAmount,
+      totalUsdValue: multiplyPrecise(collateralAmount, collateralUsdRate),
+      usdRate: collateralUsdRate,
       loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || collateralUsdRateLoading,
     },
     borrowToken: {
-      symbol: borrowed_token?.symbol ?? null,
+      symbol: borrowed_token?.symbol,
       tokenAddress: borrowed_token?.address,
-      total: borrowedAmount ?? null,
-      totalUsdValue: borrowedAmount && borrowedUsdRate ? borrowedAmount * borrowedUsdRate : null,
-      usdRate: borrowedUsdRate ?? null,
+      total: borrowedAmount,
+      totalUsdValue: multiplyPrecise(borrowedAmount, borrowedUsdRate),
+      usdRate: borrowedUsdRate,
       loading: !llamma || isMarketDetailsLoading.marketCollateralAmounts || borrowedUsdRateLoading,
     },
     borrowAPY: {
-      rate: borrowApy != null ? Number(borrowApy) : null,
-      averageRate: averageBorrowApy ?? null,
+      rate: borrowApy,
+      averageRate: averageBorrowApy,
       averageRateLabel: averageMultiplierString,
-      rebasingYield: collateralRebasingYield ?? null,
-      averageRebasingYield: averageBorrowRebasingYield ?? null,
-      totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (collateralRebasingYield ?? 0),
+      rebasingYield: collateralRebasingYield,
+      averageRebasingYield: averageBorrowRebasingYield,
+      totalBorrowRate: borrowApy == null ? undefined : sumPrecise(borrowApy, negate(collateralRebasingYield)),
       totalAverageBorrowRate,
       extraRewards: campaignRewards,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     supplyAPY: {
-      rate: supplyApy != null ? Number(supplyApy) : null,
-      averageRate: averageLendApy ?? null,
+      rate: supplyApy,
+      averageRate: averageLendApy,
       averageRateLabel: averageMultiplierString,
       supplyAprCrvMinBoost,
       supplyAprCrvMaxBoost,
-      averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost ?? null,
-      averageSupplyAprCrvMaxBoost: averageSupplyAprCrvMaxBoost ?? null,
-      averageRebasingYield: averageSupplyRebasingYield ?? null,
-      averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
+      averageSupplyAprCrvMinBoost: averageSupplyAprCrvMinBoost,
+      averageSupplyAprCrvMaxBoost: averageSupplyAprCrvMaxBoost,
+      averageRebasingYield: averageSupplyRebasingYield,
+      averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr,
       totalSupplyRateMinBoost,
       totalSupplyRateMaxBoost,
       totalAverageSupplyRateMinBoost,
       totalAverageSupplyRateMaxBoost,
-      rebasingYield: borrowRebasingYield ?? null,
+      rebasingYield: borrowRebasingYield,
       extraIncentives: rewardsApr
         ? rewardsApr.map((r) => ({
             title: r.symbol,
@@ -174,15 +175,13 @@ export const useMarketDetails = ({
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     availableLiquidity: {
-      value: available ?? null,
-      max: cap ?? null,
+      value: available,
+      max: cap,
       loading: !llamma || isMarketDetailsLoading.marketCapAndAvailable,
     },
-    maxLeverage: maxLeverage
-      ? {
-          value: Number(maxLeverage),
-          loading: !llamma || isMarketDetailsLoading.marketMaxLeverage,
-        }
-      : undefined,
+    maxLeverage: maxLeverage && {
+      value: maxLeverage,
+      loading: !llamma || isMarketDetailsLoading.marketMaxLeverage,
+    },
   }
 }

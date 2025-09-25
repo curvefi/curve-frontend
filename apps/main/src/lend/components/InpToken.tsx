@@ -11,7 +11,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, type PreciseNumber, stringNumber, ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 const InpToken = ({
   id,
@@ -50,8 +50,8 @@ const InpToken = ({
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const [releaseChannel] = useReleaseChannel()
-  const onBalance = useCallback((val?: number) => handleInpChange(`${val ?? ''}`), [handleInpChange])
-  return releaseChannel != ReleaseChannel.Beta ? (
+  const onBalance = useCallback((val?: PreciseNumber) => handleInpChange(stringNumber(val)), [handleInpChange])
+  return releaseChannel == ReleaseChannel.Legacy ? (
     <Box grid gridRowGap={1}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -108,14 +108,14 @@ const InpToken = ({
       disabled={inpDisabled}
       maxBalance={{
         loading: inpLabelLoading,
-        balance: stringToNumber(tokenBalance),
+        balance: stringToPrecise(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
+        notionalValueUsd: multiplyPrecise(usdRate, tokenBalance),
         showSlider: false,
         maxTestId,
       }}
       label={inpTopLabel}
-      balance={stringToNumber(inpValue)}
+      balance={stringToPrecise(inpValue)}
       tokenSelector={
         <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }

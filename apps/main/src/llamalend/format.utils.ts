@@ -1,7 +1,7 @@
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, type PreciseNumber } from '@ui-kit/utils'
 
 /** Common percentage formatter across the board for most llamalend percentages */
-export const formatPercent = (value: number | null | undefined) =>
+export const formatPercent = (value: PreciseNumber | number | null | undefined) =>
   formatNumber(value || 0, {
     unit: 'percentage',
     abbreviate: true,

@@ -150,7 +150,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
               collateralToken={collateralToken}
               tooMuchDebt={tooMuchDebt}
               networks={networks}
-              onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
+              onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
             />
           </OutOfCardBox>
         </Stack>

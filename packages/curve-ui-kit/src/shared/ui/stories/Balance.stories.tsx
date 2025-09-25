@@ -1,10 +1,21 @@
+import type { ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { toPrecise } from '@ui-kit/utils'
 import { Balance } from '../Balance'
 
-const meta: Meta<typeof Balance> = {
+export const BalanceWrapper = ({
+  balance,
+  notionalValueUsd,
+  ...props
+}: Omit<ComponentProps<typeof Balance>, 'balance' | 'notionalValueUsd'> & {
+  balance: number
+  notionalValueUsd?: number
+}) => <Balance balance={toPrecise(balance)} notionalValueUsd={toPrecise(notionalValueUsd)} {...props} />
+
+const meta: Meta<typeof BalanceWrapper> = {
   title: 'UI Kit/Widgets/Balance',
-  component: Balance,
+  component: BalanceWrapper,
   argTypes: {
     symbol: {
       control: 'text',
@@ -45,7 +56,7 @@ const meta: Meta<typeof Balance> = {
   },
 }
 
-type Story = StoryObj<typeof Balance>
+type Story = StoryObj<typeof BalanceWrapper>
 
 export const Default: Story = {
   parameters: {

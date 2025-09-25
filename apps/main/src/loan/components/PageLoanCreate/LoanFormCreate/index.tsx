@@ -34,7 +34,7 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, type PreciseNumber, stringNumber, ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 const LoanCreate = ({
   collateralAlert,
@@ -123,10 +123,13 @@ const LoanCreate = ({
   )
 
   const onCollateralChanged = useCallback(
-    (val?: number) => handleInpChange('collateral', `${val ?? ''}`),
+    (val?: PreciseNumber) => handleInpChange('collateral', stringNumber(val)),
     [handleInpChange],
   )
-  const onDebtChanged = useCallback((val?: number) => handleInpChange('debt', `${val ?? ''}`), [handleInpChange])
+  const onDebtChanged = useCallback(
+    (val?: PreciseNumber) => handleInpChange('debt', stringNumber(val)),
+    [handleInpChange],
+  )
 
   const handleClickCreate = useCallback(
     async (
@@ -333,15 +336,12 @@ const LoanCreate = ({
             disabled={disabled}
             maxBalance={{
               loading: haveSigner && userWalletBalancesLoading,
-              balance: stringToNumber(userWalletBalances.collateral),
+              balance: stringToPrecise(userWalletBalances.collateral),
               symbol: llamma?.collateralSymbol,
               showSlider: false,
-              ...(collateralUsdRate != null &&
-                userWalletBalances.collateral != null && {
-                  notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
-                }),
+              notionalValueUsd: multiplyPrecise(collateralUsdRate, userWalletBalances.collateral),
             }}
-            balance={stringToNumber(formValues.collateral)}
+            balance={stringToPrecise(formValues.collateral)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}
@@ -396,14 +396,14 @@ const LoanCreate = ({
             disabled={disabled}
             maxBalance={{
               loading: !maxRecv,
-              balance: stringToNumber(maxRecv),
+              balance: stringToPrecise(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,
-              ...(stablecoinUsdRate != null && maxRecv && { notionalValueUsd: stablecoinUsdRate * +maxRecv }),
+              notionalValueUsd: multiplyPrecise(stablecoinUsdRate, maxRecv),
               showSlider: false,
               maxTestId: 'debtMax',
             }}
             label={t`Borrow amount:`}
-            balance={stringToNumber(formValues.debt)}
+            balance={stringToPrecise(formValues.debt)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}

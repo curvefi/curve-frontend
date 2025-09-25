@@ -11,11 +11,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import {
   copyToClipboard,
+  decomposeNumber,
   defaultNumberFormatter,
   formatNumber,
-  decomposeNumber,
   type NumberFormatOptions,
+  type PreciseNumber,
+  stringNumber,
   type SxProps,
+  toPrecise,
 } from '@ui-kit/utils'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
@@ -50,7 +53,7 @@ const MetricChangeSize = {
 export const SIZES = Object.keys(MetricSize) as (keyof typeof MetricSize)[]
 
 type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
-  value: number
+  value: PreciseNumber
   abbreviate?: boolean // Defaults to true
 }
 
@@ -87,7 +90,7 @@ function notionalsToString(notionals: Props['notional']) {
 }
 
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
-const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
+const formatChange = (value: number): string => defaultNumberFormatter(toPrecise(value)!, { decimals: 2 })
 
 type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testId'> & {
   size: NonNullable<Props['size']>
@@ -96,10 +99,9 @@ type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testI
 }
 
 const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, testId }: MetricValueProps) => {
-  const numberValue = useMemo(() => (typeof value === 'number' && isFinite(value) ? value : null), [value])
   const { color = 'textPrimary', abbreviate = true, ...formattingOptions } = valueOptions
   const { prefix, mainValue, scaleSuffix, suffix } =
-    numberValue === null ? {} : decomposeNumber(numberValue, { ...formattingOptions, abbreviate })
+    value == null ? {} : decomposeNumber(value, { ...formattingOptions, abbreviate })
 
   const fontVariant = MetricSize[size]
   const fontVariantUnit = MetricUnitSize[size]
@@ -112,7 +114,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
         onClick={copyValue}
         sx={copyValue && { cursor: 'pointer' }}
         {...tooltip}
-        title={tooltip?.title ?? (numberValue !== null ? numberValue.toLocaleString() : t`N/A`)}
+        title={tooltip?.title ?? (value == null ? t`N/A` : stringNumber(value))}
         data-testid={`${testId}-value`}
       >
         <Stack direction="row" alignItems="baseline">
@@ -154,7 +156,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
 
 type Props = {
   /** The actual metric value to display */
-  value: number | '' | false | undefined | null
+  value: PreciseNumber | undefined | null
   valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
     color?: TypographyProps['color']
     abbreviate?: boolean // Default to true
@@ -247,7 +249,7 @@ export const Metric = ({
       <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           <AlertTitle>{copyText}</AlertTitle>
-          {value}
+          {stringNumber(value)}
         </Alert>
       </Snackbar>
     </Stack>

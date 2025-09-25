@@ -7,6 +7,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { fromPrecise, toPrecise } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 
 const { Spacing } = SizesAndSpaces
@@ -47,13 +48,13 @@ export const LiquidationRangeSlider = ({
       <Grid size={4}>
         <NumericTextField
           aria-label={t`Bands`}
-          value={sliderValue}
+          value={toPrecise(sliderValue)}
           name="range"
           variant="standard"
           size="tiny"
-          min={minValue}
-          max={maxValue}
-          onChange={(val) => val && setSliderValue(val)}
+          min={toPrecise(minValue)}
+          max={toPrecise(maxValue)}
+          onChange={(val) => val && setSliderValue(fromPrecise(val))}
           onBlur={() => setRange(sliderValue)}
           slotProps={{
             input: {

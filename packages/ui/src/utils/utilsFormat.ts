@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { formatNumber as newFormatNumber } from '@ui-kit/utils'
+import { formatNumber as newFormatNumber, type PreciseNumber } from '@ui-kit/utils'
 
 // At the moment of writing there's a Notion ticket to remove BigNumber.js
 BigNumber.config({ EXPONENTIAL_AT: 20, ROUNDING_MODE: BigNumber.ROUND_HALF_UP })
@@ -32,7 +32,10 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
 }
 
 /** Wrapper function to keep the PR small. In the future all calls to this function should be replaced with a direct call to the new number formatter. */
-export function formatNumber(val: number | string | undefined | null, options?: NumberFormatOptions | undefined) {
+export function formatNumber(
+  val: PreciseNumber | number | string | undefined | null,
+  options?: NumberFormatOptions | undefined,
+) {
   if (val == null) return options?.defaultValue ?? '-'
 
   const unit =
@@ -42,7 +45,7 @@ export function formatNumber(val: number | string | undefined | null, options?: 
         ? 'percentage'
         : undefined
 
-  return newFormatNumber(Number(val), {
+  return newFormatNumber(typeof val === 'object' ? val : Number(val), {
     ...options,
     unit,
     abbreviate: options?.notation === 'compact',

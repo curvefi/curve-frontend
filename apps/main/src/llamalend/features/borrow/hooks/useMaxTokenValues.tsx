@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { minPrecise } from '@ui-kit/utils'
 import { useMaxLeverage } from '../queries/borrow-max-leverage.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { setValueOptions } from '../react-form.utils'
@@ -34,10 +35,7 @@ export function useMaxTokenValues(
   } = useMaxLeverage(params)
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
-  const maxCollateral =
-    userBalance && maxBorrow?.maxTotalCollateral
-      ? Math.min(userBalance, maxBorrow?.maxTotalCollateral)
-      : (userBalance ?? maxBorrow?.maxTotalCollateral)
+  const maxCollateral = minPrecise(userBalance, maxBorrow?.maxTotalCollateral)
 
   const maxLeverage = maxBorrowLeverage ?? maxTotalLeverage
 

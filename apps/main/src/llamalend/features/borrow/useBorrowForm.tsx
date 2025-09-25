@@ -12,6 +12,7 @@ import type { BaseConfig } from '@ui/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/features/slippage-settings/ui/slippage.utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import { toPrecise } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from './constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
@@ -37,10 +38,10 @@ export function useBorrowForm<ChainId extends IChainId>({
     resolver: vestResolver(borrowFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
-      userBorrowed: 0,
+      userBorrowed: toPrecise(0),
       debt: undefined,
       leverageEnabled: false,
-      slippage: SLIPPAGE_PRESETS.STABLE,
+      slippage: toPrecise(SLIPPAGE_PRESETS.STABLE),
       range: BORROW_PRESET_RANGES[preset],
       maxDebt: undefined,
       maxCollateral: undefined,

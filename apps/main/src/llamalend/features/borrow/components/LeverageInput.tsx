@@ -9,6 +9,7 @@ import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { PreciseNumber } from '@ui-kit/utils'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
@@ -25,7 +26,7 @@ export const LeverageInput = ({
   leverageEnabled: boolean
   form: UseFormReturn<BorrowForm>
   params: BorrowFormQueryParams
-  maxLeverage: number | undefined
+  maxLeverage: PreciseNumber | undefined
   isError: boolean
   isLoading: boolean
 }) => {

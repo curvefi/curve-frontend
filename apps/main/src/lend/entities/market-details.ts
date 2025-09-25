@@ -3,21 +3,19 @@ import { ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
+import type { MarketParams, MarketQuery } from '@ui-kit/lib/model/query/root-keys'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
-import type { MarketQuery, MarketParams } from '@ui-kit/lib/model/query/root-keys'
+import { type PreciseNumber, toPrecise } from '@ui-kit/utils'
 
 const getLendMarket = (marketId: string) => requireLib('llamaApi').getLendMarket(marketId)
 
 type MarketCapAndAvailable = {
-  cap: number
-  available: number
-}
-type MarketMaxLeverage = {
-  maxLeverage: string | null
+  cap: PreciseNumber
+  available: PreciseNumber
 }
 type MarketCollateralAmounts = {
-  collateralAmount: number
-  borrowedAmount: number
+  collateralAmount: PreciseNumber
+  borrowedAmount: PreciseNumber
 }
 
 /**
@@ -28,8 +26,8 @@ const _getMarketCapAndAvailable = async ({ marketId }: MarketQuery): Promise<Mar
   const market = getLendMarket(marketId)
   const capAndAvailable = await market.stats.capAndAvailable(false, USE_API)
   return {
-    cap: +capAndAvailable.cap,
-    available: +capAndAvailable.available,
+    cap: toPrecise(capAndAvailable.cap),
+    available: toPrecise(capAndAvailable.available),
   }
 }
 
@@ -44,15 +42,14 @@ export const { useQuery: useMarketCapAndAvailable, invalidate: invalidateMarketC
  * The purpose of this query is to allow fetching market max leverage on chain
  * in order to display the most current data when a wallet is connected.
  * */
-const _getMarketMaxLeverage = async ({ marketId }: MarketQuery): Promise<MarketMaxLeverage> => {
-  const market = getLendMarket(marketId)
-  const maxLeverage = market.leverage.hasLeverage() ? await market.leverage.maxLeverage(market?.minBands) : null
-  return { maxLeverage }
-}
-
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'marketMaxLeverage', 'v1'] as const,
-  queryFn: _getMarketMaxLeverage,
+  queryFn: async ({ marketId }: MarketQuery) => {
+    const market = getLendMarket(marketId)
+    if (market.leverage.hasLeverage()) {
+      return toPrecise(await market.leverage.maxLeverage(market?.minBands))
+    }
+  },
   validationSuite: marketIdValidationSuite,
 })
 
@@ -64,8 +61,8 @@ const _getMarketCollateralAmounts = async ({ marketId }: MarketQuery): Promise<M
   const market = getLendMarket(marketId)
   const ammBalance = await market.stats.ammBalances(false, USE_API)
   return {
-    collateralAmount: +ammBalance.collateral,
-    borrowedAmount: +ammBalance.borrowed,
+    collateralAmount: toPrecise(ammBalance.collateral),
+    borrowedAmount: toPrecise(ammBalance.borrowed),
   }
 }
 
@@ -129,10 +126,10 @@ export const useMarketDetails = (params: MarketParams, options?: { enabled?: boo
 
   return {
     data: {
-      ...(marketCapAndAvailable ?? undefined),
-      ...(marketMaxLeverage ?? undefined),
-      ...(marketCollateralAmounts ?? undefined),
-      ...(marketOnChainRates ?? undefined),
+      ...marketCapAndAvailable,
+      ...(marketMaxLeverage && { maxLeverage: marketMaxLeverage }),
+      ...marketCollateralAmounts,
+      ...marketOnChainRates,
       pricePerShare: marketPricePerShare,
     },
     isLoading: {

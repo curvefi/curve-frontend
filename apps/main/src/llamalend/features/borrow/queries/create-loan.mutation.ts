@@ -4,12 +4,14 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { userBalancesQueryKey } from '@/llamalend/queries/user-balances.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import type { TAmount } from '@curvefi/llamalend-api/src/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import { Address } from '@ui-kit/utils'
+import { Address, fromPrecise, stringNumber } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
@@ -39,7 +41,11 @@ const getCreateMethods = (poolId: string, leverageEnabled: boolean) => {
   return {
     createLoanIsApproved: parent.createLoanIsApproved.bind(parent),
     createLoanApprove: parent.createLoanApprove.bind(parent),
-    createLoan: parent.createLoan.bind(parent),
+    createLoan: (userCollateral: TAmount, userBorrowed: TAmount, debt: TAmount, range: number, slippage: number) =>
+      // userBorrowed is only needed for leverageV2
+      parent === (market as MintMarketTemplate).leverageV2
+        ? parent.createLoan(userCollateral, userBorrowed, debt, range, slippage)
+        : (parent as LendMarketTemplate['leverage']).createLoan(userCollateral, debt, range, slippage),
   }
 }
 
@@ -54,15 +60,16 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
         const { userCollateral, userBorrowed, debt, leverageEnabled, slippage, range } = mutation
+        const [collateral, borrowed, userDebt] = [userCollateral, userBorrowed, debt].map(stringNumber)
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverageEnabled)
 
-        if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
-          const approvalTxHashes = (await createLoanApprove(userCollateral, userBorrowed)) as Address[]
+        if (!(await createLoanIsApproved(collateral, borrowed))) {
+          const approvalTxHashes = (await createLoanApprove(collateral, borrowed)) as Address[]
           await Promise.all(approvalTxHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
           notify(t`Approved loan creation`, 'success')
         }
 
-        const loanTxHash = (await createLoan(userCollateral, userBorrowed, debt, range, slippage)) as Address
+        const loanTxHash = (await createLoan(collateral, borrowed, userDebt, range, fromPrecise(slippage))) as Address
         await waitForTransactionReceipt(config, { hash: loanTxHash })
         return loanTxHash
       },

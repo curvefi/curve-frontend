@@ -8,6 +8,7 @@ import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { stringNumber, Zero } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../types'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
@@ -16,7 +17,7 @@ type BorrowGasEstimateQuery<T = IChainId> = BorrowFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<BorrowGasEstimateQuery<T>>
 
 const { useQuery: useGasEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, leverageEnabled }: GasEstimateParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = Zero, userCollateral = Zero, leverageEnabled }: GasEstimateParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'borrow-gas-estimation',
@@ -24,16 +25,17 @@ const { useQuery: useGasEstimate } = queryFactory({
       { userCollateral },
       { leverageEnabled },
     ] as const,
-  queryFn: async ({ poolId, userBorrowed = 0, userCollateral = 0, leverageEnabled }: BorrowGasEstimateQuery) => {
+  queryFn: async ({ poolId, userBorrowed = Zero, userCollateral = Zero, leverageEnabled }: BorrowGasEstimateQuery) => {
     const market = getLlamaMarket(poolId)
+    const [collateral, borrowed] = [userCollateral, userBorrowed].map(stringNumber)
     return {
       createLoanApprove: !leverageEnabled
-        ? await market.estimateGas.createLoanApprove(userCollateral)
+        ? await market.estimateGas.createLoanApprove(collateral)
         : market instanceof LendMarketTemplate
-          ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          ? await market.leverage.estimateGas.createLoanApprove(collateral, borrowed)
           : market.leverageV2.hasLeverage()
-            ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-            : await market.leverage.estimateGas.createLoanApprove(userCollateral),
+            ? await market.leverageV2.estimateGas.createLoanApprove(collateral, borrowed)
+            : await market.leverage.estimateGas.createLoanApprove(collateral),
     }
   },
   validationSuite: borrowQueryValidationSuite,

@@ -33,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { multiplyPrecise, type PreciseNumber, ReleaseChannel, stringNumber, stringToPrecise } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -102,12 +102,12 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   }
 
   const onCollateralChanged = useCallback(
-    (val?: number) => {
+    (val?: PreciseNumber) => {
       const { formValues, formStatus } = useStore.getState().loanCollateralDecrease
-      const collateral = `${val ?? ''}`
+      const collateral = stringNumber(val)
       if (collateral === formValues.collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: collateral, collateralError: '' })
+      updateFormValues({ ...formValues, collateral, collateralError: '' })
     },
     [reset, updateFormValues],
   )
@@ -270,13 +270,12 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
               })}
               disabled={disabled}
               maxBalance={{
-                balance: stringToNumber(maxRemovable),
+                balance: stringToPrecise(maxRemovable),
                 symbol: getTokenName(llamma).collateral,
                 showSlider: false,
-                ...(collateralUsdRate != null &&
-                  maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
+                notionalValueUsd: multiplyPrecise(collateralUsdRate, maxRemovable),
               }}
-              balance={stringToNumber(formValues.collateral)}
+              balance={stringToPrecise(formValues.collateral)}
               tokenSelector={
                 <TokenLabel
                   blockchainId={network.id}

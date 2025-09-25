@@ -1,10 +1,12 @@
 import { type Address, ethAddress, formatUnits } from 'viem'
 import { useBalance } from 'wagmi'
 import type { FieldsOf } from '@ui-kit/lib'
+import { toPrecise } from '@ui-kit/utils'
 import type { GetBalanceReturnType } from '@wagmi/core'
 
 /** Convert user collateral from GetBalanceReturnType to number */
-const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) => +formatUnits(value || 0n, decimals || 18)
+const convertBalance = ({ value, decimals }: Partial<GetBalanceReturnType>) =>
+  toPrecise(formatUnits(value || 0n, decimals || 18))
 
 /**
  * Hook to fetch the token balance and convert it to a number, wrapping wagmi's useBalance hook.

@@ -1,6 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { stringNumber, Zero } from '@ui-kit/utils'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
@@ -8,7 +9,7 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 type BorrowPriceImpactResult = number // percentage
 
 export const { useQuery: useBorrowPriceImpact } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt = 0 }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = Zero, userCollateral = Zero, debt = Zero }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'createLoanPriceImpact',
@@ -18,16 +19,16 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = Zero,
+    userCollateral = Zero,
+    debt = Zero,
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
     const market = getLlamaMarket(poolId)
     return market instanceof LendMarketTemplate
-      ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))
+      ? +(await market.leverage.createLoanPriceImpact(stringNumber(userBorrowed), stringNumber(debt)))
       : market.leverageV2.hasLeverage()
-        ? +(await market.leverageV2.createLoanPriceImpact(userBorrowed, debt))
-        : +(await market.leverage.priceImpact(userCollateral, debt))
+        ? +(await market.leverageV2.createLoanPriceImpact(stringNumber(userBorrowed), stringNumber(debt)))
+        : +(await market.leverage.priceImpact(stringNumber(userCollateral), stringNumber(debt)))
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

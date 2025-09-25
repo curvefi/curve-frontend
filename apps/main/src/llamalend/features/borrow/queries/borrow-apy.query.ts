@@ -5,16 +5,17 @@ import { type FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { type PreciseNumber, toPrecise } from '@ui-kit/utils'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 
 type BorrowApyQuery = PoolQuery<IChainId>
 type BorrowApyParams = FieldsOf<BorrowApyQuery>
 
 export type BorrowRatesResult = {
-  borrowApr: number
-  borrowApy?: number
-  lendApr?: number
-  lendApy?: number
+  borrowApr: PreciseNumber
+  borrowApy?: PreciseNumber
+  lendApr?: PreciseNumber
+  lendApy?: PreciseNumber
 }
 
 const convertRates = ({
@@ -23,10 +24,10 @@ const convertRates = ({
   lendApr,
   lendApy,
 }: { [K in keyof BorrowRatesResult]: string }): BorrowRatesResult => ({
-  borrowApr: +borrowApr,
-  ...(borrowApy && { borrowApy: +borrowApy }),
-  ...(lendApy && { lendApy: +lendApy }),
-  ...(lendApr && { lendApr: +lendApr }),
+  borrowApr: toPrecise(borrowApr),
+  ...(borrowApy && { borrowApy: toPrecise(borrowApy) }),
+  ...(lendApy && { lendApy: toPrecise(lendApy) }),
+  ...(lendApr && { lendApr: toPrecise(lendApr) }),
 })
 
 export const { useQuery: useMarketRates } = queryFactory({

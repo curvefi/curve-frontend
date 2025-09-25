@@ -37,7 +37,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, stringToPrecise } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -318,12 +318,12 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           disabled={disabled}
           maxBalance={{
             loading: maxRecv == null || maxRecv == '',
-            balance: stringToNumber(maxRecv),
+            balance: stringToPrecise(maxRecv),
             symbol: getTokenName(llamma).stablecoin,
             notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
             showSlider: false,
           }}
-          balance={stringToNumber(formValues.debt)}
+          balance={stringToPrecise(formValues.debt)}
           tokenSelector={
             <TokenLabel
               blockchainId={network.id}
@@ -377,7 +377,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             disabled={disabled}
             maxBalance={{
               loading: userWalletBalancesLoading,
-              balance: stringToNumber(userWalletBalances.collateral),
+              balance: stringToPrecise(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,
               showSlider: false,
               ...(collateralUsdRate != null &&
@@ -386,7 +386,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                 }),
             }}
             label={t`Collateral amount:`}
-            balance={stringToNumber(formValues.collateral)}
+            balance={stringToPrecise(formValues.collateral)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}

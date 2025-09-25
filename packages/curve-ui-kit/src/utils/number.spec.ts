@@ -1,14 +1,17 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import { fromPrecise, type PreciseNumber, toPrecise } from '@ui-kit/utils/precise-number'
 import {
-  defaultNumberFormatter,
+  defaultNumberFormatter as defaultNumberFormatterPrecision,
   formatNumber,
-  decomposeNumber,
-  abbreviateNumber,
-  scaleSuffix,
-  log10Exp,
+  decomposeNumber as decomposeNumberPrecision,
+  abbreviateNumber as abbreviateNumberPrecision,
+  scaleSuffix as scaleSuffixPrecision,
+  log10Exp as log10ExpPrecision,
+  type NumberFormatOptions,
 } from './number'
 
 describe('log10Exp', () => {
+  const log10Exp = (num: number) => fromPrecise(log10ExpPrecision(toPrecise(num)!))
   describe('basic functionality', () => {
     it('calculates correct exponents for powers of 1000', () => {
       expect(log10Exp(1000)).toBe(1) // 10^3 = 1000
@@ -67,6 +70,7 @@ describe('log10Exp', () => {
 })
 
 describe('scaleSuffix', () => {
+  const scaleSuffix = (num: number) => scaleSuffixPrecision(toPrecise(num)!)
   describe('basic functionality', () => {
     it('returns empty string for numbers less than 1000', () => {
       expect(scaleSuffix(0)).toBe('')
@@ -123,6 +127,7 @@ describe('scaleSuffix', () => {
 })
 
 describe('abbreviateNumber', () => {
+  const abbreviateNumber = (num: number) => fromPrecise(abbreviateNumberPrecision(toPrecise(num)!))
   describe('basic functionality', () => {
     it('does not abbreviate small numbers (< 1000)', () => {
       expect(abbreviateNumber(0)).toBe(0)
@@ -172,7 +177,7 @@ describe('abbreviateNumber', () => {
 
     it('handles zero', () => {
       expect(abbreviateNumber(0)).toBe(0)
-      expect(abbreviateNumber(-0)).toBe(-0)
+      expect(abbreviateNumber(-0)).toBe(0) // note: (-0).toString() == '0'
     })
 
     it('handles very large numbers', () => {
@@ -189,6 +194,8 @@ describe('abbreviateNumber', () => {
 })
 
 describe('defaultNumberFormatter', () => {
+  const defaultNumberFormatter = (num: number, options?: Partial<NumberFormatOptions>) =>
+    defaultNumberFormatterPrecision(toPrecise(num)!, options)
   describe('basic functionality', () => {
     it('formats positive numbers with default 2 decimals', () => {
       expect(defaultNumberFormatter(123.456)).toBe('123.46')
@@ -288,6 +295,8 @@ describe('defaultNumberFormatter', () => {
 })
 
 describe('decomposeNumber', () => {
+  const decomposeNumber = (num: number, options: NumberFormatOptions) =>
+    decomposeNumberPrecision(toPrecise(num)!, options)
   // Mock console.warn for USD overflow tests
   const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
 
@@ -349,7 +358,7 @@ describe('decomposeNumber', () => {
 
   describe('custom formatting', () => {
     it('applies custom formatter 1', () => {
-      const customFormatter = (value: number) => `custom-${value}`
+      const customFormatter = (value: PreciseNumber) => `custom-${value.number}`
       const result = decomposeNumber(1500, { abbreviate: true, formatter: customFormatter })
       expect(result.mainValue).toBe('custom-1.5')
     })

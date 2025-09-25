@@ -2,13 +2,13 @@ import { useMemo } from 'react'
 import type { ExtraIncentiveItem } from '@/llamalend/widgets/tooltips/RewardTooltipItems'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
-import { CRV_ADDRESS, defaultNumberFormatter } from '@ui-kit/utils'
+import { CRV_ADDRESS, defaultNumberFormatter, fromPrecise, type PreciseNumber } from '@ui-kit/utils'
 
 export const useMarketExtraIncentives = (
   type: MarketRateType,
   incentives: ExtraIncentive[],
-  minApr: number | null | undefined,
-  userBoost?: number | null | undefined,
+  minApr: PreciseNumber | null | undefined,
+  userBoost?: PreciseNumber | null | undefined,
 ): ExtraIncentiveItem[] =>
   useMemo(
     () =>
@@ -16,16 +16,16 @@ export const useMarketExtraIncentives = (
         ? notFalsy(
             minApr && {
               title: 'CRV',
-              percentage: minApr,
+              percentage: fromPrecise(minApr),
               address: CRV_ADDRESS,
               blockchainId: 'ethereum',
               isBoost: false,
             },
             userBoost &&
               minApr &&
-              userBoost > 1 && {
+              fromPrecise(userBoost) > 1 && {
                 title: `Your boost (${defaultNumberFormatter(userBoost)}x)`,
-                percentage: minApr * userBoost - minApr,
+                percentage: fromPrecise(minApr) * fromPrecise(userBoost) - fromPrecise(minApr),
                 address: CRV_ADDRESS,
                 blockchainId: 'ethereum',
                 isBoost: true,

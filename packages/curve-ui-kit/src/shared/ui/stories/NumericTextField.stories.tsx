@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { type ComponentProps, useState } from 'react'
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { type PreciseNumber, toPrecise } from '@ui-kit/utils'
 import { NumericTextField } from '../NumericTextField'
 
-const NumericTextFieldWrapper = (props: any) => {
-  const [value, setValue] = useState<number | undefined>(undefined)
+const NumericTextFieldWrapper = ({
+  min,
+  max,
+  ...props
+}: Omit<ComponentProps<typeof NumericTextField>, 'min' | 'max' | 'value'> & {
+  min?: number
+  max?: number
+}) => {
+  const [value, setValue] = useState<PreciseNumber | undefined>(undefined)
 
   return (
     <NumericTextField
+      min={toPrecise(min)}
+      max={toPrecise(max)}
       {...props}
       value={value}
       onBlur={(newValue) => {
@@ -18,14 +28,10 @@ const NumericTextFieldWrapper = (props: any) => {
   )
 }
 
-const meta: Meta<typeof NumericTextField> = {
+const meta: Meta<typeof NumericTextFieldWrapper> = {
   title: 'UI Kit/Widgets/NumericTextField',
-  component: NumericTextField,
+  component: NumericTextFieldWrapper,
   argTypes: {
-    value: {
-      control: 'number',
-      description: 'The numeric value of the input field',
-    },
     min: {
       control: 'number',
       description: 'Minimum allowed value (default: 0)',
@@ -58,7 +64,6 @@ const meta: Meta<typeof NumericTextField> = {
     },
   },
   args: {
-    value: undefined,
     min: 0,
     max: Infinity,
     label: 'Amount',
@@ -67,10 +72,9 @@ const meta: Meta<typeof NumericTextField> = {
   },
 }
 
-type Story = StoryObj<typeof NumericTextField>
+type Story = StoryObj<typeof NumericTextFieldWrapper>
 
 export const Default: Story = {
-  render: (args) => <NumericTextFieldWrapper {...args} />,
   parameters: {
     docs: {
       description: {
@@ -88,7 +92,7 @@ export const WithMinMax: Story = {
     label: 'Value (10-100)',
     helperText: 'Enter a value between 10 and 100',
   },
-  render: (args) => <NumericTextFieldWrapper {...args} />,
+
   parameters: {
     docs: {
       description: {
@@ -105,7 +109,7 @@ export const NoMinimum: Story = {
     label: 'Any Number',
     helperText: 'Enter any positive or negative number',
   },
-  render: (args) => <NumericTextFieldWrapper {...args} />,
+
   parameters: {
     docs: {
       description: {
