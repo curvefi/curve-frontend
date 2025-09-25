@@ -100,7 +100,7 @@ export const useUserCollateralEvents = ({
     lend: useUserLendCollateralEventsQuery(
       {
         chainId,
-        chain,
+        blockchainId: chain,
         controllerAddress,
         userAddress,
       },
@@ -109,7 +109,7 @@ export const useUserCollateralEvents = ({
     crvusd: useUserCrvUsdCollateralEventsQuery(
       {
         chainId,
-        chain,
+        blockchainId: chain,
         controllerAddress,
         userAddress,
       },
