@@ -67,6 +67,7 @@ const parseEventType = (
   if (type === 'Liquidate' && liquidation?.liquidator === user) return 'Self Liquidation'
   if (type === 'Liquidate') return 'Hard Liquidation'
   if (type === 'Repay' && isPositionClosed) return 'Repay and Close'
+  if (type === 'RemoveCollateral') return 'Remove Collateral'
   return type as UserCollateralEventType
 }
 

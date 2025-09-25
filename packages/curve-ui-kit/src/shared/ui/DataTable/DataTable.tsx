@@ -1,5 +1,6 @@
 /// <reference types="./DataTable.d.ts" />
 import { ReactNode, useEffect, useMemo } from 'react'
+import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
@@ -52,53 +53,58 @@ export const DataTable = <T extends TableItem>({
   useScrollToTopOnFilterChange(table)
 
   return (
-    <Table
-      sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-        borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+    <Box
+      style={{
         ...(options?.maxHeight && {
           maxHeight: options.maxHeight,
           overflowY: 'auto',
         }),
       }}
-      data-testid={!loading && 'data-table'}
     >
-      <TableHead
-        sx={(t) => ({
-          ...(!options?.disableStickyHeader && { position: 'sticky', top, zIndex: t.zIndex.tableHeader }),
-          backgroundColor: t.design.Table.Header.Fill,
-          marginBlock: Sizing['sm'],
-        })}
-        data-testid="data-table-head"
+      <Table
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
+        data-testid={!loading && 'data-table'}
       >
-        {children && <FilterRow table={table}>{children}</FilterRow>}
+        <TableHead
+          sx={(t) => ({
+            ...(!options?.disableStickyHeader && { position: 'sticky', top, zIndex: t.zIndex.tableHeader }),
+            backgroundColor: t.design.Table.Header.Fill,
+            marginBlock: Sizing['sm'],
+          })}
+          data-testid="data-table-head"
+        >
+          {children && <FilterRow table={table}>{children}</FilterRow>}
 
-        {headerGroups.map((headerGroup) => (
-          <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
-            {headerGroup.headers.map((header, index) => (
-              <HeaderCell
-                key={header.id}
-                header={header}
-                isSticky={!index && shouldStickFirstColumn}
-                width={`calc(100% / ${columnCount})`}
-              />
-            ))}
-          </TableRow>
-        ))}
-      </TableHead>
-      <TableBody>
-        {loading ? (
-          <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
-        ) : rows.length === 0 ? (
-          emptyState
-        ) : (
-          <>
-            {rows.map((row, index) => (
-              <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
-            ))}
-          </>
-        )}
-      </TableBody>
-    </Table>
+          {headerGroups.map((headerGroup) => (
+            <TableRow key={headerGroup.id} sx={{ height: Sizing['xxl'] }}>
+              {headerGroup.headers.map((header, index) => (
+                <HeaderCell
+                  key={header.id}
+                  header={header}
+                  isSticky={!index && shouldStickFirstColumn}
+                  width={`calc(100% / ${columnCount})`}
+                />
+              ))}
+            </TableRow>
+          ))}
+        </TableHead>
+        <TableBody>
+          {loading ? (
+            <SkeletonRows table={table} shouldStickFirstColumn={shouldStickFirstColumn} />
+          ) : rows.length === 0 ? (
+            emptyState
+          ) : (
+            <>
+              {rows.map((row, index) => (
+                <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+              ))}
+            </>
+          )}
+        </TableBody>
+      </Table>
+    </Box>
   )
 }
