@@ -7,7 +7,7 @@ export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | '
   Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
     description: CampaignPool['description'] | null
     lock: boolean
-    multiplier?: number
+    multiplier?: number | string // Can be 5 as parsed from "5x", or just the token like "FXN". Kept as number for sorting.
     period?: readonly [Date, Date]
   }
 
@@ -31,8 +31,13 @@ const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
             address: pool.address.toLowerCase(),
             description: pool.description !== 'null' ? pool.description : campaign.description,
             lock: pool.lock === 'true',
-            // Remove possible 'x' suffix and convert to number
-            multiplier: Number(pool.multiplier.replace(/x$/i, '')),
+            // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as string
+            multiplier: (() => {
+              if (!pool.multiplier || pool.multiplier.trim() === '') return undefined
+              const withoutSuffix = pool.multiplier.replace(/x$/i, '')
+              const numericValue = Number(withoutSuffix)
+              return isNaN(numericValue) ? pool.multiplier : numericValue
+            })(),
             ...(+pool.campaignStart &&
               +pool.campaignEnd && {
                 period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,

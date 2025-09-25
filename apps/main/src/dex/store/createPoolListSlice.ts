@@ -205,7 +205,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
               0,
               ...(
                 getCampaigns({ blockchainId: networks[chainId].networkId as Chain })?.[pool.address.toLowerCase()] ?? []
-              ).map((x) => x.multiplier ?? 0),
+              ).map((x) => (x.multiplier && typeof x.multiplier === 'number' ? x.multiplier : 0)),
             ),
           [order],
         )

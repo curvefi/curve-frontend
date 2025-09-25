@@ -49,7 +49,8 @@ export const RewardsTooltipItems = ({
             direction="row"
           >
             <RewardIcon size="md" imageId={r.platformImageId} />
-            {r.multiplier ? `${r.multiplier}x` : ''}
+            {r.multiplier}
+            {typeof r.multiplier === 'number' ? 'x' : ''}
             <ArrowOutwardIcon />
           </Stack>
         </TooltipItem>

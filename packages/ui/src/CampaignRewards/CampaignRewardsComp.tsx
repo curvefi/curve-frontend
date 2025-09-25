@@ -16,8 +16,6 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
   const { platform, multiplier, platformImageId } = rewardsPool
   const platformImageSrc = `${CURVE_ASSETS_URL}/platforms/${platformImageId}`
 
-  const hasMultiplier = !!multiplier
-
   return (
     <Tooltip
       clickable
@@ -28,7 +26,12 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
     >
       <Container highContrast={highContrast}>
         <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
-        {hasMultiplier && <Multiplier highContrast={highContrast}>{`${multiplier}x`}</Multiplier>}
+        {multiplier && (
+          <Multiplier highContrast={highContrast}>
+            {multiplier}
+            {typeof multiplier === 'number' ? 'x' : ''}
+          </Multiplier>
+        )}
         {rewardsPool.lock && <StyledIcon size={16} name="Locked" $highContrast={highContrast} />}
       </Container>
     </Tooltip>
