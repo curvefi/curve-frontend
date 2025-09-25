@@ -36,7 +36,6 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
       loading={loading}
       options={{
         maxHeight: '462px',
-        disableStickyHeader: true,
       }}
       expandedPanel={RowExpandedPanel}
       shouldStickFirstColumn={false}

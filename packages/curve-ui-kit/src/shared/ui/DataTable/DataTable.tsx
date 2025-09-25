@@ -42,7 +42,6 @@ export const DataTable = <T extends TableItem>({
   loading: boolean
   options?: {
     maxHeight: string | number // also sets overflowY to 'auto'
-    disableStickyHeader?: boolean
   }
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { rows } = table.getRowModel()
@@ -70,7 +69,9 @@ export const DataTable = <T extends TableItem>({
       >
         <TableHead
           sx={(t) => ({
-            ...(!options?.disableStickyHeader && { position: 'sticky', top, zIndex: t.zIndex.tableHeader }),
+            position: 'sticky',
+            top: options?.maxHeight ? 0 : top,
+            zIndex: t.zIndex.tableHeader,
             backgroundColor: t.design.Table.Header.Fill,
             marginBlock: Sizing['sm'],
           })}
