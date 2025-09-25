@@ -380,7 +380,7 @@ const QuickSwap = ({
       {/* inputs */}
       <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          {releaseChannel == ReleaseChannel.Legacy ? (
+          {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
               <InputProvider
                 id="fromAmount"
@@ -491,7 +491,7 @@ const QuickSwap = ({
         </div>
 
         {/* SWAP TO */}
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <div>
             <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
               <InputDebounced

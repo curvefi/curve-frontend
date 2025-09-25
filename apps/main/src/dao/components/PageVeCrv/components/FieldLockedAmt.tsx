@@ -50,7 +50,7 @@ const FieldLockedAmt = ({
     (balance: number | undefined) => handleInpLockedAmt(`${balance ?? ''}`),
     [handleInpLockedAmt],
   )
-  return releaseChannel == ReleaseChannel.Legacy ? (
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <div>
       <StyledInputProvider id="lockedAmt" disabled={disabled} inputVariant={lockedAmtError && 'error'}>
         <InputDebounced

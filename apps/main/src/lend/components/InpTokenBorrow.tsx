@@ -48,7 +48,7 @@ const InpTokenBorrow = ({
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback((val?: number) => handleInpChange(`${val ?? ''}`), [handleInpChange])
-  return releaseChannel != ReleaseChannel.Beta ? (
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
