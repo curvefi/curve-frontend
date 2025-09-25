@@ -1,5 +1,6 @@
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import Button from '@mui/material/Button'
+import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
@@ -21,10 +22,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
     <Stack>
       <Stack paddingTop={Spacing.md}>
         <Stack direction="row" justifyContent="space-between">
-          <Typography
-            variant="bodyMRegular"
-            sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}
-          >{t`Collateral`}</Typography>
+          <Typography variant="bodyMRegular" color="textSecondary">{t`Collateral`}</Typography>
           <Typography
             variant="tableCellMBold"
             color={
@@ -41,10 +39,7 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
           </Typography>
         </Stack>
         <Stack direction="row" justifyContent="space-between">
-          <Typography
-            variant="bodyMRegular"
-            sx={(t) => ({ color: t.design.Text.TextColors.Secondary })}
-          >{t`Debt`}</Typography>
+          <Typography variant="bodyMRegular" color="textSecondary">{t`Debt`}</Typography>
           <Typography
             variant="tableCellMBold"
             color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
@@ -57,7 +52,10 @@ export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row
       </Stack>
 
       <Button
-        onClick={handleViewTransaction}
+        component={Link}
+        href={txUrl}
+        target="_blank"
+        rel="noreferrer"
         variant="link"
         color="ghost"
         size="extraSmall"

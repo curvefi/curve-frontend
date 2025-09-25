@@ -64,7 +64,11 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
-  const userCollateralEvents = useUserCollateralEvents({
+  const {
+    data: userCollateralEvents,
+    isLoading: collateralEventsIsLoading,
+    isError: collateralEventsIsError,
+  } = useUserCollateralEvents({
     app: 'lend',
     chainId: rChainId,
     chain: networks[rChainId].id as Chain,
@@ -167,11 +171,11 @@ const Page = () => {
           <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
-              {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
+              {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
                 <UserPositionHistory
-                  events={userCollateralEvents.data.events}
-                  isLoading={userCollateralEvents.isLoading}
-                  isError={userCollateralEvents.isError}
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
                 />
               )}
             </Stack>

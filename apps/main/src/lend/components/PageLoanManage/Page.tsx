@@ -76,7 +76,11 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
-  const userCollateralEvents = useUserCollateralEvents({
+  const {
+    data: userCollateralEvents,
+    isLoading: collateralEventsIsLoading,
+    isError: collateralEventsIsError,
+  } = useUserCollateralEvents({
     app: 'lend',
     chainId: rChainId,
     chain: networks[rChainId].id as Chain,
@@ -191,7 +195,7 @@ const Page = () => {
                 <NoPosition type="borrow" />
               </Stack>
             )}
-            {userCollateralEvents?.data?.events && userCollateralEvents.data.events.length > 0 && (
+            {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
               <Stack
                 paddingLeft={Spacing.md}
                 paddingRight={Spacing.md}
@@ -199,9 +203,9 @@ const Page = () => {
                 sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
               >
                 <UserPositionHistory
-                  events={userCollateralEvents.data.events}
-                  isLoading={userCollateralEvents.isLoading}
-                  isError={userCollateralEvents.isError}
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
                 />
               </Stack>
             )}

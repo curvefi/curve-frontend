@@ -16,15 +16,15 @@ import { HistoryTableCell } from './HistoryTableCell'
 const { Spacing } = SizesAndSpaces
 
 const icons: Record<UserCollateralEventType, ReactNode> = {
-  'Open Position': <RewardsIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
+  'Open Position': <RewardsIcon color="primary" />,
   Borrow: <UploadIcon />,
   'Borrow More': <UploadIcon />,
   'Add Collateral': <PlusCircleIcon />,
-  Liquidate: <ExclamationTriangleIcon sx={(t) => ({ color: t.design.Text.TextColors.Feedback.Error })} />,
-  'Hard Liquidation': <ExclamationTriangleIcon sx={(t) => ({ color: t.design.Text.TextColors.Feedback.Error })} />,
+  Liquidate: <ExclamationTriangleIcon color="error" />,
+  'Hard Liquidation': <ExclamationTriangleIcon color="error" />,
   Repay: <DownloadIcon />,
-  'Repay and Close': <CrossCircleIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
-  'Self Liquidation': <CrossCircleIcon sx={(t) => ({ color: t.design.Text.TextColors.Highlight })} />,
+  'Repay and Close': <CrossCircleIcon color="primary" />,
+  'Self Liquidation': <CrossCircleIcon color="primary" />,
   'Remove Collateral': <MinusCircleIcon />,
 }
 

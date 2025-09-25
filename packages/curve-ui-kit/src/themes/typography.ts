@@ -90,12 +90,12 @@ export const TYPOGRAPHY_VARIANTS = {
   buttonM: { fontFamily: 'Button', fontWeight: 'Bold', fontSize: 'md', lineHeight: 'xl', textCase: 'uppercase' },
 
   tableHeaderM: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[250], lineHeight: Sizing[250] },
-tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
-tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
-tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
-tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs' },
+  tableHeaderS: { fontFamily: 'Body', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
+  tableCellL: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: Sizing[250], lineHeight: Sizing[250] },
+  tableCellMRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'md', lineHeight: 'sm' },
+  tableCellMBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'md', lineHeight: 'sm' },
+  tableCellSRegular: { fontFamily: 'Mono', fontWeight: 'Medium', fontSize: 'sm', lineHeight: 'xs' },
+  tableCellSBold: { fontFamily: 'Mono', fontWeight: 'Semi_Bold', fontSize: 'sm', lineHeight: 'xs' },
 
   highlightXsNotional: { fontFamily: 'Mono', fontSize: 'xs' },
   highlightXs: { fontFamily: 'Heading', fontWeight: 'Bold', fontSize: 'xs' },

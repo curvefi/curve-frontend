@@ -51,7 +51,7 @@ export const DataTable = <T extends TableItem>({
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)
 
-  const TableComponent = (
+  return (
     <Table
       sx={{
         backgroundColor: (t) => t.design.Layer[1].Fill,
@@ -65,8 +65,7 @@ export const DataTable = <T extends TableItem>({
     >
       <TableHead
         sx={(t) => ({
-          zIndex: t.zIndex.tableHeader,
-          ...(options?.disableStickyHeader ? { position: 'static' } : { position: 'sticky', top }),
+          ...(!options?.disableStickyHeader && { position: 'sticky', top, zIndex: t.zIndex.tableHeader }),
           backgroundColor: t.design.Table.Header.Fill,
           marginBlock: Sizing['sm'],
         })}
@@ -102,6 +101,4 @@ export const DataTable = <T extends TableItem>({
       </TableBody>
     </Table>
   )
-
-  return TableComponent
 }
