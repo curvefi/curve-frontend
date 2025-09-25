@@ -52,7 +52,7 @@ export const {
   getQueryData: getCampaigns,
 } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,
-  queryFn: async (): Promise<Record<string, CampaignPoolRewards[]>> => {
+  queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
     return Object.fromEntries(
       Object.entries(REWARDS).map(([address, rewards]) => [
