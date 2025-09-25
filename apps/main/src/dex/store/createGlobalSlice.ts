@@ -107,9 +107,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
      * will only make the dex app refresh and blink many times.
      * This hacky fix is there to because of Plasma network time sensitivity.
      */
-    await state.networks.fetchNetworks()
-
-    const network = state.networks.networks[chainId]
+    const networks = await state.networks.fetchNetworks()
+    const network = networks[chainId]
     const { excludePoolsMapper } = network
 
     // get poolList
