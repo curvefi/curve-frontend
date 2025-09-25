@@ -28,7 +28,7 @@ const FieldLpToken = ({
 
   const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
 
-  return releaseChannel == ReleaseChannel.Legacy ? (
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <InputProvider
       id="lpTokens"
       grid

@@ -19,7 +19,7 @@ export const ReleaseChannelToggleButtons = () => {
         exclusive
         onChange={(_, newValue: ReleaseChannel) =>
           setReleaseChannelDialog(
-            newValue == ReleaseChannel.Stable
+            newValue === ReleaseChannel.Stable
               ? (releaseChannel as ReleaseChannel.Legacy | ReleaseChannel.Beta)
               : newValue,
           )
