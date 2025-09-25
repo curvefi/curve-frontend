@@ -54,6 +54,15 @@ const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
   {},
 )
 
+/**
+ * Base query for all external reward campaigns.
+ *
+ * Fetches all active campaigns across all networks and applies time-based filtering
+ * to only include campaigns within their active period. Network filtering is intentionally
+ * NOT done at the query level to avoid cache duplication and maintain a single source of truth.
+ *
+ * @returns TanStack Query result with all active campaigns grouped by pool address
+ */
 export const {
   useQuery: useCampaigns,
   getQueryOptions: getCampaignOptions,
@@ -75,7 +84,21 @@ export const {
   refetchInterval: '10m',
 })
 
-export const useCampaignsByNetwork = (blockchainId?: Chain) => {
+/**
+ * Hook for accessing all external campaigns filtered by network.
+ *
+ * Uses client-side filtering to avoid cache duplication and maintain a single source of truth.
+ * All campaign data comes from the base `useCampaigns` query and is filtered using `useMemo`.
+ *
+ * @param blockchainId - Chain identifier to filter campaigns by network
+ * @returns TanStack Query result with campaigns filtered by the specified network
+ *
+ * @example
+ * ```typescript
+ * const { data: ethereumCampaigns } = useCampaignsByNetwork('ethereum')
+ * ```
+ */
+export const useCampaignsByNetwork = (blockchainId: Chain) => {
   const { data: allCampaigns, ...rest } = useCampaigns({})
 
   const filteredCampaigns = useMemo(() => {
