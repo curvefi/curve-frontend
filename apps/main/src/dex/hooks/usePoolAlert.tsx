@@ -226,7 +226,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       '0x2dded6da1bf5dbdf597c45fcfaa3194e53ecfeaf': ironbankAlert(),
       '0xa5407eae9ba41422680e2e00537571bcc53efbfd': synthetixUsdAlert(),
-      '0x83f24023d15d835a213df24fd309c47dAb5beb32': yieldbasisAlert(),
+      '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
       '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
       '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
 
