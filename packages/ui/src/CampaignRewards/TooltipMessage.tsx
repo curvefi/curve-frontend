@@ -1,11 +1,14 @@
 import { styled } from 'styled-components'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import Box from 'ui/src/Box'
+import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 import { ExternalLink } from 'ui/src/Link'
 import { formatDate } from '../utils'
 
-const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) => {
-  const { campaignName, platform, description, action, dashboardLink, period } = rewardsPool
+const TooltipMessage = ({ rewardsPool }: { rewardsPool: RewardsPool }) => {
+  const { campaignName, platform, description, action, dashboardLink, campaignStart, campaignEnd } = rewardsPool
+
+  const start = formatDate(new Date(+campaignStart * 1000))
+  const end = formatDate(new Date(+campaignEnd * 1000))
 
   const title = () => {
     if (campaignName && platform) {
@@ -37,10 +40,10 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) =
   return (
     <TooltipWrapper>
       {title()}
-      {period && (
+      {campaignStart && campaignStart !== '0' && campaignEnd && campaignEnd !== '0' && (
         <Box flex flexColumn>
-          <TooltipParagraph>{`from: ${formatDate(period[0])}`}</TooltipParagraph>
-          <TooltipParagraph>{`to: ${formatDate(period[1])}`}</TooltipParagraph>
+          <TooltipParagraph>{`from: ${start}`}</TooltipParagraph>
+          <TooltipParagraph>{`to: ${end}`}</TooltipParagraph>
         </Box>
       )}
       <TooltipParagraph>{getDescription()}</TooltipParagraph>

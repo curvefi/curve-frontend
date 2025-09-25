@@ -2,7 +2,7 @@ import { MarketBorrowRateTooltipContent } from '@/llamalend/widgets/tooltips/Mar
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { Box, CardHeader } from '@mui/material'
 import { formatNumber, FORMAT_OPTIONS } from '@ui/utils/utilsFormat'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SymbolCell } from '@ui-kit/shared/ui/SymbolCell'
@@ -43,7 +43,7 @@ type BorrowAPY = {
   // total = rate - rebasingYield
   totalBorrowRate: number | null
   totalAverageBorrowRate: number | null
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 type SupplyAPY = {
@@ -63,7 +63,7 @@ type SupplyAPY = {
   totalAverageSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
   averageTotalExtraIncentivesApr: number | undefined | null
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 type AvailableLiquidity = {

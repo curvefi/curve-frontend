@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { type State } from '@/loan/store/useStore'
-import { type LlamaApi, Wallet } from '@/loan/types/loan.types'
+import { type ChainId, type LlamaApi, Wallet } from '@/loan/types/loan.types'
 import { log } from '@/loan/utils/helpers'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
@@ -44,7 +44,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
   hydrate: async (curveApi, prevCurveApi, wallet) => {
     if (!curveApi) return
 
-    const { loans, collaterals } = get()
+    const { loans, campaigns, collaterals } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -63,6 +63,10 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     // Check if curveApi is actually a Curve instance and not a LendingApi
     const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
     await loans.fetchLoansDetails(curveApi, collateralDatas)
+
+    if (!prevCurveApi || isNetworkSwitched) {
+      campaigns.initCampaignRewards(curveApi.chainId as ChainId)
+    }
 
     log('Hydrate crvUSD - Complete')
   },

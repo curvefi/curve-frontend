@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { create, type GetState, type SetState } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
+import createCampaignRewardsSlice, { CampaignRewardsSlice } from '@/dex/store/createCampaignRewardsSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
 import createDashboardSlice, { DashboardSlice } from '@/dex/store/createDashboardSlice'
 import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDeployGaugeSlice'
@@ -37,7 +38,8 @@ export type State = GlobalSlice &
   LockedCrvSlice &
   CreatePoolSlice &
   IntegrationsSlice &
-  DeployGaugeSlice
+  DeployGaugeSlice &
+  CampaignRewardsSlice
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
@@ -57,6 +59,7 @@ const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createCreatePoolSlice(set, get),
   ...createIntegrationsSlice(set, get),
   ...createDeployGaugeSlice(set, get),
+  ...createCampaignRewardsSlice(set, get),
 })
 
 // the storage crashes in some browsers if the size of the object is too big

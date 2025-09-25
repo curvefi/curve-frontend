@@ -1,41 +1,40 @@
 import lodash from 'lodash'
+import { CampaignRewardsItem, type CampaignRewardsPool, RewardsAction, RewardsTags } from '@ui/CampaignRewards/types'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
-import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
+import campaigns from '@external-rewards'
 
-export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
-  Pick<CampaignPool, 'action' | 'tags' | 'address'> & {
-    description: CampaignPool['description'] | null
-    lock: boolean
-    multiplier?: number
-    period?: readonly [Date, Date]
-  }
+export type PoolRewards = {
+  action: RewardsAction
+  multiplier: string // usually formatted like '1x', but it might be just a string
+  tags: RewardsTags[]
+  description: string | null
+  platformImageId: string
+  period?: readonly [Date, Date]
+  dashboardLink: string
+}
 
-const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
-  (campaigns, campaign) => ({
-    ...campaigns,
-    ...campaign.pools.reduce<Record<string, CampaignPoolRewards[]>>(
-      (pools, pool) => ({
-        ...pools,
-        [pool.address.toLowerCase()]: [
-          ...(pools[pool.address.toLowerCase()] ?? []),
+const REWARDS: Record<string, PoolRewards[]> = campaigns.reduce(
+  (result, { pools, platformImageId, dashboardLink }: CampaignRewardsItem) => ({
+    ...result,
+    ...pools.reduce(
+      (
+        result: Record<string, PoolRewards[]>,
+        { address, multiplier, tags, action, description, campaignStart, campaignEnd }: CampaignRewardsPool,
+      ) => ({
+        ...result,
+        [address.toLowerCase()]: [
+          ...(result[address.toLowerCase()] ?? []),
           {
-            // Campaign specific properties
-            campaignName: campaign.campaignName,
-            platform: campaign.platform,
-            platformImageId: campaign.platformImageId,
-            dashboardLink: campaign.dashboardLink,
-
-            // Pool specific properties
-            ...pool,
-            address: pool.address.toLowerCase(),
-            description: pool.description !== 'null' ? pool.description : campaign.description,
-            lock: pool.lock === 'true',
-            // Remove possible 'x' suffix and convert to number
-            multiplier: Number(pool.multiplier.replace(/x$/i, '')),
-            ...(+pool.campaignStart &&
-              +pool.campaignEnd && {
-                period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,
+            dashboardLink,
+            multiplier,
+            tags,
+            action,
+            description: description === 'null' ? null : description,
+            platformImageId,
+            ...(+campaignStart &&
+              +campaignEnd && {
+                period: [new Date(1000 * +campaignStart), new Date(1000 * +campaignEnd)] as const,
               }),
           },
         ],
@@ -46,13 +45,9 @@ const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
   {},
 )
 
-export const {
-  useQuery: useCampaigns,
-  getQueryOptions: getCampaignOptions,
-  getQueryData: getCampaigns,
-} = queryFactory({
+export const { useQuery: useCampaigns, getQueryOptions: getCampaignOptions } = queryFactory({
   queryKey: () => ['external-rewards', 'v2'] as const,
-  queryFn: async () => {
+  queryFn: async (): Promise<Record<string, PoolRewards[]>> => {
     const now = Date.now() // refresh is handled by refetchInterval
     return Object.fromEntries(
       Object.entries(REWARDS).map(([address, rewards]) => [
