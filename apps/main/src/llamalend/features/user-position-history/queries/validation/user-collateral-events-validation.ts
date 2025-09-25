@@ -9,7 +9,7 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 export type UserCollateralEventsValidationParams = {
   chainId: IChainId
   blockchainId: Chain
-  controllerAddress: Address | undefined
+  contractAddress: Address | undefined
   userAddress: Address | undefined
 }
 
@@ -17,7 +17,7 @@ export const userCollateralEventsValidationSuite = createValidationSuite(
   (params: UserCollateralEventsValidationParams) => {
     llamaApiValidationGroup({ chainId: params.chainId })
     chainNameValidationGroup({ blockchainId: params.blockchainId })
-    contractValidationGroup({ blockchainId: params.blockchainId, contractAddress: params.controllerAddress })
+    contractValidationGroup({ blockchainId: params.blockchainId, contractAddress: params.contractAddress })
     userAddressValidationGroup({ userAddress: params.userAddress })
   },
 )

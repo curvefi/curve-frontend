@@ -101,7 +101,7 @@ export const useUserCollateralEvents = ({
       {
         chainId,
         blockchainId: chain,
-        controllerAddress,
+        contractAddress: controllerAddress,
         userAddress,
       },
       app == 'lend',
@@ -110,7 +110,7 @@ export const useUserCollateralEvents = ({
       {
         chainId,
         blockchainId: chain,
-        controllerAddress,
+        contractAddress: controllerAddress,
         userAddress,
       },
       app == 'crvusd',

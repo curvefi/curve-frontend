@@ -14,10 +14,6 @@ const { Spacing } = SizesAndSpaces
 export const RowExpandedPanel: ExpandedPanel<ParsedUserCollateralEvent> = ({ row: { original: event } }) => {
   const { txUrl, loanChange, borrowToken, collateralChange, collateralChangeUsd, collateralToken } = event
 
-  const handleViewTransaction = () => {
-    window.open(txUrl, '_blank')
-  }
-
   return (
     <Stack>
       <Stack paddingTop={Spacing.md}>

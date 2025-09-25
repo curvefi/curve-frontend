@@ -4,33 +4,29 @@ import type { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents, type UserCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { FieldsOf } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import type { ChainQuery, ChainNameQuery } from '@ui-kit/lib/model/query'
+import type { ChainQuery, UserQuery, ContractQuery } from '@ui-kit/lib/model/query'
 import { userCollateralEventsValidationSuite } from './validation/user-collateral-events-validation'
 
-type UserCrvUsdCollateralEventsQuery = ChainQuery<IChainId> &
-  ChainNameQuery<Chain> & {
-    controllerAddress: Address | undefined
-    userAddress: Address | undefined
-  }
+type UserCrvUsdCollateralEventsQuery = ChainQuery<IChainId> & UserQuery<Address> & ContractQuery<Chain>
 type UserCrvUsdCollateralEventsParams = FieldsOf<UserCrvUsdCollateralEventsQuery>
 
 export const { useQuery: useUserCrvUsdCollateralEventsQuery, invalidate: invalidateUserCrvUsdCollateralEventsQuery } =
   queryFactory({
-    queryKey: ({ chainId, blockchainId, controllerAddress, userAddress }: UserCrvUsdCollateralEventsParams) =>
+    queryKey: ({ chainId, blockchainId, userAddress, contractAddress }: UserCrvUsdCollateralEventsParams) =>
       [
         'userCrvUsdCollateralEvents',
         { chainId },
         { blockchainId },
-        { controllerAddress },
         { userAddress },
+        { contractAddress },
         'v1',
       ] as const,
     queryFn: async ({
       blockchainId,
-      controllerAddress,
+      contractAddress,
       userAddress,
     }: UserCrvUsdCollateralEventsQuery): Promise<UserCollateralEvents> =>
-      await getUserMarketCollateralEvents(userAddress!, blockchainId, controllerAddress!),
+      await getUserMarketCollateralEvents(userAddress!, blockchainId, contractAddress!),
     refetchInterval: '1m',
     validationSuite: userCollateralEventsValidationSuite,
   })
