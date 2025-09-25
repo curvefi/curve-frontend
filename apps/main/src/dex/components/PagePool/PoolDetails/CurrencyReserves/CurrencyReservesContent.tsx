@@ -64,7 +64,7 @@ const CurrencyReservesContent = ({
 
     <Box className={'right'} flex flexDirection="column">
       <Chip size="md" isBold>
-        {!cr || isNaN(cr.balance) ? '-' : formatNumber(cr.balance, { defaultValue: '-' })}{' '}
+        {formatNumber(cr?.balance)}{' '}
       </Chip>
       <TokenBalancePercent opacity={0.7}>
         {cr?.percentShareInPool == null || cr.percentShareInPool === 'NaN'

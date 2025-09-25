@@ -32,19 +32,16 @@ export function getFractionDigitsOptions(val: number | string | undefined | null
 }
 
 /** Wrapper function to keep the PR small. In the future all calls to this function should be replaced with a direct call to the new number formatter. */
-export function formatNumber(val: number | string | undefined | null, options?: NumberFormatOptions | undefined) {
-  if (val == null) return options?.defaultValue ?? '-'
-
-  const unit =
-    options?.style === 'currency' || options?.currency === 'USD'
-      ? 'dollar'
-      : options?.style === 'percent'
-        ? 'percentage'
-        : undefined
-
-  return newFormatNumber(Number(val), {
-    ...options,
-    unit,
-    abbreviate: options?.notation === 'compact',
-  })
-}
+export const formatNumber = (val: number | string | undefined | null, options?: NumberFormatOptions) =>
+  val == null || (typeof val === 'number' && isNaN(val))
+    ? (options?.defaultValue ?? '-')
+    : newFormatNumber(Number(val), {
+        ...options,
+        unit:
+          options?.style === 'currency' || options?.currency === 'USD'
+            ? 'dollar'
+            : options?.style === 'percent'
+              ? 'percentage'
+              : undefined,
+        abbreviate: options?.notation === 'compact',
+      })
