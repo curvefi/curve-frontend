@@ -6,7 +6,7 @@ import useStore from '@/lend/store/useStore'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import type { Chain, Address } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -51,7 +51,7 @@ export const useMarketDetails = ({
     chainId,
     tokenAddress: borrowed_token?.address,
   })
-  const { data: campaigns } = useCampaigns({ blockchainId })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
 
   const {
     borrowApy: averageBorrowApy,

@@ -10,7 +10,7 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { getHealthMode } from '@/loan/utils/health.util'
 import { Address } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -31,7 +31,7 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
-  const { data: campaigns } = useCampaigns({ blockchainId })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,

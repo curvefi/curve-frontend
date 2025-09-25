@@ -7,7 +7,7 @@ import networks from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -27,7 +27,7 @@ export const useSupplyPositionDetails = ({
   marketId,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
   const blockchainId = networks[chainId].id as Chain
-  const { data: campaigns } = useCampaigns({ blockchainId })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
     chainId,

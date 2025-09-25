@@ -3,7 +3,7 @@ import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 import useStore from '@/dex/store/useStore'
 import type { ChainId } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 
 interface CampaignRewardsBannerProps {
@@ -13,7 +13,7 @@ interface CampaignRewardsBannerProps {
 
 const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps) => {
   const network = useStore((state) => state.networks.networks[chainId])
-  const { data: campaigns } = useCampaigns({ blockchainId: network.networkId as Chain })
+  const { data: campaigns } = useCampaignsByNetwork(network.networkId as Chain)
   const campaignRewardsPool = campaigns?.[address]
 
   if (!campaignRewardsPool) return null

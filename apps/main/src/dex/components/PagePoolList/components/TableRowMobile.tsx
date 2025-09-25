@@ -19,7 +19,7 @@ import IconButton from '@ui/IconButton'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 import { CellInPool } from '@ui/Table'
 import { formatNumber } from '@ui/utils'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
@@ -51,7 +51,7 @@ const TableRowMobile = ({
   handleCellClick,
   setShowDetail,
 }: TableRowMobileProps) => {
-  const { data: campaigns } = useCampaigns({ blockchainId: blockchainId as Chain })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId as Chain)
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId

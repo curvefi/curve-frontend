@@ -13,7 +13,7 @@ import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/ma
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -58,7 +58,7 @@ const TableRow = ({
 }: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const { data: campaigns } = useCampaigns({ blockchainId: blockchainId as Chain })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId as Chain)
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>

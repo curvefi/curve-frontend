@@ -1,6 +1,8 @@
 import lodash from 'lodash'
-import { queryFactory, type ChainNameParams, type ChainNameQuery } from '@ui-kit/lib/model'
-import { chainNameValidationSuite } from '@ui-kit/lib/model/query/chain-name-validation'
+import { useMemo } from 'react'
+import type { Chain } from '@curvefi/prices-api'
+import { EmptyValidationSuite } from '@ui-kit/lib'
+import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
 export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
@@ -56,22 +58,38 @@ export const {
   getQueryOptions: getCampaignOptions,
   getQueryData: getCampaigns,
 } = queryFactory({
-  queryKey: ({ blockchainId }: ChainNameParams) => ['external-rewards', { blockchainId }] as const,
-  queryFn: async ({ blockchainId }: ChainNameQuery) => {
+  queryKey: () => ['external-rewards'] as const,
+  queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
     return Object.fromEntries(
       Object.entries(REWARDS).map(([address, rewards]) => [
         address,
-        rewards
-          .filter(({ period }) => {
-            if (!period) return true
-            const [start, end] = period
-            return lodash.inRange(now, start.getTime(), end.getTime())
-          })
-          .filter(({ network }) => network === blockchainId),
+        rewards.filter(({ period }) => {
+          if (!period) return true
+          const [start, end] = period
+          return lodash.inRange(now, start.getTime(), end.getTime())
+        }),
       ]),
     )
   },
-  validationSuite: chainNameValidationSuite,
+  validationSuite: EmptyValidationSuite, //
   refetchInterval: '10m',
 })
+
+export const useCampaignsByNetwork = (blockchainId?: Chain) => {
+  const { data: allCampaigns, ...rest } = useCampaigns({})
+
+  const filteredCampaigns = useMemo(() => {
+    if (!blockchainId) return allCampaigns
+    if (!allCampaigns) return undefined
+
+    return Object.fromEntries(
+      Object.entries(allCampaigns).map(([address, rewards]) => [
+        address,
+        rewards.filter(({ network }) => network === blockchainId),
+      ]),
+    )
+  }, [allCampaigns, blockchainId])
+
+  return { data: filteredCampaigns, ...rest }
+}

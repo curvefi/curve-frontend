@@ -6,7 +6,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -23,7 +23,7 @@ const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const blockchainId = networks[chainId]?.id
-  const { data: campaigns } = useCampaigns({ blockchainId })
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
