@@ -13,12 +13,12 @@ import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import type { CampaignRewardsMapper } from '@ui/CampaignRewards/types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 import { CellInPool } from '@ui/Table'
 import { formatNumber } from '@ui/utils'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
@@ -27,7 +27,6 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   themeType: ThemeKey
   setShowDetail: Dispatch<SetStateAction<string>>
   tableLabel: PoolListTableLabel
-  campaignRewardsMapper: CampaignRewardsMapper
 }
 
 const TableRowMobile = ({
@@ -50,8 +49,8 @@ const TableRowMobile = ({
   volume,
   handleCellClick,
   setShowDetail,
-  campaignRewardsMapper,
 }: TableRowMobileProps) => {
+  const { data: campaigns } = useCampaigns({})
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId
@@ -153,9 +152,9 @@ const TableRowMobile = ({
                           />
                         </ListInfoItem>
                       )}
-                      {poolData && campaignRewardsMapper[poolData.pool.address] && (
+                      {poolData && campaigns?.[poolData.pool.address] && (
                         <ListInfoItem title={t`Additional external rewards`}>
-                          <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} mobile />
+                          <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} mobile />
                         </ListInfoItem>
                       )}
                     </>

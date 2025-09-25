@@ -1,8 +1,34 @@
 import { default as campaignList } from './campaign-list.json'
 import * as campaignsJsons from './campaigns'
 
-const parsedCampaignsJsons: { [key: string]: any } = campaignsJsons
-const campaigns = campaignList
+export type Campaign = {
+  campaignName: string
+  platform: string
+  description: string
+  platformImageId: string
+  dashboardLink: string
+  pools: CampaignPool[]
+}
+
+export type CampaignPool = {
+  id: string
+  action: RewardsAction
+  description: string
+  campaignStart: string
+  campaignEnd: string
+  address: string
+  network: string
+  multiplier: string
+  tags: RewardsTags[]
+  lock: string
+}
+
+export type RewardsTags = 'points' | 'merkle' | 'tokens'
+export type RewardsAction = 'supply' | 'borrow' | 'lp' | 'loan'
+
+const parsedCampaignsJsons = campaignsJsons as Record<string, Campaign>
+
+export const campaigns = campaignList
   .map(({ campaign }) => {
     const campaignName = campaign.split('.')?.[0]
     if (!campaignName || !(campaignName in parsedCampaignsJsons)) return null
@@ -24,6 +50,4 @@ const campaigns = campaignList
       }),
     }
   })
-  .filter(Boolean)
-
-export default campaigns
+  .filter((campaign): campaign is NonNullable<typeof campaign> => Boolean(campaign))
