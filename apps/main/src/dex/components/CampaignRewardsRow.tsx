@@ -9,7 +9,7 @@ interface Props {
 
 const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>
-    {rewardItems.map((rewardItem, index: number) => (
+    {rewardItems.map((rewardItem, index) => (
       <CampaignRewardsComp
         key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
         rewardsPool={rewardItem}
