@@ -4,10 +4,11 @@ import { queryFactory } from '@ui-kit/lib/model'
 import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
 
 export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
-  Pick<CampaignPool, 'action' | 'multiplier' | 'tags' | 'address'> & {
+  Pick<CampaignPool, 'action' | 'tags' | 'address'> & {
     description: CampaignPool['description'] | null
-    period?: readonly [Date, Date]
     lock: boolean
+    multiplier?: number
+    period?: readonly [Date, Date]
   }
 
 const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
@@ -27,9 +28,11 @@ const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
 
             // Pool specific properties
             ...pool,
+            address: pool.address.toLowerCase(),
             description: pool.description !== 'null' ? pool.description : campaign.description,
             lock: pool.lock === 'true',
-            address: pool.address.toLowerCase(),
+            // Remove possible 'x' suffix and convert to number
+            multiplier: Number(pool.multiplier.replace(/x$/i, '')),
             ...(+pool.campaignStart &&
               +pool.campaignEnd && {
                 period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,

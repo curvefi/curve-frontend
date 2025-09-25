@@ -64,7 +64,7 @@ export const RewardsTooltipItems = ({
                 alignItems="center"
                 gap={Spacing.xs}
               >
-                {r.multiplier}
+                {r.multiplier ? `${r.multiplier}x` : ''}
                 <ArrowOutwardIcon />
               </Stack>
             </TooltipItem>

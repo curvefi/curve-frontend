@@ -195,16 +195,8 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       } else if (sortKey === 'points') {
         return orderBy(
           poolDatas,
-          ({ pool }) => {
-            const campaignRewards = getCampaigns({})?.[pool.address.toLowerCase()]
-            if (campaignRewards && campaignRewards.length > 0) {
-              // Pools with campaign rewards get a high priority value
-              return Number(campaignRewards[0].multiplier)
-            } else {
-              // Pools without campaign rewards maintain their original order
-              return 0
-            }
-          },
+          ({ pool }) =>
+            Math.max(0, ...(getCampaigns({})?.[pool.address.toLowerCase()] ?? []).map((x) => x.multiplier ?? 0)),
           [order],
         )
       }
