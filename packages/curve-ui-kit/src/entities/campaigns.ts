@@ -1,5 +1,6 @@
-import lodash from 'lodash'
+import { groupBy, inRange } from 'lodash'
 import { useMemo } from 'react'
+import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { mapRecord } from '@curvefi/prices-api/objects.util'
 import { EmptyValidationSuite } from '@ui-kit/lib'
@@ -14,44 +15,35 @@ export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | '
     period?: readonly [Date, Date]
   }
 
-const REWARDS = campaigns.reduce<Record<string, CampaignPoolRewards[]>>(
-  (campaigns, campaign) => ({
-    ...campaigns,
-    ...campaign.pools.reduce<Record<string, CampaignPoolRewards[]>>(
-      (pools, pool) => ({
-        ...pools,
-        [pool.address.toLowerCase()]: [
-          ...(pools[pool.address.toLowerCase()] ?? []),
-          {
-            // Campaign specific properties
-            campaignName: campaign.campaignName,
-            platform: campaign.platform,
-            platformImageId: campaign.platformImageId,
-            dashboardLink: campaign.dashboardLink,
+const REWARDS = groupBy(
+  // Can't use Object.groupBy until we support ES2024
+  campaigns.flatMap((campaign) =>
+    campaign.pools.map((pool) => ({
+      // Campaign specific properties
+      campaignName: campaign.campaignName,
+      platform: campaign.platform,
+      platformImageId: campaign.platformImageId,
+      dashboardLink: campaign.dashboardLink,
 
-            // Pool specific properties
-            ...pool,
-            address: pool.address.toLowerCase(),
-            description: pool.description !== 'null' ? pool.description : campaign.description,
-            lock: pool.lock === 'true',
-            // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as string
-            multiplier: (() => {
-              if (!pool.multiplier || pool.multiplier.trim() === '') return undefined
-              const withoutSuffix = pool.multiplier.replace(/x$/i, '')
-              const numericValue = Number(withoutSuffix)
-              return isNaN(numericValue) ? pool.multiplier : numericValue
-            })(),
-            ...(+pool.campaignStart &&
-              +pool.campaignEnd && {
-                period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,
-              }),
-          },
-        ],
-      }),
-      {},
-    ),
-  }),
-  {},
+      // Pool specific properties
+      ...pool,
+      address: pool.address.toLocaleLowerCase() as Address,
+      description: pool.description !== 'null' ? pool.description : campaign.description,
+      lock: pool.lock === 'true',
+      // Remove possible 'x' suffix and convert to number if numeric, otherwise keep as string
+      multiplier: (() => {
+        if (!pool.multiplier || pool.multiplier.trim() === '') return undefined
+        const withoutSuffix = pool.multiplier.replace(/x$/i, '')
+        const numericValue = Number(withoutSuffix)
+        return isNaN(numericValue) ? pool.multiplier : numericValue
+      })(),
+      ...(+pool.campaignStart &&
+        +pool.campaignEnd && {
+          period: [new Date(1000 * +pool.campaignStart), new Date(1000 * +pool.campaignEnd)] as const,
+        }),
+    })),
+  ),
+  (x) => x.address,
 )
 
 /**
@@ -76,7 +68,7 @@ export const {
       rewards.filter(({ period }) => {
         if (!period) return true
         const [start, end] = period
-        return lodash.inRange(now, start.getTime(), end.getTime())
+        return inRange(now, start.getTime(), end.getTime())
       }),
     )
   },
