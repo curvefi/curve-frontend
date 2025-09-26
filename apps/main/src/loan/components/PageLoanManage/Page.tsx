@@ -25,7 +25,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
-import { Chain } from '@curvefi/prices-api'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -39,7 +39,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { CRVUSD_ADDRESS } from '@ui-kit/utils/address'
+import { CRVUSD } from '@ui-kit/utils/address'
 
 const { Spacing } = SizesAndSpaces
 
@@ -77,29 +77,24 @@ const Page = () => {
     llammaId,
   })
 
+  const network = networks[rChainId]
   const {
     data: userCollateralEvents,
     isLoading: collateralEventsIsLoading,
     isError: collateralEventsIsError,
   } = useUserCollateralEvents({
     app: 'crvusd',
-    chainId: rChainId,
-    chain: networks[rChainId].id as Chain,
+    chain: isChain(network.id) ? network.id : undefined,
     controllerAddress: llamma?.controller as Address,
-    userAddress: curve?.signerAddress as Address,
+    userAddress: curve?.signerAddress,
     collateralToken: {
       symbol: llamma?.collateralSymbol,
       address: llamma?.collateral,
       decimals: llamma?.collateralDecimals,
       name: llamma?.collateralSymbol,
     },
-    borrowToken: {
-      symbol: 'crvUSD',
-      address: CRVUSD_ADDRESS,
-      decimals: 18,
-      name: 'crvUSD',
-    },
-    scanTxPath: networks[rChainId].scanTxPath,
+    borrowToken: CRVUSD,
+    scanTxPath: network.scanTxPath,
   })
 
   useEffect(() => {

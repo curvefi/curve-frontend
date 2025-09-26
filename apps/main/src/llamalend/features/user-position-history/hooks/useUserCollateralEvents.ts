@@ -2,8 +2,7 @@ import { useMemo } from 'react'
 import type { Address } from 'viem'
 import { useUserCrvUsdCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-crvusd-collateral-events'
 import { useUserLendCollateralEventsQuery } from '@/llamalend/features/user-position-history/queries/user-lend-collateral-events'
-import { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { Chain } from '@curvefi/prices-api'
+import { type Chain } from '@curvefi/prices-api'
 import {
   UserCollateralEvent as CrvUsdUserCollateralEvent,
   UserCollateralEvents as CrvUsdUserCollateralEvents,
@@ -75,8 +74,7 @@ type UseUserCollateralEventsProps = {
   app: 'lend' | 'crvusd'
   userAddress: Address | undefined
   controllerAddress: Address | undefined
-  chainId: IChainId
-  chain: Chain
+  chain: Chain | undefined
   collateralToken: CollateralEventToken | undefined
   borrowToken: CollateralEventToken | undefined
   scanTxPath: (txHash: string) => string
@@ -86,55 +84,47 @@ export const useUserCollateralEvents = ({
   app,
   userAddress,
   controllerAddress,
-  chainId,
   chain,
   collateralToken,
   borrowToken,
   scanTxPath,
 }: UseUserCollateralEventsProps): {
-  data: ParsedUserCollateralEvents | null
+  data?: ParsedUserCollateralEvents
   isLoading: boolean
   isError: boolean
   scanTxPath: (txHash: string) => string
 } => {
+  const params = {
+    blockchainId: chain,
+    contractAddress: controllerAddress,
+    userAddress,
+  }
   const { data, isLoading, isError } = {
-    lend: useUserLendCollateralEventsQuery(
-      {
-        chainId,
-        blockchainId: chain,
-        contractAddress: controllerAddress,
-        userAddress,
-      },
-      app == 'lend',
-    ),
-    crvusd: useUserCrvUsdCollateralEventsQuery(
-      {
-        chainId,
-        blockchainId: chain,
-        contractAddress: controllerAddress,
-        userAddress,
-      },
-      app == 'crvusd',
-    ),
+    lend: useUserLendCollateralEventsQuery(params, app == 'lend'),
+    crvusd: useUserCrvUsdCollateralEventsQuery(params, app == 'crvusd'),
   }[app]
 
-  return useMemo(() => {
-    const parsedData =
-      data?.events
-        .map((event, index) => ({
-          ...event,
-          type: parseEventType(event, data?.events[index - 1]),
-          txUrl: scanTxPath(event.txHash),
-          borrowToken,
-          collateralToken,
-        }))
-        .reverse() || []
-
-    return {
-      data: data ? { ...data, events: parsedData } : null,
+  return useMemo(
+    () => ({
+      ...(data && {
+        data: {
+          ...data,
+          events:
+            data?.events
+              .map((event, index) => ({
+                ...event,
+                type: parseEventType(event, data?.events[index - 1]),
+                txUrl: scanTxPath(event.txHash),
+                borrowToken,
+                collateralToken,
+              }))
+              .reverse() || [],
+        },
+      }),
       isLoading,
       isError,
       scanTxPath,
-    }
-  }, [data, isLoading, isError, scanTxPath, borrowToken, collateralToken])
+    }),
+    [data, isLoading, isError, scanTxPath, borrowToken, collateralToken],
+  )
 }
