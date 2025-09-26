@@ -118,6 +118,7 @@ export type UserLendingPosition = {
   lastActivity: Date
   currentShares: number
   currentSharesInGauge: number
+  boostMultiplier: number
 }
 
 export type UserMarketStats = {

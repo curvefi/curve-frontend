@@ -126,6 +126,7 @@ export const parseUserLendingPositions = (
     lastActivity: toDate(market.last_activity),
     currentShares: parseFloat(market.current_shares),
     currentSharesInGauge: parseFloat(market.current_shares_in_gauge),
+    boostMultiplier: market.boost_multiplier,
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>

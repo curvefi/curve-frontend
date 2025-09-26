@@ -141,6 +141,7 @@ export type GetUserLendingPositionsResponse = {
     last_activity: string
     current_shares: string
     current_shares_in_gauge: string
+    boost_multiplier: number
   }[]
   page: number
   per_page: number
