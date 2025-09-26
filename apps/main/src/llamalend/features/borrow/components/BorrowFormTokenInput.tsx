@@ -30,6 +30,7 @@ export const BorrowFormTokenInput = ({
   testId?: string
 }) => (
   <LargeTokenInput
+    dataType="number"
     name={name}
     label={label}
     testId={testId}
@@ -41,7 +42,7 @@ export const BorrowFormTokenInput = ({
         label={token?.symbol ?? '?'}
       />
     }
-    onBalance={useCallback((v) => form.setValue(name, v, setValueOptions), [form, name])}
+    onBalance={useCallback((v?: number) => form.setValue(name, v, setValueOptions), [form, name])}
     isError={isError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
     message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
     balanceDecimals={2}

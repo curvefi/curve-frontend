@@ -1,4 +1,4 @@
-import { getUnitOptions, type Unit } from './units'
+import { type Amount, type Decimal, getUnitOptions, type Unit } from './units'
 
 // Sometimes API returns overflowed USD values. Don't show them!
 export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
@@ -40,9 +40,9 @@ export function log10Exp(value: number): number {
  * scaleSuffix(-1000000) // Returns 'm'
  * scaleSuffix(0) // Returns ''
  */
-export function scaleSuffix(value: number): string {
+export function scaleSuffix(value: Amount): string {
   const units = ['', 'k', 'm', 'b', 't']
-  const exp = log10Exp(value)
+  const exp = log10Exp(+value)
 
   // Handle NaN case
   if (isNaN(exp)) return ''
@@ -61,12 +61,10 @@ export function scaleSuffix(value: number): string {
  * abbreviateNumber(2500000000) // Returns 2.5 (goes with suffix "b")
  * abbreviateNumber(500) // Returns 500 (goes with suffix "")
  */
-export function abbreviateNumber(value: number): number {
-  const exp = log10Exp(value) * 3
+export function abbreviateNumber<T extends Amount>(value: T): T | number {
+  const exp = log10Exp(+value) * 3
   // Only apply the scaling if exp is positive
-  value /= exp > 0 ? 10 ** exp : 1
-
-  return value
+  return exp > 0 ? +value / 10 ** exp : value
 }
 
 /**
@@ -101,9 +99,10 @@ const formatterReset = { style: undefined, currency: undefined, notation: undefi
  * - Uses en-US locale for consistent number formatting (period as decimal separator, comma as thousands separator)
  */
 export const defaultNumberFormatter = (
-  value: number,
+  value: Amount,
   { decimals = 2, trailingZeroDisplay = 'stripIfInteger', ...options }: Partial<NumberFormatOptions> = {},
 ): string => {
+  if (typeof value !== 'number') value = Number(value)
   if (isNaN(value)) return 'NaN'
   if (value === Infinity) return '∞'
   if (value === -Infinity) return '-∞'
@@ -164,7 +163,7 @@ export type NumberFormatOptions = {
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
   /** Optional formatter for value */
-  formatter?: (value: number) => string
+  formatter?: (value: Amount) => string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation'>
 
 /**
@@ -193,12 +192,12 @@ export type NumberFormatOptions = {
  * - Logs a warning to console when USD overflow occurs
  * - Uses default formatting options when not specified
  */
-export const decomposeNumber = (value: number, options: NumberFormatOptions): DecomposedNumber => {
+export const decomposeNumber = (value: Amount, options: NumberFormatOptions): DecomposedNumber => {
   const { abbreviate, formatter, unit } = options
   const { symbol = '', position = 'suffix' } = getUnitOptions(unit) ?? {}
 
   // Check for USD overflow
-  const hasOverflowError = symbol === '$' && value > MAX_USD_VALUE
+  const hasOverflowError = symbol === '$' && Number(value) > MAX_USD_VALUE
   if (hasOverflowError) {
     console.warn(`USD value is too large: ${value}`)
 
@@ -251,20 +250,19 @@ export const decomposeNumber = (value: number, options: NumberFormatOptions): De
  * formatNumber(12.0, { decimals: 4, trailingZeroDisplay: 'auto' })
  * // Returns "12.0000"
  */
-export const formatNumber = (value: number, options: NumberFormatOptions) => {
+export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
-
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
 
 /**
  * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
  */
-export const stringToNumber = (value: string | undefined | null): number | undefined => {
+export const decimal = (value: string | undefined | null): Decimal | undefined => {
   if (!['', null, undefined, '-', '?'].includes(value)) {
     const number = Number(value)
     if (Number.isFinite(number)) {
-      return number
+      return value as Decimal
     }
   }
 }

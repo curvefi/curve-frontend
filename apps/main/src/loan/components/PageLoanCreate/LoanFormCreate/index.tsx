@@ -34,7 +34,8 @@ import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 const LoanCreate = ({
   collateralAlert,
@@ -123,10 +124,10 @@ const LoanCreate = ({
   )
 
   const onCollateralChanged = useCallback(
-    (val?: number) => handleInpChange('collateral', `${val ?? ''}`),
+    (val?: Decimal) => handleInpChange('collateral', val ?? ''),
     [handleInpChange],
   )
-  const onDebtChanged = useCallback((val?: number) => handleInpChange('debt', `${val ?? ''}`), [handleInpChange])
+  const onDebtChanged = useCallback((val?: Decimal) => handleInpChange('debt', val ?? ''), [handleInpChange])
 
   const handleClickCreate = useCallback(
     async (
@@ -325,6 +326,7 @@ const LoanCreate = ({
           </>
         ) : (
           <LargeTokenInput
+            dataType="decimal"
             name="collateral"
             isError={!!formValues.collateralError}
             {...(formValues.collateralError && {
@@ -333,7 +335,7 @@ const LoanCreate = ({
             disabled={disabled}
             maxBalance={{
               loading: haveSigner && userWalletBalancesLoading,
-              balance: stringToNumber(userWalletBalances.collateral),
+              balance: decimal(userWalletBalances.collateral),
               symbol: llamma?.collateralSymbol,
               showSlider: false,
               ...(collateralUsdRate != null &&
@@ -341,7 +343,7 @@ const LoanCreate = ({
                   notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
                 }),
             }}
-            balance={stringToNumber(formValues.collateral)}
+            balance={decimal(formValues.collateral)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}
@@ -388,6 +390,7 @@ const LoanCreate = ({
           </>
         ) : (
           <LargeTokenInput
+            dataType="decimal"
             name="debt"
             isError={!!formValues.debtError}
             message={
@@ -396,14 +399,14 @@ const LoanCreate = ({
             disabled={disabled}
             maxBalance={{
               loading: !maxRecv,
-              balance: stringToNumber(maxRecv),
+              balance: decimal(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,
               ...(stablecoinUsdRate != null && maxRecv && { notionalValueUsd: stablecoinUsdRate * +maxRecv }),
               showSlider: false,
               maxTestId: 'debtMax',
             }}
             label={t`Borrow amount:`}
-            balance={stringToNumber(formValues.debt)}
+            balance={decimal(formValues.debt)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}

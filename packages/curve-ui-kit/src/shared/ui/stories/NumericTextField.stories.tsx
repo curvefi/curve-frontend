@@ -7,7 +7,7 @@ const NumericTextFieldWrapper = (props: any) => {
   const [value, setValue] = useState<number | undefined>(undefined)
 
   return (
-    <NumericTextField
+    <NumericTextField<number>
       {...props}
       value={value}
       onBlur={(newValue) => {

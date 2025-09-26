@@ -33,7 +33,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { decimal, ReleaseChannel } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -102,12 +103,11 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   }
 
   const onCollateralChanged = useCallback(
-    (val?: number) => {
+    (val?: Decimal) => {
       const { formValues, formStatus } = useStore.getState().loanCollateralDecrease
-      const collateral = `${val ?? ''}`
-      if (collateral === formValues.collateral) return
+      if ((val ?? '') === formValues.collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: collateral, collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
     },
     [reset, updateFormValues],
   )
@@ -263,6 +263,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         ) : (
           <>
             <LargeTokenInput
+              dataType="decimal"
               name="collateral"
               isError={!!formValues.collateralError}
               {...(formValues.collateralError === 'too-much' && {
@@ -270,13 +271,13 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
               })}
               disabled={disabled}
               maxBalance={{
-                balance: stringToNumber(maxRemovable),
+                balance: decimal(maxRemovable),
                 symbol: getTokenName(llamma).collateral,
                 showSlider: false,
                 ...(collateralUsdRate != null &&
                   maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
               }}
-              balance={stringToNumber(formValues.collateral)}
+              balance={decimal(formValues.collateral)}
               tokenSelector={
                 <TokenLabel
                   blockchainId={network.id}

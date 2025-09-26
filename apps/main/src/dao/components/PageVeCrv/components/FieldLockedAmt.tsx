@@ -11,7 +11,8 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { CRV_ADDRESS, ReleaseChannel, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 const FieldLockedAmt = ({
   curve,
@@ -47,7 +48,7 @@ const FieldLockedAmt = ({
 
   const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback(
-    (balance: number | undefined) => handleInpLockedAmt(`${balance ?? ''}`),
+    (balance: Decimal | undefined) => handleInpLockedAmt(balance ?? ''),
     [handleInpLockedAmt],
   )
   return releaseChannel !== ReleaseChannel.Beta ? (
@@ -83,10 +84,11 @@ const FieldLockedAmt = ({
       ) : null}
     </div>
   ) : (
-    <LargeTokenInput
+    <LargeTokenInput<Decimal>
+      dataType="decimal"
       name="lockedAmt"
       disabled={disabled}
-      balance={stringToNumber(lockedAmt)}
+      balance={decimal(lockedAmt)}
       isError={!!lockedAmtError}
       message={
         !!crv && lockedAmtError ? (
@@ -106,7 +108,7 @@ const FieldLockedAmt = ({
       }
       onBalance={onBalance}
       maxBalance={{
-        balance: stringToNumber(crv),
+        balance: decimal(crv),
         loading: haveSigner && crv === '',
         showSlider: false,
         symbol: 'CRV',

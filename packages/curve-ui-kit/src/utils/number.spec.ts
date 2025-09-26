@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
+import type { Amount } from '@ui-kit/utils/units'
 import {
   defaultNumberFormatter,
   formatNumber,
@@ -349,7 +350,7 @@ describe('decomposeNumber', () => {
 
   describe('custom formatting', () => {
     it('applies custom formatter 1', () => {
-      const customFormatter = (value: number) => `custom-${value}`
+      const customFormatter = (value: Amount) => `custom-${value}`
       const result = decomposeNumber(1500, { abbreviate: true, formatter: customFormatter })
       expect(result.mainValue).toBe('custom-1.5')
     })

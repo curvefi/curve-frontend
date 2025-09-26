@@ -1,12 +1,14 @@
-import { type Ref, type ReactNode, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { BigNumber } from 'bignumber.js'
+import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState } from 'react'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Amount } from '@ui-kit/utils/units'
 import { Balance, type Props as BalanceProps } from './Balance'
-import { NumericTextField } from './NumericTextField'
+import { type DataType, NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
@@ -42,17 +44,25 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   </Box>
 )
 
-type BalanceTextFieldProps = {
-  balance: number | undefined
-  maxBalance?: number
+type BalanceTextFieldProps<T> = {
+  balance: T | undefined
+  maxBalance?: T
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: number | undefined) => void
+  onCommit: (balance: T | undefined) => void
   name: string
-}
+} & DataType<T>
 
-const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: BalanceTextFieldProps) => (
-  <NumericTextField
+const BalanceTextField = <T extends Amount>({
+  balance,
+  name,
+  isError,
+  onCommit,
+  disabled,
+  dataType,
+}: BalanceTextFieldProps<T>) => (
+  <NumericTextField<T>
+    dataType={dataType}
     placeholder="0.00"
     variant="standard"
     value={balance}
@@ -93,21 +103,21 @@ export interface LargeTokenInputRef {
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
-type MaxBalanceProps = Partial<
-  Pick<BalanceProps, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
+type MaxBalanceProps<T> = Partial<
+  Pick<BalanceProps<T>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
 }
 
-type Props = {
+type Props<T> = DataType<T> & {
   ref?: Ref<LargeTokenInputRef>
 
   /**
    * The current balance value of the input.
    * If undefined, the input is considered uncontrolled.
    */
-  balance?: number | undefined
+  balance?: T
 
   /**
    * The token selector UI element to be rendered.
@@ -131,7 +141,7 @@ type Props = {
    * Maximum balance configuration for the input.
    * {@link MaxBalanceProps}
    */
-  maxBalance?: MaxBalanceProps
+  maxBalance?: MaxBalanceProps<T>
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -172,10 +182,28 @@ type Props = {
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
-  onBalance: (balance: number | undefined) => void
+  onBalance: (balance: T | undefined) => void
 }
 
-export const LargeTokenInput = ({
+/**
+ * Calculate the new balance based on max balance and percentage, rounding to specified decimals
+ */
+function calculateNewBalance<T extends Amount>(max: T, newPercentage: number, balanceDecimals: number | undefined): T {
+  let newBalance = new BigNumber(max).times(newPercentage).div(100)
+  if (balanceDecimals != null) {
+    // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
+    newBalance = BigNumber.min(newBalance.toFixed(balanceDecimals), max)
+  }
+  return (typeof max !== 'number' ? newBalance.toString() : newBalance.toNumber()) as T
+}
+
+/**
+ * Calculate percentage based on new balance and round to 2 decimal places
+ */
+const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
+  +new BigNumber(newBalance).div(max).times(100).toFixed(2)
+
+export const LargeTokenInput = <T extends Amount>({
   ref,
   tokenSelector,
   maxBalance,
@@ -188,7 +216,8 @@ export const LargeTokenInput = ({
   onBalance,
   balance: externalBalance,
   testId,
-}: Props) => {
+  dataType,
+}: Props<T>) => {
   const [percentage, setPercentage] = useState<number | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
@@ -200,39 +229,21 @@ export const LargeTokenInput = ({
   const handlePercentageChange = useCallback(
     (newPercentage: number | undefined) => {
       setPercentage(newPercentage)
-
       if (maxBalance?.balance == null) return
-
-      if (newPercentage == null) {
-        setBalance(undefined)
-        return
-      }
-
-      let newBalance = (maxBalance.balance * newPercentage) / 100
-      if (balanceDecimals != null) {
-        // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
-        newBalance = Math.min(+newBalance.toFixed(balanceDecimals), maxBalance.balance)
-      }
-
-      setBalance(newBalance)
+      setBalance(
+        newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage, balanceDecimals),
+      )
     },
     [maxBalance?.balance, balanceDecimals, setBalance],
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: number | undefined) => {
+    (newBalance: T | undefined) => {
       if (newBalance == null) return
-
       setBalance(newBalance)
-
-      if (maxBalance?.balance && newBalance) {
-        // Calculate percentage based on new balance and round to 2 decimal places
-        const calculatedPercentage = (newBalance / maxBalance.balance) * 100
-        const newPercentage = Math.min(Math.round(calculatedPercentage * 100) / 100, 100)
-        setPercentage(newPercentage)
-      } else {
-        setPercentage(undefined)
-      }
+      setPercentage(
+        maxBalance?.balance && newBalance ? calculateNewPercentage(newBalance, maxBalance.balance) : undefined,
+      )
     },
     [maxBalance?.balance, setBalance],
   )
@@ -285,13 +296,14 @@ export const LargeTokenInput = ({
 
         {/** Second row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="center" gap={Spacing.md}>
-          <BalanceTextField
+          <BalanceTextField<T>
             disabled={disabled}
             balance={balance}
             name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onCommit={handleBalanceChange}
+            dataType={dataType}
           />
 
           {tokenSelector}
@@ -323,7 +335,7 @@ export const LargeTokenInput = ({
             {showSlider && (
               <TradingSlider
                 disabled={disabled}
-                percentage={percentage}
+                percentage={percentage == null ? undefined : +percentage}
                 onChange={handlePercentageChange}
                 onCommit={handlePercentageChange}
               />

@@ -1,6 +1,8 @@
+import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
+import type { Amount } from '@ui-kit/utils/units'
 
 /**
  * Validates and normalizes numeric input by replacing commas with dots
@@ -44,9 +46,9 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
  * @param max - The maximum allowed value (default: Infinity)
  * @returns A number within the specified range, or min if the input is invalid/NaN
  */
-const clamp = (value?: number | string, min = -Infinity, max = Infinity) => {
-  const num = Number(value)
-  return isNaN(num) ? min : Math.max(min, Math.min(max, num))
+const clamp = (value?: string, min: Amount = -Infinity, max: Amount = Infinity): BigNumber => {
+  const num = new BigNumber(value ?? min)
+  return num.isNaN() ? new BigNumber(min) : BigNumber.max(min, BigNumber.min(max, num))
 }
 
 /**
@@ -54,35 +56,42 @@ const clamp = (value?: number | string, min = -Infinity, max = Infinity) => {
  * Returns an empty string for undefined/null values to improve UX by showing
  * a blank field when no value is set.
  */
-const getDisplayValue = (val?: number) => (val == null ? '' : String(val))
+const getDisplayValue = (val?: Amount) => (val == null ? '' : String(val))
+
+/**
+ * We require a decimal flag to distinguish between number and string types for T.
+ * We cannot otherwise know whether the consuming code expects decimal input or numbers.
+ */
+export type DataType<T> = { dataType: T extends number ? 'number' : 'decimal' }
 
 /**
  * Props for the NumericTextField component.
  * Extends Material-UI's TextFieldProps while replacing value and onChange
  * to handle numeric input specifically.
  */
-type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
+type NumericTextFieldProps<T extends Amount> = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
   /** The numeric value of the input field */
-  value: number | undefined
+  value: T | undefined
   /** Minimum allowed value (default: 0) */
-  min?: number
+  min?: T
   /** Maximum allowed value (default: Infinity) */
-  max?: number
+  max?: T
   /** Callback fired when the numeric value changes */
-  onChange?: (value: number | undefined) => void
+  onChange?: (value: T | undefined) => void
   /** Callback fired when the numeric is being submitted */
-  onBlur?: (value: number | undefined) => void
-}
+  onBlur?: (value: T | undefined) => void
+} & DataType<T>
 
-export const NumericTextField = ({
+export const NumericTextField = <T extends Amount>({
   value,
-  min = 0,
+  min,
   max,
   onChange,
   onBlur,
   onFocus,
+  dataType,
   ...props
-}: NumericTextFieldProps) => {
+}: NumericTextFieldProps<T>) => {
   // Internal value that might be incomplete, like "4.".
   const [inputValue, setInputValue] = useState(getDisplayValue(value))
 
@@ -101,11 +110,10 @@ export const NumericTextField = ({
    * @param shouldClamp - Whether to apply min/max bounds
    * @returns Numeric value, undefined for empty/invalid input
    */
-  const parseAndClamp = (validatedValue: string, shouldClamp = false) => {
+  const parseAndClamp = (validatedValue: string, { shouldClamp = false }: { shouldClamp?: boolean }) => {
     if (validatedValue === '') return undefined
-
-    const numericValue = Number(validatedValue)
-    return isNaN(numericValue) ? undefined : shouldClamp ? clamp(numericValue, min, max) : numericValue
+    const result = shouldClamp ? clamp(validatedValue, min ?? 0, max) : new BigNumber(validatedValue)
+    return (dataType === 'decimal' ? result.toString() : result.toNumber()) as T
   }
 
   return (
@@ -125,10 +133,10 @@ export const NumericTextField = ({
         onFocus?.(e)
       }}
       onChange={(e) => {
-        const sanitizedValue = sanitize(e.target.value, inputValue, min < 0)
+        const sanitizedValue = sanitize(e.target.value, inputValue, +(min ?? 0) < 0)
         setInputValue(sanitizedValue)
 
-        const changedValue = parseAndClamp(sanitizedValue, false)
+        const changedValue = parseAndClamp(sanitizedValue, { shouldClamp: false })
 
         if (changedValue !== lastChangeValue) {
           onChange?.(changedValue)
@@ -137,7 +145,7 @@ export const NumericTextField = ({
       }}
       onBlur={() => {
         // Replace a sole minus with just empty input as it's not really valid.
-        const finalValue = parseAndClamp(inputValue === '-' ? '' : inputValue, true)
+        const finalValue = parseAndClamp(inputValue === '-' ? '' : inputValue, { shouldClamp: true })
         setInputValue(getDisplayValue(finalValue))
 
         // Also emit the changed event, because due to clamping and such the final value

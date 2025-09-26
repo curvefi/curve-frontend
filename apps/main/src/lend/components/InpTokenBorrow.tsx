@@ -12,7 +12,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 const InpTokenBorrow = ({
   id,
@@ -47,7 +48,7 @@ const InpTokenBorrow = ({
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const [releaseChannel] = useReleaseChannel()
-  const onBalance = useCallback((val?: number) => handleInpChange(`${val ?? ''}`), [handleInpChange])
+  const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
   return releaseChannel !== ReleaseChannel.Beta ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
@@ -80,6 +81,7 @@ const InpTokenBorrow = ({
     </Box>
   ) : (
     <LargeTokenInput
+      dataType="decimal"
       name={id}
       testId={testId ?? `${id}Amt`}
       isError={!!inpError}
@@ -87,13 +89,13 @@ const InpTokenBorrow = ({
       disabled={inpDisabled}
       maxBalance={{
         loading: maxRecv == null,
-        balance: stringToNumber(maxRecv),
+        balance: decimal(maxRecv),
         symbol: tokenSymbol,
         notionalValueUsd: usdRate != null && maxRecv != null ? usdRate * +maxRecv : undefined,
         showSlider: false,
       }}
       label={t`Borrow amount:`}
-      balance={stringToNumber(inpValue)}
+      balance={decimal(inpValue)}
       tokenSelector={
         <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }
