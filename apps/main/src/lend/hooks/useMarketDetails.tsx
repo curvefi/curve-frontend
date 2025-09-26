@@ -6,7 +6,7 @@ import useStore from '@/lend/store/useStore'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import type { Chain, Address } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -28,6 +28,7 @@ export const useMarketDetails = ({
   llamma,
   llammaId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
+  const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = llamma ?? {}
   const { controller, vault } = llamma?.addresses ?? {}
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[llammaId])
@@ -37,7 +38,7 @@ export const useMarketDetails = ({
     isLoading: isMarketDetailsLoading,
   } = useLendMarketDetails({ chainId, marketId: llammaId })
   const { data: lendingSnapshots, isLoading: isSnapshotsLoading } = useLendingSnapshots({
-    blockchainId: networks[chainId]?.id as Chain,
+    blockchainId,
     contractAddress: controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs
@@ -50,7 +51,7 @@ export const useMarketDetails = ({
     chainId,
     tokenAddress: borrowed_token?.address,
   })
-  const { data: campaigns } = useCampaigns({})
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
 
   const {
     borrowApy: averageBorrowApy,
@@ -119,7 +120,7 @@ export const useMarketDetails = ({
 
   return {
     marketType: LlamaMarketType.Lend,
-    blockchainId: networks[chainId]?.id as Chain,
+    blockchainId,
     collateral: {
       symbol: collateral_token?.symbol ?? null,
       tokenAddress: collateral_token?.address,
@@ -166,7 +167,7 @@ export const useMarketDetails = ({
         ? rewardsApr.map((r) => ({
             title: r.symbol,
             percentage: r.apy,
-            blockchainId: networks[chainId]?.id,
+            blockchainId,
             address: r.tokenAddress,
           }))
         : [],

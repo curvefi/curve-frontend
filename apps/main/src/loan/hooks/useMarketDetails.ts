@@ -6,7 +6,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -22,7 +22,8 @@ const averageMultiplier = 30
 const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
-  const { data: campaigns } = useCampaigns({})
+  const blockchainId = networks[chainId]?.id
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -33,7 +34,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     tokenAddress: CRVUSD_ADDRESS,
   })
   const { data: crvUsdSnapshots, isLoading: isSnapshotsLoading } = useCrvUsdSnapshots({
-    blockchainId: networks[chainId as keyof typeof networks]?.id,
+    blockchainId,
     contractAddress: llamma?.controller as Address,
     agg: 'day',
     limit: 30, // fetch last 30 days for 30 day average calcs
@@ -60,7 +61,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
 
   return {
     marketType: LlamaMarketType.Mint,
-    blockchainId: networks[chainId]?.id,
+    blockchainId,
     collateral: {
       symbol: llamma?.collateralSymbol ?? null,
       tokenAddress: llamma?.collateral,

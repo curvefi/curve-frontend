@@ -6,7 +6,6 @@ import TableRowNoResult from '@/dex/components/PagePoolList/components/TableRowN
 import TableSettings from '@/dex/components/PagePoolList/components/TableSettings/TableSettings'
 import type { ColumnKeys, PagePoolList, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
-import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { DEFAULT_FORM_STATUS, getPoolListActiveKey } from '@/dex/store/createPoolListSlice'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -26,7 +25,6 @@ const PoolList = ({
   tableLabels,
   updatePath,
 }: PagePoolList) => {
-  const campaignRewardsMapper = useCampaignRewardsMapper()
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
@@ -46,7 +44,6 @@ const PoolList = ({
   const volumeMapper = useStore((state) => state.pools.volumeMapper[rChainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
   const setFormValues = useStore((state) => state.poolList.setFormValues)
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
   const hideSmallPools = useUserProfileStore((state) => state.hideSmallPools)
   const isCrvRewardsEnabled = useStore((state) => state.networks.networks[rChainId]?.isCrvRewardsEnabled)
 
@@ -115,7 +112,6 @@ const PoolList = ({
         tvlMapper ?? {},
         tvlMapperCached ?? {},
         userPoolList ?? {},
-        campaignRewardsMapper,
       )
     },
     [
@@ -132,7 +128,6 @@ const PoolList = ({
       tvlMapper,
       tvlMapperCached,
       userPoolList,
-      campaignRewardsMapper,
     ],
   )
 
@@ -153,13 +148,6 @@ const PoolList = ({
     updateFormValues(searchParams)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams, hideSmallPools])
-
-  // init campaignRewardsMapper
-  useEffect(() => {
-    if (!initiated) {
-      initCampaignRewards(rChainId)
-    }
-  }, [initCampaignRewards, rChainId, initiated])
 
   let colSpan = isMdUp ? 7 : 4
   if (showHideSmallPools) {

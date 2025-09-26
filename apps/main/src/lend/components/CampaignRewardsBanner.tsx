@@ -1,27 +1,33 @@
+import { useMemo } from 'react'
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
+import networks from '@/lend/networks'
+import { ChainId } from '@/lend/types/lend.types'
+import type { Chain } from '@curvefi/prices-api'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import useStore from '../store/useStore'
 
 interface CampaignRewardsBannerProps {
+  chainId: ChainId
   borrowAddress: string
   supplyAddress: string
 }
 
-const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
-  const campaigns = useStore((state) => state.campaigns.campaignRewardsMapper)
-  const supplyCampaignRewardsPool = campaigns[supplyAddress]
-  const borrowCampaignRewardsPool = campaigns[borrowAddress]
+const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
+  const blockchainId = networks[chainId].id as Chain
+  const { data: campaigns } = useCampaigns({ blockchainId })
+  const supplyCampaignRewardsPool = campaigns?.[supplyAddress]
+  const borrowCampaignRewardsPool = campaigns?.[borrowAddress]
 
-  if (!supplyCampaignRewardsPool && !borrowCampaignRewardsPool) return null
-
-  const campaignRewardsPools = () => {
+  const campaignRewardsPools = useMemo(() => {
     if (supplyCampaignRewardsPool && borrowCampaignRewardsPool) {
       return [...supplyCampaignRewardsPool, ...borrowCampaignRewardsPool]
     }
     if (supplyCampaignRewardsPool) return supplyCampaignRewardsPool
     if (borrowCampaignRewardsPool) return borrowCampaignRewardsPool
     return []
-  }
+  }, [supplyCampaignRewardsPool, borrowCampaignRewardsPool])
+
+  if (!supplyCampaignRewardsPool && !borrowCampaignRewardsPool) return null
 
   const message =
     supplyCampaignRewardsPool && borrowCampaignRewardsPool
@@ -30,7 +36,7 @@ const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewards
         ? t`Supplying in this pool earns points!`
         : t`Borrowing in this pool earns points!`
 
-  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPools()} message={message} />
+  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPools} message={message} />
 }
 
 export default CampaignRewardsBanner

@@ -4,11 +4,11 @@ import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components
 import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
-import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
@@ -17,6 +17,7 @@ import Tooltip from '@ui/Tooltip/TooltipButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard } from '@ui-kit/utils'
 
@@ -29,8 +30,9 @@ type RewardsProps = {
 const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
-  const campaignRewardsMapper = useCampaignRewardsMapper()
-  const campaignRewardsPool = campaignRewardsMapper[poolData.pool.address]
+  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: campaigns } = useCampaignsByNetwork(network.networkId as Chain)
+  const campaignRewardsPool = campaigns?.[poolData.pool.address]
   const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
 
   const baseAPYS = [

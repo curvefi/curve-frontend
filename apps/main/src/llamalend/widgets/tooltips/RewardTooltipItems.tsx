@@ -2,11 +2,11 @@ import { formatPercent } from '@/llamalend/format.utils'
 import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward'
 import { Stack } from '@mui/material'
 import Link from '@mui/material/Link'
-import type { RewardsAction } from '@ui/CampaignRewards/types'
-import { PoolRewards } from '@ui-kit/entities/campaigns'
+import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { RewardsAction } from '@external-rewards'
 import { TooltipItem } from './TooltipComponents'
 
 const { Spacing } = SizesAndSpaces
@@ -22,7 +22,7 @@ export type ExtraIncentiveItem = {
 type RewardsTooltipItemsProps = {
   title: string
   boostedApr?: number | null | undefined
-  extraRewards: PoolRewards[]
+  extraRewards: CampaignPoolRewards[]
   tooltipType: Extract<RewardsAction, 'borrow' | 'supply'>
   extraIncentives: ExtraIncentiveItem[]
 }
@@ -65,6 +65,7 @@ export const RewardsTooltipItems = ({
                 gap={Spacing.xs}
               >
                 {r.multiplier}
+                {typeof r.multiplier === 'number' ? 'x' : ''}
                 <ArrowOutwardIcon />
               </Stack>
             </TooltipItem>

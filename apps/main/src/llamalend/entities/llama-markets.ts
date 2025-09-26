@@ -4,7 +4,7 @@ import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
-import { getCampaignOptions, type PoolRewards } from '@ui-kit/entities/campaigns'
+import { getCampaignOptions, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -57,7 +57,7 @@ export type LlamaMarket = {
   }
   type: LlamaMarketType
   url: string
-  rewards: PoolRewards[]
+  rewards: CampaignPoolRewards[]
   isFavorite: boolean
   leverage: number
   deprecatedMessage?: string
@@ -98,7 +98,7 @@ const convertLendingVault = (
     extraRewardApr,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, PoolRewards[]> = {},
+  campaigns: Record<string, CampaignPoolRewards[]> = {},
   userBorrows: Set<Address>,
   userSupplied: Set<Address>,
 ): LlamaMarket => {
@@ -193,7 +193,7 @@ const convertMintMarket = (
     chain,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
-  campaigns: Record<string, PoolRewards[]> = {},
+  campaigns: Record<string, CampaignPoolRewards[]> = {},
   userMintMarkets: Set<Address>,
   collateralIndex: number, // index in the list of markets with the same collateral token, used to create a unique name
 ): LlamaMarket => {
