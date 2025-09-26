@@ -1,11 +1,4 @@
-import type { FormEstGas, FormStatus, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
-
-export const DEFAULT_USER_LOCKED_CRV_INFO: VecrvInfo = {
-  crv: '0',
-  lockedAmountAndUnlockTime: { lockedAmount: '0', unlockTime: 0 },
-  veCrv: '0',
-  veCrvPct: '0',
-}
+import type { FormEstGas, FormStatus, FormValues } from '@/dao/components/PageVeCrv/types'
 
 export const DEFAULT_FORM_EST_GAS: FormEstGas = {
   estimatedGas: 0,

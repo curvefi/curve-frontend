@@ -3,7 +3,6 @@ import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConnectModal'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
 import { DesktopHeader } from './DesktopHeader'
@@ -12,7 +11,6 @@ import { HeaderProps, NavigationSection } from './types'
 
 export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
   const isDesktop = useIsDesktop()
-  const [releaseChannel] = useReleaseChannel()
   const pathname = usePathname()
   const { networkId, currentMenu } = props
   const pages = useMemo(
