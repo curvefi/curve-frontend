@@ -21,7 +21,8 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -153,7 +154,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
   return (
     <>
@@ -194,9 +195,10 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
         </div>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           name="amount"
           disabled={disabled}
-          balance={stringToNumber(formValues.amount)}
+          balance={decimal(formValues.amount)}
           isError={!!formValues.amountError}
           message={
             formValues.amountError === 'too-much-wallet'
@@ -204,10 +206,10 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
               : undefined
           }
           maxBalance={{
-            balance: (userBalances?.gauge ?? '') ? Number(userBalances?.gauge ?? '') : undefined,
+            balance: decimal(userBalances?.gauge),
             loading: !!signerAddress && typeof userBalances === 'undefined',
             showSlider: false,
-            notionalValueUsd: stringToNumber(formValues?.amount),
+            notionalValueUsd: decimal(formValues?.amount),
             symbol: t`Vault shares`,
           }}
           onBalance={onBalance}

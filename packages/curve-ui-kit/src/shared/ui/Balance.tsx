@@ -7,6 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, SxProps } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -50,13 +51,13 @@ const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId
   </Button>
 )
 
-type BalanceTextProps = {
+type BalanceTextProps<T> = {
   symbol: string
-  balance?: number
+  balance?: T
   loading?: boolean
 }
 
-const BalanceText = ({ symbol, balance, loading = false }: BalanceTextProps) => (
+const BalanceText = <T extends number | Decimal>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
       <Typography
@@ -78,7 +79,7 @@ const BalanceText = ({ symbol, balance, loading = false }: BalanceTextProps) => 
 /**
  * Props for the Balance component
  */
-export type Props = {
+export type Props<T> = {
   /** The token symbol to display */
   symbol: string
   /** Controls how the max value is displayed:
@@ -88,13 +89,16 @@ export type Props = {
    */
   max: 'balance' | 'button' | 'off'
   /** The token balance amount (optional, in case of loading) */
-  balance?: number
+  balance?: T
   /** The USD value of the balance (optional) */
-  notionalValueUsd?: number
+  notionalValueUsd?: T | number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
   sx?: SxProps
-  /** Callback function when max button/balance is clicked */
+  /**
+   * Callback function when max button/balance is clicked.
+   * When using LargeTokenInput, onChange will be called with the max value before this.
+   **/
   onMax?: () => void
   /** Whether the balance is loading */
   loading?: boolean
@@ -104,7 +108,7 @@ export type Props = {
   maxTestId?: string
 }
 
-export const Balance = ({
+export const Balance = <T extends number | Decimal>({
   symbol,
   max,
   loading = false,
@@ -115,7 +119,7 @@ export const Balance = ({
   onMax,
   disabled,
   maxTestId,
-}: Props) => (
+}: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
 
