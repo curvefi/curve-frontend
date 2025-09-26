@@ -19,7 +19,7 @@ import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
-import type { Chain } from '@curvefi/prices-api'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -64,19 +64,19 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
+  const network = networks[rChainId]
   const {
     data: userCollateralEvents,
     isLoading: collateralEventsIsLoading,
     isError: collateralEventsIsError,
   } = useUserCollateralEvents({
     app: 'lend',
-    chainId: rChainId,
-    chain: networks[rChainId].id as Chain,
+    chain: isChain(network.id) ? network.id : undefined,
     controllerAddress: market?.addresses?.controller as Address,
     userAddress: signerAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
-    scanTxPath: networks[rChainId].scanTxPath,
+    scanTxPath: network.scanTxPath,
   })
 
   useEffect(() => {
@@ -141,7 +141,7 @@ const Page = () => {
   }
   return (
     <>
-      {chartExpanded && networks[rChainId].pricesData && (
+      {chartExpanded && network.pricesData && (
         <PriceAndTradesExpandedContainer>
           <Box flex padding="0 0 var(--spacing-2)">
             <ExpandButton
