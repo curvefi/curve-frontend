@@ -7,7 +7,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, SxProps } from '@ui-kit/utils'
-import type { Decimal } from '@ui-kit/utils/units'
+import type { Amount } from '@ui-kit/utils/units'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -57,7 +57,7 @@ type BalanceTextProps<T> = {
   loading?: boolean
 }
 
-const BalanceText = <T extends number | Decimal>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
+const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
     <Stack direction="row" gap={Spacing.xs} alignItems="center">
       <Typography
@@ -108,7 +108,7 @@ export type Props<T> = {
   maxTestId?: string
 }
 
-export const Balance = <T extends number | Decimal>({
+export const Balance = <T extends Amount>({
   symbol,
   max,
   loading = false,
