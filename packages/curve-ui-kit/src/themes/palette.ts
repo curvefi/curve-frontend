@@ -27,5 +27,3 @@ export const createPalette = (
   background: { default: Layer.App.Background, paper: Layer[2].Fill },
   divider: Layer[1].Outline,
 })
-
-export type Palette = ReturnType<typeof createPalette>

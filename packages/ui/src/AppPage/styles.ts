@@ -2,22 +2,6 @@ import { styled } from 'styled-components'
 import Box from 'ui/src/Box'
 import { breakpoints } from 'ui/src/utils'
 
-// PAGE STYLES
-export const AppPageContainer = styled.div`
-  background-color: var(--table--background-color);
-  border: 1px solid var(--box--secondary--border);
-  margin: 0 auto;
-  max-width: var(--width);
-  min-height: 50vh;
-  padding-bottom: var(--spacing-normal);
-
-  @media (min-width: ${breakpoints.lg}rem) {
-    margin: 1.5rem;
-    margin-top: 3rem;
-    padding-bottom: 0;
-  }
-`
-
 // PAGE STYLES WITH FORMS
 export const AppPageFormContainer = styled.div<{ isAdvanceMode: boolean }>`
   @media (min-width: 425px) {
@@ -57,21 +41,6 @@ export const AppPageFormTitleWrapper = styled.header`
   @media (min-width: ${breakpoints.sm}rem) {
     padding-top: var(--spacing-normal);
     padding-left: 0;
-  }
-`
-
-export const AppPageFormTitleLinks = styled.div`
-  color: var(--page--text-color);
-  font-size: var(--font-size-2);
-  margin-bottom: var(--spacing-2);
-  text-transform: uppercase;
-  font-weight: bold;
-  line-height: 1;
-  padding: 0 2px;
-
-  a.active {
-    background-color: black;
-    color: var(--nav--page--color);
   }
 `
 

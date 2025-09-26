@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { FormControlLabel } from '@mui/material'
 import Popover from '@mui/material/Popover'
 import Stack from '@mui/material/Stack'
@@ -7,7 +6,6 @@ import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { VisibilityGroup } from './visibility.types'
 
-const { isEqual } = lodash
 const { Spacing } = SizesAndSpaces
 
 /**

@@ -53,14 +53,12 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       sliceState.setStateByKey('loading', true)
 
-      const tvlMapper = pools.tvlMapper[chainId] ?? {}
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
       const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
       for (const { pool, tokenAddressesAll, tokensAll, tokenDecimalsAll } of poolDatas) {
-        const tvl = +(tvlMapper[pool.id]?.value ?? '0')
         const volume = +(volumeMapper[pool.id]?.value ?? '0')
         const counted = countBy(tokensAll)
 

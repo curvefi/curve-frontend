@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import { useAccount, useConfig } from 'wagmi'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
-import { userBalancesQueryKey } from '@/llamalend/queries/user-balances.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { useMutation } from '@tanstack/react-query'
@@ -73,7 +72,6 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       notify(t`Loan created successfully`, 'success')
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: userAddress }) }),
-        queryClient.invalidateQueries({ queryKey: userBalancesQueryKey({ chainId, poolId, userAddress }) }),
         queryClient.invalidateQueries({ queryKey: borrowExpectedCollateralQueryKey({ chainId, poolId, ...mutation }) }),
       ])
     },

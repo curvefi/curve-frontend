@@ -3,7 +3,6 @@ import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
-import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import Vault from '@/lend/components/PageVault/index'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
@@ -72,12 +71,6 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
-
-  // set tabs
-  const DETAIL_INFO_TYPES: { key: DetailInfoTypes; label: string }[] = [{ label: t`Lend Details`, key: 'market' }]
-  if (signerAddress) {
-    DETAIL_INFO_TYPES.push({ label: t`Your Details`, key: 'user' })
-  }
 
   const fetchInitial = useCallback(
     async (api: Api, market: OneWayMarketTemplate) => {

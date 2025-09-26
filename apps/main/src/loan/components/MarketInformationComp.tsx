@@ -46,7 +46,7 @@ export const MarketInformationComp = ({
       )}
       {isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp llamma={llamma} llammaId={llammaId} chainId={chainId} page={page} />
+          <BandsComp llamma={llamma} llammaId={llammaId} page={page} />
         </Stack>
       )}
       {llamma && isAdvancedMode && (

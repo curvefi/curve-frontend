@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { styled } from 'styled-components'
 import DetailsBandsChart from '@/loan/components/LoanInfoLlamma/components/DetailsBandsChart'
 import ChartUserBands from '@/loan/components/LoanInfoUser/components/ChartUserBands'
-import type { ChainId, Llamma } from '@/loan/types/loan.types'
+import type { Llamma } from '@/loan/types/loan.types'
 import { Stack } from '@mui/material'
 import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
@@ -10,11 +10,10 @@ import { t } from '@ui-kit/lib/i18n'
 type BandsCompProps = {
   llamma: Llamma
   llammaId: string
-  chainId: ChainId
   page: 'create' | 'manage'
 }
 
-export const BandsComp = ({ llamma, llammaId, chainId, page }: BandsCompProps) => {
+export const BandsComp = ({ llamma, llammaId, page }: BandsCompProps) => {
   const [selectedBand, setSelectedBand] = useState<'user' | 'market'>(page === 'create' ? 'market' : 'user')
 
   const SelectorMenu =

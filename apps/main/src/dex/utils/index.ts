@@ -69,8 +69,6 @@ export const delayAction = <T extends () => unknown>(cb: T) => setTimeout(() => 
 export const getChainPoolIdActiveKey = (chainId: ChainId | null, poolId: string | undefined) =>
   chainId && poolId ? `${chainId}-${poolId}` : ''
 
-export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
-
 /**
  * Converts a Token object to a TokenOption object
  *

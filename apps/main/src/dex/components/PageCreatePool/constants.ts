@@ -34,13 +34,6 @@ export type PRESETS = {
   }
 }
 
-interface ImplementationDetail {
-  name: string
-  descriptionName: string
-  titleDescription: string
-  description: string
-}
-
 const fillerParams = {
   stableSwapFee: '',
   stableA: '',

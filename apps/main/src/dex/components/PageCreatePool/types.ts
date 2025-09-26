@@ -23,12 +23,6 @@ export type CreateToken = {
   basePool?: boolean
 }
 
-export type CreateQuickListToken = {
-  address: string
-  haveSameTokenName?: boolean
-  symbol: string
-}
-
 export type TokenState = {
   address: string
   symbol: string

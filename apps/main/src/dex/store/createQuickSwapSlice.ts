@@ -318,8 +318,6 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
 
       if (!curve || !storedUserBalancesMapper || !searchedParams.fromAddress || !searchedParams.toAddress) return
 
-      const { signerAddress, chainId } = curve
-
       // set loading
       const storedRoutesAndOutput = sliceState.routesAndOutput[activeKey]
       if (storedRoutesAndOutput) {
@@ -327,7 +325,8 @@ const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): Quick
       }
 
       // get wallet balances
-      if (signerAddress) await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress)
+      if (curve.signerAddress)
+        await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress)
 
       // get max if MAX button is clicked
       if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
