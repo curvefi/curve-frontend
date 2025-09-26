@@ -49,7 +49,8 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal } from '@ui-kit/utils'
+import type { Decimal } from '@ui-kit/utils/units'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -112,7 +113,7 @@ const LoanDeleverage = ({
   )
 
   const onCollateralChanged = useCallback(
-    (val?: number) => updateFormValues({ collateral: `${val ?? ''}` }, '', false),
+    (val?: Decimal) => updateFormValues({ collateral: val ?? '' }, '', false),
     [updateFormValues],
   )
 
@@ -330,6 +331,7 @@ const LoanDeleverage = ({
         </Box>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           name="collateral"
           testId="inpCollateral"
           isError={!!formValues.collateralError}
@@ -341,13 +343,13 @@ const LoanDeleverage = ({
           disabled={disable}
           maxBalance={{
             loading: userWalletBalancesLoading,
-            balance: stringToNumber(userState?.collateral),
+            balance: decimal(userState?.collateral),
             symbol: collateralName,
             showSlider: false,
             ...(collateralUsdRate != null &&
               userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
           }}
-          balance={stringToNumber(formValues.collateral)}
+          balance={decimal(formValues.collateral)}
           tokenSelector={
             <TokenLabel
               blockchainId={network.id}
