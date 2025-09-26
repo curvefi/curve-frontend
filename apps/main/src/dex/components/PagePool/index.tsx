@@ -69,6 +69,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const pricesApiPoolsMapper = useStore((state) => state.pools.pricesApiPoolsMapper)
   const fetchPricesPoolSnapshots = useStore((state) => state.pools.fetchPricesPoolSnapshots)
   const snapshotsMapper = useStore((state) => state.pools.snapshotsMapper)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
 
@@ -199,6 +200,13 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       </StyledExternalLink>
     </AppPageFormTitleWrapper>
   )
+
+  // init rewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) setChartExpanded(false)

@@ -1,5 +1,5 @@
 import { Alert, Stack, Typography } from '@mui/material'
-import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
@@ -29,7 +29,7 @@ export type BorrowAPY = {
   // total = rate - rebasingYield
   totalBorrowRate: number | null
   totalAverageBorrowRate: number | null
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 export type LiquidationRange = {

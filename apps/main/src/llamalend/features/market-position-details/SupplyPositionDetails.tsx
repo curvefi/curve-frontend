@@ -1,6 +1,6 @@
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { PoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -31,7 +31,7 @@ type SupplyAPY = {
   totalAverageSupplyRateMaxBoost: number | null
   extraIncentives: ExtraIncentive[]
   averageTotalExtraIncentivesApr: number | undefined | null
-  extraRewards: CampaignPoolRewards[]
+  extraRewards: PoolRewards[]
   loading: boolean
 }
 type Shares = {

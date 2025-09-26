@@ -86,6 +86,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       state.userBalances.resetState()
       state.lockedCrv.resetState()
       state.createPool.resetState()
+      state.campaigns.resetState()
       state.dashboard.resetState()
     }
 
@@ -98,7 +99,16 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     state.setNetworkConfigFromApi(curveApi)
     state.networks.setNetworkConfigs(curveApi)
 
-    const network = state.networks.networks[chainId]
+    /**
+     * We might be double fetching networks due to useFetchNetworks, but there's
+     * a chance if we don't call it the networks aren't loaded yet and thus undefined.
+     * The real proper fix is to refactor into a Tanstack query and await fetchQuery.
+     * The DexLayout has `return isFetched && <Outlet />`, but adding isHydrated
+     * will only make the dex app refresh and blink many times.
+     * This hacky fix is there to because of Plasma network time sensitivity.
+     */
+    const networks = await state.networks.fetchNetworks()
+    const network = networks[chainId]
     const { excludePoolsMapper } = network
 
     // get poolList

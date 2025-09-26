@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import LoanFormCreate from '@/lend/components/PageLoanCreate/LoanFormCreate'
 import type { FormValues } from '@/lend/components/PageLoanCreate/types'
 import { DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
@@ -42,6 +42,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   const onUpdate = useOnFormUpdate(pageProps)
 
   const resetState = useStore((state) => state.loanCreate.resetState)
+  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   type Tab = 'create' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
@@ -55,6 +56,13 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           ],
     [market?.leverage, releaseChannel],
   )
+
+  // init campaignRewardsMapper
+  useEffect(() => {
+    if (!initiated) {
+      initCampaignRewards(rChainId)
+    }
+  }, [initCampaignRewards, rChainId, initiated])
 
   return (
     <>

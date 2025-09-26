@@ -1,15 +1,15 @@
 import { styled } from 'styled-components'
 import CampaignRewardsComp from 'ui/src/CampaignRewards/CampaignRewardsComp'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import type { RewardsPool } from 'ui/src/CampaignRewards/types'
 
 interface Props {
-  rewardItems: CampaignPoolRewards[]
+  rewardItems: RewardsPool[]
   mobile?: boolean
 }
 
 const CampaignRewardsRow = ({ rewardItems, mobile = false }: Props) => (
   <Container mobile={mobile}>
-    {rewardItems.map((rewardItem, index) => (
+    {rewardItems.map((rewardItem: RewardsPool, index: number) => (
       <CampaignRewardsComp
         key={`${rewardItem.platform}-${rewardItem.description}-${index}`}
         rewardsPool={rewardItem}

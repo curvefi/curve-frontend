@@ -1,13 +1,8 @@
 import { styled } from 'styled-components'
-import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { RCPointsIcon } from 'ui/src/images'
 import { ExternalLink } from 'ui/src/Link'
 import RewardsCompSmall from './CampaignRewardsComp'
-
-type CampaignRewardsBannerCompProps = {
-  campaignRewardsPool: CampaignPoolRewards[]
-  message: string
-}
+import type { CampaignRewardsBannerCompProps } from './types'
 
 const RewardsBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>

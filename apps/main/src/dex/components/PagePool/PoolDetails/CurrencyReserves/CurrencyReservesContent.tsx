@@ -64,10 +64,10 @@ const CurrencyReservesContent = ({
 
     <Box className={'right'} flex flexDirection="column">
       <Chip size="md" isBold>
-        {formatNumber(cr?.balance, { defaultValue: '-' })}{' '}
+        {formatNumber(cr?.balance)}{' '}
       </Chip>
       <TokenBalancePercent opacity={0.7}>
-        {typeof cr?.percentShareInPool === 'undefined' || cr.percentShareInPool === 'NaN'
+        {cr?.percentShareInPool == null || cr.percentShareInPool === 'NaN'
           ? '?%'
           : formatNumber(cr.percentShareInPool, {
               style: 'percent',
