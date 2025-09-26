@@ -4,10 +4,13 @@ import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { USER_POSITION_HISTORY_COLUMNS, DEFAULT_SORT } from './columns'
 import { ParsedUserCollateralEvent } from './hooks/useUserCollateralEvents'
 import { useUserPositionHistoryVisibility } from './hooks/useUserPositionHistoryVisibility'
 import { RowExpandedPanel } from './RowExpandedPanel'
+
+const { MaxHeight } = SizesAndSpaces
 
 type UserEventsTableProps = {
   events: ParsedUserCollateralEvent[]
@@ -35,7 +38,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
       }
       loading={loading}
       options={{
-        maxHeight: '462px',
+        maxHeight: MaxHeight.userEventsTable,
       }}
       expandedPanel={RowExpandedPanel}
       shouldStickFirstColumn={false}

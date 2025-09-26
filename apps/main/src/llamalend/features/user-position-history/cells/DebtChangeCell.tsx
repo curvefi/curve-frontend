@@ -10,10 +10,7 @@ export const DebtChangeCell = ({
   },
 }: CellContext<ParsedUserCollateralEvent, any>) => (
   <HistoryTableCell>
-    <Typography
-      variant="tableCellMBold"
-      color={loanChange === 0 || loanChange == null ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}
-    >
+    <Typography variant="tableCellMBold" color={!loanChange ? 'textPrimary' : loanChange > 0 ? 'error' : 'success'}>
       {loanChange > 0 ? '+' : ''}
       {loanChange ? `${formatNumber(loanChange)} ${borrowToken?.symbol}` : '-'}
     </Typography>
