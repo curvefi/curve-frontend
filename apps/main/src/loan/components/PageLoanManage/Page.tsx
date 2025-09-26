@@ -13,6 +13,7 @@ import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import useTitleMapper from '@/loan/hooks/useTitleMapper'
+import { useUserLoanStatus } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
 import {
@@ -30,10 +31,13 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
+import { LoanManageSoftLiquidation } from './LoanManageSoftLiquidation'
 
 const { Spacing } = SizesAndSpaces
 
@@ -58,6 +62,9 @@ const Page = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
   const { provider, connect: connectWallet } = useWallet()
+
+  const [releaseChannel] = useReleaseChannel()
+  const isManageSoftLiq = useUserLoanStatus(llammaId) !== 'healthy' && releaseChannel === ReleaseChannel.Beta
 
   const [loaded, setLoaded] = useState(false)
 
@@ -146,7 +153,8 @@ const Page = () => {
       )}
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {isValidRouterParams && (
+          {isManageSoftLiq && <LoanManageSoftLiquidation market={llamma} />}
+          {isValidRouterParams && !isManageSoftLiq && (
             <LoanMange
               {...formProps}
               params={params}
