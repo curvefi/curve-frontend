@@ -274,7 +274,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   return (
     <>
       {/* field debt */}
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -338,7 +338,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <>
             <InputProvider
               grid

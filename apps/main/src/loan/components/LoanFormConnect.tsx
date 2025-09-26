@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const LoanFormConnect = ({
@@ -13,12 +13,11 @@ const LoanFormConnect = ({
   haveSigner: boolean
   loading?: boolean
 }) => {
-  const { connectState } = useConnection()
-  const { connect } = useWallet()
+  const { connectState, connect } = useWallet()
   return (
     <>
       {!isLoading(connectState) && !loading && !haveSigner ? (
-        <Button fillWidth size="large" variant="filled" onClick={() => connect()}>
+        <Button fillWidth size="large" variant="filled" onClick={() => connect()} loading={isLoading(connectState)}>
           {t`Connect Wallet`}
         </Button>
       ) : isLoading(connectState) || loading ? (

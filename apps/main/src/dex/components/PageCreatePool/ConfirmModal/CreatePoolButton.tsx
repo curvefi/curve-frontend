@@ -6,7 +6,7 @@ import { CurveApi } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 interface Props {
@@ -23,10 +23,10 @@ const CreatePoolButton = ({ disabled, curve }: Props) => {
   const txLink = useStore((state) => state.createPool.transactionState.txLink)
   const poolId = useStore((state) => state.createPool.transactionState.poolId)
   const errorMessage = useStore((state) => state.createPool.transactionState.errorMessage)
-  const { connect: connectWallet } = useWallet()
+  const { connectState, connect: connectWallet } = useWallet()
 
   return !haveSigner ? (
-    <StyledButton variant="filled" onClick={() => connectWallet()}>
+    <StyledButton variant="filled" onClick={() => connectWallet()} loading={isLoading(connectState)}>
       {t`Connect Wallet`}
     </StyledButton>
   ) : (

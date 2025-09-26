@@ -158,7 +158,7 @@ export type GetUserCollateralEventsResponse = {
     {
       dt: string
       transaction_hash: Address
-      type: 'Borrow' | 'Deposit'
+      type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
       user: Address
       collateral_change: number
       collateral_change_usd: number | null
@@ -170,11 +170,14 @@ export type GetUserCollateralEventsResponse = {
         collateral_received: number
         collateral_received_usd: number
         stablecoin_received: number
+        stablecoin_received_usd: number
         debt: number
+        debt_usd: number
       } | null
       n1: number
       n2: number
       oracle_price: number
+      is_position_closed: boolean
     },
   ]
 }

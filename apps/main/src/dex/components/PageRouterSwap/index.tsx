@@ -380,7 +380,7 @@ const QuickSwap = ({
       {/* inputs */}
       <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          {releaseChannel == ReleaseChannel.Legacy ? (
+          {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
               <InputProvider
                 id="fromAmount"
@@ -446,6 +446,7 @@ const QuickSwap = ({
                 ...(searchedParams.fromAddress === ethAddress && {
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
+                showSlider: false,
               }}
               isError={!!formValues.fromError}
               disabled={isDisable}
@@ -490,7 +491,7 @@ const QuickSwap = ({
         </div>
 
         {/* SWAP TO */}
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <div>
             <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
               <InputDebounced
@@ -527,15 +528,12 @@ const QuickSwap = ({
           </div>
         ) : (
           <LargeTokenInput
+            balance={stringToNumber(formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
-            maxBalance={{
-              loading: userBalancesLoading,
-              balance: stringToNumber(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              max: 'off',
-            }}
+            {...(userToBalance != null && {
+              label: `Avail. ${formatNumber(userToBalance)} ${toToken?.symbol || ''}`,
+            })}
             message={<FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />}
             disabled={isDisable}
             testId="to-amount"

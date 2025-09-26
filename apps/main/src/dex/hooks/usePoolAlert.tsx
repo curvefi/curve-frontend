@@ -110,6 +110,7 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
     const ironbankAlert = (): PoolAlert => ({
       alertType: 'warning',
       isInformationOnlyAndShowInForm: true,
+      isDisableDeposit: true,
       message: (
         <MessageWrapper>
           <div>Ironbank protocol is deprecated. Please do not supply liquidity to this pool.</div>
@@ -130,6 +131,24 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
               https://x.com/synthetix_io/status/1953054538610688198
             </ExternalLink>{' '}
             for additional information.
+          </div>
+        </MessageWrapper>
+      ),
+    })
+    const yieldbasisAlert = (): PoolAlert => ({
+      alertType: 'warning',
+      isDisableDeposit: true,
+      isInformationOnly: true,
+      isCloseOnTooltipOnly: true,
+      message: (
+        <MessageWrapper>
+          <div>
+            This pool is managed by <b>Yieldbasis</b>. Only deposits done from from the Yieldbasis UI earn from fees and
+            rewards. <br /> Go to{' '}
+            <ExternalLink $noStyles href="https://yieldbasis.com">
+              yieldbasis.com
+            </ExternalLink>{' '}
+            to deposit.
           </div>
         </MessageWrapper>
       ),
@@ -207,6 +226,9 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       '0x3f1b0278a9ee595635b61817630cc19de792f506': synthetixAlert(),
       '0x2dded6da1bf5dbdf597c45fcfaa3194e53ecfeaf': ironbankAlert(),
       '0xa5407eae9ba41422680e2e00537571bcc53efbfd': synthetixUsdAlert(),
+      '0x83f24023d15d835a213df24fd309c47dab5beb32': yieldbasisAlert(),
+      '0xf1f435b05d255a5dbde37333c0f61da6f69c6127': yieldbasisAlert(),
+      '0xd9ff8396554a0d18b2cfbec53e1979b7ecce8373': yieldbasisAlert(),
 
       // arbitrum
       '0x960ea3e3c7fb317332d990873d354e18d7645590': possibleVyperExploitedAlert(), // tricrypto

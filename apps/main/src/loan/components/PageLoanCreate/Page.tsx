@@ -1,15 +1,19 @@
 import { useCallback, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import type { Address } from 'viem'
 import { useAccount } from 'wagmi'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
 import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
+import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
@@ -20,6 +24,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -35,6 +40,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { CRVUSD } from '@ui-kit/utils/address'
 
 const { Spacing } = SizesAndSpaces
 
@@ -69,6 +75,25 @@ const Page = () => {
   const isLeverage = rFormType === 'leverage'
 
   const marketDetails = useMarketDetails({ chainId: rChainId, llamma, llammaId })
+  const network = networks[rChainId]
+  const {
+    data: userCollateralEvents,
+    isLoading: collateralEventsIsLoading,
+    isError: collateralEventsIsError,
+  } = useUserCollateralEvents({
+    app: 'crvusd',
+    chain: isChain(network.id) ? network.id : undefined,
+    controllerAddress: llamma?.controller as Address,
+    userAddress: curve?.signerAddress,
+    collateralToken: {
+      symbol: llamma?.collateralSymbol,
+      address: llamma?.collateral,
+      decimals: llamma?.collateralDecimals,
+      name: llamma?.collateralSymbol,
+    },
+    borrowToken: CRVUSD,
+    scanTxPath: network.scanTxPath,
+  })
 
   const fetchInitial = useCallback(
     (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
@@ -94,7 +119,7 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (pageLoaded && curve) {
+    if (pageLoaded && curve?.hydrated) {
       if (llamma) {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
@@ -109,7 +134,7 @@ const Page = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded && curve && llamma])
+  }, [pageLoaded && curve?.hydrated && llamma])
 
   // redirect if loan exists
   useEffect(() => {
@@ -198,6 +223,13 @@ const Page = () => {
           {!loanExists && (
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
+              {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
+                <UserPositionHistory
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
+                />
+              )}
             </Stack>
           )}
           <Stack>

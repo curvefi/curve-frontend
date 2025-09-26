@@ -59,7 +59,7 @@ const FieldToken = ({
     afterMaxClick?.(idx)
   }, [idx, afterMaxClick, handleAmountChange, balance])
 
-  return releaseChannel == ReleaseChannel.Legacy ? (
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <InputProvider
       grid
       gridTemplateColumns={hideMaxButton ? '1fr auto' : '1fr auto auto'}

@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import Button from '@ui/Button'
 import Spinner from '@ui/Spinner'
-import { useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
 const FormActions = ({
@@ -13,11 +13,11 @@ const FormActions = ({
   loading: boolean
   children: ReactNode
 }) => {
-  const { connect } = useWallet()
+  const { connect, connectState } = useWallet()
   return (
     <>
       {!haveSigner && !loading ? (
-        <Button fillWidth size="large" variant="filled" onClick={() => connect()}>
+        <Button fillWidth size="large" variant="filled" onClick={() => connect()} loading={isLoading(connectState)}>
           {t`Connect Wallet`}
         </Button>
       ) : loading ? (

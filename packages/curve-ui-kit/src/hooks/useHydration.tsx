@@ -29,6 +29,7 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
       try {
         // todo: keep hydration when switching apps, only hydrate when wallet/chain changes
         await hydrate(lib, prev.current, wallet)
+        if (lib) lib.hydrated = true
       } catch (error) {
         console.error(`Error during ${libKey} hydration`, error)
       } finally {
@@ -37,9 +38,7 @@ export const useHydration = <K extends LibKey, ChainId extends number>(
         }
       }
     })()
-    return () => {
-      abort.abort()
-    }
+    return () => abort.abort()
   }, [chainId, hydrate, lib, libKey, wallet])
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
-import { useLendMarket } from '@/lend/entities/lend-markets'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import useStore from '@/lend/store/useStore'
 import AlertBox from '@ui/AlertBox'
@@ -18,7 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
-  const { data: market } = useLendMarket({ chainId: rChainId, marketId: rOwmId })
+  const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
   const loanCollateralAddActiveKey = useStore((state) => state.loanCollateralAdd.activeKey)

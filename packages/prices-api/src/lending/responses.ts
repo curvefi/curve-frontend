@@ -56,7 +56,7 @@ export type GetUserCollateralEventsResponse = {
     {
       dt: string
       transaction_hash: Address
-      type: 'Borrow' | 'Deposit'
+      type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
       user: Address
       collateral_change: number
       collateral_change_usd: number
@@ -73,7 +73,7 @@ export type GetUserCollateralEventsResponse = {
         debt_usd: number
       }
       leverage?: {
-        event_type: 'Deposit' | 'Borrow'
+        event_type: 'Deposit' | 'Repay'
         user: Address
         user_collateral: number
         user_borrowed: number
@@ -88,6 +88,7 @@ export type GetUserCollateralEventsResponse = {
       n1: number
       n2: number
       oracle_price: number
+      is_position_closed: boolean
     },
   ]
 }

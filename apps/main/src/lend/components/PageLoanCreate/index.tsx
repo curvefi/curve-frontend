@@ -75,7 +75,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
-        fullWidth={releaseChannel == ReleaseChannel.Legacy}
+        fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         <AppFormContentWrapper>

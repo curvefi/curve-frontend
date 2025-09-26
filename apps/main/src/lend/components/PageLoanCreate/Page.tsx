@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
+import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
-import { useLendMarket } from '@/lend/entities/lend-markets'
+import { useOneWayMarket } from '@/lend/entities/chain'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -16,6 +17,9 @@ import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -38,7 +42,7 @@ const Page = () => {
   const params = useParams<MarketUrlParams>()
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
 
-  const { data: market, isSuccess } = useLendMarket({ chainId: rChainId, marketId: rMarket })
+  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
@@ -53,11 +57,26 @@ const Page = () => {
 
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const rOwmId = market?.id ?? ''
+  const { signerAddress } = api ?? {}
 
   const marketDetails = useMarketDetails({
     chainId: rChainId,
     llamma: market,
     llammaId: rOwmId,
+  })
+  const network = networks[rChainId]
+  const {
+    data: userCollateralEvents,
+    isLoading: collateralEventsIsLoading,
+    isError: collateralEventsIsError,
+  } = useUserCollateralEvents({
+    app: 'lend',
+    chain: isChain(network.id) ? network.id : undefined,
+    controllerAddress: market?.addresses?.controller as Address,
+    userAddress: signerAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
+    scanTxPath: network.scanTxPath,
   })
 
   useEffect(() => {
@@ -122,7 +141,7 @@ const Page = () => {
   }
   return (
     <>
-      {chartExpanded && networks[rChainId].pricesData && (
+      {chartExpanded && network.pricesData && (
         <PriceAndTradesExpandedContainer>
           <Box flex padding="0 0 var(--spacing-2)">
             <ExpandButton
@@ -152,6 +171,13 @@ const Page = () => {
           <MarketInformationTabs currentTab={'borrow'} hrefs={positionDetailsHrefs}>
             <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
               <NoPosition type="borrow" />
+              {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
+                <UserPositionHistory
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
+                />
+              )}
             </Stack>
           </MarketInformationTabs>
           <Stack>
