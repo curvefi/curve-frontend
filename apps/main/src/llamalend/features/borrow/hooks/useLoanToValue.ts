@@ -4,7 +4,12 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { BorrowFormQueryParams, Token } from '../types'
 
 /**
- * Hook to calculate Loan to Value (LTV) ratio in percentage
+ * Hook to calculate the Loan to Value (LTV) ratio in percentage points.
+ * LTV = (debt in USD) / (collateral in USD) * 100
+ *
+ * It fetches the USD rates for both the collateral and borrow tokens.
+ * When leverage is enabled, it uses the expected total collateral after leverage
+ * Otherwise, it uses the user's current collateral directly from the form params
  */
 export const useLoanToValue = <ChainId extends IChainId>({
   params,
