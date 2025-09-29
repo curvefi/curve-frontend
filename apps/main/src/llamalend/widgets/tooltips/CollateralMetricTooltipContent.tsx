@@ -1,3 +1,4 @@
+import type { CollateralValue } from '@/llamalend/features/market-position-details/BorrowPositionDetails'
 import {
   TooltipItem,
   TooltipItems,
@@ -7,7 +8,6 @@ import {
 import { Stack } from '@mui/material'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
-import type { CollateralValue } from '../BorrowPositionDetails'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null

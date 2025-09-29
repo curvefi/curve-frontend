@@ -1,3 +1,4 @@
+import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { CardHeader, Box } from '@mui/material'
 import type { PoolRewards } from '@ui-kit/entities/campaigns'
@@ -7,7 +8,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { ExtraIncentive } from '@ui-kit/types/market'
 import { formatNumber } from '@ui-kit/utils'
 import { AmountSuppliedTooltipContent } from './tooltips/AmountSuppliedTooltipContent'
-import { BoostTooltipContent } from './tooltips/BoostTooltipContent'
 import { VaultSharesTooltipContent } from './tooltips/VaultSharesTooltipContent'
 
 const { Spacing } = SizesAndSpaces

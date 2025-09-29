@@ -21,12 +21,24 @@ export const useLlamaMarketSortOptions = () => {
             label: t`Borrow Amount`,
           },
           {
+            id: LlamaMarketColumnId.UserCollateral,
+            label: t`Collateral Amount`,
+          },
+          {
+            id: LlamaMarketColumnId.UserLtv,
+            label: t`LTV`,
+          },
+          {
             id: LlamaMarketColumnId.UserEarnings,
             label: t`My Earnings`,
           },
           {
             id: LlamaMarketColumnId.UserDeposited,
             label: t`Supplied Amount`,
+          },
+          {
+            id: LlamaMarketColumnId.UserBoostMultiplier,
+            label: t`Boost`,
           },
         ]
       : []),
@@ -39,7 +51,7 @@ export const useLlamaMarketSortOptions = () => {
       label: t`Supply Yield`,
     },
     {
-      id: LlamaMarketColumnId.TVL,
+      id: LlamaMarketColumnId.Tvl,
       label: t`Total Value Locked`,
     },
     {

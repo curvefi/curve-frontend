@@ -1,16 +1,23 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { formatPercent } from '@/llamalend/format.utils'
+import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
+import { t } from '@ui-kit/lib/i18n'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { LlamaMarketColumnId } from '../columns.enum'
 
 export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
   const { data, error, isLoading } = useUserMarketStats(row.original, LlamaMarketColumnId.UserLtv)
 
   if (isLoading) {
-    return <Skeleton variant="text" width={40} />
+    return (
+      <Typography variant="tableCellMBold" textAlign="right">
+        <Skeleton variant="text" width={40} />
+      </Typography>
+    )
   }
 
   if (!data?.ltv || error) {
@@ -22,8 +29,10 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
   }
 
   return (
-    <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
-      {formatPercent(data.ltv)}
-    </Typography>
+    <Tooltip clickable title={t`LTV`} body={<CurrentLTVTooltipContent />} placement="top">
+      <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
+        {formatPercent(data.ltv)}
+      </Typography>
+    </Tooltip>
   )
 }
