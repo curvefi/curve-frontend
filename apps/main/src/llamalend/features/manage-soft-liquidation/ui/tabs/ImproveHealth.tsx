@@ -75,6 +75,7 @@ export const ImproveHealth = ({
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
       <LargeTokenInput
+        dataType="number"
         label={t`Debt to repay`}
         name="debtBalance"
         tokenSelector={

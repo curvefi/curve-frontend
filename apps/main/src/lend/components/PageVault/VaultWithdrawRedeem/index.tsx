@@ -25,7 +25,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -189,7 +189,7 @@ const VaultWithdrawRedeem = ({
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
   return (
     <>
@@ -249,9 +249,10 @@ const VaultWithdrawRedeem = ({
         </div>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           name="amount"
           disabled={disabled}
-          balance={stringToNumber(formValues.amount)}
+          balance={decimal(formValues.amount)}
           isError={!!formValues.amountError}
           message={
             formValues.amountError === 'too-much-wallet'
@@ -261,10 +262,10 @@ const VaultWithdrawRedeem = ({
                 : undefined
           }
           maxBalance={{
-            balance: stringToNumber(max),
+            balance: decimal(max),
             loading: !!signerAddress && userBalances == null,
             showSlider: false,
-            notionalValueUsd: stringToNumber(userBalances?.vaultSharesConverted),
+            notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
             symbol: t`Vault shares`,
           }}
           onBalance={onBalance}

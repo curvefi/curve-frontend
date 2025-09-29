@@ -7,6 +7,7 @@ export * from './shortenString'
 export * from './web3'
 export * from './network'
 export * from './number'
+export * from './decimal'
 export * from './searchText'
 export * from './mui'
 
