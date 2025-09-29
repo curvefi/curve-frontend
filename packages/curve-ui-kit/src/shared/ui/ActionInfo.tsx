@@ -39,7 +39,7 @@ export type ActionInfoProps = Pick<StackProps, 'sx' | 'className'> & {
   /** Optional content to display to the right of the value */
   valueRight?: ReactNode
   /** Tooltip text to display when hovering over the value */
-  valueTooltip?: string
+  valueTooltip?: ReactNode
   /** Previous value (if needed for comparison) */
   prevValue?: string
   /** Custom color for the previous value text */
@@ -56,8 +56,12 @@ export type ActionInfoProps = Pick<StackProps, 'sx' | 'className'> & {
   copiedTitle?: string
   /** Size of the component */
   size?: ActionInfoSize
-  /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
-  loading?: boolean | string
+  /** Whether the component is in a loading state. Can be one of:
+   * - boolean
+   * - string (value is used for skeleton width inference)
+   * - [number, number] (explicit skeleton width and height in px)
+   **/
+  loading?: boolean | [number, number] | string
   /** Error state; Unused for now, but kept for future use */
   error?: boolean | Error | null
   /** Test ID for the component */
