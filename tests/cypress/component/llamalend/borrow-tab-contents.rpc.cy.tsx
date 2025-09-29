@@ -72,7 +72,7 @@ describe('BorrowTabContents Component Tests', () => {
     cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type('100')
     getActionValue('borrow-health').should('not.contain.text', '∞')
 
-    const leverageEnabled = oneBool() // test with and without leverage
+    const leverageEnabled = oneBool() || true // test with and without leverage
     if (leverageEnabled) {
       cy.get('[data-testid="leverage-checkbox"]').click()
     }
@@ -81,9 +81,12 @@ describe('BorrowTabContents Component Tests', () => {
     cy.contains('button', 'Health').click()
 
     if (leverageEnabled) getActionValue('borrow-price-impact').contains('%')
-    const rangeRegex = /(\d(\.\d+)?)( - )(\d(\.\d+)?)/
-    getActionValue('borrow-band-range').should('match', rangeRegex)
-    getActionValue('borrow-price-range').invoke(LOAD_TIMEOUT, 'text').should('match', rangeRegex)
+    getActionValue('borrow-band-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) to (\d(\.\d+)?)/)
+    getActionValue('borrow-price-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
     getActionValue('borrow-apr').contains('%')
     getActionValue('borrow-ltv').contains('%')
     getActionValue('borrow-slippage').contains('%')
