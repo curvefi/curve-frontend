@@ -1,4 +1,3 @@
-import type { CompleteBorrowForm } from '@/llamalend/features/borrow/types'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -6,7 +5,7 @@ import { type FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
-import { maxBorrowReceiveKey } from './borrow-max-receive.query'
+import type { CompleteBorrowForm } from '../types'
 
 type BorrowApyQuery = PoolQuery<IChainId> & Pick<CompleteBorrowForm, 'debt'>
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
@@ -43,5 +42,4 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
         convertRates({ borrowApr: ((await market.stats.parameters()) as any).future_rate })
   },
   validationSuite: llamaApiValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
 })
