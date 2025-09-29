@@ -2,6 +2,7 @@ import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { formatPercent } from '@/llamalend/format.utils'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
+import { Box } from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
@@ -14,16 +15,18 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
 
   if (isLoading) {
     return (
-      <Typography variant="tableCellMBold" textAlign="right">
-        <Skeleton variant="text" width={40} />
-      </Typography>
+      <Box display="flex" justifyContent="end">
+        <Typography variant="tableCellMBold" textAlign="right">
+          <Skeleton variant="text" width={40} />
+        </Typography>
+      </Box>
     )
   }
 
   if (!data?.ltv || error) {
     return (
       <Typography variant="tableCellMBold" color="textSecondary" textAlign="right">
-        —
+        -
       </Typography>
     )
   }
