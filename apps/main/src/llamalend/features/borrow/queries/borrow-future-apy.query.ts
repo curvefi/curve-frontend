@@ -38,8 +38,7 @@ export const { useQuery: useMarketFutureRates } = queryFactory({
     const market = getLlamaMarket(poolId)
     return market instanceof LendMarketTemplate
       ? convertRates(await market.stats.futureRates(reserves, debt))
-      : // todo: remove `as any` after https://github.com/curvefi/curve-llamalend.js/pull/44
-        convertRates({ borrowApr: ((await market.stats.parameters()) as any).future_rate })
+      : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
   },
   validationSuite: llamaApiValidationSuite,
 })
