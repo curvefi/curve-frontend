@@ -6,8 +6,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, SxProps } from '@ui-kit/utils'
-import type { Amount } from '@ui-kit/utils/units'
+import { type Amount, formatNumber, type SxProps } from '@ui-kit/utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
@@ -138,7 +137,7 @@ export const Balance = <T extends Amount>({
     )}
 
     {max === 'button' && balance != null && (
-      // Right-align without flex grow for precise click area
+      // Right-align without flexGrow for a precise click area
       <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled} testId={maxTestId}>
         {t`Max`}
       </MaxButton>

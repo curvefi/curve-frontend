@@ -11,8 +11,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, ReleaseChannel, decimal } from '@ui-kit/utils'
-import type { Decimal } from '@ui-kit/utils/units'
+import { CRV_ADDRESS, ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const FieldLockedAmt = ({
   curve,

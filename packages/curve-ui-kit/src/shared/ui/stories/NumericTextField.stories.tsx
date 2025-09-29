@@ -5,12 +5,11 @@ import { NumericTextField } from '../NumericTextField'
 
 const NumericTextFieldWrapper = (props: any) => {
   const [value, setValue] = useState<number | undefined>(undefined)
-
   return (
-    <NumericTextField<number>
+    <NumericTextField
       {...props}
       value={value}
-      onBlur={(newValue) => {
+      onBlur={(newValue: number) => {
         setValue(newValue)
         props.onBlur?.(newValue)
       }}

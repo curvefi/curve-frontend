@@ -1,4 +1,5 @@
-import { type Amount, type Decimal, getUnitOptions, type Unit } from './units'
+import { type Amount } from './decimal'
+import { getUnitOptions, type Unit } from './units'
 
 // Sometimes API returns overflowed USD values. Don't show them!
 export const MAX_USD_VALUE = 100_000_000_000_000 // $ 100T 🤑
@@ -253,16 +254,4 @@ export const decomposeNumber = (value: Amount, options: NumberFormatOptions): De
 export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
-}
-
-/**
- * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
- */
-export const decimal = (value: string | undefined | null): Decimal | undefined => {
-  if (!['', null, undefined, '-', '?'].includes(value)) {
-    const number = Number(value)
-    if (Number.isFinite(number)) {
-      return value as Decimal
-    }
-  }
 }

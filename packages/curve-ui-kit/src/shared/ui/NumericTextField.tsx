@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js'
 import { useEffect, useState } from 'react'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
-import type { Amount } from '@ui-kit/utils/units'
+import { type Amount } from '@ui-kit/utils'
 
 /**
  * Validates and normalizes numeric input by replacing commas with dots

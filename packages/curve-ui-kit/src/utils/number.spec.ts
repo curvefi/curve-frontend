@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import type { Amount } from '@ui-kit/utils/units'
+import { type Amount } from './decimal'
 import {
   defaultNumberFormatter,
   formatNumber,

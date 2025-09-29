@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import type { Amount } from '@ui-kit/utils/units'
+import { type Amount, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { type DataType, NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -188,7 +188,7 @@ type Props<T> = DataType<T> & {
 /**
  * Calculate the new balance based on max balance and percentage, rounding to specified decimals
  */
-function calculateNewBalance<T extends Amount>(max: T, newPercentage: number, balanceDecimals: number | undefined): T {
+function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, balanceDecimals: number | undefined): T {
   let newBalance = new BigNumber(max).times(newPercentage).div(100)
   if (balanceDecimals != null) {
     // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
@@ -198,10 +198,14 @@ function calculateNewBalance<T extends Amount>(max: T, newPercentage: number, ba
 }
 
 /**
- * Calculate percentage based on new balance and round to 2 decimal places
+ * Calculate percentage based on the new balance and round to 2 decimal places.
  */
 const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
-  +new BigNumber(newBalance).div(max).times(100).toFixed(2)
+  new BigNumber(newBalance)
+    .div(max)
+    .times(100)
+    .toFixed(2)
+    .replace(/\.?0+$/, '') as Decimal
 
 export const LargeTokenInput = <T extends Amount>({
   ref,
@@ -218,7 +222,7 @@ export const LargeTokenInput = <T extends Amount>({
   testId,
   dataType,
 }: Props<T>) => {
-  const [percentage, setPercentage] = useState<number | undefined>(undefined)
+  const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
@@ -227,7 +231,7 @@ export const LargeTokenInput = <T extends Amount>({
   const showMaxBalance = showSlider || showBalance
 
   const handlePercentageChange = useCallback(
-    (newPercentage: number | undefined) => {
+    (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
       if (maxBalance?.balance == null) return
       setBalance(
@@ -270,9 +274,8 @@ export const LargeTokenInput = <T extends Amount>({
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
   const onMax = useCallback(() => {
-    const callback = maxBalance?.onMax
-    handlePercentageChange(100)
-    callback?.()
+    handlePercentageChange('100')
+    maxBalance?.onMax?.call(null)
   }, [handlePercentageChange, maxBalance?.onMax])
 
   return (
@@ -335,7 +338,7 @@ export const LargeTokenInput = <T extends Amount>({
             {showSlider && (
               <TradingSlider
                 disabled={disabled}
-                percentage={percentage == null ? undefined : +percentage}
+                percentage={percentage}
                 onChange={handlePercentageChange}
                 onCommit={handlePercentageChange}
               />
