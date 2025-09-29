@@ -1,10 +1,17 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import Box from 'ui/src/Box/Box'
-import Loader from 'ui/src/Loader/Loader'
+import Divider from '@mui/material/Divider'
+import ActionInfo, { ActionInfoSize } from '@ui-kit/shared/ui/ActionInfo'
 
 type Variant = 'error' | 'warning' | 'success' | ''
 type Size = 'xs' | 'sm' | 'md' | 'lg'
+
+const SizeMap = {
+  xs: 'small',
+  sm: 'small',
+  md: 'medium',
+  lg: 'large',
+} satisfies Record<Size, ActionInfoSize>
 
 type Props = {
   children: ReactNode
@@ -35,37 +42,29 @@ const DetailInfo = ({
   children,
   size = 'sm',
   ...props
-}: Props) => {
-  const classNames = `${className} ${isDivider ? 'divider' : ''}`
-
-  return (
-    <Wrapper
+}: Props) => (
+  <>
+    {isDivider && <Divider />}
+    <ActionInfo
       {...props}
-      size={size}
-      className={classNames}
-      grid
-      gridAutoFlow="column"
-      gridColumnGap={2}
-      isDivider={isDivider}
-      fillWidth
-    >
-      {label && <DetailLabel>{label}</DetailLabel>}
-      <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
-        {loading && <Loader skeleton={loadingSkeleton} />}
-        {!loading && (
-          <>
-            {children || '-'} {!!Tooltip && Tooltip} {Action && Action}
-          </>
-        )}
-      </DetailValue>
-    </Wrapper>
-  )
-}
-
-export const DetailLabel = styled.span`
-  display: inline-block;
-  font-weight: bold;
-`
+      className={className}
+      size={SizeMap[size]}
+      loading={loading}
+      label={label}
+      copy={typeof children === 'string'}
+      value={
+        <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
+          {!loading && (
+            <>
+              {children || '-'} {!!Tooltip && Tooltip} {Action && Action}
+            </>
+          )}
+        </DetailValue>
+      }
+      copyValue={typeof children === 'string' ? children : ''}
+    />
+  </>
+)
 
 type DetailValeProps = {
   haveLabel: boolean
@@ -92,64 +91,6 @@ const DetailValue = styled.div<DetailValeProps>`
       return 'inherit'
     }
   }};
-`
-
-interface WrapperProps extends Pick<Props, 'isDivider' | 'isMultiLine' | 'size' | 'textLeft'> {}
-
-const Wrapper = styled(Box)<WrapperProps>`
-  align-items: center;
-  min-height: 1.7rem; // 27px
-
-  ${({ size }) => {
-    if (size === 'sm') {
-      return `font-size: var(--font-size-2);`
-    } else if (size === 'md') {
-      return `font-size: var(--font-size-3);`
-    }
-  }}
-
-  .svg-tooltip {
-    margin-top: 0.25rem;
-    top: 0.1rem;
-  }
-
-  .svg-arrow {
-    position: relative;
-    top: 0.1875rem; // 3px
-    opacity: 0.7;
-  }
-
-  ${({ isDivider }) => {
-    if (isDivider) {
-      return `
-        margin-top: var(--spacing-1);
-        padding-top: var(--spacing-1);
-        border-color: inherit;
-        border-top: 1px solid var(--border-400);
-      `
-    }
-  }}
-  ${({ isMultiLine }) => {
-    if (isMultiLine) {
-      return `
-        grid-auto-flow: row;
-      `
-    }
-  }}
-  ${DetailValue} {
-    ${({ textLeft }) => {
-      if (textLeft) {
-        return `
-          justify-content: flex-start;
-          text-align: left;
-      `
-      }
-    }}
-  }
-
-  .svg-tooltip {
-    top: 0.2rem;
-  }
 `
 
 export default DetailInfo
