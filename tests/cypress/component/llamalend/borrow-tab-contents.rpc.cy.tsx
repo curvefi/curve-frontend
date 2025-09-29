@@ -72,7 +72,7 @@ describe('BorrowTabContents Component Tests', () => {
     cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type('100')
     getActionValue('borrow-health').should('not.contain.text', '∞')
 
-    const leverageEnabled = oneBool() || true // test with and without leverage
+    const leverageEnabled = oneBool() // test with and without leverage
     if (leverageEnabled) {
       cy.get('[data-testid="leverage-checkbox"]').click()
     }
