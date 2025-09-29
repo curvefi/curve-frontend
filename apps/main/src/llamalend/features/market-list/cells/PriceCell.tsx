@@ -14,8 +14,10 @@ import { ErrorCell } from './ErrorCell'
 export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, number>) => {
   const market = row.original
   const { assets } = market
-  const { chain, address, symbol } = assets.borrowed // todo: earnings are usually crv
   const columnId = column.id as LlamaMarketColumnId
+
+  const assetInfo = columnId === LlamaMarketColumnId.UserCollateral ? assets.collateral : assets.borrowed
+  const { chain, address, symbol } = assetInfo // todo: earnings are usually crv
   const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
   const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
     blockchainId: chain,
@@ -25,6 +27,7 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const value =
     {
       [LlamaMarketColumnId.UserBorrowed]: borrowed,
+      [LlamaMarketColumnId.UserCollateral]: stats?.collateral,
       [LlamaMarketColumnId.UserEarnings]: earningsData?.earnings, // todo: handle other claimable rewards
       [LlamaMarketColumnId.UserDeposited]: earningsData?.totalCurrentAssets,
     }[column.id] ?? getValue()
