@@ -100,6 +100,18 @@
       "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "null",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x64273624eb57c5cA961d366CBF3968e760Bf0452",
+      "network": "ethereum",
+      "multiplier": "20x",
+      "tags": ["points"],
+      "lock": "false"
     }
   ]
 }
