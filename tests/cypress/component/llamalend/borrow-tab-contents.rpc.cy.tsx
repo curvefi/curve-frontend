@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
+import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import networks from '@/loan/networks'
-import { oneBool } from '@cy/support/generators'
+import { oneBool, oneValueOf } from '@cy/support/generators'
 import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
 import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
@@ -13,18 +14,44 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
+import { useHydration } from '@ui-kit/hooks/useHydration'
+import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
-const MARKET_ID = 'lbtc'
-const COLLATERAL_ADDRESS = '0x8236a87084f8b84306f72007f36f2618a5634494'
+const MARKETS = {
+  [LlamaMarketType.Mint]: {
+    id: 'lbtc',
+    collateralAddress: '0x8236a87084f8b84306f72007f36f2618a5634494' as const, // lbtc
+    collateral: '1',
+    borrow: '100',
+  },
+  [LlamaMarketType.Lend]: {
+    id: 'one-way-market-14',
+    collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3' as const, // USDe
+    collateral: '1',
+    borrow: '0.9',
+  },
+}
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
 
-function BorrowTabTest() {
+type BorrowTabTestProps = { type: LlamaMarketType }
+
+const prefetch = () => prefetchMarkets({})
+
+function BorrowTabTest({ type }: BorrowTabTestProps) {
   const { llamaApi } = useConnection()
-  const market = useMemo(() => llamaApi?.getMintMarket(MARKET_ID), [llamaApi])
+  const { id } = MARKETS[type]
+
+  const hydrated = useHydration('llamaApi', prefetch, chainId)
+  const market = useMemo(
+    () =>
+      hydrated &&
+      { [LlamaMarketType.Mint]: llamaApi?.getMintMarket, [LlamaMarketType.Lend]: llamaApi?.getLendMarket }[type]?.(id),
+    [hydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
+  )
   return market ? (
     <BorrowTabContents market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} />
   ) : (
@@ -43,19 +70,23 @@ describe('BorrowTabContents Component Tests', () => {
     },
   }))
 
+  const marketType = oneValueOf(LlamaMarketType)
+  const { collateralAddress: tokenAddress, collateral, borrow } = MARKETS[marketType]
+  const leverageEnabled = oneBool() // test with and without leverage
+
   beforeEach(() => {
     const vnet = getVirtualNetwork()
     const { adminRpcUrl } = getRpcUrls(vnet)
     fundEth({ adminRpcUrl, amountWei: oneEthInWei, recipientAddresses: [address] })
-    fundErc20({ adminRpcUrl, amountWei: oneEthInWei, tokenAddress: COLLATERAL_ADDRESS, recipientAddresses: [address] })
+    fundErc20({ adminRpcUrl, amountWei: oneEthInWei, tokenAddress, recipientAddresses: [address] })
     cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
   })
 
-  const BorrowTabTestWrapper = () => (
+  const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
     <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
       <ConnectionProvider app="llamalend" network={networks[chainId]} onChainUnavailable={console.error}>
         <Box sx={{ maxWidth: 500 }}>
-          <BorrowTabTest />
+          <BorrowTabTest {...props} />
         </Box>
       </ConnectionProvider>
     </ClientWrapper>
@@ -63,16 +94,15 @@ describe('BorrowTabContents Component Tests', () => {
 
   const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
-  it('calculates max debt and health', () => {
-    cy.mount(<BorrowTabTestWrapper />)
+  it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
+    cy.mount(<BorrowTabTestWrapper type={marketType} />)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('exist')
-    cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type('1')
+    cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
     getActionValue('borrow-health').should('have.text', '∞')
-    cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type('100')
+    cy.get('[data-testid="borrow-debt-input"] input[type="text"]').first().type(borrow)
     getActionValue('borrow-health').should('not.contain.text', '∞')
 
-    const leverageEnabled = oneBool() // test with and without leverage
     if (leverageEnabled) {
       cy.get('[data-testid="leverage-checkbox"]').click()
     }
@@ -86,6 +116,7 @@ describe('BorrowTabContents Component Tests', () => {
       .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?)( - )(\d(\.\d+)?)/)
     getActionValue('borrow-apr').contains('%')
+    getActionValue('borrow-apr-previous').contains('%')
     getActionValue('borrow-ltv').contains('%')
     getActionValue('borrow-slippage').contains('%')
     getActionValue('borrow-n').contains('50')
