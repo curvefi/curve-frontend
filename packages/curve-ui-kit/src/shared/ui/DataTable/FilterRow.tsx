@@ -1,10 +1,7 @@
 import type { ReactNode } from 'react'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TableItem, TanstackTable } from './data-table.utils'
-
-const { Sizing } = SizesAndSpaces
 
 export const FilterRow = <T extends TableItem>({
   table,
