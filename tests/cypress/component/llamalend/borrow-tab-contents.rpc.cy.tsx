@@ -111,10 +111,12 @@ describe('BorrowTabContents Component Tests', () => {
     cy.contains('button', 'Health').click()
 
     if (leverageEnabled) getActionValue('borrow-price-impact').contains('%')
-    getActionValue('borrow-band-range').should('exist') // bands are giving an error for now, don't check the content
+    getActionValue('borrow-band-range')
+      .invoke(LOAD_TIMEOUT, 'text')
+      .should('match', /(\d(\.\d+)?) to (\d(\.\d+)?)/)
     getActionValue('borrow-price-range')
       .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?)( - )(\d(\.\d+)?)/)
+      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
     getActionValue('borrow-apr').contains('%')
     getActionValue('borrow-apr-previous').contains('%')
     getActionValue('borrow-ltv').contains('%')
