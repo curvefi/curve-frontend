@@ -59,17 +59,17 @@ export const getSections = (appName: AppName) => [
       },
       {
         label: t`Telegram`,
-        href: 'https://t.me/curvefi',
+        href: 'https://t.me/+UPEp5CicUjf5Sc1g',
         icon: <TelegramIcon />,
       },
       {
         label: t`Telegram (CN)`,
-        href: 'https://t.me/curveficn',
+        href: 'https://t.me/+QX3ldcDwA2w2NmNl',
         icon: <TelegramCNIcon />,
       },
       {
         label: t`Telegram (RU)`,
-        href: 'https://t.me/crvrussianchat',
+        href: 'https://t.me/+dNEAYz0REIU1MzRi',
         icon: <TelegramRUIcon />,
       },
     ],
