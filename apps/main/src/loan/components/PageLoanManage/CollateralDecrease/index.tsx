@@ -71,11 +71,14 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
-  const updateFormValues = (updatedFormValues: FormValues) => {
-    if (chainId && llamma) {
-      void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
-    }
-  }
+  const updateFormValues = useCallback(
+    (updatedFormValues: FormValues) => {
+      if (chainId && llamma) {
+        void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
+      }
+    },
+    [chainId, llamma, maxRemovable, setFormValues],
+  )
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
