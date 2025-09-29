@@ -677,15 +677,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.6":
-  version: 2.68.6
-  resolution: "@curvefi/api@npm:2.68.6"
+"@curvefi/api@npm:2.68.8":
+  version: 2.68.8
+  resolution: "@curvefi/api@npm:2.68.8"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.16"
-    bignumber.js: "npm:^9.3.0"
-    ethers: "npm:^6.14.1"
+    bignumber.js: "npm:^9.3.1"
+    ethers: "npm:^6.15.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/dc1ade19d31471b7af81cfcea749f42b0ffa800d2408c33928b03708b8ad2069becc3d4bdb17dc1738f7b93e9bfd834739d00fbf368ae4aa80d14758accf7241
+  checksum: 10c0/2a6d5e1b64065f7377882d4d2f2b4cbbd23644935c2c7d9a80f459ecb760171b901c610b5da82bd1689650664f236254a2882019fcf25a928127376cae15c55c
   languageName: node
   linkType: hard
 
@@ -11968,7 +11968,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:2.68.6"
+    "@curvefi/api": "npm:2.68.8"
     "@curvefi/llamalend-api": "npm:1.0.33"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
