@@ -1,3 +1,4 @@
+import { useMarketFutureRates } from '@/llamalend/features/borrow/queries/borrow-future-apy.query'
 import { formatPercent } from '@/llamalend/format.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -46,6 +47,11 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
+  const {
+    data: futureRates,
+    isLoading: futureRatesLoading,
+    error: futureRatesError,
+  } = useMarketFutureRates(params, isOpen)
   const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
@@ -95,9 +101,10 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
           <ActionInfo label={t`N`} value={formatNumber(range)} testId="borrow-n" />
           <ActionInfo
             label={t`Borrow APR`}
-            value={formatPercent(rates?.borrowApr)}
-            error={ratesError}
-            loading={ratesLoading}
+            prevValue={formatPercent(rates?.borrowApr)}
+            value={futureRates?.borrowApr ? formatPercent(futureRates?.borrowApr) : '...'}
+            error={ratesError || futureRatesError}
+            loading={ratesLoading || futureRatesLoading}
             testId="borrow-apr"
           />
           {loanToValue != null && (

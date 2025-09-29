@@ -1,3 +1,4 @@
+import type { CompleteBorrowForm } from '@/llamalend/features/borrow/types'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -7,10 +8,10 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 
-type BorrowApyQuery = PoolQuery<IChainId>
-type BorrowApyParams = FieldsOf<BorrowApyQuery>
+type BorrowApyQuery = PoolQuery<IChainId> & Pick<CompleteBorrowForm, 'debt'>
+type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
-export type BorrowRatesResult = {
+export type BorrowFutureRatesResult = {
   borrowApr: number
   borrowApy?: number
   lendApr?: number
@@ -22,22 +23,24 @@ const convertRates = ({
   borrowApy,
   lendApr,
   lendApy,
-}: { [K in keyof BorrowRatesResult]: string }): BorrowRatesResult => ({
+}: { [K in keyof BorrowFutureRatesResult]: string }): BorrowFutureRatesResult => ({
   borrowApr: +borrowApr,
   ...(borrowApy && { borrowApy: +borrowApy }),
   ...(lendApy && { lendApy: +lendApy }),
   ...(lendApr && { lendApr: +lendApr }),
 })
 
-const [isGetter, useAPI] = [true, true] as const
+const reserves = 0 as const
 
-export const { useQuery: useMarketRates } = queryFactory({
-  queryKey: ({ chainId, poolId }: BorrowApyParams) => [...rootKeys.pool({ chainId, poolId }), 'market-rates'] as const,
-  queryFn: async ({ poolId }: BorrowApyQuery) => {
+export const { useQuery: useMarketFutureRates } = queryFactory({
+  queryKey: ({ chainId, poolId, debt }: BorrowFutureApyParams) =>
+    [...rootKeys.pool({ chainId, poolId }), 'market-future-rates', { debt }] as const,
+  queryFn: async ({ poolId, debt }: BorrowApyQuery) => {
     const market = getLlamaMarket(poolId)
     return market instanceof LendMarketTemplate
-      ? convertRates(await market.stats.rates(isGetter, useAPI))
-      : convertRates({ borrowApr: (await market.stats.parameters()).rate })
+      ? convertRates(await market.stats.futureRates(reserves, debt))
+      : // todo: remove `as any` after https://github.com/curvefi/curve-llamalend.js/pull/44
+        convertRates({ borrowApr: ((await market.stats.parameters()) as any).future_rate })
   },
   validationSuite: llamaApiValidationSuite,
   dependencies: (params) => [maxBorrowReceiveKey(params)],
