@@ -33,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { Decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -71,11 +71,14 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
-  const updateFormValues = (updatedFormValues: FormValues) => {
-    if (chainId && llamma) {
-      void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
-    }
-  }
+  const updateFormValues = useCallback(
+    (updatedFormValues: FormValues) => {
+      if (chainId && llamma) {
+        void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
+      }
+    },
+    [chainId, llamma, maxRemovable, setFormValues],
+  )
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
