@@ -199,6 +199,7 @@ type UserMarketEarnings = {
   current_assets_in_convex: string
   total_current_shares: string
   total_current_assets: string
+  boost_multiplier: number | null
 }
 
 export type GetUserMarketEarningsResponse = UserMarketEarnings

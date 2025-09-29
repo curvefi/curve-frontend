@@ -176,6 +176,7 @@ export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsRespon
   currentAssetsInConvex: parseFloat(x.current_assets_in_convex),
   totalCurrentShares: parseFloat(x.total_current_shares),
   totalCurrentAssets: parseFloat(x.total_current_assets),
+  boostMultiplier: x.boost_multiplier,
 })
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>
