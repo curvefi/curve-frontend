@@ -4,7 +4,7 @@ import { formatNumber } from '@ui/utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const FieldLpToken = ({
   amount,
@@ -24,11 +24,11 @@ const FieldLpToken = ({
   handleAmountChange: (val: string) => void
 }) => {
   const [releaseChannel] = useReleaseChannel()
-  const onBalance = useCallback((val?: number) => handleAmountChange(`${val ?? ''}`), [handleAmountChange])
+  const onBalance = useCallback((val?: Decimal) => handleAmountChange(val ?? ''), [handleAmountChange])
 
   const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
 
-  return releaseChannel == ReleaseChannel.Legacy ? (
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <InputProvider
       id="lpTokens"
       grid
@@ -53,16 +53,17 @@ const FieldLpToken = ({
     </InputProvider>
   ) : (
     <LargeTokenInput
+      dataType="decimal"
       name="lpTokens"
       disabled={disabled}
       isError={hasError}
       maxBalance={{
-        balance: stringToNumber(balance),
+        balance: decimal(balance),
         symbol: t`LP Tokens`,
         showSlider: false,
         loading: balanceLoading,
       }}
-      balance={stringToNumber(amount)}
+      balance={decimal(amount)}
       onBalance={onBalance}
     />
   )

@@ -46,6 +46,7 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={4}>
         <NumericTextField
+          dataType="number"
           aria-label={t`Bands`}
           value={sliderValue}
           name="range"

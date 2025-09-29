@@ -30,16 +30,14 @@ export const chains = [
   'arbitrum',
   'optimism',
   'fantom',
-  'avalanche',
   'xdai',
-  'matic',
-  'harmony',
-  'moonbeam',
   'base',
   'polygon',
   'fraxtal',
   'sonic',
   'hyperliquid',
+  'bsc',
+  'taiko',
 ] as const
 
 export type Chain = (typeof chains)[number]

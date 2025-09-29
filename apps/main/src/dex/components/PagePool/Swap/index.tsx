@@ -41,7 +41,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -335,11 +335,11 @@ const Swap = ({
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const setFromAmount = useCallback(
-    (value?: number) => updateFormValues({ isFrom: true, fromAmount: `${value ?? ''}`, toAmount: '' }, null, null),
+    (value?: Decimal) => updateFormValues({ isFrom: true, fromAmount: value ?? '', toAmount: '' }, null, null),
     [updateFormValues],
   )
   const setToAmount = useCallback(
-    (value?: number) => updateFormValues({ isFrom: false, toAmount: `${value ?? ''}`, fromAmount: '' }, null, null),
+    (value?: Decimal) => updateFormValues({ isFrom: false, toAmount: value ?? '', fromAmount: '' }, null, null),
     [updateFormValues],
   )
 
@@ -348,7 +348,7 @@ const Swap = ({
       {/* input fields */}
       <FieldsWrapper>
         <div>
-          {releaseChannel == ReleaseChannel.Legacy ? (
+          {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
               <StyledInputProvider
                 id="fromAmount"
@@ -419,9 +419,10 @@ const Swap = ({
             </Box>
           ) : (
             <LargeTokenInput
+              dataType="decimal"
               name="fromAmount"
               onBalance={setFromAmount}
-              balance={stringToNumber(formValues.fromAmount)}
+              balance={decimal(formValues.fromAmount)}
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
@@ -453,7 +454,7 @@ const Swap = ({
               })}
               disabled={isDisabled}
               maxBalance={{
-                balance: stringToNumber(userFromBalance),
+                balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
                 showSlider: false,
@@ -489,7 +490,7 @@ const Swap = ({
         </div>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <div>
             <StyledInputProvider
               id="toAmount"
@@ -544,9 +545,10 @@ const Swap = ({
           </div>
         ) : (
           <LargeTokenInput
+            dataType="decimal"
             name="toAmount"
             onBalance={setToAmount}
-            balance={stringToNumber(formValues.toAmount)}
+            balance={decimal(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
               <TokenSelector
@@ -576,7 +578,7 @@ const Swap = ({
               />
             }
             maxBalance={{
-              balance: stringToNumber(userToBalance),
+              balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
               showSlider: false,

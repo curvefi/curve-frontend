@@ -22,7 +22,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -168,12 +168,12 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
   const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
 
   return (
     <>
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
@@ -210,9 +210,10 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
         </div>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           name="amount"
           disabled={disabled}
-          balance={stringToNumber(formValues.amount)}
+          balance={decimal(formValues.amount)}
           isError={!!formValues.amountError}
           message={
             formValues.amountError === 'too-much-wallet'
@@ -220,10 +221,10 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
               : undefined
           }
           maxBalance={{
-            balance: stringToNumber(userBalances?.vaultShares),
+            balance: decimal(userBalances?.vaultShares),
             loading: !!signerAddress && userBalances == null,
             showSlider: false,
-            notionalValueUsd: stringToNumber(formValues?.amount),
+            notionalValueUsd: decimal(formValues?.amount),
             symbol: t`Vault shares`,
           }}
           onBalance={onBalance}

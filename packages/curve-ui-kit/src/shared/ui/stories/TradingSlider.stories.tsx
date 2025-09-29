@@ -2,16 +2,17 @@ import { useState } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { TradingSlider } from '../TradingSlider'
 
 const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider>) => {
-  const [percentage, setPercentage] = useState<number | undefined>(props.percentage || 50)
+  const [percentage, setPercentage] = useState<Decimal | undefined>(props.percentage || '50')
 
   return (
     <Box sx={{ width: '400px' }}>
       <TradingSlider
         {...props}
-        percentage={percentage}
+        percentage={decimal(percentage)}
         onChange={(newPercentage) => {
           setPercentage(newPercentage)
           props.onCommit?.(newPercentage)
@@ -50,7 +51,7 @@ const meta: Meta<typeof TradingSlider> = {
     },
   },
   args: {
-    percentage: 50,
+    percentage: '50',
     step: 1,
     textAlign: 'left',
     onChange: fn(),

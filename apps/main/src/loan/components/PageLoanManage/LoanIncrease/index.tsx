@@ -37,7 +37,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -118,9 +118,9 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     [formStatus.error, formStatus.isComplete, reset, updateFormValues],
   )
 
-  const onDebtChanged = useCallback((val?: number) => handleInpChange('debt', `${val ?? ''}`), [handleInpChange])
+  const onDebtChanged = useCallback((val?: Decimal) => handleInpChange('debt', val ?? ''), [handleInpChange])
   const onCollateralChanged = useCallback(
-    (val?: number) => handleInpChange('collateral', `${val ?? ''}`),
+    (val?: Decimal) => handleInpChange('collateral', val ?? ''),
     [handleInpChange],
   )
 
@@ -274,7 +274,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   return (
     <>
       {/* field debt */}
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -307,6 +307,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         </Box>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           label={t`Borrow amount:`}
           name="debt"
           isError={!!formValues.debtError}
@@ -318,12 +319,12 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           disabled={disabled}
           maxBalance={{
             loading: maxRecv == null || maxRecv == '',
-            balance: stringToNumber(maxRecv),
+            balance: decimal(maxRecv),
             symbol: getTokenName(llamma).stablecoin,
             notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
             showSlider: false,
           }}
-          balance={stringToNumber(formValues.debt)}
+          balance={decimal(formValues.debt)}
           tokenSelector={
             <TokenLabel
               blockchainId={network.id}
@@ -338,7 +339,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <>
             <InputProvider
               grid
@@ -372,12 +373,13 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           </>
         ) : (
           <LargeTokenInput
+            dataType="decimal"
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}
             maxBalance={{
               loading: userWalletBalancesLoading,
-              balance: stringToNumber(userWalletBalances.collateral),
+              balance: decimal(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,
               showSlider: false,
               ...(collateralUsdRate != null &&
@@ -386,7 +388,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                 }),
             }}
             label={t`Collateral amount:`}
-            balance={stringToNumber(formValues.collateral)}
+            balance={decimal(formValues.collateral)}
             tokenSelector={
               <TokenLabel
                 blockchainId={network.id}

@@ -1,4 +1,5 @@
 import type { Address } from '@curvefi/prices-api'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 
 export const MAX_USD_VALUE = 40_000_000 // $ 40m 🤑 not higher so we can test the highest TVL
 
@@ -19,6 +20,7 @@ export const range = (lengthOrStart: number, length?: number) =>
 
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
 export const oneBool = () => oneOf(true, false)
+export const oneValueOf = <K extends keyof any, T>(obj: Record<K, T>) => oneOf(...recordValues(obj))
 
 export const oneAddress = (): Address =>
   `0x${range(4) // create separate ints otherwise they aren't large enough

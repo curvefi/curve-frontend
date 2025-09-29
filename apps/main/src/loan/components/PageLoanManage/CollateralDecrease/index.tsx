@@ -33,7 +33,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -71,11 +71,14 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
-  const updateFormValues = (updatedFormValues: FormValues) => {
-    if (chainId && llamma) {
-      void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
-    }
-  }
+  const updateFormValues = useCallback(
+    (updatedFormValues: FormValues) => {
+      if (chainId && llamma) {
+        void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
+      }
+    },
+    [chainId, llamma, maxRemovable, setFormValues],
+  )
 
   const reset = useCallback(
     (isErrorReset: boolean, isFullReset: boolean) => {
@@ -102,12 +105,11 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   }
 
   const onCollateralChanged = useCallback(
-    (val?: number) => {
+    (val?: Decimal) => {
       const { formValues, formStatus } = useStore.getState().loanCollateralDecrease
-      const collateral = `${val ?? ''}`
-      if (collateral === formValues.collateral) return
+      if ((val ?? '') === formValues.collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: collateral, collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
     },
     [reset, updateFormValues],
   )
@@ -230,7 +232,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     <>
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel == ReleaseChannel.Legacy ? (
+        {releaseChannel !== ReleaseChannel.Beta ? (
           <>
             <InputProvider
               grid
@@ -263,6 +265,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         ) : (
           <>
             <LargeTokenInput
+              dataType="decimal"
               name="collateral"
               isError={!!formValues.collateralError}
               {...(formValues.collateralError === 'too-much' && {
@@ -270,13 +273,13 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
               })}
               disabled={disabled}
               maxBalance={{
-                balance: stringToNumber(maxRemovable),
+                balance: decimal(maxRemovable),
                 symbol: getTokenName(llamma).collateral,
                 showSlider: false,
                 ...(collateralUsdRate != null &&
                   maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
               }}
-              balance={stringToNumber(formValues.collateral)}
+              balance={decimal(formValues.collateral)}
               tokenSelector={
                 <TokenLabel
                   blockchainId={network.id}

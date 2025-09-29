@@ -18,7 +18,7 @@ export const DesktopOnlyHoverClass = 'desktop-only-on-hover'
 export const ClickableInRowClass = 'clickable-in-row'
 
 /** Required fields for the data in the table. */
-export type TableItem = { url: string }
+export type TableItem = { url?: string | null }
 
 export type TanstackTable<T extends TableItem> = ReturnType<typeof useReactTable<T>>
 

@@ -80,5 +80,6 @@ export const parseUserCollateralEvents = (
     n1: y.n1,
     n2: y.n2,
     oraclePrice: y.oracle_price,
+    isPositionClosed: y.is_position_closed,
   })),
 })

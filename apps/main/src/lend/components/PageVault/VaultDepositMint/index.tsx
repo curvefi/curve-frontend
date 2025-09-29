@@ -27,7 +27,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -69,7 +69,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
-  const onBalance = useCallback((amount?: number) => reset({ amount: `${amount ?? ''}` }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
   const handleInpAmountChange = (amount: string) => {
     reset({ amount })
@@ -189,7 +189,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   return (
     <>
-      {releaseChannel == ReleaseChannel.Legacy ? (
+      {releaseChannel !== ReleaseChannel.Beta ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
@@ -239,6 +239,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
         </div>
       ) : (
         <LargeTokenInput
+          dataType="decimal"
           name="inpCollateral"
           isError={!!formValues.amountError}
           message={
@@ -251,13 +252,13 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
           disabled={disabled}
           maxBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
-            balance: stringToNumber(userBalances?.borrowed),
+            balance: decimal(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
             showSlider: false,
             notionalValueUsd:
               usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
           }}
-          balance={+formValues.amount}
+          balance={decimal(formValues.amount)}
           tokenSelector={
             <TokenLabel
               blockchainId={networks[rChainId].id}

@@ -42,7 +42,7 @@ export const { useQuery: useBorrowBands } = queryFactory({
         : market.leverageV2.hasLeverage()
           ? market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
           : market.leverage.createLoanBands(userCollateral, debt, range)
-      : market.createLoanBands(userCollateral, userBorrowed, range)
+      : market.createLoanBands(userCollateral, debt, range)
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

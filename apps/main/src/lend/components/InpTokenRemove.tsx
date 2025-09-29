@@ -12,7 +12,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
 
 const InpTokenRemove = ({
   network,
@@ -49,8 +49,8 @@ const InpTokenRemove = ({
 }) => {
   const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
-  const onBalance = useCallback((val?: number) => handleInpChange(`${val ?? ''}`), [handleInpChange])
-  return releaseChannel == ReleaseChannel.Legacy ? (
+  const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
+  return releaseChannel !== ReleaseChannel.Beta ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -91,6 +91,7 @@ const InpTokenRemove = ({
     </Box>
   ) : (
     <LargeTokenInput
+      dataType="decimal"
       name="collateral"
       isError={!!inpError}
       message={
@@ -103,12 +104,12 @@ const InpTokenRemove = ({
       disabled={inpDisabled}
       maxBalance={{
         loading: tokenBalance == null,
-        balance: stringToNumber(maxRemovable),
+        balance: decimal(maxRemovable),
         symbol: tokenSymbol,
         showSlider: false,
         notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
       }}
-      balance={stringToNumber(inpValue)}
+      balance={decimal(inpValue)}
       tokenSelector={
         <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
       }

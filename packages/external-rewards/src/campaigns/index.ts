@@ -26,6 +26,7 @@ import Loop from './Loop.json'
 import Mellow from './Mellow.json'
 import MezoUSD from './MezoUSD.json'
 import Noon from './Noon.json'
+import Plasma from './Plasma.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
@@ -80,4 +81,5 @@ export {
   Ebisu,
   MezoUSD,
   Liquity,
+  Plasma,
 }

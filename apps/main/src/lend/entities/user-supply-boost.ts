@@ -15,7 +15,7 @@ const _fetchUserSupplyBoost = async ({ marketId }: MarketQuery): Promise<number 
   return boost ? +boost : null
 }
 
-export const { useQuery: useUserSupplyBoost, invalidate: invalidateUserSupplyBoost } = queryFactory({
+export const { useQuery: useUserSupplyBoost } = queryFactory({
   queryKey: (params: MarketParams) => [...rootKeys.market(params), 'userSupplyBoost', 'v1'] as const,
   queryFn: _fetchUserSupplyBoost,
   refetchInterval: '1m',
