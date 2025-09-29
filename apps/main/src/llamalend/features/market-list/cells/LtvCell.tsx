@@ -32,7 +32,12 @@ export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {
   }
 
   return (
-    <Tooltip clickable title={t`LTV`} body={<CurrentLTVTooltipContent />} placement="top">
+    <Tooltip
+      clickable
+      title={t`LTV`}
+      body={<CurrentLTVTooltipContent debtDenomination={'Borrowed amount'} />}
+      placement="top"
+    >
       <Typography variant="tableCellMBold" color="textPrimary" textAlign="right">
         {formatPercent(data.ltv)}
       </Typography>
