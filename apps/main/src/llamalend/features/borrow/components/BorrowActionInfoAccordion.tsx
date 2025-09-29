@@ -29,8 +29,9 @@ import { BorrowLeverageActionInfos } from './BorrowLeverageActionInfos'
  */
 export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params,
-  values: { range, slippage, debt, userCollateral, leverageEnabled },
+  values: { range, slippage, leverageEnabled },
   collateralToken,
+  borrowToken,
   tooMuchDebt,
   networks,
   onSlippageChange,
@@ -38,6 +39,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   params: BorrowFormQueryParams<ChainId>
   values: BorrowForm
   collateralToken: Token | undefined
+  borrowToken: Token | undefined
   tooMuchDebt: boolean
   networks: NetworkDict<ChainId>
   onSlippageChange: (newSlippage: string) => void
@@ -53,7 +55,8 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
     error: futureRatesError,
   } = useMarketFutureRates(params, isOpen)
   const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
-  const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
+
+  const loanToValue = useLoanToValue({ params, collateralToken, borrowToken })
   const theme = useTheme()
 
   return (
