@@ -2,7 +2,6 @@ import { getAddress, isAddress } from 'viem'
 
 export * from './array'
 export * from './address'
-export * from './BigDecimal'
 export * from './bigNumber'
 export * from './shortenString'
 export * from './web3'

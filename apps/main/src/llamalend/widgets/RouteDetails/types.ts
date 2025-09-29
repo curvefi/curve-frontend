@@ -5,12 +5,6 @@ export type Hop = {
   part: number
 }
 
-export type Route = {
-  swapFrom: string
-  swapTo: string
-  data: Hop[]
-}
-
 export type BreakdownItem = { $opacity?: boolean; $isTotal?: boolean; $minWidth?: string }
 
 export type RouteDetailsProps = BreakdownItem & {

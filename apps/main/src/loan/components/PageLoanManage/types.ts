@@ -1,5 +1,5 @@
 import { ChainId, type CollateralUrlParams, LlamaApi, Llamma, TitleMapper } from '@/loan/types/loan.types'
-export type DetailInfoTypes = 'user' | 'llamma'
+
 export type FormType = 'loan' | 'collateral' | 'swap' | 'deleverage'
 export type LoanFormType = 'loan-increase' | 'loan-decrease' | 'loan-liquidate'
 export type CollateralFormType = 'collateral-increase' | 'collateral-decrease'

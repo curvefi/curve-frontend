@@ -1,6 +1,5 @@
 import { styled } from 'styled-components'
 import Box from '@ui/Box'
-import { breakpoints } from '@ui/utils'
 
 export const SubTitle = styled.h3`
   font-size: var(--font-size-3);
@@ -38,32 +37,4 @@ export const StyledStats = styled(Box)<StatsProps>`
       `
     }
   }}
-`
-
-export const ContentStats = styled.div`
-  @media (min-width: ${breakpoints.sm}rem) {
-    align-items: flex-start;
-    display: flex;
-    margin-bottom: var(--spacing-normal);
-  }
-`
-
-export const ContentWrapper = styled.div<{ paddingTop?: boolean; isBorderBottom?: boolean }>`
-  > ${ContentStats}:not(:last-of-type) {
-    margin-bottom: var(--spacing-narrow);
-  }
-
-  padding: var(--spacing-normal) var(--spacing-narrow);
-  ${({ paddingTop }) => paddingTop && `padding-top: var(--spacing-wide);`}
-
-  ${({ isBorderBottom }) => {
-    if (isBorderBottom) {
-      return `border-bottom: 1px solid var(--border-600);`
-    }
-  }};
-
-  @media (min-width: ${breakpoints.sm}rem) {
-    padding-left: var(--spacing-normal);
-    padding-right: var(--spacing-normal);
-  }
 `

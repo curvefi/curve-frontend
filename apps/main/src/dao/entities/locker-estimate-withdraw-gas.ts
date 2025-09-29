@@ -8,19 +8,14 @@ import { curveApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-valid
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
 
-async function _fetchLockEstimateWithdrawGas({ chainId, userAddress }: ChainQuery<ChainId> & UserQuery) {
+async function _fetchLockEstimateWithdrawGas({ userAddress }: ChainQuery<ChainId> & UserQuery) {
   const curve = requireLib('curveApi')
-
   const gasInfo = await lib.lockCrv.estGasWithdrawLockedCrv(curve, userAddress)
   const estimatedGasValue = gasInfo.estimatedGas
-
-  if (Array.isArray(estimatedGasValue)) {
-    return estimatedGasValue.length > 0 ? estimatedGasValue[0] : 0
-  }
-  return estimatedGasValue
+  return Array.isArray(estimatedGasValue) ? (estimatedGasValue?.[0] ?? 0) : estimatedGasValue
 }
 
-export const { useQuery: useLockEstimateWithdrawGas, invalidate: invalidateLockEstimateWithdrawGas } = queryFactory({
+export const { useQuery: useLockEstimateWithdrawGas } = queryFactory({
   queryKey: (params: ChainParams<ChainId> & UserParams) =>
     ['lock-estimate-withdraw-gas', { chainId: params.chainId }, { userAddress: params.userAddress }] as const,
   queryFn: _fetchLockEstimateWithdrawGas,
