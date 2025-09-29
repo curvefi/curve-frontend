@@ -11,8 +11,8 @@ import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangl
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 
 /**
- * Display a list of wallets to choose from, connecting to the selected one.
- * Use global state retrieved from the useWallet hook to determine if the modal is open.
+ * Displays a modal warning users about phishing risks and encourages them to verify they are on the official Curve domains.
+ * The modal lists official domains, provides security tips, and can be dismissed by the user. Its visibility is managed via session storage.
  */
 export const PhishingWarningModal = () => {
   const [dismissed, setDismissed] = usePhishingWarningDismissed()
