@@ -12,6 +12,10 @@ const { Spacing } = SizesAndSpaces
 
 type Variant = 'error' | 'warning' | 'success' | ''
 
+/**
+ * Maps the `variant` prop to the corresponding `valueColor` prop for the `ActionInfo` component.
+ * This should be removed when we get rid of this file and use `ActionInfo` directly.
+ * */
 const VariantToColorMap = {
   '': 'textPrimary',
   error: 'error',
