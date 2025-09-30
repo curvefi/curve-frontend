@@ -19,7 +19,12 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
   const { assets } = market
   const columnId = column.id as LlamaMarketColumnId
 
-  const assetInfo = columnId === LlamaMarketColumnId.UserCollateral ? assets.collateral : assets.borrowed
+  const assetInfo =
+    (
+      {
+        [LlamaMarketColumnId.UserCollateral]: assets.collateral,
+      } as Record<LlamaMarketColumnId, typeof assets.collateral>
+    )[columnId] ?? assets.borrowed
   const { chain, address, symbol } = assetInfo // todo: earnings are usually crv
   const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
   const { data: usdPrice, isLoading: isUsdRateLoading } = useTokenUsdPrice({
