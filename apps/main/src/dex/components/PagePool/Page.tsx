@@ -5,12 +5,13 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useConnection, useHydrationContext } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 
 export const PagePool = () => {
   const push = useNavigate()
-  const { curveApi = null, connectState } = useConnection()
+  const { connectState } = useConnection()
+  const { api: curveApi = null } = useHydrationContext('curveApi')
   const props = useParams<PoolUrlParams>()
   const { pool: rPoolId, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)

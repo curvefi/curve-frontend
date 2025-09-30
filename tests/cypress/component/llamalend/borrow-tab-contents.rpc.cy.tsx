@@ -14,7 +14,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
-import { useHydration } from '@ui-kit/hooks/useHydration'
+import { HydrationProvider } from '@ui-kit/features/connect-wallet/lib/HydrationProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
@@ -45,7 +45,7 @@ function BorrowTabTest({ type }: BorrowTabTestProps) {
   const { llamaApi } = useConnection()
   const { id } = MARKETS[type]
 
-  const hydrated = useHydration('llamaApi', prefetch, chainId)
+  const hydrated = HydrationProvider('llamaApi', prefetch, chainId)
   const market = useMemo(
     () =>
       hydrated &&
