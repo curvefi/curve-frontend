@@ -5,7 +5,6 @@ import ListItem from '@mui/material/ListItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { usePhishingWarningDismissed } from '@ui-kit/hooks/useSessionStorage'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -27,15 +26,10 @@ const urls = [
  */
 export const PhishingWarningModal = () => {
   const [dismissed, setDismissed] = usePhishingWarningDismissed()
-  const [isOpen, , close] = useSwitch(!dismissed)
-  const onClick = () => {
-    close()
-    setDismissed(true)
-  }
+  const onClick = () => setDismissed(true)
   return (
     <ModalDialog
-      open={isOpen}
-      onClose={close}
+      open={!dismissed}
       title={t`Warning`}
       titleAction={
         <ExclamationTriangleIcon
