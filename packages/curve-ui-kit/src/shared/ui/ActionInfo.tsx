@@ -146,7 +146,10 @@ const ActionInfo = ({
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
 
-            <WithSkeleton loading={!!loading}>
+            <WithSkeleton
+              loading={!!loading}
+              {...(Array.isArray(loading) && { width: loading[0], height: loading[1] })}
+            >
               <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
                 {loading ? (
                   typeof loading === 'string' ? (
