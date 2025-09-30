@@ -6,7 +6,7 @@ import networks from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
@@ -25,7 +25,8 @@ export const useSupplyPositionDetails = ({
   market,
   marketId,
 }: UseSupplyPositionDetailsProps): SupplyPositionDetailsProps => {
-  const { data: campaigns } = useCampaigns({})
+  const blockchainId = networks[chainId].id as Chain
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
   const { data: userBalances, isLoading: isUserBalancesLoading } = useUserMarketBalances({ chainId, marketId })
   const { data: marketPricePerShare, isLoading: isMarketPricePerShareLoading } = useMarketPricePerShare({
     chainId,
@@ -44,7 +45,7 @@ export const useSupplyPositionDetails = ({
     tokenAddress: market?.addresses?.borrowed_token,
   })
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
-    blockchainId: networks[chainId].id as Chain,
+    blockchainId,
     contractAddress: market?.addresses?.controller as Address,
     agg: 'day',
     limit: averageMultiplier, // fetch last 30 days for 30 day average calcs
@@ -128,7 +129,7 @@ export const useSupplyPositionDetails = ({
         ? onChainRates?.rewardsApr.map((r) => ({
             title: r.symbol,
             percentage: r.apy,
-            blockchainId: networks[chainId]?.id as Chain,
+            blockchainId,
             address: r.tokenAddress,
           }))
         : [],
