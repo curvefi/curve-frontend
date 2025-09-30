@@ -1,5 +1,5 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { AssetDetails, LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
@@ -23,7 +23,10 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
     (
       {
         [LlamaMarketColumnId.UserCollateral]: assets.collateral,
-      } as Record<LlamaMarketColumnId, typeof assets.collateral>
+        [LlamaMarketColumnId.UserBorrowed]: assets.borrowed,
+        [LlamaMarketColumnId.UserEarnings]: assets.borrowed,
+        [LlamaMarketColumnId.UserDeposited]: assets.borrowed,
+      } as Partial<Record<LlamaMarketColumnId, AssetDetails>>
     )[columnId] ?? assets.borrowed
   const { chain, address, symbol } = assetInfo // todo: earnings are usually crv
   const { data: stats, error: statsError, isLoading } = useUserMarketStats(market, columnId)
