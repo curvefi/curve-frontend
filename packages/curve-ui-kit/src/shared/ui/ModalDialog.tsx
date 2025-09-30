@@ -11,15 +11,47 @@ import type { SxProps } from '@ui-kit/utils'
 import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 
 export type ModalDialogProps = {
+  /** Content of the modal dialog */
   children: ReactNode
+
+  /** Title of the modal dialog */
   title: string
+
+  /** Color of the title text */
   titleColor?: string
+
+  /** Whether the modal dialog is open */
   open: boolean
-  onClose: () => void
+
+  /**
+   * Callback function when the modal dialog is closed
+   * If this is not provided, the modal cannot be closed by clicking outside or pressing Escape. No close button will be shown.
+   **/
+  onClose?: () => void
+
+  /**
+   * Callback function when the modal dialog has finished its close transition.
+   * This is a good moment to stop rendering the modal to improve performance.
+   * If the modal stops being rendered as soon as it is closed, the transition cannot be seen.
+   **/
   onTransitionExited?: () => void
+
+  /**
+   * Optional action element to display before the title.
+   * Usually an icon button to perform an action related to the modal, like going back.
+   **/
   titleAction?: ReactNode
+
+  /**
+   * Optional footer element to display at the bottom of the modal.
+   * Usually contains action buttons.
+   **/
   footer?: ReactNode
+
+  /** If true, the modal will have a compact height instead of filling most of the screen */
   compact?: boolean
+
+  /** Custom styles for the modal dialog */
   sx?: SxProps
 }
 
@@ -67,9 +99,11 @@ export const ModalDialog = ({
     >
       <CardHeader
         action={
-          <IconButton onClick={onClose} size="extraSmall">
-            <CloseIcon />
-          </IconButton>
+          onClose && (
+            <IconButton onClick={onClose} size="extraSmall">
+              <CloseIcon />
+            </IconButton>
+          )
         }
         avatar={titleAction}
         title={
