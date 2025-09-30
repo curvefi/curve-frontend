@@ -5,7 +5,6 @@ import { type FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
-import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 
 type BorrowApyQuery = PoolQuery<IChainId>
 type BorrowApyParams = FieldsOf<BorrowApyQuery>
@@ -29,14 +28,15 @@ const convertRates = ({
   ...(lendApr && { lendApr: +lendApr }),
 })
 
+const [isGetter, useAPI] = [true, true] as const
+
 export const { useQuery: useMarketRates } = queryFactory({
   queryKey: ({ chainId, poolId }: BorrowApyParams) => [...rootKeys.pool({ chainId, poolId }), 'market-rates'] as const,
   queryFn: async ({ poolId }: BorrowApyQuery) => {
     const market = getLlamaMarket(poolId)
     return market instanceof LendMarketTemplate
-      ? convertRates(await market.stats.rates())
+      ? convertRates(await market.stats.rates(isGetter, useAPI))
       : convertRates({ borrowApr: (await market.stats.parameters()).rate })
   },
   validationSuite: llamaApiValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
 })

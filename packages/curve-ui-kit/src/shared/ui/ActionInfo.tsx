@@ -116,7 +116,11 @@ const ActionInfo = ({
 
       <Stack direction="row" alignItems="center" gap={Spacing.xs}>
         {prevValue && (
-          <Typography variant={prevValueSize[size]} color={prevValueColor ?? 'textTertiary'}>
+          <Typography
+            variant={prevValueSize[size]}
+            color={prevValueColor ?? 'textTertiary'}
+            data-testid={`${testId}-previous-value`}
+          >
             {prevValue}
           </Typography>
         )}

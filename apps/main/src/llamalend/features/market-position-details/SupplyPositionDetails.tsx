@@ -62,16 +62,9 @@ export type SupplyPositionDetailsProps = {
   shares: Shares
   supplyAsset: SupplyAsset
   boost: Boost
-  claimableRewards: ClaimableRewards
 }
 
-export const SupplyPositionDetails = ({
-  supplyAPY,
-  shares,
-  supplyAsset,
-  boost,
-  claimableRewards,
-}: SupplyPositionDetailsProps) => {
+export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }: SupplyPositionDetailsProps) => {
   const {
     totalSupplyRateMaxBoost,
     totalSupplyRateMinBoost,

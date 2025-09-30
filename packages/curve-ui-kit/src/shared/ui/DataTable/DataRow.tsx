@@ -39,9 +39,10 @@ export const DataRow = <T extends TableItem>({
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
   const push = useNavigate()
   const url = row.original.url
+  const hasUrl = Boolean(url?.trim())
   const onClickDesktop = useCallback(
-    (e: MouseEvent<HTMLTableRowElement>) => onCellClick(e.target, url, push),
-    [url, push],
+    (e: MouseEvent<HTMLTableRowElement>) => hasUrl && url && onCellClick(e.target, url, push),
+    [url, push, hasUrl],
   )
   const visibleCells = row.getVisibleCells()
 
@@ -51,7 +52,7 @@ export const DataRow = <T extends TableItem>({
         <TableRow
           sx={{
             marginBlock: 0,
-            cursor: 'pointer',
+            cursor: hasUrl ? 'pointer' : 'default',
             transition: `border-bottom ${TransitionFunction}`,
             [`& .${DesktopOnlyHoverClass}`]: {
               opacity: { mobile: 1, desktop: 0 },
@@ -74,7 +75,7 @@ export const DataRow = <T extends TableItem>({
           }}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
-          onClick={isMobile ? () => row.toggleExpanded() : onClickDesktop}
+          onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
         >
           {visibleCells.map((cell, index) => (
             <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />

@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { useMarketOnChainRates, useMarketPricePerShare } from '@/lend/entities/market-details'
 import { useUserMarketBalances } from '@/lend/entities/user-market-balances'
 import { useUserSupplyBoost } from '@/lend/entities/user-supply-boost'
-import { useUserSupplyClaimable } from '@/lend/entities/user-supply-claimable'
 import networks from '@/lend/networks'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { SupplyPositionDetailsProps } from '@/llamalend/features/market-position-details'
@@ -44,10 +43,6 @@ export const useSupplyPositionDetails = ({
   const { data: suppliedAssetUsdRate, isLoading: suppliedAssetUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: market?.addresses?.borrowed_token,
-  })
-  const { data: userSupplyClaimable, isLoading: isUserSupplyClaimableLoading } = useUserSupplyClaimable({
-    chainId,
-    marketId,
   })
   const { data: lendingSnapshots, isLoading: islendingSnapshotsLoading } = useLendingSnapshots({
     blockchainId,
@@ -141,11 +136,6 @@ export const useSupplyPositionDetails = ({
       averageTotalExtraIncentivesApr: averageTotalExtraIncentivesApr ?? null,
       extraRewards: campaignRewards,
       loading: islendingSnapshotsLoading || isOnChainRatesLoading || isUserBalancesLoading,
-    },
-    claimableRewards: {
-      crv: userSupplyClaimable?.crv,
-      rewards: userSupplyClaimable?.rewards,
-      loading: isUserSupplyClaimableLoading,
     },
     boost: {
       value: userSupplyBoost,

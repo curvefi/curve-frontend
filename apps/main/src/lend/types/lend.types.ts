@@ -14,7 +14,6 @@ export type AlertType = 'info' | 'warning' | 'error' | 'danger'
 export type ChainId = IChainId
 export type NetworkEnum = INetworkName
 export type Provider = ethers.BrowserProvider
-export type MarketListType = 'borrow' | 'supply'
 export type EstimatedGas = number | number[] | null
 export type OneWayMarketTemplate = LendMarketTemplate // todo: use LendMarketTemplate consistently
 
@@ -252,7 +251,6 @@ export type FutureRates = {
   lendApy: string
 }
 export type MarketDetailsView = 'user' | 'market' | ''
-export type TitleKey = keyof typeof TITLE
 export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 
 export enum FormWarning {

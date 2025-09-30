@@ -677,31 +677,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.6":
-  version: 2.68.6
-  resolution: "@curvefi/api@npm:2.68.6"
+"@curvefi/api@npm:2.68.8":
+  version: 2.68.8
+  resolution: "@curvefi/api@npm:2.68.8"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.16"
-    bignumber.js: "npm:^9.3.0"
-    ethers: "npm:^6.14.1"
+    bignumber.js: "npm:^9.3.1"
+    ethers: "npm:^6.15.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/dc1ade19d31471b7af81cfcea749f42b0ffa800d2408c33928b03708b8ad2069becc3d4bdb17dc1738f7b93e9bfd834739d00fbf368ae4aa80d14758accf7241
+  checksum: 10c0/2a6d5e1b64065f7377882d4d2f2b4cbbd23644935c2c7d9a80f459ecb760171b901c610b5da82bd1689650664f236254a2882019fcf25a928127376cae15c55c
   languageName: node
   linkType: hard
 
-"@curvefi/ethcall@npm:6.0.15":
-  version: 6.0.15
-  resolution: "@curvefi/ethcall@npm:6.0.15"
-  dependencies:
-    "@types/node": "npm:^22.12.0"
-    abi-coder: "npm:^5.0.0"
-  peerDependencies:
-    ethers: ^6.0.0
-  checksum: 10c0/2578869f9f45ea04206efd9a57dcdd7dec142a6f57fedc90706c39f785dd824f5a88f18195536540b0b86dd6b7a956ceec153202e2465284cec416e27dbb72d2
-  languageName: node
-  linkType: hard
-
-"@curvefi/ethcall@npm:^6.0.16":
+"@curvefi/ethcall@npm:6.0.16, @curvefi/ethcall@npm:^6.0.16":
   version: 6.0.16
   resolution: "@curvefi/ethcall@npm:6.0.16"
   dependencies:
@@ -713,15 +701,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:1.0.31":
-  version: 1.0.31
-  resolution: "@curvefi/llamalend-api@npm:1.0.31"
+"@curvefi/llamalend-api@npm:1.0.33":
+  version: 1.0.33
+  resolution: "@curvefi/llamalend-api@npm:1.0.33"
   dependencies:
-    "@curvefi/ethcall": "npm:6.0.15"
-    bignumber.js: "npm:^9.3.0"
-    ethers: "npm:^6.14.3"
-    memoizee: "npm:^0.4.17"
-  checksum: 10c0/e35e55c0fc147e29bfb13c299abf91a9c197efe0d8af8581bb9c68efa8b06c7039c1c6f2e9bb51ad8e5d8c4de7375380287b863b6a9d36e61a2773d4a14097f4
+    "@curvefi/ethcall": "npm:6.0.16"
+    bignumber.js: "npm:9.3.1"
+    ethers: "npm:6.15.0"
+    memoizee: "npm:0.4.17"
+  checksum: 10c0/210d689fc2424de36dd717b2ba70e4b0e908a6e4c3efe2b519d4f1b3d6e02b0bc1efa6f467edc317fb598778859566f5cd10d0fd4c339bdff62c3bff5e4ab6c9
   languageName: node
   linkType: hard
 
@@ -11980,8 +11968,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
-    "@curvefi/api": "npm:2.68.6"
-    "@curvefi/llamalend-api": "npm:1.0.31"
+    "@curvefi/api": "npm:2.68.8"
+    "@curvefi/llamalend-api": "npm:1.0.33"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -12052,7 +12040,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"memoizee@npm:^0.4.17":
+"memoizee@npm:0.4.17, memoizee@npm:^0.4.17":
   version: 0.4.17
   resolution: "memoizee@npm:0.4.17"
   dependencies:

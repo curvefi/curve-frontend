@@ -15,6 +15,7 @@ import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
 import { useBorrowBands } from '../queries/borrow-bands.query'
+import { useMarketFutureRates } from '../queries/borrow-future-apy.query'
 import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
@@ -46,6 +47,11 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
+  const {
+    data: futureRates,
+    isLoading: futureRatesLoading,
+    error: futureRatesError,
+  } = useMarketFutureRates(params, isOpen)
   const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
   const loanToValue = useLoanToValue({ debt, userCollateral, chainId: params.chainId!, collateralToken })
   const theme = useTheme()
@@ -95,9 +101,10 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
           <ActionInfo label={t`N`} value={formatNumber(range)} testId="borrow-n" />
           <ActionInfo
             label={t`Borrow APR`}
-            value={formatPercent(rates?.borrowApr)}
-            error={ratesError}
-            loading={ratesLoading}
+            prevValue={formatPercent(rates?.borrowApr)}
+            value={futureRates?.borrowApr ? formatPercent(futureRates?.borrowApr) : '...'}
+            error={ratesError || futureRatesError}
+            loading={ratesLoading || futureRatesLoading}
             testId="borrow-apr"
           />
           {loanToValue != null && (
@@ -105,7 +112,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
           )}
           <ActionInfo
             label={t`Estimated tx cost (step 1 of 2)`}
-            value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '...' })}
+            value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '-' })}
             valueTooltip={gas?.createLoanApprove?.tooltip}
             loading={gasLoading}
           />

@@ -10,7 +10,6 @@ import {
   createValidationSuite,
   tokenIdValidationFn,
 } from '@ui-kit/lib/validation'
-import { BD } from '@ui-kit/utils'
 import { AddRewardParams, DepositRewardApproveParams, DepositRewardParams } from '../types'
 
 export const gaugeAddRewardValidationGroup = ({ distributorId, rewardTokenId }: AddRewardParams) =>
@@ -67,7 +66,7 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
   if (!tokenBalance) return
 
   enforce(amount).condition((amount) => ({
-    pass: BD.from(amount).lte(BD.from(tokenBalance)),
+    pass: +amount < +tokenBalance,
     message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(tokenBalance, { decimals: 5 })}`,
   }))
 }

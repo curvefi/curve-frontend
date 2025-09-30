@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import type { Address } from 'viem'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -17,7 +18,10 @@ import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/h
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { UserPositionHistory } from '@/llamalend/features/user-position-history'
+import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -71,6 +75,20 @@ const Page = () => {
     chainId: rChainId,
     llamma: market,
     llammaId: rOwmId,
+  })
+  const network = networks[rChainId]
+  const {
+    data: userCollateralEvents,
+    isLoading: collateralEventsIsLoading,
+    isError: collateralEventsIsError,
+  } = useUserCollateralEvents({
+    app: 'lend',
+    chain: isChain(network.id) ? network.id : undefined,
+    controllerAddress: market?.addresses?.controller as Address,
+    userAddress: signerAddress,
+    collateralToken: market?.collateral_token,
+    borrowToken: market?.borrowed_token,
+    scanTxPath: network.scanTxPath,
   })
 
   // set tabs
@@ -143,7 +161,7 @@ const Page = () => {
 
   return (
     <>
-      {chartExpanded && networks[rChainId].pricesData && (
+      {chartExpanded && network.pricesData && (
         <PriceAndTradesExpandedContainer>
           <Box flex padding="0 0 var(--spacing-2)">
             <ExpandButton
@@ -176,6 +194,20 @@ const Page = () => {
             ) : (
               <Stack padding={Spacing.md} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
                 <NoPosition type="borrow" />
+              </Stack>
+            )}
+            {userCollateralEvents?.events && userCollateralEvents.events.length > 0 && (
+              <Stack
+                paddingLeft={Spacing.md}
+                paddingRight={Spacing.md}
+                paddingBottom={Spacing.md}
+                sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+              >
+                <UserPositionHistory
+                  events={userCollateralEvents.events}
+                  isLoading={collateralEventsIsLoading}
+                  isError={collateralEventsIsError}
+                />
               </Stack>
             )}
           </MarketInformationTabs>

@@ -124,6 +124,31 @@ export type UserMarketStats = {
 
 export type UserMarketSnapshots = UserMarketStats[]
 
+export type UserCollateralEvent = {
+  timestamp: Date
+  txHash: Address
+  type: 'Borrow' | 'Liquidate' | 'Repay' | 'RemoveCollateral'
+  user: Address
+  collateralChange: number
+  collateralChangeUsd?: number
+  loanChange: number
+  loanChangeUsd?: number
+  liquidation?: {
+    user: Address
+    liquidator: Address
+    collateralReceived: number
+    collateralReceivedUsd: number
+    stablecoinReceived: number
+    stablecoinReceivedUsd: number
+    debt: number
+    debtUsd: number
+  }
+  n1: number
+  n2: number
+  oraclePrice: number
+  isPositionClosed: boolean
+}
+
 export type UserCollateralEvents = {
   controller: Address
   user: Address
@@ -132,25 +157,5 @@ export type UserCollateralEvents = {
   totalDepositUsd: number
   totalBorrowed: number
   totalBorrowedPrecise: string
-  events: {
-    timestamp: Date
-    txHash: Address
-    type: 'Borrow' | 'Deposit'
-    user: Address
-    collateralChange: number
-    collateralChangeUsd?: number
-    loanChange: number
-    loanChangeUsd?: number
-    liquidation?: {
-      user: Address
-      liquidator: Address
-      collateralReceived: number
-      collateralReceivedUsd: number
-      stablecoinReceived: number
-      debt: number
-    }
-    n1: number
-    n2: number
-    oraclePrice: number
-  }[]
+  events: UserCollateralEvent[]
 }

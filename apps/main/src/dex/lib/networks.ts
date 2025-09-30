@@ -1,7 +1,7 @@
 import memoize from 'memoizee'
 import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig, type NetworkEnum, NetworkUrlParams } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkDef } from '@ui/utils'
@@ -431,13 +431,3 @@ export const getNetworkDefs = memoize(
     ),
   { maxAge: 5 * 60 * 1000, promise: true, preFetch: true },
 )
-
-export const getNetworkDef = async ({
-  network,
-}: NetworkUrlParams): Promise<NetworkDef<NetworkEnum, ChainId> | undefined> => {
-  const config = recordValues(await getNetworks()).find((n) => n.id === network)
-  return config && createNetworkDef(config)
-}
-
-export const getChainId = async ({ network }: NetworkUrlParams): Promise<number | undefined> =>
-  recordValues(await getNetworks()).find((n) => n.id === network)?.chainId

@@ -34,7 +34,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, stringToNumber } from '@ui-kit/utils'
+import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -107,12 +107,11 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   }
 
   const onCollateralChanged = useCallback(
-    (val?: number) => {
+    (val?: Decimal) => {
       const { formStatus, formValues } = useStore.getState().loanCollateralIncrease
-      const collateral = `${val ?? ''}`
-      if (formValues.collateral === collateral) return
+      if (formValues.collateral === (val ?? '')) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral, collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
     },
     [reset, updateFormValues],
   )
@@ -280,6 +279,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             </>
           ) : (
             <LargeTokenInput
+              dataType="decimal"
               name="collateral"
               testId="inpCollateral"
               isError={!!formValues.collateralError}
@@ -289,7 +289,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               disabled={disabled}
               maxBalance={{
                 loading: userWalletBalancesLoading,
-                balance: stringToNumber(userWalletBalances.collateral),
+                balance: decimal(userWalletBalances.collateral),
                 symbol: getTokenName(llamma).collateral,
                 showSlider: false,
                 ...(collateralUsdRate != null &&
@@ -297,7 +297,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                     notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
                   }),
               }}
-              balance={stringToNumber(formValues.collateral)}
+              balance={decimal(formValues.collateral)}
               tokenSelector={
                 <TokenLabel
                   blockchainId={network?.id}

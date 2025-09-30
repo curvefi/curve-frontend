@@ -21,8 +21,6 @@ import { TokenOption } from './TokenOption'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
-export type Section = 'my' | 'all'
-
 export type TokenSectionProps = Required<
   Pick<TokenListProps, 'tokens' | 'balances' | 'tokenPrices' | 'disabledTokens'>
 > &
