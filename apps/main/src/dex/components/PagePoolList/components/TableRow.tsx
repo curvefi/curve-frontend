@@ -1,5 +1,4 @@
 import { Fragment, HTMLAttributes, useEffect, useRef, useState } from 'react'
-import type { CampaignRewardsMapper } from 'ui/src/CampaignRewards/types'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
 import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
@@ -11,8 +10,10 @@ import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/Page
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
 import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
+import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
+import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -29,7 +30,6 @@ export type TableRowProps = {
   rewardsApy: RewardsApy | undefined
   searchParams: SearchParams
   showInPoolColumn: boolean
-  campaignRewardsMapper: CampaignRewardsMapper
   tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
   volumeCached: { value: string } | undefined
@@ -50,7 +50,6 @@ const TableRow = ({
   rewardsApy,
   searchParams,
   showInPoolColumn,
-  campaignRewardsMapper,
   tvlCached,
   tvl,
   volumeCached,
@@ -59,6 +58,7 @@ const TableRow = ({
 }: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
+  const { data: campaigns } = useCampaignsByNetwork(blockchainId as Chain)
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
@@ -97,8 +97,8 @@ const TableRow = ({
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
                   </>
                 )}
-                {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                  <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+                {poolData && campaigns?.[poolData.pool.address] && (
+                  <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
                 )}
               </Box>
             </Td>
@@ -124,8 +124,8 @@ const TableRow = ({
                   {rewardsApy && (
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
                   )}
-                  {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                    <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+                  {poolData && campaigns?.[poolData.pool.address] && (
+                    <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
                   )}
                 </Box>
               </Td>
@@ -141,8 +141,8 @@ const TableRow = ({
                   isHighlightOther={sortBy === 'rewardsOther'}
                   rewardsApy={rewardsApy}
                 />
-                {poolData && campaignRewardsMapper[poolData.pool.address] && (
-                  <CampaignRewardsRow rewardItems={campaignRewardsMapper[poolData.pool.address]} />
+                {poolData && campaigns?.[poolData.pool.address] && (
+                  <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
                 )}
               </Box>
             </Td>

@@ -5,7 +5,6 @@ import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollatera
 import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
 import type { CollateralFormType, LeverageFormType, LoanFormType } from '@/lend/components/PageLoanManage/types'
-import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
@@ -26,10 +25,8 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
 ]
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rOwmId, rFormType, market, rChainId, params } = pageProps
+  const { rOwmId, rFormType, market, params } = pageProps
   const push = useNavigate()
-
-  const { initCampaignRewards, initiated } = useStore((state) => state.campaigns)
 
   type Tab = 'loan' | 'collateral' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
@@ -50,13 +47,6 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   )
 
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
-
-  // init campaignRewardsMapper
-  useEffect(() => {
-    if (!initiated) {
-      initCampaignRewards(rChainId)
-    }
-  }, [initCampaignRewards, rChainId, initiated])
 
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
