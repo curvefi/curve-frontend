@@ -13,7 +13,9 @@ describe('Disclaimers', () => {
     const viewport = oneOf(oneDesktopViewport, oneTabletViewport)()
     it(`should contain footer disclaimer links for ${viewport.join('x')}`, () => {
       cy.viewport(...viewport)
-      cy.visit(`/${oneAppPath() || 'dex'}/`)
+      cy.visit(`/${oneAppPath() || 'dex'}/`, {
+        onBeforeLoad: (win) => win.sessionStorage.setItem('phishing-warning-dismissed', 'true'),
+      })
 
       // Navigate to risk disclaimer from footer.
       cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
@@ -28,7 +30,9 @@ describe('Disclaimers', () => {
 
     it(`should contain multiple tabs for ${width}x${height}`, () => {
       cy.viewport(width, height)
-      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/disclaimer`)
+      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/disclaimer`, {
+        onBeforeLoad: (win) => win.sessionStorage.setItem('phishing-warning-dismissed', 'true'),
+      })
 
       // Make sure there's tabs available and click one.
       cy.get(`[data-testid='disclaimer']`, LOAD_TIMEOUT).should('be.visible')

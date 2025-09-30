@@ -343,7 +343,7 @@ describe(`LlamaLend Storage Migration`, () => {
 function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {
   cy.viewport(width, height)
   cy.visit('/llamalend/ethereum/markets/', {
-    onBeforeLoad: ({ localStorage }) => localStorage.clear(),
+    onBeforeLoad: (win) => win.sessionStorage.setItem('phishing-warning-dismissed', 'true'),
     ...LOAD_TIMEOUT,
     ...options,
   })
