@@ -13,6 +13,7 @@ import { SizesAndSpaces } from '../../themes/design/1_sizes_spaces'
 export type ModalDialogProps = {
   children: ReactNode
   title: string
+  titleColor?: string
   open: boolean
   onClose: () => void
   onTransitionExited?: () => void
@@ -29,6 +30,7 @@ export const ModalDialog = ({
   onTransitionExited,
   title,
   titleAction,
+  titleColor = 'textSecondary',
   footer,
   compact,
   sx,
@@ -71,7 +73,7 @@ export const ModalDialog = ({
         }
         avatar={titleAction}
         title={
-          <Typography variant="headingXsBold" color="textSecondary">
+          <Typography variant="headingXsBold" color={titleColor}>
             {title}
           </Typography>
         }
