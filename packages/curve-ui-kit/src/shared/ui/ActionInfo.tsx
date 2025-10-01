@@ -25,7 +25,7 @@ const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
 export type ActionInfoSize = 'small' | 'medium' | 'large'
 
-export type ActionInfoProps = Pick<StackProps, 'sx' | 'className'> & {
+export type ActionInfoProps = {
   /** Label displayed on the left side */
   label: ReactNode
   /** Custom color for the label text */
@@ -46,11 +46,7 @@ export type ActionInfoProps = Pick<StackProps, 'sx' | 'className'> & {
   prevValueColor?: TypographyProps['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
-  /** Whether the value can be copied. It also requires a `copyValue` or `value` to be a string */
-  copy?: boolean
-  /** Value to be copied.
-   * Example: copy the full address or amount when `value` is formatted.
-   * Defaults to the original value (if it's a string!). */
+  /** Value to be copied (will display a copy button). */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
@@ -66,6 +62,8 @@ export type ActionInfoProps = Pick<StackProps, 'sx' | 'className'> & {
   error?: boolean | Error | null
   /** Test ID for the component */
   testId?: string
+  /** Additional styles */
+  sx?: StackProps['sx']
 }
 
 const labelSize = {
@@ -98,24 +96,22 @@ const ActionInfo = ({
   valueTooltip = '',
   link,
   size = 'medium',
-  copy = false,
-  copyValue: givenCopyValue,
+  copyValue,
   copiedTitle,
   loading = false,
   error = false,
   testId = 'action-info',
-  ...styleProps // sx, className
+  sx,
 }: ActionInfoProps) => {
   const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
-  const copyValue = (givenCopyValue ?? (typeof value === 'string' ? value : '')).trim()
 
   const copyAndShowSnackbar = useCallback(() => {
-    void copyToClipboard(copyValue)
+    void copyToClipboard(copyValue!.trim())
     openSnackbar()
   }, [copyValue, openSnackbar])
 
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm} data-testid={testId} {...styleProps}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
         {label}
       </Typography>
@@ -169,7 +165,7 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {copy && copyValue && (
+        {copyValue && (
           <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
             <ContentCopy />
           </IconButton>

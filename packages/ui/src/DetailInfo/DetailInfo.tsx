@@ -25,7 +25,6 @@ const VariantToColorMap = {
 
 type Props = {
   children: ReactNode
-  className?: string
   isBold?: boolean | null
   isDivider?: boolean
   isMultiLine?: boolean
@@ -36,19 +35,9 @@ type Props = {
   variant?: Variant
 }
 
-const OldDetailInfo = ({
-  className,
-  isBold,
-  isDivider,
-  label,
-  loading,
-  loadingSkeleton,
-  tooltip,
-  variant,
-  children,
-}: Props) => (
+const OldDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
   <Wrapper
-    className={`${className} ${isDivider ? 'divider' : ''}`}
+    className={isDivider ? 'divider' : ''}
     grid
     gridAutoFlow="column"
     gridColumnGap={2}
@@ -67,30 +56,18 @@ const OldDetailInfo = ({
   </Wrapper>
 )
 
-const NewDetailInfo = ({
-  className,
-  isBold,
-  isDivider,
-  label,
-  loading,
-  loadingSkeleton,
-  tooltip,
-  variant,
-  children,
-}: Props) => (
+const NewDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
-      className={className}
       label={label}
       value={children || '-'}
       valueColor={VariantToColorMap[variant || '']}
       valueTooltip={tooltip}
-      copy={typeof children === 'string'}
       error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
       copyValue={typeof children === 'string' ? children : ''}
-      size={isBold ? 'large' : 'medium'}
+      {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
     />
   </>
 )
