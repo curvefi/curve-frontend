@@ -34,7 +34,7 @@ describe('Header', () => {
       appPath = oneAppPath()
       cy.visit(`/${appPath}`, {
         onBeforeLoad: (win) => {
-          win.localStorage.setItem('phishing-warning-dismissed', `${new Date().toISOString()}`)
+          win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`)
           isDarkMode = checkIsDarkMode(win)
         },
       })
@@ -101,7 +101,7 @@ describe('Header', () => {
       cy.viewport(...viewport)
       appPath = oneAppPath()
       cy.visit(`/${appPath}`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `${new Date().toISOString()}`),
+        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
       })
       waitIsLoaded(appPath)
     })
