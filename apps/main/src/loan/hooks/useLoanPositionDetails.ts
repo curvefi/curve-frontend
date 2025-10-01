@@ -1,7 +1,8 @@
 import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { calculateLtv, calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import { calculateLtv } from '@/llamalend/llama.utils'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -150,7 +151,10 @@ export const useLoanPositionDetails = ({
       loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
+      value:
+        collateralTotalValue && debt
+          ? calculateLtv(Number(debt), Number(collateral), Number(stablecoin), borrowedUsdRate, collateralUsdRate)
+          : null,
       loading: userLoanDetailsLoading ?? true,
     },
     totalDebt: {
