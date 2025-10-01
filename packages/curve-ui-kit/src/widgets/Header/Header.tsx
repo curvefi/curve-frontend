@@ -5,6 +5,7 @@ import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { isChinese, t } from '@ui-kit/lib/i18n'
 import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
+import { PhishingWarningModal } from '@ui-kit/widgets/Header/PhishingWarningModal'
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
@@ -27,6 +28,7 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
       )}
       <WalletToast />
       <WagmiConnectModal />
+      <PhishingWarningModal />
     </>
   )
 }

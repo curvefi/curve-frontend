@@ -148,6 +148,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
               params={params}
               values={values}
               collateralToken={collateralToken}
+              borrowToken={borrowToken}
               tooMuchDebt={tooMuchDebt}
               networks={networks}
               onSlippageChange={(value) => form.setValue('slippage', +value, setValueOptions)}
