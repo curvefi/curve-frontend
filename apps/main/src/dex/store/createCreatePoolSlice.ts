@@ -23,6 +23,8 @@ import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
+import { getInvalidCharactersInString } from '../utils'
 
 type SliceState = {
   navigationIndex: number
@@ -734,7 +736,10 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     updatePoolInfoValidation: (poolInfo: boolean) => {
       set(
         produce((state) => {
-          state.createPool.validation.poolInfo = poolInfo
+          // Also check for invalid characters in pool name
+          const invalidChars = getInvalidCharactersInString(state.createPool.poolName, INVALID_POOLS_NAME_CHARACTERS)
+          const hasInvalidChars = invalidChars.length > 0
+          state.createPool.validation.poolInfo = poolInfo && !hasInvalidChars
         }),
       )
     },

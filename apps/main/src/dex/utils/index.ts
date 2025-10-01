@@ -85,3 +85,7 @@ export const toTokenOption =
     symbol: token.symbol,
     volume: token.volume,
   })
+
+// Check for invalid characters in pool name
+export const getInvalidCharactersInString = (str: string, invalidCharacters: string[]): string[] =>
+  invalidCharacters.filter((char) => str.includes(char))
