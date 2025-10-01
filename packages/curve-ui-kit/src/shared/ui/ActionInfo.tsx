@@ -13,6 +13,7 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { WithTooltip } from '@ui-kit/shared/ui/WithTooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
@@ -59,7 +60,7 @@ export type ActionInfoProps = {
    **/
   loading?: boolean | [number, number] | string
   /** Error state; Unused for now, but kept for future use */
-  error?: boolean | Error | null
+  error?: boolean | Error | string | null
   /** Test ID for the component */
   testId?: string
   /** Additional styles */
@@ -110,6 +111,7 @@ const ActionInfo = ({
     openSnackbar()
   }, [copyValue, openSnackbar])
 
+  const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   return (
     <Stack direction="row" alignItems="center" gap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
@@ -137,7 +139,7 @@ const ActionInfo = ({
           />
         )}
 
-        <Tooltip title={(typeof error === 'object' && error?.message) || valueTooltip} placement="top">
+        <Tooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
@@ -147,23 +149,19 @@ const ActionInfo = ({
               {...(Array.isArray(loading) && { width: loading[0], height: loading[1] })}
             >
               <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
-                {loading ? (
-                  typeof loading === 'string' ? (
-                    loading
-                  ) : (
-                    MOCK_SKELETON
-                  )
-                ) : error ? (
-                  <ExclamationTriangleIcon fontSize="small" />
-                ) : (
-                  value
-                )}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
               </Typography>
             </WithSkeleton>
 
             {valueRight}
           </Stack>
         </Tooltip>
+
+        {error && (
+          <WithTooltip title={errorMessage} placement="top">
+            <ExclamationTriangleIcon fontSize="small" color="error" />
+          </WithTooltip>
+        )}
 
         {copyValue && (
           <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
