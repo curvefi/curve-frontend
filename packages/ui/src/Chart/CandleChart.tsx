@@ -160,6 +160,8 @@ const CandleChart = ({
 
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
+    // Reset fetching flag when new data arrives (fetch completed)
+    fetchingMoreRef.current = false
   }, [lastFetchEndTime])
 
   // Keep ohlcDataRef in sync with latest ohlcData
@@ -175,14 +177,7 @@ const CandleChart = ({
           return
         }
         fetchingMoreRef.current = true
-
         fetchMoreChartData(lastFetchEndTimeRef.current)
-
-        // Reset the flag after the debounce delay to ensure no overlapping calls
-        // This prevents multiple calls while still allowing the operation to complete
-        setTimeout(() => {
-          fetchingMoreRef.current = false
-        }, 500)
       },
       500,
       { leading: true, trailing: false },
@@ -491,12 +486,6 @@ const CandleChart = ({
     }
   }, [handleVisibleLogicalRangeChange])
 
-  useEffect(() => {
-    if (!volumeSeriesRef.current || !volumeData) return
-
-    volumeSeriesRef.current.setData(volumeData)
-  }, [volumeData])
-
   // Update liquidation range data when it changes
   useEffect(() => {
     if (!liquidationRange) return
@@ -535,18 +524,6 @@ const CandleChart = ({
       setSeriesData(bgSeries, data.price2)
     })
   }, [liquidationRange])
-
-  useEffect(() => {
-    if (!candlestickSeriesRef.current || !ohlcData) return
-
-    candlestickSeriesRef.current.setData(ohlcData)
-  }, [ohlcData])
-
-  useEffect(() => {
-    if (!oraclePriceSeriesRef.current || !oraclePriceData) return
-
-    oraclePriceSeriesRef.current.setData(oraclePriceData)
-  }, [oraclePriceData])
 
   // Update liquidation range series colors when they change
   useEffect(() => {
