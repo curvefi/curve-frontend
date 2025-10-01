@@ -23,6 +23,7 @@ import LevelMoney from './LevelMoney.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
+import Makina from './Makina.json'
 import Mellow from './Mellow.json'
 import MezoUSD from './MezoUSD.json'
 import Noon from './Noon.json'
@@ -82,4 +83,5 @@ export {
   MezoUSD,
   Liquity,
   Plasma,
+  Makina,
 }

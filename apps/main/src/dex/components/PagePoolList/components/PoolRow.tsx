@@ -9,7 +9,6 @@ import type {
   SearchTermMapper,
 } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
-import useCampaignRewardsMapper from '@/dex/hooks/useCampaignRewardsMapper'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -69,7 +68,6 @@ export const PoolRow = ({
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
   const network = useStore((state) => state.networks.networks[rChainId])
-  const campaignRewardsMapper = useCampaignRewardsMapper()
 
   const theme = useUserProfileStore((state) => state.theme)
 
@@ -109,7 +107,6 @@ export const PoolRow = ({
     volumeCached,
     volume,
     handleCellClick,
-    campaignRewardsMapper,
   }
 
   return (

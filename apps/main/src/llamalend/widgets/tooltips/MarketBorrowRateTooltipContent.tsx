@@ -6,7 +6,7 @@ import {
   TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
-import type { PoolRewards } from '@ui-kit/entities/campaigns'
+import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { RewardsTooltipItems } from './RewardTooltipItems'
@@ -18,7 +18,7 @@ export type MarketBorrowRateTooltipContentProps = {
   totalAverageBorrowRate: number | null | undefined
   averageRate: number | null | undefined
   periodLabel: string // e.g. "7D", "30D"
-  extraRewards: PoolRewards[]
+  extraRewards: CampaignPoolRewards[]
   rebasingYield: number | null | undefined
   collateralSymbol: string | null | undefined
   isLoading?: boolean

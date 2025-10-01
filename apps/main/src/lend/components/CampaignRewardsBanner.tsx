@@ -1,36 +1,35 @@
 import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
+import networks from '@/lend/networks'
+import { ChainId } from '@/lend/types/lend.types'
+import type { Chain } from '@curvefi/prices-api'
+import { useCampaigns } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import useStore from '../store/useStore'
 
 interface CampaignRewardsBannerProps {
+  chainId: ChainId
   borrowAddress: string
   supplyAddress: string
 }
 
-const CampaignRewardsBanner = ({ borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
-  const campaigns = useStore((state) => state.campaigns.campaignRewardsMapper)
-  const supplyCampaignRewardsPool = campaigns[supplyAddress]
-  const borrowCampaignRewardsPool = campaigns[borrowAddress]
-
-  if (!supplyCampaignRewardsPool && !borrowCampaignRewardsPool) return null
-
-  const campaignRewardsPools = () => {
-    if (supplyCampaignRewardsPool && borrowCampaignRewardsPool) {
-      return [...supplyCampaignRewardsPool, ...borrowCampaignRewardsPool]
-    }
-    if (supplyCampaignRewardsPool) return supplyCampaignRewardsPool
-    if (borrowCampaignRewardsPool) return borrowCampaignRewardsPool
-    return []
-  }
-
-  const message =
-    supplyCampaignRewardsPool && borrowCampaignRewardsPool
-      ? t`Supplying and borrowing in this pool earns points!`
-      : supplyCampaignRewardsPool
-        ? t`Supplying in this pool earns points!`
-        : t`Borrowing in this pool earns points!`
-
-  return <CampaignBannerComp campaignRewardsPool={campaignRewardsPools()} message={message} />
+const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
+  const blockchainId = networks[chainId].id as Chain
+  const { data: campaigns } = useCampaigns({ blockchainId })
+  const supplyCampaignRewardsPool = campaigns?.[supplyAddress] ?? []
+  const borrowCampaignRewardsPool = campaigns?.[borrowAddress] ?? []
+  return (
+    supplyCampaignRewardsPool.length + borrowCampaignRewardsPool.length > 0 && (
+      <CampaignBannerComp
+        campaignRewardsPool={[...supplyCampaignRewardsPool, ...borrowCampaignRewardsPool]}
+        message={
+          supplyCampaignRewardsPool.length && borrowCampaignRewardsPool.length
+            ? t`Supplying and borrowing in this pool earns points!`
+            : supplyCampaignRewardsPool
+              ? t`Supplying in this pool earns points!`
+              : t`Borrowing in this pool earns points!`
+        }
+      />
+    )
+  )
 }
 
 export default CampaignRewardsBanner

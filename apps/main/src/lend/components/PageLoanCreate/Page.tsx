@@ -165,6 +165,7 @@ const Page = () => {
         </AppPageFormsWrapper>
         <Stack flexDirection="column" flexGrow={1} sx={{ gap: Spacing.md }}>
           <CampaignRewardsBanner
+            chainId={rChainId}
             borrowAddress={market?.addresses?.controller || ''}
             supplyAddress={market?.addresses?.vault || ''}
           />
