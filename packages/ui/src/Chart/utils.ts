@@ -41,3 +41,45 @@ export function hslaToRgb(hsla: string) {
     return `rgb(${Math.round(255 * f(0))}, ${Math.round(255 * f(8))}, ${Math.round(255 * f(4))})`
   })
 }
+
+/**
+ * Calculates robust price range for chart auto-scaling by filtering outliers
+ * Uses percentile-based approach to exclude anomalous candles that would flatten the chart
+ * @param prices - Array of all price values (highs and lows) from visible candles
+ * @param lowerPercentile - Lower percentile threshold (0-1), default 0.02 (2nd percentile)
+ * @param upperPercentile - Upper percentile threshold (0-1), default 0.98 (98th percentile)
+ * @param padding - Padding factor to add visual comfort, default 0.05 (5%)
+ * @returns Object with minValue and maxValue, or null if insufficient data
+ * @example
+ * const prices = [100, 101, 102, 1000, 103] // 1000 is an outlier
+ * const range = calculateRobustPriceRange(prices) // excludes 1000
+ */
+export function calculateRobustPriceRange(
+  prices: number[],
+  lowerPercentile = 0.02,
+  upperPercentile = 0.98,
+  padding = 0.05,
+): { minValue: number; maxValue: number } | null {
+  if (!prices || prices.length === 0) {
+    return null
+  }
+
+  // Sort prices in ascending order
+  const sortedPrices = [...prices].sort((a, b) => a - b)
+
+  // Calculate percentile indices
+  const lowerIndex = Math.max(0, Math.floor(sortedPrices.length * lowerPercentile))
+  const upperIndex = Math.min(sortedPrices.length - 1, Math.floor(sortedPrices.length * upperPercentile))
+
+  const minValue = sortedPrices[lowerIndex]
+  const maxValue = sortedPrices[upperIndex]
+
+  // Add padding for visual comfort
+  const range = maxValue - minValue
+  const paddingAmount = range * padding
+
+  return {
+    minValue: minValue - paddingAmount,
+    maxValue: maxValue + paddingAmount,
+  }
+}

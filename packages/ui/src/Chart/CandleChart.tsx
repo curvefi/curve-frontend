@@ -20,7 +20,7 @@ import type {
   LiquidationRanges,
   ChartColors,
 } from './types'
-import { hslaToRgb } from './utils'
+import { hslaToRgb, calculateRobustPriceRange } from './utils'
 
 /**
  * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
@@ -108,6 +108,7 @@ const CandleChart = ({
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
   const totalDecimalPlacesRef = useRef(4)
@@ -160,6 +161,11 @@ const CandleChart = ({
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
   }, [lastFetchEndTime])
+
+  // Keep ohlcDataRef in sync with latest ohlcData
+  useEffect(() => {
+    ohlcDataRef.current = ohlcData
+  }, [ohlcData])
 
   const debouncedFetchMoreChartData = useRef(
     lodash.debounce(
@@ -367,6 +373,58 @@ const CandleChart = ({
       wickUpColor: '#26a69a',
       wickDownColor: '#ef5350',
       priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
+        const originalRange = original()
+
+        if (!originalRange || !chartRef.current || !candlestickSeriesRef.current) {
+          return originalRange
+        }
+
+        // Get visible logical range to determine which bars are visible
+        const visibleLogicalRange = chartRef.current.timeScale().getVisibleLogicalRange()
+
+        if (!visibleLogicalRange) {
+          return originalRange
+        }
+
+        // Get the bars that are currently visible
+        const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(visibleLogicalRange)
+
+        // Use ref to access latest ohlcData without causing series recreation
+        const currentOhlcData = ohlcDataRef.current
+
+        if (!barsInfo || !currentOhlcData || currentOhlcData.length === 0) {
+          return originalRange
+        }
+
+        // Calculate the slice indices for visible bars
+        const startIndex = Math.max(0, Math.floor(barsInfo.barsBefore))
+        const endIndex = Math.min(currentOhlcData.length, currentOhlcData.length - Math.floor(barsInfo.barsAfter))
+
+        // Get visible bars
+        const visibleBars = currentOhlcData.slice(startIndex, endIndex)
+
+        if (visibleBars.length === 0) {
+          return originalRange
+        }
+
+        // Collect all price points (high and low) from visible bars
+        const allPrices = visibleBars.flatMap((item) => [item.high, item.low])
+
+        // Calculate robust price range excluding outliers
+        const robustRange = calculateRobustPriceRange(allPrices)
+
+        if (!robustRange) {
+          return originalRange
+        }
+
+        return {
+          priceRange: {
+            minValue: robustRange.minValue,
+            maxValue: robustRange.maxValue,
+          },
+        }
+      },
     })
 
     return () => {
