@@ -54,6 +54,7 @@ export type Market = {
     symbol: string
     rate: number
   }[]
+  maxLtv: number
 }
 
 export type Snapshot = {
@@ -101,6 +102,7 @@ export type Snapshot = {
     rebasingYield: number | null
   }
   timestamp: Date
+  maxLtv: number
 }
 
 /** More specifically, the markets where a user holds a position */

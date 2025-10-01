@@ -32,6 +32,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     collected: x.collected_fees,
   },
   created_at: new Date(x.created_at),
+  maxLtv: x.max_ltv,
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
@@ -69,6 +70,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     address: x.stablecoin_token.address,
     rebasingYield: x.stablecoin_token.rebasing_yield,
   },
+  maxLtv: x.max_ltv,
 })
 
 export const parseKeeper = (x: Responses.GetKeepersResponse['keepers'][number]): Models.Keeper => ({

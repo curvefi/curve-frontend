@@ -56,6 +56,7 @@ export type GetMarketsResponse = {
       symbol: string
       apr: number
     }[]
+    max_ltv: number
   }[]
 }
 
@@ -110,6 +111,7 @@ export type GetSnapshotsResponse = {
         rebasing_yield: number | null
       }
       timestamp: string
+      max_ltv: number
     },
   ]
 }

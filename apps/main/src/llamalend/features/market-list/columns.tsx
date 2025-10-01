@@ -10,6 +10,7 @@ import {
   LineGraphCell,
   LtvCell,
   MarketTitleCell,
+  MaxLtvCell,
   PriceCell,
   RateCell,
   UtilizationCell,
@@ -39,6 +40,7 @@ const headers = {
   [LlamaMarketColumnId.BorrowRate]: t`Borrow Rate`,
   [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
   [LlamaMarketColumnId.BorrowChart]: t`7D Rate Chart`,
+  [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
   [LlamaMarketColumnId.Tvl]: t`TVL`,
@@ -141,6 +143,11 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.BorrowChart,
     header: headers[LlamaMarketColumnId.BorrowChart],
     cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
+  }),
+  columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
+    header: headers[LlamaMarketColumnId.MaxLtv],
+    cell: MaxLtvCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: headers[LlamaMarketColumnId.UtilizationPercent],
