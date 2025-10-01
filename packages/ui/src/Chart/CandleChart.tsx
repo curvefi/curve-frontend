@@ -406,18 +406,16 @@ const CandleChart = ({
         // Collect all price points (high and low) from visible bars
         const allPrices = visibleBars.flatMap((item) => [item.high, item.low])
 
-        // Calculate robust price range excluding outliers
-        const robustRange = calculateRobustPriceRange(allPrices)
+        // Get the latest 5 candles to always include in range (current price action)
+        const recentCandleCount = Math.min(5, visibleBars.length)
+        const recentCandles = visibleBars.slice(-recentCandleCount)
+        const recentPrices = recentCandles.flatMap((item) => [item.high, item.low])
 
-        if (!robustRange) {
-          return originalRange
-        }
+        // Calculate robust price range excluding outliers but always including recent prices
+        const robustRange = calculateRobustPriceRange(allPrices, recentPrices)
 
         return {
-          priceRange: {
-            minValue: robustRange.minValue,
-            maxValue: robustRange.maxValue,
-          },
+          priceRange: robustRange,
         }
       },
     })

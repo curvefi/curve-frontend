@@ -45,23 +45,31 @@ export function hslaToRgb(hsla: string) {
 /**
  * Calculates robust price range for chart auto-scaling by filtering outliers
  * Uses percentile-based approach to exclude anomalous candles that would flatten the chart
+ * Always includes recent candles to ensure current price action is visible
  * @param prices - Array of all price values (highs and lows) from visible candles
+ * @param recentPrices - Array of recent price values that should always be included (e.g., latest candle)
  * @param lowerPercentile - Lower percentile threshold (0-1), default 0.02 (2nd percentile)
  * @param upperPercentile - Upper percentile threshold (0-1), default 0.98 (98th percentile)
  * @param padding - Padding factor to add visual comfort, default 0.05 (5%)
- * @returns Object with minValue and maxValue, or null if insufficient data
+ * @returns Object with minValue and maxValue (defaults to 1:1 peg with padding if no data)
  * @example
  * const prices = [100, 101, 102, 1000, 103] // 1000 is an outlier
- * const range = calculateRobustPriceRange(prices) // excludes 1000
+ * const recentPrices = [103] // latest price should always be visible
+ * const range = calculateRobustPriceRange(prices, recentPrices) // excludes 1000 but includes 103
  */
 export function calculateRobustPriceRange(
   prices: number[],
+  recentPrices: number[] = [],
   lowerPercentile = 0.02,
   upperPercentile = 0.98,
   padding = 0.05,
-): { minValue: number; maxValue: number } | null {
+): { minValue: number; maxValue: number } {
+  // Default to 1:1 peg with padding if no data
   if (!prices || prices.length === 0) {
-    return null
+    return {
+      minValue: 1 - padding,
+      maxValue: 1 + padding,
+    }
   }
 
   // Sort prices in ascending order
@@ -71,8 +79,16 @@ export function calculateRobustPriceRange(
   const lowerIndex = Math.max(0, Math.floor(sortedPrices.length * lowerPercentile))
   const upperIndex = Math.min(sortedPrices.length - 1, Math.floor(sortedPrices.length * upperPercentile))
 
-  const minValue = sortedPrices[lowerIndex]
-  const maxValue = sortedPrices[upperIndex]
+  let minValue = sortedPrices[lowerIndex]
+  let maxValue = sortedPrices[upperIndex]
+
+  // Ensure recent prices are always included in the range
+  if (recentPrices.length > 0) {
+    const recentMin = Math.min(...recentPrices)
+    const recentMax = Math.max(...recentPrices)
+    minValue = Math.min(minValue, recentMin)
+    maxValue = Math.max(maxValue, recentMax)
+  }
 
   // Add padding for visual comfort
   const range = maxValue - minValue
