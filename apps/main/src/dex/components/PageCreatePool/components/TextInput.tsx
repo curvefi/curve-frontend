@@ -18,7 +18,7 @@ const TextInput = (props: Props) => {
       <label {...labelProps}>{label}</label>
       <StyledInput {...inputProps} ref={ref} />
       {props.description && <div {...descriptionProps}>{props.description}</div>}
-      {props.errorMessage && <div {...errorMessageProps}>{props.errorMessage as ReactNode}</div>}
+      {props.errorMessage && <ErrorMessage {...errorMessageProps}>{props.errorMessage as ReactNode}</ErrorMessage>}
     </InputWrapper>
   )
 }
@@ -53,6 +53,14 @@ const StyledInput = styled.input`
   &:focus-visible {
     outline: var(--button_text--hover--color) auto 2px;
   }
+`
+
+const ErrorMessage = styled.div`
+  margin-top: var(--spacing-1);
+  padding: 0 var(--spacing-2);
+  color: var(--danger-400);
+  font-size: var(--font-size-1);
+  font-weight: var(--medium);
 `
 
 export default TextInput
