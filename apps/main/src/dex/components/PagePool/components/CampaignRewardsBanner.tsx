@@ -15,20 +15,20 @@ const CampaignRewardsBanner = ({ chainId, address }: CampaignRewardsBannerProps)
   const network = useStore((state) => state.networks.networks[chainId])
   const { data: campaigns } = useCampaignsByNetwork(network.networkId as Chain)
   const campaignRewardsPool = campaigns?.[address]
-
-  if (!campaignRewardsPool) return null
-
-  const isPoints = campaignRewardsPool && campaignRewardsPool.some((rewardItem) => rewardItem.tags.includes('points'))
-
-  const bannerMessage = () => {
-    if (isPoints) return t`Liquidity providers in this pool also earn points!`
-    return t`Liquidity providers in this pool also earn additional tokens!`
-  }
-
   return (
-    <CampaignRewardsBannerWrapper>
-      <CampaignBannerComp campaignRewardsPool={campaignRewardsPool} message={bannerMessage()} />
-    </CampaignRewardsBannerWrapper>
+    campaignRewardsPool &&
+    campaignRewardsPool.length > 0 && (
+      <CampaignRewardsBannerWrapper>
+        <CampaignBannerComp
+          campaignRewardsPool={campaignRewardsPool}
+          message={
+            campaignRewardsPool?.some((rewardItem) => rewardItem.tags.includes('points'))
+              ? t`Liquidity providers in this pool also earn points!`
+              : t`Liquidity providers in this pool also earn additional tokens!`
+          }
+        />
+      </CampaignRewardsBannerWrapper>
+    )
   )
 }
 

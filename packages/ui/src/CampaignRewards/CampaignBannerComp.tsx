@@ -9,7 +9,7 @@ type CampaignRewardsBannerCompProps = {
   message: string
 }
 
-const RewardsBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
+const CampaignBannerComp = ({ campaignRewardsPool, message }: CampaignRewardsBannerCompProps) => (
   <Wrapper>
     <StyledPointsIcon />
     <RewardsMessage>
@@ -60,4 +60,4 @@ const RewardsIconsWrapper = styled.div`
   flex-shrink: 1;
 `
 
-export default RewardsBannerComp
+export default CampaignBannerComp
