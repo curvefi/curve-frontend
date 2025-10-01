@@ -4,8 +4,7 @@ import List from '@mui/material/List'
 import ListItem from '@mui/material/ListItem'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { usePhishingWarningDismissed } from '@ui-kit/hooks/useSessionStorage'
-import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { usePhishingWarningDismissed } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
@@ -21,21 +20,20 @@ const urls = [
   'https://news.curve.finance',
 ]
 
+const ONE_DAY = 24 * 60 * 60 * 1000
+const DEADLINE = new Date('2025-10-21')
+
 /**
  * Displays a modal warning users about phishing risks and encourages them to verify they are on the official Curve domains.
- * The modal lists official domains, provides security tips, and can be dismissed by the user. Its visibility is managed via session storage.
+ * The modal lists official domains, provides security tips, and can be dismissed by the user. Its visibility is managed via local storage.
  */
 export const PhishingWarningModal = () => {
-  const [dismissed, setDismissed] = usePhishingWarningDismissed()
-  const [isOpen, , close] = useSwitch(!dismissed)
-  const onClick = () => {
-    close()
-    setDismissed(true)
-  }
+  const [dismissedAt, setDismissedAt] = usePhishingWarningDismissed()
+  const onClick = () => setDismissedAt(new Date())
+  const visible = new Date() < DEADLINE && (dismissedAt == null || Date.now() - dismissedAt.getTime() > ONE_DAY)
   return (
     <ModalDialog
-      open={isOpen}
-      onClose={close}
+      open={visible}
       title={t`Warning`}
       titleAction={
         <ExclamationTriangleIcon
