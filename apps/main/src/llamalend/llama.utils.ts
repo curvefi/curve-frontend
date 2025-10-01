@@ -48,3 +48,14 @@ export const getTokens = (market: LlamaMarketTemplate) =>
           decimals: market.borrowed_token.decimals,
         },
       }
+
+/**
+ * Calculates the loan-to-value ratio of a market.
+ * @param debt - The amount of debt in the market.
+ * @param collateralValue - The value of the collateral in the market. Collateral includes depositted collateral and collateral that has been converted into borrow token in soft-liquidation.
+ * @returns The loan-to-value ratio of the market.
+ */
+export const calculateLtv = (debt: number, collateralValue: number) => {
+  if (collateralValue === 0 || debt === 0) return 0
+  return (debt / collateralValue) * 100
+}

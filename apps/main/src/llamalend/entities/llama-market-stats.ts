@@ -3,6 +3,7 @@ import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamale
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/entities/mint-markets'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { calculateLtv } from '@/llamalend/llama.utils'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
@@ -67,6 +68,8 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
   const isLoading = loadingLend || loadingEarn || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
 
+  const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
+
   return {
     ...(stats && {
       data: {
@@ -81,12 +84,15 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           usdRate: collateralUsdRate,
         },
         borrowToken: {
-          amount: 'borrowed' in stats ? stats.borrowed : stats.stablecoin,
+          amount: borrowedAmount,
           address: market?.assets?.borrowed?.address,
           symbol: market?.assets?.borrowed?.symbol,
           usdRate: borrowedUsdRate,
         },
-        ltv: ((stats.collateral * (collateralUsdRate ?? 0)) / (stats.debt * (borrowedUsdRate ?? 0))) * 100,
+        ltv: calculateLtv(
+          stats.debt * (borrowedUsdRate ?? 0),
+          stats.collateral * (collateralUsdRate ?? 0) + borrowedAmount * (borrowedUsdRate ?? 0),
+        ),
       },
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),
