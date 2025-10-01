@@ -141,6 +141,7 @@ export type GetUserLendingPositionsResponse = {
     last_activity: string
     current_shares: string
     current_shares_in_gauge: string
+    boost_multiplier: number
   }[]
   page: number
   per_page: number
@@ -198,6 +199,7 @@ type UserMarketEarnings = {
   current_assets_in_convex: string
   total_current_shares: string
   total_current_assets: string
+  boost_multiplier: number | null
 }
 
 export type GetUserMarketEarningsResponse = UserMarketEarnings

@@ -6,7 +6,8 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
-import { calculateLtv, calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
+import { calculateLtv } from '@/llamalend/llama.utils'
 import type { Address, Chain } from '@curvefi/prices-api'
 import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
@@ -135,7 +136,10 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
+      value:
+        collateralTotalValue && debt
+          ? calculateLtv(Number(debt), Number(collateral), Number(borrowed), borrowedUsdRate, collateralUsdRate)
+          : null,
       loading: !market || isUserLoanDetailsLoading,
     },
     pnl: {
