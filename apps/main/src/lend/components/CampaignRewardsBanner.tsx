@@ -14,14 +14,14 @@ interface CampaignRewardsBannerProps {
 const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].id as Chain
   const { data: campaigns } = useCampaigns({ blockchainId })
-  const supplyCampaignRewardsPool = campaigns?.[supplyAddress]
-  const borrowCampaignRewardsPool = campaigns?.[borrowAddress]
+  const supplyCampaignRewardsPool = campaigns?.[supplyAddress] ?? []
+  const borrowCampaignRewardsPool = campaigns?.[borrowAddress] ?? []
   return (
-    (supplyCampaignRewardsPool || borrowCampaignRewardsPool) && (
+    supplyCampaignRewardsPool.length + borrowCampaignRewardsPool.length > 0 && (
       <CampaignBannerComp
-        campaignRewardsPool={[...(supplyCampaignRewardsPool ?? []), ...(borrowCampaignRewardsPool ?? [])]}
+        campaignRewardsPool={[...supplyCampaignRewardsPool, ...borrowCampaignRewardsPool]}
         message={
-          supplyCampaignRewardsPool && borrowCampaignRewardsPool
+          supplyCampaignRewardsPool.length && borrowCampaignRewardsPool.length
             ? t`Supplying and borrowing in this pool earns points!`
             : supplyCampaignRewardsPool
               ? t`Supplying in this pool earns points!`
