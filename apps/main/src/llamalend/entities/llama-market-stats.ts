@@ -89,10 +89,7 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           symbol: market?.assets?.borrowed?.symbol,
           usdRate: borrowedUsdRate,
         },
-        ltv: calculateLtv(
-          stats.debt * (borrowedUsdRate ?? 0),
-          stats.collateral * (collateralUsdRate ?? 0) + borrowedAmount * (borrowedUsdRate ?? 0),
-        ),
+        ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
       },
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),

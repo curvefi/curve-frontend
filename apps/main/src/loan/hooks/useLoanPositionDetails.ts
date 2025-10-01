@@ -151,7 +151,10 @@ export const useLoanPositionDetails = ({
       loading: (userLoanDetailsLoading ?? true) || collateralUsdRateLoading || borrowedUsdRateLoading,
     },
     ltv: {
-      value: collateralTotalValue && debt ? calculateLtv(Number(debt), collateralTotalValue) : null,
+      value:
+        collateralTotalValue && debt
+          ? calculateLtv(Number(debt), Number(collateral), Number(stablecoin), borrowedUsdRate, collateralUsdRate)
+          : null,
       loading: userLoanDetailsLoading ?? true,
     },
     totalDebt: {
