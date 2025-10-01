@@ -51,7 +51,7 @@ export function hslaToRgb(hsla: string) {
  * @param lowerPercentile - Lower percentile threshold (0-1), default 0.02 (2nd percentile)
  * @param upperPercentile - Upper percentile threshold (0-1), default 0.98 (98th percentile)
  * @param padding - Padding factor to add visual comfort, default 0.05 (5%)
- * @returns Object with minValue and maxValue (defaults to 1:1 peg with padding if no data)
+ * @returns Object with minValue and maxValue, or null if no data available
  * @example
  * const prices = [100, 101, 102, 1000, 103] // 1000 is an outlier
  * const recentPrices = [103] // latest price should always be visible
@@ -63,13 +63,11 @@ export function calculateRobustPriceRange(
   lowerPercentile = 0.02,
   upperPercentile = 0.98,
   padding = 0.05,
-): { minValue: number; maxValue: number } {
-  // Default to 1:1 peg with padding if no data
+): { minValue: number; maxValue: number } | null {
+  // Return null if no data - caller should use original range
+  // We can't assume a default value (like 1.0) works for all trading pairs
   if (!prices || prices.length === 0) {
-    return {
-      minValue: 1 - padding,
-      maxValue: 1 + padding,
-    }
+    return null
   }
 
   // Sort prices in ascending order

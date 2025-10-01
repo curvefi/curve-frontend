@@ -414,6 +414,11 @@ const CandleChart = ({
         // Calculate robust price range excluding outliers but always including recent prices
         const robustRange = calculateRobustPriceRange(allPrices, recentPrices)
 
+        // If we can't calculate a robust range, fall back to original auto-scaling
+        if (!robustRange) {
+          return originalRange
+        }
+
         return {
           priceRange: robustRange,
         }
