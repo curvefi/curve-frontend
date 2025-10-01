@@ -22,7 +22,7 @@ export const BoostCell = ({ row }: CellContext<LlamaMarket, number>) => {
     )
   }
 
-  if (!boostMultiplier || boostMultiplier <= 1) {
+  if (!boostMultiplier) {
     return (
       <Typography variant="tableCellMBold" color="textSecondary" textAlign="right">
         -
