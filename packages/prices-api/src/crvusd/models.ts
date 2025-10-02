@@ -29,6 +29,7 @@ export type Market = {
     collected: number
   }
   created_at: Date
+  maxLtv: number
 }
 
 export type Snapshot = {
@@ -63,6 +64,7 @@ export type Snapshot = {
     address: string
     rebasingYield: number
   }
+  maxLtv: number
 }
 
 export type PoolPrice = {

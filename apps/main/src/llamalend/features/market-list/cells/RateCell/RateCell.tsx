@@ -17,7 +17,6 @@ const { Spacing } = SizesAndSpaces
 const RateTypes = {
   [LlamaMarketColumnId.LendRate]: MarketRateType.Supply,
   [LlamaMarketColumnId.BorrowRate]: MarketRateType.Borrow,
-  [LlamaMarketColumnId.UserLtv]: MarketRateType.Supply,
 } as const
 
 const TooltipComponents = {

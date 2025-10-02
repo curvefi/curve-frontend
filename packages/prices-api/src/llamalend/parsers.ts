@@ -53,6 +53,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: y.symbol,
     rate: y.apr,
   })),
+  maxLtv: x.max_ltv,
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
@@ -103,6 +104,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
   },
+  maxLtv: x.max_ltv,
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>

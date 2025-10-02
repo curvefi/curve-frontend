@@ -55,6 +55,10 @@ export const useLlamaMarketSortOptions = () => {
       label: t`Total Value Locked`,
     },
     {
+      id: LlamaMarketColumnId.MaxLtv,
+      label: t`Max LTV`,
+    },
+    {
       id: LlamaMarketColumnId.UtilizationPercent,
       label: t`Utilization`,
     },

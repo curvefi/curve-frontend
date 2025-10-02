@@ -37,6 +37,12 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`Max LTV`,
+        columns: [LlamaMarketColumnId.MaxLtv],
+        active: false,
+        enabled: true,
+      },
+      {
         label: t`Utilization`,
         columns: [LlamaMarketColumnId.UtilizationPercent],
         active: !onlyPositions,
