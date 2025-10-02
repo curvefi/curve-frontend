@@ -2,7 +2,6 @@ import { styled } from 'styled-components'
 import TextInput from '@/dex/components/PageCreatePool/components/TextInput'
 import { INVALID_POOLS_NAME_CHARACTERS } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
-import { getInvalidCharactersInPoolName } from '@/dex/utils'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -12,7 +11,7 @@ const PoolInfo = () => {
   const updatePoolName = useStore((state) => state.createPool.updatePoolName)
   const updatePoolSymbol = useStore((state) => state.createPool.updatePoolSymbol)
 
-  const invalidCharsFound = getInvalidCharactersInPoolName(poolName, INVALID_POOLS_NAME_CHARACTERS)
+  const invalidCharsFound = INVALID_POOLS_NAME_CHARACTERS.filter((c) => poolName.includes(c))
   const poolNameError =
     invalidCharsFound.length > 0
       ? t`Pool name cannot contain the following character${invalidCharsFound.length > 1 ? 's' : ''}: "${invalidCharsFound.join('", "')}"`

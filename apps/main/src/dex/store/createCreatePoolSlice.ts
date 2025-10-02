@@ -24,7 +24,6 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
-import { getInvalidCharactersInPoolName } from '../utils'
 
 type SliceState = {
   navigationIndex: number
@@ -737,7 +736,8 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
       set(
         produce((state) => {
           // Also check for invalid characters in pool name
-          const invalidChars = getInvalidCharactersInPoolName(state.createPool.poolName, INVALID_POOLS_NAME_CHARACTERS)
+          const { poolName } = state.createPool
+          const invalidChars = INVALID_POOLS_NAME_CHARACTERS.filter((c) => poolName.includes(c))
           state.createPool.validation.poolInfo = poolInfo && !invalidChars.length
         }),
       )
