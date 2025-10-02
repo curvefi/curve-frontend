@@ -1,12 +1,23 @@
-import { useAccount } from 'wagmi'
+import { useAccount, useChainId } from 'wagmi'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/entities/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/entities/mint-markets'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { calculateLtv } from '@/llamalend/llama.utils'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
-const statsColumns = [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed]
-const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited]
+const statsColumns = [
+  LlamaMarketColumnId.UserHealth,
+  LlamaMarketColumnId.UserBorrowed,
+  LlamaMarketColumnId.UserCollateral,
+  LlamaMarketColumnId.UserLtv,
+]
+const earningsColumns = [
+  LlamaMarketColumnId.UserEarnings,
+  LlamaMarketColumnId.UserDeposited,
+  LlamaMarketColumnId.UserBoostMultiplier,
+]
 
 /**
  * Hook that fetches the user's stats for a given market.
@@ -19,6 +30,15 @@ const earningsColumns = [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.U
 export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColumnId) {
   const { type, userHasPositions, address: marketAddress, controllerAddress, chain } = market
   const { address: userAddress } = useAccount()
+  const chainId = useChainId()
+  const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: market?.assets?.collateral?.address,
+  })
+  const { data: borrowedUsdRate, isLoading: borrowedUsdRateLoading } = useTokenUsdRate({
+    chainId,
+    tokenAddress: market?.assets?.borrowed?.address,
+  })
 
   const enableStats = !!userHasPositions?.Borrow && (!column || statsColumns.includes(column))
   const enableEarnings = !!userHasPositions?.Supply && column != null && earningsColumns.includes(column)
@@ -46,7 +66,9 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
 
   const stats = (enableLendingStats && lendData) || (enableMintStats && mintData)
   const error = (enableLendingStats && lendError) || (enableMintStats && mintError) || (enableEarnings && earnError)
-  const isLoading = loadingLend || loadingEarn || loadingMint
+  const isLoading = loadingLend || loadingEarn || loadingMint || collateralUsdRateLoading || borrowedUsdRateLoading
+
+  const borrowedAmount = stats ? ('borrowed' in stats ? stats.borrowed : stats.stablecoin) : 0
 
   return {
     ...(stats && {
@@ -55,6 +77,19 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
         isCollateralEroded: stats.softLiquidation && stats.debt > 0,
         health: stats.healthFull,
         borrowed: stats.debt,
+        collateral: {
+          amount: stats.collateral,
+          address: market?.assets?.collateral?.address,
+          symbol: market?.assets?.collateral?.symbol,
+          usdRate: collateralUsdRate,
+        },
+        borrowToken: {
+          amount: borrowedAmount,
+          address: market?.assets?.borrowed?.address,
+          symbol: market?.assets?.borrowed?.symbol,
+          usdRate: borrowedUsdRate,
+        },
+        ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
       },
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),

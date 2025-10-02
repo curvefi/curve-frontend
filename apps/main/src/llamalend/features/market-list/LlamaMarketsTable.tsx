@@ -29,7 +29,7 @@ const { isEqual } = lodash
 const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.TVL, value: [minLiquidity, null] }], [minLiquidity])
+  useMemo(() => [{ id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] }], [minLiquidity])
 
 const migration: MigrationOptions<ColumnFiltersState> = {
   version: 1,
