@@ -72,7 +72,6 @@ const TableRowMobile = ({
         return formatNumber(tvl?.value, { notation: 'compact', currency: 'USD' })
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showDetail, sortBy, volume?.value, tvl?.value, rewardsApy, poolData])
 
   return (
