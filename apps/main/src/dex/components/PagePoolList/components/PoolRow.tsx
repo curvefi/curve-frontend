@@ -14,9 +14,9 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 interface PoolRowProps {
   poolId: string
@@ -57,7 +57,7 @@ export const PoolRow = ({
   const userActiveKey = getUserActiveKey(curve)
 
   const formValues = useStore((state) => state.poolList.formValues)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
+  const isMobile = useIsMobile()
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
   const rewardsApy = useStore((state) => state.pools.rewardsApyMapper[rChainId]?.[poolId])
@@ -111,7 +111,7 @@ export const PoolRow = ({
 
   return (
     <>
-      {isXSmDown ? (
+      {isMobile ? (
         <TableRowMobile
           tableLabel={tableLabels}
           showDetail={showDetail}
@@ -127,7 +127,7 @@ export const PoolRow = ({
         <TrSearchedTextResult
           colSpan={10}
           id={poolId}
-          isMobile={isXSmDown}
+          isMobile={isMobile}
           result={searchedByAddresses}
           searchTermMapper={parsedSearchTermMapper}
           scanAddressPath={network.scanAddressPath}
