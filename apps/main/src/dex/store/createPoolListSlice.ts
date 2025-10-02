@@ -24,7 +24,9 @@ import {
   type ValueMapperCached,
 } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
-import { getCampaigns } from '@ui-kit/entities/campaigns'
+import { combineCampaigns } from '@ui-kit/entities/campaigns'
+import { getCampaignsExternal } from '@ui-kit/entities/campaigns/campaigns-external'
+import { getCampaignsMerkl } from '@ui-kit/entities/campaigns/campaigns-merkl'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -201,13 +203,20 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         const blockchainId = networks[chainId].networkId as Chain
         return orderBy(
           poolDatas,
-          ({ pool }) =>
-            Math.max(
+          ({ pool }) => {
+            const externalCampaigns = getCampaignsExternal({})
+            const merklCampaigns = getCampaignsMerkl({})
+            const campaigns = combineCampaigns({
+              campaigns: [externalCampaigns, merklCampaigns],
+              filter: (campaign) => campaign.network === blockchainId,
+            })
+            const rewards = campaigns[pool.address.toLowerCase()] ?? []
+
+            return Math.max(
               0,
-              ...(getCampaigns({})?.[pool.address.toLowerCase()] ?? [])
-                .filter((x) => x.network === blockchainId)
-                .map((x) => (x.multiplier && typeof x.multiplier === 'number' ? x.multiplier : 0)),
-            ),
+              ...rewards.map((x) => (x.multiplier && typeof x.multiplier === 'number' ? x.multiplier : 0)),
+            )
+          },
           [order],
         )
       }

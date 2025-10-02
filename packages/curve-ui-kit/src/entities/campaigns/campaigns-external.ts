@@ -1,19 +1,10 @@
 import { groupBy, inRange } from 'lodash'
-import { useMemo } from 'react'
 import type { Address } from 'viem'
-import type { Chain } from '@curvefi/prices-api'
 import { mapRecord } from '@curvefi/prices-api/objects.util'
+import { CURVE_ASSETS_URL } from '@ui/utils'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
-import { campaigns, type Campaign, type CampaignPool } from '@external-rewards'
-
-export type CampaignPoolRewards = Pick<Campaign, 'campaignName' | 'platform' | 'platformImageId' | 'dashboardLink'> &
-  Pick<CampaignPool, 'action' | 'tags' | 'address' | 'network'> & {
-    description: CampaignPool['description'] | null
-    lock: boolean
-    multiplier?: number | string // Can be 5 as parsed from "5x", or just the token like "FXN". Kept as number for sorting.
-    period?: readonly [Date, Date]
-  }
+import { campaigns } from '@external-rewards'
 
 const REWARDS = groupBy(
   // Can't use Object.groupBy until we support ES2024
@@ -22,7 +13,7 @@ const REWARDS = groupBy(
       // Campaign specific properties
       campaignName: campaign.campaignName,
       platform: campaign.platform,
-      platformImageId: campaign.platformImageId,
+      platformImageId: `${CURVE_ASSETS_URL}/platforms/${campaign.platformImageId}`,
       dashboardLink: campaign.dashboardLink,
 
       // Pool specific properties
@@ -56,11 +47,11 @@ const REWARDS = groupBy(
  * @returns TanStack Query result with all active campaigns grouped by pool address
  */
 export const {
-  useQuery: useCampaigns,
-  getQueryOptions: getCampaignOptions,
-  getQueryData: getCampaigns,
+  useQuery: useCampaignsExternal,
+  getQueryOptions: getCampaignsExternalOptions,
+  getQueryData: getCampaignsExternal,
 } = queryFactory({
-  queryKey: () => ['external-rewards'] as const,
+  queryKey: () => ['campaigns-external'] as const,
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
 
@@ -75,30 +66,3 @@ export const {
   validationSuite: EmptyValidationSuite,
   refetchInterval: '10m',
 })
-
-/**
- * Hook for accessing all external campaigns filtered by network.
- *
- * Uses client-side filtering to avoid cache duplication and maintain a single source of truth.
- * All campaign data comes from the base `useCampaigns` query and is filtered using `useMemo`.
- *
- * @param blockchainId - Chain identifier to filter campaigns by network
- * @returns TanStack Query result with campaigns filtered by the specified network
- *
- * @example
- * ```typescript
- * const { data: ethereumCampaigns } = useCampaignsByNetwork('ethereum')
- * ```
- */
-export const useCampaignsByNetwork = (blockchainId: Chain) => {
-  const { data: allCampaigns, ...rest } = useCampaigns({})
-
-  const filteredCampaigns = useMemo(() => {
-    if (!blockchainId) return allCampaigns
-    if (!allCampaigns) return undefined
-
-    return mapRecord(allCampaigns, (_, rewards) => rewards.filter(({ network }) => network === blockchainId))
-  }, [allCampaigns, blockchainId])
-
-  return { data: filteredCampaigns, ...rest }
-}

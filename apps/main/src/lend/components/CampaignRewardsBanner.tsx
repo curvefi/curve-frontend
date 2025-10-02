@@ -2,8 +2,9 @@ import CampaignBannerComp from 'ui/src/CampaignRewards/CampaignBannerComp'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import type { Chain } from '@curvefi/prices-api'
-import { useCampaigns } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import type { Address } from '@ui-kit/utils'
 
 interface CampaignRewardsBannerProps {
   chainId: ChainId
@@ -13,17 +14,17 @@ interface CampaignRewardsBannerProps {
 
 const CampaignRewardsBanner = ({ chainId, borrowAddress, supplyAddress }: CampaignRewardsBannerProps) => {
   const blockchainId = networks[chainId].id as Chain
-  const { data: campaigns } = useCampaigns({ blockchainId })
-  const supplyCampaignRewardsPool = campaigns?.[supplyAddress] ?? []
-  const borrowCampaignRewardsPool = campaigns?.[borrowAddress] ?? []
+  const { data: supplyCampaigns } = useCampaignsByAddress({ blockchainId, address: supplyAddress as Address })
+  const { data: borrowCampaigns } = useCampaignsByAddress({ blockchainId, address: borrowAddress as Address })
+
   return (
-    supplyCampaignRewardsPool.length + borrowCampaignRewardsPool.length > 0 && (
+    supplyCampaigns.length + borrowCampaigns.length > 0 && (
       <CampaignBannerComp
-        campaignRewardsPool={[...supplyCampaignRewardsPool, ...borrowCampaignRewardsPool]}
+        campaignRewardsPool={[...supplyCampaigns, ...borrowCampaigns]}
         message={
-          supplyCampaignRewardsPool.length && borrowCampaignRewardsPool.length
+          supplyCampaigns.length && borrowCampaigns.length
             ? t`Supplying and borrowing in this pool earns points!`
-            : supplyCampaignRewardsPool
+            : supplyCampaigns
               ? t`Supplying in this pool earns points!`
               : t`Borrowing in this pool earns points!`
         }
