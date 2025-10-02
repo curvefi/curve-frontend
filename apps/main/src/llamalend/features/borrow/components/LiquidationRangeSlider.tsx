@@ -32,13 +32,13 @@ export const LiquidationRangeSlider = ({
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
   return (
     <Grid container columnSpacing={Spacing.sm}>
-      {/* we need 10 px padding because the slider is overflowing its container */}
       <Grid size={8}>
         <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
           <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
           <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
         </Stack>
-        <Grid size={12} paddingInline="10px">
+        {/* we need 10 px padding, and -4px marginBottom, because the slider is overflowing its container */}
+        <Grid size={12} paddingInline="10px" marginBottom="-4px">
           <Slider
             aria-label={t`Bands`}
             getAriaValueText={format}
