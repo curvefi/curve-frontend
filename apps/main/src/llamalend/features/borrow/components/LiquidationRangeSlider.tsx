@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
@@ -32,19 +33,25 @@ export const LiquidationRangeSlider = ({
   return (
     <Grid container columnSpacing={Spacing.sm}>
       {/* we need 10 px padding because the slider is overflowing its container */}
-      <Grid size={8} paddingInline="10px">
-        <Slider
-          aria-label={t`Bands`}
-          getAriaValueText={format}
-          value={sliderValue}
-          onChange={(_, n) => setSliderValue(n as number)}
-          onChangeCommitted={(_, n) => setRange(n as number)}
-          min={minValue}
-          max={maxValue}
-          size="medium"
-        />
+      <Grid size={8}>
+        <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
+          <Typography variant="tableHeaderS" color="textTertiary">{t`Max LTV`}</Typography>
+          <Typography variant="tableHeaderS" color="textTertiary">{t`Safe`}</Typography>
+        </Stack>
+        <Grid size={12} paddingInline="10px">
+          <Slider
+            aria-label={t`Bands`}
+            getAriaValueText={format}
+            value={sliderValue}
+            onChange={(_, n) => setSliderValue(n as number)}
+            onChangeCommitted={(_, n) => setRange(n as number)}
+            min={minValue}
+            max={maxValue}
+            size="medium"
+          />
+        </Grid>
       </Grid>
-      <Grid size={4}>
+      <Grid size={4} display="flex" alignItems="flex-end" direction="row">
         <NumericTextField
           dataType="number"
           aria-label={t`Bands`}
