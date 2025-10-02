@@ -1,4 +1,7 @@
+import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
+import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { MarketBorrowRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipContent'
+import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import { CardHeader, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
@@ -14,11 +17,8 @@ import type {
   LiquidationRange,
   BandRange,
 } from './BorrowPositionDetails'
-import { CollateralMetricTooltipContent } from './tooltips/CollateralMetricTooltipContent'
-import { CurrentLTVTooltipContent } from './tooltips/CurrentLTVTooltipContent'
 import { LiquidityThresholdTooltipContent } from './tooltips/LiquidityThresholdMetricTooltipContent'
 import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
-import { TotalDebtTooltipContent } from './tooltips/TotalDebtTooltipContent'
 
 const { Spacing } = SizesAndSpaces
 
