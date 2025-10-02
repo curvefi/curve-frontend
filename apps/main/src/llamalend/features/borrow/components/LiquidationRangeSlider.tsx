@@ -35,8 +35,8 @@ export const LiquidationRangeSlider = ({
       {/* we need 10 px padding because the slider is overflowing its container */}
       <Grid size={8}>
         <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
-          <Typography variant="tableHeaderS" color="textTertiary">{t`Max LTV`}</Typography>
-          <Typography variant="tableHeaderS" color="textTertiary">{t`Safe`}</Typography>
+          <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
+          <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
         </Stack>
         <Grid size={12} paddingInline="10px">
           <Slider
