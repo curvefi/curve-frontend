@@ -7,31 +7,32 @@ import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import Link from '@mui/material/Link'
 import Snackbar from '@mui/material/Snackbar'
-import Stack from '@mui/material/Stack'
+import Stack, { type StackProps } from '@mui/material/Stack'
 import Typography, { type TypographyProps } from '@mui/material/Typography'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { ExclamationTriangleIcon } from '@ui-kit/shared/icons/ExclamationTriangleIcon'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { WithTooltip } from '@ui-kit/shared/ui/WithTooltip'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
-import { copyToClipboard, type SxProps } from '@ui-kit/utils'
+import { copyToClipboard } from '@ui-kit/utils'
 import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
 const MOCK_SKELETON = 10 // Mock value for skeleton to infer some width
 
-type ComponentSize = 'small' | 'medium' | 'large'
+export type ActionInfoSize = 'small' | 'medium' | 'large'
 
 export type ActionInfoProps = {
   /** Label displayed on the left side */
-  label: string
+  label: ReactNode
   /** Custom color for the label text */
   labelColor?: TypographyProps['color']
   /** Primary value to display and copy */
-  value: string
+  value: ReactNode
   /** Custom color for the value text */
   valueColor?: TypographyProps['color']
   /** Optional content to display to the left of the value */
@@ -39,46 +40,50 @@ export type ActionInfoProps = {
   /** Optional content to display to the right of the value */
   valueRight?: ReactNode
   /** Tooltip text to display when hovering over the value */
-  valueTooltip?: string
+  valueTooltip?: ReactNode
   /** Previous value (if needed for comparison) */
   prevValue?: string
   /** Custom color for the previous value text */
   prevValueColor?: TypographyProps['color']
   /** URL to navigate to when clicking the external link button */
   link?: string
-  /** Whether or not the value can be copied */
-  copy?: boolean
-  /** Value to be copied. Example use case would be copying the full address when the value is formatted / shortened. Defaults to original value. */
+  /** Value to be copied (will display a copy button). */
   copyValue?: string
   /** Message displayed in the snackbar title when the value is copied */
   copiedTitle?: string
   /** Size of the component */
-  size?: ComponentSize
-  /** Whether the component is in a loading state. Can be boolean or string (string value is used for skeleton width inference) */
-  loading?: boolean | string
+  size?: ActionInfoSize
+  /** Whether the component is in a loading state. Can be one of:
+   * - boolean
+   * - string (value is used for skeleton width inference)
+   * - [number, number] (explicit skeleton width and height in px)
+   **/
+  loading?: boolean | [number, number] | string
   /** Error state; Unused for now, but kept for future use */
-  error?: boolean | Error | null
+  error?: boolean | Error | string | null
+  /** Test ID for the component */
   testId?: string
-  sx?: SxProps
+  /** Additional styles */
+  sx?: StackProps['sx']
 }
 
 const labelSize = {
   small: 'bodyXsRegular',
   medium: 'bodyMRegular',
   large: 'bodyMRegular',
-} as const satisfies Record<ComponentSize, TypographyVariantKey>
+} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const prevValueSize = {
   small: 'bodySRegular',
   medium: 'bodyMRegular',
   large: 'bodyMRegular',
-} as const satisfies Record<ComponentSize, TypographyVariantKey>
+} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const valueSize = {
   small: 'bodyXsBold',
   medium: 'highlightM',
   large: 'headingSBold',
-} as const satisfies Record<ComponentSize, TypographyVariantKey>
+} as const satisfies Record<ActionInfoSize, TypographyVariantKey>
 
 const ActionInfo = ({
   label,
@@ -92,8 +97,7 @@ const ActionInfo = ({
   valueTooltip = '',
   link,
   size = 'medium',
-  copy = false,
-  copyValue: givenCopyValue,
+  copyValue,
   copiedTitle,
   loading = false,
   error = false,
@@ -101,15 +105,15 @@ const ActionInfo = ({
   sx,
 }: ActionInfoProps) => {
   const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
-  const copyValue = (givenCopyValue ?? value).trim()
 
   const copyAndShowSnackbar = useCallback(() => {
-    void copyToClipboard(copyValue)
+    void copyToClipboard(copyValue!.trim())
     openSnackbar()
   }, [copyValue, openSnackbar])
 
+  const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   return (
-    <Stack direction="row" alignItems="center" gap={Spacing.sm} sx={sx} data-testid={testId}>
+    <Stack direction="row" alignItems="center" gap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
         {label}
       </Typography>
@@ -135,24 +139,17 @@ const ActionInfo = ({
           />
         )}
 
-        <Tooltip title={(typeof error === 'object' && error?.message) || valueTooltip} placement="top">
+        <Tooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
 
-            <WithSkeleton loading={!!loading}>
+            <WithSkeleton
+              loading={!!loading}
+              {...(Array.isArray(loading) && { width: loading[0], height: loading[1] })}
+            >
               <Typography variant={valueSize[size]} color={error ? 'error' : (valueColor ?? 'textPrimary')}>
-                {loading ? (
-                  typeof loading === 'string' ? (
-                    loading
-                  ) : (
-                    MOCK_SKELETON
-                  )
-                ) : error ? (
-                  <ExclamationTriangleIcon fontSize="small" />
-                ) : (
-                  value
-                )}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
               </Typography>
             </WithSkeleton>
 
@@ -160,7 +157,13 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {copy && copyValue && (
+        {error && (
+          <WithTooltip title={errorMessage} placement="top">
+            <ExclamationTriangleIcon fontSize="small" color="error" />
+          </WithTooltip>
+        )}
+
+        {copyValue && (
           <IconButton size="extraSmall" title={copyValue} onClick={copyAndShowSnackbar} color="primary">
             <ContentCopy />
           </IconButton>

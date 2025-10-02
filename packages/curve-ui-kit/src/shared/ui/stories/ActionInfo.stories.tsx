@@ -45,9 +45,9 @@ const meta: Meta<typeof ActionInfo> = {
       control: 'text',
       description: 'The URL to navigate to when clicking the external link button',
     },
-    copy: {
-      control: 'boolean',
-      description: 'Whether or not the value can be copied',
+    copyValue: {
+      control: 'text',
+      description: 'The value to be copied (will display a copy button)',
     },
     copiedTitle: {
       control: 'text',
@@ -73,7 +73,7 @@ const meta: Meta<typeof ActionInfo> = {
     valueColor: 'textPrimary',
     valueTooltip: 'Contract address',
     link: 'https://etherscan.io/address/0x0655977feb2f289a4ab78af67bab0d17aab84367',
-    copy: true,
+    copyValue: '',
     copiedTitle: 'Contract address copied!',
     size: 'small',
     loading: false,
@@ -172,7 +172,6 @@ export const WithEmptyValueAndSwitch: Story = {
     value: '',
     valueRight: <Switch size="small" />,
     link: '',
-    copy: false,
     size: 'medium',
   },
   parameters: {
@@ -202,7 +201,6 @@ export const WithError: Story = {
   args: {
     error: new Error('Failed to load contract address'),
     size: 'medium',
-    copy: false,
     link: '',
   },
   parameters: {

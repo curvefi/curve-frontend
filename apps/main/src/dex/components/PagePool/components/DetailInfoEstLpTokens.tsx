@@ -34,7 +34,6 @@ const DetailInfoEstLpTokens = ({
       isBold
       loading={formLpTokenExpected.loading}
       loadingSkeleton={[85, 23]}
-      className={formLpTokenExpected.expected.length > 20 ? 'isRow' : ''}
       label={t`Minimum LP Tokens:`}
       tooltip={
         showTooltip ? (
