@@ -53,7 +53,6 @@ export const PegKeeperAdvancedDetails = ({
         label={t`Pool`}
         value={shortenAddress(poolAddress, { digits: 2 })}
         link={getInternalUrl('dex', 'ethereum', `${DEX_ROUTES.PAGE_POOLS}/${poolId}/deposit`)}
-        copy
         copyValue={poolAddress}
         testId={`${testId}-action-info-pool`}
       />
@@ -62,7 +61,6 @@ export const PegKeeperAdvancedDetails = ({
         label={t`Contract`}
         value={shortenAddress(address, { digits: 2 })}
         link={`https://etherscan.io/address/${address}`}
-        copy
         copyValue={address}
         testId={`${testId}-action-info-contract`}
       />
