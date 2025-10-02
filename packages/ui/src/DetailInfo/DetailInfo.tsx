@@ -66,7 +66,6 @@ const NewDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, too
       valueTooltip={tooltip}
       error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
-      copyValue={typeof children === 'string' ? children : ''}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
     />
   </>
