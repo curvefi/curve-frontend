@@ -17,7 +17,7 @@ import type {
   LiquidationRange,
   BandRange,
 } from './BorrowPositionDetails'
-import { LiquidityThresholdTooltipContent } from './tooltips/LiquidityThresholdMetricTooltipContent'
+import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
 
 const { Spacing } = SizesAndSpaces
@@ -188,7 +188,7 @@ export const BorrowInformation = ({
         valueTooltip={{
           title: t`Liquidation Threshold (LT)`,
           body: (
-            <LiquidityThresholdTooltipContent
+            <LiquidationThresholdTooltipContent
               liquidationRange={liquidationRange}
               rangeToLiquidation={liquidationRange?.rangeToLiquidation}
               bandRange={bandRange}
