@@ -10,7 +10,7 @@ import {
   LineGraphCell,
   LtvCell,
   MarketTitleCell,
-  MaxLtvCell,
+  PercentCell,
   PriceCell,
   RateCell,
   UtilizationCell,
@@ -146,7 +146,7 @@ export const LLAMA_MARKET_COLUMNS = [
   }),
   columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
     header: headers[LlamaMarketColumnId.MaxLtv],
-    cell: MaxLtvCell,
+    cell: PercentCell,
     meta: { type: 'numeric' },
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
