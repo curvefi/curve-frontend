@@ -73,7 +73,7 @@ const TableRowMobile = ({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [showDetail, sortBy])
+  }, [showDetail, sortBy, volume?.value, tvl?.value, rewardsApy, poolData])
 
   return (
     <LazyItem id={`${index}`} className="row--info">
