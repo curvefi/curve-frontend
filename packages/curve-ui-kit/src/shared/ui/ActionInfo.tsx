@@ -18,7 +18,6 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
-import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -94,7 +93,7 @@ const ActionInfo = ({
   valueColor,
   valueLeft,
   valueRight,
-  valueTooltip = '',
+  valueTooltip,
   link,
   size = 'medium',
   copyValue,
@@ -139,7 +138,7 @@ const ActionInfo = ({
           />
         )}
 
-        <Tooltip title={valueTooltip} placement="top">
+        <WithTooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
           <Stack direction="row" alignItems="center" gap={Spacing.xxs} data-testid={`${testId}-value`}>
             {valueLeft}
@@ -155,7 +154,7 @@ const ActionInfo = ({
 
             {valueRight}
           </Stack>
-        </Tooltip>
+        </WithTooltip>
 
         {error && (
           <WithTooltip title={errorMessage} placement="top">
