@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
@@ -32,11 +31,15 @@ export const LiquidationRangeSlider = ({
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
   return (
     <Grid container columnSpacing={Spacing.sm}>
-      <Grid size={8}>
-        <Stack direction="row" alignItems="flex-end" justifyContent="space-between">
-          <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
-          <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
-        </Stack>
+      <Grid container size={8}>
+        <Grid size={12} container>
+          <Grid size={6}>
+            <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
+          </Grid>
+          <Grid size={6} sx={{ textAlign: 'right' }}>
+            <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
+          </Grid>
+        </Grid>
         {/* we need 10 px padding, and -4px marginBottom, because the slider is overflowing its container */}
         <Grid size={12} paddingInline="10px" marginBottom="-4px">
           <Slider
