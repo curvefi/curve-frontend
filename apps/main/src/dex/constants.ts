@@ -49,3 +49,6 @@ export const DEFAULT_NETWORK_CONFIG = {
   hasFactory: false,
   pricesApi: false,
 }
+
+// List of characters that are not allowed in pool names. See getPoolName() in @curvefi/api
+export const INVALID_POOLS_NAME_CHARACTERS = [':'] as const satisfies string[]

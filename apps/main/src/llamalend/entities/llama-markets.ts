@@ -38,6 +38,7 @@ export type LlamaMarket = {
   address: Address
   controllerAddress: Address
   assets: Assets
+  maxLtv: number
   utilizationPercent: number
   liquidityUsd: number
   tvl: number
@@ -96,6 +97,7 @@ const convertLendingVault = (
     aprLendCrvMaxBoost: lendCrvAprBoosted,
     leverage,
     extraRewardApr,
+    maxLtv,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignPoolRewards[]> = {},
@@ -123,6 +125,7 @@ const convertLendingVault = (
         balanceUsd: totalAssetsUsd,
       },
     },
+    maxLtv,
     utilizationPercent: totalAssetsUsd && (100 * totalDebtUsd) / totalAssetsUsd,
     debtCeiling: null, // debt ceiling is not applicable for lend markets
     liquidityUsd: totalAssetsUsd - totalDebtUsd,
@@ -191,6 +194,7 @@ const convertMintMarket = (
     debtCeiling,
     leverage,
     chain,
+    maxLtv,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignPoolRewards[]> = {},
@@ -222,6 +226,7 @@ const convertMintMarket = (
         rebasingYield: collateralToken.rebasingYield ? Number(collateralToken.rebasingYield) : null,
       },
     },
+    maxLtv,
     utilizationPercent: Math.min(100, (100 * borrowed) / debtCeiling), // debt ceiling may be lowered, so cap at 100%
     debtCeiling,
     liquidityUsd: borrowable,

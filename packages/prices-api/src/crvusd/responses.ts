@@ -28,6 +28,7 @@ export type GetMarketsResponse = {
       rebasing_yield: number | null
     }
     created_at: string
+    max_ltv: number
   }[]
   count: number
 }
@@ -69,6 +70,7 @@ export type GetSnapshotsResponse = {
       address: string
       rebasing_yield: number
     }
+    max_ltv: number
   }[]
 }
 

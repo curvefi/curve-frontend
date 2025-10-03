@@ -13,6 +13,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -28,8 +29,7 @@ const PoolList = ({
   const activeKey = getPoolListActiveKey(rChainId, searchParams)
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
-  const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isXSmDown = useLayoutStore((state) => state.isXSmDown)
+  const isMobile = useIsMobile()
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
@@ -93,9 +93,9 @@ const PoolList = ({
       return keys.concat([COLUMN_KEYS.rewardsLite, COLUMN_KEYS.tvl])
     }
 
-    isMdUp ? keys.push(COLUMN_KEYS.rewardsDesktop) : keys.push(COLUMN_KEYS.rewardsMobile)
+    !isMobile ? keys.push(COLUMN_KEYS.rewardsDesktop) : keys.push(COLUMN_KEYS.rewardsMobile)
     return keys.concat([COLUMN_KEYS.volume, COLUMN_KEYS.tvl])
-  }, [isLite, isMdUp, showInPoolColumn])
+  }, [isLite, isMobile, showInPoolColumn])
 
   const updateFormValues = useCallback(
     (searchParams: SearchParams) => {
@@ -149,7 +149,7 @@ const PoolList = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, isReadyWithApiData, chainId, signerAddress, searchParams, hideSmallPools])
 
-  let colSpan = isMdUp ? 7 : 4
+  let colSpan = !isMobile ? 7 : 4
   if (showHideSmallPools) {
     colSpan++
   }
@@ -170,7 +170,7 @@ const PoolList = ({
       />
 
       <Table cellPadding={0} cellSpacing={0}>
-        {isXSmDown ? (
+        {isMobile ? (
           <TableHeadMobile showInPoolColumn={showInPoolColumn} />
         ) : (
           <TableHead
