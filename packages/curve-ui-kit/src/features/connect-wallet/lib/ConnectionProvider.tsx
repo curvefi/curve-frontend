@@ -119,7 +119,7 @@ export const ConnectionProvider = <App extends AppName>({
     return () => abort.abort()
   }, [app, hydrate, isReconnecting, libKey, network, wallet])
 
-  // the following statements are skipping the render cycle, we need to ensure they are changed together with connectState
+  // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
   const isHydrated = [curveApi, llamaApi].includes(globalLibs.hydrated[app])
