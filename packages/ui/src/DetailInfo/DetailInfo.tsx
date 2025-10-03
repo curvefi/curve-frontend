@@ -64,8 +64,8 @@ const NewDetailInfo = ({
   loadingSkeleton,
   tooltip,
   variant,
-  children,
   isMultiLine,
+  children,
 }: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}

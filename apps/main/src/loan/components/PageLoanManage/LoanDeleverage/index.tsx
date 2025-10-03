@@ -292,13 +292,6 @@ const LoanDeleverage = ({
     </DetailInfo>
   )
 
-  useEffect(() => {
-    console.log({
-      isReady,
-      detailInfo,
-    })
-  }, [detailInfo, isReady])
-
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}

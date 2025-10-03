@@ -62,7 +62,7 @@ const DetailInfoTradeRoutes = ({
                         variant="bodySBold"
                       >
                         {route}
-                      </Typography>{' '}
+                      </Typography>
                       <Typography variant="bodySRegular">{(isMultiRoutes && from) || to}</Typography>
                     </Stack>
                   )
