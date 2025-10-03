@@ -11,6 +11,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer/Disclaimer'
+import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
@@ -57,6 +58,14 @@ export const daoRoutes = daoLayoutRoute.addChildren([
     component: () => <Disclaimer currentApp="dao" />,
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve' }],
+    }),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/legal',
+    component: () => <LegalPage currentApp="dao" />,
+    head: () => ({
+      meta: [{ title: 'Legal - Curve DAO' }],
     }),
     ...layoutProps,
   }),

@@ -7,6 +7,7 @@ import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
+import { LegalPage } from '@ui-kit/widgets/Legal'
 import { LendLayout } from '../lend/LendLayout'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
@@ -40,6 +41,14 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     component: () => <Disclaimer currentApp="lend" />,
     head: () => ({
       meta: [{ title: 'Risk Disclaimer - Curve Lend' }],
+    }),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/legal',
+    component: () => <LegalPage currentApp="lend" />,
+    head: () => ({
+      meta: [{ title: 'Legal - Curve Lend' }],
     }),
     ...layoutProps,
   }),
