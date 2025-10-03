@@ -10,7 +10,7 @@ export interface AddressActionInfoProps {
   network: BaseConfig | undefined
   title: ReactNode
   address: string | undefined
-  isBorderBottom: boolean
+  isBorderBottom?: boolean
 }
 
 export const AddressActionInfo = ({ network, title, address, isBorderBottom }: AddressActionInfoProps) => (
