@@ -16,6 +16,7 @@ import { Dex } from '../Disclaimer/Tabs/Dex'
 import { LlamaLend } from '../Disclaimer/Tabs/LlamaLend'
 import { CrvUsd } from '../Disclaimer/Tabs/CrvUsd'
 import { SCrvUsd } from '../Disclaimer/Tabs/SCrvUsd'
+import { Terms } from '../Disclaimer/Tabs/Terms'
 import { Grid } from '@mui/material'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
@@ -134,7 +135,8 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
           </>
         ) : (
           <TabPanel>
-            <Header>{tab === 'terms' ? t`Terms and Conditions` : tab === 'privacy' ? t`Privacy Policy` : t``}</Header>
+            {tab === 'terms' && <Terms />}
+            {tab === 'privacy' && <Header>{t`Privacy Policy`}</Header>}
           </TabPanel>
         )}
       </Stack>
