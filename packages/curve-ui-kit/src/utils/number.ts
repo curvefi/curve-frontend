@@ -165,7 +165,7 @@ export type NumberFormatOptions = {
   abbreviate: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
-} & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation'>
+} & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>
 
 /**
  * Decomposes a number into its formatted parts including prefix, main value, suffix, and scale suffix.
@@ -266,4 +266,4 @@ export const formatPercent = (value?: Amount | null) =>
     maximumSignificantDigits: undefined,
   })
 
-export const formatUsd = (value: Amount) => formatNumber(value, { currency: 'USD', abbreviate: true })
+export const formatUsd = (value: Amount) => formatNumber(value, { unit: 'dollar', abbreviate: true })
