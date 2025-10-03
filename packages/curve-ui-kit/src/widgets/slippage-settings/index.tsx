@@ -1,2 +1,2 @@
-export { SlippageSettings } from './ui/SlippageSettings'
+export { SlippageSettings } from './SlippageSettings'
 export { SlippageToleranceActionInfo } from './SlippageToleranceActionInfo'

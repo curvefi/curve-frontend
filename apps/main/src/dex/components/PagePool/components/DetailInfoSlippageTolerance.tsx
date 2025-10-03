@@ -3,11 +3,11 @@ import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
-import { SlippageSettings, SlippageToleranceActionInfo } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { decimal, ReleaseChannel } from '@ui-kit/utils'
+import { SlippageSettings, SlippageToleranceActionInfo } from '@ui-kit/widgets/slippage-settings'
 
 type Props = {
   maxSlippage: string
