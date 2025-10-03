@@ -4,8 +4,11 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
+import { SlippageToleranceActionInfo } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { decimal, ReleaseChannel } from '@ui-kit/utils'
 
 type Props = {
   maxSlippage: string
@@ -14,11 +17,17 @@ type Props = {
 
 const DetailInfoSlippageTolerance = ({ maxSlippage, noLabel }: Props) => {
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const [releaseChannel] = useReleaseChannel()
+  const value = decimal(maxSlippage)!
+
+  if (releaseChannel === ReleaseChannel.Beta) {
+    return <SlippageToleranceActionInfo maxSlippage={value} onSave={setMaxSlippage} />
+  }
 
   return (
     <StyledDetailInfo label={noLabel ? undefined : t`Slippage tolerance:`}>
       <SlippageSettings
-        maxSlippage={maxSlippage}
+        maxSlippage={value}
         button={({ onClick }) => (
           <IconButton onClick={onClick}>
             {formatNumber(maxSlippage, { style: 'percent', defaultValue: '-' })} <Icon name="Settings" size={16} />

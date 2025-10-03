@@ -1,16 +1,15 @@
-import { formatPercent } from '@/llamalend/format.utils'
 import type { NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import { formatNumber } from '@ui/utils'
-import { SlippageSettings } from '@ui-kit/features/slippage-settings'
+import { SlippageToleranceActionInfo } from '@ui-kit/features/slippage-settings'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
-import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { Decimal, formatPercent } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
@@ -42,7 +41,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   borrowToken: Token | undefined
   tooMuchDebt: boolean
   networks: NetworkDict<ChainId>
-  onSlippageChange: (newSlippage: string) => void
+  onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
@@ -119,19 +118,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
             valueTooltip={gas?.createLoanApprove?.tooltip}
             loading={gasLoading}
           />
-          <ActionInfo
-            label={t`Slippage tolerance`}
-            value={formatPercent(slippage)}
-            valueRight={
-              <SlippageSettings
-                buttonSize="extraSmall"
-                buttonIcon={<GearIcon sx={{ color: 'text.primary' }} />}
-                maxSlippage={`${slippage}`}
-                onSave={onSlippageChange}
-              />
-            }
-            testId="borrow-slippage"
-          />
+          <SlippageToleranceActionInfo maxSlippage={slippage} onSave={onSlippageChange} />
         </Stack>
       </Accordion>
     </Box>

@@ -255,3 +255,15 @@ export const formatNumber = (value: Amount, options: NumberFormatOptions) => {
   const decomposed = decomposeNumber(value, options)
   return [decomposed.prefix, decomposed.mainValue, decomposed.scaleSuffix, decomposed.suffix].filter(Boolean).join('')
 }
+
+/** Common percentage formatter across the board for most llamalend percentages */
+export const formatPercent = (value?: Amount | null) =>
+  formatNumber(value || 0, {
+    unit: 'percentage',
+    abbreviate: true,
+    // Disregard the precision edge case around 0 and 1 and force using 2 decimals
+    minimumFractionDigits: 2,
+    maximumSignificantDigits: undefined,
+  })
+
+export const formatUsd = (value: Amount) => formatNumber(value, { currency: 'USD', abbreviate: true })

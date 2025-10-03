@@ -4,44 +4,29 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
 import { SlippageSettings } from '@ui-kit/features/slippage-settings'
+import { SlippageToleranceActionInfo } from '@ui-kit/features/slippage-settings'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { ReleaseChannel } from '@ui-kit/utils'
+import { decimal, ReleaseChannel } from '@ui-kit/utils'
 
 type Props = {
   maxSlippage: string
 }
 
-const NewDetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
+const DetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  const [releaseChannel] = useReleaseChannel()
+  const value = decimal(maxSlippage)!
 
-  return (
-    <ActionInfo
-      label={t`Slippage tolerance:`}
-      value={
-        <SlippageSettings
-          maxSlippage={maxSlippage}
-          button={({ onClick }) => (
-            <IconButton onClick={onClick}>
-              {formatNumber(maxSlippage, { style: 'percent', defaultValue: '-' })} <Icon name="Settings" size={16} />
-            </IconButton>
-          )}
-          onSave={setMaxSlippage}
-        />
-      }
-    />
-  )
-}
-
-const OldDetailInfoSlippageTolerance = ({ maxSlippage }: Props) => {
-  const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
+  if (releaseChannel === ReleaseChannel.Beta) {
+    return <SlippageToleranceActionInfo maxSlippage={value} onSave={setMaxSlippage} />
+  }
 
   return (
     <StyledDetailInfo label={t`Slippage tolerance:`}>
       <SlippageSettings
-        maxSlippage={maxSlippage}
+        maxSlippage={value}
         button={({ onClick }) => (
           <IconButton onClick={onClick}>
             {formatNumber(maxSlippage, { style: 'percent', defaultValue: '-' })} <Icon name="Settings" size={16} />
@@ -66,9 +51,4 @@ const StyledDetailInfo = styled(DetailInfo)`
   }
 `
 
-export default function DetailInfoSlippageTolerance(props: Props) {
-  const [releaseChannel] = useReleaseChannel()
-  const DetailInfo =
-    releaseChannel === ReleaseChannel.Beta ? NewDetailInfoSlippageTolerance : OldDetailInfoSlippageTolerance
-  return <DetailInfo {...props} />
-}
+export default DetailInfoSlippageTolerance
