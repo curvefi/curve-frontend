@@ -89,7 +89,7 @@ const LoanCreate = ({
       />
       <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
         <AppFormContentWrapper>
-          {releaseChannel === ReleaseChannel.Beta ? (
+          {releaseChannel === ReleaseChannel.Beta && false ? (
             <BorrowTabContents
               networks={networks}
               chainId={rChainId}

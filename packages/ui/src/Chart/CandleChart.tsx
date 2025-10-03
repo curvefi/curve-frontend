@@ -494,7 +494,13 @@ const CandleChart = ({
     if (!liquidationRange) return
 
     const setSeriesData = (series: ISeriesApi<'Area'> | null, data: any) => {
-      if (series) series.setData(data)
+      try {
+        if (series) series.setData(data)
+      } catch (e) {
+        // handles the crash in Deleverage page (happens in development mode only)
+        // See https://www.notion.so/Deleverage-page-crashes-after-load-277599aae06480f6ad7dd4b7526d7352
+        console.error(`Cannot set chart series data`, e)
+      }
     }
 
     const ranges = []

@@ -7,8 +7,8 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { decimal, ReleaseChannel } from '@ui-kit/utils'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/slippage-settings'
-import { SlippageSettings } from '@ui-kit/widgets/slippage-settings'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
+import { SlippageSettings } from '@ui-kit/widgets/SlippageSettings'
 
 type Props = {
   maxSlippage: string

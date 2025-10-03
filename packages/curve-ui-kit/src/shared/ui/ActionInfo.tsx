@@ -64,8 +64,6 @@ export type ActionInfoProps = {
   testId?: string
   /** Additional styles */
   sx?: StackProps['sx']
-  /** CSS flex-wrap property */
-  flexWrap?: StackProps['flexWrap']
   /** CSS align-items property */
   alignItems?: StackProps['alignItems']
 }
@@ -104,7 +102,6 @@ const ActionInfo = ({
   copiedTitle,
   loading = false,
   error = false,
-  flexWrap,
   alignItems = 'center',
   testId = 'action-info',
   sx,
@@ -118,19 +115,12 @@ const ActionInfo = ({
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   return (
-    <Stack
-      direction="row"
-      alignItems={alignItems}
-      columnGap={Spacing.sm}
-      flexWrap={flexWrap}
-      data-testid={testId}
-      sx={sx}
-    >
+    <Stack direction="row" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
       <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
         {label}
       </Typography>
 
-      <Stack direction="row" alignItems={alignItems} gap={Spacing.xs}>
+      <Stack direction="row" alignItems={alignItems} gap={Spacing.xs} className="ActionInfo-valueGroup">
         {prevValue && (
           <Typography
             variant={prevValueSize[size]}
@@ -153,7 +143,13 @@ const ActionInfo = ({
 
         <WithTooltip title={valueTooltip} placement="top">
           {/** Additional stack to add some space between left (icon), value and right (icon) */}
-          <Stack direction="row" alignItems={alignItems} gap={Spacing.xxs} data-testid={`${testId}-value`}>
+          <Stack
+            direction="row"
+            alignItems={alignItems}
+            gap={Spacing.xxs}
+            data-testid={`${testId}-value`}
+            className="ActionInfo-value"
+          >
             {valueLeft}
 
             <WithSkeleton

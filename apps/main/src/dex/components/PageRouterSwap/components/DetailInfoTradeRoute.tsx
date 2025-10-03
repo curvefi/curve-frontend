@@ -11,10 +11,10 @@ import { RCCircle } from '@ui/images'
 import Loader from '@ui/Loader'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
-import { CircleIcon as NewCircleIcon } from '@ui-kit/shared/icons/CircleIcon'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
+import { RouteTrack } from '@ui-kit/widgets/RouteTrack'
 
 const { Spacing } = SizesAndSpaces
 
@@ -76,21 +76,6 @@ const OldDetailInfoTradeRoute = ({
     </Wrapper>
   )
 }
-
-const Circle = () => <NewCircleIcon sx={{ width: '0.5rem', height: '0.5rem', fill: 'currentColor' }} />
-
-const RouteTrack = () => (
-  <Stack
-    direction="column"
-    justifyContent="center"
-    alignItems="center"
-    sx={{ marginBlock: '6px 14px', opacity: '0.7' }} // aligns with the 1st and last items
-  >
-    <Circle />
-    <Stack sx={{ borderLeft: '2px dotted', height: '100%', opacity: '0.5' }} />
-    <Circle />
-  </Stack>
-)
 
 export const NewDetailInfoTradeRoute = ({
   params,

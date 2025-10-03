@@ -2,7 +2,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { GearIcon } from '@ui-kit/shared/icons/GearIcon'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatPercent as formatPercent } from '@ui-kit/utils'
-import { SlippageSettings } from '@ui-kit/widgets/slippage-settings/SlippageSettings'
+import { SlippageSettings } from '@ui-kit/widgets/SlippageSettings/SlippageSettings'
 
 export const SlippageToleranceActionInfo = ({
   maxSlippage,
