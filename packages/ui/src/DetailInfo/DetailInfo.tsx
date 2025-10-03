@@ -56,7 +56,17 @@ const OldDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, too
   </Wrapper>
 )
 
-const NewDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
+const NewDetailInfo = ({
+  isBold,
+  isDivider,
+  label,
+  loading,
+  loadingSkeleton,
+  tooltip,
+  variant,
+  children,
+  isMultiLine,
+}: Props) => (
   <>
     {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
     <ActionInfo
@@ -67,6 +77,7 @@ const NewDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, too
       error={variant === 'error'}
       loading={loading && (loadingSkeleton || true)}
       {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
+      {...(isMultiLine && { alignItems: 'flex-start' })}
     />
   </>
 )

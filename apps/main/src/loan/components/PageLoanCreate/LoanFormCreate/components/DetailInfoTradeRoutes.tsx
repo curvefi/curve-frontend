@@ -23,18 +23,9 @@ const DetailInfoTradeRoutes = ({
   outputSymbol: string
   routes: string
 }) => {
-  const parsedRoutes = useMemo(() => {
-    if (routes) {
-      const delimiterPattern = /\s*-->\s*|\s*->\s*/
-      return routes.split(delimiterPattern)
-    } else {
-      return []
-    }
-  }, [routes])
-
+  const parsedRoutes = useMemo(() => routes?.split(/\s*-->\s*|\s*->\s*/) || [], [routes])
   const routesLength = parsedRoutes.length
   const isMultiRoutes = routesLength > 1
-  const detailRowJustifyContent = isMultiRoutes ? 'flex-start' : 'flex-end'
 
   return (
     <Wrapper grid gridAutoFlow="row">
@@ -48,7 +39,7 @@ const DetailInfoTradeRoutes = ({
             gridAutoFlow="column"
             gridColumnGap="1"
             gridTemplateColumns={routesLength === 1 ? '1fr' : 'auto 1fr'}
-            flexJustifyContent={detailRowJustifyContent}
+            flexJustifyContent={isMultiRoutes ? 'flex-start' : 'flex-end'}
             isMultiRoutes={isMultiRoutes}
           >
             {routesLength > 1 && (
