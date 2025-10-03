@@ -1,10 +1,10 @@
 import lodash from 'lodash'
-import { useMemo } from 'react'
+import { SetStateAction, useCallback, useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
 import type { ColumnFiltersState } from '@tanstack/table-core'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
-import { ReleaseChannel, defaultReleaseChannel } from '@ui-kit/utils'
-import { type MigrationOptions, useStoredState } from './useStoredState'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
+import { GetAndSet, type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
 
@@ -77,4 +77,15 @@ export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favorite
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+}
+
+export const usePhishingWarningDismissed = (): GetAndSet<Date | null> => {
+  const [dateStr, setDateStr] = useLocalStorage<string | null>(`phishing-warning-dismissed`, null)
+  const date = useMemo(() => (dateStr == null ? null : new Date(dateStr)), [dateStr])
+  const setDate = useCallback(
+    (setter: SetStateAction<Date | null>) =>
+      setDateStr((typeof setter === 'function' ? setter(date) : setter)?.toISOString() ?? null),
+    [setDateStr, date],
+  )
+  return [date, setDate] as const
 }

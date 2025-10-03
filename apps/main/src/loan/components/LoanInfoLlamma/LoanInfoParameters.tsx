@@ -15,10 +15,10 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
 
   return (
     <Box grid gridRowGap="1">
-      <DetailInfo label={t`Band width factor`} size="md">
+      <DetailInfo label={t`Band width factor`}>
         <span>{formatNumber(llamma?.A, { useGrouping: false })}</span>
       </DetailInfo>
-      <DetailInfo label={t`Base price`} size="md">
+      <DetailInfo label={t`Base price`}>
         {typeof loanDetails?.basePrice !== 'undefined' && (
           <Chip
             size="md"
@@ -29,7 +29,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           </Chip>
         )}
       </DetailInfo>
-      <DetailInfo label={t`Oracle price`} size="md">
+      <DetailInfo label={t`Oracle price`}>
         {typeof priceInfo?.oraclePrice !== 'undefined' && (
           <Chip
             size="md"
@@ -40,7 +40,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           </Chip>
         )}
       </DetailInfo>
-      <DetailInfo label={t`Borrow rate`} size="md">
+      <DetailInfo label={t`Borrow rate`}>
         {typeof parameters?.rate !== 'undefined' && (
           <Chip
             size="md"

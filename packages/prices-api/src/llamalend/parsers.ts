@@ -53,6 +53,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: y.symbol,
     rate: y.apr,
   })),
+  maxLtv: x.max_ltv,
 })
 
 export const parseAllMarkets = (resp: Responses.GetAllMarketsResponse) =>
@@ -103,6 +104,7 @@ export const parseSnapshot = (x: Responses.GetSnapshotsResponse['data'][number])
     address: x.borrowed_token.address,
     rebasingYield: x.borrowed_token.rebasing_yield,
   },
+  maxLtv: x.max_ltv,
 })
 
 export const parseUserMarkets = (x: Pick<Responses.GetUserMarketsResponse, 'markets'>): Models.UserMarket[] =>
@@ -126,6 +128,7 @@ export const parseUserLendingPositions = (
     lastActivity: toDate(market.last_activity),
     currentShares: parseFloat(market.current_shares),
     currentSharesInGauge: parseFloat(market.current_shares_in_gauge),
+    boostMultiplier: market.boost_multiplier,
   }))
 
 export const parseAllUserMarkets = (x: Responses.GetAllUserMarketsResponse) =>
@@ -175,6 +178,7 @@ export const parseUserMarketEarnings = (x: Responses.GetUserMarketEarningsRespon
   currentAssetsInConvex: parseFloat(x.current_assets_in_convex),
   totalCurrentShares: parseFloat(x.total_current_shares),
   totalCurrentAssets: parseFloat(x.total_current_assets),
+  boostMultiplier: x.boost_multiplier,
 })
 
 export const parseUserMarketSnapshots = (x: Responses.GetUserMarketSnapshotsResponse): Models.UserMarketSnapshots =>

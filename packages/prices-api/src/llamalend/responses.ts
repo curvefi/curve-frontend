@@ -56,6 +56,7 @@ export type GetMarketsResponse = {
       symbol: string
       apr: number
     }[]
+    max_ltv: number
   }[]
 }
 
@@ -110,6 +111,7 @@ export type GetSnapshotsResponse = {
         rebasing_yield: number | null
       }
       timestamp: string
+      max_ltv: number
     },
   ]
 }
@@ -141,6 +143,7 @@ export type GetUserLendingPositionsResponse = {
     last_activity: string
     current_shares: string
     current_shares_in_gauge: string
+    boost_multiplier: number
   }[]
   page: number
   per_page: number
@@ -198,6 +201,7 @@ type UserMarketEarnings = {
   current_assets_in_convex: string
   total_current_shares: string
   total_current_assets: string
+  boost_multiplier: number | null
 }
 
 export type GetUserMarketEarningsResponse = UserMarketEarnings

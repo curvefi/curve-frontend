@@ -102,8 +102,8 @@ export const LendingMarketsFilters = ({
 
     <Grid size={{ mobile: 12, tablet: 4 }}>
       <RangeSliderFilter
-        id={LlamaMarketColumnId.TVL}
-        field={LlamaMarketColumnId.TVL}
+        id={LlamaMarketColumnId.Tvl}
+        field={LlamaMarketColumnId.Tvl}
         title={t`TVL`}
         format={formatUsd}
         {...props}

@@ -54,6 +54,7 @@ export type Market = {
     symbol: string
     rate: number
   }[]
+  maxLtv: number
 }
 
 export type Snapshot = {
@@ -101,6 +102,7 @@ export type Snapshot = {
     rebasingYield: number | null
   }
   timestamp: Date
+  maxLtv: number
 }
 
 /** More specifically, the markets where a user holds a position */
@@ -118,6 +120,7 @@ export type UserLendingPosition = {
   lastActivity: Date
   currentShares: number
   currentSharesInGauge: number
+  boostMultiplier: number
 }
 
 export type UserMarketStats = {
@@ -164,6 +167,7 @@ export type UserMarketEarnings = {
   currentAssetsInConvex: number
   totalCurrentShares: number
   totalCurrentAssets: number
+  boostMultiplier: number | null
 }
 
 export type UserMarketSnapshots = UserMarketStats[]

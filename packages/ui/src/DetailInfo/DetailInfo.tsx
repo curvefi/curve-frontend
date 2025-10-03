@@ -1,66 +1,76 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
+import Divider from '@mui/material/Divider'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import ActionInfo, { ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
 import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
 
+const { Spacing } = SizesAndSpaces
+
 type Variant = 'error' | 'warning' | 'success' | ''
-type Size = 'xs' | 'sm' | 'md' | 'lg'
+
+/**
+ * Maps the `variant` prop to the corresponding `valueColor` prop for the `ActionInfo` component.
+ * This should be removed when we get rid of this file and use `ActionInfo` directly.
+ * */
+const VariantToColorMap = {
+  '': 'textPrimary',
+  error: 'error',
+  warning: 'warning',
+  success: 'success',
+} satisfies Record<Variant, ActionInfoProps['valueColor']>
 
 type Props = {
   children: ReactNode
-  action?: ReactNode
-  className?: string
   isBold?: boolean | null
   isDivider?: boolean
   isMultiLine?: boolean
   label?: ReactNode
   loading?: boolean
   loadingSkeleton?: [number, number]
-  size?: Size
-  textLeft?: boolean
   tooltip?: ReactNode
   variant?: Variant
 }
 
-const DetailInfo = ({
-  action: Action,
-  className,
-  isBold,
-  isDivider,
-  label,
-  loading,
-  loadingSkeleton,
-  tooltip: Tooltip,
-  variant,
-  children,
-  size = 'sm',
-  ...props
-}: Props) => {
-  const classNames = `${className} ${isDivider ? 'divider' : ''}`
+const OldDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
+  <Wrapper
+    className={isDivider ? 'divider' : ''}
+    grid
+    gridAutoFlow="column"
+    gridColumnGap={2}
+    isDivider={isDivider}
+    fillWidth
+  >
+    {label && <DetailLabel>{label}</DetailLabel>}
+    <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
+      {loading && <Loader skeleton={loadingSkeleton} />}
+      {!loading && (
+        <>
+          {children || '-'} {!!tooltip && tooltip}
+        </>
+      )}
+    </DetailValue>
+  </Wrapper>
+)
 
-  return (
-    <Wrapper
-      {...props}
-      size={size}
-      className={classNames}
-      grid
-      gridAutoFlow="column"
-      gridColumnGap={2}
-      isDivider={isDivider}
-      fillWidth
-    >
-      {label && <DetailLabel>{label}</DetailLabel>}
-      <DetailValue haveLabel={!!label} isBold={isBold} variant={variant}>
-        {loading && <Loader skeleton={loadingSkeleton} />}
-        {!loading && (
-          <>
-            {children || '-'} {!!Tooltip && Tooltip} {Action && Action}
-          </>
-        )}
-      </DetailValue>
-    </Wrapper>
-  )
-}
+const NewDetailInfo = ({ isBold, isDivider, label, loading, loadingSkeleton, tooltip, variant, children }: Props) => (
+  <>
+    {isDivider && <Divider sx={{ marginBlock: Spacing.sm }} />}
+    <ActionInfo
+      label={label}
+      value={children || '-'}
+      valueColor={VariantToColorMap[variant || '']}
+      valueTooltip={tooltip}
+      error={variant === 'error'}
+      loading={loading && (loadingSkeleton || true)}
+      copyValue={typeof children === 'string' ? children : ''}
+      {...(isBold && { sx: { '& .MuiTypography-root': { '&': { fontWeight: 'bold' } } } })}
+    />
+  </>
+)
 
 export const DetailLabel = styled.span`
   display: inline-block;
@@ -94,19 +104,12 @@ const DetailValue = styled.div<DetailValeProps>`
   }};
 `
 
-interface WrapperProps extends Pick<Props, 'isDivider' | 'isMultiLine' | 'size' | 'textLeft'> {}
+interface WrapperProps extends Pick<Props, 'isDivider' | 'isMultiLine'> {}
 
 const Wrapper = styled(Box)<WrapperProps>`
   align-items: center;
   min-height: 1.7rem; // 27px
-
-  ${({ size }) => {
-    if (size === 'sm') {
-      return `font-size: var(--font-size-2);`
-    } else if (size === 'md') {
-      return `font-size: var(--font-size-3);`
-    }
-  }}
+  font-size: var(--font-size-3);
 
   .svg-tooltip {
     margin-top: 0.25rem;
@@ -136,20 +139,14 @@ const Wrapper = styled(Box)<WrapperProps>`
       `
     }
   }}
-  ${DetailValue} {
-    ${({ textLeft }) => {
-      if (textLeft) {
-        return `
-          justify-content: flex-start;
-          text-align: left;
-      `
-      }
-    }}
-  }
 
   .svg-tooltip {
     top: 0.2rem;
   }
 `
 
-export default DetailInfo
+export default function DetailInfo(props: Props) {
+  const [releaseChannel] = useReleaseChannel()
+  const DetailInfo = releaseChannel === ReleaseChannel.Beta ? NewDetailInfo : OldDetailInfo
+  return <DetailInfo {...props} />
+}

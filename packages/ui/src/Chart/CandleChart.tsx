@@ -20,7 +20,7 @@ import type {
   LiquidationRanges,
   ChartColors,
 } from './types'
-import { hslaToRgb } from './utils'
+import { hslaToRgb, calculateRobustPriceRange } from './utils'
 
 /**
  * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
@@ -108,6 +108,7 @@ const CandleChart = ({
   const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
   const totalDecimalPlacesRef = useRef(4)
@@ -159,7 +160,14 @@ const CandleChart = ({
 
   useEffect(() => {
     lastFetchEndTimeRef.current = lastFetchEndTime
+    // Reset fetching flag when new data arrives (fetch completed)
+    fetchingMoreRef.current = false
   }, [lastFetchEndTime])
+
+  // Keep ohlcDataRef in sync with latest ohlcData
+  useEffect(() => {
+    ohlcDataRef.current = ohlcData
+  }, [ohlcData])
 
   const debouncedFetchMoreChartData = useRef(
     lodash.debounce(
@@ -169,14 +177,7 @@ const CandleChart = ({
           return
         }
         fetchingMoreRef.current = true
-
         fetchMoreChartData(lastFetchEndTimeRef.current)
-
-        // Reset the flag after the debounce delay to ensure no overlapping calls
-        // This prevents multiple calls while still allowing the operation to complete
-        setTimeout(() => {
-          fetchingMoreRef.current = false
-        }, 500)
       },
       500,
       { leading: true, trailing: false },
@@ -367,6 +368,61 @@ const CandleChart = ({
       wickUpColor: '#26a69a',
       wickDownColor: '#ef5350',
       priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
+        const originalRange = original()
+
+        if (!originalRange || !chartRef.current || !candlestickSeriesRef.current) {
+          return originalRange
+        }
+
+        // Get visible logical range to determine which bars are visible
+        const visibleLogicalRange = chartRef.current.timeScale().getVisibleLogicalRange()
+
+        if (!visibleLogicalRange) {
+          return originalRange
+        }
+
+        // Get the bars that are currently visible
+        const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(visibleLogicalRange)
+
+        // Use ref to access latest ohlcData without causing series recreation
+        const currentOhlcData = ohlcDataRef.current
+
+        if (!barsInfo || !currentOhlcData || currentOhlcData.length === 0) {
+          return originalRange
+        }
+
+        // Calculate the slice indices for visible bars
+        const startIndex = Math.max(0, Math.floor(barsInfo.barsBefore))
+        const endIndex = Math.min(currentOhlcData.length, currentOhlcData.length - Math.floor(barsInfo.barsAfter))
+
+        // Get visible bars
+        const visibleBars = currentOhlcData.slice(startIndex, endIndex)
+
+        if (visibleBars.length === 0) {
+          return originalRange
+        }
+
+        // Collect all price points (high and low) from visible bars
+        const allPrices = visibleBars.flatMap((item) => [item.high, item.low])
+
+        // Get the latest 5 candles to always include in range (current price action)
+        const recentCandleCount = Math.min(5, visibleBars.length)
+        const recentCandles = visibleBars.slice(-recentCandleCount)
+        const recentPrices = recentCandles.flatMap((item) => [item.high, item.low])
+
+        // Calculate robust price range excluding outliers but always including recent prices
+        const robustRange = calculateRobustPriceRange(allPrices, recentPrices)
+
+        // If we can't calculate a robust range, fall back to original auto-scaling
+        if (!robustRange) {
+          return originalRange
+        }
+
+        return {
+          priceRange: robustRange,
+        }
+      },
     })
 
     return () => {
@@ -433,12 +489,6 @@ const CandleChart = ({
     }
   }, [handleVisibleLogicalRangeChange])
 
-  useEffect(() => {
-    if (!volumeSeriesRef.current || !volumeData) return
-
-    volumeSeriesRef.current.setData(volumeData)
-  }, [volumeData])
-
   // Update liquidation range data when it changes
   useEffect(() => {
     if (!liquidationRange) return
@@ -477,18 +527,6 @@ const CandleChart = ({
       setSeriesData(bgSeries, data.price2)
     })
   }, [liquidationRange])
-
-  useEffect(() => {
-    if (!candlestickSeriesRef.current || !ohlcData) return
-
-    candlestickSeriesRef.current.setData(ohlcData)
-  }, [ohlcData])
-
-  useEffect(() => {
-    if (!oraclePriceSeriesRef.current || !oraclePriceData) return
-
-    oraclePriceSeriesRef.current.setData(oraclePriceData)
-  }, [oraclePriceData])
 
   // Update liquidation range series colors when they change
   useEffect(() => {

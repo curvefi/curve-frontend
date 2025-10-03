@@ -31,20 +31,30 @@ export const LiquidationRangeSlider = ({
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
   return (
     <Grid container columnSpacing={Spacing.sm}>
-      {/* we need 10 px padding because the slider is overflowing its container */}
-      <Grid size={8} paddingInline="10px">
-        <Slider
-          aria-label={t`Bands`}
-          getAriaValueText={format}
-          value={sliderValue}
-          onChange={(_, n) => setSliderValue(n as number)}
-          onChangeCommitted={(_, n) => setRange(n as number)}
-          min={minValue}
-          max={maxValue}
-          size="medium"
-        />
+      <Grid container size={8}>
+        <Grid size={12} container>
+          <Grid size={6}>
+            <Typography variant="bodyXsRegular" color="textTertiary">{t`Max LTV`}</Typography>
+          </Grid>
+          <Grid size={6} sx={{ textAlign: 'right' }}>
+            <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
+          </Grid>
+        </Grid>
+        {/* we need 10 px padding, and -4px marginBottom, because the slider is overflowing its container */}
+        <Grid size={12} paddingInline="10px" marginBottom="-4px">
+          <Slider
+            aria-label={t`Bands`}
+            getAriaValueText={format}
+            value={sliderValue}
+            onChange={(_, n) => setSliderValue(n as number)}
+            onChangeCommitted={(_, n) => setRange(n as number)}
+            min={minValue}
+            max={maxValue}
+            size="medium"
+          />
+        </Grid>
       </Grid>
-      <Grid size={4}>
+      <Grid size={4} display="flex" alignItems="flex-end" direction="row">
         <NumericTextField
           dataType="number"
           aria-label={t`Bands`}

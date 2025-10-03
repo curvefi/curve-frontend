@@ -37,6 +37,12 @@ const createLlamaMarketsColumnOptions = ({
         enabled: true,
       },
       {
+        label: t`Max LTV`,
+        columns: [LlamaMarketColumnId.MaxLtv],
+        active: false,
+        enabled: true,
+      },
+      {
         label: t`Utilization`,
         columns: [LlamaMarketColumnId.UtilizationPercent],
         active: !onlyPositions,
@@ -56,7 +62,7 @@ const createLlamaMarketsColumnOptions = ({
       },
       {
         label: t`TVL`,
-        columns: [LlamaMarketColumnId.TVL],
+        columns: [LlamaMarketColumnId.Tvl],
         active: !onlyPositions,
         enabled: true,
       },
@@ -79,7 +85,12 @@ const createLlamaMarketsColumnOptions = ({
       },
       {
         label: t`Borrow Details`,
-        columns: [LlamaMarketColumnId.UserHealth, LlamaMarketColumnId.UserBorrowed],
+        columns: [
+          LlamaMarketColumnId.UserHealth,
+          LlamaMarketColumnId.UserBorrowed,
+          LlamaMarketColumnId.UserCollateral,
+          LlamaMarketColumnId.UserLtv,
+        ],
         active: onlyPositions == MarketRateType.Borrow,
         enabled: hasPositions,
       },
@@ -96,7 +107,11 @@ const createLlamaMarketsColumnOptions = ({
       },
       {
         label: t`Lend Details`,
-        columns: [LlamaMarketColumnId.UserEarnings, LlamaMarketColumnId.UserDeposited],
+        columns: [
+          LlamaMarketColumnId.UserEarnings,
+          LlamaMarketColumnId.UserDeposited,
+          LlamaMarketColumnId.UserBoostMultiplier,
+        ],
         active: onlyPositions == MarketRateType.Supply,
         enabled: hasPositions,
       },

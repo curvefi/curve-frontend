@@ -4,10 +4,13 @@ import { t } from '@ui-kit/lib/i18n'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarket } from '../../entities/llama-markets'
 import {
+  BoostCell,
   CompactUsdCell,
   HealthCell,
   LineGraphCell,
+  LtvCell,
   MarketTitleCell,
+  PercentCell,
   PriceCell,
   RateCell,
   UtilizationCell,
@@ -29,14 +32,18 @@ const headers = {
   [LlamaMarketColumnId.Assets]: t`Collateral • Borrow`,
   [LlamaMarketColumnId.UserHealth]: t`Health`,
   [LlamaMarketColumnId.UserBorrowed]: t`Borrow Amount`,
+  [LlamaMarketColumnId.UserCollateral]: t`Collateral Amount`,
+  [LlamaMarketColumnId.UserLtv]: t`LTV`,
+  [LlamaMarketColumnId.UserBoostMultiplier]: t`Boost`,
   [LlamaMarketColumnId.UserEarnings]: t`My Earnings`,
   [LlamaMarketColumnId.UserDeposited]: t`Supplied Amount`,
   [LlamaMarketColumnId.BorrowRate]: t`Borrow Rate`,
   [LlamaMarketColumnId.LendRate]: t`Supply Yield`,
   [LlamaMarketColumnId.BorrowChart]: t`7D Rate Chart`,
+  [LlamaMarketColumnId.MaxLtv]: t`Max LTV`,
   [LlamaMarketColumnId.UtilizationPercent]: t`Utilization`,
   [LlamaMarketColumnId.LiquidityUsd]: t`Available Liquidity`,
-  [LlamaMarketColumnId.TVL]: t`TVL`,
+  [LlamaMarketColumnId.Tvl]: t`TVL`,
   [LlamaMarketColumnId.TotalDebt]: t`Total Debt`,
   [LlamaMarketColumnId.TotalCollateralUsd]: t`Total Collateral`,
 } as const
@@ -66,15 +73,15 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({
-    id: LlamaMarketColumnId.UserHealth,
-    header: headers[LlamaMarketColumnId.UserHealth],
-    cell: HealthCell,
+    id: LlamaMarketColumnId.UserBorrowed,
+    header: headers[LlamaMarketColumnId.UserBorrowed],
+    cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.display({
-    id: LlamaMarketColumnId.UserBorrowed,
-    header: headers[LlamaMarketColumnId.UserBorrowed],
+    id: LlamaMarketColumnId.UserCollateral,
+    header: headers[LlamaMarketColumnId.UserCollateral],
     cell: PriceCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
@@ -94,6 +101,13 @@ export const LLAMA_MARKET_COLUMNS = [
     filterFn: boolFilterFn,
     sortUndefined: 'last',
   }),
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserBoostMultiplier,
+    header: headers[LlamaMarketColumnId.UserBoostMultiplier],
+    cell: BoostCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
   columnHelper.accessor('rates.borrowTotalApy', {
     id: LlamaMarketColumnId.BorrowRate,
     header: headers[LlamaMarketColumnId.BorrowRate],
@@ -102,6 +116,20 @@ export const LLAMA_MARKET_COLUMNS = [
       type: 'numeric',
       tooltip: createTooltip(LlamaMarketColumnId.BorrowRate, <BorrowRateHeaderTooltipContent />),
     },
+    sortUndefined: 'last',
+  }),
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserLtv,
+    header: headers[LlamaMarketColumnId.UserLtv],
+    cell: LtvCell,
+    meta: { type: 'numeric' },
+    sortUndefined: 'last',
+  }),
+  columnHelper.display({
+    id: LlamaMarketColumnId.UserHealth,
+    header: headers[LlamaMarketColumnId.UserHealth],
+    cell: HealthCell,
+    meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor('rates.lendTotalApyMinBoosted', {
@@ -115,6 +143,11 @@ export const LLAMA_MARKET_COLUMNS = [
     id: LlamaMarketColumnId.BorrowChart,
     header: headers[LlamaMarketColumnId.BorrowChart],
     cell: (c) => <LineGraphCell market={c.row.original} type={MarketRateType.Borrow} />,
+  }),
+  columnHelper.accessor(LlamaMarketColumnId.MaxLtv, {
+    header: headers[LlamaMarketColumnId.MaxLtv],
+    cell: PercentCell,
+    meta: { type: 'numeric' },
   }),
   columnHelper.accessor(LlamaMarketColumnId.UtilizationPercent, {
     header: headers[LlamaMarketColumnId.UtilizationPercent],
@@ -144,12 +177,12 @@ export const LLAMA_MARKET_COLUMNS = [
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
-  columnHelper.accessor(LlamaMarketColumnId.TVL, {
-    header: headers[LlamaMarketColumnId.TVL],
+  columnHelper.accessor(LlamaMarketColumnId.Tvl, {
+    header: headers[LlamaMarketColumnId.Tvl],
     cell: CompactUsdCell,
     meta: {
       type: 'numeric',
-      tooltip: createTooltip(LlamaMarketColumnId.TVL, <TvlHeaderTooltipContent />),
+      tooltip: createTooltip(LlamaMarketColumnId.Tvl, <TvlHeaderTooltipContent />),
     },
     sortUndefined: 'last',
   }),
@@ -174,6 +207,6 @@ export const LLAMA_MARKET_COLUMNS = [
   hidden(LlamaMarketColumnId.Type, LlamaMarketColumnId.Type, multiFilterFn),
 ] satisfies LlamaColumn[]
 
-export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.TVL, desc: true }]
+export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.Tvl, desc: true }]
 export const DEFAULT_SORT_BORROW = [{ id: LlamaMarketColumnId.UserHealth, desc: false }]
 export const DEFAULT_SORT_SUPPLY = [{ id: LlamaMarketColumnId.UserDeposited, desc: true }]
