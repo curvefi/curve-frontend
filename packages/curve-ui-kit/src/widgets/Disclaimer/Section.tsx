@@ -24,8 +24,20 @@ export const Title = ({ children }: { children?: ReactNode }) => (
   </Typography>
 )
 
+export const SubTitle = ({ children }: { children?: ReactNode }) => (
+  <Typography variant="bodyMBold" color="textSecondary">
+    {children}
+  </Typography>
+)
+
 export const Paragraph = ({ children }: { children?: ReactNode }) => (
   <Typography component="div" variant="bodyMRegular" color="textSecondary">
+    {children}
+  </Typography>
+)
+
+export const Bold = ({ children }: { children: React.ReactNode }) => (
+  <Typography component="span" variant="bodyMBold" sx={{ display: 'inline' }}>
     {children}
   </Typography>
 )
