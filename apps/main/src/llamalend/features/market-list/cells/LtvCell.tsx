@@ -1,6 +1,5 @@
 import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { formatPercent } from '@/llamalend/format.utils'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { Box } from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'
@@ -8,6 +7,7 @@ import Typography from '@mui/material/Typography'
 import type { CellContext } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
+import { formatPercent } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from '../columns.enum'
 
 export const LtvCell = ({ row }: CellContext<LlamaMarket, number>) => {

@@ -2,6 +2,7 @@ import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfac
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
+import { Decimal } from '@ui-kit/utils'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
 export type CompleteBorrowForm = {
@@ -9,7 +10,7 @@ export type CompleteBorrowForm = {
   userBorrowed: number // currently hidden and always 0
   debt: number
   range: number
-  slippage: number
+  slippage: Decimal
   leverageEnabled: boolean
 }
 

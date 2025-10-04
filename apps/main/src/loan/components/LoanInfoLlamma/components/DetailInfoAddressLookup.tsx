@@ -1,20 +1,17 @@
 import { styled } from 'styled-components'
-import type { StatsProps } from '@/loan/components/LoanInfoLlamma/styles'
 import { StyledStats } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'
 import { ChainId } from '@/loan/types/loan.types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { AddressActionInfo, AddressActionInfoProps } from '@ui-kit/shared/ui/AddressActionInfo'
+import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
 
-interface Props extends StatsProps {
-  chainId: ChainId
-  title: string
-  address: string
-}
+type Props = Omit<AddressActionInfoProps, 'network' | 'address'> & { chainId: ChainId; address: string }
 
-const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => (
+const OldDetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => (
   <StyledStats {...props}>
     <strong>{title}</strong>
     <span>
@@ -54,4 +51,11 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 `
 
-export default DetailInfoAddressLookup
+export default function DetailInfoAddressLookup({ chainId, ...props }: Props) {
+  const [releaseChannel] = useReleaseChannel()
+  return releaseChannel === ReleaseChannel.Beta ? (
+    <AddressActionInfo network={networks[chainId]} {...props} />
+  ) : (
+    <OldDetailInfoAddressLookup chainId={chainId} {...props} />
+  )
+}

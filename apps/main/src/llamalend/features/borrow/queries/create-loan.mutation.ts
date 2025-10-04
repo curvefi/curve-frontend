@@ -61,7 +61,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
           notify(t`Approved loan creation`, 'success')
         }
 
-        const loanTxHash = (await createLoan(userCollateral, userBorrowed, debt, range, slippage)) as Address
+        const loanTxHash = (await createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
         await waitForTransactionReceipt(config, { hash: loanTxHash })
         return loanTxHash
       },

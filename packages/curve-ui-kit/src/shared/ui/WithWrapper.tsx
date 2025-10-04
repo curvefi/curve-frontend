@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 type WithWrapperProps<Props> = Props & {
   /** Whether wrapper should be applied */

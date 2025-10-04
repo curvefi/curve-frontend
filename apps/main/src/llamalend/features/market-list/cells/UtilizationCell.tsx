@@ -1,6 +1,5 @@
 import { ReactElement } from 'react'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { formatPercent } from '@/llamalend/format.utils'
 import { TooltipItem, TooltipItems } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import type { Chain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -13,6 +12,7 @@ import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { formatPercent } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 

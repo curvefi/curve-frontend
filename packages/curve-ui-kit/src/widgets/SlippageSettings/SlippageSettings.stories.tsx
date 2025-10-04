@@ -3,7 +3,8 @@ import type { Meta, StoryObj } from '@storybook/react-vite'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
-import { SlippageSettings } from './'
+import { Decimal } from '@ui-kit/utils'
+import { SlippageSettings } from './SlippageSettings'
 
 const SlippageSettingsComponent = ({
   maxSlippage: initialMaxSlippage,
@@ -12,7 +13,7 @@ const SlippageSettingsComponent = ({
   const [maxSlippage, setMaxSlippage] = useState(initialMaxSlippage)
 
   // Mock the setMaxSlippage function
-  const handleSave = (newSlippage: string) => {
+  const handleSave = (newSlippage: Decimal) => {
     setMaxSlippage(newSlippage)
     console.info('Max slippage updated:', newSlippage)
   }

@@ -1,13 +1,24 @@
+import { ComponentProps } from 'react'
 import { styled } from 'styled-components'
 import DetailInfoTradeRouteRoute from '@/dex/components/PageRouterSwap/components/DetailInfoTradeRouteRoute'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { type NetworkUrlParams, TokensNameMapper } from '@/dex/types/main.types'
+import List from '@mui/material/List'
+import ListItem from '@mui/material/ListItem'
+import Stack from '@mui/material/Stack'
 import Box from '@ui/Box'
 import { RCCircle } from '@ui/images'
 import Loader from '@ui/Loader'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
+import { RouteTrack } from '@ui-kit/widgets/RouteTrack'
 
-const DetailInfoTradeRoute = ({
+const { Spacing } = SizesAndSpaces
+
+const OldDetailInfoTradeRoute = ({
   params,
   loading,
   routes,
@@ -33,7 +44,7 @@ const DetailInfoTradeRoute = ({
         padding={isMultiRoutes ? '0 0 0 var(--spacing-1)' : ''}
       >
         {loading ? (
-          <Loader skeleton={[130, 22.6 * (routesLength || 1)]} />
+          <Loader skeleton={[180, 22.6 * (routesLength || 1)]} />
         ) : routesLength > 0 ? (
           <Box grid gridAutoFlow="column" gridColumnGap="1" flexJustifyContent={detailRowJustifyContent}>
             {routesLength > 1 && (
@@ -65,6 +76,43 @@ const DetailInfoTradeRoute = ({
     </Wrapper>
   )
 }
+
+export const NewDetailInfoTradeRoute = ({
+  params,
+  loading,
+  routes,
+  tokensNameMapper,
+}: ComponentProps<typeof OldDetailInfoTradeRoute>) => (
+  <ActionInfo
+    label={t`Trade routed through:`}
+    value={
+      routes?.length ? (
+        <Stack direction="row" gap={Spacing.sm}>
+          {routes.length > 1 && <RouteTrack />}
+          <List sx={{ paddingTop: 0, ...(routes.length <= 1 && { paddingBottom: 0 }) }}>
+            {routes.map((route) => (
+              <ListItem
+                key={`${route.poolId}-${route.outputCoinAddress}`}
+                sx={(t) => ({ whiteSpace: 'nowrap', padding: 0, ...t.typography.bodySRegular })}
+              >
+                <DetailInfoTradeRouteRoute
+                  params={params}
+                  route={route}
+                  routesLength={routes.length}
+                  tokensNameMapper={tokensNameMapper}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Stack>
+      ) : (
+        '-'
+      )
+    }
+    {...(routes && routes.length > 1 && { flexWrap: 'wrap', alignItems: 'start' })}
+    loading={loading && [180, 24]}
+  />
+)
 
 const Item = styled.li`
   white-space: nowrap;
@@ -103,4 +151,9 @@ const Wrapper = styled(Box)`
   font-size: var(--font-size-2);
 `
 
-export default DetailInfoTradeRoute
+export default function DetailInfoTradeRoute(props: ComponentProps<typeof NewDetailInfoTradeRoute>) {
+  const [releaseChannel] = useReleaseChannel()
+  const DetailInfoTradeRoute =
+    releaseChannel === ReleaseChannel.Beta ? NewDetailInfoTradeRoute : OldDetailInfoTradeRoute
+  return <DetailInfoTradeRoute {...props} />
+}

@@ -9,14 +9,12 @@ import { t } from '@ui-kit/lib/i18n'
 const DetailInfoExchangeRate = ({
   exchangeRates,
   loading,
-  ...rest
 }: {
   exchangeRates?: ExchangeRate[] | null
   loading: boolean
-  isMultiLine?: boolean
 }) => (
   <StyledDetailInfo
-    {...rest}
+    isMultiLine={exchangeRates != null && exchangeRates.length > 1}
     label={
       <>
         {t`Exchange rate`} <Chip size="xs">{t`(incl. fees):`}</Chip>
