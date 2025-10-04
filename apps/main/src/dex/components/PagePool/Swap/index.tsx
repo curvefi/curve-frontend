@@ -275,8 +275,7 @@ const Swap = ({
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
       void fetchUserPoolInfo(curve, poolId, true)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance])
+  }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {

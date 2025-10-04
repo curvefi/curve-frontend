@@ -24,16 +24,12 @@ const TransferActions = ({
   const { data: signerAddress } = useSignerAddress()
   const { rChainId, rPoolId } = routerParams
   const alert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
-  const { curveApi } = useConnection()
+  const { isHydrated } = useConnection()
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])
   const walletBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
 
   const isLoading =
-    loading ||
-    typeof poolData === 'undefined' ||
-    typeof currencyReserves === 'undefined' ||
-    !curveApi?.hydrated ||
-    !seed.loaded
+    loading || typeof poolData === 'undefined' || typeof currencyReserves === 'undefined' || !isHydrated || !seed.loaded
 
   return (
     <>

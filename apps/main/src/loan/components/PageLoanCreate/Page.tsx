@@ -48,14 +48,13 @@ const Page = () => {
   const params = useParams<CollateralUrlParams>()
   const { rFormType = null, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
-  const { connectState, llamaApi: curve = null } = useConnection()
+  const { isHydrated, llamaApi: curve = null, connectState } = useConnection()
   const rChainId = useChainId(params)
   const { connect: connectWallet, provider } = useWallet()
   const { address } = useAccount()
   const [loaded, setLoaded] = useState(false)
 
   const collateralDatasMapper = useStore((state) => state.collaterals.collateralDatasMapper[rChainId])
-  const pageLoaded = !isLoading(connectState)
   const { llamma, llamma: { id: llammaId = '' } = {}, displayName } = collateralDatasMapper?.[rCollateralId] ?? {}
 
   const formValues = useStore((state) => state.loanCreate.formValues)
@@ -119,7 +118,7 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (pageLoaded && curve?.hydrated) {
+    if (isHydrated && curve) {
       if (llamma) {
         resetUserDetailsState(llamma)
         fetchInitial(curve, isLeverage, llamma)
@@ -134,7 +133,7 @@ const Page = () => {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pageLoaded && curve?.hydrated && llamma])
+  }, [isHydrated, curve, llamma])
 
   // redirect if loan exists
   useEffect(() => {
