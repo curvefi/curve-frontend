@@ -35,6 +35,10 @@ export const {
   }),
 })
 
+/**
+ * Hook to fetch USD rates for multiple tokens on a specific blockchain.
+ * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
+ */
 export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
   const uniqueAddresses = Array.from(new Set(tokenAddresses))
 

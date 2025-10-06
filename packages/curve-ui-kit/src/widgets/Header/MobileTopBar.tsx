@@ -1,5 +1,6 @@
 import Stack from '@mui/material/Stack'
-import { ChainSwitcher, ChainSwitcherProps } from '@ui-kit/features/switch-chain'
+import { NetworkMapping } from '@ui/utils'
+import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { HeaderLogo } from './HeaderLogo'
 import { MenuToggleButton } from './MenuToggleButton'
@@ -9,14 +10,14 @@ export type MobileTopBarProps = {
   isSidebarOpen: boolean
   isLite: boolean
   currentMenu: AppMenuOption
-  ChainProps: ChainSwitcherProps
+  networks: NetworkMapping
 }
 
-export const MobileTopBar = ({ ChainProps, currentMenu, isSidebarOpen, toggleSidebar, isLite }: MobileTopBarProps) => (
+export const MobileTopBar = ({ networks, currentMenu, isSidebarOpen, toggleSidebar, isLite }: MobileTopBarProps) => (
   <Stack direction="row" width="100%" paddingX={2}>
     <MenuToggleButton isOpen={isSidebarOpen} toggle={toggleSidebar} />
     <HeaderLogo isLite={isLite} currentMenu={currentMenu} />
     <Stack flexGrow={1} />
-    <ChainSwitcher {...ChainProps} />
+    <ChainSwitcher networks={networks} />
   </Stack>
 )

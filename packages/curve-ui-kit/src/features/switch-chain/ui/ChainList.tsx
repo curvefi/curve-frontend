@@ -73,10 +73,10 @@ export function ChainList({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {networks.map((network) => (
-                    <MenuItem<number, typeof Link>
-                      data-testid={`menu-item-chain-${network.chainId}`}
-                      key={network.chainId}
-                      value={network.chainId}
+                    <MenuItem<string, typeof Link>
+                      data-testid={`menu-item-chain-${network.id}`}
+                      key={network.id}
+                      value={network.id}
                       component={Link}
                       href={getNetworkPathname(pathname, network.id)}
                       isSelected={network.id == selectedNetworkId}
