@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import { getNetworkDefs } from '@/dex/lib/networks'
@@ -6,7 +6,7 @@ import { GlobalLayout } from '@/routes/GlobalLayout'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
-import { HeadContent, Outlet } from '@tanstack/react-router'
+import { HeadContent, Outlet, useRouterState } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
@@ -36,7 +36,16 @@ export const RootLayout = () => {
   const theme = useUserProfileStore((state) => state.theme)
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
+  const { location } = useRouterState()
   useLayoutStoreResponsive()
+
+  useEffect(() => {
+    // If there's a hash (#section-id), let the browser handle scrolling
+    if (location.hash) return
+
+    // Otherwise, scroll to top
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [location.pathname])
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
