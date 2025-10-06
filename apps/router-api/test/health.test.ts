@@ -1,15 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { buildServer } from '../src/server'
 
-const baseConfig = {
-  serviceName: 'router-api',
-  environment: 'test',
-  version: '0.1.0-test',
-}
-
 describe('health endpoint', () => {
   it('responds with service metadata', async () => {
-    const server = buildServer(baseConfig)
+    const server = buildServer()
 
     try {
       const response = await server.inject({ method: 'GET', url: '/health' })
@@ -18,9 +12,9 @@ describe('health endpoint', () => {
       const payload = response.json()
       expect(payload).toMatchObject({
         status: 'ok',
-        service: baseConfig.serviceName,
-        environment: baseConfig.environment,
-        version: baseConfig.version,
+        service: 'router-api',
+        environment: 'test',
+        version: process.env.npm_package_version || '0.0.1',
       })
       expect(typeof payload.timestamp).toBe('string')
       expect(typeof payload.uptime).toBe('number')
