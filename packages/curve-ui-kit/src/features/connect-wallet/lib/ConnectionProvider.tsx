@@ -53,6 +53,7 @@ export const ConnectionProvider = <App extends AppName>({
       if (wallet && wallet?.chainId !== chainId) {
         setConnectState(LOADING)
         if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
+          console.warn(`Failed to switch wallet to chain ${chainId}, current chain is ${wallet?.chainId}`)
           setConnectState(FAILURE)
           onChainUnavailable([chainId, wallet?.chainId as AppChainId<App>])
         }
@@ -97,14 +98,16 @@ export const ConnectionProvider = <App extends AppName>({
 
         if (signal.aborted) return
         setConnectState(LOADING)
-        console.info(
-          `Initializing ${libKey} for ${network.name} (${network.chainId})`,
-          wallet ? `Wallet ${wallet?.account?.address} with chain ${wallet?.chainId}` : 'without wallet',
-          prevLib
-            ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
-            : `First initialization`,
-        )
         const newLib = await globalLibs.init(libKey, network, wallet?.provider)
+        if (newLib) {
+          console.info(
+            `Initialized ${libKey} for ${network.name} (${network.chainId})`,
+            wallet ? `Wallet ${wallet?.account?.address} with chain ${wallet?.chainId}` : 'without wallet',
+            prevLib
+              ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
+              : `First initialization`,
+          )
+        }
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
