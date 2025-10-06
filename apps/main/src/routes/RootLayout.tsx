@@ -45,7 +45,7 @@ export const RootLayout = () => {
 
     // Otherwise, scroll to top
     window.scrollTo({ top: 0, behavior: 'auto' })
-  }, [location.pathname])
+  }, [location.pathname, location.hash])
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
