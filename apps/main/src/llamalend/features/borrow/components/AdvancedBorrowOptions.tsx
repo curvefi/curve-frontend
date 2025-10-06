@@ -45,7 +45,7 @@ export const AdvancedBorrowOptions = ({
   } = useBorrowExpectedCollateral(params, leverageEnabled)
 
   return (
-    <Stack gap={Spacing.sm} marginBlock={Spacing.lg}>
+    <Stack gap={Spacing.sm} marginBlock={Spacing.sm}>
       <LiquidationRangeSlider market={market} range={range} setRange={setRange} />
       <Stack
         sx={{
