@@ -10,13 +10,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
 import { LastUpdated } from '../Disclaimer/LastUpdated'
 import { TabPanel } from '../Disclaimer/TabPanel'
-import { Header } from '../Disclaimer/Section'
 import { Footer } from '../Disclaimer/Footer'
 import { Dex } from '../Disclaimer/Tabs/Dex'
 import { LlamaLend } from '../Disclaimer/Tabs/LlamaLend'
 import { CrvUsd } from '../Disclaimer/Tabs/CrvUsd'
 import { SCrvUsd } from '../Disclaimer/Tabs/SCrvUsd'
 import { Terms } from '../Disclaimer/Tabs/Terms'
+import { Privacy } from '../Disclaimer/Tabs/Privacy'
 import { Grid } from '@mui/material'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
@@ -135,8 +135,8 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
           </>
         ) : (
           <TabPanel>
-            {tab === 'terms' && <Terms />}
-            {tab === 'privacy' && <Header>{t`Privacy Policy`}</Header>}
+            {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
+            {tab === 'privacy' && <Privacy currentApp={currentApp} network={network} />}
           </TabPanel>
         )}
       </Stack>

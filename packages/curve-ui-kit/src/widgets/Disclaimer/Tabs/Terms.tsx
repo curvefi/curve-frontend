@@ -1,29 +1,33 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { pushSearchParams } from '@ui-kit/utils/urls'
 import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../Section'
 import { List } from '../List'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { AppName, getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
+import { CurveNetworkId, LlamaNetworkId } from '@ui-kit/features/connect-wallet/lib/types'
 
-export const Terms = () => (
+export const Terms = ({ currentApp, network }: { currentApp: AppName; network: CurveNetworkId | LlamaNetworkId }) => (
   <>
     <Header>{t`Preamble`}</Header>
     <Section>
       <Paragraph>
         {t`These terms and conditions (`}
-        <Bold>{t`Terms`}</Bold>
+        <Bold>{t`"Terms"`}</Bold>
         {t`) are entered into between Swiss Stake AG with registered office in Zug, Switzerland (`}
-        <Bold>{t`we`}</Bold>
+        <Bold>{t`"we"`}</Bold>
         {t`, `}
-        <Bold>{t`us`}</Bold>
+        <Bold>{t`"us"`}</Bold>
         {t` or `}
-        <Bold>{t`Company`}</Bold>
+        <Bold>{t`"Company"`}</Bold>
         {t`) and the users (`}
-        <Bold>{t`you`}</Bold>
+        <Bold>{t`"you"`}</Bold>
         {t` or `}
-        <Bold>{t`your`}</Bold>
-        {t`) of the website [www.curve.finance] («`}
-        <Bold>{t`Website`}</Bold>
-        {t`»). These Terms, together with our Privacy Policy, govern your access to and use of the Website, including any data, information, items, links and Curve Functionalities which can be accessed via the Website.`}
+        <Bold>{t`"your"`}</Bold>
+        {t`) of the website [www.curve.finance] (`}
+        <Bold>{t`«Website»`}</Bold>
+        {t`). These Terms, together with our Privacy Policy, govern your access to and use of the Website, including any data, information, items, links and Curve Functionalities which can be accessed via the Website.`}
       </Paragraph>
       <Paragraph>
         {t`We reserve the right to modify these Terms at any time at our sole discretion. In this case, the Company will provide notice by changing the «last updated» date above. By continuing to access or use the Website, you confirm that you accept these updated Terms, and all documents incorporated therein by reference. If you do not agree with these Terms and/or the Privacy Notice, please immediately cease all use of the Website.`}
@@ -75,12 +79,12 @@ export const Terms = () => (
     <Section>
       <Title>{t`2.1 Information Accessible through the Website`}</Title>
 
+      <SubTitle>{t`2.1.1 Overview`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.1.1 Overview`}</SubTitle>
         {t`Users may find information related to the curve project (`}
-        <Bold>{t`Curve Project`}</Bold>
+        <Bold>{t`"Curve Project"`}</Bold>
         {t`) and its respective ecosystem (`}
-        <Bold>{t`Information`}</Bold>
+        <Bold>{t`"Information"`}</Bold>
         {t`). The Information accessible on the Website concerns:`}
       </Paragraph>
       <Paragraph>
@@ -88,7 +92,7 @@ export const Terms = () => (
           <Typography component="li" variant="bodyMRegular">
             {t`Technical Information: The Website provides access to various types of documentation related to the Curve ecosystem, including among others user guides (`}
             <Link color="textSecondary" href="https://resources.curve.finance/" target="_blank">
-              https://resources.curve.finance/
+              {t`https://resources.curve.finance/`}
             </Link>
             {t`), GitHub repositories (`}
             <Link color="textSecondary" href="https://github.com/curvefi" target="_blank">
@@ -139,10 +143,10 @@ export const Terms = () => (
       <Paragraph>
         {t`The Information is provided for general informational purposes only. The Information may be generated or supplemented by artificial intelligence, or third parties and we make no representations or warranties regarding its accuracy, completeness, or usefulness. Any reference to a third-party provider, projects and applications does not entail any endorsement by the Company and no background checks have been conducted in this regard. Any reliance you place on the Information is strictly at your own risk. Nothing in the Information should be used or relied upon as legal, financial, tax or other advice, or as an instruction or solicitation of action by any person.`}
       </Paragraph>
+      <SubTitle>{t`2.1.2 Third Party Links`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.1.2 Third Party Links`}</SubTitle>
         {t`The Website may contain links to websites and content that is controlled or operated by third parties (`}
-        <Bold>{t`Third Party Links`}</Bold>
+        <Bold>{t`"Third Party Links"`}</Bold>
         {t`). The Company is providing these Third-Party Links for convenience only, and the inclusion of any Third-Party Links on the Website does not imply any endorsement by the Company of the Third-Party Links and/or their operators. The Company is not responsible for any content associated with the Third-Party Links.`}
       </Paragraph>
       <Paragraph>
@@ -152,25 +156,25 @@ export const Terms = () => (
 
     <Section>
       <Title>{t`2.2 Functionalities Accessible through the Website`}</Title>
+      <SubTitle>{t`2.2.1 Overview`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.2.1 Overview`}</SubTitle>
         {t`The Website provides a non-exclusive interface via which Users may access, interact and use the Curve Project software, consisting of a set of smart contracts as deployed (`}
-        <Bold>{t`Curve Smart Contracts`}</Bold>
+        <Bold>{t`"Curve Smart Contracts"`}</Bold>
         {t`), as well as access to tooling software, data analytics and governance tools (together with the Curve Smart Contracts the `}
-        <Bold>{t`Curve Functionalities`}</Bold>
+        <Bold>{t`"Curve Functionalities"`}</Bold>
         {t`). The Curve Smart Contracts enable Users among others and in a fully decentralized manner, to provide liquidity by participating in or creating liquidity pools, to lend or borrow tokens and to participate in the governance of the Curve Project.`}
       </Paragraph>
       <Paragraph>
         {t`Users understand that the content of the Curve Functionalities may evolve over time due to regulatory requirements and ongoing development in the Curve ecosystem.`}
       </Paragraph>
 
+      <SubTitle>{t`2.2.2 Third Party Wallet`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.2.2 Third Party Wallet`}</SubTitle>
         {t`To access the Curve Functionalities and interact with their underlying technology via the Website, you must first connect one of the third-party listed wallets under the "Connect Wallet" tab of the Website.`}
       </Paragraph>
       <Paragraph>
         {t`You are solely responsible for the security of your Wallets, and any associated seed phrases, passwords, and private keys (collectively `}
-        <Bold>{t`Security Credentials`}</Bold>
+        <Bold>{t`"Security Credentials"`}</Bold>
         {t`). It is crucial to remember your Security Credentials, to store them in a safe place, and to not disclose them to anyone.`}
       </Paragraph>
       <Paragraph>
@@ -179,10 +183,10 @@ export const Terms = () => (
       <Paragraph>
         {t`We assume no liability for any damages, including but not limited to, those associated with the disclosure, manipulation, or hacking of your Security Credentials, or those that may result in the unauthorized access to your Wallets.`}
       </Paragraph>
+      <SubTitle>{t`2.2.3 Third Party Services`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.2.3 Third Party Services`}</SubTitle>
         {t`The Website as well as the Curve Functionalities may include links to third-party services, APIs, architecture and technology (`}
-        <Bold>{t`Third-Party Service`}</Bold>
+        <Bold>{t`"Third-Party Service"`}</Bold>
         {t`) with which you can interact using your Wallet (e.g. aggregators or other routing services).`}
       </Paragraph>
       <Paragraph>
@@ -204,44 +208,51 @@ export const Terms = () => (
 
     <Section>
       <Title>{t`2.3 Risks`}</Title>
+      <SubTitle>{t`2.3.1 Absence of Counterparty Risks`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.3.1 Absence of Counterparty Risks`}</SubTitle>
         {t`Users understand and acknowledge that the Curve Functionalities are neither operated nor controlled by the Company. Should Users interact with the Curve Functionalities, they understand and acknowledge that they are engaging directly with the Curve Functionalities and potentially with third parties. This means the Company is neither involved nor in any way responsible for the operation, running or functioning of the Curve Functionalities and/or any of the interactions, collaborations or factual relationships between Users and the technical component of the Curve Functionalities. The Company has neither access to nor any other possibility to control and/or influence the corresponding transactions, deposits and/or allocations made by the Users and the involved technical components supporting the Curve Functionalities.`}
       </Paragraph>
       <Paragraph>
         {t`In particular, the Company has not and will not enter into any legal or factual relationship with any User of the Website nor the Curve Functionalities in general. CONSEQUENTLY, COMPANY IS NOT LIABLE TO ANY USER FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE, IN CONNECTION WITH THE USE OR INABILITY TO USE THE CURVE FUNCTIONALITIES IN GENERAL.`}
       </Paragraph>
+      <SubTitle>{t`2.3.2 Technical Risks`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.3.2 Technical Risks`}</SubTitle>
         {t`As the technological components supporting the Curve Functionalities are of experimental nature they may contain bugs, defects, or errors (including any bug, defect, or error relating to or resulting from the display, manipulation, processing, storage, transmission, or use of data) that may materially and adversely affect the use, functionality, or performance of the Curve Functionalities or any product or system containing or used in conjunction with the Curve Functionalities. Any tooling and analytics software/APIs are solely meant for informational, testing and debugging purposes. Users are advised to use and run their own tooling and analytics solutions for their productive environment.`}
       </Paragraph>
       <Paragraph>
         {t`THE CURVE FUNCTIONALITIES (INCL. TOOLING SOFTWARE AND ANALYTICS DATA) HAVE BEEN AND ARE BEING PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. CONSEQUENTLY, ANY INTERACTION WITH THE CURVE FUNCTIONALITIES MAY RESULT IN IRREVERSIBLE LOSS, WITHOUT ANY KIND OF CONSIDERATION.`}
       </Paragraph>
+      <SubTitle>{t`2.3.3 Malicious Behavior Risks`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.3.3 Malicious Behavior Risks`}</SubTitle>
         {t`The Website may be exposed to third-party infrastructure failures or cyberattacks including but not limited to SQL injection attacks, cross-site scripting (XSS), or clickjacking, denial-of-service (DoS) attacks, attacks at the DNS or DNS registrar level, or other unauthorized and/or malicious activities, that could result in the theft, loss, or unauthorized transfer of digital assets.`}
       </Paragraph>
       <Paragraph>
         {t`The Curve Functionalities may rely on smart contracts, which are self-executing pieces of code. Users acknowledge that, despite best efforts to enhance security, the smart contracts and technological components supporting the Curve Functionalities – including its blockchain infrastructure, smart contracts, wallets – may be vulnerable to cyberattacks. Malicious actors may exploit software vulnerabilities, attack consensus mechanisms, or compromise private keys to gain unauthorized access to digital assets. Risks include hacking attempts on the Curve Functionalities, the wallets, smart contract exploits, phishing attacks, malware infections, and other forms of cybercrime that could result in the theft, loss, or unauthorized transfer of digital assets. Since digital assets exist entirely in a technological environment, they are inherently exposed to evolving cyber threats, some of which may be undetectable or irreparable until after significant damage has occurred.`}
       </Paragraph>
+      <SubTitle>{t`2.3.4 Legal and Regulatory Risks`}</SubTitle>
       <Paragraph>
-        <SubTitle>{t`2.3.4 Legal and Regulatory Risks`}</SubTitle>
         {t`Crypto-assets and blockchain-based technologies operate within a rapidly evolving regulatory landscape worldwide. Applicable laws and regulations vary significantly across jurisdictions and are subject to change at any time. Such regulatory developments may adversely affect the Curve Functionalities which may result in substantial or even total losses for the Users and could compel the Company to suspend, whether temporarily or permanently, access to the Website.`}
       </Paragraph>
       <Paragraph>
         {t`User is solely responsible for complying with applicable law when interacting with the Curve Functionalities whatsoever.`}
       </Paragraph>
-      <Paragraph>
-        <SubTitle>{t`2.4 Fees`}</SubTitle>
-        {t`The Website is provided free of charge.`}
-      </Paragraph>
+      <SubTitle>{t`2.4 Fees`}</SubTitle>
+      <Paragraph>{t`The Website is provided free of charge.`}</Paragraph>
     </Section>
 
     <Header>{t`3. Personal Data`}</Header>
     <Section>
       <Paragraph>
-        {t`Please see our Privacy Notice (INSERT LINK) to understand how we collect, use and disclose your personal data.`}
+        {t`Please see our `}
+        <RouterLink
+          color="textSecondary"
+          href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
+          onClick={(e) => pushSearchParams(e, { tab: 'privacy' })}
+        >
+          {t`Privacy Notice`}
+        </RouterLink>
+
+        {t` to understand how we collect, use and disclose your personal data.`}
       </Paragraph>
     </Section>
 
@@ -279,7 +290,7 @@ export const Terms = () => (
       </Paragraph>
       <Paragraph>
         {t`Neither the Company nor any person associated with the Company makes any warranty or representation with respect to the completeness, security, reliability, quality, accuracy, or availability of the Website and the content (as outlined in section 2 above; `}
-        <Bold>{t`Content`}</Bold>
+        <Bold>{t`"Content"`}</Bold>
         {t`). Without limiting the foregoing, neither the Foundation nor anyone associated with the Company represents or warrants that the Website, the Information, any Third Party Links or Third Party Services or any Curve Functionalities accessed via the Website will be accurate, reliable, error-free, or uninterrupted, that defects will be corrected, that our Website or the server that makes it available are free of viruses or other harmful components, or that the Website or any Curve Functionalities or other Content accessed via the Website will otherwise meet your needs or expectations.`}
       </Paragraph>
     </Section>

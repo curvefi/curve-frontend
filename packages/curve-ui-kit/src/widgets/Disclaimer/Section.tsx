@@ -45,13 +45,13 @@ export const Bold = ({ children }: { children: React.ReactNode }) => (
 export const Section = ({ children }: { children?: ReactNode }) => {
   const childArray = Children.toArray(children)
   const title = childArray.find((child) => typeof child === 'object' && 'type' in child && child.type === Title)
-  const paragraphs = childArray.filter(
-    (child) => typeof child === 'object' && 'type' in child && child.type === Paragraph,
+  const content = childArray.filter(
+    (child) => typeof child === 'object' && 'type' in child && (child.type === Paragraph || child.type === SubTitle),
   )
 
   return (
     <Stack
-      gap={Spacing.sm}
+      gap={Spacing.md}
       sx={{
         // Adds extra margin between consecutive Sections.
         // Not defined in parent since it can host other elements like headers,
@@ -64,7 +64,7 @@ export const Section = ({ children }: { children?: ReactNode }) => {
     >
       {title}
 
-      <Stack gap={Spacing.md}>{paragraphs}</Stack>
+      <Stack gap={Spacing.md}>{content}</Stack>
     </Stack>
   )
 }
