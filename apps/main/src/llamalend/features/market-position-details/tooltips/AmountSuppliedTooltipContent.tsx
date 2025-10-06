@@ -11,7 +11,7 @@ import type { Shares, SupplyAsset } from '../SupplyPositionDetails'
 
 const UnavailableNotation = '-'
 
-const isAvailable = (value: unknown): value is number => value !== null && value !== undefined
+const isAvailable = (value: number | null | undefined): value is number => value != null
 
 const formatAmount = (
   percentage: number | null,
