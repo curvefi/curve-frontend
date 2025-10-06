@@ -1,7 +1,6 @@
 import { t } from '@ui-kit/lib/i18n'
 import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
-export const PAGE_DISCLAIMER = '/disclaimer'
 export const PAGE_INTEGRATIONS = '/integrations'
 export const PAGE_LEGAL = '/legal'
 
@@ -12,14 +11,12 @@ export const DEX_ROUTES = {
   PAGE_DASHBOARD: '/dashboard',
   PAGE_DEPLOY_GAUGE: '/deploy-gauge',
   PAGE_COMPENSATION: '/compensation',
-  PAGE_DISCLAIMER,
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 }
 
 export const LEND_ROUTES = {
   PAGE_MARKETS: '/markets',
-  PAGE_DISCLAIMER,
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 }
@@ -27,7 +24,6 @@ export const LEND_ROUTES = {
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
-  PAGE_DISCLAIMER,
   PAGE_LEGAL,
   PAGE_PSR: '/psr',
   PAGE_INTEGRATIONS,
@@ -35,7 +31,6 @@ export const CRVUSD_ROUTES = {
 
 export const LLAMALEND_ROUTES = {
   PAGE_MARKETS: '/markets',
-  PAGE_DISCLAIMER,
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 }
@@ -48,7 +43,6 @@ export const DAO_ROUTES = {
   PAGE_ANALYTICS: '/analytics',
   PAGE_USER: '/user',
   DISCUSSION: 'https://gov.curve.finance/',
-  PAGE_DISCLAIMER,
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 }

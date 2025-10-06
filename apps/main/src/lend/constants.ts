@@ -3,7 +3,6 @@ import { LEND_ROUTES } from '@ui-kit/shared/routes'
 export const ROUTE = {
   ...LEND_ROUTES,
   PAGE_INTEGRATIONS: '/integrations',
-  PAGE_DISCLAIMER: '/disclaimer',
   PAGE_CREATE: '/create',
   PAGE_MANAGE: '/manage',
   PAGE_VAULT: '/vault',

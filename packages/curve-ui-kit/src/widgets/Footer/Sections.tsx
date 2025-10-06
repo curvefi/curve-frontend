@@ -22,15 +22,15 @@ import { AppName } from '@ui-kit/shared/routes'
 
 function getDisclaimersTab(appName: AppName) {
   if (appName === 'lend') {
-    return '?tab=lend'
+    return '?tab=disclaimers&subtab=lend'
   }
   if (appName !== 'crvusd') {
     return ''
   }
   if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
-    return '?tab=scrvusd'
+    return '?tab=disclaimers&subtab=scrvusd'
   }
-  return '?tab=crvusd'
+  return '?tab=disclaimers&subtab=crvusd'
 }
 
 export const getSections = (appName: AppName) => [
@@ -104,8 +104,8 @@ export const getSections = (appName: AppName) => [
         icon: <GitHubIcon />,
       },
       {
-        label: t`Risk Disclaimers`,
-        href: `disclaimer/${getDisclaimersTab(appName)}`,
+        label: t`Legal`,
+        href: `legal/`,
         icon: <RiskDisclaimersIcon />,
       },
       {
