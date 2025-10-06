@@ -1,4 +1,5 @@
 import fastify, { FastifyInstance } from 'fastify'
+import { registerOptimalRoute } from './routes/optimal-route'
 
 export interface RouterApiServerConfig {
   serviceName: string
@@ -33,6 +34,8 @@ export function buildServer(): FastifyInstance {
     uptime: process.uptime(),
     timestamp: new Date().toISOString(),
   }))
+
+  registerOptimalRoute(server)
 
   return server
 }
