@@ -8,9 +8,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { pushSearchParams } from '@ui-kit/utils/urls'
 import { List } from '../general/List'
 import { Header, Paragraph, Section } from '../general/Section'
-import { pushSearchParams } from '@ui-kit/utils/urls'
 
 const { Spacing } = SizesAndSpaces
 
