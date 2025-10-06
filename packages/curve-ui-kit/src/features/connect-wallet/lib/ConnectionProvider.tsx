@@ -122,7 +122,7 @@ export const ConnectionProvider = <App extends AppName>({
   // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
-  const isHydrated = [curveApi, llamaApi].includes(globalLibs.hydrated[app])
+  const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
 
   return (
     <ConnectionContext.Provider
