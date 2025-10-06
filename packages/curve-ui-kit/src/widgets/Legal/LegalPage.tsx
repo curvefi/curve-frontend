@@ -15,7 +15,7 @@ import { LlamaLend } from './components/disclaimer-tabs/LlamaLend'
 import { SCrvUsd } from './components/disclaimer-tabs/SCrvUsd'
 import { Footer } from './components/general/Footer'
 import { LastUpdated } from './components/general/LastUpdated'
-import { TabPanel } from './components/general/TabPanel'
+import { TabPanelWithLastUpdated } from './components/general/TabPanel'
 import { Privacy } from './components/tabs/Privacy'
 import { Terms } from './components/tabs/Terms'
 import { TABS, DISCLAIMER_TABS, VALID_TABS, VALID_DISCLAIMER_TABS, DEFAULT_DISCLAIMERS_TABS } from './constants'
@@ -88,20 +88,14 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         }}
         data-testid={useAfterHydration('legal-page')}
       >
-        <Grid container direction={isMobile ? 'column' : 'row'} justifyContent="space-between" alignItems="flex-start">
-          <Grid size={isMobile ? 12 : 8}>
-            <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} />
+        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start" spacing={Spacing.md}>
+          <Grid size={{ mobile: 12, desktop: 10 }}>
+            <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} muiVariant="scrollable" />
           </Grid>
           <Grid
-            size={isMobile ? 12 : 4}
-            display="flex"
+            size={{ mobile: 12, desktop: 2 }}
+            display={{ mobile: 'none', desktop: 'flex' }}
             justifyContent="flex-end"
-            width={isMobile ? '100%' : 'auto'}
-            sx={{
-              backgroundColor: isMobile ? (t) => t.design.Layer[1].Fill : 'transparent',
-              paddingInline: isMobile ? Spacing.md : 0,
-              paddingBlock: isMobile ? Spacing.md : 0,
-            }}
           >
             <LastUpdated />
           </Grid>
@@ -118,21 +112,26 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
               spacing={Spacing.md}
               sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
             >
-              <TabsSwitcher variant="underlined" value={disclaimerTab} options={disclaimerTabs} />
+              <TabsSwitcher
+                variant="underlined"
+                value={disclaimerTab}
+                options={disclaimerTabs}
+                muiVariant="scrollable"
+              />
             </Stack>
-            <TabPanel>
+            <TabPanelWithLastUpdated>
               {disclaimerTab === 'dex' && <Dex />}
               {disclaimerTab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
               {disclaimerTab === 'crvusd' && <CrvUsd />}
               {disclaimerTab === 'scrvusd' && <SCrvUsd />}
               <Footer />
-            </TabPanel>
+            </TabPanelWithLastUpdated>
           </>
         ) : (
-          <TabPanel>
+          <TabPanelWithLastUpdated>
             {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
             {tab === 'privacy' && <Privacy currentApp={currentApp} network={network} />}
-          </TabPanel>
+          </TabPanelWithLastUpdated>
         )}
       </Stack>
     </Stack>

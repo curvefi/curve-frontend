@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 import Stack from '@mui/material/Stack'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { LastUpdated } from './LastUpdated'
 
 const { Spacing } = SizesAndSpaces
 
@@ -22,4 +23,13 @@ export const TabPanel = ({ children }: Props) => (
   >
     {children}
   </Stack>
+)
+
+export const TabPanelWithLastUpdated = ({ children }: { children: ReactNode }) => (
+  <TabPanel>
+    <Stack display={{ mobile: 'flex', desktop: 'none' }} sx={{ paddingInline: Spacing.md }}>
+      <LastUpdated />
+    </Stack>
+    {children}
+  </TabPanel>
 )
