@@ -1,7 +1,7 @@
 import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { Grid } from '@mui/material'
+import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -99,12 +99,8 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         {tab === 'disclaimers' ? (
           <>
             <Stack
-              direction={{
-                mobile: 'column-reverse',
-                tablet: 'row',
-              }}
+              direction={'row'}
               justifyContent="space-between"
-              spacing={Spacing.md}
               sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
             >
               <TabsSwitcher
@@ -112,6 +108,15 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 value={disclaimerTab}
                 options={disclaimerTabs}
                 muiVariant="scrollable"
+              />
+              {/* Box with bottom border for consistent underline of the TabsSwitcher */}
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  borderBottom: '1px solid',
+                  borderColor: (t) => t.design.Color.Neutral[200],
+                  display: 'block',
+                }}
               />
             </Stack>
             <TabPanel>
