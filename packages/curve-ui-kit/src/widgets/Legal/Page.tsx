@@ -2,48 +2,25 @@ import { MouseEvent, useEffect, useMemo, useState } from 'react'
 import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
+import { Grid } from '@mui/material'
 import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
-import { t } from '@ui-kit/lib/i18n'
 import type { AppName } from '@ui-kit/shared/routes'
-import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { pushSearchParams } from '@ui-kit/utils/urls'
-import { LastUpdated } from '../Disclaimer/LastUpdated'
-import { TabPanel } from '../Disclaimer/TabPanel'
-import { Footer } from '../Disclaimer/Footer'
-import { Dex } from '../Disclaimer/Tabs/Dex'
-import { LlamaLend } from '../Disclaimer/Tabs/LlamaLend'
-import { CrvUsd } from '../Disclaimer/Tabs/CrvUsd'
-import { SCrvUsd } from '../Disclaimer/Tabs/SCrvUsd'
-import { Terms } from '../Disclaimer/Tabs/Terms'
-import { Privacy } from '../Disclaimer/Tabs/Privacy'
-import { Grid } from '@mui/material'
+import { LastUpdated } from './components/general/LastUpdated'
+import { TabPanel } from './components/general/TabPanel'
+import { Footer } from './components/general/Footer'
+import { Dex } from './components/disclaimer-tabs/Dex'
+import { LlamaLend } from './components/disclaimer-tabs/LlamaLend'
+import { CrvUsd } from './components/disclaimer-tabs/CrvUsd'
+import { SCrvUsd } from './components/disclaimer-tabs/SCrvUsd'
+import { Terms } from './components/tabs/Terms'
+import { Privacy } from './components/tabs/Privacy'
+import { TABS, DISCLAIMER_TABS, VALID_TABS, VALID_DISCLAIMER_TABS, DEFAULT_DISCLAIMERS_TABS } from './constants'
+import type { Tab, DisclaimerTab } from './types/tabs'
 
 const { MaxWidth, Spacing } = SizesAndSpaces
-
-type Tab = 'terms' | 'privacy' | 'disclaimers'
-type DisclaimerTab = 'dex' | 'lend' | 'crvusd' | 'scrvusd'
-
-const TABS: TabOption<Tab>[] = [
-  { value: 'terms', label: t`Terms & Conditions` },
-  { value: 'privacy', label: t`Privacy Notice` },
-  { value: 'disclaimers', label: t`Risk Disclaimers` },
-]
-
-const DISCLAIMER_TABS: TabOption<DisclaimerTab>[] = [
-  { value: 'dex', label: t`Dex` },
-  { value: 'lend', label: t`LlamaLend` },
-  { value: 'crvusd', label: t`crvUSD` },
-  { value: 'scrvusd', label: t`Savings crvUSD` },
-]
-
-const defaultDisclaimerTab: Record<AppName, DisclaimerTab> = {
-  dao: 'dex',
-  crvusd: 'crvusd',
-  lend: 'lend',
-  llamalend: 'lend',
-  dex: 'dex',
-}
 
 export type LegalPageProps = {
   currentApp: AppName
@@ -59,8 +36,13 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const tab = searchParams?.get('tab') ?? 'terms'
-  const disclaimerTab = searchParams?.get('subtab') ?? defaultDisclaimerTab[currentApp]
+  const tabParam = searchParams?.get('tab')
+  const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
+  const subtabParam = searchParams?.get('subtab')
+  const disclaimerTab: DisclaimerTab =
+    subtabParam !== null && VALID_DISCLAIMER_TABS.has(subtabParam as DisclaimerTab)
+      ? (subtabParam as DisclaimerTab)
+      : DEFAULT_DISCLAIMERS_TABS[currentApp]
 
   const tabs = useMemo(
     () => [

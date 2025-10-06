@@ -1,8 +1,8 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../Section'
-import { List } from '../List'
+import { Section, Header, Title, Paragraph, Bold } from '../general/Section'
+import { List } from '../general/List'
 import { CurveNetworkId, LlamaNetworkId } from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
 

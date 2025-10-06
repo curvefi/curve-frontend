@@ -5,8 +5,8 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { List } from '../List'
-import { Section, Header, Title, Paragraph } from '../Section'
+import { List } from '../general/List'
+import { Section, Header, Title, Paragraph } from '../general/Section'
 
 const { Spacing } = SizesAndSpaces
 
