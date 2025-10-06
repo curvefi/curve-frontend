@@ -24,12 +24,3 @@ export const TabPanel = ({ children }: Props) => (
     {children}
   </Stack>
 )
-
-export const TabPanelWithLastUpdated = ({ children }: { children: ReactNode }) => (
-  <TabPanel>
-    <Stack display={{ mobile: 'flex', desktop: 'none' }} sx={{ paddingInline: Spacing.md }}>
-      <LastUpdated />
-    </Stack>
-    {children}
-  </TabPanel>
-)

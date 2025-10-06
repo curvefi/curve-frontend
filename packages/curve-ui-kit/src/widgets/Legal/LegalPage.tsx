@@ -15,7 +15,7 @@ import { LlamaLend } from './components/disclaimer-tabs/LlamaLend'
 import { SCrvUsd } from './components/disclaimer-tabs/SCrvUsd'
 import { Footer } from './components/general/Footer'
 import { LastUpdated } from './components/general/LastUpdated'
-import { TabPanelWithLastUpdated } from './components/general/TabPanel'
+import { TabPanel } from './components/general/TabPanel'
 import { Privacy } from './components/tabs/Privacy'
 import { Terms } from './components/tabs/Terms'
 import { TABS, DISCLAIMER_TABS, VALID_TABS, VALID_DISCLAIMER_TABS, DEFAULT_DISCLAIMERS_TABS } from './constants'
@@ -87,16 +87,12 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         }}
         data-testid={useAfterHydration('legal-page')}
       >
-        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start" spacing={Spacing.md}>
-          <Grid size={{ mobile: 12, desktop: 10 }}>
-            <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} muiVariant="scrollable" />
-          </Grid>
-          <Grid
-            size={{ mobile: 12, desktop: 2 }}
-            display={{ mobile: 'none', desktop: 'flex' }}
-            justifyContent="flex-end"
-          >
+        <Grid container direction="column" spacing={Spacing.md}>
+          <Grid size={12} justifyContent="flex-start">
             <LastUpdated />
+          </Grid>
+          <Grid size={12}>
+            <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} muiVariant="scrollable" />
           </Grid>
         </Grid>
 
@@ -118,19 +114,19 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
                 muiVariant="scrollable"
               />
             </Stack>
-            <TabPanelWithLastUpdated>
+            <TabPanel>
               {disclaimerTab === 'dex' && <Dex />}
               {disclaimerTab === 'lend' && <LlamaLend currentApp={currentApp} network={network} />}
               {disclaimerTab === 'crvusd' && <CrvUsd />}
               {disclaimerTab === 'scrvusd' && <SCrvUsd />}
               <Footer />
-            </TabPanelWithLastUpdated>
+            </TabPanel>
           </>
         ) : (
-          <TabPanelWithLastUpdated>
+          <TabPanel>
             {tab === 'terms' && <Terms currentApp={currentApp} network={network} />}
             {tab === 'privacy' && <Privacy currentApp={currentApp} network={network} />}
-          </TabPanelWithLastUpdated>
+          </TabPanel>
         )}
       </Stack>
     </Stack>
