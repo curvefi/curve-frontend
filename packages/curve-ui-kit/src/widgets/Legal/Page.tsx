@@ -4,6 +4,7 @@ import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/
 import { Grid } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -36,6 +37,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const isMobile = useIsMobile()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
   const subtabParam = searchParams?.get('subtab')
@@ -86,14 +88,25 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
         }}
         data-testid={useAfterHydration('legal-page')}
       >
-        <Grid container direction="row" justifyContent="space-between" alignItems="flex-start">
-          <Grid size={8}>
+        <Grid container direction={isMobile ? 'column' : 'row'} justifyContent="space-between" alignItems="flex-start">
+          <Grid size={isMobile ? 12 : 8}>
             <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} />
           </Grid>
-          <Grid size={4} display="flex" justifyContent="flex-end">
+          <Grid
+            size={isMobile ? 12 : 4}
+            display="flex"
+            justifyContent="flex-end"
+            width={isMobile ? '100%' : 'auto'}
+            sx={{
+              backgroundColor: isMobile ? (t) => t.design.Layer[1].Fill : 'transparent',
+              paddingInline: isMobile ? Spacing.md : 0,
+              paddingBlock: isMobile ? Spacing.md : 0,
+            }}
+          >
             <LastUpdated />
           </Grid>
         </Grid>
+
         {tab === 'disclaimers' ? (
           <>
             <Stack
