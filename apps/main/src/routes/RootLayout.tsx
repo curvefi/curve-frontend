@@ -13,12 +13,14 @@ import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWag
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
 import { useLayoutStoreResponsive } from '@ui-kit/hooks/useLayoutStoreResponsive'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { useNetworkFromUrl } from '@ui-kit/hooks/useNetworkFromUrl'
 import { useOnChainUnavailable } from '@ui-kit/hooks/useOnChainUnavailable'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { ReleaseChannel } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { rootRoute } from './root.routes'
 
@@ -37,15 +39,16 @@ export const RootLayout = () => {
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
   const { location } = useRouterState()
+  const [releaseChannel] = useReleaseChannel()
   useLayoutStoreResponsive()
 
   useEffect(() => {
     // If there's a hash (#section-id), let the browser handle scrolling
     if (location.hash) return
-
+    if (releaseChannel !== ReleaseChannel.Beta) return
     // Otherwise, scroll to top
     window.scrollTo({ top: 0, behavior: 'auto' })
-  }, [location.pathname, location.hash])
+  }, [location.pathname, location.hash, releaseChannel])
 
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
