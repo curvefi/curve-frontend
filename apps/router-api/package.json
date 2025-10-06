@@ -1,14 +1,14 @@
 {
   "name": "router-api",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "engines": {
     "node": "22"
   },
   "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "start": "node dist/index.js",
+    "dev": "tsx watch src/local.ts",
+    "start": "node dist/local.js",
     "build": "tsc --project tsconfig.build.json",
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
