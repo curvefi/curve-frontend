@@ -1,12 +1,12 @@
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-import { t } from '@ui-kit/lib/i18n'
-import { pushSearchParams } from '@ui-kit/utils/urls'
-import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../general/Section'
-import { List } from '../general/List'
-import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
-import { AppName, getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { CurveNetworkId, LlamaNetworkId } from '@ui-kit/features/connect-wallet/lib/types'
+import { t } from '@ui-kit/lib/i18n'
+import { AppName, getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
+import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { pushSearchParams } from '@ui-kit/utils/urls'
+import { List } from '../general/List'
+import { Section, Header, Title, Paragraph, Bold, SubTitle } from '../general/Section'
 
 export const Terms = ({ currentApp, network }: { currentApp: AppName; network: CurveNetworkId | LlamaNetworkId }) => (
   <>
