@@ -26,7 +26,7 @@ type DisclaimerTab = 'dex' | 'lend' | 'crvusd' | 'scrvusd'
 
 const TABS: TabOption<Tab>[] = [
   { value: 'terms', label: t`Terms & Conditions` },
-  { value: 'privacy', label: t`Privacy Policy` },
+  { value: 'privacy', label: t`Privacy Notice` },
   { value: 'disclaimers', label: t`Risk Disclaimers` },
 ]
 
