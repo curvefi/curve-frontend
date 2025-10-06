@@ -8,7 +8,6 @@ import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
 import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
@@ -45,10 +44,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => <Disclaimer currentApp="crvusd" />,
-    head: () => ({
-      meta: [{ title: 'Risk Disclaimer - Curve' }],
-    }),
+    loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/legal/?tab=disclaimers`),
     ...layoutProps,
   }),
   createRoute({
