@@ -27,8 +27,8 @@ export function registerOptimalRoute(server: FastifyInstance): void {
   )
 }
 
-export function parseRouterRoutes(curve: CurveJS, routes: IRouteStep[]) {
-  const pools = routes.map((route): [IRouteStep, PoolTemplate | undefined] => {
+const tryGetPools = (routes: IRouteStep[], curve: CurveJS) =>
+  routes.map((route): [IRouteStep, PoolTemplate | undefined] => {
     try {
       return [route, curve.getPool(route.poolId)]
     } catch (error) {
@@ -36,35 +36,8 @@ export function parseRouterRoutes(curve: CurveJS, routes: IRouteStep[]) {
       return [route, undefined]
     }
   })
-  return {
-    routes: pools.map(([route, pool]) => ({ ...route, name: pool?.name ?? route.poolId, routeUrlId: pool?.id })),
-    isStableswapRoute: pools.every(([, p]) => !p?.isCrypto),
-  }
-}
 
 const LOW_EXCHANGE_RATE = 0.98
-
-function _parseRoutesAndOutput(
-  curve: CurveJS,
-  routes: IRouteStep[],
-  toAmount: Decimal,
-  toStoredRate: Decimal | undefined,
-  fromAmount: Decimal,
-) {
-  const { routes: parsedRoutes, isStableswapRoute } = parseRouterRoutes(curve, routes)
-  const exchangeRate = (Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toString() : '0') as Decimal
-  return {
-    parsedRoutes,
-    isExchangeRateLow:
-      isStableswapRoute &&
-      Number(toAmount) &&
-      (toStoredRate && Number(toStoredRate) > 1
-        ? // toStoredRate is above 1 if the "toToken" is of type oracle or erc4626 in a stableswap-ng pool
-          Number(fromAmount) / Number(toAmount) < Number(toStoredRate) * LOW_EXCHANGE_RATE
-        : Number(toAmount) / Number(fromAmount) < LOW_EXCHANGE_RATE),
-    isHighSlippage: isStableswapRoute && Number(exchangeRate) > LOW_EXCHANGE_RATE,
-  }
-}
 
 /**
  * Get the stored rate for the to token in the last route.
@@ -83,28 +56,40 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAd
 }
 
 async function buildOptimalRouteResponse(curve: CurveJS, query: OptimalRouteQuery): Promise<RouteResponse[]> {
-  const { tokenOut, tokenIn, chainId, amountIn, amountOut } = query
-  const fromToken = tokenIn[0]
-  const toToken = tokenOut[0]
-  const fromAmount =
-    amountIn?.[0] ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
-
+  const {
+    tokenOut: [toToken],
+    tokenIn: [fromToken],
+    chainId,
+    amountIn: [amountIn] = [],
+    amountOut,
+  } = query
+  const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
   const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
+  if (!routes.length) return []
 
-  if (routes.length === 0 && +output === 0) return []
-
-  const [fetchedToAmount, priceImpact, toStoredRate] = await Promise.all([
+  const [toAmount, priceImpact, toStoredRate] = await Promise.all([
     curve.router.expected(fromToken, toToken, fromAmount),
     curve.router.priceImpact(fromToken, toToken, fromAmount),
     routerGetToStoredRate(routes, curve, toToken),
   ])
-  const { parsedRoutes, isExchangeRateLow, isHighSlippage } = _parseRoutesAndOutput(
-    curve,
-    routes,
-    fetchedToAmount as Decimal,
-    toStoredRate as Decimal,
-    fromAmount,
-  )
+
+  const pools = tryGetPools(routes, curve)
+  const parsedRoutes = pools.map(([route, pool]) => ({
+    ...route,
+    name: pool?.name ?? route.poolId,
+    routeUrlId: pool?.id,
+  }))
+  const isStableswapRoute = pools.every(([, p]) => !p?.isCrypto)
+  const exchangeRate = Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toNumber() : 0
+  const isExchangeRateLow =
+    isStableswapRoute &&
+    Number(toAmount) &&
+    (toStoredRate && Number(toStoredRate) > 1
+      ? // toStoredRate is above 1 if the "toToken" is of type oracle or erc4626 in a stableswap-ng pool
+        Number(fromAmount) / Number(toAmount) < Number(toStoredRate) * LOW_EXCHANGE_RATE
+      : Number(toAmount) / Number(fromAmount) < LOW_EXCHANGE_RATE)
+  const isHighSlippage = isStableswapRoute && exchangeRate > LOW_EXCHANGE_RATE
+
   return [
     {
       amountOut: output,
