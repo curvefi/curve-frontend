@@ -37,7 +37,6 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const isMobile = useIsMobile()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
   const subtabParam = searchParams?.get('subtab')

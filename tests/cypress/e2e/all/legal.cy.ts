@@ -48,5 +48,24 @@ describe('Legal', () => {
         .filter('[href="https://docs.curve.finance/scrvusd/overview/"]')
         .should('be.visible')
     })
+
+    it('should use the first tab as default when the wrong tab is provided', () => {
+      cy.visit('/lend/#/ethereum/legal?tab=dontexist')
+      // Verify the first tab (Terms & Conditions) is selected
+      cy.get("[data-testid='legal-page'] [role='tablist'] [role='tab']")
+        .first()
+        .should('have.attr', 'aria-selected', 'true')
+        .and('have.class', 'Mui-selected')
+    })
+
+    it('should use the current page subtab as default when the wrong subtab is provided', () => {
+      cy.visit('/lend/#/ethereum/legal?tab=disclaimers&subtab=dontexist')
+
+      // Verify the Disclaimers tab is selected and the lend subtab is selected
+      cy.get("[data-testid='legal-page'] [role='tablist']")
+        .contains("[role='tab']", 'LlamaLend')
+        .should('have.attr', 'aria-selected', 'true')
+        .and('have.class', 'Mui-selected')
+    })
   })
 })
