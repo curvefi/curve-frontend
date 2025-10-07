@@ -30,15 +30,9 @@ export default defineConfig(({ command }) => ({
   vercel: {
     buildCommand: 'yarn build',
     rewrites: [
-      {
-        source: '/favicon',
-        destination: '/favicon.ico',
-      },
-      {
-        // match all files except api routes
-        source: '/((?!api/).*)',
-        destination: '/index.html',
-      },
+      { source: '/favicon', destination: '/favicon.ico' },
+      { source: '/api/(.*)', destination: '/api/router' },
+      { source: '/(.*)', destination: '/index.html' },
     ],
   },
 }))

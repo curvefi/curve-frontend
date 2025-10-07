@@ -4,7 +4,8 @@ import { buildServer } from 'router-api/src/server'
 const server = buildServer()
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const start = Date.now()
   await server.ready()
   server.server.emit('request', request, response)
-  console.info(`${request.method} ${request.url}`)
+  response.on('finish', () => console.info(`${request.method} ${request.url} - ${Date.now() - start}ms`))
 }
