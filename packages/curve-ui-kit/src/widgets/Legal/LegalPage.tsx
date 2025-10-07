@@ -4,7 +4,6 @@ import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/
 import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
