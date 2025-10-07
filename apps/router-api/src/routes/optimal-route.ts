@@ -22,7 +22,9 @@ export function registerOptimalRoute(server: FastifyInstance): void {
     },
     async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
       const query = request.query
-      return buildOptimalRouteResponse(query)
+      const result = await buildOptimalRouteResponse(query)
+      console.info('route calculated', JSON.stringify({ query, result }, null, 2))
+      return result
     },
   )
 }

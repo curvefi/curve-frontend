@@ -1,5 +1,5 @@
 import { Address } from 'viem'
-import type { IRouteStep, ISwapType } from '@curvefi/api/lib/interfaces'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
 export type Decimal = `${number}`
 
@@ -30,7 +30,7 @@ export type OptimalRouteQuery = {
 
 export const routeItemSchema = {
   type: 'object',
-  required: ['gas', 'amountOut', 'priceImpact', 'feeAmount', 'minAmountOut', 'createdAt', 'tx', 'route'],
+  required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
     amountOut: { type: 'string' },
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
@@ -47,28 +47,15 @@ export const routeItemSchema = {
           action: { type: 'string', enum: ['swap'] },
           args: {
             type: 'object',
-            required: ['poolId', 'amount'],
+            required: ['poolId', 'swapAddress', 'swapParams', 'tvl'],
             additionalProperties: true,
             properties: {
               poolId: { type: 'string' },
-              amount: { type: 'string' },
               swapAddress: AddressSchema,
-              inputCoinAddress: AddressSchema,
-              outputCoinAddress: AddressSchema,
               swapParams: {
                 description: 'Array of [inputCoinIndex, outputCoinIndex, swapType, amount, minAmountOut]',
                 type: 'array',
-                items: [
-                  { type: 'integer', description: 'inputCoinIndex' },
-                  { type: 'integer', description: 'outputCoinIndex' },
-                  {
-                    type: 'string',
-                    enum: Array.from({ length: 9 }, (_, i) => i + 1) as ISwapType[],
-                    description: 'swapType',
-                  },
-                  { type: 'integer', description: 'amount' },
-                  { type: 'integer', description: 'minAmountOut' },
-                ],
+                items: { type: 'integer' },
                 minItems: 5,
                 maxItems: 5,
               },
