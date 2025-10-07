@@ -37,6 +37,7 @@ export default defineConfig(({ command }) => ({
       {
         source: '/security.txt',
         destination: '/.well-known/security.txt',
+        statusCode: 308, // Permanent redirect
       },
       {
         source: '/(.*)',
