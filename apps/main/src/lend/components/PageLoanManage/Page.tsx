@@ -8,6 +8,7 @@ import LoanMange from '@/lend/components/PageLoanManage/index'
 import type { DetailInfoTypes } from '@/lend/components/PageLoanManage/types'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import { useBorrowPositionDetails } from '@/lend/hooks/useBorrowPositionDetails'
+import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -127,6 +128,8 @@ const Page = () => {
       scrollToTop()
     }
   }, [chartExpanded])
+
+  useLendPageTitle(market?.collateral_token?.symbol, 'Manage', 'Curve Llamalend')
 
   const pageProps = {
     params,

@@ -5,6 +5,7 @@ import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import Vault from '@/lend/components/PageVault/index'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import { useSupplyPositionDetails } from '@/lend/hooks/useSupplyPositionDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
@@ -97,6 +98,8 @@ const Page = () => {
   useEffect(() => {
     if (api && market && isPageVisible) void fetchInitial(api, market)
   }, [api, fetchInitial, isPageVisible, market])
+
+  useLendPageTitle(market?.collateral_token?.symbol, 'Supply', 'Curve Llamalend')
 
   const pageProps: PageContentProps = {
     params,

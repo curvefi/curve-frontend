@@ -6,6 +6,7 @@ import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
 import { MarketInformationTabs } from '@/lend/components/MarketInformationTabs'
 import LoanCreate from '@/lend/components/PageLoanCreate/index'
 import { useOneWayMarket } from '@/lend/entities/chain'
+import { useLendPageTitle } from '@/lend/hooks/useLendPageTitle'
 import { useMarketDetails } from '@/lend/hooks/useMarketDetails'
 import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
@@ -109,6 +110,8 @@ const Page = () => {
       scrollToTop()
     }
   }, [chartExpanded])
+
+  useLendPageTitle(market?.collateral_token?.symbol, 'Create', 'Curve Llamalend')
 
   const pageProps: PageContentProps = {
     params,
