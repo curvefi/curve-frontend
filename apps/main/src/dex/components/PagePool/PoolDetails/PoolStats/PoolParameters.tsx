@@ -60,16 +60,6 @@ const PoolParameters = ({
   const staked = usePoolTotalStaked(poolDataCacheOrApi)
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
 
-  const rampADetails = useMemo(() => {
-    if (initial_A_time && initial_A && future_A_time && future_A) {
-      return {
-        isFutureATimePassedToday: dayjs().isAfter(future_A_time, 'day'),
-        isFutureATimeToday: dayjs().isSame(future_A_time, 'day'),
-        isRampUp: Number(future_A) > Number(initial_A),
-      }
-    }
-  }, [future_A, future_A_time, initial_A, initial_A_time])
-
   const { gamma, adminFee, fee } = parameters ?? {}
   if (releaseChannel === ReleaseChannel.Beta) {
     const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
@@ -169,21 +159,18 @@ const PoolParameters = ({
                 label={t`A`}
                 value={formatNumber(A, { useGrouping: false })}
                 valueTooltip={
-                  <>
+                  <Stack gap={Spacing.sm}>
                     {t`Amplification coefficient chosen from fluctuation of prices around 1.`}
-                    {rampADetails && rampADetails?.isFutureATimePassedToday && (
-                      <>
-                        <br />{' '}
-                        {t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
-                          dayjs(future_A_time),
-                        )}, when A ramped from ${initial_A} to ${future_A}.`}
-                      </>
-                    )}
-                  </>
+                    {future_A_time != null &&
+                      dayjs().isAfter(future_A_time, 'day') &&
+                      t`Last change occurred between ${formatDisplayDate(dayjs(initial_A_time))} and ${formatDisplayDate(
+                        dayjs(future_A_time),
+                      )}, when A ramped from ${initial_A} to ${future_A}.`}
+                  </Stack>
                 }
               />
             )}
-            {rampADetails && !rampADetails.isFutureATimePassedToday && (
+            {future_A_time != null && !dayjs().isAfter(future_A_time, 'day') && (
               <>
                 <ActionInfo
                   label={t`Ramping A`}
