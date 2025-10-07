@@ -1,4 +1,3 @@
-import { formatPercent } from '@/llamalend/format.utils'
 import {
   TooltipWrapper,
   TooltipDescription,
@@ -6,7 +5,7 @@ import {
   TooltipItem,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { t } from '@ui-kit/lib/i18n'
-import { formatNumber } from '@ui-kit/utils'
+import { formatNumber, formatPercent } from '@ui-kit/utils'
 import type { Shares, SupplyAsset } from '../SupplyPositionDetails'
 
 const UnavailableNotation = '-'
