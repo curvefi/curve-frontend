@@ -127,7 +127,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     }
 
     // deleverage prices
-    if (deleveragePrices && chartOhlcObject.data) {
+    if (deleveragePrices && deleveragePrices.length !== 0 && chartOhlcObject.data) {
       liqRanges.new = formatRange(deleveragePrices)
     }
 
