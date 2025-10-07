@@ -16,6 +16,8 @@ type MerkleReward = {
     /** Full URL to the icon. We should use this one because curve-assets repo might be missing some; these are guaranteed to be available */
     icon: string
   }
+  /** Probably the USD value. Either way, only used to filter 'empty' campaigns, which are a thing apparantly. */
+  value: 0
 }
 
 /** The API response returned by the Merkl Opportunity endpoint. We only extract what we need; much more other data is returned */
@@ -46,22 +48,26 @@ type MerklOpportunity = {
 }
 
 const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRewards[] =>
-  opp.rewardsRecord.breakdowns.map(({ token }) => ({
-    campaignName: opp.name,
-    platform: opp.tags.map((tag) => capitalize(tag)).join(', '),
-    platformImageId: token.icon,
-    dashboardLink: `https://app.merkl.xyz/opportunities/ethereum/${opp.type}/${opp.identifier}`,
+  opp.rewardsRecord.breakdowns
+    // Filter rewards with a value of 0. Maybe campaign devs are testing something, as such campaigns exist in real life data.
+    .filter(({ value }) => value > 0)
+    // Convert actual token reward data into the more generic data type we use all across the app.
+    .map(({ token }) => ({
+      campaignName: opp.name,
+      platform: opp.tags.map((tag) => capitalize(tag)).join(', '),
+      platformImageId: token.icon,
+      dashboardLink: `https://app.merkl.xyz/opportunities/ethereum/${opp.type}/${opp.identifier}`,
 
-    address: opp.explorerAddress.toLocaleLowerCase() as Address,
-    description: opp.description,
-    steps: opp.howToSteps,
-    lock: false, // Merkl doesn't offer 'locked' rewards
-    multiplier: token.symbol, // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
+      address: opp.explorerAddress.toLocaleLowerCase() as Address,
+      description: opp.description,
+      steps: opp.howToSteps,
+      lock: false, // Merkl doesn't offer 'locked' rewards
+      multiplier: token.symbol, // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
 
-    tags: [], // what are we using this for???
-    action: 'lp', // For now we focus on LP pool campaigns only
-    network: opp.chain.name.toLocaleLowerCase(),
-  }))
+      tags: [], // what are we using this for???
+      action: 'lp', // For now we focus on LP pool campaigns only
+      network: opp.chain.name.toLocaleLowerCase(),
+    }))
 
 /**
  * Merkl opportunities are a collection of campaigns that target the same thing, like a dex pool.
