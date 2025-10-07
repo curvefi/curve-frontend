@@ -2,6 +2,7 @@ import { enforce, group, test } from 'vest'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { Decimal } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 import { type BorrowForm, type BorrowFormQueryParams } from '../types'
 
@@ -22,7 +23,7 @@ const validateDebt = (debt: number | undefined | null, required: boolean) =>
     }
   })
 
-const validateSlippage = (slippage: number | null | undefined) =>
+const validateSlippage = (slippage: Decimal | null | undefined) =>
   test('slippage', 'Slippage must be a number between 0 and 100', () => {
     enforce(slippage).isNumeric().gte(0).lte(100)
   })

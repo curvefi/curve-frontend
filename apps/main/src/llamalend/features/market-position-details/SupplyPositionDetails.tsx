@@ -34,7 +34,7 @@ type SupplyAPY = {
   extraRewards: CampaignPoolRewards[]
   loading: boolean
 }
-type Shares = {
+export type Shares = {
   value: number | undefined | null
   staked: number | undefined | null
   loading: boolean
@@ -48,7 +48,7 @@ type Boost = {
   value: number | undefined | null
   loading: boolean
 }
-type SupplyAsset = {
+export type SupplyAsset = {
   symbol: string | undefined | null
   address: string | undefined | null
   usdRate: number | undefined | null
@@ -154,7 +154,7 @@ export const SupplyPositionDetails = ({ supplyAPY, shares, supplyAsset, boost }:
           }
           valueTooltip={{
             title: t`Amount Supplied`,
-            body: <AmountSuppliedTooltipContent />,
+            body: <AmountSuppliedTooltipContent shares={shares} supplyAsset={supplyAsset} />,
             placement: 'top',
             arrow: false,
             clickable: true,
