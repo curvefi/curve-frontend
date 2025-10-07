@@ -57,12 +57,12 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
     const market = getLlamaMarket(poolId)
     if (market instanceof LendMarketTemplate) {
       return convertNumbers(
-        await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, slippage),
+        await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),
       )
     }
     if (market.leverageV2.hasLeverage()) {
       return convertNumbers(
-        await market.leverageV2.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, slippage),
+        await market.leverageV2.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),
       )
     }
 

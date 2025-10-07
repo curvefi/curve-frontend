@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
@@ -17,6 +18,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { ModalDialog } from '@ui-kit/shared/ui/ModalDialog'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal, Decimal } from '@ui-kit/utils'
 import { MAX_RECOMMENDED_SLIPPAGE, MIN_SLIPPAGE, SLIPPAGE_PRESETS } from './slippage.utils'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -24,7 +26,7 @@ const { Spacing, IconSize } = SizesAndSpaces
 type Error = keyof typeof inputErrorMapper
 
 type FormValues = {
-  selected: string
+  selected: Decimal | 'custom'
   customValue: string
   error?: Error
 }
@@ -63,8 +65,8 @@ function validateCustomValue(value: string): FormValues['error'] {
   const numValue = Number(value)
 
   if (numValue === 0) return undefined // empty value, not really an error
-  if (numValue > MAX_RECOMMENDED_SLIPPAGE) return 'too-high'
-  if (numValue < MIN_SLIPPAGE) return 'too-low'
+  if (numValue > +MAX_RECOMMENDED_SLIPPAGE) return 'too-high'
+  if (numValue < +MIN_SLIPPAGE) return 'too-low'
 
   return undefined
 }
@@ -78,8 +80,8 @@ function validateCustomValue(value: string): FormValues['error'] {
  *   - customValue: The custom slippage value if not one of the preset options
  *   - error: Validation error if the custom value is invalid
  */
-function initFormValues(maxSlippage: string): FormValues {
-  const isCustomValue = !Object.values(SLIPPAGE_PRESETS).includes(Number(maxSlippage))
+function initFormValues(maxSlippage: Decimal): FormValues {
+  const isCustomValue = !recordValues(SLIPPAGE_PRESETS).includes(maxSlippage)
 
   return {
     selected: isCustomValue ? 'custom' : maxSlippage,
@@ -92,14 +94,14 @@ export type SlippageSettingsProps = {
   /** Whether the modal is currently open */
   isOpen: boolean
   /** Current maximum slippage value as a string */
-  maxSlippage: string
+  maxSlippage: Decimal
 }
 
 export type SlippageSettingsCallbacks = {
   /** Function to close the modal */
   onClose: () => void
   /** Callback function when slippage value is saved */
-  onSave: (slippage: string) => void
+  onSave: (slippage: Decimal) => void
 }
 
 export type Props = SlippageSettingsProps & SlippageSettingsCallbacks
@@ -131,11 +133,16 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
     }
   }, [error])
 
+  const onButtonClick = useCallback(() => {
+    const value = decimal(selected === 'custom' ? customValue : selected)
+    return value != null && onSave(value)
+  }, [onSave, selected, customValue])
+
   // To save: require a selected value, and if 'custom', the custom value must be non-empty and pass validation
   // Allow 'too-high' error as it's discouraged but sometimes necessary for low-liquidity pools
   const canSave = selected && (selected !== 'custom' || (customValue && (!error || error === 'too-high')))
   const footer = (
-    <Button fullWidth disabled={!canSave} onClick={() => onSave(selected === 'custom' ? customValue : selected)}>
+    <Button fullWidth disabled={!canSave} onClick={onButtonClick}>
       {t`Save`}
     </Button>
   )
@@ -202,23 +209,15 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
             <RadioGroup
               row
               value={formValues.selected}
-              onChange={(e) => setFormValues({ ...formValues, selected: e.target.value })}
+              onChange={(e) => setFormValues({ ...formValues, selected: e.target.value as Decimal })}
               sx={{
                 flexGrow: 1,
                 justifyContent: { mobile: 'space-between', tablet: 'start' },
                 gap: Spacing.xs,
               }}
             >
-              <FormControlLabel
-                value={SLIPPAGE_PRESETS.STABLE.toString()}
-                label={FORMATTED_STABLE}
-                control={<Radio />}
-              />
-              <FormControlLabel
-                value={SLIPPAGE_PRESETS.CRYPTO.toString()}
-                label={FORMATTED_CRYPTO}
-                control={<Radio />}
-              />
+              <FormControlLabel value={SLIPPAGE_PRESETS.STABLE} label={FORMATTED_STABLE} control={<Radio />} />
+              <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO} label={FORMATTED_CRYPTO} control={<Radio />} />
             </RadioGroup>
 
             <Box display="flex" flexGrow={1} justifyContent={{ mobile: 'start', tablet: 'end' }}>
