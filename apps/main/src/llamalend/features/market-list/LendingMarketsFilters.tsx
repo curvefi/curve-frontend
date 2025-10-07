@@ -3,11 +3,11 @@ import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from './columns.enum'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
@@ -26,9 +26,6 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
 
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="lg" />
 }
-
-const formatUsd = (value: number) => formatNumber(value, { currency: 'USD', decimals: 0 })
-const formatPercent = (value: number) => formatNumber(value, { style: 'percent' })
 
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
