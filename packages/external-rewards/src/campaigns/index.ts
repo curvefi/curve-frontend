@@ -3,7 +3,6 @@ import Apple from './Apple.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
-import Carrot from './Carrot.json'
 import DLCLink from './DLCLink.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
@@ -63,7 +62,6 @@ export {
   Hourglass,
   Fx,
   Pumpbtc,
-  Carrot,
   Bills,
   StableLabs,
   Sonic,
