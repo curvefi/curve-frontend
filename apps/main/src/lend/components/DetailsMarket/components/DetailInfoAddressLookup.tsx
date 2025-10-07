@@ -1,21 +1,19 @@
-import { ReactNode } from 'react'
 import { styled } from 'styled-components'
-import type { StatsProps } from '@/lend/components/DetailsMarket/styles'
 import { StyledStats } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { ChainId } from '@/lend/types/lend.types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
-import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { AddressActionInfo, AddressActionInfoProps } from '@ui-kit/shared/ui/AddressActionInfo'
+import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
 
-interface Props extends StatsProps {
-  chainId: ChainId
-  title: ReactNode
-  address: string | undefined
-}
+type Props = Omit<AddressActionInfoProps, 'network'> & { chainId: ChainId }
 
-const DetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
+const OldDetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props) => {
   const isValidAddress = address ? address !== 'NaN' : true
 
   return (
@@ -92,4 +90,21 @@ const StyledExternalLink = styled(ExternalLink)<{ isValid: boolean }>`
   }}
 `
 
-export default DetailInfoAddressLookup
+const NoGaugeActionInfo = ({ isBorderBottom, title }: Pick<Props, 'isBorderBottom' | 'title'>) => (
+  <ActionInfo
+    label={title}
+    value={t`no gauge`}
+    {...(isBorderBottom && { sx: { borderBottom: (t) => `1px solid ${t.palette.divider}` } })}
+  />
+)
+
+export default function DetailInfoAddressLookup({ chainId, ...props }: Props) {
+  const [releaseChannel] = useReleaseChannel()
+  return releaseChannel !== ReleaseChannel.Beta ? (
+    <OldDetailInfoAddressLookup chainId={chainId} {...props} />
+  ) : props.address === 'NaN' ? (
+    <NoGaugeActionInfo {...props} />
+  ) : (
+    <AddressActionInfo network={networks[chainId]} {...props} />
+  )
+}

@@ -1,5 +1,4 @@
 import { useMarketExtraIncentives } from '@/llamalend/features/market-list/hooks/useMarketExtraIncentives'
-import { formatPercent } from '@/llamalend/format.utils'
 import {
   TooltipDescription,
   TooltipItem,
@@ -10,6 +9,7 @@ import Stack from '@mui/material/Stack'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { ExtraIncentive, MarketRateType } from '@ui-kit/types/market'
+import { formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketSupplyRateTooltipContentProps = {

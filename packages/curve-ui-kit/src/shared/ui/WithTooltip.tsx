@@ -1,4 +1,3 @@
-import React from 'react'
 import { default as Tooltip, TooltipProps } from '@mui/material/Tooltip'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 

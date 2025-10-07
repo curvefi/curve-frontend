@@ -128,7 +128,7 @@ describe(`LlamaLend Markets`, () => {
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', 'Liquidity: $0 -'],
-      ['tvl', 'TVL: $10,000 -'],
+      ['tvl', 'TVL: $10k -'],
       ['utilizationPercent', 'Utilization: 0% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width

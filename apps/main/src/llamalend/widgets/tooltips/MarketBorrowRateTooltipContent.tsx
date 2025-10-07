@@ -1,14 +1,14 @@
-import { formatPercent } from '@/llamalend/format.utils'
 import {
+  TooltipDescription,
   TooltipItem,
   TooltipItems,
   TooltipWrapper,
-  TooltipDescription,
 } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import Stack from '@mui/material/Stack'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { formatPercent } from '@ui-kit/utils'
 import { RewardsTooltipItems } from './RewardTooltipItems'
 
 export type MarketBorrowRateTooltipContentProps = {
