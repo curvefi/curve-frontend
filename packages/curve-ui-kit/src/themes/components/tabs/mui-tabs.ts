@@ -127,6 +127,9 @@ export const defineMuiTabs = ({
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
+        '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
+          marginRight: '1px',
+        },
         [`&.${small} .MuiTab-root`]: tabPadding('xs', 'xs', 'md', 'md'),
         [`&.${medium} .MuiTab-root`]: tabPadding('md', 'xs', 'lg', 'lg'),
       },
