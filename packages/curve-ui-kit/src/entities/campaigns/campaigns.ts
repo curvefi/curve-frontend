@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { fromEntries, notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib'
 import { getCampaignsExternalOptions } from './campaigns-external'
@@ -35,9 +35,7 @@ export const combineCampaigns = ({
   filter?: (campaign: CampaignPoolRewards) => boolean
 }): Campaigns => {
   // Get all unique addresses from all campaign sources
-  const allAddresses = new Set(
-    campaigns.filter((record): record is Campaigns => record !== undefined).flatMap((record) => Object.keys(record)),
-  )
+  const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
 
   // Combine campaigns by address, applying optional filter
   return fromEntries(
