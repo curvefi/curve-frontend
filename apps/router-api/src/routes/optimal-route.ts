@@ -22,7 +22,7 @@ export function registerOptimalRoute(server: FastifyInstance): void {
     },
     async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
       const query = request.query
-      return buildOptimalRouteResponse(await loadCurve(query.chainId), query)
+      return buildOptimalRouteResponse(query)
     },
   )
 }
@@ -55,7 +55,7 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAd
   ] as Decimal
 }
 
-async function buildOptimalRouteResponse(curve: CurveJS, query: OptimalRouteQuery): Promise<RouteResponse[]> {
+export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],
@@ -63,6 +63,8 @@ async function buildOptimalRouteResponse(curve: CurveJS, query: OptimalRouteQuer
     amountIn: [amountIn] = [],
     amountOut,
   } = query
+
+  const curve = await loadCurve(query.chainId)
   const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
   const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []

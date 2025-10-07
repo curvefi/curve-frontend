@@ -35,7 +35,8 @@ export default defineConfig(({ command }) => ({
         destination: '/favicon.ico',
       },
       {
-        source: '/(.*)',
+        // match all files except api routes
+        source: '/((?!api/).*)',
         destination: '/index.html',
       },
     ],

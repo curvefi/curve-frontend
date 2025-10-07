@@ -1,5 +1,8 @@
+import dotenv from 'dotenv'
 import type { FastifyListenOptions } from 'fastify'
 import { buildServer } from './server'
+
+dotenv.config() // Load environment variables from .env file
 
 const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOptions => ({
   port: Number(PORT),

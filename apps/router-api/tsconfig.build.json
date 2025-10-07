@@ -1,10 +1,13 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
     "noEmit": false,
-    "outDir": "dist",
+    "outDir": "dist/api",
     "rootDir": "src",
     "sourceMap": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/dev.ts"]
 }
