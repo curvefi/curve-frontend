@@ -36,6 +36,10 @@ type MerklOpportunity = {
   explorerAddress: Address
   /** Tags are usually protocols involved in the entire reward chain, so can be considerd the "platform" */
   tags: string[]
+  chain: {
+    id: number
+    name: string
+  }
   rewardsRecord: {
     breakdowns: MerkleReward[]
   }
@@ -56,7 +60,7 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
 
     tags: [], // what are we using this for???
     action: 'lp', // for now we focus on LP pool campaigns only
-    network: 'ethereum', // fuck, we need to refactor networks first
+    network: opp.chain.name.toLocaleLowerCase(),
   }))
 
 /**
