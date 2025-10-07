@@ -110,24 +110,24 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
       liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
-    if (increaseLoanPrices && increaseLoanPrices.length !== 0 && chartOhlcObject.data) {
+    if (increaseLoanPrices?.length && chartOhlcObject.data) {
       liqRanges.new = formatRange(increaseLoanPrices)
     }
     // decrease loan prices
-    if (decreaseLoanPrices && decreaseLoanPrices.length !== 0 && chartOhlcObject.data) {
+    if (decreaseLoanPrices?.length && chartOhlcObject.data) {
       liqRanges.new = formatRange(decreaseLoanPrices)
     }
     // increase collateral prices
-    if (increaseCollateralPrices && increaseCollateralPrices.length !== 0 && chartOhlcObject.data) {
+    if (increaseCollateralPrices?.length && chartOhlcObject.data) {
       liqRanges.new = formatRange(increaseCollateralPrices)
     }
     // decrease collateral prices
-    if (decreaseCollateralPrices && decreaseCollateralPrices.length !== 0 && chartOhlcObject.data) {
+    if (decreaseCollateralPrices?.length && chartOhlcObject.data) {
       liqRanges.new = formatRange(decreaseCollateralPrices)
     }
 
     // deleverage prices
-    if (deleveragePrices && deleveragePrices.length !== 0 && chartOhlcObject.data) {
+    if (deleveragePrices?.length && chartOhlcObject.data) {
       liqRanges.new = formatRange(deleveragePrices)
     }
 
