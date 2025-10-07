@@ -1,5 +1,4 @@
 import Aegis from './Aegis.json'
-import Apple from './Apple.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
@@ -71,7 +70,6 @@ export {
   TacTokens,
   Loop,
   Noon,
-  Apple,
   Tharwa,
   Aegis,
   Ebisu,
