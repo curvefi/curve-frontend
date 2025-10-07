@@ -30,7 +30,6 @@ import SolvProtocol from './SolvProtocol.json'
 import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
-import TacTokens from './TacTokens.json'
 import Tharwa from './Tharwa.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
@@ -66,7 +65,6 @@ export {
   GoNuts,
   Falcon,
   Hyperwave,
-  TacTokens,
   Loop,
   Noon,
   Tharwa,
