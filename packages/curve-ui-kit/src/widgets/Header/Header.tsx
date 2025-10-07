@@ -4,8 +4,7 @@ import { WagmiConnectModal } from '@ui-kit/features/connect-wallet/ui/WagmiConne
 import { usePathname } from '@ui-kit/hooks/router'
 import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { isChinese, t } from '@ui-kit/lib/i18n'
-import { type AppName, getInternalUrl, PAGE_DISCLAIMER, PAGE_INTEGRATIONS, routeToPage } from '@ui-kit/shared/routes'
-import { PhishingWarningModal } from '@ui-kit/widgets/Header/PhishingWarningModal'
+import { type AppName, getInternalUrl, PAGE_INTEGRATIONS, PAGE_LEGAL, routeToPage } from '@ui-kit/shared/routes'
 import { DesktopHeader } from './DesktopHeader'
 import { MobileHeader } from './MobileHeader'
 import { HeaderProps, NavigationSection } from './types'
@@ -28,7 +27,6 @@ export const Header = ({ routes, currentApp, ...props }: HeaderProps) => {
       )}
       <WalletToast />
       <WagmiConnectModal />
-      <PhishingWarningModal />
     </>
   )
 }
@@ -40,7 +38,7 @@ const getSections = (currentApp: AppName, networkId: string): NavigationSection[
       { href: 'https://news.curve.finance/', label: t`News` },
       { href: 'https://resources.curve.finance/lending/understanding-lending/', label: t`User Resources` },
       { href: 'https://docs.curve.finance', label: t`Developer Resources` },
-      { href: getInternalUrl(currentApp, networkId, PAGE_DISCLAIMER), label: t`Risk Disclaimers` },
+      { href: getInternalUrl(currentApp, networkId, PAGE_LEGAL), label: t`Legal` },
       { href: getInternalUrl(currentApp, networkId, PAGE_INTEGRATIONS), label: t`Integrations` },
       { href: 'https://resources.curve.finance/glossary-branding/branding/', label: t`Branding` },
       ...(isChinese() ? [{ href: 'https://www.curve.wiki/', label: t`Wiki` }] : []),

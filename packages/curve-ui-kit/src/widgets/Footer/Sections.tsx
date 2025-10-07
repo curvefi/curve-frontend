@@ -20,19 +20,6 @@ import { TelegramRUIcon } from '@ui-kit/shared/icons/TelegramRUIcon'
 import { XIcon } from '@ui-kit/shared/icons/XIcon'
 import { AppName } from '@ui-kit/shared/routes'
 
-function getDisclaimersTab(appName: AppName) {
-  if (appName === 'lend') {
-    return '?tab=lend'
-  }
-  if (appName !== 'crvusd') {
-    return ''
-  }
-  if (typeof window !== 'undefined' && window.location.href.toLocaleLowerCase().includes('scrvusd')) {
-    return '?tab=scrvusd'
-  }
-  return '?tab=crvusd'
-}
-
 export const getSections = (appName: AppName) => [
   {
     title: t`Community`,
@@ -104,8 +91,8 @@ export const getSections = (appName: AppName) => [
         icon: <GitHubIcon />,
       },
       {
-        label: t`Risk Disclaimers`,
-        href: `disclaimer/${getDisclaimersTab(appName)}`,
+        label: t`Legal`,
+        href: `legal/`,
         icon: <RiskDisclaimersIcon />,
       },
       {
