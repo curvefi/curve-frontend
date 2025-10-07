@@ -9,7 +9,6 @@ export const MAIN_ROUTE = {
   PAGE_LOCKER: '/locker',
   PAGE_INTEGRATIONS: '/integrations',
   PAGE_COMPENSATION: '/compensation',
-  PAGE_DISCLAIMER: '/disclaimer',
   PAGE_404: '/404',
 }
 
