@@ -35,6 +35,10 @@ export default defineConfig(({ command }) => ({
         destination: '/favicon.ico',
       },
       {
+        source: '/security.txt',
+        destination: '/.well-known/security.txt',
+      },
+      {
         source: '/(.*)',
         destination: '/index.html',
       },
