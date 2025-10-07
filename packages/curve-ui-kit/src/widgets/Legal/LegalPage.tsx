@@ -92,7 +92,7 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
             <LastUpdated />
           </Grid>
           <Grid size={12}>
-            <TabsSwitcher variant="contained" fullWidth value={tab} options={tabs} muiVariant="scrollable" />
+            <TabsSwitcher variant="contained" value={tab} options={tabs} muiVariant="scrollable" />
           </Grid>
         </Grid>
 
