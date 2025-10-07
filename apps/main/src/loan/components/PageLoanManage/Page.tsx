@@ -47,8 +47,7 @@ const Page = () => {
   const params = useParams<CollateralUrlParams>()
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
-  const { connectState, llamaApi: curve = null } = useConnection()
-  const pageLoaded = !isLoading(connectState)
+  const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
   const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
   const { address } = useAccount()
@@ -98,8 +97,8 @@ const Page = () => {
   })
 
   useEffect(() => {
-    if (curve?.hydrated && pageLoaded) {
-      if (rChainId && rCollateralId && rFormType && curve.signerAddress && llamma) {
+    if (isHydrated && curve) {
+      if (rCollateralId && llamma) {
         void (async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists) {
@@ -109,13 +108,22 @@ const Page = () => {
           setLoaded(true)
         })()
       } else {
-        const args = { rChainId, rCollateralId, rFormType, signer: curve.signerAddress, llamma }
-        console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, args)
+        console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, params)
         push(getCollateralListPathname(params))
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, pageLoaded, rFormType])
+  }, [
+    isReady,
+    isHydrated,
+    rFormType,
+    curve,
+    rCollateralId,
+    llamma,
+    fetchLoanDetails,
+    resetUserDetailsState,
+    push,
+    params,
+  ])
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
