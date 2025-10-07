@@ -24,7 +24,6 @@ import Lombard from './Lombard.json'
 import Loop from './Loop.json'
 import Makina from './Makina.json'
 import Mellow from './Mellow.json'
-import MezoUSD from './MezoUSD.json'
 import Noon from './Noon.json'
 import Plasma from './Plasma.json'
 import Pumpbtc from './Pumpbtc.json'
@@ -76,7 +75,6 @@ export {
   Tharwa,
   Aegis,
   Ebisu,
-  MezoUSD,
   Liquity,
   Plasma,
   Makina,
