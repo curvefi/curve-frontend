@@ -24,7 +24,6 @@ import Loop from './Loop.json'
 import Makina from './Makina.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
-import Plasma from './Plasma.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
@@ -74,6 +73,5 @@ export {
   Aegis,
   Ebisu,
   Liquity,
-  Plasma,
   Makina,
 }
