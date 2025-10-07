@@ -55,11 +55,11 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
     address: opp.explorerAddress.toLocaleLowerCase() as Address,
     description: opp.description,
     steps: opp.howToSteps,
-    lock: false, // i dont think merkle offers 'locked' rewards?
+    lock: false, // Merkl doesn't offer 'locked' rewards
     multiplier: token.symbol, // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
 
     tags: [], // what are we using this for???
-    action: 'lp', // for now we focus on LP pool campaigns only
+    action: 'lp', // For now we focus on LP pool campaigns only
     network: opp.chain.name.toLocaleLowerCase(),
   }))
 
