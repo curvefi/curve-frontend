@@ -3,6 +3,7 @@ import type { Address } from 'viem'
 import { addQueryString, FetchError } from '@curvefi/prices-api/fetch'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
+import { formatPercent } from '@ui-kit/utils'
 import type { CampaignPoolRewards } from './types'
 
 type MerkleReward = {
@@ -62,7 +63,8 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
       description: opp.description,
       steps: opp.howToSteps,
       lock: false, // Merkl doesn't offer 'locked' rewards
-      multiplier: token.symbol, // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
+      // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
+      multiplier: [token.symbol, opp.apr ? formatPercent(opp.apr) : ''].join(' '),
 
       tags: [], // what are we using this for???
       action: 'lp', // For now we focus on LP pool campaigns only
