@@ -11,8 +11,8 @@ type MerkleReward = {
     chainId: number
     /** Token address that is *NOT* lowercased */
     address: Address
-    /** There's also a 'symbol', not sure how they differ, but I'm guessing this is the right one */
-    displaySymbol: string
+    /** There's also a 'displaySymbol', but sometimes that one's empty, but I'm guessing this is the right one */
+    symbol: string
     /** Full URL to the icon. We should use this one because curve-assets repo might be missing some; these are guaranteed to be available */
     icon: string
   }
@@ -56,7 +56,7 @@ const opportunityToCampaignPoolRewards = (opp: MerklOpportunity): CampaignPoolRe
     description: opp.description,
     steps: opp.howToSteps,
     lock: false, // i dont think merkle offers 'locked' rewards?
-    multiplier: token.displaySymbol, // Merkl campaigns don't have a multiplier, just a token. And APR is for the whole opportunity
+    multiplier: token.symbol, // Merkl campaigns don't have a multiplier, just a token. And APR is only available for the whole opportunity.
 
     tags: [], // what are we using this for???
     action: 'lp', // for now we focus on LP pool campaigns only
