@@ -38,7 +38,6 @@ import Tharwa from './Tharwa.json'
 import Usual from './Usual.json'
 import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
-import YieldNest from './YieldNest.json'
 
 export {
   DLCLink,
@@ -68,7 +67,6 @@ export {
   Infinifi,
   Asymmetry,
   GoNuts,
-  YieldNest,
   Falcon,
   Hyperwave,
   TacTokens,
