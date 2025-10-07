@@ -8,8 +8,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { List } from '../List'
-import { Header, Paragraph, Section } from '../Section'
+import { pushSearchParams } from '@ui-kit/utils/urls'
+import { List } from '../general/List'
+import { Header, Paragraph, Section } from '../general/Section'
 
 const { Spacing } = SizesAndSpaces
 
@@ -117,7 +118,8 @@ export const SCrvUsd = () => (
         {t`Read the`}{' '}
         <RouterLink
           color="textSecondary"
-          href={getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_DISCLAIMER)}
+          href={getInternalUrl('crvusd', 'ethereum', CRVUSD_ROUTES.PAGE_LEGAL)}
+          onClick={(e) => pushSearchParams(e, { tab: 'disclaimers', subtab: 'crvusd' })}
           target="_blank"
         >
           {t`crvUSD Risk Disclaimer`}

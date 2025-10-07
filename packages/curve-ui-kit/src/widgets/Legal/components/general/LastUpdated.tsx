@@ -5,6 +5,6 @@ import { t } from '@ui-kit/lib/i18n'
 export const LastUpdated = () => (
   <Stack justifyContent="space-evenly" alignItems="end">
     <Typography variant="bodyXsRegular" color="textTertiary">{t`Last Updated`}</Typography>
-    <Typography variant="highlightM">12.08.2024</Typography>
+    <Typography variant="highlightM">06.10.2025</Typography>
   </Stack>
 )
