@@ -189,6 +189,9 @@ type Props<T> = DataType<T> & {
  * Calculate the new balance based on max balance and percentage, rounding to specified decimals
  */
 function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, balanceDecimals: number | undefined): T {
+  // Avoid loss of precision when clicking 'Max'
+  if (Number(newPercentage) === 100) return max
+
   let newBalance = new BigNumber(max).times(newPercentage).div(100)
   if (balanceDecimals != null) {
     // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
