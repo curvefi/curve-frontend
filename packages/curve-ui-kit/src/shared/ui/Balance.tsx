@@ -65,7 +65,7 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
         color={balance != null ? 'textPrimary' : 'textTertiary'}
         data-testid="balance-value"
       >
-        {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
+        {balance == null ? '-' : formatNumber(balance, { abbreviate: true, highPrecision: true })}
       </Typography>
 
       <Typography variant="highlightS" color="textPrimary">
