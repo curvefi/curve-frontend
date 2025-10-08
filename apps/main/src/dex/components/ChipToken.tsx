@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
@@ -50,11 +50,11 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
   const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
 
-  const handleMouseEnter = (foundUsdRate?: string) => {
-    if (!foundUsdRate) {
+  const handleMouseEnter = useCallback(() => {
+    if (typeof usdRate === 'undefined') {
       void fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate)
     }
-  }
+  }, [usdRate, chainId, tokenAddress])
 
   const parsedTokenName = useMemo(() => {
     if (tokenName && tokenName.length > 10) {
@@ -64,7 +64,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   }, [tokenName])
 
   return (
-    <ChipTokenWrapper className={className} onMouseEnter={() => handleMouseEnter(parsedUsdRate)}>
+    <ChipTokenWrapper className={className} onMouseEnter={handleMouseEnter}>
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
