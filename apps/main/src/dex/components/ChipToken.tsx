@@ -51,7 +51,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
 
   const handleMouseEnter = useCallback(() => {
-    if (typeof usdRate === 'undefined') {
+    if (usdRate == null) {
       void fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate)
     }
   }, [usdRate, chainId, tokenAddress])
@@ -70,7 +70,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
           <AlignmentWrapper>
             <ChipTokenUsdRate>
-              {typeof usdRate === 'undefined' ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
+              {usdRate == null ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
             </ChipTokenUsdRate>
             <ChipTokenAddress>{shortenAddress(tokenAddress)}</ChipTokenAddress>
             <ChipTokenCopyButtonIcon name="Copy" size={16} />
