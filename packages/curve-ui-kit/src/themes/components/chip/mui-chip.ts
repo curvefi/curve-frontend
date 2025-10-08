@@ -98,7 +98,7 @@ export const defineMuiChip = (
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
       },
-      // Mui has a default padding of 12px set this way, which we want to override with our custom paddingInline
+      // Mui has default paddings set this to 12px, override with our custom paddingInline per size
       '& .MuiChip-label': {
         paddingLeft: 'unset',
         paddingRight: 'unset',
