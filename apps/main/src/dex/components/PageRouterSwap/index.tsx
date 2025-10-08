@@ -478,19 +478,19 @@ const QuickSwap = ({
               }
             />
           )}
-
-          {/* SWAP ICON */}
-          <Box flex flexJustifyContent="center">
-            <IconButton
-              disabled={isDisable}
-              onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
-              size="medium"
-              testId="swap-tokens"
-            >
-              <Icon name="ArrowsVertical" size={24} />
-            </IconButton>
-          </Box>
         </div>
+
+        {/* SWAP ICON */}
+        <Box flex flexJustifyContent="center">
+          <IconButton
+            disabled={isDisable}
+            onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
+            size="medium"
+            testId="swap-tokens"
+          >
+            <Icon name="ArrowsVertical" size={24} />
+          </IconButton>
+        </Box>
 
         {/* SWAP TO */}
         {releaseChannel !== ReleaseChannel.Beta ? (

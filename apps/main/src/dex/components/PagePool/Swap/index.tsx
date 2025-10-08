@@ -467,28 +467,28 @@ const Swap = ({
               }}
             />
           )}
-
-          <Box flex flexJustifyContent="center">
-            <IconButton
-              disabled={isDisabled}
-              onClick={() => {
-                const cFormValues = cloneDeep(formValues)
-                cFormValues.isFrom = true
-                cFormValues.fromAmount = formValues.toAmount
-                cFormValues.fromToken = formValues.toToken
-                cFormValues.fromAddress = formValues.toAddress
-                cFormValues.toToken = formValues.fromToken
-                cFormValues.toAddress = formValues.fromAddress
-                cFormValues.toAmount = ''
-
-                updateFormValues(cFormValues, null, '')
-              }}
-              size="medium"
-            >
-              <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
-            </IconButton>
-          </Box>
         </div>
+
+        <Box flex flexJustifyContent="center">
+          <IconButton
+            disabled={isDisabled}
+            onClick={() => {
+              const cFormValues = cloneDeep(formValues)
+              cFormValues.isFrom = true
+              cFormValues.fromAmount = formValues.toAmount
+              cFormValues.fromToken = formValues.toToken
+              cFormValues.fromAddress = formValues.toAddress
+              cFormValues.toToken = formValues.fromToken
+              cFormValues.toAddress = formValues.fromAddress
+              cFormValues.toAmount = ''
+
+              updateFormValues(cFormValues, null, '')
+            }}
+            size="medium"
+          >
+            <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
+          </IconButton>
+        </Box>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
         {releaseChannel !== ReleaseChannel.Beta ? (
