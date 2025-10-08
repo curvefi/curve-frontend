@@ -6,19 +6,22 @@ import { PoolTemplate } from '@curvefi/api/lib/pools'
 import { type CurveJS, loadCurve } from '../curvejs'
 import {
   type Decimal,
+  OptimalRoutePath,
   type OptimalRouteQuery,
-  optimalRouteQuerySchema,
-  routeItemSchema,
+  OptimalRouteSchema,
   type RouteResponse,
 } from './optimal-route.schemas'
 
 export const notFalsy = <T>(...items: (T | null | undefined | false | 0)[]): T[] => items.filter(Boolean) as T[]
 
+/**
+ * Register the optimal route endpoint. This is inspired by the Enso endpoint with the same path.
+ */
 export function registerOptimalRoute(server: FastifyInstance): void {
   server.get(
-    '/api/router/optimal-route',
+    OptimalRoutePath,
     {
-      schema: { querystring: optimalRouteQuerySchema, response: { 200: { type: 'array', items: routeItemSchema } } },
+      schema: OptimalRouteSchema,
     },
     async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
       const query = request.query
@@ -29,6 +32,10 @@ export function registerOptimalRoute(server: FastifyInstance): void {
   )
 }
 
+/**
+ * Returns an array of tuples containing the route step and the corresponding pool object (or undefined if not found).
+ * If a pool is not found, it logs the missing poolId to the console.
+ */
 const tryGetPools = (routes: IRouteStep[], curve: CurveJS) =>
   routes.map((route): [IRouteStep, PoolTemplate | undefined] => {
     try {
@@ -57,6 +64,9 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAd
   ] as Decimal
 }
 
+/**
+ * Runs the router to get the optimal route and builds the response.
+ */
 export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
@@ -66,7 +76,7 @@ export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promi
     amountOut,
   } = query
 
-  const curve = await loadCurve(query.chainId)
+  const curve = await loadCurve(chainId)
   const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
   const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []

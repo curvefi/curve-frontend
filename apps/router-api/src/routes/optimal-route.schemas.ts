@@ -3,11 +3,15 @@ import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
 export type Decimal = `${number}`
 
-const AddressSchema = { type: 'string', pattern: '^0x[a-fA-F0-9]{40}$' } as const
+export const ADDRESS_HEX_PATTERN = '^0x[a-fA-F0-9]{40}$'
+
+export const OptimalRoutePath = '/api/router/optimal-route'
+
+const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const AmountArraySchema = { type: 'array', items: { type: 'string' }, minItems: 1, maxItems: 1 } as const
 
-export const optimalRouteQuerySchema = {
+const optimalRouteQuerySchema = {
   type: 'object',
   required: ['tokenIn', 'tokenOut'],
   additionalProperties: false,
@@ -24,11 +28,11 @@ export type OptimalRouteQuery = {
   chainId: number
   tokenIn: [Address]
   tokenOut: [Address]
-  amountIn: [Decimal] | undefined
-  amountOut: [Decimal] | undefined
+  amountIn?: [Decimal]
+  amountOut?: [Decimal]
 }
 
-export const routeItemSchema = {
+const routeItemSchema = {
   type: 'object',
   required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
@@ -73,6 +77,11 @@ export const routeItemSchema = {
     },
   },
 } as const
+
+export const OptimalRouteSchema = {
+  querystring: optimalRouteQuerySchema,
+  response: { 200: { type: 'array', items: routeItemSchema } },
+}
 
 type RouteStep = {
   tokenIn: [Address]
