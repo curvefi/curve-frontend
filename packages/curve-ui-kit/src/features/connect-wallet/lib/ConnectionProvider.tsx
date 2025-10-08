@@ -27,7 +27,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
-  const chainId = useChainId()
+  const walletChainId = useChainId()
   const { switchChainAsync } = useSwitchChain()
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
@@ -40,11 +40,11 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
      */
     async function updateWalletChain() {
       const networkChainId = Number(network.chainId) as TChainId
-      if (networkChainId !== chainId) {
+      if (networkChainId !== walletChainId) {
         setConnectState(LOADING)
         if (isFocused && !(await switchChainAsync({ chainId: networkChainId as WagmiChainId }))) {
           setConnectState(FAILURE)
-          onChainUnavailable([networkChainId, chainId as TChainId])
+          onChainUnavailable([networkChainId, walletChainId as TChainId])
         }
         return // hook is called again after since it depends on walletChainId
       }
@@ -53,7 +53,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
       console.error('Error updating wallet chain', e)
       setConnectState(FAILURE)
     })
-  }, [isFocused, chainId, network.chainId, onChainUnavailable, switchChainAsync, wallet])
+  }, [isFocused, walletChainId, network.chainId, onChainUnavailable, switchChainAsync, wallet])
 
   useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect
@@ -66,7 +66,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     const initApp = async () => {
       const networkChainId = Number(network.chainId) as TChainId
       try {
-        if (chainId !== networkChainId) {
+        if (walletChainId !== networkChainId) {
           return // wait for the wallet to be connected to the right chain
         }
 
@@ -80,7 +80,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
         setConnectState(LOADING)
         console.info(
           `Initializing ${libKey} for ${network.name} (${network.chainId})`,
-          wallet ? `Wallet ${wallet?.account?.address} with chain ${chainId}` : 'without wallet',
+          wallet ? `Wallet ${wallet?.account?.address} with chain ${walletChainId}` : 'without wallet',
           prevLib
             ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
             : `First initialization`,
@@ -98,7 +98,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     }
     void initApp()
     return () => abort.abort()
-  }, [chainId, isReconnecting, libKey, network, wallet])
+  }, [walletChainId, isReconnecting, libKey, network, wallet])
 
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
