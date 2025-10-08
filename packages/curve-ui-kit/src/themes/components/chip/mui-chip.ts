@@ -22,16 +22,17 @@ type ChipSizeDefinition = {
   font: TypographyVariantKey
   height: Responsive
   iconSize: Responsive
+  paddingInline: Responsive
 }
 
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.sm, iconSize: IconSize.sm },
-  small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm },
-  medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md },
-  large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg },
-  extraLarge: { font: 'headingSBold', height: Sizing.xl, iconSize: IconSize.xl },
+  extraSmall: { font: 'bodyXsBold', height: IconSize.sm, iconSize: IconSize.sm, paddingInline: Sizing.xxs },
+  small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm, paddingInline: Sizing.xxs },
+  medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md, paddingInline: Sizing.xxs },
+  large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg, paddingInline: Sizing.xs },
+  extraLarge: { font: 'headingSBold', height: Sizing.xl, iconSize: IconSize.xl, paddingInline: Sizing.xs },
 }
 
 // overrides for clickable chips
@@ -62,14 +63,14 @@ export const defineMuiChip = (
       borderRadius: Chips.BorderRadius.NonClickable,
       color: TextColors.Primary,
       backgroundColor: 'transparent',
-      ...handleBreakpoints({ paddingInline: Spacing.xxs }),
       '&:has(.MuiChip-icon)': {
         ...handleBreakpoints({ gap: Spacing.xs }),
         '& .MuiChip-icon': { marginInline: 0 },
-        '& .MuiChip-label': {
-          paddingInlineStart: 0,
-          paddingInlineEnd: Spacing.xs.desktop,
-        },
+      },
+      // Mui has a default padding of 12px set this way, which we want to override with our custom paddingInline
+      '& .MuiChip-label': {
+        paddingLeft: 'unset',
+        paddingRight: 'unset',
       },
       '& .MuiChip-label:empty': { display: 'none' },
     },
@@ -126,10 +127,10 @@ export const defineMuiChip = (
       },
     },
 
-    ...Object.entries(chipSizes).map(([size, { font, iconSize, height }]) => ({
+    ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline }]) => ({
       props: { size: size as ChipSizes },
       style: {
-        ...handleBreakpoints({ ...typography[font], height }),
+        ...handleBreakpoints({ ...typography[font], height, paddingInline }),
         '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
         '&:has(.MuiChip-icon):has(.MuiChip-label:empty)': handleBreakpoints({
           width: height, // force chips with only an icon to be a perfect circle
