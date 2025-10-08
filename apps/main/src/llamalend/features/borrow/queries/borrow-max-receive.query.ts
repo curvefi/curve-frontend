@@ -4,21 +4,21 @@ import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { assert } from '@ui-kit/utils'
+import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../types'
 import { borrowFormValidationGroup } from './borrow.validation'
 
-type BorrowMaxReceiveQuery = Omit<BorrowFormQuery, 'userCollateral' | 'debt'> & { userCollateral: number }
+type BorrowMaxReceiveQuery = Omit<BorrowFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
 type BorrowMaxReceiveParams = FieldsOf<BorrowMaxReceiveQuery>
 
 type BorrowMaxReceiveResult = {
-  maxDebt: number
-  maxTotalCollateral?: number
-  maxLeverage?: number
-  userCollateral?: number
-  collateralFromUserBorrowed?: number
-  collateralFromMaxDebt?: number
-  avgPrice?: number
+  maxDebt: Decimal
+  maxTotalCollateral?: Decimal
+  maxLeverage?: Decimal
+  userCollateral?: Decimal
+  collateralFromUserBorrowed?: Decimal
+  collateralFromMaxDebt?: Decimal
+  avgPrice?: Decimal
 }
 const convertNumbers = ({
   maxDebt,
@@ -29,13 +29,13 @@ const convertNumbers = ({
   collateralFromUserBorrowed,
   collateralFromMaxDebt,
 }: { [K in keyof BorrowMaxReceiveResult]: string }): BorrowMaxReceiveResult => ({
-  maxDebt: +maxDebt,
-  maxLeverage: maxLeverage == null ? undefined : +maxLeverage,
-  maxTotalCollateral: maxTotalCollateral == null ? undefined : +maxTotalCollateral,
-  avgPrice: avgPrice == null ? undefined : +avgPrice,
-  userCollateral: userCollateral == null ? undefined : +userCollateral,
-  collateralFromUserBorrowed: collateralFromUserBorrowed == null ? undefined : +collateralFromUserBorrowed,
-  collateralFromMaxDebt: collateralFromMaxDebt == null ? undefined : +collateralFromMaxDebt,
+  maxDebt: maxDebt as Decimal,
+  maxLeverage: decimal(maxLeverage),
+  maxTotalCollateral: decimal(maxTotalCollateral),
+  avgPrice: decimal(avgPrice),
+  userCollateral: decimal(userCollateral),
+  collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),
+  collateralFromMaxDebt: decimal(collateralFromMaxDebt),
 })
 
 export const maxReceiveValidation = createValidationSuite(
@@ -53,8 +53,8 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
   queryKey: ({
     chainId,
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
+    userBorrowed = `0`,
+    userCollateral = `0`,
     range,
     leverageEnabled,
   }: BorrowMaxReceiveParams) =>
@@ -68,8 +68,8 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
+    userBorrowed = `0`,
+    userCollateral = `0`,
     range,
     leverageEnabled,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
@@ -84,7 +84,7 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
       return convertNumbers(await market.leverageV2.createLoanMaxRecv(userCollateral, userBorrowed, range))
     }
 
-    assert(userBorrowed === 0, `userBorrowed must be 0 for non-leverage mint markets`)
+    assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
     const result = await market.leverage.createLoanMaxRecv(userCollateral, range)
     const { maxBorrowable, maxCollateral, leverage, routeIdx } = result
     return convertNumbers({ maxDebt: maxBorrowable, maxTotalCollateral: maxCollateral, maxLeverage: '9' })

@@ -19,9 +19,9 @@ export const { useQuery: useBorrowHealth } = queryFactory({
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<number> => {
