@@ -4,7 +4,9 @@ import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
-import { getCampaignOptions, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
+import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
+import { getCampaignsMerklOptions } from '@ui-kit/entities/campaigns/campaigns-merkl'
 import { combineQueriesMeta, PartialQueryResult } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { CRVUSD_ROUTES, getInternalUrl, LEND_ROUTES } from '@ui-kit/shared/routes'
@@ -279,7 +281,8 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
     queries: [
       getLendingVaultsOptions({}, enabled),
       getMintMarketOptions({}, enabled),
-      getCampaignOptions({}, enabled),
+      getCampaignsExternalOptions({}, enabled),
+      getCampaignsMerklOptions({}, enabled),
       getFavoriteMarketOptions({}, enabled),
       getUserLendingVaultsOptions({ userAddress }, enabled),
       getUserLendingSuppliesOptions({ userAddress }, enabled),
@@ -289,7 +292,8 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const [
         lendingVaults,
         mintMarkets,
-        campaigns,
+        externalCampaigns,
+        merklCampaigns,
         favoriteMarkets,
         userLendingVaults,
         userSuppliedMarkets,
@@ -300,6 +304,9 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
       const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
       const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
       const countMarket = createCountMarket(mintMarkets.data)
+      const campaigns = combineCampaigns({
+        campaigns: [externalCampaigns.data, merklCampaigns.data],
+      })
 
       // only render table when both lending and mint markets are ready, however show one of them if the other is in error
       const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
@@ -329,10 +336,10 @@ export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
               hasFavorites: favoriteMarketsSet.size > 0,
               markets: [
                 ...(lendingVaults.data ?? []).map((vault) =>
-                  convertLendingVault(vault, favoriteMarketsSet, campaigns.data, userBorrows, userSupplied),
+                  convertLendingVault(vault, favoriteMarketsSet, campaigns, userBorrows, userSupplied),
                 ),
                 ...(mintMarkets.data ?? []).map((market) =>
-                  convertMintMarket(market, favoriteMarketsSet, campaigns.data, userMints, countMarket(market)),
+                  convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
                 ),
               ],
             }

@@ -1,6 +1,5 @@
 import { SizesAndSpaces } from 'curve-ui-kit/src/themes/design/1_sizes_spaces'
 import { styled } from '@mui/material/styles'
-import { CURVE_ASSETS_URL } from '@ui/utils'
 import { applySxProps, type SxProps } from '@ui-kit/utils'
 
 const { IconSize } = SizesAndSpaces
@@ -15,7 +14,7 @@ const getSize = (size: IconSize) => parseFloat(IconSize[size].mobile) * 16
 export const RewardIcon = ({ imageId, size = 'xs', sx }: { imageId: string; size: IconSize; sx?: SxProps }) => (
   <RewardsImg
     alt={imageId}
-    src={`${CURVE_ASSETS_URL}/platforms/${imageId}`}
+    src={imageId}
     width={getSize(size)}
     height={getSize(size)}
     sx={(theme) => ({
