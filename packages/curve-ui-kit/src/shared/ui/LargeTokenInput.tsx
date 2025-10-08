@@ -21,9 +21,11 @@ type HelperMessageProps = {
 const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   <Box
     sx={{
+      display: 'flex',
+      alignItems: 'center',
       backgroundColor: (t) => t.design.Layer[3].Fill,
-      paddingBlock: Spacing.sm,
-      paddingInlineStart: Spacing.sm,
+      padding: Spacing.sm,
+      minHeight: Sizing.sm,
       ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
     }}
   >
@@ -284,15 +286,13 @@ export const LargeTokenInput = <T extends Amount>({
   return (
     <Stack
       data-testid={testId}
-      gap={Spacing.xs}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-        padding: Spacing.md,
         outline: (t) =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xs}>
+      <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input */}
         {label && (
           <Typography variant="bodyXsRegular" color="textSecondary">
