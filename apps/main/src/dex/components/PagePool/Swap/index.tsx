@@ -11,7 +11,6 @@ import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
-import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
@@ -346,7 +345,7 @@ const Swap = ({
   return (
     <>
       {/* input fields */}
-      <FieldsWrapper>
+      <Box grid gridRowGap="1">
         <div>
           {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
@@ -628,7 +627,7 @@ const Swap = ({
             </Checkbox>
           </div>
         )}
-      </FieldsWrapper>
+      </Box>
 
       <Box>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />

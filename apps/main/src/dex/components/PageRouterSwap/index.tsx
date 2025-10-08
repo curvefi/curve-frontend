@@ -378,7 +378,7 @@ const QuickSwap = ({
   return (
     <>
       {/* inputs */}
-      <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
+      <Box grid gridRowGap="1" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
           {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
