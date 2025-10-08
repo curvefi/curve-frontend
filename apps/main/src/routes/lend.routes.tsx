@@ -65,7 +65,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/create/$formType',
     component: PageLoanCreate,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Create Loan - Curve Lend` }],
+      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -73,7 +73,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/create',
     component: PageLoanCreate,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Create Loan - Curve Lend` }],
+      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -81,7 +81,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/manage/$formType',
     component: PageLoanManage,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Manage Loan - Curve Lend` }],
+      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -89,7 +89,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/manage',
     component: PageLoanManage,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Manage Loan - Curve Lend` }],
+      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -97,7 +97,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/vault/$formType',
     component: PageVault,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Supply - Curve Lend` }],
+      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -105,7 +105,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/vault',
     component: PageVault,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Supply - Curve Lend` }],
+      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
