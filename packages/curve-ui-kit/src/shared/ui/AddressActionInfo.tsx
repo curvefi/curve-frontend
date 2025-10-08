@@ -32,6 +32,11 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
       )
     }
     copyValue={address}
-    {...(isBorderBottom && { sx: { borderBottom: (t) => `1px solid ${t.palette.divider}` } })}
+    sx={{
+      alignItems: 'center',
+      ...(isBorderBottom && {
+        borderBottom: (t) => `1px solid ${t.palette.divider}`,
+      }),
+    }}
   />
 )
