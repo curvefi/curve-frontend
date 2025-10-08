@@ -4,7 +4,6 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -240,7 +239,6 @@ export const LargeTokenInput = <T extends Amount>({
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
-  const isDesktop = useIsDesktop()
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
@@ -321,13 +319,12 @@ export const LargeTokenInput = <T extends Amount>({
                   flexGrow: 1,
                   justifyContent: 'end',
                   // Hide by default, show on parent hover
-                  opacity: 0,
+                  opacity: { desktop: 0 },
                   transition: `opacity ${TransitionFunction}`,
                   // Show when parent stack is hovered
                   [`#${componentId}:hover &`]: {
                     opacity: 1,
                   },
-                  ...(!isDesktop && { opacity: 1 }),
                 }}
               >
                 {[25, 50, 75, 100].map((percent) => (
