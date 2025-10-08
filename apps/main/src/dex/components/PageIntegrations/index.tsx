@@ -37,7 +37,6 @@ const IntegrationsComp = ({
   const setFormValues = useStore((state) => state.integrations.setFormValues)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
   const { filterKey, filterNetworkId } = parseSearchParams(
     searchParams,
