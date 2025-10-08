@@ -124,7 +124,7 @@ export const Balance = <T extends Amount>({
   maxTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
