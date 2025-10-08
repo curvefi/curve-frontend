@@ -16,23 +16,54 @@ const createColor = (color: keyof DesignSystem['Badges']['Fill'], Badges: Design
   props: { color: color.toLowerCase() as ChipProps['color'] },
 })
 
-const { Sizing, Spacing, IconSize } = SizesAndSpaces
+const { Sizing, Spacing, IconSize, LineHeight } = SizesAndSpaces
 
 type ChipSizeDefinition = {
   font: TypographyVariantKey
   height: Responsive
   iconSize: Responsive
   paddingInline: Responsive
+  lineHeight: Responsive
 }
 
 type ChipSizes = NonNullable<ChipProps['size']>
 
 const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
-  extraSmall: { font: 'bodyXsBold', height: IconSize.sm, iconSize: IconSize.sm, paddingInline: Sizing.xxs },
-  small: { font: 'buttonXs', height: IconSize.md, iconSize: IconSize.sm, paddingInline: Sizing.xxs },
-  medium: { font: 'buttonXs', height: Sizing.md, iconSize: IconSize.md, paddingInline: Sizing.xxs },
-  large: { font: 'buttonM', height: Sizing.md, iconSize: IconSize.lg, paddingInline: Sizing.xs },
-  extraLarge: { font: 'headingSBold', height: Sizing.xl, iconSize: IconSize.xl, paddingInline: Sizing.xs },
+  extraSmall: {
+    font: 'bodyXsBold',
+    height: IconSize.sm,
+    iconSize: IconSize.sm,
+    paddingInline: Sizing.xxs,
+    lineHeight: LineHeight.sm,
+  },
+  small: {
+    font: 'buttonXs',
+    height: IconSize.md,
+    iconSize: IconSize.sm,
+    paddingInline: Sizing.xxs,
+    lineHeight: LineHeight.sm,
+  },
+  medium: {
+    font: 'buttonXs',
+    height: Sizing.md,
+    iconSize: IconSize.md,
+    paddingInline: Sizing.xxs,
+    lineHeight: LineHeight.md,
+  },
+  large: {
+    font: 'buttonM',
+    height: Sizing.md,
+    iconSize: IconSize.lg,
+    paddingInline: Sizing.xs,
+    lineHeight: LineHeight.md,
+  },
+  extraLarge: {
+    font: 'headingSBold',
+    height: Sizing.xl,
+    iconSize: IconSize.xl,
+    paddingInline: Sizing.xs,
+    lineHeight: LineHeight.lg,
+  },
 }
 
 // overrides for clickable chips
@@ -127,11 +158,12 @@ export const defineMuiChip = (
       },
     },
 
-    ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline }]) => ({
+    ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline, lineHeight }]) => ({
       props: { size: size as ChipSizes },
       style: {
         ...handleBreakpoints({ ...typography[font], height, paddingInline }),
         '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
+        '& .MuiChip-label': handleBreakpoints({ lineHeight }),
         '&:has(.MuiChip-icon):has(.MuiChip-label:empty)': handleBreakpoints({
           width: height, // force chips with only an icon to be a perfect circle
         }),
