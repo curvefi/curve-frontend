@@ -63,7 +63,7 @@ function getSpinnerColor(isDisabled: boolean) {
   if (isDisabled) {
     return 'var(--input--disabled--color)'
   } else {
-    return 'var(--border-400)'
+    return 'var(--spinner--background-color)'
   }
 }
 
