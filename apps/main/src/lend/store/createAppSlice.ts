@@ -40,7 +40,7 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
       }),
     )
   },
-  hydrate: async (api, prevApi, wallet) => {
+  hydrate: async (api, prevApi) => {
     get().updateGlobalStoreByKey('hydratedChainId', null)
     if (!api) return
 
@@ -49,7 +49,6 @@ const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice =>
     const state = get()
 
     log('Hydrating Lend', api.chainId, {
-      wallet: wallet?.chainId ?? '',
       chainId: [prevApi?.chainId, api.chainId],
       signerAddress: [prevApi?.signerAddress, api.signerAddress],
     })

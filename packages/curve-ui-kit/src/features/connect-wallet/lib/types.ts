@@ -5,10 +5,9 @@ import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@
 import { type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 
-export type Wallet<TChainId extends number = number> = {
+export type Wallet = {
   readonly provider?: Eip1193Provider
   readonly account: { address: Address; ensName?: string }
-  readonly chainId: TChainId
 }
 
 export enum ConnectState {

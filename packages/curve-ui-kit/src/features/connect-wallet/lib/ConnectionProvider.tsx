@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useState } from 'react'
-import { useSwitchChain } from 'wagmi'
+import { useChainId, useSwitchChain } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { ConnectionContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
@@ -27,6 +27,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
+  const chainId = useChainId()
   const { switchChainAsync } = useSwitchChain()
   const { wallet, provider, isReconnecting } = useWagmiWallet()
   const isFocused = useIsDocumentFocused()
@@ -38,12 +39,12 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
      * This is separate from the rest of initApp to avoid unnecessary reinitialization, as isFocused can change frequently.
      */
     async function updateWalletChain() {
-      const chainId = Number(network.chainId) as TChainId
-      if (wallet && wallet?.chainId !== chainId) {
+      const networkChainId = Number(network.chainId) as TChainId
+      if (networkChainId !== chainId) {
         setConnectState(LOADING)
-        if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
+        if (isFocused && !(await switchChainAsync({ chainId: networkChainId as WagmiChainId }))) {
           setConnectState(FAILURE)
-          onChainUnavailable([chainId, wallet?.chainId as TChainId])
+          onChainUnavailable([networkChainId, chainId as TChainId])
         }
         return // hook is called again after since it depends on walletChainId
       }
@@ -52,7 +53,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
       console.error('Error updating wallet chain', e)
       setConnectState(FAILURE)
     })
-  }, [isFocused, network.chainId, onChainUnavailable, switchChainAsync, wallet])
+  }, [isFocused, chainId, network.chainId, onChainUnavailable, switchChainAsync, wallet])
 
   useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect
@@ -63,14 +64,14 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initApp = async () => {
-      const chainId = Number(network.chainId) as TChainId
+      const networkChainId = Number(network.chainId) as TChainId
       try {
-        if (wallet && wallet?.chainId !== chainId) {
+        if (chainId !== networkChainId) {
           return // wait for the wallet to be connected to the right chain
         }
 
         const prevLib = globalLibs.get(libKey)
-        if (isWalletMatching(wallet, prevLib, chainId)) {
+        if (isWalletMatching(wallet, prevLib, networkChainId)) {
           setConnectState(SUCCESS)
           return // already connected to the right chain and wallet, no need to reinitialize
         }
@@ -79,7 +80,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
         setConnectState(LOADING)
         console.info(
           `Initializing ${libKey} for ${network.name} (${network.chainId})`,
-          wallet ? `Wallet ${wallet?.account?.address} with chain ${wallet?.chainId}` : 'without wallet',
+          wallet ? `Wallet ${wallet?.account?.address} with chain ${chainId}` : 'without wallet',
           prevLib
             ? `Old library had ${prevLib.signerAddress ? `signer ${prevLib.signerAddress}` : 'no signer'} with chain ${prevLib.chainId}`
             : `First initialization`,
@@ -97,7 +98,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     }
     void initApp()
     return () => abort.abort()
-  }, [isReconnecting, libKey, network, wallet])
+  }, [chainId, isReconnecting, libKey, network, wallet])
 
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
