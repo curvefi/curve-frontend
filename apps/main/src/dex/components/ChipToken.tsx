@@ -68,7 +68,9 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
-          <ChipTokenUsdRate>{typeof usdRate === 'undefined' ? <Spinner size={10} /> : parsedUsdRate}</ChipTokenUsdRate>
+          <ChipTokenUsdRate>
+            {typeof usdRate === 'undefined' ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
+          </ChipTokenUsdRate>
           <ChipTokenCopyButtonIcon name="Copy" size={16} />
         </Button>
       </ChipTokenAdditionalInfo>
@@ -108,6 +110,10 @@ const ChipTokenUsdRate = styled.span`
   top: -2px;
   font-size: var(--font-size-1);
   font-weight: bold;
+`
+const ChipTokenUsdRateSpinner = styled(Spinner)`
+  position: relative;
+  top: 2px;
 `
 
 const ChipTokenCopyButtonIcon = styled(Icon)`
