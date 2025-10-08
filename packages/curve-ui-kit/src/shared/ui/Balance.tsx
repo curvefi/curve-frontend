@@ -64,14 +64,14 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
       <Stack direction="row" gap={Spacing.xs} alignItems="center">
         <Typography
           className="balance"
-          variant="highlightS"
+          variant="highlightXs"
           color={balance != null ? 'textPrimary' : 'textTertiary'}
           data-testid="balance-value"
         >
-          {balance == null ? '-' : formatNumber(balance, { abbreviate: true, highPrecision: true })}
+          {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
         </Typography>
 
-        <Typography variant="highlightS" color="textPrimary">
+        <Typography variant="highlightXs" color="textPrimary">
           {symbol}
         </Typography>
       </Stack>
@@ -124,7 +124,7 @@ export const Balance = <T extends Amount>({
   maxTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
@@ -135,7 +135,7 @@ export const Balance = <T extends Amount>({
     )}
 
     {notionalValueUsd != null && !loading && (
-      <Typography variant="bodySRegular" color="textTertiary">
+      <Typography variant="bodyXsRegular" color="textTertiary">
         {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}

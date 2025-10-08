@@ -11,7 +11,6 @@ import FieldHelperUsdRate from '@/dex/components/FieldHelperUsdRate'
 import DetailInfoSlippageTolerance from '@/dex/components/PagePool/components/DetailInfoSlippageTolerance'
 import TransferActions from '@/dex/components/PagePool/components/TransferActions'
 import WarningModal from '@/dex/components/PagePool/components/WarningModal'
-import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { ExchangeOutput, FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/Swap/types'
 import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/components/PagePool/Swap/utils'
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
@@ -346,7 +345,7 @@ const Swap = ({
   return (
     <>
       {/* input fields */}
-      <FieldsWrapper>
+      <Box grid gridRowGap="1">
         <div>
           {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
@@ -419,10 +418,14 @@ const Swap = ({
             </Box>
           ) : (
             <LargeTokenInput
+              label={t`Sell`}
               dataType="decimal"
               name="fromAmount"
               onBalance={setFromAmount}
               balance={decimal(formValues.fromAmount)}
+              inputBalanceUsd={
+                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
+              }
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
@@ -458,6 +461,7 @@ const Swap = ({
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
                 showSlider: false,
+                showChips: true,
                 ...(toUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
                 ...(formValues.fromAddress.toLowerCase() === ethAddress && {
@@ -466,28 +470,28 @@ const Swap = ({
               }}
             />
           )}
-
-          <Box flex flexJustifyContent="center">
-            <IconButton
-              disabled={isDisabled}
-              onClick={() => {
-                const cFormValues = cloneDeep(formValues)
-                cFormValues.isFrom = true
-                cFormValues.fromAmount = formValues.toAmount
-                cFormValues.fromToken = formValues.toToken
-                cFormValues.fromAddress = formValues.toAddress
-                cFormValues.toToken = formValues.fromToken
-                cFormValues.toAddress = formValues.fromAddress
-                cFormValues.toAmount = ''
-
-                updateFormValues(cFormValues, null, '')
-              }}
-              size="medium"
-            >
-              <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
-            </IconButton>
-          </Box>
         </div>
+
+        <Box flex flexJustifyContent="center">
+          <IconButton
+            disabled={isDisabled}
+            onClick={() => {
+              const cFormValues = cloneDeep(formValues)
+              cFormValues.isFrom = true
+              cFormValues.fromAmount = formValues.toAmount
+              cFormValues.fromToken = formValues.toToken
+              cFormValues.fromAddress = formValues.toAddress
+              cFormValues.toToken = formValues.fromToken
+              cFormValues.toAddress = formValues.fromAddress
+              cFormValues.toAmount = ''
+
+              updateFormValues(cFormValues, null, '')
+            }}
+            size="medium"
+          >
+            <Icon name="ArrowsVertical" size={24} aria-label="icon arrow vertical" />
+          </IconButton>
+        </Box>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
         {releaseChannel !== ReleaseChannel.Beta ? (
@@ -545,9 +549,13 @@ const Swap = ({
           </div>
         ) : (
           <LargeTokenInput
+            label={t`Buy`}
             dataType="decimal"
             name="toAmount"
             onBalance={setToAmount}
+            inputBalanceUsd={
+              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
+            }
             balance={decimal(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
@@ -619,7 +627,7 @@ const Swap = ({
             </Checkbox>
           </div>
         )}
-      </FieldsWrapper>
+      </Box>
 
       <Box>
         <DetailInfoExchangeRate exchangeRates={exchangeOutput.exchangeRates} loading={exchangeOutput.loading} />

@@ -378,7 +378,7 @@ const QuickSwap = ({
   return (
     <>
       {/* inputs */}
-      <Box grid gridRowGap="narrow" margin="var(--spacing-3) 0 var(--spacing-3) 0">
+      <Box grid gridRowGap="1" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
           {releaseChannel !== ReleaseChannel.Beta ? (
             <Box grid gridGap={1}>
@@ -435,9 +435,13 @@ const QuickSwap = ({
             </Box>
           ) : (
             <LargeTokenInput
+              label={t`Sell`}
               dataType="decimal"
               onBalance={setFromAmount}
               name="fromAmount"
+              inputBalanceUsd={
+                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
+              }
               maxBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
@@ -448,6 +452,7 @@ const QuickSwap = ({
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
                 showSlider: false,
+                showChips: true,
               }}
               isError={!!formValues.fromError}
               disabled={isDisable}
@@ -468,28 +473,22 @@ const QuickSwap = ({
                   }}
                 />
               }
-              message={
-                formValues.fromError ? (
-                  t`Amount > wallet balance ${formatNumber(userFromBalance)}`
-                ) : (
-                  <FieldHelperUsdRate amount={formValues.fromAmount} usdRate={fromUsdRate} />
-                )
-              }
+              message={formValues.fromError && t`Amount > wallet balance ${formatNumber(userFromBalance)}`}
             />
           )}
-
-          {/* SWAP ICON */}
-          <Box flex flexJustifyContent="center">
-            <IconButton
-              disabled={isDisable}
-              onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
-              size="medium"
-              testId="swap-tokens"
-            >
-              <Icon name="ArrowsVertical" size={24} />
-            </IconButton>
-          </Box>
         </div>
+
+        {/* SWAP ICON */}
+        <Box flex flexJustifyContent="center">
+          <IconButton
+            disabled={isDisable}
+            onClick={() => redirect(searchedParams.fromAddress, searchedParams.toAddress)}
+            size="medium"
+            testId="swap-tokens"
+          >
+            <Icon name="ArrowsVertical" size={24} />
+          </IconButton>
+        </Box>
 
         {/* SWAP TO */}
         {releaseChannel !== ReleaseChannel.Beta ? (
@@ -529,14 +528,24 @@ const QuickSwap = ({
           </div>
         ) : (
           <LargeTokenInput
+            label={t`Buy`}
             dataType="decimal"
             balance={decimal(formValues.toAmount)}
+            inputBalanceUsd={
+              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
+            }
             onBalance={setToAmount}
             name="toAmount"
-            {...(userToBalance != null && {
-              label: `Avail. ${formatNumber(userToBalance)} ${toToken?.symbol || ''}`,
-            })}
-            message={<FieldHelperUsdRate amount={formValues.toAmount} usdRate={toUsdRate} />}
+            maxBalance={{
+              loading: userBalancesLoading,
+              balance: decimal(userToBalance),
+              symbol: toToken?.symbol || '',
+              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
+              ...(searchedParams.fromAddress === ethAddress && {
+                tooltip: t`'Balance'`,
+              }),
+              showSlider: false,
+            }}
             disabled={isDisable}
             testId="to-amount"
             tokenSelector={

@@ -1,12 +1,13 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId } from 'react'
 import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Amount, type Decimal } from '@ui-kit/utils'
+import { formatNumber, type Amount, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { type DataType, NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -21,9 +22,11 @@ type HelperMessageProps = {
 const HelperMessage = ({ message, isError }: HelperMessageProps) => (
   <Box
     sx={{
+      display: 'flex',
+      alignItems: 'center',
       backgroundColor: (t) => t.design.Layer[3].Fill,
-      paddingBlock: Spacing.sm,
-      paddingInlineStart: Spacing.sm,
+      padding: Spacing.sm,
+      minHeight: Sizing.sm,
       ...(isError && { backgroundColor: (t) => t.design.Layer.Feedback.Error }),
     }}
   >
@@ -108,6 +111,7 @@ type MaxBalanceProps<T> = Partial<
 > & {
   showBalance?: boolean
   showSlider?: boolean
+  showChips?: boolean
 }
 
 type Props<T> = DataType<T> & {
@@ -142,6 +146,9 @@ type Props<T> = DataType<T> & {
    * {@link MaxBalanceProps}
    */
   maxBalance?: MaxBalanceProps<T>
+
+  /** Optional usd value of the balance given as input. */
+  inputBalanceUsd?: T
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -210,6 +217,9 @@ const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
+/** Small chip buttons that set the input value to a certain percentage of the maxBalance */
+const EASY_CHIPS = [25, 50, 75, 100]
+
 export const LargeTokenInput = <T extends Amount>({
   ref,
   tokenSelector,
@@ -222,6 +232,7 @@ export const LargeTokenInput = <T extends Amount>({
   balanceDecimals = 4,
   onBalance,
   balance: externalBalance,
+  inputBalanceUsd,
   testId,
   dataType,
 }: Props<T>) => {
@@ -230,8 +241,7 @@ export const LargeTokenInput = <T extends Amount>({
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
   const showSlider = maxBalance && maxBalance.showSlider !== false
-  const showBalance = maxBalance && maxBalance.showBalance !== false
-  const showMaxBalance = showSlider || showBalance
+  const showWalletBalance = maxBalance && maxBalance.showBalance !== false
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
@@ -281,23 +291,58 @@ export const LargeTokenInput = <T extends Amount>({
     maxBalance?.onMax?.call(null)
   }, [handlePercentageChange, maxBalance?.onMax])
 
+  const componentId = useId()
+
   return (
     <Stack
+      id={componentId}
       data-testid={testId}
-      gap={Spacing.xs}
+      gap={Spacing.sm}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
-        padding: Spacing.md,
         outline: (t) =>
           `1px solid ${isError ? t.design.Layer.Feedback.Error : t.design.Inputs.Base.Default.Border.Default}`,
       }}
     >
-      <Stack gap={Spacing.xs}>
-        {/** First row is an optional label describing the input */}
-        {label && (
-          <Typography variant="bodyXsRegular" color="textSecondary">
-            {label}
-          </Typography>
+      <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
+        {/** First row is an optional label describing the input and/or chips */}
+        {(label || maxBalance?.showChips) && (
+          <Stack direction="row" alignItems="center">
+            {label && (
+              <Typography variant="bodyXsRegular" color="textSecondary">
+                {label}
+              </Typography>
+            )}
+
+            {maxBalance?.showChips && (
+              <Stack
+                direction="row"
+                gap={Spacing.xxs}
+                sx={{
+                  flexGrow: 1,
+                  justifyContent: 'end',
+                  // Hide by default, show on parent hover
+                  opacity: { desktop: 0 },
+                  transition: `opacity ${TransitionFunction}`,
+                  // Show when parent stack is hovered
+                  [`#${componentId}:hover &`]: {
+                    opacity: 1,
+                  },
+                }}
+              >
+                {EASY_CHIPS.map((percent) => (
+                  <Chip
+                    key={`input-chip-${percent}`}
+                    label={`${percent}%`}
+                    size="extraSmall"
+                    color="default"
+                    clickable
+                    onClick={() => handlePercentageChange(`${percent}`)}
+                  ></Chip>
+                ))}
+              </Stack>
+            )}
+          </Stack>
         )}
 
         {/** Second row containing the token selector and balance input text */}
@@ -315,37 +360,42 @@ export const LargeTokenInput = <T extends Amount>({
           {tokenSelector}
         </Stack>
 
-        {/** Third row containing (max) balance and sliders */}
-        {showMaxBalance && (
-          <Stack
-            direction="row"
-            gap={Spacing.sm}
-            sx={{
-              minHeight: Sizing.sm, // same height as slider so height doesn't jump if maxBalance becomes available
-              zIndex: 1, // required otherwise the slider background and border don't show up
-            }}
-          >
-            {showBalance && (
+        {/** Third row containing input and max balances */}
+        {(showWalletBalance || inputBalanceUsd) && (
+          <Stack direction="row">
+            {inputBalanceUsd != null && (
+              <Typography variant="bodyXsRegular" color="textTertiary">
+                ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
+              </Typography>
+            )}
+
+            {showWalletBalance && (
               <Balance
                 disabled={disabled}
                 symbol={maxBalance?.symbol ?? ''}
                 balance={maxBalance?.balance}
                 notionalValueUsd={maxBalance?.notionalValueUsd}
-                max={maxBalance.max ?? 'button'}
+                max="off"
                 onMax={onMax}
-                // Stretch the balance component if there's no slider so the max button can reach the end
-                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
+                sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
             )}
+          </Stack>
+        )}
 
-            {showSlider && (
-              <TradingSlider
-                disabled={disabled}
-                percentage={percentage}
-                onChange={handlePercentageChange}
-                onCommit={handlePercentageChange}
-              />
-            )}
+        {/** Fourth row showing optional slider for max balance. */}
+        {showSlider && (
+          <Stack
+            sx={{
+              zIndex: 1, // required, otherwise the slider background and border don't show up
+            }}
+          >
+            <TradingSlider
+              disabled={disabled}
+              percentage={percentage}
+              onChange={handlePercentageChange}
+              onCommit={handlePercentageChange}
+            />
           </Stack>
         )}
       </Stack>
