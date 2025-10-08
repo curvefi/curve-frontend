@@ -3,19 +3,26 @@ import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
 import type { NetworkDef } from '@ui/utils'
 import type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
-import {
-  AppLib,
-  CurveApi,
+import type {
   CurveChainId,
   CurveNetworkId,
   LibChainId,
   LibKey,
   LibNetworkId,
   Libs,
-  LlamaChainId,
   LlamaNetworkId,
+  LlamaChainId,
+  CurveApi,
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
+
+export const AppLibs: Record<AppName, LibKey> = {
+  crvusd: 'llamaApi',
+  dao: 'curveApi',
+  dex: 'curveApi',
+  lend: 'llamaApi',
+  llamalend: 'llamaApi',
+}
 
 /**
  * Compare the signer address of the wallet with the one in the library.
@@ -66,16 +73,8 @@ const initLib: {
  * It would be better to use only the context, but we need to be able to access it in the store and query functions.
  */
 export const globalLibs = {
-  /** Holds the last successfully hydrated lib for each app to avoid rehydrating when switching apps */
-  hydrated: {} as { [App in AppName]?: AppLib<App> },
-
-  /** Holds the current instance of each library */
   current: {} as Libs,
-
-  /** Get the current instance of a library */
   get: <K extends LibKey>(key: K): Libs[K] | undefined => globalLibs.current[key],
-
-  /** Get the current instance of a library only if it matches the wallet and chainId */
   getMatching: <K extends LibKey, ChainId extends number>(
     key: K,
     wallet?: Wallet,
@@ -86,18 +85,12 @@ export const globalLibs = {
       return lib
     }
   },
-
-  /** Get the current instance of a library or throw if not initialized */
   require<K extends LibKey>(key: K): NonNullable<Libs[K]> {
-    const lib = globalLibs.get(key)
-    if (!lib) throw new Error(`${key} not initialized`)
-    return lib
+    const value = globalLibs.get(key)
+    if (!value) throw new Error(`${key} not initialized`)
+    return value
   },
-
-  /** Set the current instance of a library */
   set: <K extends LibKey>(key: K, lib: Libs[K]) => (globalLibs.current[key] = lib),
-
-  /** Initialize a library for a given network and provider */
   init: async <K extends LibKey>(
     key: K,
     network: NetworkDef<LibNetworkId[K], LibChainId[K]>,

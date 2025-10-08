@@ -4,7 +4,6 @@ import { type default as curveApi } from '@curvefi/api'
 import type { IChainId as CurveChainId, INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces'
 import { type default as llamaApi } from '@curvefi/llamalend-api'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { AppName } from '@ui-kit/shared/routes'
 
 export type Wallet<TChainId extends number = number> = {
   readonly provider?: Eip1193Provider
@@ -14,13 +13,12 @@ export type Wallet<TChainId extends number = number> = {
 
 export enum ConnectState {
   LOADING = 'loading',
-  FAILURE = 'failure',
-  HYDRATING = 'hydrating',
   SUCCESS = 'success',
+  FAILURE = 'failure',
 }
 
-export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: Address }
-export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address }
+export type CurveApi = typeof curveApi & { chainId: CurveChainId; signerAddress?: Address; hydrated?: boolean }
+export type LlamaApi = typeof llamaApi & { chainId: LlamaChainId; signerAddress: Address; hydrated?: boolean }
 
 export type LibChainId = {
   curveApi: CurveChainId
@@ -38,25 +36,5 @@ export type Libs = {
 }
 
 export type LibKey = keyof Libs
-
-export const AppLibs = {
-  crvusd: 'llamaApi',
-  dao: 'curveApi',
-  dex: 'curveApi',
-  lend: 'llamaApi',
-  llamalend: 'llamaApi',
-} satisfies Record<AppName, LibKey>
-type AppLibMap = typeof AppLibs
-
-export type AppLib<A extends AppName> = Libs[AppLibMap[A]]
-export type AppChainId<A extends AppName> = LibChainId[(typeof AppLibs)[A]]
-export type AppNetworkId<A extends AppName> = LibNetworkId[(typeof AppLibs)[A]]
-
-export type Hydrator<App extends AppName> = (
-  lib: AppLib<App>,
-  prevLib: AppLib<App> | undefined,
-  wallet?: Wallet,
-) => Promise<void>
-export type HydratorMap = { [A in AppName]?: Hydrator<A> }
 
 export { CurveChainId, LlamaChainId, CurveNetworkId, LlamaNetworkId }
