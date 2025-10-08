@@ -5,8 +5,9 @@ import type { NetworkDef } from '@ui/utils'
 import { isCypress } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
-const { FAILURE, LOADING } = ConnectState
+const { FAILURE, LOADING, SUCCESS } = ConnectState
 
+export const isSuccess = (status: ConnectState) => status === SUCCESS
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
@@ -18,12 +19,10 @@ type ConnectionContextValue = {
   wallet?: Wallet
   provider?: BrowserProvider
   network?: NetworkDef
-  isHydrated: boolean
 }
 
 export const ConnectionContext = createContext<ConnectionContextValue>({
   connectState: LOADING,
-  isHydrated: false,
 })
 
 /**

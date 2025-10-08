@@ -14,6 +14,7 @@ import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
 import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
+import { useHydration } from '@ui-kit/hooks/useHydration'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
@@ -41,13 +42,15 @@ type BorrowTabTestProps = { type: LlamaMarketType }
 const prefetch = () => prefetchMarkets({})
 
 function BorrowTabTest({ type }: BorrowTabTestProps) {
-  const { isHydrated, llamaApi } = useConnection()
+  const { llamaApi } = useConnection()
   const { id } = MARKETS[type]
+
+  const hydrated = useHydration('llamaApi', prefetch, chainId)
   const market = useMemo(
     () =>
-      isHydrated &&
+      hydrated &&
       { [LlamaMarketType.Mint]: llamaApi?.getMintMarket, [LlamaMarketType.Lend]: llamaApi?.getLendMarket }[type]?.(id),
-    [isHydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
+    [hydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
   )
   return market ? (
     <BorrowTabContents market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} />
@@ -81,12 +84,7 @@ describe('BorrowTabContents Component Tests', () => {
 
   const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
     <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
-      <ConnectionProvider
-        app="llamalend"
-        network={networks[chainId]}
-        onChainUnavailable={console.error}
-        hydrate={{ llamalend: prefetch }}
-      >
+      <ConnectionProvider app="llamalend" network={networks[chainId]} onChainUnavailable={console.error}>
         <Box sx={{ maxWidth: 500 }}>
           <BorrowTabTest {...props} />
         </Box>

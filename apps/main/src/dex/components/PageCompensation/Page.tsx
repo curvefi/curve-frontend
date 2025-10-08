@@ -18,7 +18,6 @@ import { t } from '@ui-kit/lib/i18n'
 export const PageCompensation = () => {
   const { network } = useParams<NetworkUrlParams>()
   const { curveApi = null, connectState } = useConnection()
-  const isConnecting = isLoading(connectState)
   const { connect: connectWallet, provider } = useWallet()
   const [contracts, setContracts] = useState<EtherContract[]>([])
   const rChainId = useChainId(network)
@@ -37,10 +36,10 @@ export const PageCompensation = () => {
 
   // get initial data
   useEffect(() => {
-    if (!isConnecting && provider) {
+    if (!isLoading(connectState) && provider) {
       void fetchData(provider)
     }
-  }, [fetchData, isConnecting, provider])
+  }, [fetchData, connectState, provider])
 
   return (
     <>
@@ -59,7 +58,13 @@ export const PageCompensation = () => {
           ) : !provider ? (
             <>
               <strong>Please connect your wallet to view compensation</strong>
-              <Button fillWidth loading={isConnecting} size="large" variant="filled" onClick={() => connectWallet()}>
+              <Button
+                fillWidth
+                loading={isLoading(connectState)}
+                size="large"
+                variant="filled"
+                onClick={() => connectWallet()}
+              >
                 {t`Connect Wallet`}
               </Button>
             </>

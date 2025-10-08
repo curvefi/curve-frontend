@@ -3,11 +3,11 @@ import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/
 import Link from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
-import { type AppName, getInternalUrl, PAGE_DISCLAIMER } from '@ui-kit/shared/routes'
+import { type AppName, getInternalUrl, PAGE_LEGAL } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { pushSearchParams } from '@ui-kit/utils/urls'
-import { List } from '../List'
-import { Header, Paragraph, Section, Title } from '../Section'
+import { List } from '../general/List'
+import { Header, Paragraph, Section, Title } from '../general/Section'
 
 export const LlamaLend = ({
   currentApp,
@@ -24,8 +24,8 @@ export const LlamaLend = ({
         {t`Users wishing to acquaint themselves with a broader range of general risk disclosures are encouraged to read the`}{' '}
         <RouterLink
           color="textSecondary"
-          href={getInternalUrl(currentApp, network, PAGE_DISCLAIMER + '?tab=dex')}
-          onClick={(e) => pushSearchParams(e, { tab: 'dex' })}
+          href={getInternalUrl(currentApp, network, PAGE_LEGAL)}
+          onClick={(e) => pushSearchParams(e, { tab: 'disclaimers', subtab: 'dex' })}
         >
           {t`Curve Risk Disclosures for Liquidity Providers`}
         </RouterLink>
