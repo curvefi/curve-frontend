@@ -68,17 +68,24 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
-          <ChipTokenUsdRate>
-            {typeof usdRate === 'undefined' ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
-          </ChipTokenUsdRate>
-          <ChipTokenAddress>{shortenAddress(tokenAddress)}</ChipTokenAddress>
-          <ChipTokenCopyButtonIcon name="Copy" size={16} />
+          <AlignmentWrapper>
+            <ChipTokenUsdRate>
+              {typeof usdRate === 'undefined' ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
+            </ChipTokenUsdRate>
+            <ChipTokenAddress>{shortenAddress(tokenAddress)}</ChipTokenAddress>
+            <ChipTokenCopyButtonIcon name="Copy" size={16} />
+          </AlignmentWrapper>
         </Button>
       </ChipTokenAdditionalInfo>
     </ChipTokenWrapper>
   )
 }
 
+const AlignmentWrapper = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: end;
+`
 const ChipTokenAdditionalInfo = styled.span`
   align-items: center;
   max-width: 0;
@@ -105,28 +112,21 @@ const ChipTokenWrapper = styled.span`
   }
 `
 const ChipTokenAddress = styled.span`
-  margin: 0 2px;
-  top: -4px;
   font-family: var(--font-mono);
   font-size: var(--font-size-2);
+  margin-bottom: 2px;
 `
 
 const ChipTokenUsdRate = styled.span`
-  margin: 0 2px;
-  position: relative;
-  top: -2px;
   font-size: var(--font-size-1);
   font-weight: bold;
-`
-const ChipTokenUsdRateSpinner = styled(Spinner)`
-  position: relative;
-  top: 2px;
+  margin-bottom: 2px;
 `
 
+const ChipTokenUsdRateSpinner = styled(Spinner)``
+
 const ChipTokenCopyButtonIcon = styled(Icon)`
-  position: relative;
-  top: 1px;
-  margin: 0 2px;
+  margin-bottom: 2px;
 `
 
 export default ChipToken
