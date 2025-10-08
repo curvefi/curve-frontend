@@ -149,7 +149,7 @@ export const CrvUsd = () => (
 
     <Section>
       <Title>{t`No Loss Prevention`}</Title>
-      <Paragraph>{t`crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets.`}</Paragraph>
+      <Paragraph>{t`crvUSD and its underlying infrastructure are in an early stage of development, are inherently experimental, and carry a significant degree of risk. Engagement with crvUSD during this phase should be approached with the understanding that it may lead to partial or complete loss of funds. Such losses may include the total loss of all assets, which in some cases may be permanently unrecoverable. Users considering minting, redeeming, or utilizing crvUSD should be prepared for the possibility of encountering technical issues, bugs, or vulnerabilities that could impact the value of crvUSD or the safety of allocated crypto assets.`}</Paragraph>
     </Section>
 
     <Section>
