@@ -1,10 +1,12 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState } from 'react'
+import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId } from 'react'
 import Box from '@mui/material/Box'
+import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
+import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
-import { Duration } from '@ui-kit/themes/design/0_primitives'
+import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
@@ -110,6 +112,7 @@ type MaxBalanceProps<T> = Partial<
 > & {
   showBalance?: boolean
   showSlider?: boolean
+  showChips?: boolean
 }
 
 type Props<T> = DataType<T> & {
@@ -231,9 +234,9 @@ export const LargeTokenInput = <T extends Amount>({
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
-  const showSlider = maxBalance && maxBalance.showSlider !== false
   const showBalance = maxBalance && maxBalance.showBalance !== false
   const showMaxBalance = showSlider || showBalance
+  const isDesktop = useIsDesktop()
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
@@ -283,9 +286,13 @@ export const LargeTokenInput = <T extends Amount>({
     maxBalance?.onMax?.call(null)
   }, [handlePercentageChange, maxBalance?.onMax])
 
+  const componentId = useId()
+
   return (
     <Stack
+      id={componentId}
       data-testid={testId}
+      gap={Spacing.sm}
       sx={{
         backgroundColor: (t) => t.design.Inputs.Large.Default.Fill,
         outline: (t) =>
@@ -293,11 +300,44 @@ export const LargeTokenInput = <T extends Amount>({
       }}
     >
       <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
-        {/** First row is an optional label describing the input */}
-        {label && (
-          <Typography variant="bodyXsRegular" color="textSecondary">
-            {label}
-          </Typography>
+        {/** First row is an optional label describing the input and/or chips */}
+        {(label || maxBalance?.showChips) && (
+          <Stack direction="row" alignItems="center">
+            {label && (
+              <Typography variant="bodyXsRegular" color="textSecondary">
+                {label}
+              </Typography>
+            )}
+
+            {maxBalance?.showChips && (
+              <Stack
+                direction="row"
+                gap={Spacing.xxs}
+                sx={{
+                  flexGrow: 1,
+                  justifyContent: 'end', // Hide by default, show on parent hover
+                  opacity: 0,
+                  transition: `opacity ${TransitionFunction}`,
+                  // Show when parent stack is hovered
+                  [`#${componentId}:hover &`]: {
+                    opacity: 1,
+                  },
+                  ...(!isDesktop && { opacity: 1 }),
+                }}
+              >
+                {[25, 50, 75, 100].map((percent) => (
+                  <Chip
+                    key={`input-chip-${percent}`}
+                    label={`${percent}%`}
+                    size="extraSmall"
+                    color="default"
+                    clickable
+                    onClick={() => handlePercentageChange(`${percent}`)}
+                  ></Chip>
+                ))}
+              </Stack>
+            )}
+          </Stack>
         )}
 
         {/** Second row containing the token selector and balance input text */}
