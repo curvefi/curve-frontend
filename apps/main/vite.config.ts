@@ -32,6 +32,7 @@ export default defineConfig(({ command }) => ({
     rewrites: [
       { source: '/favicon', destination: '/favicon.ico' },
       { source: '/api/(.*)', destination: '/api/router' },
+      { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
       { source: '/(.*)', destination: '/index.html' },
     ],
   },

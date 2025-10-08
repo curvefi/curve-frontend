@@ -133,27 +133,27 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
     }
 
     // current loan prices
-    if (userPrices && currentChart.data) {
+    if (userPrices?.length && currentChart.data) {
       liqRanges.current = formatRange(userPrices)
     }
     // increase loan prices
-    if (borrowMorePrices && borrowMorePrices.length !== 0 && currentChart.data) {
+    if (borrowMorePrices?.length && currentChart.data) {
       liqRanges.new = formatRange(borrowMorePrices)
     }
     // decrease loan prices
-    if (repayLoanPrices && repayLoanPrices.length !== 0 && currentChart.data) {
+    if (repayLoanPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(repayLoanPrices)
     }
     // increase collateral prices
-    if (addCollateralPrices && addCollateralPrices.length !== 0 && currentChart.data) {
+    if (addCollateralPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(addCollateralPrices)
     }
     // decrease collateral prices
-    if (removeCollateralPrices && removeCollateralPrices.length !== 0 && currentChart.data) {
+    if (removeCollateralPrices?.length && currentChart.data) {
       liqRanges.new = formatRange(removeCollateralPrices)
     }
     // // deleverage prices
-    if (repayLeveragePrices && currentChart.data) {
+    if (repayLeveragePrices?.length && currentChart.data) {
       liqRanges.new = formatRange(repayLeveragePrices)
     }
 
