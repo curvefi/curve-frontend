@@ -319,7 +319,8 @@ export const LargeTokenInput = <T extends Amount>({
                 gap={Spacing.xxs}
                 sx={{
                   flexGrow: 1,
-                  justifyContent: 'end', // Hide by default, show on parent hover
+                  justifyContent: 'end',
+                  // Hide by default, show on parent hover
                   opacity: 0,
                   transition: `opacity ${TransitionFunction}`,
                   // Show when parent stack is hovered
