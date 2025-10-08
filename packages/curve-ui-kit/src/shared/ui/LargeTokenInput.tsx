@@ -217,6 +217,9 @@ const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
+/** Small chip buttons that set the input value to a certain percentage of the maxBalance */
+const EASY_CHIPS = [25, 50, 75, 100]
+
 export const LargeTokenInput = <T extends Amount>({
   ref,
   tokenSelector,
@@ -327,7 +330,7 @@ export const LargeTokenInput = <T extends Amount>({
                   },
                 }}
               >
-                {[25, 50, 75, 100].map((percent) => (
+                {EASY_CHIPS.map((percent) => (
                   <Chip
                     key={`input-chip-${percent}`}
                     label={`${percent}%`}
