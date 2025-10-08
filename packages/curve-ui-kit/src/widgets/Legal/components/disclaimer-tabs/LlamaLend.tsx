@@ -151,7 +151,7 @@ export const LlamaLend = ({
       <Paragraph>
         <List type="disc">
           <Typography component="li" variant="bodyMRegular">
-            {t`Investing in crvUSD carries inherent risks that could lead to partial or complete loss of your investment due to its experimental nature. You are responsible for understanding the risks of buying, selling, and using crvUSD and its infrastructure`}
+            {t`Creating crvUSD carries inherent risks that could lead to partial or complete loss of your assets involved due to its experimental nature. You are responsible for understanding the risks of buying, selling, and using crvUSD and its infrastructure`}
           </Typography>
 
           <Typography component="li" variant="bodyMRegular">
