@@ -99,7 +99,7 @@ const Page = () => {
     if (api && market && isPageVisible) void fetchInitial(api, market)
   }, [api, fetchInitial, isPageVisible, market])
 
-  useLendPageTitle(market?.collateral_token?.symbol, 'Supply', 'Curve Llamalend')
+  useLendPageTitle(market?.collateral_token?.symbol, 'Supply')
 
   const pageProps: PageContentProps = {
     params,

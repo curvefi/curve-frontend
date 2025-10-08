@@ -111,7 +111,7 @@ const Page = () => {
     }
   }, [chartExpanded])
 
-  useLendPageTitle(market?.collateral_token?.symbol, 'Create', 'Curve Llamalend')
+  useLendPageTitle(market?.collateral_token?.symbol, 'Create')
 
   const pageProps: PageContentProps = {
     params,
