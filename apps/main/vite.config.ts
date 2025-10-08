@@ -35,6 +35,11 @@ export default defineConfig(({ command }) => ({
         destination: '/favicon.ico',
       },
       {
+        source: '/security.txt',
+        destination: '/.well-known/security.txt',
+        statusCode: 308, // Permanent redirect
+      },
+      {
         source: '/(.*)',
         destination: '/index.html',
       },

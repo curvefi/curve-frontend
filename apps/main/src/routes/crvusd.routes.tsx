@@ -8,7 +8,7 @@ import { CrvUsdClientLayout } from '@/loan/CrvUsdClientLayout'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
+import { LegalPage } from '@ui-kit/widgets/Legal'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
 
@@ -44,9 +44,14 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => <Disclaimer currentApp="crvusd" />,
+    loader: ({ params: { network } }) => redirectTo(`/crvusd/${network}/legal/?tab=disclaimers`),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/legal',
+    component: () => <LegalPage currentApp="crvusd" />,
     head: () => ({
-      meta: [{ title: 'Risk Disclaimer - Curve' }],
+      meta: [{ title: 'Legal - Curve' }],
     }),
     ...layoutProps,
   }),
@@ -67,7 +72,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     path: '$network/markets/$collateralId/create/$formType',
     component: CreateLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Create - ${params.collateralId} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -75,7 +80,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     path: '$network/markets/$collateralId/create',
     component: CreateLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Create - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Create - ${params.collateralId} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -83,7 +88,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     path: '$network/markets/$collateralId/manage/$formType',
     component: ManageLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Manage - ${params.collateralId} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -91,7 +96,7 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     path: '$network/markets/$collateralId/manage',
     component: ManageLoan,
     head: ({ params }) => ({
-      meta: [{ title: `Manage - ${params.collateralId} - Curve` }],
+      meta: [{ title: `Manage - ${params.collateralId} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),

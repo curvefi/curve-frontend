@@ -6,7 +6,7 @@ import PageVault from '@/lend/components/PageVault/Page'
 import Skeleton from '@mui/material/Skeleton'
 import { createRoute } from '@tanstack/react-router'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Disclaimer } from '@ui-kit/widgets/Disclaimer'
+import { LegalPage } from '@ui-kit/widgets/Legal'
 import { LendLayout } from '../lend/LendLayout'
 import { rootRoute } from './root.routes'
 import { redirectTo } from './util'
@@ -37,9 +37,14 @@ export const lendRoutes = lendLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network/disclaimer',
-    component: () => <Disclaimer currentApp="lend" />,
+    loader: ({ params: { network } }) => redirectTo(`/lend/${network}/legal/?tab=disclaimers`),
+    ...layoutProps,
+  }),
+  createRoute({
+    path: '$network/legal',
+    component: () => <LegalPage currentApp="lend" />,
     head: () => ({
-      meta: [{ title: 'Risk Disclaimer - Curve Lend' }],
+      meta: [{ title: 'Legal - Curve Lend' }],
     }),
     ...layoutProps,
   }),
@@ -60,7 +65,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/create/$formType',
     component: PageLoanCreate,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Create Loan - Curve Lend` }],
+      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -68,7 +73,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/create',
     component: PageLoanCreate,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Create Loan - Curve Lend` }],
+      meta: [{ title: `Create - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -76,7 +81,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/manage/$formType',
     component: PageLoanManage,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Manage Loan - Curve Lend` }],
+      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -84,7 +89,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/manage',
     component: PageLoanManage,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Manage Loan - Curve Lend` }],
+      meta: [{ title: `Manage - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -92,7 +97,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/vault/$formType',
     component: PageVault,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Supply - Curve Lend` }],
+      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
@@ -100,7 +105,7 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     path: '$network/markets/$market/vault',
     component: PageVault,
     head: ({ params }) => ({
-      meta: [{ title: `${params.market} | Supply - Curve Lend` }],
+      meta: [{ title: `Supply - ${params.market} - Curve Llamalend` }],
     }),
     ...layoutProps,
   }),
