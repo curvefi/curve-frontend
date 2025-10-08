@@ -168,7 +168,7 @@ export type NumberFormatOptions = {
   decimals?: number
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
-  /** Some use cases require high precision, like user input. This will override the decimals property. */
+  /** Some use cases require high precision, like user input. When enabled, ensures at least a certain amount decimals are shown. */
   highPrecision?: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
