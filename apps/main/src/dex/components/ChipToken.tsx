@@ -7,7 +7,7 @@ import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -71,6 +71,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
           <ChipTokenUsdRate>
             {typeof usdRate === 'undefined' ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
           </ChipTokenUsdRate>
+          <ChipTokenAddress>{shortenAddress(tokenAddress)}</ChipTokenAddress>
           <ChipTokenCopyButtonIcon name="Copy" size={16} />
         </Button>
       </ChipTokenAdditionalInfo>
@@ -102,6 +103,12 @@ const ChipTokenWrapper = styled.span`
       max-width: 18.75rem; // 300px
     }
   }
+`
+const ChipTokenAddress = styled.span`
+  margin: 0 2px;
+  top: -4px;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-2);
 `
 
 const ChipTokenUsdRate = styled.span`
