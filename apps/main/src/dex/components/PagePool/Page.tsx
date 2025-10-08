@@ -5,12 +5,12 @@ import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { useConnection } from '@ui-kit/features/connect-wallet'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
 
 export const PagePool = () => {
   const push = useNavigate()
-  const { curveApi = null, isHydrated } = useConnection()
+  const { curveApi = null, connectState } = useConnection()
   const props = useParams<PoolUrlParams>()
   const { pool: rPoolId, formType: rFormType, network: networkId } = props
   const rChainId = useChainId(networkId)
@@ -33,7 +33,7 @@ export const PagePool = () => {
       push(reRoutePathname)
       return
     }
-    if (!isHydrated && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
+    if (!isLoading(connectState) && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
       void (async () => {
         const foundPoolData = await fetchNewPool(curveApi, rPoolId)
         if (!foundPoolData) {
@@ -41,7 +41,7 @@ export const PagePool = () => {
         }
       })()
     }
-  }, [curveApi, fetchNewPool, haveAllPools, network, isHydrated, props, poolData, push, rChainId])
+  }, [curveApi, fetchNewPool, haveAllPools, network, connectState, props, poolData, push, rChainId])
 
   return (
     rFormType &&

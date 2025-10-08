@@ -4,7 +4,7 @@ import Link from '@mui/material/Link'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { Section, Header, Title, Paragraph } from '../Section'
+import { Section, Header, Title, Paragraph } from '../general/Section'
 
 const { Spacing } = SizesAndSpaces
 

@@ -491,10 +491,17 @@ const CandleChart = ({
 
   // Update liquidation range data when it changes
   useEffect(() => {
-    if (!liquidationRange) return
-
     const setSeriesData = (series: ISeriesApi<'Area'> | null, data: any) => {
       if (series) series.setData(data)
+    }
+
+    // Clear all series if liquidationRange is undefined or has no data
+    if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new)) {
+      setSeriesData(currentAreaSeriesRef.current, [])
+      setSeriesData(currentAreaBgSeriesRef.current, [])
+      setSeriesData(newAreaSeriesRef.current, [])
+      setSeriesData(newAreaBgSeriesRef.current, [])
+      return
     }
 
     const ranges = []
@@ -508,12 +515,18 @@ const CandleChart = ({
         },
       )
     } else if (liquidationRange.new) {
+      // Clear current series since it's not being used
+      setSeriesData(currentAreaSeriesRef.current, [])
+      setSeriesData(currentAreaBgSeriesRef.current, [])
       ranges.push({
         series: newAreaSeriesRef.current,
         bgSeries: newAreaBgSeriesRef.current,
         data: liquidationRange.new,
       })
     } else if (liquidationRange.current) {
+      // Clear new series since it's not being used
+      setSeriesData(newAreaSeriesRef.current, [])
+      setSeriesData(newAreaBgSeriesRef.current, [])
       ranges.push({
         series: currentAreaSeriesRef.current,
         bgSeries: currentAreaBgSeriesRef.current,
