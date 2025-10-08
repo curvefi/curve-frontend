@@ -8,7 +8,7 @@ import { useIsDesktop } from '@ui-kit/hooks/useBreakpoints'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Amount, type Decimal } from '@ui-kit/utils'
+import { formatNumber, type Amount, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { type DataType, NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -148,6 +148,9 @@ type Props<T> = DataType<T> & {
    */
   maxBalance?: MaxBalanceProps<T>
 
+  /** Optional usd value of the balance given as input. */
+  inputBalanceUsd?: T
+
   /**
    * Optional message to display below the input, called the 'helper message'.
    * Can also be used for displaying an error message.
@@ -227,6 +230,7 @@ export const LargeTokenInput = <T extends Amount>({
   balanceDecimals = 4,
   onBalance,
   balance: externalBalance,
+  inputBalanceUsd,
   testId,
   dataType,
 }: Props<T>) => {
@@ -234,8 +238,8 @@ export const LargeTokenInput = <T extends Amount>({
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
   // Set defaults for showSlider and showBalance to true if maxBalance is provided
-  const showBalance = maxBalance && maxBalance.showBalance !== false
-  const showMaxBalance = showSlider || showBalance
+  const showSlider = maxBalance && maxBalance.showSlider !== false
+  const showWalletBalance = maxBalance && maxBalance.showBalance !== false
   const isDesktop = useIsDesktop()
 
   const handlePercentageChange = useCallback(
@@ -355,37 +359,42 @@ export const LargeTokenInput = <T extends Amount>({
           {tokenSelector}
         </Stack>
 
-        {/** Third row containing (max) balance and sliders */}
-        {showMaxBalance && (
-          <Stack
-            direction="row"
-            gap={Spacing.sm}
-            sx={{
-              minHeight: Sizing.sm, // same height as slider so height doesn't jump if maxBalance becomes available
-              zIndex: 1, // required otherwise the slider background and border don't show up
-            }}
-          >
-            {showBalance && (
+        {/** Third row containing input and max balances */}
+        {(showWalletBalance || inputBalanceUsd) && (
+          <Stack direction="row">
+            {inputBalanceUsd != null && (
+              <Typography variant="bodyXsRegular" color="textTertiary">
+                ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
+              </Typography>
+            )}
+
+            {showWalletBalance && (
               <Balance
                 disabled={disabled}
                 symbol={maxBalance?.symbol ?? ''}
                 balance={maxBalance?.balance}
                 notionalValueUsd={maxBalance?.notionalValueUsd}
-                max={maxBalance.max ?? 'button'}
+                max="off"
                 onMax={onMax}
-                // Stretch the balance component if there's no slider so the max button can reach the end
-                sx={{ ...(!showSlider && { flexGrow: 1 }) }}
+                sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
             )}
+          </Stack>
+        )}
 
-            {showSlider && (
-              <TradingSlider
-                disabled={disabled}
-                percentage={percentage}
-                onChange={handlePercentageChange}
-                onCommit={handlePercentageChange}
-              />
-            )}
+        {/** Fourth row showing optional slider for max balance. */}
+        {showSlider && (
+          <Stack
+            sx={{
+              zIndex: 1, // required, otherwise the slider background and border don't show up
+            }}
+          >
+            <TradingSlider
+              disabled={disabled}
+              percentage={percentage}
+              onChange={handlePercentageChange}
+              onCommit={handlePercentageChange}
+            />
           </Stack>
         )}
       </Stack>

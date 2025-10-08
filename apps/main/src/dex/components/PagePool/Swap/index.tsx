@@ -424,6 +424,9 @@ const Swap = ({
               name="fromAmount"
               onBalance={setFromAmount}
               balance={decimal(formValues.fromAmount)}
+              inputBalanceUsd={
+                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
+              }
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
@@ -551,6 +554,9 @@ const Swap = ({
             dataType="decimal"
             name="toAmount"
             onBalance={setToAmount}
+            inputBalanceUsd={
+              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
+            }
             balance={decimal(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
