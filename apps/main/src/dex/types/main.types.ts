@@ -56,7 +56,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   pricesApi: boolean
 }
 
-export type NetworkAliases = { crv: string }
 export type NativeToken = { symbol: string; wrappedSymbol: string; address: string; wrappedAddress: string }
 export type Networks = Record<ChainId, NetworkConfig>
 export type CurrencyReservesToken = {

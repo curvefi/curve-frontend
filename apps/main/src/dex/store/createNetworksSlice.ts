@@ -1,11 +1,10 @@
 import type { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
-import { type ChainId, CurveApi, NativeToken, NetworkAliases } from '@/dex/types/main.types'
+import { type ChainId, CurveApi, NativeToken } from '@/dex/types/main.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  aliases: Record<ChainId, NetworkAliases | undefined>
   nativeToken: Record<ChainId, NativeToken | undefined>
 }
 
@@ -16,7 +15,6 @@ export type NetworksSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  aliases: {},
   nativeToken: {},
 }
 
@@ -30,9 +28,8 @@ const createNetworksSlice = (_: StoreApi<State>['setState'], get: StoreApi<State
     [sliceKey]: {
       ...DEFAULT_STATE,
       setNetworkConfigs: (curve: CurveApi) => {
-        const { ALIASES, NATIVE_TOKEN } = curve.getNetworkConstants()
+        const { NATIVE_TOKEN } = curve.getNetworkConstants()
         setStateByActiveKey('nativeToken', curve.chainId.toString(), { ...NATIVE_TOKEN })
-        setStateByActiveKey('aliases', curve.chainId.toString(), { ...ALIASES })
       },
     },
   }
