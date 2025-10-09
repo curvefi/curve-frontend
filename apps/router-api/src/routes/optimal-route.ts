@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { FastifyInstance, FastifyRequest } from 'fastify'
+import { FastifyBaseLogger } from 'fastify/types/logger'
 import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
@@ -25,8 +26,8 @@ export function registerOptimalRoute(server: FastifyInstance): void {
     },
     async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
       const query = request.query
-      const result = await buildOptimalRouteResponse(query)
-      console.info('route calculated', JSON.stringify({ query, result }, null, 2))
+      const result = await buildOptimalRouteResponse(query, request.log)
+      request.log.info({ message: 'route calculated', query, result })
       return result
     },
   )
@@ -34,14 +35,14 @@ export function registerOptimalRoute(server: FastifyInstance): void {
 
 /**
  * Returns an array of tuples containing the route step and the corresponding pool object (or undefined if not found).
- * If a pool is not found, it logs the missing poolId to the console.
+ * If a pool is not found, it logs the missing poolId to the log.
  */
-const tryGetPools = (routes: IRouteStep[], curve: CurveJS) =>
+const tryGetPools = (routes: IRouteStep[], curve: CurveJS, log: FastifyBaseLogger) =>
   routes.map((route): [IRouteStep, PoolTemplate | undefined] => {
     try {
       return [route, curve.getPool(route.poolId)]
     } catch (error) {
-      console.info('routerBestRouteAndOutput missing poolName', route.poolId)
+      log.info({ message: 'routerBestRouteAndOutput missing poolName', poolId: route.poolId })
       return [route, undefined]
     }
   })
@@ -67,7 +68,10 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAd
 /**
  * Runs the router to get the optimal route and builds the response.
  */
-export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promise<RouteResponse[]> {
+export async function buildOptimalRouteResponse(
+  query: OptimalRouteQuery,
+  log: FastifyBaseLogger,
+): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],
@@ -76,7 +80,7 @@ export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promi
     amountOut,
   } = query
 
-  const curve = await loadCurve(chainId)
+  const curve = await loadCurve(chainId, log)
   const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
   const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
@@ -87,7 +91,7 @@ export async function buildOptimalRouteResponse(query: OptimalRouteQuery): Promi
     routerGetToStoredRate(routes, curve, toToken),
   ])
 
-  const pools = tryGetPools(routes, curve)
+  const pools = tryGetPools(routes, curve, log)
   const parsedRoutes = pools.map(([route, pool]) => ({
     ...route,
     name: pool?.name ?? route.poolId,

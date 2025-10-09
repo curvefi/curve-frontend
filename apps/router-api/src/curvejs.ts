@@ -1,3 +1,4 @@
+import { FastifyBaseLogger } from 'fastify/types/logger'
 import { type default as curveApi, createCurve } from '@curvefi/api'
 import { resolveRpc } from './rpc/network-metadata'
 
@@ -15,7 +16,7 @@ const FACTORIES = [
   'stableNgFactory',
 ] as const
 
-async function hydrateCurve(curve: CurveJS) {
+async function hydrateCurve(curve: CurveJS, log: FastifyBaseLogger) {
   const factories = FACTORIES.map((key) => curve[key])
   await Promise.all(
     factories.map(async (factory) => {
@@ -23,7 +24,7 @@ async function hydrateCurve(curve: CurveJS) {
       if ('fetchNewPools' in factory) await factory.fetchNewPools()
     }),
   )
-  console.info(`curve-router: curve client initialized for ${curve.chainId}`)
+  log.info({ message: 'curve client initialized', chainId: curve.chainId })
   return () => Promise.all(factories.map((factory) => 'fetchNewPools' in factory && factory.fetchNewPools()))
 }
 
@@ -31,13 +32,13 @@ async function hydrateCurve(curve: CurveJS) {
  * Get a Curve.js instance for a specific chain ID, initializing it if necessary.
  * The instance is cached for future use. Also returns a function to refresh the pool data.
  */
-export const loadCurve = (chainId: number) => {
+export const loadCurve = (chainId: number, log: FastifyBaseLogger) => {
   if (!instances[chainId]) {
     instances[chainId] = (async () => {
       const curve = createCurve()
       const { url } = await resolveRpc(chainId, curve)
       await curve.init('JsonRpc', { url }, { chainId })
-      const refresh = await hydrateCurve(curve)
+      const refresh = await hydrateCurve(curve, log)
       return curve
     })()
   }
