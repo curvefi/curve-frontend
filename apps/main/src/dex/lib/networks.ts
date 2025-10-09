@@ -4,7 +4,6 @@ import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
 import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { fromEntries, recordValues } from '@curvefi/prices-api/objects.util'
-import type { NetworkDef } from '@ui/utils'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
@@ -391,43 +390,7 @@ export async function getNetworks() {
   return { ...defaultNetworks, ...liteNetworks }
 }
 
-/**
- * Strip out functions from the network config so they can be passed from server to client
- */
-const createNetworkDef = ({
-  id,
-  name,
-  chainId,
-  explorerUrl,
-  isTestnet,
-  symbol,
-  rpcUrl,
-  showInSelectNetwork,
-  isLite,
-  logoSrc,
-  logoSrcDark,
-  showRouterSwap,
-}: NetworkConfig): NetworkDef<NetworkEnum, ChainId> => ({
-  id,
-  name,
-  chainId,
-  explorerUrl,
-  isTestnet,
-  symbol,
-  rpcUrl,
-  showInSelectNetwork,
-  isLite,
-  logoSrc,
-  logoSrcDark,
-  showRouterSwap,
-})
-
 export const getNetworkDefs = memoize(
-  async () =>
-    fromEntries(
-      recordValues(await getNetworks())
-        .map(createNetworkDef)
-        .map((def) => [def.chainId, def] as const),
-    ),
+  async () => fromEntries(recordValues(await getNetworks()).map((n) => [n.chainId, n] as const)),
   { maxAge: 5 * 60 * 1000, promise: true, preFetch: true },
 )

@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber, type SxProps } from '@ui-kit/utils'
@@ -58,20 +60,22 @@ type BalanceTextProps<T> = {
 
 const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
-    <Stack direction="row" gap={Spacing.xs} alignItems="center">
-      <Typography
-        className="balance"
-        variant="highlightS"
-        color={balance != null ? 'textPrimary' : 'textTertiary'}
-        data-testid="balance-value"
-      >
-        {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
-      </Typography>
+    <Tooltip title={t`Wallet balance`} body={notFalsy(balance?.toString(), symbol).join(' ')} clickable>
+      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+        <Typography
+          className="balance"
+          variant="highlightXs"
+          color={balance != null ? 'textPrimary' : 'textTertiary'}
+          data-testid="balance-value"
+        >
+          {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
+        </Typography>
 
-      <Typography variant="highlightS" color="textPrimary">
-        {symbol}
-      </Typography>
-    </Stack>
+        <Typography variant="highlightXs" color="textPrimary">
+          {symbol}
+        </Typography>
+      </Stack>
+    </Tooltip>
   </WithSkeleton>
 )
 
@@ -120,7 +124,7 @@ export const Balance = <T extends Amount>({
   maxTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.sm, height: IconSize.sm }} />}
+    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
     {max === 'balance' && balance != null ? (
       <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
@@ -131,7 +135,7 @@ export const Balance = <T extends Amount>({
     )}
 
     {notionalValueUsd != null && !loading && (
-      <Typography variant="bodySRegular" color="textTertiary">
+      <Typography variant="bodyXsRegular" color="textTertiary">
         {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}

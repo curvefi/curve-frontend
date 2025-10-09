@@ -6,7 +6,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Address } from '@curvefi/prices-api'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -23,7 +23,10 @@ const averageMultiplierString = `${averageMultiplier}D`
 
 export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
   const blockchainId = networks[chainId]?.id
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: llamma?.controller?.toLocaleLowerCase() as Address,
+  })
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
@@ -51,11 +54,6 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       }) ?? { rate: null, rebasingYield: null },
     [crvUsdSnapshots],
   )
-
-  const campaignRewards = useMemo(() => {
-    if (!campaigns || !llamma?.controller) return []
-    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
-  }, [campaigns, llamma?.controller])
 
   const totalAverageBorrowRate = averageRate == null ? null : averageRate - (averageRebasingYield ?? 0)
 
@@ -85,7 +83,7 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
       rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
-      extraRewards: campaignRewards,
+      extraRewards: campaigns,
       totalBorrowRate: loanDetails?.parameters?.rate
         ? Number(loanDetails?.parameters?.rate) -
           (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)

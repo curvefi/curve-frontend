@@ -2,28 +2,39 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { useSwitchChain } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
 import { ConnectionContext, useWagmiWallet } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
-import { ConnectState } from '@ui-kit/features/connect-wallet/lib/types'
+import {
+  AppChainId,
+  AppLib,
+  AppLibs,
+  AppNetworkId,
+  ConnectState,
+  HydratorMap,
+} from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
-import { AppLibs, globalLibs, isWalletMatching } from './utils'
+import { globalLibs, isWalletMatching } from './utils'
 import type { WagmiChainId } from './wagmi/wagmi-config'
 
-const { FAILURE, LOADING, SUCCESS } = ConnectState
+const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
 
 /**
  * ConnectionProvider is a React context provider that manages the connection state of a wallet.
  * We use a context instead of a store to be able to get the initialization functions injected depending on the app.
  * todo: Merged with useWallet after wagmi migration. Get rid of apiStore after this is used everywhere.
  */
-export const ConnectionProvider = <TChainId extends number, NetworkConfig extends NetworkDef>({
+export const ConnectionProvider = <App extends AppName>({
   network,
   onChainUnavailable,
   app,
+  hydrate,
   children,
 }: {
-  network: NetworkConfig
-  onChainUnavailable: ([unsupportedChainId, walletChainId]: [TChainId, TChainId]) => void
-  app: AppName
+  /** Network configuration to connect to. */
+  network: NetworkDef<AppNetworkId<App>, AppChainId<App>>
+  /** Callback when the wallet is connected to an unsupported chain. */
+  onChainUnavailable: ([unsupportedChainId, walletChainId]: [AppChainId<App>, AppChainId<App>]) => void
+  app: App
+  hydrate: HydratorMap
   children: ReactNode
 }) => {
   const [connectState, setConnectState] = useState<ConnectState>(LOADING)
@@ -38,12 +49,12 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
      * This is separate from the rest of initApp to avoid unnecessary reinitialization, as isFocused can change frequently.
      */
     async function updateWalletChain() {
-      const chainId = Number(network.chainId) as TChainId
+      const chainId = Number(network.chainId) as AppChainId<App>
       if (wallet && wallet?.chainId !== chainId) {
         setConnectState(LOADING)
         if (isFocused && !(await switchChainAsync({ chainId: chainId as WagmiChainId }))) {
           setConnectState(FAILURE)
-          onChainUnavailable([chainId, wallet?.chainId as TChainId])
+          onChainUnavailable([chainId, wallet?.chainId as AppChainId<App>])
         }
         return // hook is called again after since it depends on walletChainId
       }
@@ -59,11 +70,21 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
     const abort = new AbortController()
     const signal = abort.signal
 
+    /** Initialize the app by hydrating the library if needed. */
+    const hydrateApp = async (lib: AppLib<App>, prevLib?: AppLib<App>) => {
+      if (globalLibs.hydrated[app] != lib && hydrate[app]) {
+        setConnectState(HYDRATING)
+        await hydrate[app](lib, prevLib, wallet) // if thrown, it will be caught in initLib
+      }
+      globalLibs.hydrated[app] = lib as (typeof globalLibs.hydrated)[App]
+      setConnectState(SUCCESS)
+    }
+
     /**
      * Initialize the app by connecting to the wallet and setting up the library.
      */
-    const initApp = async () => {
-      const chainId = Number(network.chainId) as TChainId
+    const initLib = async () => {
+      const chainId = Number(network.chainId) as AppChainId<App>
       try {
         if (wallet && wallet?.chainId !== chainId) {
           return // wait for the wallet to be connected to the right chain
@@ -71,8 +92,7 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
 
         const prevLib = globalLibs.get(libKey)
         if (isWalletMatching(wallet, prevLib, chainId)) {
-          setConnectState(SUCCESS)
-          return // already connected to the right chain and wallet, no need to reinitialize
+          return await hydrateApp(prevLib) // already connected to the right chain and wallet, no need to reinitialize
         }
 
         if (signal.aborted) return
@@ -88,24 +108,28 @@ export const ConnectionProvider = <TChainId extends number, NetworkConfig extend
 
         if (signal.aborted) return
         globalLibs.set(libKey, newLib)
-        setConnectState(SUCCESS)
+        await hydrateApp(newLib, prevLib)
       } catch (error) {
         if (signal.aborted) return console.info('Error during init ignored', error)
         console.error('Error during init', error)
         setConnectState(FAILURE)
       }
     }
-    void initApp()
+    void initLib()
     return () => abort.abort()
-  }, [isReconnecting, libKey, network, wallet])
+  }, [app, hydrate, isReconnecting, libKey, network, wallet])
 
+  // the following statements are skipping the render cycle, only update the libs when connectState changes too!
   const curveApi = globalLibs.getMatching('curveApi', wallet, network?.chainId)
   const llamaApi = globalLibs.getMatching('llamaApi', wallet, network?.chainId)
+  const isHydrated = !!globalLibs.hydrated[app] && { curveApi, llamaApi }[libKey] === globalLibs.hydrated[app]
+
   return (
     <ConnectionContext.Provider
       value={{
         connectState,
         network,
+        isHydrated,
         ...(wallet && { wallet }),
         ...(provider && { provider }),
         ...(curveApi && { curveApi }),

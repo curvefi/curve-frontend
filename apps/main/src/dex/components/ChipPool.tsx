@@ -86,6 +86,7 @@ const ChipPoolAdditionalInfo = styled.span`
   transition: max-width 1s;
   white-space: nowrap;
   overflow: hidden;
+  margin-left: 4px;
 `
 
 const ChipPoolWrapper = styled.span`

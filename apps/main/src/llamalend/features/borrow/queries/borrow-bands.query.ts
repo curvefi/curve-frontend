@@ -12,9 +12,9 @@ export const { useQuery: useBorrowBands } = queryFactory({
   queryKey: ({
     chainId,
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQueryParams) =>
@@ -29,9 +29,9 @@ export const { useQuery: useBorrowBands } = queryFactory({
     ] as const,
   queryFn: ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
-    debt = 0,
+    userBorrowed = '0',
+    userCollateral = '0',
+    debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<BorrowBandsResult> => {

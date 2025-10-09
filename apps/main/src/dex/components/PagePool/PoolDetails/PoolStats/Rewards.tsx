@@ -17,9 +17,9 @@ import Tooltip from '@ui/Tooltip/TooltipButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, type Address } from '@ui-kit/utils'
 
 type RewardsProps = {
   chainId: ChainId
@@ -31,8 +31,10 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
   const network = useStore((state) => state.networks.networks[chainId])
-  const { data: campaigns } = useCampaignsByNetwork(network.networkId as Chain)
-  const campaignRewardsPool = campaigns?.[poolData.pool.address]
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId: network.networkId as Chain,
+    address: poolData.pool.address as Address,
+  })
   const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
 
   const baseAPYS = [
@@ -135,10 +137,10 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
           )}
         </RewardsContainer>
       )}
-      {campaignRewardsPool && (
+      {campaigns.length > 0 && (
         <CampaignRewardsWrapper>
           <h4>{t`Additional external rewards`}</h4>
-          <CampaignRewardsRow rewardItems={campaignRewardsPool} />
+          <CampaignRewardsRow rewardItems={campaigns} />
         </CampaignRewardsWrapper>
       )}
     </RewardsWrapper>

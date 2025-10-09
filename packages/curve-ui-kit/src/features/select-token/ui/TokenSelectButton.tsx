@@ -45,7 +45,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     }
     IconComponent={KeyboardArrowDownIcon}
     sx={{
-      minHeight: ButtonSize.sm,
+      maxHeight: ButtonSize.sm,
       minWidth: MinWidth.select,
       backgroundColor: (t) => t.design.Layer[1].Fill,
       border: 'none',

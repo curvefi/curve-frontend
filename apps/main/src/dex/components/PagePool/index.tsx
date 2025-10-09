@@ -72,15 +72,21 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const storeMaxSlippage = useUserProfileStore((state) => state.maxSlippage[chainIdPoolId])
 
-  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager({
-    chainId: rChainId,
-    poolId: poolData?.pool.id,
-  })
+  const { data: gaugeManager, isPending: isPendingGaugeManager } = useGaugeManager(
+    {
+      chainId: rChainId,
+      poolId: poolData?.pool.id,
+    },
+    !!curve,
+  )
 
-  const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors({
-    chainId: rChainId,
-    poolId: poolData?.pool.id,
-  })
+  const { data: rewardDistributors, isPending: isPendingRewardsDistributors } = useGaugeRewardsDistributors(
+    {
+      chainId: rChainId,
+      poolId: poolData?.pool.id,
+    },
+    !!curve,
+  )
 
   const [seed, setSeed] = useState(DEFAULT_SEED)
 
