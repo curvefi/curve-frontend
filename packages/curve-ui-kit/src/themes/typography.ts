@@ -80,7 +80,7 @@ export const TYPOGRAPHY_VARIANTS = {
 
   bodyMRegular: { fontFamily: 'Body', fontSize: 'md' },
   bodyMBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'md' },
-  bodySRegular: { fontFamily: 'Body', fontSize: 'sm' },
+  bodySRegular: { fontFamily: 'Body', fontSize: 'sm', fontWeight: 'Normal', lineHeight: 'sm' },
   bodySBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'sm' },
   bodyXsRegular: { fontFamily: 'Body', fontSize: 'xs' },
   bodyXsBold: { fontFamily: 'Body', fontWeight: 'Bold', fontSize: 'xs' },
