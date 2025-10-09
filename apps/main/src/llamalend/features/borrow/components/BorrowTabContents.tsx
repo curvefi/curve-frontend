@@ -1,13 +1,12 @@
 import { useCallback, useEffect } from 'react'
-import type { ReactNode } from 'react'
 import { FormProvider } from 'react-hook-form'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
+import { AppFormContentWrapper } from '@ui/AppForm'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -22,7 +21,7 @@ import { InputDivider } from './InputDivider'
 import { LeverageInput } from './LeverageInput'
 import { LoanPresetSelector } from './LoanPresetSelector'
 
-const { Spacing, MinWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 /**
  * Hook to call the parent form to keep in sync with the chart and other components
@@ -78,114 +77,88 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     <FormProvider {...form}>
       <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
         <Stack gap={Spacing.md}>
-          <Stack divider={<InputDivider />}>
-            <BorrowFormTokenInput
-              label={t`Collateral`}
-              token={collateralToken}
-              name="userCollateral"
-              form={form}
-              isLoading={maxTokenValues.isCollateralLoading}
-              isError={maxTokenValues.isCollateralError}
-              max={values.maxCollateral}
-              testId="borrow-collateral-input"
-            />
-            <BorrowFormTokenInput
-              label={t`Borrow`}
-              token={borrowToken}
-              name="debt"
-              form={form}
-              isLoading={maxTokenValues.isDebtLoading}
-              isError={maxTokenValues.isDebtError}
-              max={values.maxDebt}
-              testId="borrow-debt-input"
-            />
+          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+            <AppFormContentWrapper>
+              <Stack gap={Spacing.md}>
+                <Stack divider={<InputDivider />}>
+                  <BorrowFormTokenInput
+                    label={t`Collateral`}
+                    token={collateralToken}
+                    name="userCollateral"
+                    form={form}
+                    isLoading={maxTokenValues.isCollateralLoading}
+                    isError={maxTokenValues.isCollateralError}
+                    max={values.maxCollateral}
+                    testId="borrow-collateral-input"
+                  />
+                  <BorrowFormTokenInput
+                    label={t`Borrow`}
+                    token={borrowToken}
+                    name="debt"
+                    form={form}
+                    isLoading={maxTokenValues.isDebtLoading}
+                    isError={maxTokenValues.isDebtError}
+                    max={values.maxDebt}
+                    testId="borrow-debt-input"
+                  />
+                </Stack>
+
+                {marketHasLeverage && (
+                  <LeverageInput
+                    leverageEnabled={values.leverageEnabled}
+                    form={form}
+                    params={params}
+                    maxLeverage={maxTokenValues.maxLeverage}
+                    isError={maxTokenValues.isLeverageError}
+                    isLoading={maxTokenValues.isLeverageLoading}
+                  />
+                )}
+
+                <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
+                  <Collapse in={preset === BorrowPreset.Custom}>
+                    <AdvancedBorrowOptions
+                      market={market}
+                      values={values}
+                      params={params}
+                      setRange={setRange}
+                      network={network.id}
+                      collateralToken={collateralToken}
+                      borrowToken={borrowToken}
+                    />
+                  </Collapse>
+                </LoanPresetSelector>
+
+                <Button
+                  type="submit"
+                  loading={isPending || !market}
+                  disabled={formErrors.length > 0}
+                  data-testid="borrow-submit-button"
+                >
+                  {isPending ? t`Processing...` : t`Approve & Borrow`}
+                </Button>
+
+                <BorrowFormAlert
+                  isCreated={isCreated}
+                  creationError={creationError}
+                  formErrors={formErrors}
+                  network={network}
+                  txHash={txHash}
+                />
+              </Stack>
+            </AppFormContentWrapper>
           </Stack>
 
-          {marketHasLeverage && (
-            <LeverageInput
-              leverageEnabled={values.leverageEnabled}
-              form={form}
-              params={params}
-              maxLeverage={maxTokenValues.maxLeverage}
-              isError={maxTokenValues.isLeverageError}
-              isLoading={maxTokenValues.isLeverageLoading}
-            />
-          )}
-
-          <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
-            <Collapse in={preset === BorrowPreset.Custom}>
-              <AdvancedBorrowOptions
-                market={market}
-                values={values}
-                params={params}
-                setRange={setRange}
-                network={network.id}
-                collateralToken={collateralToken}
-                borrowToken={borrowToken}
-              />
-            </Collapse>
-          </LoanPresetSelector>
-
-          <Button
-            type="submit"
-            loading={isPending || !market}
-            disabled={formErrors.length > 0}
-            data-testid="borrow-submit-button"
-          >
-            {isPending ? t`Processing...` : t`Approve & Borrow`}
-          </Button>
-
-          <BorrowFormAlert
-            isCreated={isCreated}
-            creationError={creationError}
-            formErrors={formErrors}
-            network={network}
-            txHash={txHash}
+          <BorrowActionInfoAccordion
+            params={params}
+            values={values}
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
+            tooMuchDebt={tooMuchDebt}
+            networks={networks}
+            onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
           />
-
-          <OutOfCardBox>
-            <BorrowActionInfoAccordion
-              params={params}
-              values={values}
-              collateralToken={collateralToken}
-              borrowToken={borrowToken}
-              tooMuchDebt={tooMuchDebt}
-              networks={networks}
-              onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
-            />
-          </OutOfCardBox>
         </Stack>
       </form>
     </FormProvider>
   )
 }
-
-/**
- * A box that visually breaks out of the card/tab it's contained in.
- * Used to wrap the accordion at the bottom of the borrow form.
- * We should move the accordion out of the card later, this is simpler during refactoring the old page
- */
-export const OutOfCardBox = ({ children }: { children: ReactNode }) => (
-  <Box
-    sx={(t) => ({
-      // match what the parent <DetailPageStack> is using
-      backgroundColor: 'var(--page--background-color)',
-      position: 'relative',
-      marginInline: 'calc(-50vw + 186px)',
-      marginBlockEnd: 'calc(-1 * var(--spacing-3))',
-      paddingBlockStart: 'var(--spacing-3)',
-      [t.breakpoints.up('tablet')]: {
-        marginInline: 'calc(-50vw + 194px)',
-      },
-      [t.breakpoints.up(MinWidth.twoCardLayout)]: {
-        // force width since <AppFormContentWrapper> gives a fixed width too
-        width: '386px',
-        marginInline: '-22px',
-        marginBlockEnd: 'calc(-1 * var(--spacing-3))',
-        paddingBlockStart: 'var(--spacing-3)',
-      },
-    })}
-  >
-    {children}
-  </Box>
-)

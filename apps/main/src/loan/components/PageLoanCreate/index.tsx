@@ -87,20 +87,15 @@ const LoanCreate = ({
         options={tabs}
         fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <AppFormContentWrapper>
-          {releaseChannel === ReleaseChannel.Beta ? (
-            <BorrowTabContents
-              networks={networks}
-              chainId={rChainId}
-              market={llamma ?? undefined}
-              onUpdate={onUpdate}
-            />
-          ) : (
+      {releaseChannel === ReleaseChannel.Beta ? (
+        <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
+      ) : (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <AppFormContentWrapper>
             <LoanFormCreate {...props} collateralAlert={collateralAlert} />
-          )}
-        </AppFormContentWrapper>
-      </Stack>
+          </AppFormContentWrapper>
+        </Stack>
+      )}
     </>
   )
 }
