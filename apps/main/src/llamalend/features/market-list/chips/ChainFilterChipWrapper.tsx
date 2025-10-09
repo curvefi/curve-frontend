@@ -36,11 +36,9 @@ export const ChainFilterChipWrapper = ({
       {chains.map((chain) => (
         <GridChip
           key={chain}
-          label=""
           selected={selectedChains?.includes(chain) ?? false}
           toggle={() => toggleChain(chain)}
           icon={<ChainIcon blockchainId={chain} size="md" />}
-          showCancelIcon={false}
           aria-label={chain}
           data-testid={`chip-chain-${chain}`}
         />
