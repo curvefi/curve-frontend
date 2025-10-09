@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -12,19 +11,10 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
 const { Spacing } = SizesAndSpaces
-const { get, sortBy, sortedUniq } = lodash
-
-/**
- * Get all unique string values from a field in an array of objects and sort them alphabetically.
- * TODO: validate T[K] is string with typescript. DeepKeys makes it hard to do this.
- */
-const getSortedStrings = <T, K extends DeepKeys<T>>(data: T[], field: K) => {
-  const values = data.map((d) => get(d, field) as string)
-  return sortedUniq(sortBy(values, (val) => val.toLowerCase()))
-}
 
 /**
  * A filter for tanstack tables that allows multi-select of string values.
@@ -50,7 +40,7 @@ export const MultiSelectFilter = <T,>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const options = useMemo(() => getSortedStrings(data, field), [data, field])
+  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
   const selectedOptions = columnFilters[id] as string[] | undefined
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
