@@ -13,9 +13,10 @@ import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/ma
 import type { Chain } from '@curvefi/prices-api'
 import Box from '@ui/Box'
 import { CellInPool, Td, Tr } from '@ui/Table'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import useIntersectionObserver from '@ui-kit/hooks/useIntersectionObserver'
 import { t } from '@ui-kit/lib/i18n'
+import type { Address } from '@ui-kit/utils'
 
 export type TableRowProps = {
   index: number
@@ -58,7 +59,10 @@ const TableRow = ({
 }: TableRowProps) => {
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId as Chain)
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId: blockchainId as Chain,
+    address: poolData?.pool?.address as Address,
+  })
 
   return (
     <LazyItem id={`${poolId}-${index}`} className="row--info" onClick={({ target }) => handleCellClick(target)}>
@@ -97,9 +101,7 @@ const TableRow = ({
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
                   </>
                 )}
-                {poolData && campaigns?.[poolData.pool.address] && (
-                  <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
-                )}
+                {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}
               </Box>
             </Td>
           )}
@@ -124,9 +126,7 @@ const TableRow = ({
                   {rewardsApy && (
                     <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewardsApy} />
                   )}
-                  {poolData && campaigns?.[poolData.pool.address] && (
-                    <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
-                  )}
+                  {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}
                 </Box>
               </Td>
             </>
@@ -141,9 +141,7 @@ const TableRow = ({
                   isHighlightOther={sortBy === 'rewardsOther'}
                   rewardsApy={rewardsApy}
                 />
-                {poolData && campaigns?.[poolData.pool.address] && (
-                  <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} />
-                )}
+                {campaigns.length > 0 && <CampaignRewardsRow rewardItems={campaigns} />}
               </Box>
             </Td>
           )}

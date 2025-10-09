@@ -23,7 +23,7 @@ export type CampaignPool = {
   lock: string
 }
 
-export type RewardsTags = 'points' | 'merkle' | 'tokens'
+export type RewardsTags = 'points' | 'tokens'
 export type RewardsAction = 'supply' | 'borrow' | 'lp' | 'loan'
 
 const parsedCampaignsJsons = campaignsJsons as Record<string, Campaign>

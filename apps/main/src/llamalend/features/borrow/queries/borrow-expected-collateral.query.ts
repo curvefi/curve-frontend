@@ -1,17 +1,17 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { assert } from '@ui-kit/utils'
+import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowExpectedCollateralResult = {
-  totalCollateral: number
-  leverage: number
-  userCollateral: number
-  collateralFromUserBorrowed: number | undefined
-  collateralFromDebt: number | undefined
-  avgPrice: number | undefined
+  totalCollateral: Decimal
+  leverage: Decimal
+  userCollateral: Decimal
+  collateralFromUserBorrowed: Decimal | undefined
+  collateralFromDebt: Decimal | undefined
+  avgPrice: Decimal | undefined
 }
 
 const convertNumbers = ({
@@ -29,16 +29,16 @@ const convertNumbers = ({
   collateralFromDebt?: string
   avgPrice?: string
 }): BorrowExpectedCollateralResult => ({
-  totalCollateral: +totalCollateral,
-  leverage: +leverage,
-  userCollateral: +userCollateral,
-  avgPrice: avgPrice == null ? undefined : +avgPrice,
-  collateralFromUserBorrowed: collateralFromUserBorrowed == null ? undefined : +collateralFromUserBorrowed,
-  collateralFromDebt: collateralFromDebt == null ? undefined : +collateralFromDebt,
+  totalCollateral: totalCollateral as Decimal,
+  leverage: leverage as Decimal,
+  userCollateral: userCollateral as Decimal,
+  avgPrice: decimal(avgPrice),
+  collateralFromUserBorrowed: decimal(collateralFromUserBorrowed),
+  collateralFromDebt: decimal(collateralFromDebt),
 })
 
 export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCollateralQueryKey } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = 0, userCollateral = 0, debt, slippage }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, poolId, userBorrowed = '0', userCollateral = '0', debt, slippage }: BorrowFormQueryParams) =>
     [
       ...rootKeys.pool({ chainId, poolId }),
       'createLoanExpectedCollateral',
@@ -49,8 +49,8 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
     ] as const,
   queryFn: async ({
     poolId,
-    userBorrowed = 0,
-    userCollateral = 0,
+    userBorrowed = '0',
+    userCollateral = '0',
     debt,
     slippage,
   }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
@@ -66,7 +66,7 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
       )
     }
 
-    assert(userBorrowed == 0, `userBorrowed must be 0 for non-leverage mint markets`)
+    assert(!+userBorrowed, `userBorrowed must be 0 for non-leverage mint markets`)
     const { collateral, leverage, routeIdx } = await market.leverage.createLoanCollateral(userCollateral, debt)
     return convertNumbers({ userCollateral, leverage, totalCollateral: collateral })
   },

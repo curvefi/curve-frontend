@@ -6,17 +6,17 @@ import { Decimal } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 import { type BorrowForm, type BorrowFormQueryParams } from '../types'
 
-const validateUserBorrowed = (userBorrowed: number | null | undefined) =>
+const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =>
   test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
     enforce(userBorrowed).isNumeric().gte(0)
   })
 
-const validateUserCollateral = (userCollateral: number | undefined | null) =>
+const validateUserCollateral = (userCollateral: Decimal | undefined | null) =>
   test('userCollateral', `Collateral amount must be a positive number`, () => {
     enforce(userCollateral).isNumeric().gt(0)
   })
 
-const validateDebt = (debt: number | undefined | null, required: boolean) =>
+const validateDebt = (debt: Decimal | undefined | null, required: boolean) =>
   test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
     if (required || debt != null) {
       enforce(debt).isNumeric().gt(0)
@@ -34,7 +34,7 @@ export const validateRange = (range: number | null | undefined, { MaxLtv, Safe }
   })
 }
 
-export const validateMaxDebt = (debt: number | undefined | null, maxDebt: number | undefined | null) => {
+export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decimal | undefined | null) => {
   test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
     if (debt != null && maxDebt != null) {
       enforce(debt).lte(maxDebt)
@@ -43,8 +43,8 @@ export const validateMaxDebt = (debt: number | undefined | null, maxDebt: number
 }
 
 export const validateMaxCollateral = (
-  userCollateral: number | undefined | null,
-  maxCollateral: number | undefined | null,
+  userCollateral: Decimal | undefined | null,
+  maxCollateral: Decimal | undefined | null,
 ) => {
   test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
     if (userCollateral != null && maxCollateral != null) {

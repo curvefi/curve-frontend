@@ -101,7 +101,12 @@ const formatterReset = { style: undefined, currency: undefined, notation: undefi
  */
 export const defaultNumberFormatter = (
   value: Amount,
-  { decimals = 2, trailingZeroDisplay = 'stripIfInteger', ...options }: Partial<NumberFormatOptions> = {},
+  {
+    decimals = 2,
+    trailingZeroDisplay = 'stripIfInteger',
+    highPrecision = false,
+    ...options
+  }: Partial<NumberFormatOptions> = {},
 ): string => {
   if (typeof value !== 'number') value = Number(value)
   if (isNaN(value)) return 'NaN'
@@ -114,7 +119,7 @@ export const defaultNumberFormatter = (
 
   const formatted = value.toLocaleString(LOCALE, {
     minimumFractionDigits: Math.min(decimals, options.maximumFractionDigits ?? Infinity),
-    maximumFractionDigits: decimals,
+    maximumFractionDigits: highPrecision ? Math.max(4, decimals) : decimals,
     trailingZeroDisplay,
     ...options,
     ...formatterReset,
@@ -163,6 +168,8 @@ export type NumberFormatOptions = {
   decimals?: number
   /** If the value should be abbreviated to 1.23k or 3.45m */
   abbreviate: boolean
+  /** Some use cases require high precision, like user input. When enabled, ensures at least a certain amount decimals are shown. */
+  highPrecision?: boolean
   /** Optional formatter for value */
   formatter?: (value: Amount) => string
 } & Omit<Intl.NumberFormatOptions, 'unit' | 'style' | 'compact' | 'notation' | 'currency'>

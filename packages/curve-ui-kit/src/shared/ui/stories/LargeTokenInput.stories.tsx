@@ -67,6 +67,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
           notionalValueUsd: tokenInfo.balance * 2, // Mock USD value
           showBalance: props.maxBalance.showBalance,
           showSlider: props.maxBalance.showSlider,
+          showChips: props.maxBalance.showChips,
         }
 
   return (
@@ -74,6 +75,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
       {...props}
       name="amount"
       maxBalance={maxBalance}
+      inputBalanceUsd={props.inputBalanceUsd}
       tokenSelector={
         <TokenSelector
           onTokenChange={(newToken) => {
@@ -114,16 +116,22 @@ const meta: Meta<typeof LargeTokenInput> = {
       control: 'number',
       description: 'Number of decimal places to round balance values to when calculating from percentage',
     },
+    inputBalanceUsd: {
+      control: 'number',
+      description: 'Optional dollar value of the given input balance',
+    },
   },
   args: {
     maxBalance: {
       showBalance: true,
       showSlider: true,
+      showChips: true,
     },
     message: '',
     label: 'You pay',
     isError: false,
     balanceDecimals: 4,
+    inputBalanceUsd: 1337,
     onBalance: fn(),
   },
 }
@@ -180,6 +188,7 @@ export const WithoutBalance: Story = {
       showBalance: false,
       showSlider: true,
     },
+    inputBalanceUsd: undefined,
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {

@@ -11,7 +11,7 @@ import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
 import { getHealthMode } from '@/loan/utils/health.util'
 import { Address } from '@curvefi/prices-api'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -32,7 +32,10 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId,
+    address: llamma?.controller?.toLocaleLowerCase() as Address,
+  })
   const {
     userState: { collateral, stablecoin, debt } = {},
     userPrices,
@@ -94,11 +97,6 @@ export const useLoanPositionDetails = ({
     return Number(collateral) * Number(collateralUsdRate) + Number(stablecoin)
   }, [collateral, stablecoin, collateralUsdRate])
 
-  const campaignRewards = useMemo(() => {
-    if (!campaigns || !llamma?.controller) return []
-    return [...(campaigns[llamma?.controller.toLowerCase()] ?? [])]
-  }, [campaigns, llamma?.controller])
-
   const collateralRebasingYield = crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield // take only most recent rebasing yield
 
   return {
@@ -121,7 +119,7 @@ export const useLoanPositionDetails = ({
         ? Number(loanDetails?.parameters?.rate) - (collateralRebasingYield ?? 0)
         : null,
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
-      extraRewards: campaignRewards,
+      extraRewards: campaigns,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },
     liquidationRange: {

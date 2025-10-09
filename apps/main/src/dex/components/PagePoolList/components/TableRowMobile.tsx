@@ -19,9 +19,10 @@ import IconButton from '@ui/IconButton'
 import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
 import { CellInPool } from '@ui/Table'
 import { formatNumber } from '@ui/utils'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
+import type { Address } from '@ui-kit/utils'
 
 type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
   showDetail: string
@@ -51,7 +52,10 @@ const TableRowMobile = ({
   handleCellClick,
   setShowDetail,
 }: TableRowMobileProps) => {
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId as Chain)
+  const { data: campaigns } = useCampaignsByAddress({
+    blockchainId: blockchainId as Chain,
+    address: poolData?.pool?.address as Address,
+  })
   const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
   const { searchText, sortBy } = searchParams
   const isShowDetail = showDetail === poolId
@@ -152,9 +156,9 @@ const TableRowMobile = ({
                           />
                         </ListInfoItem>
                       )}
-                      {poolData && campaigns?.[poolData.pool.address] && (
+                      {campaigns.length > 0 && (
                         <ListInfoItem title={t`Additional external rewards`}>
-                          <CampaignRewardsRow rewardItems={campaigns[poolData.pool.address]} mobile />
+                          <CampaignRewardsRow rewardItems={campaigns} mobile />
                         </ListInfoItem>
                       )}
                     </>

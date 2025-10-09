@@ -5,15 +5,16 @@ import { type FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
+import { decimal, Decimal } from '@ui-kit/utils'
 
 type BorrowApyQuery = PoolQuery<IChainId>
 type BorrowApyParams = FieldsOf<BorrowApyQuery>
 
 export type BorrowRatesResult = {
-  borrowApr: number
-  borrowApy?: number
-  lendApr?: number
-  lendApy?: number
+  borrowApr: Decimal
+  borrowApy?: Decimal
+  lendApr?: Decimal
+  lendApy?: Decimal
 }
 
 const convertRates = ({
@@ -22,10 +23,10 @@ const convertRates = ({
   lendApr,
   lendApy,
 }: { [K in keyof BorrowRatesResult]: string }): BorrowRatesResult => ({
-  borrowApr: +borrowApr,
-  ...(borrowApy && { borrowApy: +borrowApy }),
-  ...(lendApy && { lendApy: +lendApy }),
-  ...(lendApr && { lendApr: +lendApr }),
+  borrowApr: borrowApr as Decimal,
+  borrowApy: decimal(borrowApy),
+  lendApy: decimal(lendApy),
+  lendApr: decimal(lendApr),
 })
 
 const [isGetter, useAPI] = [true, true] as const

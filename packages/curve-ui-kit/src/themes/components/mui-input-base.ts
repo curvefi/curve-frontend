@@ -42,6 +42,7 @@ export const defineMuiInputBase = (
     input: {
       height: ButtonSize.md,
       boxSizing: 'border-box',
+      textOverflow: 'ellipsis',
     },
   },
 })

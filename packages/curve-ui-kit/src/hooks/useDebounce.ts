@@ -78,8 +78,11 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
  * This is useful for delaying updates to a value that changes frequently,
  * such as user input, to avoid excessive computations or side effects.
  */
-export function useDebouncedValue<T>(givenValue: T, debounceMs: number = Duration.FormDebounce) {
-  const [value, setValue] = useState<T>(givenValue)
+export function useDebouncedValue<T>(
+  givenValue: T,
+  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: { defaultValue?: T; debounceMs?: number } = {},
+) {
+  const [value, setValue] = useState<T>(defaultValue)
   useEffect(() => {
     const timer = setTimeout(() => setValue(givenValue), debounceMs)
     return () => clearTimeout(timer)

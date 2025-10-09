@@ -1,5 +1,4 @@
 import { styled } from 'styled-components'
-import { CURVE_ASSETS_URL } from '@ui/utils'
 import type { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import TooltipMessage from 'ui/src/CampaignRewards/TooltipMessage'
 import Icon from 'ui/src/Icon'
@@ -14,7 +13,6 @@ type CampaignRewardsCompProps = {
 
 const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: CampaignRewardsCompProps) => {
   const { platform, multiplier, platformImageId } = rewardsPool
-  const platformImageSrc = `${CURVE_ASSETS_URL}/platforms/${platformImageId}`
 
   return (
     <Tooltip
@@ -25,7 +23,7 @@ const RewardsCompSmall = ({ rewardsPool, highContrast, mobile, banner }: Campaig
       increaseZIndex={banner}
     >
       <Container highContrast={highContrast}>
-        <TokenIcon src={platformImageSrc} alt={platform} width={16} height={16} />
+        <TokenIcon src={platformImageId} alt={platform} width={16} height={16} />
         {multiplier && (
           <Multiplier highContrast={highContrast}>
             {multiplier}
