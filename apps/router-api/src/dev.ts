@@ -12,6 +12,7 @@ const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOp
 /**
  * Starts the Fastify server and sets up graceful shutdown handlers.
  * This function is invoked when running the application locally.
+ * On Vercel, we use the server instance directly in the API route handler of the main app.
  */
 async function start(): Promise<void> {
   const server = buildServer()
