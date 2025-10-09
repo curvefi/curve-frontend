@@ -327,6 +327,8 @@ export const defaultNetworks = Object.entries({
     twocryptoFactory: true,
     tricryptoFactory: true,
     hasFactory: true,
+    showInSelectNetwork: false,
+    showRouterSwap: false,
   },
 }).reduce(
   (prev, [key, config]) => {
