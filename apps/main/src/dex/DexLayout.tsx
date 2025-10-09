@@ -6,16 +6,14 @@ import { recordValues } from '@curvefi/prices-api/objects.util'
 import { Outlet } from '@tanstack/react-router'
 import { useParams } from '@ui-kit/hooks/router'
 import { useRedirectToEth } from '@ui-kit/hooks/useRedirectToEth'
-import { useNetworks } from './entities/networks'
 
 export function DexLayout() {
   const networks = use(getNetworkDefs())
   const { network: networkId = 'ethereum' } = useParams<Partial<UrlParams>>()
-  const { isFetched: networksFetched } = useNetworks()
   const network = recordValues(networks).find((n) => n.id === networkId)!
 
   useRedirectToEth(network, networkId)
   useAutoRefresh(network)
 
-  return networksFetched && <Outlet />
+  return <Outlet />
 }
