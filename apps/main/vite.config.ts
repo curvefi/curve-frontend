@@ -7,31 +7,29 @@ import vercel from 'vite-plugin-vercel'
 const { API_PROXY_TARGET = 'http://localhost:3010' } = process.env
 
 // https://vite.dev/config/
-export default defineConfig(({ command, mode }) => {
-  return {
-    // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
-    server: { port: 3000, hmr: true, proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } } },
-    preview: { port: 3000 },
-    plugins: [react(), svgr(), vercel()],
-    optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
-    resolve: {
-      alias: [
-        { find: '@', replacement: resolve(__dirname, './src') },
-        { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src/') },
-        { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/curve-ui-kit/src') },
-        { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
-        { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
-      ],
-    },
-    define: { 'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"' },
-    vercel: {
-      buildCommand: 'yarn build',
-      rewrites: [
-        { source: '/favicon', destination: '/favicon.ico' },
-        { source: '/api/(.*)', destination: '/api/router' },
-        { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
-        { source: '/(.*)', destination: '/index.html' },
-      ],
-    },
-  }
-})
+export default defineConfig(({ command, mode }) => ({
+  // the local server starts on port 3000 by default, with hot module reload enabled and /api proxying
+  server: { port: 3000, hmr: true, proxy: { '/api': { target: API_PROXY_TARGET, changeOrigin: true } } },
+  preview: { port: 3000 },
+  plugins: [react(), svgr(), vercel()],
+  optimizeDeps: { include: ['styled-components', '@mui/material', '@mui/icons-material'] },
+  resolve: {
+    alias: [
+      { find: '@', replacement: resolve(__dirname, './src') },
+      { find: '@ui', replacement: resolve(__dirname, '../../packages/ui/src/') },
+      { find: '@ui-kit', replacement: resolve(__dirname, '../../packages/curve-ui-kit/src') },
+      { find: '@external-rewards', replacement: resolve(__dirname, '../../packages/external-rewards/src/index.ts') },
+      { find: '@curvefi/prices-api', replacement: resolve(__dirname, '../../packages/prices-api/src') },
+    ],
+  },
+  define: { 'process.env.NODE_ENV': command === 'serve' ? '"development"' : '"production"' },
+  vercel: {
+    buildCommand: 'yarn build',
+    rewrites: [
+      { source: '/favicon', destination: '/favicon.ico' },
+      { source: '/api/(.*)', destination: '/api/router' },
+      { source: '/security.txt', destination: '/.well-known/security.txt', statusCode: 308 /* Permanent redirect */ },
+      { source: '/(.*)', destination: '/index.html' },
+    ],
+  },
+}))
