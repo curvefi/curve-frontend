@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
@@ -23,7 +24,7 @@ export const TokenSelector = ({
 }) => {
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
   const aliasesCrv = useStore((state) => state.networks.aliases[chainId]?.crv)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
 

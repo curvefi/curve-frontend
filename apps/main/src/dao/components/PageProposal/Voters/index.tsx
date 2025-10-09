@@ -7,7 +7,7 @@ import type { ProposalType } from '@curvefi/prices-api/proposal/models'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink, InternalLink } from '@ui/Link'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
@@ -60,7 +60,7 @@ const Voters = ({ totalVotes, voteId, proposalType, className }: Props) => {
                     {vote.topHolder ? vote.topHolder : shortenAddress(vote.voter)}
                   </StyledInternalLink>
                 </Box>
-                <StyledExternalLink href={networks[Chain.Ethereum].scanTxPath(vote.txHash)}>
+                <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], vote.txHash)}>
                   <Data>
                     {formatNumber(+vote.stake, { notation: 'compact' })} (
                     {formatNumber(vote.relativePower, { notation: 'compact' })}%)

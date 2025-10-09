@@ -5,6 +5,7 @@ import FieldToken from '@/dex/components/PagePool/components/FieldToken'
 import type { FormValues, LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
@@ -75,7 +76,7 @@ const FieldsDeposit = ({
     updatedMaxSlippage: string | null,
   ) => void
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const maxLoading = useStore((state) => state.poolDeposit.maxLoading)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)

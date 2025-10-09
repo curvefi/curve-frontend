@@ -25,11 +25,13 @@ import {
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { checkTokensInPoolUnset, containsOracle } from '@/dex/components/PageCreatePool/utils'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
+import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -195,7 +197,7 @@ const TokensInPoolSummary = ({ blockchainId, chainId }: Props) => {
 }
 
 const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) => {
-  const { scanAddressPath, stableswapFactory } = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   return (
     <TokenRow>
       <ButtonTokenIcon blockchainId={blockchainId} tooltip={token.symbol} address={token.address} />
@@ -204,7 +206,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
           {token.symbol}
           {token.basePool && swapType === STABLESWAP && <BasepoolLabel>{t`BASE`}</BasepoolLabel>}
         </TokenSymbol>
-        {swapType === STABLESWAP && stableswapFactory && (
+        {swapType === STABLESWAP && network.stableswapFactory && (
           <TokenType>
             {token.ngAssetType === 0 && t`Standard`}
             {token.ngAssetType === 1 && t`Oracle`}
@@ -213,7 +215,7 @@ const TokenSummary = ({ blockchainId, token, chainId, swapType }: TokenSummary) 
           </TokenType>
         )}
       </Box>
-      <AddressLink href={scanAddressPath(token.address)}>
+      <AddressLink href={scanAddressPath(network, token.address)}>
         {shortenAddress(token.address)}
         <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
       </AddressLink>

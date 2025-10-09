@@ -89,7 +89,7 @@ const Page = () => {
     userAddress: signerAddress,
     collateralToken: market?.collateral_token,
     borrowToken: market?.borrowed_token,
-    scanTxPath: network.scanTxPath,
+    network,
   })
 
   // set tabs

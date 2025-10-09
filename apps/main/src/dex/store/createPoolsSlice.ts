@@ -43,6 +43,7 @@ import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -171,15 +172,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     ...DEFAULT_STATE,
 
     fetchPoolsTvl: async (curve, poolDatas) => {
-      const {
-        storeCache,
-        networks: { networks },
-      } = get()
+      const { storeCache } = get()
       const { tvlMapper: sTvlMapper } = get()[sliceKey]
 
       log('fetchPoolsTvl', curve.chainId, poolDatas.length)
       const chainId = curve.chainId
 
+      const networks = await fetchNetworks()
       const { results } = await PromisePool.for(poolDatas)
         .withConcurrency(10)
         .process(async (poolData) => {
@@ -197,10 +196,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       const {
         storeCache,
         [sliceKey]: { volumeMapper: sVolumeMapper, ...sliceState },
-        networks: { networks },
       } = get()
       const { getVolume } = curvejsApi.pool
 
+      const networks = await fetchNetworks()
       if (networks[chainId].isLite) {
         sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), {})
         return
@@ -229,12 +228,13 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         userBalances,
         tokens,
         [sliceKey]: { poolsMapper: storedPoolsMapper },
-        networks,
+        networks: networksStore,
       } = get()
 
       const { chainId } = curve
-      const { isLite } = networks.networks[chainId]
-      const nativeToken = networks.nativeToken[chainId]
+      const networks = await fetchNetworks()
+      const { isLite } = networks[chainId]
+      const nativeToken = networksStore.nativeToken[chainId]
 
       try {
         set(
@@ -247,7 +247,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         const { poolsMapper, poolsMapperCache } = await getPools(
           curve,
           poolIds,
-          networks.networks[chainId],
+          networks[chainId],
           storedPoolsMapper[chainId] ?? {},
           failedFetching24hOldVprice,
         )
@@ -403,7 +403,8 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
     fetchPoolsRewardsApy: async (chainId, poolIds) => {
       const state = get()
       const { rewardsApyMapper: allRewardsApyMapper, setStateByActiveKey } = state[sliceKey]
-      const network = state.networks.networks[chainId]
+      const networks = await fetchNetworks()
+      const network = networks[chainId]
       const { poolAllRewardsApy } = curvejsApi.pool
 
       log('fetchPoolsRewardsApy', chainId, poolIds.length)
@@ -444,12 +445,10 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       // }
     },
     fetchPoolStats: async (curve, poolData) => {
-      const {
-        pools,
-        networks: { networks },
-      } = get()
+      const { pools } = get()
       const { chainId } = curve
       const { pool } = poolData
+      const networks = await fetchNetworks()
       const network = networks[chainId]
       const { isLite } = network
       const { getVolume, poolParameters } = curvejsApi.pool
@@ -508,9 +507,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       )
     },
     fetchPricesApiPools: async (chainId: ChainId) => {
-      const {
-        networks: { networks },
-      } = get()
+      const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
         const networkId = networks[chainId].id
 
@@ -532,9 +529,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       }
     },
     fetchPricesPoolSnapshots: async (chainId: ChainId, poolAddress: string) => {
-      const {
-        networks: { networks },
-      } = get()
+      const networks = await fetchNetworks()
       if (networks[chainId].pricesApi) {
         const startTime = Math.floor((Date.now() - 24 * 60 * 60 * 1000) / 1000)
         const endTime = Math.floor(Date.now() / 1000)
@@ -580,9 +575,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         }),
       )
 
-      const {
-        networks: { networks },
-      } = get()
+      const networks = await fetchNetworks()
       const network = networks[chainId].id.toLowerCase()
 
       if (selectedChartIndex === 0 || selectedChartIndex === 1) {
@@ -682,9 +675,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
       chartCombinations: PricesApiCoin[][],
       isFlipped: boolean[],
     ) => {
-      const {
-        networks: { networks },
-      } = get()
+      const networks = await fetchNetworks()
       const network = networks[chainId].id.toLowerCase()
 
       if (selectedChartIndex === 0 || selectedChartIndex === 1) {
@@ -770,9 +761,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         }),
       )
 
-      const {
-        networks: { networks },
-      } = get()
+      const networks = await fetchNetworks()
       const network = networks[chainId].id.toLowerCase()
 
       try {

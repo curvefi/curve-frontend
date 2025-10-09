@@ -17,6 +17,7 @@ import {
   DEFAULT_SLIPPAGE,
   tokensDescription,
 } from '@/dex/components/PagePool/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
@@ -26,6 +27,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { scanTxPath } from '@ui/utils'
 
 const FormDeposit = ({
   chainIdPoolId,
@@ -55,7 +57,8 @@ const FormDeposit = ({
   const fetchStepDeposit = useStore((state) => state.poolDeposit.fetchStepDeposit)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = networks[chainId!] || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -105,7 +108,7 @@ const FormDeposit = ({
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const txDescription = t`Deposited ${tokenText}.`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={network.scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

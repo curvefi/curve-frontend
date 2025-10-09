@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { delayAction } from '@/dex/utils'
@@ -39,7 +40,7 @@ const SelectTokenButton = ({
   tokens = [],
   onSelectionChange,
 }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const { data: network } = useNetworkByChain({ chainId })
   const visibleTokens = useRef<{ [k: string]: boolean }>({})
   const overlayTriggerState = useOverlayTriggerState({})
   const openButtonRef = useRef<HTMLButtonElement>(null)
@@ -64,7 +65,7 @@ const SelectTokenButton = ({
       address: nativeToken?.wrappedAddress ?? '',
       symbol: nativeToken?.wrappedSymbol ?? '',
     },
-    ...networks[chainId].createQuickList,
+    ...network.createQuickList,
   ].map(({ address, symbol }) => ({
     chain: blockchainId,
     address: address as Address,

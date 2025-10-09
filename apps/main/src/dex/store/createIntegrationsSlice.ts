@@ -7,6 +7,7 @@ import type { State } from '@/dex/store/useStore'
 import type { FilterKey, FormStatus, FormValues } from '@/dex/types/integrations.types'
 import type { ChainId } from '@/dex/types/main.types'
 import type { IntegrationApp, IntegrationsTags } from '@ui/Integration/types'
+import { fetchNetworks, getNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep, sortBy } = lodash
@@ -60,16 +61,14 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
     ...DEFAULT_STATE,
     init: async (chainId: ChainId) => {
       const state = get()
-      const {
-        networks: { networks },
-      } = state
       const { integrationsList: storedList, integrationsTags: storedTags, setStateByKey } = state[sliceKey]
 
       const parsedChainId = chainId || 1
+      const networks = fetchNetworks()
 
       if (storedList === null) {
         try {
-          const integrationsList = await httpFetcher(networks[parsedChainId]?.integrations.listUrl)
+          const integrationsList = await httpFetcher((await networks)[parsedChainId]?.integrations.listUrl)
           const parsedIntegrationsList = parseIntegrationsList(integrationsList)
           setStateByKey('integrationsList', parsedIntegrationsList)
         } catch (error) {
@@ -80,7 +79,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
 
       if (storedTags === null) {
         try {
-          const integrationsTags = await httpFetcher(networks[parsedChainId]?.integrations.tagsUrl)
+          const integrationsTags = await httpFetcher((await networks)[parsedChainId]?.integrations.tagsUrl)
           setStateByKey('integrationsTags', parseIntegrationsTags(integrationsTags))
         } catch (error) {
           console.error(error)
@@ -95,10 +94,7 @@ const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>): In
       return integrationApps
     },
     filterByNetwork: (filterNetworkId: string, integrationApps: IntegrationApp[]) => {
-      const {
-        networks: { networks },
-      } = get()
-      const networkId = networks[+filterNetworkId]?.id
+      const networkId = getNetworks()[+filterNetworkId]?.id
       return networkId ? integrationApps.filter(({ networks }) => networks[networkId]) : integrationApps
     },
     filterBySearchText: (searchText: string, integrationApps: IntegrationApp[]) => {
