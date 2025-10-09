@@ -6,15 +6,15 @@ import { Decimal } from '@ui-kit/utils'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
 export type CompleteBorrowForm = {
-  userCollateral: number
-  userBorrowed: number // currently hidden and always 0
-  debt: number
+  userCollateral: Decimal
+  userBorrowed: Decimal // currently hidden and always 0
+  debt: Decimal
   range: number
   slippage: Decimal
   leverageEnabled: boolean
 }
 
-type CalculatedValues = { maxDebt: number | undefined; maxCollateral: number | undefined }
+type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues
