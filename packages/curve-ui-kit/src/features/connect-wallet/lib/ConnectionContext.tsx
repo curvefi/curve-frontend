@@ -2,12 +2,12 @@ import { BrowserProvider } from 'ethers'
 import { createContext, useContext, useMemo } from 'react'
 import { useAccount, useConnectorClient } from 'wagmi'
 import type { NetworkDef } from '@ui/utils'
-import { isCypress } from '@ui-kit/utils'
+import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { type Address, isCypress } from '@ui-kit/utils'
 import { ConnectState, type CurveApi, type LlamaApi, type Wallet } from './types'
 
-const { FAILURE, LOADING, SUCCESS } = ConnectState
+const { FAILURE, LOADING } = ConnectState
 
-export const isSuccess = (status: ConnectState) => status === SUCCESS
 export const isFailure = (status: ConnectState) => status === FAILURE
 export const isLoading = (status: ConnectState) => status === LOADING
 
@@ -19,11 +19,27 @@ type ConnectionContextValue = {
   wallet?: Wallet
   provider?: BrowserProvider
   network?: NetworkDef
+  isHydrated: boolean
 }
 
 export const ConnectionContext = createContext<ConnectionContextValue>({
   connectState: LOADING,
+  isHydrated: false,
 })
+
+/**
+ * Detects if the wallet is in the process of reconnecting.
+ * - `useAccount` and `useClient` are not always in sync, so check both
+ * - `isReconnecting` is set when switching pages
+ * - `isConnecting` is set when the wallet gets flipped from connecting to connected when loading,
+ *   especially without any wallet plugin
+ * Therefore, we use a very cumbersome condition to detect if we are reconnecting, and also need some debouncing 😭
+ */
+function useWagmiIsReconnecting(address?: Address) {
+  const { isReconnecting, isConnected, isConnecting } = useAccount()
+  const isConnectingDebounced = useDebouncedValue(isConnecting, { defaultValue: true })
+  return !address && (isConnectingDebounced || isReconnecting || isConnected)
+}
 
 /**
  * Separate hook to get the wallet and provider from wagmi.
@@ -36,10 +52,8 @@ export const ConnectionContext = createContext<ConnectionContextValue>({
 export function useWagmiWallet() {
   const { data: client } = useConnectorClient()
   const address = client?.account?.address
-  const { isReconnecting, isConnected, isConnecting } = useAccount()
   return {
-    // `useAccount` and `useClient` are not always in sync, so check both. `isReconnecting` is set when switching pages
-    isReconnecting: !address && (isConnecting || isReconnecting || isConnected),
+    isReconnecting: useWagmiIsReconnecting(address),
     ...(useMemo(() => {
       const wallet = address &&
         client?.transport.request && {

@@ -1,7 +1,11 @@
 import { useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
+import useDaoStore from '@/dao/store/useStore'
 import { getNetworkDefs } from '@/dex/lib/networks'
+import useDexStore from '@/dex/store/useStore'
+import useLendStore from '@/lend/store/useStore'
+import useLoanStore from '@/loan/store/useStore'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import isPropValid from '@emotion/is-prop-valid'
@@ -9,6 +13,7 @@ import { OverlayProvider } from '@react-aria/overlays'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
+import { HydratorMap } from '@ui-kit/features/connect-wallet/lib/types'
 import { useWagmiConfig } from '@ui-kit/features/connect-wallet/lib/wagmi/useWagmiConfig'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { usePathname } from '@ui-kit/hooks/router'
@@ -29,6 +34,14 @@ import { rootRoute } from './root.routes'
  */
 const shouldForwardProp = (propName: string, target: unknown) => typeof target !== 'string' || isPropValid(propName)
 
+function useHydrationMethods(): HydratorMap {
+  const crvusd: HydratorMap['crvusd'] = useLoanStore().hydrate
+  const dao: HydratorMap['dao'] = useDaoStore().hydrate
+  const dex: HydratorMap['dex'] = useDexStore().hydrate
+  const lend: HydratorMap['lend'] = useLendStore().hydrate
+  return useMemo(() => ({ crvusd, dao, dex, lend }), [crvusd, dao, dex, lend])
+}
+
 export const RootLayout = () => {
   const networkDefs = rootRoute.useLoaderData() as Awaited<ReturnType<typeof getNetworkDefs>>
   const networks = useMemo(() => recordValues(networkDefs), [networkDefs])
@@ -38,6 +51,7 @@ export const RootLayout = () => {
   const onChainUnavailable = useOnChainUnavailable(networks)
   useLayoutStoreResponsive()
 
+  const hydrate = useHydrationMethods()
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
@@ -46,7 +60,12 @@ export const RootLayout = () => {
             <QueryProvider persister={persister} queryClient={queryClient}>
               {network && (
                 <ErrorBoundary title={t`Layout error`}>
-                  <ConnectionProvider app={currentApp} network={network} onChainUnavailable={onChainUnavailable}>
+                  <ConnectionProvider
+                    app={currentApp}
+                    network={network}
+                    onChainUnavailable={onChainUnavailable}
+                    hydrate={hydrate}
+                  >
                     <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
                       <HeadContent />
                       <Outlet />

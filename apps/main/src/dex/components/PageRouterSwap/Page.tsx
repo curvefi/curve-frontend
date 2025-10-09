@@ -22,6 +22,7 @@ export const PageRouterSwap = () => {
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
+  const isConnecting = isLoading(connectState)
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
@@ -57,7 +58,7 @@ export const PageRouterSwap = () => {
   // redirect to poolList if Swap is excluded from route
   useEffect(() => {
     setLoaded(false)
-    if (!isLoading(connectState) && rChainId && typeof hasRouter !== 'undefined') {
+    if (!isConnecting && rChainId && typeof hasRouter !== 'undefined') {
       if (!hasRouter) {
         push(getPath(props, `${ROUTE.PAGE_POOLS}`))
         return
@@ -88,7 +89,7 @@ export const PageRouterSwap = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
-    connectState,
+    isConnecting,
     hasRouter,
     paramsFromAddress,
     paramsToAddress,
@@ -108,7 +109,7 @@ export const PageRouterSwap = () => {
             connectText="Connect Wallet"
             loadingText="Connecting"
             connectWallet={() => connectWallet()}
-            isLoading={isLoading(connectState)}
+            isLoading={isConnecting}
           />
         </ConnectWalletWrapper>
       </Box>
