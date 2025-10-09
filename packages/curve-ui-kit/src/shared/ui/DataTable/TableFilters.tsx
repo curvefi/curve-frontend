@@ -125,7 +125,7 @@ export const TableFilters = <ColumnIds extends string>({
           </>
         ) : (
           chips && (
-            <Grid size={12} gap={0} justifyContent="flex-end">
+            <Grid container size={12} gap={0} justifyContent="space-between">
               {chips}
             </Grid>
           )

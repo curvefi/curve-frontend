@@ -13,7 +13,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { ChainFilterChipWrapper } from './chips/ChainFilterChipWrapper'
 import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
 import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { MarketTypeFilterChips } from './chips/MarketTypeFilterChips'
@@ -108,15 +108,17 @@ export const LlamaMarketsTable = ({
           />
         }
         chips={
-          <MarketFilterChipWrapper
-            hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          >
-            {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
-            <MarketTypeFilterChips {...filterProps} />
-            <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          </MarketFilterChipWrapper>
+          <>
+            <ChainFilterChipWrapper data={data} {...filterProps} />
+            <MarketFilterChipWrapper
+              hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
+              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              resetFilters={resetFilters}
+            >
+              <MarketTypeFilterChips {...filterProps} />
+              <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+            </MarketFilterChipWrapper>
+          </>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
