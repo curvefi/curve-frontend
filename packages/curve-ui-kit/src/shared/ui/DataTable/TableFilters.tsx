@@ -88,7 +88,11 @@ export const TableFilters = <ColumnIds extends string>({
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
         <Grid size={{ mobile: 6 }}>
           <Typography variant="headingSBold">{title}</Typography>
-          {subtitle && <Typography variant="bodySRegular">{subtitle}</Typography>}
+          {subtitle && (
+            <Typography variant="bodySRegular" color="textSecondary">
+              {subtitle}
+            </Typography>
+          )}
         </Grid>
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           {!isMobile && toggleVisibility && (

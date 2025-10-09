@@ -26,7 +26,7 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
-const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+const LOCAL_STORAGE_KEY = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(() => [{ id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] }], [minLiquidity])
@@ -56,13 +56,13 @@ export const LlamaMarketsTable = ({
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    TITLE,
+    LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
-    TITLE,
+    LOCAL_STORAGE_KEY,
     sorting,
     userHasPositions,
   )
@@ -91,8 +91,8 @@ export const LlamaMarketsTable = ({
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={TITLE}
-        subtitle={t`Borrow with the power of Curve soft liquidations`}
+        title={t`Markets`}
+        subtitle={t`Find your next opportunity`}
         loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
