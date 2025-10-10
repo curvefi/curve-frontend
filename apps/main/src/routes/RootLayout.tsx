@@ -43,7 +43,7 @@ function useHydrationMethods(): HydratorMap {
 
 // Inner component that uses TanStack Query hooks
 const NetworkAwareLayout = () => {
-  const { data: networkDefs } = useNetworks()
+  const { data: networkDefs, isError } = useNetworks()
   const networks = useMemo(() => recordValues(networkDefs), [networkDefs])
   const network = useNetworkFromUrl(networks)
   const currentApp = getCurrentApp(usePathname())
@@ -52,24 +52,25 @@ const NetworkAwareLayout = () => {
 
   useLayoutStoreResponsive()
 
+  // Fall back to the error boundary if after many retries TanStack failed to query all (required) networks
+  if (isError) throw new Error('Could not load networks')
+
   return (
     <WagmiProvider config={useWagmiConfig(networks)}>
-      <ErrorBoundary title={t`Layout error`}>
-        {network && (
-          <ConnectionProvider
-            app={currentApp}
-            network={network}
-            onChainUnavailable={onChainUnavailable}
-            hydrate={hydrate}
-          >
-            <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
-              <HeadContent />
-              <Outlet />
-              <TanStackRouterDevtools />
-            </GlobalLayout>
-          </ConnectionProvider>
-        )}
-      </ErrorBoundary>
+      {network && (
+        <ConnectionProvider
+          app={currentApp}
+          network={network}
+          onChainUnavailable={onChainUnavailable}
+          hydrate={hydrate}
+        >
+          <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
+            <HeadContent />
+            <Outlet />
+            <TanStackRouterDevtools />
+          </GlobalLayout>
+        </ConnectionProvider>
+      )}
     </WagmiProvider>
   )
 }
@@ -78,14 +79,16 @@ export const RootLayout = () => {
   const theme = useUserProfileStore((state) => state.theme)
 
   return (
-    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-      <ThemeProvider theme={theme}>
-        <OverlayProvider>
-          <QueryProvider persister={persister} queryClient={queryClient}>
-            <NetworkAwareLayout />
-          </QueryProvider>
-        </OverlayProvider>
-      </ThemeProvider>
-    </StyleSheetManager>
+    <ErrorBoundary title={t`Layout error`}>
+      <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+        <ThemeProvider theme={theme}>
+          <OverlayProvider>
+            <QueryProvider persister={persister} queryClient={queryClient}>
+              <NetworkAwareLayout />
+            </QueryProvider>
+          </OverlayProvider>
+        </ThemeProvider>
+      </StyleSheetManager>
+    </ErrorBoundary>
   )
 }
