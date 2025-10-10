@@ -7,7 +7,7 @@ import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-valid
 import { fetchNetworks } from './networks'
 
 async function _fetchAppStatsVolume({ chainId }: ChainQuery<ChainId>) {
-  const networks = (await fetchNetworks()) ?? {}
+  const networks = await fetchNetworks()
   const { isLite } = networks[chainId] ?? {}
   return isLite ? null : curvejsApi.network.getVolume(requireLib('curveApi'))
 }
