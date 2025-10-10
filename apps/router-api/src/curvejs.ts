@@ -1,4 +1,4 @@
-import { FastifyBaseLogger } from 'fastify/types/logger'
+import { FastifyBaseLogger } from 'fastify'
 import { type default as curveApi, createCurve } from '@curvefi/api'
 import { resolveRpc } from './rpc/network-metadata'
 

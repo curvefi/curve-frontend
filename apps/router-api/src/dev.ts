@@ -1,7 +1,7 @@
 import type { FastifyListenOptions } from 'fastify'
 import { createRouterApiServer } from './server'
 
-process.loadEnvFile() // Load environment variables from .env file
+process.loadEnvFile()
 
 const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOptions => ({
   port: Number(PORT),

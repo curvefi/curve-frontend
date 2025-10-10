@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import type { FastifyRequest } from 'fastify'
-import { FastifyBaseLogger } from 'fastify/types/logger'
+import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
