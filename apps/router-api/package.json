@@ -7,9 +7,7 @@
     "node": "22"
   },
   "scripts": {
-    "dev": "tsx watch src/local.ts",
-    "start": "node dist/local.js",
-    "build": "tsc --project tsconfig.build.json",
+    "dev": "tsx watch src/dev.ts",
     "lint": "eslint \"src/**/*.ts\"",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
@@ -21,9 +19,10 @@
   },
   "devDependencies": {
     "@types/node": "24.5.2",
+    "dotenv": "^17.2.3",
     "eslint": "*",
     "eslint-config-custom": "*",
-    "tsx": "^4.20.6",
+    "tsx": "4.20.6",
     "typescript": "*",
     "vitest": "^3.2.4"
   }

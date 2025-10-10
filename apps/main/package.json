@@ -55,7 +55,7 @@
     "@types/node": "24.3.0",
     "@types/react": "*",
     "@types/react-dom": "*",
-    "@vitejs/plugin-react": "^5.0.1",
+    "@vitejs/plugin-react": "^5.0.4",
     "babel-plugin-styled-components": "^2.1.4",
     "eslint": "*",
     "eslint-config-custom": "*",

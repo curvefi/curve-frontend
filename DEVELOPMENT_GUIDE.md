@@ -94,27 +94,7 @@ import { isAddress, isAddressEqual, zeroAddress, type Address } from 'viem'
 enforce(isAddress(data.rewardTokenId)).isTruthy()
 ```
 
-## 6. BigDecimal
-
-A custom `BigDecimal` implementation is used for precise numerical operations:
-
-- Use `BigDecimal` for all financial calculations to avoid floating-point errors
-- Implement utility functions that work with `BigDecimal` for common operations
-
-## 7. Custom Hooks
-
-Several custom hooks are used throughout the project:
-
-- Create hooks for reusable logic (e.g., `useChainId`, `useCurve`)
-- Implement hooks that combine multiple queries for complex data fetching scenarios
-
-Example:
-
-```typescript
-const { data: curve } = useCurve()
-```
-
-## 8. TypeScript
+## 6. TypeScript
 
 The project heavily uses TypeScript:
 
