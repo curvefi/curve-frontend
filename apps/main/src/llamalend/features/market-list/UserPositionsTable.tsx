@@ -10,6 +10,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
 import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
@@ -22,7 +23,7 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
-const TITLES = {
+const LOCAL_STORAGE_KEYS = {
   // not using the t`` here as the value is used as a key in the local storage
   [MarketRateType.Borrow]: 'My Borrow Positions',
   [MarketRateType.Supply]: 'My Supply Positions',
@@ -47,7 +48,7 @@ const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
-  const title = TITLES[tab]
+  const title = LOCAL_STORAGE_KEYS[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
     title,
     migration,
@@ -74,7 +75,8 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={title}
+        filterExpandedKey={title}
+        leftChildren={<TableFiltersTitles title={t`${title}`} />}
         loading={loading}
         visibilityGroups={columnSettings}
         searchText={searchText}
@@ -91,6 +93,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               tab={tab}
               searchText={searchText}
               onSearch={onSearch}
+              testId={title}
             />
           </MarketFilterChipWrapper>
         }

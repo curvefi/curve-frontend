@@ -35,7 +35,7 @@ export const MarketFilterChipWrapper = ({
 
   const isMobile = useIsMobile()
   return (
-    <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.lg}>
+    <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.md}>
       {children}
 
       {hiddenMarketCount != null && (
@@ -47,9 +47,11 @@ export const MarketFilterChipWrapper = ({
                 <Typography variant="highlightS">{hiddenMarketCount}</Typography>
               </Stack>
             </ChipGridItem>
-            <ChipGridItem alignRight>
-              <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
-            </ChipGridItem>
+            {hasFilters && (
+              <ChipGridItem alignRight>
+                <ResetFiltersButton onClick={resetFilters} />
+              </ChipGridItem>
+            )}
           </Grid>
         </Tooltip>
       )}
