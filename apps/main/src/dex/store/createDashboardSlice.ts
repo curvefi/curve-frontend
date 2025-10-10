@@ -1,7 +1,7 @@
 import lodash from 'lodash'
 import type { Address } from 'viem'
 import { isAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type { VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import type {
   DashboardDataMapper,
@@ -77,7 +77,7 @@ const DEFAULT_STATE: SliceState = {
   vecrvInfo: {},
 }
 
-const createDashboardSlice = (set: SetState<State>, get: GetState<State>): DashboardSlice => ({
+const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): DashboardSlice => ({
   dashboard: {
     ...DEFAULT_STATE,
 
@@ -371,7 +371,7 @@ const createDashboardSlice = (set: SetState<State>, get: GetState<State>): Dashb
 
       return resp
     },
-    fetchStepWithdrawVecrv: async (activeKey, curve, walletAddress) => {
+    fetchStepWithdrawVecrv: async (_, curve, walletAddress) => {
       const {
         [sliceKey]: { formValues, ...sliceState },
       } = get()

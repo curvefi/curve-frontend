@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { DepositWithdrawModule, StatisticsChart } from '@/loan/components/PageCrvUsdStaking/types'
 import { SCRVUSD_GAS_ESTIMATE } from '@/loan/constants'
 import type { ScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
@@ -88,7 +88,7 @@ const DEFAULT_STATE: SliceState = {
   withdrawTransaction: { transactionStatus: '', transaction: null, errorMessage: '' },
 }
 
-const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     checkApproval: {

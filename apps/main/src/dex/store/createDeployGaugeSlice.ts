@@ -1,6 +1,6 @@
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { DeploymentType, GaugeType, PoolType, PoolTypes } from '@/dex/components/PageDeployGauge/types'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -89,7 +89,7 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createDeployGaugeSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   deployGauge: {
     ...DEFAULT_STATE,
 

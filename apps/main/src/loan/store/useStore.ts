@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { create } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/loan/store/createAppSlice'
@@ -38,7 +38,7 @@ export type State = CacheSlice &
   OhlcChartSlice &
   ScrvUsdSlice
 
-const store = (set: SetState<State>, get: GetState<State>): State => ({
+const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createCacheSlice(set, get),
   ...createAppSlice(set, get),
   ...createChartBandsSlice(set, get),

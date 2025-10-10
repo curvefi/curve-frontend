@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanCollateralAdd/types'
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -69,7 +69,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanCollateralAdd } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCollateralAdd = (_: SetState<State>, get: GetState<State>): LoanCollateralAddSlice => ({
+const createLoanCollateralAdd = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanCollateralAddSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

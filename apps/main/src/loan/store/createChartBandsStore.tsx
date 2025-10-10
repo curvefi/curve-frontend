@@ -1,4 +1,4 @@
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import { ChainId } from '@/loan/types/loan.types'
 
@@ -23,7 +23,7 @@ const DEFAULT_STATE: SliceState = {
   xAxisDisplayType: 'price',
 }
 
-const createChartBandsSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createChartBandsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
