@@ -46,6 +46,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "^5.0.4",
+    "babel-plugin-react-compiler": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "storybook": "9.1.10",

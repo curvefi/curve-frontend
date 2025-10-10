@@ -61,6 +61,7 @@
     "@eslint/js": "9.37.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.1",
+    "babel-plugin-react-compiler": "1.0.0",
     "bignumber.js": "9.3.1",
     "eslint": "9.37.0",
     "ethers": "6.15.0",
@@ -68,10 +69,10 @@
     "lodash": "4.17.21",
     "react": "19.2.0",
     "react-dom": "19.2.0",
+    "styled-components": "6.1.19",
     "typescript": "5.9.3",
     "vite": "7.1.9",
     "vitest": "^3.2.4",
-    "zustand": "5.0.8",
-    "styled-components": "6.1.19"
+    "zustand": "5.0.8"
   }
 }

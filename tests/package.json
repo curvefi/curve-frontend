@@ -27,6 +27,7 @@
     "@types/wait-on": "^5.3.4",
     "@vitejs/plugin-react": "^5.0.4",
     "@vitest/ui": "^3.2.4",
+    "babel-plugin-react-compiler": "*",
     "cypress": "^15.0.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
