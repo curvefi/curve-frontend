@@ -1,11 +1,8 @@
-import { forwardRef, ReactNode, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
-import IconButton from '@mui/material/IconButton'
 import Stack from '@mui/material/Stack'
-import SvgIcon from '@mui/material/SvgIcon'
-import Typography from '@mui/material/Typography'
 import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -13,6 +10,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
 import { ToolkitIcon } from '../../icons/ToolkitIcon'
+import { TableButton } from './TableButton'
 import { TableSearchField } from './TableSearchField'
 import { TableVisibilitySettingsPopover } from './TableVisibilitySettingsPopover'
 import type { VisibilityGroup } from './visibility.types'
@@ -20,64 +18,36 @@ import type { VisibilityGroup } from './visibility.types'
 const { Spacing } = SizesAndSpaces
 
 /**
- * A button for controlling the DataTable.
- */
-const TableButton = forwardRef<
-  HTMLButtonElement,
-  {
-    onClick: () => void
-    active?: boolean
-    loading?: boolean
-    testId?: string
-    icon: typeof SvgIcon
-  }
->(function TableButton({ active, icon: Icon, testId, ...rest }, ref) {
-  return (
-    <IconButton
-      ref={ref}
-      size="small"
-      data-testid={testId}
-      sx={(t) => ({
-        border: `1px solid ${active ? t.design.Chips.Current.Outline : t.design.Button.Outlined.Default.Outline}`,
-        backgroundColor: active ? t.design.Chips.Current.Fill : 'transparent',
-        transition: t.design.Button.Transition,
-      })}
-      {...rest}
-    >
-      <Icon />
-    </IconButton>
-  )
-})
-
-/**
  * A component that wraps a table and provides a title, subtitle, and filter controls.
  */
 export const TableFilters = <ColumnIds extends string>({
-  title,
-  subtitle,
+  leftChildren,
+  filterExpandedKey,
   loading,
   onReload,
   visibilityGroups,
   toggleVisibility,
+  hasSearchBar,
   collapsible,
   chips,
   sort,
   searchText,
   onSearch,
 }: {
-  title: string
-  subtitle?: string
+  leftChildren: ReactNode
+  filterExpandedKey: string
   loading: boolean
   onReload?: () => void
   visibilityGroups: VisibilityGroup<ColumnIds>[]
   toggleVisibility?: (columns: string[]) => void
+  hasSearchBar?: boolean
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
   sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
 }) => {
-  const [filterExpanded, setFilterExpanded] = useFilterExpanded(title)
+  const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
   const isMobile = useIsMobile()
@@ -86,14 +56,7 @@ export const TableFilters = <ColumnIds extends string>({
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
-        <Grid size={{ mobile: 6 }}>
-          <Typography variant="headingSBold">{title}</Typography>
-          {subtitle && (
-            <Typography variant="bodySRegular" color="textSecondary">
-              {subtitle}
-            </Typography>
-          )}
-        </Grid>
+        <Grid size={{ mobile: 6 }}>{leftChildren}</Grid>
         <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
           {!isMobile && toggleVisibility && (
             <TableButton
@@ -113,11 +76,14 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
           {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
+          {!isMobile && hasSearchBar && (
+            <TableSearchField collapsible value={searchText} onChange={onSearch} testId={filterExpandedKey} />
+          )}
         </Grid>
         {isMobile ? (
           <>
             <Grid size={12}>
-              <TableSearchField value={searchText} onChange={onSearch} />
+              <TableSearchField value={searchText} onChange={onSearch} testId={`${filterExpandedKey}-mobile`} />
             </Grid>
             <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
               {sort}
@@ -125,7 +91,7 @@ export const TableFilters = <ColumnIds extends string>({
           </>
         ) : (
           chips && (
-            <Grid container size={12} gap={0} justifyContent="space-between">
+            <Grid container size={12} gap={Spacing.xs} justifyContent="space-between">
               {chips}
             </Grid>
           )
