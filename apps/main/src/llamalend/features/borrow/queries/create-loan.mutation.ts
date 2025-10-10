@@ -3,12 +3,13 @@ import { useAccount, useConfig } from 'wagmi'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useMutation } from '@tanstack/react-query'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import { Address } from '@ui-kit/utils'
+import { Address, Amount, Decimal } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
@@ -38,7 +39,15 @@ const getCreateMethods = (poolId: string, leverageEnabled: boolean) => {
   return {
     createLoanIsApproved: parent.createLoanIsApproved.bind(parent),
     createLoanApprove: parent.createLoanApprove.bind(parent),
-    createLoan: parent.createLoan.bind(parent),
+    createLoan: async (collateral: Amount, userBorrowed: Amount, debt: Amount, range: number, slippage: Decimal) => {
+      if (leverageEnabled && (market instanceof LendMarketTemplate || market.leverageV2.hasLeverage())) {
+        const parent = market instanceof LendMarketTemplate ? market.leverage : market.leverageV2
+        return (await parent.createLoan(collateral, userBorrowed, debt, range, +slippage)) as Address
+      }
+      console.assert(!+userBorrowed, `userBorrowed not supported in this market`)
+      const parent = leverageEnabled && market instanceof MintMarketTemplate ? market.leverage : market
+      return (await parent.createLoan(collateral, debt, range, +slippage)) as Address
+    },
   }
 }
 
@@ -61,7 +70,7 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
           notify(t`Approved loan creation`, 'success')
         }
 
-        const loanTxHash = (await createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
+        const loanTxHash = await createLoan(userCollateral, userBorrowed, debt, range, slippage)
         await waitForTransactionReceipt(config, { hash: loanTxHash })
         return loanTxHash
       },

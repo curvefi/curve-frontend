@@ -5,7 +5,7 @@ import { ExternalLink } from 'ui/src/Link'
 import { formatDate } from '../utils'
 
 const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) => {
-  const { campaignName, platform, description, action, dashboardLink, period } = rewardsPool
+  const { campaignName, platform, description, action, dashboardLink, period, steps } = rewardsPool
 
   const title = () => {
     if (campaignName && platform) {
@@ -44,6 +44,16 @@ const TooltipMessage = ({ rewardsPool }: { rewardsPool: CampaignPoolRewards }) =
         </Box>
       )}
       <TooltipParagraph>{getDescription()}</TooltipParagraph>
+      {steps && steps.length > 0 && (
+        <TooltipParagraph>
+          <TooltipStepsTitle>Steps:</TooltipStepsTitle>
+          <ol>
+            {steps.map((step) => (
+              <TooltipStep key={step}>{step}</TooltipStep>
+            ))}
+          </ol>
+        </TooltipParagraph>
+      )}
       <TooltipDisclaimer>
         External rewards are project dependent, always check with the token issuer to make sure you have taken all the
         necessary actions to benefit from their rewards program.
@@ -78,6 +88,15 @@ const TooltipDisclaimer = styled.p`
   text-align: left;
   font-weight: normal;
   font-size: var(--font-size-2);
+`
+
+const TooltipStepsTitle = styled.span`
+  font-weight: bold;
+`
+
+const TooltipStep = styled.li`
+  list-style: auto;
+  margin: 0 0 0 2ch;
 `
 
 export default TooltipMessage

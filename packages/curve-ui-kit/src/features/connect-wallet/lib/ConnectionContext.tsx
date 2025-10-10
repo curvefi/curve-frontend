@@ -59,11 +59,10 @@ export function useWagmiWallet() {
         client?.transport.request && {
           provider: { request: client.transport.request },
           account: { address }, // the ensName is set later when detected
-          chainId: client.chain.id,
         }
       hackSignerInCypress(wallet)
       return { wallet, provider: wallet ? new BrowserProvider(wallet.provider) : null }
-    }, [address, client?.chain.id, client?.transport.request]) ?? null),
+    }, [address, client?.transport.request]) ?? null),
   }
 }
 

@@ -11,6 +11,7 @@ import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES } from './constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
@@ -37,7 +38,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     resolver: vestResolver(borrowFormValidationSuite),
     defaultValues: {
       userCollateral: undefined,
-      userBorrowed: 0,
+      userBorrowed: `0` satisfies Decimal,
       debt: undefined,
       leverageEnabled: false,
       slippage: SLIPPAGE_PRESETS.STABLE,

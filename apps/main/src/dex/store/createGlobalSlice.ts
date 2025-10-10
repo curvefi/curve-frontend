@@ -62,7 +62,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
       }),
     )
   },
-  hydrate: async (curveApi, prevCurveApi, wallet) => {
+  hydrate: async (curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const state = get()
@@ -70,7 +70,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     const isUserSwitched = prevCurveApi?.signerAddress !== curveApi.signerAddress
     const { chainId } = curveApi
     log('Hydrating DEX', curveApi?.chainId, {
-      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
       hasRPC: !curveApi.isNoRPC,

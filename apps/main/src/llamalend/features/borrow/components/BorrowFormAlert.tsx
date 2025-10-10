@@ -5,10 +5,11 @@ import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
 import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { Decimal } from '@ui-kit/utils'
 import type { BorrowFormErrors } from '../types'
 
 /** List of fields that show their own error messages, those will be omitted from the general error alert */
-const handledErrors: BorrowFormErrors[number][0][] = ['userCollateral', 'debt', 'maxDebt', 'userCollateral']
+const handledErrors: BorrowFormErrors[Decimal][0][] = ['userCollateral', 'debt', 'maxDebt', 'userCollateral']
 
 /**
  * Alert component to display the status of the borrow form submission.

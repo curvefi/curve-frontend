@@ -6,7 +6,7 @@ import useStore from '@/lend/store/useStore'
 import type { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import type { Chain, Address } from '@curvefi/prices-api'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -51,7 +51,10 @@ export const useMarketDetails = ({
     chainId,
     tokenAddress: borrowed_token?.address,
   })
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
+
+  const { data: campaignsVault } = useCampaignsByAddress({ blockchainId, address: vault as Address })
+  const { data: campaignsController } = useCampaignsByAddress({ blockchainId, address: controller as Address })
+  const campaigns = [...campaignsVault, ...campaignsController]
 
   const {
     borrowApy: averageBorrowApy,
@@ -89,10 +92,6 @@ export const useMarketDetails = ({
   const supplyAprCrvMaxBoost = crvRates?.[1] ?? lendingSnapshots?.[0]?.lendAprCrvMaxBoost ?? 0
   const collateralRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.collateralToken?.rebasingYield // take only most recent rebasing yield
   const borrowRebasingYield = lendingSnapshots?.[lendingSnapshots.length - 1]?.borrowedToken?.rebasingYield // take only most recent rebasing yield
-  const campaignRewards =
-    campaigns && vault && controller
-      ? [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])]
-      : []
   const extraIncentivesTotalApr = sum(rewardsApr?.map((r) => r.apy) ?? [])
   const totalSupplyRateMinBoost =
     supplyApy == null
@@ -145,7 +144,7 @@ export const useMarketDetails = ({
       averageRebasingYield: averageBorrowRebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (collateralRebasingYield ?? 0),
       totalAverageBorrowRate,
-      extraRewards: campaignRewards,
+      extraRewards: campaigns,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     supplyAPY: {
@@ -171,7 +170,7 @@ export const useMarketDetails = ({
             address: r.tokenAddress,
           }))
         : [],
-      extraRewards: campaignRewards,
+      extraRewards: campaigns,
       loading: !llamma || isSnapshotsLoading || isMarketDetailsLoading.marketOnChainRates,
     },
     availableLiquidity: {

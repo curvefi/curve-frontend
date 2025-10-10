@@ -9,7 +9,7 @@ import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-pos
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import type { Address, Chain } from '@curvefi/prices-api'
-import { useCampaignsByNetwork } from '@ui-kit/entities/campaigns'
+import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
@@ -48,7 +48,7 @@ export const useBorrowPositionDetails = ({
   const prices = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
 
   const blockchainId = networks[chainId].id as Chain
-  const { data: campaigns } = useCampaignsByNetwork(blockchainId)
+  const { data: campaigns } = useCampaignsByAddress({ blockchainId, address: controller as Address })
   const { data: onChainRatesData, isLoading: isOnchainRatesLoading } = useMarketOnChainRates({
     chainId,
     marketId,
@@ -82,10 +82,6 @@ export const useBorrowPositionDetails = ({
     if (!collateralUsdRate || !collateral || !borrowed) return null
     return Number(collateral) * Number(collateralUsdRate) + Number(borrowed)
   }, [collateral, borrowed, collateralUsdRate])
-  const campaignRewards = useMemo(() => {
-    if (!campaigns || !controller) return []
-    return [...(campaigns[controller.toLowerCase()] ?? [])]
-  }, [campaigns, controller])
 
   const rebasingYield = lendSnapshots?.[lendSnapshots.length - 1]?.collateralToken?.rebasingYield // take most recent rebasing yield
   return {
@@ -106,7 +102,7 @@ export const useBorrowPositionDetails = ({
       averageRebasingYield: averageRebasingYield ?? null,
       totalBorrowRate: borrowApy == null ? null : Number(borrowApy) - (rebasingYield ?? 0),
       totalAverageBorrowRate: averageRate == null ? null : averageRate - (averageRebasingYield ?? 0),
-      extraRewards: campaignRewards,
+      extraRewards: campaigns,
       loading: !market || isOnchainRatesLoading || isLendSnapshotsLoading || !market?.addresses.controller,
     },
     liquidationRange: {

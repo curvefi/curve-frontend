@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import type { AriaButtonProps } from 'react-aria'
 import { useButton } from 'react-aria'
 import { styled } from 'styled-components'
@@ -7,7 +7,7 @@ import Icon from '@ui/Icon'
 import Spinner from '@ui/Spinner'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
-import { copyToClipboard } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -50,11 +50,11 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   const [usdRate, setUsdRate] = useState<number | undefined>(undefined)
   const parsedUsdRate = formatNumber(usdRate, { ...FORMAT_OPTIONS.USD, defaultValue: '-' })
 
-  const handleMouseEnter = (foundUsdRate?: string) => {
-    if (!foundUsdRate) {
+  const handleMouseEnter = useCallback(() => {
+    if (usdRate == null) {
       void fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate)
     }
-  }
+  }, [usdRate, chainId, tokenAddress])
 
   const parsedTokenName = useMemo(() => {
     if (tokenName && tokenName.length > 10) {
@@ -64,18 +64,28 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
   }, [tokenName])
 
   return (
-    <ChipTokenWrapper className={className} onMouseEnter={() => handleMouseEnter(parsedUsdRate)}>
+    <ChipTokenWrapper className={className} onMouseEnter={handleMouseEnter}>
       <span>{isHighlight ? <strong>{parsedTokenName}</strong> : parsedTokenName} </span>
       <ChipTokenAdditionalInfo>
         <Button {...props} onPress={() => copyToClipboard(tokenAddress)}>
-          <ChipTokenUsdRate>{typeof usdRate === 'undefined' ? <Spinner size={10} /> : parsedUsdRate}</ChipTokenUsdRate>
-          <ChipTokenCopyButtonIcon name="Copy" size={16} />
+          <AlignmentWrapper>
+            <ChipTokenUsdRate>
+              {usdRate == null ? <ChipTokenUsdRateSpinner size={10} /> : parsedUsdRate}
+            </ChipTokenUsdRate>
+            <ChipTokenAddress>{shortenAddress(tokenAddress)}</ChipTokenAddress>
+            <ChipTokenCopyButtonIcon name="Copy" size={16} />
+          </AlignmentWrapper>
         </Button>
       </ChipTokenAdditionalInfo>
     </ChipTokenWrapper>
   )
 }
 
+const AlignmentWrapper = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: end;
+`
 const ChipTokenAdditionalInfo = styled.span`
   align-items: center;
   max-width: 0;
@@ -101,19 +111,22 @@ const ChipTokenWrapper = styled.span`
     }
   }
 `
-
-const ChipTokenUsdRate = styled.span`
-  margin: 0 2px;
-  position: relative;
-  top: -2px;
-  font-size: var(--font-size-1);
-  font-weight: bold;
+const ChipTokenAddress = styled.span`
+  font-family: var(--font-mono);
+  font-size: var(--font-size-2);
+  margin-bottom: 2px;
 `
 
+const ChipTokenUsdRate = styled.span`
+  font-size: var(--font-size-1);
+  font-weight: bold;
+  margin-bottom: 2px;
+`
+
+const ChipTokenUsdRateSpinner = styled(Spinner)``
+
 const ChipTokenCopyButtonIcon = styled(Icon)`
-  position: relative;
-  top: 1px;
-  margin: 0 2px;
+  margin-bottom: 2px;
 `
 
 export default ChipToken

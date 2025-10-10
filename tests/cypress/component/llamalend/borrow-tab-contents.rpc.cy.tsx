@@ -98,7 +98,7 @@ describe('BorrowTabContents Component Tests', () => {
 
   it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
     cy.mount(<BorrowTabTestWrapper type={marketType} />)
-    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('exist')
+    cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
     cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
     getActionValue('borrow-health').should('have.text', '∞')
