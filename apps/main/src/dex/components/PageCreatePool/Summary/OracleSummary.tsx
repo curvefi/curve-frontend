@@ -13,9 +13,9 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
+import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
-import { scanAddressPath } from '@ui/utils'
 
 type Props = {
   chainId: ChainId
