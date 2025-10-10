@@ -40,8 +40,9 @@ const IntegrationsComp = ({
 
   const { data: networks } = useNetworks()
   const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
-  const networksIdMapper = fromEntries(
-    recordEntries(networks).map(([chainId, { networkId }]) => [networkId, Number(chainId)]),
+  const networksIdMapper = useMemo(
+    () => fromEntries(recordEntries(networks).map(([chainId, { networkId }]) => [networkId, Number(chainId)])),
+    [networks],
   )
 
   const { filterKey, filterNetworkId } = parseSearchParams(
