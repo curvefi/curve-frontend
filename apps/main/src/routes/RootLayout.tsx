@@ -79,16 +79,16 @@ export const RootLayout = () => {
   const theme = useUserProfileStore((state) => state.theme)
 
   return (
-    <ErrorBoundary title={t`Layout error`}>
-      <StyleSheetManager shouldForwardProp={shouldForwardProp}>
-        <ThemeProvider theme={theme}>
+    <StyleSheetManager shouldForwardProp={shouldForwardProp}>
+      <ThemeProvider theme={theme}>
+        <ErrorBoundary title={t`Layout error`}>
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <NetworkAwareLayout />
             </QueryProvider>
           </OverlayProvider>
-        </ThemeProvider>
-      </StyleSheetManager>
-    </ErrorBoundary>
+        </ErrorBoundary>
+      </ThemeProvider>
+    </StyleSheetManager>
   )
 }
