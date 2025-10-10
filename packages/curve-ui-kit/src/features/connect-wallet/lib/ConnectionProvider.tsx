@@ -54,7 +54,7 @@ export const ConnectionProvider = <App extends AppName>({
       if (networkChainId !== walletChainId) {
         setConnectState(LOADING)
         if (isFocused && !(await switchChainAsync({ chainId: networkChainId as WagmiChainId }))) {
-          console.warn(`Failed to switch wallet to chain ${chainId}, current chain is ${wallet?.chainId}`)
+          console.warn(`Failed to switch wallet to chain ${networkChainId}, current chain is ${walletChainId}`)
           setConnectState(FAILURE)
           onChainUnavailable([networkChainId, walletChainId as AppChainId<App>])
         }
