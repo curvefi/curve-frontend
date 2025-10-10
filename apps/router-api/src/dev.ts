@@ -1,8 +1,7 @@
-import dotenv from 'dotenv'
 import type { FastifyListenOptions } from 'fastify'
-import { buildServer } from './server'
+import { createRouterApiServer } from './server'
 
-dotenv.config() // Load environment variables from .env file
+process.loadEnvFile() // Load environment variables from .env file
 
 const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOptions => ({
   port: Number(PORT),
@@ -15,7 +14,7 @@ const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOp
  * On Vercel, we use the server instance directly in the API route handler of the main app.
  */
 async function start(): Promise<void> {
-  const server = buildServer()
+  const server = createRouterApiServer()
 
   const stopServer = async (signal: NodeJS.Signals) => {
     server.log.info({ signal }, 'Received shutdown signal. Closing server.')
