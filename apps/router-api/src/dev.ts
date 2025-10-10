@@ -1,5 +1,8 @@
+import dotenv from 'dotenv'
 import type { FastifyListenOptions } from 'fastify'
 import { buildServer } from './server'
+
+dotenv.config() // Load environment variables from .env file
 
 const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOptions => ({
   port: Number(PORT),
@@ -9,6 +12,7 @@ const loadConfigFromEnv = ({ HOST, PORT = 3010 } = process.env): FastifyListenOp
 /**
  * Starts the Fastify server and sets up graceful shutdown handlers.
  * This function is invoked when running the application locally.
+ * On Vercel, we use the server instance directly in the API route handler of the main app.
  */
 async function start(): Promise<void> {
   const server = buildServer()
