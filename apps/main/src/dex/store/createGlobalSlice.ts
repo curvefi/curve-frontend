@@ -97,7 +97,6 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
-    state.networks.setNetworkConfigs(curveApi)
 
     const networks = await fetchNetworks()
     const network = networks[chainId]
@@ -111,7 +110,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     // if no pools found for network, set tvl, volume and pools state to empty object
     if (!poolIds.length) {
       state.pools.setEmptyPoolListDefault(chainId)
-      state.tokens.setEmptyPoolListDefault(chainId)
+      state.tokens.setEmptyPoolListDefault(curveApi)
       return
     }
 

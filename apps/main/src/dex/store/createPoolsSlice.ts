@@ -228,13 +228,12 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
         userBalances,
         tokens,
         [sliceKey]: { poolsMapper: storedPoolsMapper },
-        networks: networksStore,
       } = get()
 
       const { chainId } = curve
       const networks = await fetchNetworks()
       const { isLite } = networks[chainId]
-      const nativeToken = networksStore.nativeToken[chainId]
+      const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       try {
         set(
@@ -284,7 +283,7 @@ const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlic
               pools.fetchPoolsVolume(chainId, partialPoolDatas),
             ]))
 
-        const partialTokens = await tokens.setTokensMapper(chainId, partialPoolDatas)
+        const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
 
         if (curve.signerAddress) {
           void userBalances.fetchUserBalancesByTokens(curve, partialTokens)

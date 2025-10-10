@@ -30,7 +30,7 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
       const { chainId } = curve
       const poolsData = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
-      void setTokensMapper(chainId, poolsData)
+      void setTokensMapper(curve, poolsData)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )

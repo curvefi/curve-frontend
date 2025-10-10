@@ -27,7 +27,6 @@ export const PageRouterSwap = () => {
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
@@ -35,6 +34,7 @@ export const PageRouterSwap = () => {
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
+  const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')

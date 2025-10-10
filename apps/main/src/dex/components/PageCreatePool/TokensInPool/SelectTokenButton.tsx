@@ -48,7 +48,7 @@ const SelectTokenButton = ({
   const { endsWith } = useFilter({ sensitivity: 'base' })
 
   const isMobile = useIsMobile()
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
+  const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)

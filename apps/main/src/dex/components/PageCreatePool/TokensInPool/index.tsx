@@ -44,10 +44,10 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
   const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const basePools = useStore((state) => state.pools.basePools[chainId] ?? [])
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
+  const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
   const {
     data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory },
