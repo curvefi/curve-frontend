@@ -11,12 +11,14 @@ export const UserPositionFilterChips = ({
   userHasPositions,
   onSearch,
   searchText,
+  testId,
   ...filterProps
 }: FilterProps<LlamaMarketKey> & {
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   tab: MarketRateType
   searchText: string
   onSearch: (search: string) => void
+  testId: string
 }) => {
   const isMobile = useIsMobile()
   const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
@@ -24,7 +26,7 @@ export const UserPositionFilterChips = ({
     <Grid container justifyContent="space-between" size={12} columnSpacing={1}>
       {!isMobile && (
         <Grid size={showChips ? 6 : 12}>
-          <TableSearchField value={searchText} onChange={onSearch} />
+          <TableSearchField value={searchText} onChange={onSearch} testId={testId} />
         </Grid>
       )}
       {showChips && (
