@@ -4,7 +4,7 @@ import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
@@ -13,6 +13,7 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { ChainFilterChipWrapper } from './chips/ChainFilterChipWrapper'
 import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
 import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
@@ -68,7 +69,6 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const isMobile = useIsMobile()
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
@@ -91,14 +91,15 @@ export const LlamaMarketsTable = ({
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={t`Markets`}
-        subtitle={t`Find your next opportunity`}
+        filterExpandedKey={LOCAL_STORAGE_KEY}
         loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         searchText={searchText}
+        hasSearchBar
         onSearch={onSearch}
+        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={
           <LendingMarketsFilters
             columnFilters={columnFiltersById}
