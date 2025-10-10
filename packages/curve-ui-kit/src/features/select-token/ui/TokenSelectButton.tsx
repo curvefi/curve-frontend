@@ -30,6 +30,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     open={false}
     disabled={disabled}
     displayEmpty
+    size="small"
     renderValue={() =>
       token ? (
         <TokenLabel
@@ -45,30 +46,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => (
     }
     IconComponent={KeyboardArrowDownIcon}
     sx={{
-      maxHeight: ButtonSize.sm,
-      minWidth: MinWidth.select,
       backgroundColor: (t) => t.design.Layer[1].Fill,
-      border: 'none',
-      borderBottom: (t) => `2px solid ${t.design.Layer[1].Outline}`,
-      ...(!disabled && {
-        '&:hover': {
-          border: 'none',
-          borderBottom: (t) => `2px solid ${t.design.Layer[2].Outline}`,
-        },
-        '&:active': {
-          border: 'none',
-          borderBottom: (t) => `2px solid ${t.design.Layer[3].Outline}`,
-        },
-      }),
-      '& .MuiOutlinedInput-notchedOutline': {
-        border: 'none',
-      },
-      '& .MuiSelect-select': {
-        padding: 0,
-        paddingInlineStart: Spacing.sm,
-        paddingInlineEnd: Spacing.xs,
-      },
-      ...sx,
     }}
   />
 )

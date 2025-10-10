@@ -72,14 +72,7 @@ export const RangeSliderFilter = <T,>({
       size="small"
       displayEmpty
       data-testid={`minimum-slider-filter-${id}`}
-      renderValue={() => (
-        <Typography variant="bodyMRegular">
-          {`${title}: `}
-          <Typography component="span" variant="bodyMBold">
-            {range.map(format).join(' - ')}
-          </Typography>
-        </Typography>
-      )}
+      renderValue={() => <Typography variant="bodySBold">{range.map(format).join(' - ')}</Typography>}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
       MenuProps={{ elevation: 3 }}
     >

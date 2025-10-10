@@ -1,5 +1,5 @@
 import { type MouseEvent, ReactNode, useCallback, useMemo, useRef } from 'react'
-import Box from '@mui/material/Box'
+import { Stack } from '@mui/material'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
@@ -94,7 +94,7 @@ export const MultiSelectFilter = <T,>({
               </MenuItem>
             ))
           ) : (
-            <Typography variant="bodyMBold">{defaultText}</Typography>
+            <Typography variant="bodySBold">{defaultText}</Typography>
           )
         }
       ></Select>
@@ -107,7 +107,13 @@ export const MultiSelectFilter = <T,>({
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
           slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
         >
-          <Box borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`} padding={Spacing.sm} component="li">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            borderBottom={(t) => `1px solid ${t.design.Layer[3].Outline}`}
+            padding={Spacing.sm}
+            component="li"
+          >
             <Button
               color="ghost"
               size="extraSmall"
@@ -115,7 +121,7 @@ export const MultiSelectFilter = <T,>({
               data-testid="multi-select-clear"
               sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
-          </Box>
+          </Stack>
           {options.map((optionId) => (
             <InvertOnHover hoverEl={menuRef.current} key={optionId}>
               <MenuItem
