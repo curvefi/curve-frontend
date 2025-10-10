@@ -28,8 +28,8 @@ export const MarketFilterChipWrapper = ({
     !hasFilters && hiddenMarketCount
       ? [
           t`Some markets are hidden by default due to low TVL.`,
-          t`Deprecated markets are only visible for users that have an active position.`,
           t`You may change that in the TVL filter.`,
+          t`Note that deprecated markets are only visible for users that have an active position.`,
         ].join(' ')
       : null
 
