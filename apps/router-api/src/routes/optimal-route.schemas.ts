@@ -78,10 +78,12 @@ const routeItemSchema = {
   },
 } as const
 
-export const OptimalRouteSchema = {
+const OptimalRouteSchema = {
   querystring: optimalRouteQuerySchema,
   response: { 200: { type: 'array', items: routeItemSchema } },
 }
+
+export const OptimalRouteOpts = { schema: OptimalRouteSchema } as const
 
 type RouteStep = {
   tokenIn: [Address]

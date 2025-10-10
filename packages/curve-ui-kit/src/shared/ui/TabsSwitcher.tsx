@@ -57,12 +57,12 @@ export const TabsSwitcher = <T extends string | number>({
     sx={{ ...sx, ...(fullWidth && { '& .MuiTab-root': { flexGrow: 1 } }) }}
     {...props}
   >
-    {options.map(({ value, label, sx, href, ...props }) => (
+    {options.map(({ value, label, href, ...props }) => (
       <Tab
+        data-testid={`tab-${value}`}
         key={value}
         value={value}
         label={<Typography variant={textVariant ?? defaultTextVariants[size]}>{label}</Typography>}
-        sx={sx}
         {...(href && { href, component: Link })}
         {...props}
       />

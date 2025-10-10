@@ -1,36 +1,22 @@
 import BigNumber from 'bignumber.js'
-import type { FastifyInstance, FastifyRequest } from 'fastify'
-import { FastifyBaseLogger } from 'fastify/types/logger'
+import type { FastifyRequest } from 'fastify'
+import { FastifyBaseLogger } from 'fastify'
 import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import { type CurveJS, loadCurve } from '../curvejs'
-import {
-  type Decimal,
-  OptimalRoutePath,
-  type OptimalRouteQuery,
-  OptimalRouteSchema,
-  type RouteResponse,
-} from './optimal-route.schemas'
+import { type Decimal, type OptimalRouteQuery, type RouteResponse } from './optimal-route.schemas'
 
 export const notFalsy = <T>(...items: (T | null | undefined | false | 0)[]): T[] => items.filter(Boolean) as T[]
 
 /**
- * Register the optimal route endpoint. This is inspired by the Enso endpoint with the same path.
+ * Handles the optimal route request. Returns the optimal route for the given parameters.
  */
-export function registerOptimalRoute(server: FastifyInstance): void {
-  server.get(
-    OptimalRoutePath,
-    {
-      schema: OptimalRouteSchema,
-    },
-    async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
-      const query = request.query
-      const result = await buildOptimalRouteResponse(query, request.log)
-      request.log.info({ message: 'route calculated', query, result })
-      return result
-    },
-  )
+export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: OptimalRouteQuery }>) => {
+  const query = request.query
+  const result = await buildOptimalRouteResponse(query, request.log)
+  request.log.info({ message: 'route calculated', query, result })
+  return result
 }
 
 /**
@@ -55,7 +41,7 @@ const LOW_EXCHANGE_RATE = 0.98
  * Tokens of type oracle or erc4626 can have stored rates above 1 and should be handled differently when checking for low exchange rate.
  * @returns The stored rate for the to token in the last route.
  */
-export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAddress: string) {
+async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAddress: string) {
   const { poolAddress, poolId } = routes[routes.length - 1]
   if (poolAddress === zeroAddress) return
   const pool = curve.getPool(poolId)
@@ -68,10 +54,7 @@ export async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAd
 /**
  * Runs the router to get the optimal route and builds the response.
  */
-export async function buildOptimalRouteResponse(
-  query: OptimalRouteQuery,
-  log: FastifyBaseLogger,
-): Promise<RouteResponse[]> {
+async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyBaseLogger): Promise<RouteResponse[]> {
   const {
     tokenOut: [toToken],
     tokenIn: [fromToken],

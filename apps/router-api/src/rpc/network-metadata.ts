@@ -2,25 +2,18 @@ import { NETWORK_CONSTANTS } from '@curvefi/api/lib/constants/network_constants.
 import type { CurveJS } from '../curvejs'
 
 /**
- * Sanitize a string to be used as an environment variable key.
- * Converts to uppercase, replaces non-alphanumeric characters with underscores,
- * and trims leading/trailing underscores.
- */
-export const sanitizeId = (value: string): string =>
-  value
-    .trim()
-    .replace(/[^a-zA-Z0-9]+/g, '_')
-    .replace(/^_+|_+$/g, '')
-    .toUpperCase()
-
-/**
  * Resolve the RPC URL for a given chain ID from environment variables.
  * Looks for an environment variable named `RPC_URL_{SANITIZED_ID}`.
  * If not found, uses the provided fallback URL.
  * Throws an error if neither is available.
  */
-export function resolveEnv(id: string, fallback?: string, env: NodeJS.ProcessEnv = process.env): string {
-  const envKey = `RPC_URL_${sanitizeId(id)}`
+function resolveEnv(id: string, fallback?: string, env: NodeJS.ProcessEnv = process.env): string {
+  // Converts to uppercase, replaces non-alphanumeric characters with underscores and trims leading/trailing underscores
+  const envKey = `RPC_URL_${id
+    .trim()
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toUpperCase()}`
   const url = env[envKey]?.trim() ?? fallback
   if (!url?.length) throw new Error(`Missing RPC URL for chain ${id}. Add it to environment variable: "${envKey}"`)
   return url
