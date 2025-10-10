@@ -44,8 +44,8 @@ export const TableSearchField = ({
         sx={{
           display: 'flex',
           transition: TransitionFunction,
-          flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.md}`,
-          minWidth: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.md}`,
+          flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
+          width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
         }}
       >
         {!isExpanded ? (
