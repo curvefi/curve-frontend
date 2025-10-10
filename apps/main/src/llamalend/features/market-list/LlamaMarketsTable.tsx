@@ -40,7 +40,7 @@ const useDefaultLlamaFilter = (minLiquidity: number) =>
 const migration: MigrationOptions<ColumnFiltersState> = {
   version: 2,
   // migration from v1 to v2: add deprecated filter
-  migrate: (oldValue, initialValue) => [...initialValue.filter((i) => !oldValue.some((o) => o.id === i.id))],
+  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
 }
 
 export const LlamaMarketsTable = ({
