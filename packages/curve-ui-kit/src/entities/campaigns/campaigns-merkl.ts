@@ -1,6 +1,7 @@
 import { groupBy, capitalize } from 'lodash'
 import type { Address } from 'viem'
 import { addQueryString, FetchError } from '@curvefi/prices-api/fetch'
+import { paginate } from '@curvefi/prices-api/paginate'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model'
 import { formatPercent } from '@ui-kit/utils'
@@ -92,21 +93,27 @@ export const {
 } = queryFactory({
   queryKey: () => ['campaigns-merkl'] as const,
   queryFn: async () => {
-    const params = {
-      mainProtocolId: 'curve',
-      test: false,
-      status: 'LIVE',
-      action: 'POOL', // Only pool campaigns for now. Perhaps there will be lending campaigns in the future
+    const fetchPage = async (page: number, items: number) => {
+      const params = {
+        mainProtocolId: 'curve',
+        test: false,
+        status: 'LIVE',
+        action: 'POOL', // Only pool campaigns for now. Perhaps there will be lending campaigns in the future
+        items,
+        page,
+      }
+
+      const url = `https://api.merkl.xyz/v4/opportunities${addQueryString(params)}`
+      const resp = await fetch(url, { method: 'GET' })
+
+      if (!resp.ok) {
+        throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`)
+      }
+
+      return (await resp.json()) as MerklOpportunity[]
     }
 
-    const url = `https://api.merkl.xyz/v4/opportunities${addQueryString(params)}`
-    const resp = await fetch(url, { method: 'GET' })
-
-    if (!resp.ok) {
-      throw new FetchError(resp.status, `Merkl fetch error ${resp.status} for URL: ${url}`)
-    }
-
-    const opportunities = (await resp.json()) as MerklOpportunity[]
+    const opportunities = await paginate(fetchPage, 0, 100)
     const campaigns = opportunities.flatMap(opportunityToCampaignPoolRewards)
 
     // Can't use Object.groupBy until we support ES2024
