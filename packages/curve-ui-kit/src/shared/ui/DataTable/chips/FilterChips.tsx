@@ -4,9 +4,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
-import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable/ResetFiltersButton'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ResetFiltersButton } from '../ResetFiltersButton'
 import { ChipGridItem } from './ChipGridItem'
 
 const { Spacing } = SizesAndSpaces
@@ -18,12 +18,7 @@ type MarketsFilterChipsProps = {
   children?: ReactNode
 }
 
-export const MarketFilterChipWrapper = ({
-  hiddenMarketCount,
-  resetFilters,
-  hasFilters,
-  children,
-}: MarketsFilterChipsProps) => {
+export const FilterChips = ({ hiddenMarketCount, resetFilters, hasFilters, children }: MarketsFilterChipsProps) => {
   const tooltip =
     !hasFilters && hiddenMarketCount
       ? t`Some markets are hidden by default due to low liquidity. You may change that in the liquidity filter.`

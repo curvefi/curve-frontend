@@ -5,6 +5,7 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
+import { FilterChips } from '@ui-kit/shared/ui/DataTable/chips/FilterChips'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -12,7 +13,6 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
@@ -80,7 +80,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <MarketFilterChipWrapper
+          <FilterChips
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
           >
@@ -92,7 +92,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               searchText={searchText}
               onSearch={onSearch}
             />
-          </MarketFilterChipWrapper>
+          </FilterChips>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />

@@ -1,6 +1,7 @@
 import { type MouseEvent, useCallback, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
+import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
@@ -23,6 +24,7 @@ const onCellClick = (target: EventTarget, url: string, routerNavigate: (href: st
 }
 
 export type DataRowProps<T extends TableItem> = {
+  table: Table<T>
   row: Row<T>
   isLast: boolean
   expandedPanel: ExpandedPanel<T>
@@ -30,6 +32,7 @@ export type DataRowProps<T extends TableItem> = {
 }
 
 export const DataRow = <T extends TableItem>({
+  table,
   isLast,
   row,
   expandedPanel,
@@ -83,7 +86,9 @@ export const DataRow = <T extends TableItem>({
         </TableRow>
       </InvertOnHover>
 
-      {isMobile && <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} />}
+      {isMobile && (
+        <ExpansionRow<T> colSpan={visibleCells.length} row={row} expandedPanel={expandedPanel} table={table} />
+      )}
     </>
   )
 }

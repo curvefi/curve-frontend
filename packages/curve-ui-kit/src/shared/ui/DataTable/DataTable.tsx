@@ -28,7 +28,6 @@ const { Sizing } = SizesAndSpaces
  * DataTable component to render the table with headers and rows.
  */
 export const DataTable = <T extends TableItem>({
-  table,
   emptyState,
   children,
   loading,
@@ -44,8 +43,8 @@ export const DataTable = <T extends TableItem>({
     maxHeight: string | number // also sets overflowY to 'auto'
   }
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
+  const { table, shouldStickFirstColumn } = rowProps
   const { rows } = table.getRowModel()
-  const { shouldStickFirstColumn } = rowProps
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)

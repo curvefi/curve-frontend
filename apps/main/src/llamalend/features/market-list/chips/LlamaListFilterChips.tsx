@@ -5,11 +5,11 @@ import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
+import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
-import { GridChip } from './GridChip'
 
 const { Spacing } = SizesAndSpaces
 

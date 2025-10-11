@@ -8,6 +8,7 @@ import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
+import { FilterChips } from '@ui-kit/shared/ui/DataTable/chips/FilterChips'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
@@ -15,7 +16,6 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { MarketTypeFilterChips } from './chips/MarketTypeFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
@@ -108,7 +108,7 @@ export const LlamaMarketsTable = ({
           />
         }
         chips={
-          <MarketFilterChipWrapper
+          <FilterChips
             hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
@@ -116,7 +116,7 @@ export const LlamaMarketsTable = ({
             {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
             <MarketTypeFilterChips {...filterProps} />
             <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          </MarketFilterChipWrapper>
+          </FilterChips>
         }
         sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
