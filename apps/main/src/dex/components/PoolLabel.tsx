@@ -7,6 +7,7 @@ import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
 import useStore from '@/dex/store/useStore'
 import { PoolData, PoolDataCache } from '@/dex/types/main.types'
+import type { INetworkName } from '@curvefi/api/lib/interfaces'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import { default as AlertTooltipIcon } from '@ui/Tooltip/TooltipAlert'
@@ -14,23 +15,16 @@ import { Chip } from '@ui/Typography'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 
-type PoolListProps = {
-  quickViewValue?: ReactNode
-  searchText?: string
-  searchTextByTokensAndAddresses?: { [address: string]: boolean }
-  searchTextByOther?: { [address: string]: boolean }
-  onClick(target: EventTarget): void
-}
-
 type Props = {
   className?: string
-  blockchainId: string
+  blockchainId: INetworkName
   isVisible?: boolean
   poolData: PoolDataCache | PoolData | undefined
-  poolListProps?: PoolListProps
+  quickViewValue?: ReactNode
+  onClick?: (target: EventTarget) => void
 }
 
-const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, poolListProps }: Props) => {
+const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, quickViewValue, onClick }: Props) => {
   const { pool } = poolData ?? {}
   const tokens = useMemo(
     () =>
@@ -45,8 +39,6 @@ const PoolLabel = ({ className = '', blockchainId, isVisible = true, poolData, p
   const tokenAlert = useTokenAlert(poolData?.tokenAddressesAll ?? [])
   const isMobile = useIsMobile()
   const searchedTerms = useStore((state) => state.poolList.searchedTerms)
-
-  const { quickViewValue, onClick } = poolListProps ?? {}
 
   const handleClick = (target: EventTarget) => {
     if (typeof onClick === 'function') {
