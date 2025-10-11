@@ -111,7 +111,12 @@ export const getCurrentApp = (path: string | null): AppName => {
   return AppNames.includes(app as AppName) ? (app as AppName) : 'dex'
 }
 
-export const getCurrentNetwork = (path: string | null): string => {
-  const [, , networkId] = path?.split('/') || []
+/**
+ * Gets the current network ID from the given URL path.
+ * @param path - The URL path to extract the network ID from.
+ * @returns The network ID if present, otherwise undefined (e.g., for the root path it's empty until redirected).
+ */
+export const getCurrentNetwork = (path: string): string | undefined => {
+  const [, , networkId] = path?.split('/') ?? []
   return networkId
 }

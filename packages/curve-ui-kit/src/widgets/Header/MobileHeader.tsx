@@ -66,7 +66,7 @@ export const MobileHeader = ({
       <Toolbar sx={(t) => ({ paddingBlock, zIndex: t.zIndex.drawer + 1 })}>
         <MobileTopBar
           isLite={isLite}
-          ChainProps={{ chainId, networks: supportedNetworks }}
+          networks={supportedNetworks}
           currentMenu={currentMenu}
           isSidebarOpen={isSidebarOpen}
           toggleSidebar={toggleSidebar}

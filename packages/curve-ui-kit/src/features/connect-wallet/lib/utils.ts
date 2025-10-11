@@ -1,20 +1,10 @@
 import type { Eip1193Provider } from 'ethers'
 import { createCurve } from '@curvefi/api'
 import { createLlamalend } from '@curvefi/llamalend-api'
+import { NETWORK_CONSTANTS as LLAMA_NETWORKS } from '@curvefi/llamalend-api/lib/llamalend'
 import type { NetworkDef } from '@ui/utils'
 import type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
-import {
-  AppLib,
-  CurveApi,
-  CurveChainId,
-  CurveNetworkId,
-  LibChainId,
-  LibKey,
-  LibNetworkId,
-  Libs,
-  LlamaChainId,
-  LlamaNetworkId,
-} from '@ui-kit/features/connect-wallet/lib/types'
+import { AppLib, CurveApi, LibChainId, LibKey, LibNetworkId, Libs } from '@ui-kit/features/connect-wallet/lib/types'
 import { AppName } from '@ui-kit/shared/routes'
 
 /**
@@ -35,21 +25,15 @@ const initLib: {
     externalProvider?: Eip1193Provider,
   ) => Promise<Libs[K]>
 } = {
-  llamaApi: async (
-    network: NetworkDef<LlamaNetworkId, LlamaChainId>,
-    externalProvider: Eip1193Provider | undefined,
-  ) => {
-    if (!externalProvider) {
+  llamaApi: async (network, externalProvider) => {
+    if (!externalProvider || !(network.chainId in LLAMA_NETWORKS)) {
       return
     }
     const api = createLlamalend()
     await api.init('Web3', { network, externalProvider }, { chainId: network.chainId })
     return api as LlamaApi
   },
-  curveApi: async (
-    network: NetworkDef<CurveNetworkId, CurveChainId>,
-    externalProvider: Eip1193Provider | undefined,
-  ) => {
+  curveApi: async (network, externalProvider) => {
     const { chainId } = network
     const curveApi = createCurve()
     if (externalProvider) {

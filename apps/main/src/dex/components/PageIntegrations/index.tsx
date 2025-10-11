@@ -5,7 +5,7 @@ import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import { ROUTE } from '@/dex/constants'
 import useStore from '@/dex/store/useStore'
 import type { FormValues } from '@/dex/types/integrations.types'
-import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
+import { ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
@@ -37,7 +37,6 @@ const IntegrationsComp = ({
   const setFormValues = useStore((state) => state.integrations.setFormValues)
   const networks = useStore((state) => state.networks.networks)
   const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
 
   const { filterKey, filterNetworkId } = parseSearchParams(
     searchParams,
@@ -144,14 +143,16 @@ const IntegrationsComp = ({
               integrationsAppNetworks={
                 !rChainId && (
                   <Box margin="0.25rem 0 0 0">
-                    {Object.keys(app.networks).map((networkId) => {
-                      if (networkId in networksIdMapper) {
-                        const chainId = networksIdMapper[networkId as NetworkEnum]
-                        const { name, logoSrc } = networks[chainId]
-                        return <img key={chainId} alt={name} src={logoSrc} loading="lazy" width="18" height="18" />
-                      }
-                      return null
-                    })}
+                    {Object.keys(app.networks).map((networkId) => (
+                      <img
+                        key={networkId}
+                        alt={`${networkId} logo`}
+                        src={networkId}
+                        loading="lazy"
+                        width="18"
+                        height="18"
+                      />
+                    ))}
                   </Box>
                 )
               }
