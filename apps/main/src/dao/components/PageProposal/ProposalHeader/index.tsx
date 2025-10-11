@@ -6,7 +6,7 @@ import SmallLabel from '@/dao/components/SmallLabel'
 import { ProposalData } from '@/dao/entities/proposals-mapper'
 import networks from '@/dao/networks'
 import { ExternalLink } from '@ui/Link'
-import { formatDate } from '@ui/utils'
+import { formatDate, scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
 type ProposalHeaderProps = {
@@ -42,7 +42,7 @@ const ProposalHeader = ({ proposal, loading, voteId, proposalType }: ProposalHea
         <MetricsComp
           title={t`Executed On`}
           data={
-            <StyledExternalLink href={networks[Chain.Ethereum].scanTxPath(executionTx)}>
+            <StyledExternalLink href={scanTxPath(networks[Chain.Ethereum], executionTx)}>
               <MetricsColumnData>{formatDate(executionDate)}</MetricsColumnData>
             </StyledExternalLink>
           }

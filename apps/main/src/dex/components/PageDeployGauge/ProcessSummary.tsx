@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import InfoBox from '@/dex/components/PageDeployGauge/InfoBox'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@mui/material/Button'
@@ -7,6 +8,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
 import Spinner from '@ui/Spinner'
+import { scanTxPath } from '@ui/utils'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenString } from '@ui-kit/utils'
@@ -20,10 +22,12 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
   const deploymentStatus = useStore((state) => state.deployGauge.deploymentStatus)
   const linkPoolAddress = useStore((state) => state.deployGauge.linkPoolAddress)
   const currentSidechain = useStore((state) => state.deployGauge.currentSidechain)
-  const networks = useStore((state) => state.networks.networks)
 
   const push = useNavigate()
   const sidechain: ChainId = currentSidechain !== null ? currentSidechain : 1
+
+  const { data: network } = useNetworkByChain({ chainId })
+  const { data: networkSidechain } = useNetworkByChain({ chainId: sidechain })
 
   return (
     <Box flex flexColumn>
@@ -51,7 +55,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                   </Box>
                   <Transaction
                     variant={'contained'}
-                    href={networks[sidechain].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
+                    href={scanTxPath(networkSidechain, deploymentStatus.sidechain.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.sidechain.transaction.hash)}
@@ -83,7 +87,7 @@ const ProcessSummary = ({ chainId, isLite }: Props) => {
                   </Box>
                   <Transaction
                     variant={'contained'}
-                    href={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
+                    href={scanTxPath(network, deploymentStatus.mirror.transaction.hash)}
                   >
                     <p>{t`Transaction:`}</p>
                     {shortenString(deploymentStatus.mirror.transaction.hash)}

@@ -42,6 +42,7 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+import { fetchNetworks } from '../entities/networks'
 
 const { chunk, flatten, isUndefined } = lodash
 
@@ -1573,11 +1574,7 @@ const lockCrv = {
 }
 
 async function warnIncorrectEstGas(chainId: ChainId, estimatedGas: EstimatedGas) {
-  // import useStore dynamically to avoid circular dependency issues (only in production builds)
-  const {
-    default: { getState },
-  } = await import('@/dex/store/useStore')
-  const network = getState().networks.networks[chainId]
+  const network = (await fetchNetworks())[chainId]
   const isGasL2 = network?.gasL2
   if (isGasL2 && !Array.isArray(estimatedGas) && estimatedGas !== null) {
     console.warn('Incorrect estimated gas returned for L2', estimatedGas)

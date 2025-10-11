@@ -1,11 +1,9 @@
-import { getNetworkDefs } from '@/dex/lib/networks'
 import { createRootRoute } from '@tanstack/react-router'
 import { t } from '@ui-kit/lib/i18n'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { RootLayout } from './RootLayout'
 
 export const rootRoute = createRootRoute({
-  loader: getNetworkDefs,
   component: () => (
     <ErrorBoundary title={t`Root layout error`}>
       <RootLayout />

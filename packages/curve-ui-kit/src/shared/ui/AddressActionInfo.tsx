@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 import Button from '@mui/material/Button'
 import LinkMui from '@mui/material/Link'
-import { BaseConfig } from '@ui/utils'
+import { BaseConfig, scanAddressPath } from '@ui/utils'
 import { shortenAddress } from '../../utils'
 import { ArrowTopRightIcon } from '../icons/ArrowTopRightIcon'
 import ActionInfo from './ActionInfo'
@@ -20,7 +20,7 @@ export const AddressActionInfo = ({ network, title, address, isBorderBottom }: A
       address && (
         <Button
           component={LinkMui}
-          href={network?.scanAddressPath(address)}
+          href={network ? scanAddressPath(network, address) : undefined}
           target="_blank"
           color="navigation"
           variant="link"

@@ -7,6 +7,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { useNetworkByChain, useNetworks } from '../entities/networks'
 
 export const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
@@ -18,8 +19,9 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
   const fetchPoolsTvl = useStore((state) => state.pools.fetchPoolsTvl)
   const setTokensMapper = useStore((state) => state.tokens.setTokensMapper)
   const fetchAllStoredBalances = useStore((state) => state.userBalances.fetchAllStoredBalances)
-  const network = useStore((state) => state.networks.networks[networkDef.chainId])
-  const networks = useStore((state) => state.networks.networks)
+
+  const { data: networks } = useNetworks()
+  const { data: network } = useNetworkByChain({ chainId: networkDef.chainId })
 
   useGasInfoAndUpdateLib({ chainId: networkDef.chainId, networks })
 
@@ -28,7 +30,7 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
       const { chainId } = curve
       const poolsData = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
-      void setTokensMapper(chainId, poolsData)
+      void setTokensMapper(curve, poolsData)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )

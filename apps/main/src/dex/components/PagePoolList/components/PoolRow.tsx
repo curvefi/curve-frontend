@@ -9,6 +9,7 @@ import type {
   SearchTermMapper,
 } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { parseSearchTermMapper } from '@/dex/hooks/useSearchTermMapper'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -67,7 +68,7 @@ export const PoolRow = ({
   const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
   const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const theme = useUserProfileStore((state) => state.theme)
 
@@ -130,7 +131,7 @@ export const PoolRow = ({
           isMobile={isMobile}
           result={searchedByAddresses}
           searchTermMapper={parsedSearchTermMapper}
-          scanAddressPath={network.scanAddressPath}
+          network={network}
         />
       )}
     </>

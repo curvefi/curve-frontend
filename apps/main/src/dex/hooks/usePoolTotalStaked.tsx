@@ -5,6 +5,7 @@ import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { useNetworks } from '../entities/networks'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { address, lpToken, gauge } = poolDataCacheOrApi?.pool ?? {}
@@ -12,7 +13,8 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
   const { provider: walletProvider } = useWallet()
   const staked = useStore((state) => state.pools.stakedMapper[address])
   const setStateByActiveKey = useStore((state) => state.pools.setStateByActiveKey)
-  const { rpcUrl } = useStore((state) => curveApi && state.networks.networks[curveApi.chainId]) ?? {}
+  const { data: networks } = useNetworks()
+  const { rpcUrl } = (curveApi && networks[curveApi.chainId]) || {}
 
   const updateTotalStakeValue = useCallback(
     (value: { totalStakedPercent: string | number; gaugeTotalSupply: number | string }) => {

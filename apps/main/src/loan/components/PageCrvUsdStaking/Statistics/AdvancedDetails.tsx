@@ -1,6 +1,7 @@
 import { SCRVUSD_VAULT_ADDRESS } from '@/loan/constants'
 import networks from '@/loan/networks'
 import { Card, CardHeader, Stack } from '@mui/material'
+import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,7 +20,7 @@ const AdvancedDetails = () => (
       <ActionInfo
         label={t`Vault Contract Address`}
         value={shortenAddress(SCRVUSD_VAULT_ADDRESS)}
-        link={networks[Chain.Ethereum].scanAddressPath(SCRVUSD_VAULT_ADDRESS)}
+        link={scanAddressPath(networks[Chain.Ethereum], SCRVUSD_VAULT_ADDRESS)}
         copyValue={SCRVUSD_VAULT_ADDRESS}
         copiedTitle={t`Vault contract address copied!`}
       />

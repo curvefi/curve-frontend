@@ -5,6 +5,7 @@ import { ChainId } from '@/loan/types/loan.types'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { scanAddressPath } from '@ui/utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { AddressActionInfo, AddressActionInfoProps } from '@ui-kit/shared/ui/AddressActionInfo'
 import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
@@ -15,7 +16,7 @@ const OldDetailInfoAddressLookup = ({ chainId, title, address, ...props }: Props
   <StyledStats {...props}>
     <strong>{title}</strong>
     <span>
-      <StyledExternalLink href={networks[chainId]?.scanAddressPath(address)}>
+      <StyledExternalLink href={scanAddressPath(networks[chainId], address)}>
         {shortenAddress(address)}
         <Icon name="Launch" size={16} />
       </StyledExternalLink>

@@ -1,6 +1,7 @@
 import { styled } from 'styled-components'
 import CurrencyReservesContent from '@/dex/components/PagePool/PoolDetails/CurrencyReserves/CurrencyReservesContent'
 import { StyledStats } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolTokensLinksMapper from '@/dex/hooks/usePoolTokensLinksMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, TokensMapper, Tvl } from '@/dex/types/main.types'
@@ -19,7 +20,7 @@ interface Props {
 }
 
 const CurrencyReserves = ({ rChainId, rPoolId, tokensMapper, tvl }: Props) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
   const currencyReserves = useStore((state) => state.pools.currencyReserves[getChainPoolIdActiveKey(rChainId, rPoolId)])

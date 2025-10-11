@@ -1,6 +1,7 @@
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -13,9 +14,9 @@ type Props = {
 const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
-  const networks = useStore((state) => state.networks.networks)
-
-  const { stableswapFactory, tricryptoFactory, twocryptoFactory } = networks[chainId]
+  const {
+    data: { stableswapFactory, tricryptoFactory, twocryptoFactory },
+  } = useNetworkByChain({ chainId })
 
   return (
     <>

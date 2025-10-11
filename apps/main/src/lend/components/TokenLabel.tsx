@@ -7,6 +7,7 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import TextEllipsis from '@ui/TextEllipsis'
+import { scanTokenPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard } from '@ui-kit/utils'
 
@@ -44,7 +45,7 @@ const TokenLabel = ({
         TokenIconComp
       ) : (
         <>
-          <StyledExternalLink href={networks[rChainId].scanTokenPath(address)}>{TokenIconComp}</StyledExternalLink>
+          <StyledExternalLink href={scanTokenPath(networks[rChainId], address)}>{TokenIconComp}</StyledExternalLink>
           <StyledIconButton
             size="medium"
             onClick={(evt) => {

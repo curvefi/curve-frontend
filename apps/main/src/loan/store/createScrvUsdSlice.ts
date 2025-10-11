@@ -8,6 +8,7 @@ import { invalidateScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalan
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { type ChainId, FetchStatus, TransactionStatus } from '@/loan/types/loan.types'
+import { scanTxPath } from '@ui/utils'
 import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
@@ -211,7 +212,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('approveDepositTransaction', {
             transactionStatus: 'loading',
-            transaction: networks[chainId].scanTxPath(transactionHash[0]),
+            transaction: scanTxPath(networks[chainId], transactionHash[0]),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -222,7 +223,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('approveDepositTransaction', {
             transactionStatus: 'success',
-            transaction: networks[chainId].scanTxPath(transactionHash[0]),
+            transaction: scanTxPath(networks[chainId], transactionHash[0]),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -265,7 +266,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('depositTransaction', {
             transactionStatus: 'loading',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -276,7 +277,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('depositTransaction', {
             transactionStatus: 'success',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -319,7 +320,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'loading',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -331,7 +332,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'success',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -374,7 +375,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'loading',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()
@@ -385,7 +386,7 @@ const createScrvUsdSlice = (set: SetState<State>, get: GetState<State>) => ({
 
           get()[sliceKey].setStateByKey('withdrawTransaction', {
             transactionStatus: 'success',
-            transaction: networks[chainId].scanTxPath(transactionHash),
+            transaction: scanTxPath(networks[chainId], transactionHash),
             errorMessage: '',
           })
           dismissNotificationHandler()

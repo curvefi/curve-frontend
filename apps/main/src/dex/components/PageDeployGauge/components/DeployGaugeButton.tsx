@@ -7,6 +7,7 @@ import {
   TWOCOINCRYPTOSWAP,
   TWOCOINCRYPTOSWAPNG,
 } from '@/dex/components/PageDeployGauge/constants'
+import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
@@ -14,6 +15,7 @@ import { getPath, useRestFullPathname } from '@/dex/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
 import Button from '@ui/Button'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import { scanTxPath } from '@ui/utils'
 import { isLoading, useWallet } from '@ui-kit/features/connect-wallet'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -27,7 +29,7 @@ interface Props {
 }
 
 const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
   const isLite = networks[chainId]?.isLite ?? false
   const push = useNavigate()
@@ -97,7 +99,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
                   description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-                  link={networks[chainId].scanTxPath(deploymentStatus.sidechain.transaction.hash)}
+                  link={scanTxPath(networks[chainId], deploymentStatus.sidechain.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
             )
@@ -106,7 +108,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
               <InfoLinkBarWrapper>
                 <StyledInfoLinkBar
                   description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-                  link={networks[chainId].scanTxPath(deploymentStatus.mirror.transaction.hash)}
+                  link={scanTxPath(networks[chainId], deploymentStatus.mirror.transaction.hash)}
                 />
               </InfoLinkBarWrapper>
             )}
@@ -176,7 +178,7 @@ const DeployGaugeButton = ({ disabled, chainId, curve, pageLoaded }: Props) => {
         <InfoLinkBarWrapper>
           <StyledInfoLinkBar
             description={t`Tx: Gauge for ${shortenAddress(lpTokenAddress)} deployed`}
-            link={networks[chainId].scanTxPath(deploymentStatus.mainnet.transaction.hash)}
+            link={scanTxPath(networks[chainId], deploymentStatus.mainnet.transaction.hash)}
           />
         </InfoLinkBarWrapper>
       )}

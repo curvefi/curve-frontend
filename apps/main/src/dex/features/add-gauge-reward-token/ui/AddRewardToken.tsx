@@ -3,6 +3,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import { zeroAddress } from 'viem'
 import AlertFormError from '@/dex/components/AlertFormError'
 import { useAddRewardToken, useGaugeRewardsDistributors, useIsDepositRewardAvailable } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useSignerAddress } from '@/dex/entities/signer'
 import { addGaugeRewardTokenValidationSuite } from '@/dex/features/add-gauge-reward-token/model'
 import type { AddRewardFormValues, AddRewardTokenProps } from '@/dex/features/add-gauge-reward-token/types'
@@ -12,11 +13,11 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
-import useStore from '@/dex/store/useStore'
 import { vestResolver } from '@hookform/resolvers/vest'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import TxInfoBar from '@ui/TxInfoBar'
+import { scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { formDefaultOptions } from '@ui-kit/lib/model/form'
 
@@ -49,7 +50,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
     data: addRewardTokenData,
   } = useAddRewardToken({ chainId, poolId })
 
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
 
   const onSubmit = useCallback(
     ({ rewardTokenId, distributorId }: AddRewardFormValues) => {
@@ -84,7 +85,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
           <EstimatedGasInfo chainId={chainId} poolId={poolId} />
           <FormActions chainId={chainId} poolId={poolId} />
           {isSuccessAddRewardToken && addRewardTokenData && (
-            <TxInfoBar description={t`Reward token added`} txHash={network.scanTxPath(addRewardTokenData)} />
+            <TxInfoBar description={t`Reward token added`} txHash={scanTxPath(network, addRewardTokenData)} />
           )}
           <FormErrorsDisplay errorKeys={['root.serverError']} component={AlertFormError} />
         </FormContainer>

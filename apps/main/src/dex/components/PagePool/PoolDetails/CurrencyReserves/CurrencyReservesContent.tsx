@@ -8,7 +8,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import TooltipButton from '@ui/Tooltip/TooltipButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import Chip from '@ui/Typography/Chip'
-import { breakpoints, formatNumber } from '@ui/utils'
+import { breakpoints, formatNumber, scanTokenPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -34,7 +34,7 @@ const CurrencyReservesContent = ({
       />
 
       <Box grid gridGap={1}>
-        <TokenLabelLink $noStyles href={network.scanTokenPath(tokenAddress)}>
+        <TokenLabelLink $noStyles href={scanTokenPath(network, tokenAddress)}>
           <ExternalLinkToken>{token}</ExternalLinkToken>{' '}
           {haveSameTokenName ? (
             <Chip opacity={0.7} size="xs">

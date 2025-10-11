@@ -6,6 +6,7 @@ import {
   SummaryDataPlaceholder,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
@@ -26,7 +27,7 @@ const StableswapParameters = ({ chainId }: Props) => {
   const allowedExtraProfit = useStore((state) => state.createPool.parameters.allowedExtraProfit)
   const cryptoA = useStore((state) => state.createPool.parameters.cryptoA)
   const adjustmentStep = useStore((state) => state.createPool.parameters.adjustmentStep)
-  const networks = useStore((state) => state.networks.networks)
+  const { data: network } = useNetworkByChain({ chainId })
 
   return (
     <>
@@ -41,7 +42,7 @@ const StableswapParameters = ({ chainId }: Props) => {
       <ExtraMarginRow>
         <SummaryDataTitle>{t`Initial Price${
           isTricrypto(
-            networks[chainId].tricryptoFactory,
+            network.tricryptoFactory,
             tokensInPool.tokenAmount,
             tokensInPool.tokenA,
             tokensInPool.tokenB,
@@ -57,7 +58,7 @@ const StableswapParameters = ({ chainId }: Props) => {
         )}
       </ExtraMarginRow>
       {isTricrypto(
-        networks[chainId].tricryptoFactory,
+        network.tricryptoFactory,
         tokensInPool.tokenAmount,
         tokensInPool.tokenA,
         tokensInPool.tokenB,

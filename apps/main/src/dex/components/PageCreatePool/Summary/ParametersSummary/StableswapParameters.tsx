@@ -5,6 +5,7 @@ import {
   SummaryDataPlaceholder,
   ExtraMarginRow,
 } from '@/dex/components/PageCreatePool/Summary/styles'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,7 +20,9 @@ const StableswapParameters = ({ chainId }: Props) => {
   const stableA = useStore((state) => state.createPool.parameters.stableA)
   const maExpTime = useStore((state) => state.createPool.parameters.maExpTime)
   const offpegFeeMultiplier = useStore((state) => state.createPool.parameters.offpegFeeMultiplier)
-  const stableswapFactory = useStore((state) => state.networks.networks[chainId].stableswapFactory)
+  const {
+    data: { stableswapFactory },
+  } = useNetworkByChain({ chainId })
 
   return (
     <>

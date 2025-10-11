@@ -302,7 +302,7 @@ export function createGasInfoQueryOptions<TChainId extends number>({
     gasPricesUrl: network?.gasPricesUrl,
     // It seems that in the original code the Ethereum mainnet gas prices URL was used for L2 price fetching.
     // I do not question whether this is right or not. I just re-use what was already being used.
-    gasPricesUrlL2: network?.gasL2 ? networks[1 as TChainId].gasPricesUrl : undefined,
+    gasPricesUrlL2: network?.gasL2 ? networks?.[1 as TChainId]?.gasPricesUrl : undefined,
   }
 }
 

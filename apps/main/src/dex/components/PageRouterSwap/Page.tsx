@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import QuickSwap from '@/dex/components/PageRouterSwap/index'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import useStore from '@/dex/store/useStore'
@@ -26,14 +27,14 @@ export const PageRouterSwap = () => {
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
   const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
-  const nativeToken = useStore((state) => state.networks.nativeToken[rChainId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
   const { tokensMapper, tokensMapperStr } = useTokensMapper(rChainId)
   const [loaded, setLoaded] = useState(false)
 
   const { hasRouter } = getNetworkConfigFromApi(rChainId)
+  const nativeToken = curveApi?.getNetworkConstants()?.NATIVE_TOKEN
   const paramsFromAddress = searchParams?.get('from')?.toLowerCase() || nativeToken?.address || ''
   const paramsToAddress = searchParams?.get('to')?.toLowerCase() || nativeToken?.wrappedAddress || ''
   const paramsMaxSlippage = searchParams?.get('slippage')

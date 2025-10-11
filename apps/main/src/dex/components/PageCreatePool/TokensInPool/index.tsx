@@ -19,6 +19,7 @@ import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToke
 import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
 import { CreateToken, TokenId, TokensInPoolState } from '@/dex/components/PageCreatePool/types'
 import { checkMetaPool, containsOracle, getBasepoolCoins } from '@/dex/components/PageCreatePool/utils'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { DEFAULT_CREATE_POOL_STATE } from '@/dex/store/createCreatePoolSlice'
 import useStore from '@/dex/store/useStore'
@@ -43,14 +44,14 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
   const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
-  const nativeToken = useStore((state) => state.networks.nativeToken[chainId])
   const basePools = useStore((state) => state.pools.basePools[chainId] ?? [])
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
-  const createDisabledTokens = useStore((state) => state.networks.networks[chainId]?.createDisabledTokens)
-  const stableswapFactory = useStore((state) => state.networks.networks[chainId]?.stableswapFactory)
-  const tricryptoFactory = useStore((state) => state.networks.networks[chainId]?.tricryptoFactory)
-  const twocryptoFactory = useStore((state) => state.networks.networks[chainId]?.twocryptoFactory)
+  const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
+
+  const {
+    data: { createDisabledTokens, stableswapFactory, tricryptoFactory, twocryptoFactory },
+  } = useNetworkByChain({ chainId })
 
   const NATIVE_TOKENS = useMemo(
     () => (nativeToken?.address ? [nativeToken.address, ...createDisabledTokens] : [...createDisabledTokens]),

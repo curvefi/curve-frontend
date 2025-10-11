@@ -209,9 +209,6 @@ export type BaseConfig<TId extends string = string, TChainId extends number = nu
   gasPricesDefault: number
   integrations: { listUrl: string; tagsUrl: string }
   rewards: { baseUrl: string; campaignsUrl: string; tagsUrl: string }
-  scanAddressPath: (hash: string) => string
-  scanTxPath: (hash: string) => string
-  scanTokenPath: (hash: string) => string
   orgUIPath: string
 }
 
@@ -234,9 +231,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     rpcUrl,
     isTestnet,
     explorerUrl,
-    scanAddressPath: (hash: string) => `${explorerUrl}address/${hash}`,
-    scanTxPath: (hash: string) => `${explorerUrl}tx/${hash}`,
-    scanTokenPath: (hash: string) => `${explorerUrl}token/${hash}`,
   }
 }
 
@@ -245,3 +239,7 @@ function formatNetworkName(id: string) {
   const formattedText = id.replace(/[-_]./g, (match) => ' ' + match.charAt(1).toUpperCase())
   return formattedText.charAt(0).toUpperCase() + formattedText.slice(1)
 }
+
+export const scanAddressPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}address/${hash}`
+export const scanTxPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}tx/${hash}`
+export const scanTokenPath = ({ explorerUrl }: BaseConfig, hash: string) => `${explorerUrl}token/${hash}`

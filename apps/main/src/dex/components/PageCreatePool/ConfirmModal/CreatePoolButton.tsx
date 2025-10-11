@@ -1,5 +1,6 @@
 import { styled } from 'styled-components'
 import InfoLinkBar from '@/dex/components/PageCreatePool/ConfirmModal/CreateInfoLinkBar'
+import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
@@ -15,7 +16,7 @@ interface Props {
 }
 
 const CreatePoolButton = ({ disabled, curve }: Props) => {
-  const networks = useStore((state) => state.networks.networks)
+  const { data: networks } = useNetworks()
   const { haveSigner } = curveProps(curve, networks)
   const deployPool = useStore((state) => state.createPool.deployPool)
   const txStatus = useStore((state) => state.createPool.transactionState.txStatus)

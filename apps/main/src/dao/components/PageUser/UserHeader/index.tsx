@@ -7,6 +7,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import { ExternalLink } from '@ui/Link'
+import { scanAddressPath } from '@ui/utils'
 import { copyToClipboard } from '@ui-kit/utils'
 
 interface UserHeaderProps {
@@ -29,7 +30,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
                 <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
                   <Icon name="Copy" size={16} />
                 </StyledCopyButton>
-                <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>
+                <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
                   <Icon name="Launch" size={16} />
                 </StyledExternalLink>
               </Box>
@@ -41,7 +42,7 @@ const UserHeader = ({ userAddress, userMapper }: UserHeaderProps) => {
             <StyledCopyButton size="small" onClick={() => copyToClipboard(userAddress)}>
               <Icon name="Copy" size={16} />
             </StyledCopyButton>
-            <StyledExternalLink size="small" href={networks[1].scanAddressPath(userAddress)}>
+            <StyledExternalLink size="small" href={scanAddressPath(networks[1], userAddress)}>
               <Icon name="Launch" size={16} />
             </StyledExternalLink>
           </Box>

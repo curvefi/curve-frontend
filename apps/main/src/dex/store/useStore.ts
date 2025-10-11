@@ -8,7 +8,6 @@ import createDeployGaugeSlice, { DeployGaugeSlice } from '@/dex/store/createDepl
 import createGlobalSlice, { GlobalSlice } from '@/dex/store/createGlobalSlice'
 import createIntegrationsSlice, { IntegrationsSlice } from '@/dex/store/createIntegrationsSlice'
 import createLockedCrvSlice, { LockedCrvSlice } from '@/dex/store/createLockedCrvSlice'
-import createNetworksSlice, { NetworksSlice } from '@/dex/store/createNetworksSlice'
 import createPoolDepositSlice, { PoolDepositSlice } from '@/dex/store/createPoolDepositSlice'
 import createPoolListSlice, { PoolListSlice } from '@/dex/store/createPoolListSlice'
 import createPoolsSlice, { PoolsSlice } from '@/dex/store/createPoolsSlice'
@@ -22,7 +21,6 @@ import createUserSlice, { UserSlice } from '@/dex/store/createUserSlice'
 const { debounce, merge } = lodash
 
 export type State = GlobalSlice &
-  NetworksSlice &
   CacheSlice &
   PoolsSlice &
   PoolDepositSlice &
@@ -41,7 +39,6 @@ export type State = GlobalSlice &
 
 const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
-  ...createNetworksSlice(set, get),
   ...createCacheSlice(set, get),
   ...createPoolListSlice(set, get),
   ...createPoolsSlice(set, get),

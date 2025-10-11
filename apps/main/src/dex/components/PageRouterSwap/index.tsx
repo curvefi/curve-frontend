@@ -18,6 +18,7 @@ import type {
   SearchedParams,
   StepKey,
 } from '@/dex/components/PageRouterSwap/types'
+import { useNetworks } from '@/dex/entities/networks'
 import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
 import useStore from '@/dex/store/useStore'
 import { ChainId, CurveApi, type NetworkUrlParams, TokensMapper } from '@/dex/types/main.types'
@@ -32,7 +33,7 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
@@ -82,7 +83,8 @@ const QuickSwap = ({
   const resetFormErrors = useStore((state) => state.quickSwap.resetFormErrors)
   const setFormValues = useStore((state) => state.quickSwap.setFormValues)
   const updateTokenList = useStore((state) => state.quickSwap.updateTokenList)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = (chainId && networks[chainId]) || null
 
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
@@ -176,7 +178,7 @@ const QuickSwap = ({
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={network.scanTxPath(resp.hash)}
+            txHash={scanTxPath(network, resp.hash)}
             onClose={() => updateFormValues({}, false, '', true)}
           />,
         )

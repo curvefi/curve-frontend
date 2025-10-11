@@ -5,6 +5,7 @@ import SmallLabel from '@/dao/components/SmallLabel'
 import networks from '@/dao/networks'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import Box from '@ui/Box'
+import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcons } from '@ui-kit/shared/ui/TokenIcons'
 import { shortenAddress } from '@ui-kit/utils'
@@ -39,7 +40,7 @@ const TitleComp = ({ gaugeData, gaugeAddress }: TitleCompProps) => (
           <GaugeAddress>{shortenAddress(gaugeAddress)}</GaugeAddress>
           <ButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[1].scanAddressPath(gaugeAddress ?? '')}
+              href={scanAddressPath(networks[1], gaugeAddress ?? '')}
               tooltip={t`View gauge on explorer`}
             />
             <CopyIconButton copyContent={gaugeAddress ?? ''} tooltip={t`Copy gauge address`} />

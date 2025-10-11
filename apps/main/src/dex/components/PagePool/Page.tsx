@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import Transfer from '@/dex/components/PagePool/index'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import useStore from '@/dex/store/useStore'
 import type { PoolUrlParams } from '@/dex/types/main.types'
@@ -20,7 +21,7 @@ export const PagePool = () => {
   const fetchNewPool = useStore((state) => state.pools.fetchNewPool)
   const poolDataCache = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[rPoolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[rPoolId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
 
   const poolDataCacheOrApi = useMemo(() => poolData || poolDataCache, [poolData, poolDataCache])
 

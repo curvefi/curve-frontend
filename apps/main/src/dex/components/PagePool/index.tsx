@@ -12,6 +12,7 @@ import MySharesStats from '@/dex/components/PagePool/UserDetails'
 import Withdraw from '@/dex/components/PagePool/Withdraw'
 import { ROUTE } from '@/dex/constants'
 import { useGaugeManager, useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { getUserPoolActiveKey } from '@/dex/store/createUserSlice'
@@ -35,6 +36,7 @@ import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { BlockSkeleton } from '@ui/skeleton'
 import TextEllipsis from '@ui/TextEllipsis'
+import { scanAddressPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -92,7 +94,8 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const { pool } = poolDataCacheOrApi
   const poolId = poolData?.pool?.id
-  const { networkId, isLite, pricesApi, scanAddressPath } = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
+  const { networkId, isLite, pricesApi } = network
   const poolAddress = poolData?.pool.address
 
   const pricesApiPoolData = poolData && pricesApiPoolsMapper[poolData.pool.address]
@@ -200,7 +203,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   const TitleComp = () => (
     <AppPageFormTitleWrapper>
-      <StyledExternalLink href={scanAddressPath(pool.address)}>
+      <StyledExternalLink href={scanAddressPath(network, pool.address)}>
         <Title as="h1">{pool?.name || ''}</Title>
       </StyledExternalLink>
     </AppPageFormTitleWrapper>

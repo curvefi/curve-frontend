@@ -5,6 +5,7 @@ import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
+import { fetchNetworks } from '../entities/networks'
 
 export type DefaultStateKeys = keyof typeof DEFAULT_STATE
 export type SliceKey = keyof State | ''
@@ -95,17 +96,8 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
 
     // update network settings from api
     state.setNetworkConfigFromApi(curveApi)
-    state.networks.setNetworkConfigs(curveApi)
 
-    /**
-     * We might be double fetching networks due to useFetchNetworks, but there's
-     * a chance if we don't call it the networks aren't loaded yet and thus undefined.
-     * The real proper fix is to refactor into a Tanstack query and await fetchQuery.
-     * The DexLayout has `return isFetched && <Outlet />`, but adding isHydrated
-     * will only make the dex app refresh and blink many times.
-     * This hacky fix is there to because of Plasma network time sensitivity.
-     */
-    const networks = await state.networks.fetchNetworks()
+    const networks = await fetchNetworks()
     const network = networks[chainId]
     const { excludePoolsMapper } = network
 
@@ -117,7 +109,7 @@ const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSl
     // if no pools found for network, set tvl, volume and pools state to empty object
     if (!poolIds.length) {
       state.pools.setEmptyPoolListDefault(chainId)
-      state.tokens.setEmptyPoolListDefault(chainId)
+      state.tokens.setEmptyPoolListDefault(curveApi)
       return
     }
 

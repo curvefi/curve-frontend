@@ -40,6 +40,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -142,7 +143,8 @@ const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): Poo
           cFormValues.isWrapped,
           parseAmountsForAPI(cFormValues.amounts),
         )
-        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks: get().networks.networks })
+        const networks = await fetchNetworks()
+        const { basePlusPriority } = await fetchGasInfoAndUpdateLib({ chainId, networks })
 
         if (!resp.error && resp.estimatedGas && basePlusPriority?.[0]) {
           cFormValues.amounts[idx].value = getMaxAmountMinusGas(resp.estimatedGas, basePlusPriority[0], userBalance)

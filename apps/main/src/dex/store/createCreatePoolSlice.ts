@@ -20,10 +20,12 @@ import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/c
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { INVALID_POOLS_NAME_CHARACTERS } from '../constants'
+import { fetchNetworks, getNetworks } from '../entities/networks'
 
 type SliceState = {
   navigationIndex: number
@@ -289,9 +291,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
     },
     updateSwapType: (swapType: SwapType, chainId: ChainId) => {
       // set allowed token amount
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
       if (swapType === CRYPTOSWAP) {
         const amount = networks[chainId].twocryptoFactory || networks[chainId].twocryptoFactory ? 2 : 3
 
@@ -767,7 +767,6 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
           poolName,
           initialPrice,
         },
-        networks: { networks },
       } = get()
 
       let dismissNotificationHandler
@@ -783,6 +782,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
         }),
       )
 
+      const networks = await fetchNetworks()
       if (swapType === CRYPTOSWAP) {
         // ----- TRICRYPTO -----
         if (isTricrypto(networks[chainId].tricryptoFactory, tokenAmount, tokenA, tokenB, tokenC)) {
@@ -807,7 +807,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -888,7 +888,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -984,7 +984,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 
@@ -1072,7 +1072,7 @@ const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): Crea
               produce((state) => {
                 state.createPool.transactionState.txStatus = 'LOADING'
                 state.createPool.transactionState.transaction = deployPoolTx
-                state.createPool.transactionState.txLink = networks[chainId].scanTxPath(deployPoolTx.hash)
+                state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
               }),
             )
 

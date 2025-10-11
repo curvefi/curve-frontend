@@ -3,7 +3,7 @@ import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Box from '@mui/material/Box'
 import Link from '@mui/material/Link'
-import type { BaseConfig } from '@ui/utils'
+import { scanTxPath, type BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Decimal } from '@ui-kit/utils'
 import type { BorrowFormErrors } from '../types'
@@ -42,7 +42,7 @@ export const BorrowFormAlert = ({
       <Alert severity="success" data-testid="borrow-success-alert">
         <AlertTitle>{t`Loan created`}</AlertTitle>
         {txHash && (
-          <Link rel="noreferrer" target="_blank" href={network.scanTxPath(txHash)}>
+          <Link rel="noreferrer" target="_blank" href={scanTxPath(network, txHash)}>
             {t`View on Explorer`}
           </Link>
         )}

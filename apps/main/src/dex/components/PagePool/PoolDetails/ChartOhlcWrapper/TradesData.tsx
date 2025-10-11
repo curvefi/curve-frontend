@@ -1,11 +1,11 @@
 import { styled } from 'styled-components'
-import useStore from '@/dex/store/useStore'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import type { LpTradesData, LpTradeToken } from '@ui/Chart/types'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 
 const TradesData = ({
@@ -17,14 +17,14 @@ const TradesData = ({
   chainId: ChainId
   tradesTokens: LpTradeToken[]
 }) => {
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   return lpTradesData.map((transaction, index) => {
     const boughtToken = tradesTokens.find((token) => token.event_index === transaction.bought_id)
     const soldToken = tradesTokens.find((token) => token.event_index === transaction.sold_id)
 
     return (
       <TransactionRow key={`${transaction.transaction_hash}-${transaction.sold_id}-trade-${index}`}>
-        <Event href={network.scanTxPath(transaction.transaction_hash)} rel="noopener" target="_blank">
+        <Event href={scanTxPath(network, transaction.transaction_hash)} rel="noopener" target="_blank">
           <TradeFrom>
             <StyledTokenIcon
               size="sm"

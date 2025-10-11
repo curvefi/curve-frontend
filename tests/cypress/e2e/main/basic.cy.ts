@@ -10,7 +10,7 @@ describe('Basic Access Test', () => {
     cy.intercept(`https://api-core.curve.finance/v1/getPlatforms`, { statusCode: 500 }).as('error')
     cy.visit('/dex/ethereum/pools', { failOnStatusCode: false })
     cy.wait('@error')
-    cy.get('[data-testid="error-title"]').should('contain.text', 'Unexpected Error')
+    cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Layout error')
     cy.get('[data-testid="retry-error-button"]').click()
     cy.wait('@error') // error called again
   })

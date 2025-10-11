@@ -37,7 +37,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -133,7 +133,7 @@ const LoanDeleverage = ({
         setTxInfoBar(
           <TxInfoBar
             description={txInfoBarMessage}
-            txHash={networks[rChainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
                 updateFormValues({}, '', true)

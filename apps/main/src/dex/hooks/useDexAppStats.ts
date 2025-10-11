@@ -8,6 +8,7 @@ import { FORMAT_OPTIONS, formatNumber, type NetworkDef } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK } from '@ui-kit/shared/routes'
+import { useNetworkByChain } from '../entities/networks'
 
 export const useDexAppStats = (network: NetworkDef | undefined) => {
   const { curveApi = {} } = useConnection()
@@ -34,7 +35,7 @@ const [swapRoute, ...dexRoutes] = APP_LINK.dex.routes
 
 export function useDexRoutes({ chainId, showRouterSwap }: NetworkDef) {
   const routerCached = useStore((state) => state.storeCache.routerFormValues[chainId])
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   return useMemo(
     () => [
       ...(showRouterSwap

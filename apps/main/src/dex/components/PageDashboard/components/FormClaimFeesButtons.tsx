@@ -10,6 +10,7 @@ import {
 } from 'react'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
 import { DEFAULT_FORM_STATUS } from '@/dex/components/PageDashboard/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { claimButtonsKey } from '@/dex/types/main.types'
 import Button from '@ui/Button'
@@ -17,6 +18,7 @@ import type { ButtonProps } from '@ui/Button/types'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -42,7 +44,8 @@ const FormClaimFeesButtons = ({
   const setFormStatus = useStore((state) => state.dashboard.setFormStatusClaimFees)
 
   const { chainId, signerAddress } = curve || {}
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = networks[chainId!] || null
   const [claimingKey, setClaimingKey] = useState<claimButtonsKey | ''>('')
 
   const claimButtons = useMemo(() => {
@@ -68,7 +71,6 @@ const FormClaimFeesButtons = ({
     async (key: claimButtonsKey) => {
       if (!network || !curve) return
 
-      const { scanTxPath } = network
       const notifyMessage = t`Please approve claim veCRV rewards.`
       const { dismiss } = notify(notifyMessage, 'pending')
 
@@ -103,7 +105,7 @@ const FormClaimFeesButtons = ({
       setTxInfoBar(
         <TxInfoBar
           description={successMessage}
-          txHash={scanTxPath(resp.hash)}
+          txHash={scanTxPath(network, resp.hash)}
           onClose={() => {
             setFormStatus(DEFAULT_FORM_STATUS)
             setSteps([])

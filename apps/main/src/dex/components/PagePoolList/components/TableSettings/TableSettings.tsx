@@ -4,6 +4,7 @@ import TableSortSelect from 'ui/src/TableSort/TableSortSelect'
 import TableSortSelectMobile from 'ui/src/TableSort/TableSortSelectMobile'
 import TableCheckboxHideSmallPools from '@/dex/components/PagePoolList/components/TableSettings/TableCheckboxHideSmallPools'
 import type { FilterKey, PoolListFilter, PoolListTableLabel, SearchParams } from '@/dex/components/PagePoolList/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -41,7 +42,9 @@ const TableSettings = ({
 }: Props) => {
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey])
   const isLgUp = useLayoutStore((state) => state.isLgUp)
-  const { poolFilters } = useStore((state) => state.networks.networks[rChainId])
+  const {
+    data: { poolFilters },
+  } = useNetworkByChain({ chainId: rChainId })
 
   const FILTERS: PoolListFilter[] = useMemo(
     () => [

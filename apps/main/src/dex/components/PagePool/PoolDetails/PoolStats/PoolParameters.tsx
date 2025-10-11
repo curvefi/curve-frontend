@@ -6,6 +6,7 @@ import PoolParametersDaoFees from '@/dex/components/PagePool/PoolDetails/PoolSta
 import PoolTotalStaked from '@/dex/components/PagePool/PoolDetails/PoolStats/PoolTotalStaked'
 import { StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import usePoolTotalStaked from '@/dex/hooks/usePoolTotalStaked'
 import useStore from '@/dex/store/useStore'
 import type { PoolParameters } from '@/dex/types/main.types'
@@ -34,8 +35,9 @@ const PoolParameters = ({
   parameters: PoolParameters
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams'>) => {
   const { rChainId, rPoolId } = routerParams
-  const { pricesApi } = useStore((state) => state.networks.networks[rChainId])
-  const isLite = useStore((state) => state.networks.networks[rChainId]?.isLite)
+  const {
+    data: { pricesApi, isLite },
+  } = useNetworkByChain({ chainId: rChainId })
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
   const [releaseChannel] = useReleaseChannel()
