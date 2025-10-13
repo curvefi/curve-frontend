@@ -47,6 +47,7 @@ export type QueryFactoryInput<
   dependencies?: (params: TParams) => QueryKey[]
   refetchOnWindowFocus?: 'always'
   refetchOnMount?: 'always'
+  disableLog?: true
 }
 
 export type QueryFactoryOutput<

@@ -25,6 +25,7 @@ export function queryFactory<
   refetchInterval,
   validationSuite,
   dependencies,
+  disableLog,
   ...options
 }: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
   TQuery,
@@ -36,7 +37,7 @@ export function queryFactory<
     queryOptions({
       queryKey: queryKey(params),
       queryFn: ({ queryKey }: QueryFunctionContext<TKey>) => {
-        logQuery(queryKey)
+        if (!disableLog) logQuery(queryKey)
         return runQuery(getParamsFromQueryKey(queryKey))
       },
       gcTime: REFRESH_INTERVAL[gcTime],

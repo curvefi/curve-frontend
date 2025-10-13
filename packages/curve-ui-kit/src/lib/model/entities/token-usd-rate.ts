@@ -19,6 +19,7 @@ export const {
   staleTime: '5m',
   refetchInterval: '1m',
   validationSuite: tokenValidationSuite,
+  disableLog: true, // too much noise in the logs
 })
 
 type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
