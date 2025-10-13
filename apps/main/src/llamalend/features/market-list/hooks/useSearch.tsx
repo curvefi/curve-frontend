@@ -6,9 +6,9 @@ export const useSearch = (
   setColumnFilter: (id: string, value: unknown) => void,
 ) =>
   [
-    (columnFiltersById[LlamaMarketColumnId.Assets] as string) ?? '',
+    (columnFiltersById?.[LlamaMarketColumnId.Assets] as string) ?? '',
     useCallback(
-      (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
+      (search: string) => setColumnFilter?.(LlamaMarketColumnId.Assets, search || undefined),
       [setColumnFilter],
     ),
   ] as const

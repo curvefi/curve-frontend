@@ -18,7 +18,7 @@ export const ChainFilterChipWrapper = ({
   data: LlamaMarket[]
 } & FilterProps<LlamaMarketKey>) => {
   const chains = useMemo(() => getUniqueSortedStrings(data, LlamaMarketColumnId.Chain), [data])
-  const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain] as string[] | undefined
+  const selectedChains = columnFiltersById?.[LlamaMarketColumnId.Chain] as string[] | undefined
 
   const toggleChain = useCallback(
     (chain: string) => {
@@ -26,7 +26,7 @@ export const ChainFilterChipWrapper = ({
       const newSelection = isSelected
         ? (selectedChains?.filter((c) => c !== chain) ?? [])
         : [...(selectedChains ?? []), chain]
-      setColumnFilter(LlamaMarketColumnId.Chain, newSelection.length ? newSelection : undefined)
+      setColumnFilter?.(LlamaMarketColumnId.Chain, newSelection.length ? newSelection : undefined)
     },
     [selectedChains, setColumnFilter],
   )

@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket, LlamaMarketKey } from '@/llamalend/entities/llama-markets'
 import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
@@ -17,9 +17,17 @@ const { Spacing } = SizesAndSpaces
  * Displays a token with its icon and symbol.
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
-const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
+const Token = ({
+  symbol,
+  data,
+  field,
+}: {
+  symbol: string
+  data: LlamaMarket[] | undefined
+  field: 'collateral' | 'borrowed'
+}) => {
   const { chain, address } = useMemo(
-    () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
+    () => data?.find((d) => d.assets[field].symbol === symbol)?.assets[field] ?? { chain: '', address: '' },
     [data, field, symbol],
   )
 
@@ -27,38 +35,40 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
 }
 
 const LendingMarketsFilterWrapper = ({ title, children }: { title?: string; children: React.ReactNode }) => (
-    <Grid size={{ mobile: 12, tablet: 3, desktop: 2.4 }}>
-      <Stack>
-        {title && (
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            {title}
-          </Typography>
-        )}
-        {children}
-      </Stack>
-    </Grid>
-  )
+  <Grid size={{ mobile: 12, tablet: 3, desktop: 2.4 }}>
+    <Stack>
+      {title && (
+        <Typography variant="bodyXsRegular" color="textTertiary">
+          {title}
+        </Typography>
+      )}
+      {children}
+    </Stack>
+  </Grid>
+)
 
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
 export const LendingMarketsFilters = ({
   minLiquidity = 0,
-  ...props
+  data,
+  ...filterProps
 }: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
-  data: LlamaMarket[]
+  data?: LlamaMarket[]
   minLiquidity?: number
+  columnFiltersById: Record<LlamaMarketKey, unknown>
+  setColumnFilter: (id: string, value: unknown) => void
 }) => (
   <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
     <LendingMarketsFilterWrapper title={t`Collateral Tokens`}>
       <MultiSelectFilter
         id={LlamaMarketColumnId.CollateralSymbol}
         field="assets.collateral.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
+        renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
         defaultText={t`All`}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </LendingMarketsFilterWrapper>
 
@@ -66,9 +76,10 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.BorrowedSymbol}
         field="assets.borrowed.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
+        renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
         defaultText={t`All`}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </LendingMarketsFilterWrapper>
 
@@ -78,7 +89,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.Tvl}
         title={t`TVL`}
         format={formatUsd}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </LendingMarketsFilterWrapper>
 
@@ -88,7 +100,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.LiquidityUsd}
         title={t`Liquidity`}
         format={formatUsd}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </LendingMarketsFilterWrapper>
 
@@ -98,7 +111,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.UtilizationPercent}
         title={t`Utilization`}
         format={formatPercent}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </LendingMarketsFilterWrapper>
   </Grid>
