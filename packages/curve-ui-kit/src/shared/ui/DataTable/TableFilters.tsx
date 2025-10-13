@@ -48,14 +48,22 @@ export const TableFilters = <ColumnIds extends string>({
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
+
+  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
-        <Grid>{leftChildren}</Grid>
-        <Grid display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
+        {!(isSearchExpanded && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
+        <Grid
+          size={{ mobile: isSearchExpanded ? 12 : 'auto', tablet: 6 }}
+          display="flex"
+          justifyContent="flex-end"
+          gap={Spacing.xs}
+          flexWrap="wrap"
+        >
           {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
@@ -65,7 +73,7 @@ export const TableFilters = <ColumnIds extends string>({
               active={visibilitySettingsOpen}
             />
           )}
-          {isCollapsible && (
+          {isCollapsible && !isMobile && (
             <TableButton
               onClick={() => setFilterExpanded((prev) => !prev)}
               active={filterExpanded}
@@ -73,9 +81,16 @@ export const TableFilters = <ColumnIds extends string>({
               testId="btn-expand-filters"
             />
           )}
-          {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
-          {!isMobile && hasSearchBar && (
-            <TableSearchField collapsible value={searchText} onChange={onSearch} testId={filterExpandedKey} />
+          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
+          {hasSearchBar && (
+            <TableSearchField
+              collapsible
+              value={searchText}
+              onChange={onSearch}
+              testId={filterExpandedKey}
+              toggleExpanded={toggleSearchExpanded}
+              isExpanded={isSearchExpanded}
+            />
           )}
         </Grid>
         <Grid container size={12} gap={Spacing.xs} justifyContent="space-between">

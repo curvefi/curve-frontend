@@ -6,21 +6,30 @@ import { SearchField, SearchFieldProps } from '@ui-kit/shared/ui/SearchField'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
+
+const { Spacing } = SizesAndSpaces
+
+type Props = {
+  value: string
+  onChange: (value: string) => void
+  collapsible?: boolean
+  testId?: string
+  toggleExpanded: () => void
+  isExpanded: boolean
+}
 
 export const TableSearchField = ({
   value,
   onChange,
   collapsible = false,
   testId,
-}: {
-  value: string
-  onChange: (value: string) => void
-  collapsible?: boolean
-  testId?: string
-}) => {
+  toggleExpanded,
+  isExpanded,
+}: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
-  const [isExpanded, , , toggleExpanded] = useSwitch(false)
+  const isMobile = useIsMobile()
 
   const handleExpand = useCallback(() => {
     toggleExpanded()
@@ -43,7 +52,8 @@ export const TableSearchField = ({
       <Box
         sx={{
           display: 'flex',
-          transition: TransitionFunction,
+          // on mobile when search is de-expanded, animation doesn't look good
+          transition: isMobile ? (isExpanded ? TransitionFunction : 'none') : TransitionFunction,
           flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
           width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
         }}
