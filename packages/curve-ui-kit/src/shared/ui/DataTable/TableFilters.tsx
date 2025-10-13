@@ -30,7 +30,6 @@ export const TableFilters = <ColumnIds extends string>({
   hasSearchBar,
   collapsible,
   chips,
-  sort,
   searchText,
   onSearch,
 }: {
@@ -43,7 +42,6 @@ export const TableFilters = <ColumnIds extends string>({
   hasSearchBar?: boolean
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
-  sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
 }) => {
