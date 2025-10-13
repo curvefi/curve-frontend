@@ -51,7 +51,7 @@ export const DesktopHeader = ({
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
             {/* TODO: update cypress tests to support UserProfileButton */}
             <UserProfileButton visible={releaseChannel !== ReleaseChannel.Legacy && !isCypress} />
-            <ChainSwitcher chainId={chainId} networks={supportedNetworks} />
+            <ChainSwitcher networks={supportedNetworks} />
             <ConnectWalletIndicator />
           </Box>
         </Container>

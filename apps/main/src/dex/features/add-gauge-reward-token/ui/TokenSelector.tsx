@@ -3,12 +3,13 @@ import { useFormContext } from 'react-hook-form'
 import { type Address, isAddressEqual, zeroAddress } from 'viem'
 import { ethAddress } from 'viem'
 import { useGaugeRewardsDistributors } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import type { AddRewardFormValues } from '@/dex/features/add-gauge-reward-token/types'
 import { FlexItemToken, SubTitle } from '@/dex/features/add-gauge-reward-token/ui'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
-import useStore from '@/dex/store/useStore'
 import { ChainId, Token } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { TokenSelector as TokenSelectorUIKit } from '@ui-kit/features/select-token'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -21,9 +22,10 @@ export const TokenSelector = ({
   poolId: string
   disabled: boolean
 }) => {
+  const { curveApi } = useConnection()
+  const aliasesCrv = curveApi?.getNetworkConstants()?.ALIASES?.crv
   const { getValues, setValue, watch } = useFormContext<AddRewardFormValues>()
-  const aliasesCrv = useStore((state) => state.networks.aliases[chainId]?.crv)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   const rewardTokenId = watch('rewardTokenId')
   const { tokensMapper } = useTokensMapper(chainId)
 
