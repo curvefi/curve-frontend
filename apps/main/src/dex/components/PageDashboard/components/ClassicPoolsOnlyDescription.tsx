@@ -1,13 +1,15 @@
 import { Fragment } from 'react'
 import { styled } from 'styled-components'
 import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardContext'
-import useStore from '@/dex/store/useStore'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ExternalLink } from '@ui/Link'
 import { t } from '@ui-kit/lib/i18n'
 
 const ClassicPoolsOnlyDescription = () => {
   const { rChainId, signerAddress } = useDashboardContext()
-  const { missingPools, orgUIPath } = useStore((state) => state.networks.networks[rChainId])
+  const {
+    data: { missingPools, orgUIPath },
+  } = useNetworkByChain({ chainId: rChainId })
 
   return (
     !!signerAddress &&

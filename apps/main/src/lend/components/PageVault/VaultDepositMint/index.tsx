@@ -20,7 +20,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -97,7 +97,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
         setTxInfoBar(
           <TxInfoBar
             description={txMessage}
-            txHash={networks[chainId].scanTxPath(resp.hash)}
+            txHash={scanTxPath(networks[chainId], resp.hash)}
             onClose={() => reset({})}
           />,
         )

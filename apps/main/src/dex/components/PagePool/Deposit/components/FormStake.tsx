@@ -10,6 +10,7 @@ import type { FormStatus, FormValues, StepKey } from '@/dex/components/PagePool/
 import { FieldsWrapper } from '@/dex/components/PagePool/styles'
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import { DEFAULT_ESTIMATED_GAS } from '@/dex/components/PagePool/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, Pool, PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
@@ -17,6 +18,7 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
+import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 
@@ -35,7 +37,8 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const fetchStepStake = useStore((state) => state.poolDeposit.fetchStepStake)
   const setFormValues = useStore((state) => state.poolDeposit.setFormValues)
   const resetState = useStore((state) => state.poolDeposit.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = (chainId && networks[chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -69,7 +72,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && network) {
         const TxDescription = `Staked ${formValues.lpToken} LP Tokens`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

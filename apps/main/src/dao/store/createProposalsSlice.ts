@@ -13,6 +13,7 @@ import {
   TransactionState,
 } from '@/dao/types/dao.types'
 import { ProposalType } from '@curvefi/prices-api/proposal/models'
+import { scanTxPath } from '@ui/utils'
 import { notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -130,7 +131,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             [voteIdKey]: {
               status: 'LOADING',
               hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
+              txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
 
@@ -141,7 +142,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             [voteIdKey]: {
               status: 'SUCCESS',
               hash: voteResponseHash,
-              txLink: networks[1].scanTxPath(voteResponseHash),
+              txLink: scanTxPath(networks[1], voteResponseHash),
             },
           })
 
@@ -222,7 +223,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
             [voteIdKey]: {
               status: 'LOADING',
               hash: transactionHash,
-              txLink: networks[1].scanTxPath(transactionHash),
+              txLink: scanTxPath(networks[1], transactionHash),
               error: null,
             },
           })
@@ -241,7 +242,7 @@ const createProposalsSlice = (set: SetState<State>, get: GetState<State>): Propo
               state[sliceKey].executeTxMapper[voteIdKey] = {
                 status: 'SUCCESS',
                 hash: transactionHash,
-                txLink: networks[1].scanTxPath(transactionHash),
+                txLink: scanTxPath(networks[1], transactionHash),
                 error: null,
               }
             }),

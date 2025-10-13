@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { StyledIconButton, StyledInformationSquare16 } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId, PoolData } from '@/dex/types/main.types'
 import { formatDisplayDate } from '@/dex/utils/utilsDates'
@@ -9,7 +10,7 @@ import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import TextEllipsis from '@ui/TextEllipsis'
 import { Chip } from '@ui/Typography'
-import { formatDate, formatNumber, getFractionDigitsOptions } from '@ui/utils'
+import { formatDate, formatNumber, getFractionDigitsOptions, scanTokenPath } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +29,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
   const isBasePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
   const basePools = useStore((state) => state.pools.basePools)
   const pricesApiPoolDataMapper = useStore((state) => state.pools.pricesApiPoolDataMapper)
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const snapshotData = snapshotsMapper[poolAddress]
   const pricesData = pricesApiPoolDataMapper[poolAddress]
   const basePoolList = isBasePoolsLoading ? [] : basePools[rChainId]
@@ -98,7 +99,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
           {pricesData.base_pool && (
             <PoolParameter>
               <PoolParameterTitle>{t`Basepool:`}</PoolParameterTitle>
-              <DataAddressLink href={network.scanTokenPath(pricesData.base_pool)}>
+              <DataAddressLink href={scanTokenPath(network, pricesData.base_pool)}>
                 {shortenAddress(pricesData.base_pool)}
               </DataAddressLink>
             </PoolParameter>
@@ -109,7 +110,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
           </PoolParameter>
           <PoolParameter>
             <PoolParameterTitle>{t`Registry:`}</PoolParameterTitle>
-            <PoolParameterLink href={network.scanTokenPath(pricesData.registry)}>
+            <PoolParameterLink href={scanTokenPath(network, pricesData.registry)}>
               {shortenAddress(pricesData.registry)}
             </PoolParameterLink>
           </PoolParameter>
@@ -122,7 +123,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
               <Coin key={`${token}-${idx}`}>
                 <Box flex>
                   <>
-                    <StyledExternalLink href={network.scanTokenPath(poolData.tokenAddresses[idx])}>
+                    <StyledExternalLink href={scanTokenPath(network, poolData.tokenAddresses[idx])}>
                       <ExternalLinkTokenWrapper>
                         <StyledTokenIcon
                           size="sm"
@@ -147,7 +148,7 @@ const PoolParameters = ({ pricesApi, poolData, rChainId }: PoolParametersProps) 
                     <Box flex>
                       <Numeral>├─</Numeral>
                       <IndentDataTitle>{t`Oracle Address:`}</IndentDataTitle>
-                      <IndentDataAddressLink href={network.scanTokenPath(pricesData.oracles[idx].oracle_address)}>
+                      <IndentDataAddressLink href={scanTokenPath(network, pricesData.oracles[idx].oracle_address)}>
                         {shortenAddress(pricesData.oracles[idx].oracle_address)}
                       </IndentDataAddressLink>
                     </Box>

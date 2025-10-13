@@ -3,10 +3,12 @@ import { styled } from 'styled-components'
 import SelectIntegrationTags from '@/dex/components/PageIntegrations/components/SelectIntegrationTags'
 import { parseSearchParams } from '@/dex/components/PageIntegrations/utils'
 import { ROUTE } from '@/dex/constants'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import type { FormValues } from '@/dex/types/integrations.types'
 import { ChainId, NetworkEnum, type NetworkUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
+import { fromEntries, recordEntries } from '@curvefi/prices-api/objects.util'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -35,9 +37,13 @@ const IntegrationsComp = ({
   const integrationsList = useStore((state) => state.integrations.integrationsList)
   const results = useStore((state) => state.integrations.results)
   const setFormValues = useStore((state) => state.integrations.setFormValues)
-  const networks = useStore((state) => state.networks.networks)
+
+  const { data: networks } = useNetworks()
   const visibleNetworksList = useMemo(() => Object.values(networks).filter((n) => n.showInSelectNetwork), [networks])
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
+  const networksIdMapper = useMemo(
+    () => fromEntries(recordEntries(networks).map(([chainId, { networkId }]) => [networkId, Number(chainId)])),
+    [networks],
+  )
 
   const { filterKey, filterNetworkId } = parseSearchParams(
     searchParams,
