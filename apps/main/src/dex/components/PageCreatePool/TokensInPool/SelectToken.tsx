@@ -19,6 +19,7 @@ import {
   SelectTokenFormValues,
   TokensInPoolState,
 } from '@/dex/components/PageCreatePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
@@ -57,7 +58,7 @@ const SelectToken = ({
   const swapType = useStore((state) => state.createPool.swapType)
   const clearToken = useStore((state) => state.createPool.clearToken)
   const tokensInPool = useStore((state) => state.createPool.tokensInPool)
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
 
   const getTokenName = (tokenId: TokenId) => {
     if (tokenId === TOKEN_D) return t`Token D`

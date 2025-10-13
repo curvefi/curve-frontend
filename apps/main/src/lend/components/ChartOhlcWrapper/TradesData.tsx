@@ -3,7 +3,7 @@ import networks from '@/lend/networks'
 import Box from '@ui/Box'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import { Chip } from '@ui/Typography'
-import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate } from '@ui/utils'
+import { formatNumber, getFractionDigitsOptions, convertDate, convertTimeAgo, formatDate, scanTxPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TradesDataProps } from './types'
 
@@ -11,7 +11,7 @@ const TradesData = ({ lendTradesData, chainId }: TradesDataProps) => (
   <>
     {lendTradesData.map((transaction, index) => (
       <TransactionRow key={`${transaction.txHash}-${transaction.idSold}-trade-${index}`}>
-        <Event href={networks[chainId].scanTxPath(transaction.txHash)} rel="noopener" target="_blank">
+        <Event href={scanTxPath(networks[chainId], transaction.txHash)} rel="noopener" target="_blank">
           <TradeFrom>
             <StyledTokenIcon
               size="sm"

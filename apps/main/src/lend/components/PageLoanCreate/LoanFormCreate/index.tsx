@@ -29,7 +29,7 @@ import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -116,7 +116,7 @@ const LoanCreate = ({
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction complete.`
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={network.scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txMessage} txHash={scanTxPath(network, resp.hash)} />)
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()

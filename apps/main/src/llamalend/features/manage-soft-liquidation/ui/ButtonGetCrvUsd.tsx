@@ -14,14 +14,12 @@ const { IconSize } = SizesAndSpaces
  */
 export const ButtonGetCrvUsd = () => {
   const pathname = usePathname()
-  const networkId = getCurrentNetwork(pathname)
-  const href = `${getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`
-
+  const networkId = getCurrentNetwork(pathname) ?? 'ethereum'
   return (
     <Button
       component={Link}
       color="ghost"
-      href={href}
+      href={`${getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`}
       target="_blank"
       size="extraSmall"
       endIcon={<CallMade sx={{ width: IconSize.md, height: IconSize.md }} />}

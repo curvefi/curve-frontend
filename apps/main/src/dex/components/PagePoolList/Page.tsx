@@ -4,6 +4,7 @@ import PoolList from '@/dex/components/PagePoolList/index'
 import { PoolListPage } from '@/dex/components/PagePoolList/PoolListPage'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { useChainId } from '@/dex/hooks/useChainId'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
 import Settings from '@/dex/layout/default/Settings'
@@ -37,7 +38,7 @@ const OldPoolListPage = () => {
 
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   const { isLite, poolFilters } = network
   const poolDatasLength = Object.keys(poolDataMapper ?? poolDataMapperCached ?? {}).length
   const defaultSortBy = isLite ? 'tvl' : 'volume'

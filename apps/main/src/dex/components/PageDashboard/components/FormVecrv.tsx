@@ -5,6 +5,7 @@ import { useDashboardContext } from '@/dex/components/PageDashboard/dashboardCon
 import { Title } from '@/dex/components/PageDashboard/styles'
 import type { FormStatus } from '@/dex/components/PageDashboard/types'
 import { DEFAULT_FORM_STATUS, getIsLockExpired } from '@/dex/components/PageDashboard/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
@@ -19,7 +20,7 @@ import { Chip } from '@ui/Typography'
 import { formatDate } from '@ui/utils'
 import { formatNumber } from '@ui/utils'
 import { breakpoints } from '@ui/utils/responsive'
-import { NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
+import { NETWORK_BASE_CONFIG, scanTxPath } from '@ui/utils/utilsNetworks'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
@@ -40,7 +41,8 @@ const FormVecrv = () => {
   const formStatus = useStore((state) => state.dashboard.formStatus)
   const setFormStatusVecrv = useStore((state) => state.dashboard.setFormStatusVecrv)
   const fetchStepWithdraw = useStore((state) => state.dashboard.fetchStepWithdrawVecrv)
-  const network = useStore((state) => curve && state.networks.networks[curve.chainId])
+  const { data: networks } = useNetworks()
+  const network = (curve && networks[curve.chainId]) || null
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -67,7 +69,7 @@ const FormVecrv = () => {
         setTxInfoBar(
           <TxInfoBar
             description={txDescription}
-            txHash={network.scanTxPath(resp.hash)}
+            txHash={scanTxPath(network, resp.hash)}
             onClose={() => {
               setTxInfoBar(null)
               setFormStatusVecrv(DEFAULT_FORM_STATUS)

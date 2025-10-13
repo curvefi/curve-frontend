@@ -16,19 +16,20 @@ import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
   Pool,
-  RewardsApyMapper,
   PoolData,
   PoolDataCache,
+  RewardsApyMapper,
   TvlMapper,
   UserPoolListMapper,
-  VolumeMapper,
   type ValueMapperCached,
+  VolumeMapper,
 } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternal } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerkl } from '@ui-kit/entities/campaigns/campaigns-merkl'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
+import { fetchNetworks, getNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { orderBy, uniqBy, chunk } = lodash
@@ -150,9 +151,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
     },
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
       const { hideSmallPoolsTvl } = networks[chainId]
 
       const result = takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
@@ -160,9 +159,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
       return result
     },
     sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled, chainId) => {
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
 
       if (poolDatas.length === 0) {
         return poolDatas
@@ -199,12 +196,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         return orderBy(
           poolDatas,
           ({ pool }) => {
-            const externalCampaigns = getCampaignsExternal({})
-            const merklCampaigns = getCampaignsMerkl({})
-            const campaigns = combineCampaigns({
-              campaigns: [externalCampaigns, merklCampaigns],
-              filter: (campaign) => campaign.network === blockchainId,
-            })
+            const campaigns = combineCampaigns(getCampaignsExternal({}), getCampaignsMerkl({}), blockchainId)
             const rewards = campaigns[pool.address.toLowerCase()] ?? []
 
             return Math.max(
@@ -229,9 +221,9 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
     ) => {
       const {
         pools,
-        networks: { networks },
         [sliceKey]: { activeKey, formStatus, result: storedResults, ...sliceState },
       } = get()
+      const networks = await fetchNetworks()
       const { isCrvRewardsEnabled } = networks?.[rChainId] ?? {}
 
       const { searchText, filterKey, sortBy, sortByOrder } = searchParams

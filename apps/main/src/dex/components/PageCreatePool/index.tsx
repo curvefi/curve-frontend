@@ -17,6 +17,7 @@ import {
   oraclesReady,
   checkPoolInfo,
 } from '@/dex/components/PageCreatePool/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import { curveProps } from '@/dex/lib/utils'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, ChainId } from '@/dex/types/main.types'
@@ -33,7 +34,7 @@ type Props = {
 
 const CreatePool = ({ curve }: Props) => {
   const navHeight = useLayoutStore((state) => state.navHeight)
-  const networks = useStore((state) => state.networks.networks)
+  const { data: networks } = useNetworks()
   const { chainId, haveSigner } = curveProps(curve, networks) as { chainId: ChainId; haveSigner: boolean }
   const poolSymbol = useStore((state) => state.createPool.poolSymbol)
   const swapType = useStore((state) => state.createPool.swapType)
