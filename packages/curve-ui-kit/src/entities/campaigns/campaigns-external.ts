@@ -63,5 +63,5 @@ export const {
     )
   },
   validationSuite: EmptyValidationSuite,
-  refetchInterval: '1d',
+  refetchInterval: '10m',
 })
