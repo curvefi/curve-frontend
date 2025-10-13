@@ -189,8 +189,6 @@ export type NetworkDef<TId extends string = string, TChainId extends number = nu
   symbol: string
   rpcUrl: string
   showInSelectNetwork: boolean
-  logoSrc: string
-  logoSrcDark: string
   showRouterSwap: boolean
 }
 
@@ -226,8 +224,6 @@ export function getBaseNetworksConfig<TId extends string, ChainId extends number
     id, // TODO: remove id or networkId
     networkId: id,
     hex: ethers.toQuantity(chainId),
-    logoSrc: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}.png`,
-    logoSrcDark: `https://cdn.jsdelivr.net/gh/curvefi/curve-assets/chains/${id}-dark.png`,
     rpcUrl,
     isTestnet,
     explorerUrl,
