@@ -2,7 +2,7 @@ import lodash from 'lodash'
 import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
-import { ChainId, NativeToken, Token, TokensMapper, TokensNameMapper, PoolData } from '@/dex/types/main.types'
+import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
 import { log } from '@ui-kit/lib/logging'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -19,8 +19,8 @@ const sliceKey = 'tokens'
 // prettier-ignore
 export type TokensSlice = {
   [sliceKey]: SliceState & {
-    setTokensMapper(chainId: ChainId, poolDatas: PoolData[]): Promise<string[]>
-    setEmptyPoolListDefault(chainId: ChainId): void
+    setTokensMapper(curve: CurveApi, poolDatas: PoolData[]): Promise<string[]>
+    setEmptyPoolListDefault(curve: CurveApi): void
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -47,14 +47,15 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    setTokensMapper: async (chainId, poolDatas) => {
-      const { pools, networks } = get()
+    setTokensMapper: async (curve, poolDatas) => {
+      const { pools } = get()
       const { tokensMapper, ...sliceState } = get()[sliceKey]
 
       sliceState.setStateByKey('loading', true)
 
+      const chainId = curve.chainId
       const volumeMapper = pools.volumeMapper[chainId] ?? {}
-      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(networks.nativeToken[chainId])
+      const DEFAULT_TOKEN_MAPPER = _getDefaultTokenMapper(curve)
       let cTokensMapper: TokensMapper = { ...(tokensMapper[chainId] ?? DEFAULT_TOKEN_MAPPER) }
       const partialTokensMapper: TokensMapper = {}
 
@@ -102,9 +103,10 @@ const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSl
 
       return Object.keys(parsedPartialTokensMapper)
     },
-    setEmptyPoolListDefault: async (chainId) => {
-      const { networks, [sliceKey]: sliceState } = get()
-      const nativeToken = networks.nativeToken[chainId]
+    setEmptyPoolListDefault: async (curve) => {
+      const { [sliceKey]: sliceState } = get()
+      const chainId = curve.chainId
+      const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN
 
       if (!nativeToken) return
 
@@ -154,9 +156,8 @@ export function getTokensMapperStr(tokensMapper: TokensMapper | undefined) {
   }, '')
 }
 
-export function _getDefaultTokenMapper(nativeToken: NativeToken | undefined) {
-  if (!nativeToken) return {}
-  const { address, symbol, wrappedAddress, wrappedSymbol } = nativeToken
+export function _getDefaultTokenMapper(curve: CurveApi) {
+  const { address, symbol, wrappedAddress, wrappedSymbol } = curve.getNetworkConstants().NATIVE_TOKEN
   return {
     [address]: { ...DEFAULT_TOKEN, symbol: symbol, address: address },
     [wrappedAddress]: { ...DEFAULT_TOKEN, symbol: wrappedSymbol, address: wrappedAddress },
