@@ -3,8 +3,10 @@ import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
+import { useUserBandsData } from '@/lend/hooks/useUserBandsData'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { BandsChart } from '@/llamalend/widgets/bands-chart/BandsChart'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -35,17 +37,28 @@ export const MarketInformationComp = ({
   const { rChainId, rOwmId, market } = pageProps
   const theme = useTheme()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const { userBandsBalances, marketBandsBalances } = useUserBandsData({
+    rChainId,
+    rOwmId,
+    api: pageProps.api,
+    market: pageProps.market,
+  })
 
   return (
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack
+          display="grid"
+          gridTemplateColumns="1fr 0.5fr"
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+        >
           <ChartOhlcWrapper
             rChainId={rChainId}
             rOwmId={rOwmId}
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
+          <BandsChart userBandsBalances={userBandsBalances ?? []} marketBandsBalances={marketBandsBalances ?? []} />
         </Stack>
       )}
       {type === 'borrow' && isAdvancedMode && (
