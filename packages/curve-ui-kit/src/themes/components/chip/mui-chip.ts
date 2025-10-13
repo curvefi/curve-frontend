@@ -161,21 +161,32 @@ export const defineMuiChip = (
     ...Object.entries(chipSizes).map(([size, { font, iconSize, height, paddingInline, lineHeight }]) => ({
       props: { size: size as ChipSizes },
       style: {
-        ...handleBreakpoints({ ...typography[font], height, paddingInline }),
-        '& .MuiChip-icon': handleBreakpoints({ width: iconSize, height: iconSize }),
+        ...handleBreakpoints({ ...typography[font], paddingInline }),
+        height: height.desktop, // constant height for all breakpoints
+        '& .MuiChip-icon': handleBreakpoints({ width: iconSize.desktop, height: iconSize.desktop }),
         '& .MuiChip-label': handleBreakpoints({ lineHeight }),
-        '&:has(.MuiChip-icon):has(.MuiChip-label:empty)': handleBreakpoints({
-          width: height, // force chips with only an icon to be a perfect circle
-        }),
+        // Target chips with empty labels (icon-only chips)
+        '&:has(.MuiChip-label:empty)': {
+          width: height.desktop, // constant width for icon-only chips (perfect square)
+          height: height.desktop,
+        },
       },
     })),
-    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, ...rest }]) => ({
+    ...Object.entries(chipSizeClickable).map(([size, { font, deleteIconSize, height: heightOverride, ...rest }]) => ({
       props: {
         size: size as ChipSizes,
         clickable: true,
       },
       style: {
         ...handleBreakpoints({ ...(font && typography[font]), ...rest }),
+        ...(heightOverride && {
+          height: heightOverride.desktop, // constant height override for clickable chips
+          // Target clickable chips with empty labels (icon-only chips)
+          '&:has(.MuiChip-label:empty)': {
+            width: heightOverride.desktop, // constant width for icon-only clickable chips (perfect square)
+            height: heightOverride.desktop,
+          },
+        }),
         '& .MuiChip-deleteIcon': handleBreakpoints({ width: deleteIconSize, height: deleteIconSize }),
       },
     })),

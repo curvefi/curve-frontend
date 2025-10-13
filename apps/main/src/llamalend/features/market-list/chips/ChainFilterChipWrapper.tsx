@@ -32,9 +32,19 @@ export const ChainFilterChipWrapper = ({
   )
 
   return (
-    <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.xs}>
+    <Grid
+      container
+      rowSpacing={Spacing.xs}
+      columnSpacing={Spacing.xs}
+      size={{ mobile: 12, tablet: 'auto' }}
+      sx={{
+        flexWrap: { mobile: 'nowrap', tablet: 'wrap' },
+        overflowX: { mobile: 'auto', tablet: 'visible' },
+      }}
+    >
       {chains.map((chain) => (
         <GridChip
+          size="auto"
           key={chain}
           selected={selectedChains?.includes(chain) ?? false}
           toggle={() => toggleChain(chain)}

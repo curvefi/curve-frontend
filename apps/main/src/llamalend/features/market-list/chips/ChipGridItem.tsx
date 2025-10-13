@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
+import { type GridProps } from '@mui/material/Grid'
 
 /**
  * A Grid item for the list of chips. It takes 50% of the width on mobile and auto on larger screens.
@@ -11,15 +12,15 @@ import Grid from '@mui/material/Grid'
  */
 export const ChipGridItem = ({
   children,
-  size = 6,
+  size = { mobile: 6, tablet: 'auto' },
   alignRight,
 }: {
   children: ReactNode
-  size?: number
+  size?: GridProps['size']
   alignRight?: boolean
 }) => (
   <Grid
-    size={{ mobile: size, tablet: 'auto' }}
+    size={size}
     sx={{
       alignContent: 'center',
       ...(alignRight && { textAlign: 'right', '&': { flexGrow: '1' } }),
