@@ -4,7 +4,7 @@ import { PoolAlert } from '@/dex/types/main.types'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-const useTokenAlert = (tokenAddressAll: string[]): PoolAlert | null =>
+const useTokenAlert = (tokenAddressAll: string[] | undefined): PoolAlert | null =>
   useMemo(() => {
     const maAlert: PoolAlert = {
       alertType: 'info',

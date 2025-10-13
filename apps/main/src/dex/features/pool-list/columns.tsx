@@ -2,7 +2,7 @@ import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { boolFilterFn, filterByText, inListFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
-import { PoolNameCell } from './cells/PoolNameCell'
+import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
 import { PoolTvlCell } from './cells/PoolTvlCell'
 import { PoolVolumeCell } from './cells/PoolVolumeCell'
 import { RewardsBaseCell } from './cells/RewardsBaseCell'
@@ -43,8 +43,7 @@ export const POOL_LIST_COLUMNS = [
   columnHelper.accessor('pool.name', {
     id: PoolColumnId.PoolName,
     header: t`Pool`,
-    cell: PoolNameCell,
-    meta: { type: 'numeric' },
+    cell: PoolTitleCell,
     filterFn: filterByText(
       'pool.wrappedCoins',
       'pool.wrappedCoinAddresses',

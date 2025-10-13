@@ -1,5 +1,5 @@
 import { isEqual } from 'lodash'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
@@ -16,6 +16,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
@@ -80,6 +81,9 @@ export const PoolListTable = ({ rChainId, curve }: { rChainId: ChainId; curve: C
   })
 
   const loading = !data
+  useTraceProps('PoolListTable', { columnFilters, columnVisibility, data, expanded, sorting, loading })
+  useEffect(() => console.log(data), [data])
+
   return (
     <DataTable
       table={table}

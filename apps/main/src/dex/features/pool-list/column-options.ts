@@ -1,7 +1,7 @@
-import { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
+import { PoolColumnId } from './columns'
 
 const createVisibility = ({
   isLite,

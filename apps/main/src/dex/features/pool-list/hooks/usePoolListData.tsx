@@ -10,6 +10,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import type { PoolListItem, PoolTag } from '../types'
 
 const getPoolTags = (hasPosition: boolean, { pool: { address, id, name, referenceAsset } }: PoolData) =>
@@ -44,6 +45,8 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
     REFRESH_INTERVAL['11m'],
     isPageVisible,
   )
+
+  useTraceProps('usePoolListData', { poolsData, rewardsApyMapper, tvlMapper, userPoolList, volumeMapper, network })
 
   return {
     isReady: !!useMemo(
