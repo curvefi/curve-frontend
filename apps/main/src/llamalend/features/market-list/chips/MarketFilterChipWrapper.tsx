@@ -1,19 +1,15 @@
 import { type ReactNode } from 'react'
 import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { ResetFiltersButton } from '@ui-kit/shared/ui/DataTable/ResetFiltersButton'
-import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 import { MarketSortDrawer } from '../drawers/MarketSortDrawer'
-import { ChipGridItem } from './ChipGridItem'
+import { HiddenMarketsResetFilters } from './HiddenMarketsResetFilters'
 import { LlamaListFilterChips } from './LlamaListFilterChips'
 import { MarketTypeFilterChips } from './MarketTypeFilterChips'
 
@@ -74,27 +70,20 @@ export const MarketFilterChipWrapper = ({
               hasFavorites={hasFavorites}
               data={data}
               minLiquidity={minLiquidity}
+              hiddenMarketCount={hiddenMarketCount}
+              resetFilters={resetFilters}
+              hasFilters={hasFilters}
               {...filterProps}
             />
           </Grid>
         </Grid>
       )}
       {hiddenMarketCount != null && !isMobile && (
-        <Tooltip title={tooltip}>
-          <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <ChipGridItem {...(!isMobile && { alignRight: true })}>
-              <Stack direction="row" gap={1} alignItems="center">
-                <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
-                <Typography variant="highlightS">{hiddenMarketCount}</Typography>
-              </Stack>
-            </ChipGridItem>
-            {hasFilters && (
-              <ChipGridItem alignRight>
-                <ResetFiltersButton onClick={resetFilters} />
-              </ChipGridItem>
-            )}
-          </Grid>
-        </Tooltip>
+        <HiddenMarketsResetFilters
+          hiddenMarketCount={hiddenMarketCount}
+          resetFilters={resetFilters}
+          hasFilters={hasFilters}
+        />
       )}
     </Grid>
   )
