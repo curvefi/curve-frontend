@@ -1,4 +1,5 @@
-import { useQueries } from '@tanstack/react-query'
+import { useCallback, useMemo } from 'react'
+import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib, requireLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
@@ -20,11 +21,19 @@ export const {
   validationSuite: tokenValidationSuite,
 })
 
-export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
-  const uniqueAddresses = Array.from(new Set(tokenAddresses))
+type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
 
+export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
+  const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
   return useQueries({
-    queries: uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    combine: (results) => combineQueriesToObject(results, uniqueAddresses),
+    queries: useMemo(
+      (): UseTokenOptions[] =>
+        uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+      [chainId, uniqueAddresses],
+    ),
+    combine: useCallback(
+      (results: QueriesResults<UseTokenOptions[]>) => combineQueriesToObject(results, uniqueAddresses),
+      [uniqueAddresses],
+    ),
   })
 }
