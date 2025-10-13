@@ -15,13 +15,13 @@ import type { State } from '@/dex/store/useStore'
 import {
   ChainId,
   Pool,
-  RewardsApyMapper,
   PoolData,
   PoolDataCache,
+  RewardsApyMapper,
   TvlMapper,
   UserPoolListMapper,
-  VolumeMapper,
   type ValueMapperCached,
+  VolumeMapper,
 } from '@/dex/types/main.types'
 import type { Chain } from '@curvefi/prices-api'
 import { combineCampaigns } from '@ui-kit/entities/campaigns'
@@ -204,12 +204,7 @@ const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolLi
         return orderBy(
           poolDatas,
           ({ pool }) => {
-            const externalCampaigns = getCampaignsExternal({})
-            const merklCampaigns = getCampaignsMerkl({})
-            const campaigns = combineCampaigns({
-              campaigns: [externalCampaigns, merklCampaigns],
-              filter: (campaign) => campaign.network === blockchainId,
-            })
+            const campaigns = combineCampaigns(getCampaignsExternal({}), getCampaignsMerkl({}), blockchainId)
             const rewards = campaigns[pool.address.toLowerCase()] ?? []
 
             return Math.max(

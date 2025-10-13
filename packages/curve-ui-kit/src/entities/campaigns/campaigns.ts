@@ -1,12 +1,13 @@
-import { useMemo } from 'react'
+import memoizee from 'memoizee'
+import { useCallback, useMemo } from 'react'
 import type { Address } from 'viem'
 import type { Chain } from '@curvefi/prices-api'
 import { fromEntries, notFalsy, objectKeys } from '@curvefi/prices-api/objects.util'
-import { useQueries } from '@tanstack/react-query'
+import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { combineQueriesMeta } from '@ui-kit/lib'
 import { getCampaignsExternalOptions } from './campaigns-external'
 import { getCampaignsMerklOptions } from './campaigns-merkl'
-import type { CampaignPoolRewards, Campaigns } from './types'
+import type { Campaigns } from './types'
 
 /**
  * Combines multiple campaign records into a single record, merging campaigns by address.
@@ -14,52 +15,45 @@ import type { CampaignPoolRewards, Campaigns } from './types'
  * When the same address appears in multiple campaign sources, all rewards are merged into a single array.
  * Addresses with no campaigns after filtering are automatically excluded.
  *
+ * The function is memoized because Tanstack will call `combine` on every usage of `useQueries`,
+ *
  * @param campaigns - Array of campaign records to combine (undefined values are filtered out)
  * @param filter - Optional filter function to apply to individual campaigns before grouping
  * @returns Combined record with all campaigns merged by address
- *
- * @example
- * ```typescript
- * // Combine and filter by network
- * const ethereumCampaigns = combineCampaigns({
- *   campaigns: [externalCampaigns, merklCampaigns],
- *   filter: (campaign) => campaign.network === 'ethereum'
- * })
- * ```
  */
-export const combineCampaigns = ({
-  campaigns,
-  filter,
-}: {
-  campaigns: (Campaigns | undefined)[]
-  filter?: (campaign: CampaignPoolRewards) => boolean
-}): Campaigns => {
-  // Get all unique addresses from all campaign sources
-  const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
+export const combineCampaigns = memoizee(
+  (external: Campaigns | undefined, merkl: Campaigns | undefined, network?: string): Campaigns => {
+    const campaigns = [external, merkl]
+    // Get all unique addresses from all campaign sources
+    const allAddresses = new Set(notFalsy(...campaigns).flatMap(objectKeys))
 
-  // Combine campaigns by address, applying optional filter
-  return fromEntries(
-    [...allAddresses]
-      .map((address) => {
-        const allRewards = campaigns
-          .filter((record): record is Campaigns => record !== undefined)
-          .flatMap((record) => record[address] || [])
+    // Combine campaigns by address, applying optional filter
+    return fromEntries(
+      [...allAddresses]
+        .map((address) => {
+          const allRewards = campaigns
+            .filter((record): record is Campaigns => record !== undefined)
+            .flatMap((record) => record[address] || [])
 
-        const filteredRewards = filter ? allRewards.filter(filter) : allRewards
+          const filteredRewards = network ? allRewards.filter((r) => r.network === network) : allRewards
 
-        return [address, filteredRewards] as const
-      })
-      // Only include campaigns that have rewards after filtering
-      .filter(([_, rewards]) => rewards.length > 0),
-  )
-}
+          return [address, filteredRewards] as const
+        })
+        // Only include campaigns that have rewards after filtering
+        .filter(([_, rewards]) => rewards.length > 0),
+    )
+  },
+)
 
-type UseCampaignsOptions = { blockchainId?: Chain }
+type UseCampaignsOptions = { blockchainId?: Chain; enabled?: boolean }
+
+type CampaignQueries = [ReturnType<typeof getCampaignsExternalOptions>, ReturnType<typeof getCampaignsMerklOptions>]
+const queries: CampaignQueries = [getCampaignsExternalOptions({}), getCampaignsMerklOptions({})]
 
 /**
  * Hook for accessing all campaigns, optionally filtered by network.
  *
- * @param options.blockchainId - Optional chain identifier to filter campaigns by network
+ * @param blockchainId - Optional chain identifier to filter campaigns by network
  *
  * @example
  * ```typescript
@@ -77,22 +71,22 @@ type UseCampaignsOptions = { blockchainId?: Chain }
  */
 const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
   useQueries({
-    queries: [getCampaignsExternalOptions({}), getCampaignsMerklOptions({})],
-    combine: (campaigns) => ({
-      ...combineQueriesMeta(campaigns),
-      // Combine campaigns with optional network filter
-      data: combineCampaigns({
-        campaigns: campaigns.map((campaign) => campaign.data),
-        filter: blockchainId ? (campaign) => campaign.network === blockchainId : undefined,
+    queries,
+    combine: useCallback(
+      ([external, merkl]: QueriesResults<CampaignQueries>) => ({
+        ...combineQueriesMeta([external, merkl]),
+        // Combine campaigns with an optional network filter
+        data: combineCampaigns(external.data, merkl.data, blockchainId),
       }),
-    }),
+      [blockchainId],
+    ),
   })
 
 /**
  * Hook for accessing campaigns for a specific campaign address, optionally filtered by network.
  *
- * @param options.address - Address to get campaigns for
- * @param options.blockchainId - Optional chain identifier to filter campaigns by network
+ * @param address - Address to get campaigns for
+ * @param blockchainId - Optional chain identifier to filter campaigns by network
  *
  * @example
  * ```typescript
@@ -104,13 +98,8 @@ const useCampaigns = ({ blockchainId }: UseCampaignsOptions = {}) =>
  */
 export const useCampaignsByAddress = ({
   address,
-  ...useCampaignOptions
+  blockchainId,
 }: { address: Address | undefined } & UseCampaignsOptions) => {
-  const { data: campaigns, ...queryData } = useCampaigns(useCampaignOptions)
-  const rewards = useMemo(() => (address && campaigns[address]) || [], [address, campaigns])
-
-  return {
-    ...queryData,
-    data: rewards,
-  }
+  const { data } = useCampaigns({ blockchainId, enabled: Boolean(address) })
+  return { data: useMemo(() => (address && data[address]) || [], [address, data]) }
 }
