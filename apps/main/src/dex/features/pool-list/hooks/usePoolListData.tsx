@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
@@ -10,7 +10,6 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
-import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import type { PoolListItem, PoolTag } from '../types'
 
 const getPoolTags = (hasPosition: boolean, { pool: { address, id, name, referenceAsset } }: PoolData) =>
@@ -34,7 +33,13 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
   const volumeMapper = useStore((state) => state.pools.volumeMapper[chainId])
   const fetchPoolsRewardsApy = useStore((state) => state.pools.fetchPoolsRewardsApy)
+  const fetchMissingPoolsRewardsApy = useStore((state) => state.pools.fetchMissingPoolsRewardsApy)
   const poolsData = useMemo(() => poolDataMapper && recordValues(poolDataMapper), [poolDataMapper])
+
+  useEffect(
+    () => poolsData && void fetchMissingPoolsRewardsApy(chainId, poolsData),
+    [chainId, fetchMissingPoolsRewardsApy, fetchPoolsRewardsApy, poolsData],
+  )
 
   usePageVisibleInterval(
     useCallback(() => {
@@ -46,9 +51,8 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
     isPageVisible,
   )
 
-  useTraceProps('usePoolListData', { poolsData, rewardsApyMapper, tvlMapper, userPoolList, volumeMapper, network })
-
   return {
+    isLoading: !poolsData,
     isReady: !!useMemo(
       () => objectKeys(tvlMapper ?? {}).length && (!isLite || objectKeys(volumeMapper || {}).length),
       [isLite, tvlMapper, volumeMapper],
@@ -60,9 +64,9 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
         poolsData.map(
           (item): PoolListItem => ({
             ...item,
-            rewards: rewardsApyMapper?.[item.pool.id] ?? {},
-            volume: volumeMapper?.[item.pool.id] ?? {},
-            tvl: tvlMapper?.[item.pool.id] ?? {},
+            rewards: rewardsApyMapper?.[item.pool.id],
+            volume: volumeMapper?.[item.pool.id],
+            tvl: tvlMapper?.[item.pool.id],
             hasPosition: userPoolList?.[item.pool.id],
             network,
             url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.id}/deposit`),

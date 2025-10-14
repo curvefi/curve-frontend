@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type RefObject } from 'react'
+import { type RefObject, useCallback, useEffect, useState } from 'react'
 
 interface Props extends IntersectionObserverInit {
   /** Once the element is visible, freeze that state and stop observing */
@@ -6,6 +6,16 @@ interface Props extends IntersectionObserverInit {
 }
 
 type IntersectionEntry = IntersectionObserverEntry | { isIntersecting: boolean }
+
+export const observeNode = (
+  node: Element,
+  callback: (entries: IntersectionObserverEntry[]) => void,
+  observerParams?: IntersectionObserverInit,
+) => {
+  const observer = new IntersectionObserver(callback, observerParams)
+  observer.observe(node)
+  return () => observer.disconnect()
+}
 
 /**
  * Hook that tracks when an element is visible in the viewport using the Intersection Observer API
@@ -46,12 +56,26 @@ export default function useIntersectionObserver(elementRef: RefObject<Element | 
 
     const node = elementRef?.current
     if (frozen || !node) return
-
-    const observerParams = { threshold, root, rootMargin }
-    const observer = new IntersectionObserver(updateEntry, observerParams)
-    observer.observe(node)
-    return () => observer.disconnect()
+    return observeNode(node, updateEntry, { threshold, root, rootMargin })
   }, [elementRef, root, rootMargin, frozen, updateEntry, threshold])
 
   return entry
+}
+
+/**
+ * Hook that tracks if an element is visible in the viewport using the Intersection Observer API
+ * Similar to useIntersectionObserver, but it receives a node directly and returns a boolean.
+ */
+export function useIsVisible<T extends Element>(node: T | null, enabled: boolean = true) {
+  const [visible, setIsVisible] = useState(false)
+  useEffect(
+    () =>
+      node && enabled
+        ? observeNode(node, (entries) =>
+            setIsVisible((visible) => (visible || entries[entries.length - 1]?.isIntersecting) ?? false),
+          )
+        : undefined,
+    [node, enabled],
+  )
+  return visible
 }

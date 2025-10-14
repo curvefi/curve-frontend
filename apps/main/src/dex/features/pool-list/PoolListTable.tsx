@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import useStore from '@/dex/store/useStore'
+import { useCallback, useMemo, useState } from 'react'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId } from '@/dex/types/main.types'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { CurveApi } from '@ui-kit/features/connect-wallet'
@@ -16,7 +16,6 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
-import { useTraceProps } from '@ui-kit/utils/useTraceProps'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
@@ -46,13 +45,15 @@ const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: 
     useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || undefined), [setColumnFilter]),
   ] as const
 
-export const PoolListTable = ({ rChainId, curve }: { rChainId: ChainId; curve: CurveApi | null }) => {
+export const PoolListTable = ({ chainId, curve }: { chainId: ChainId; curve: CurveApi | null }) => {
   // todo: this needs to be more complicated, we need to show at least the top 10 per chain
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId })
   const { isCrvRewardsEnabled, isLite } = network
   const { signerAddress } = curve ?? {}
-  const { data, isReady, userHasPositions } = usePoolListData(network)
+
+  // todo: use isReady to show a loading spinner close to the data
+  const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
@@ -80,12 +81,9 @@ export const PoolListTable = ({ rChainId, curve }: { rChainId: ChainId; curve: C
     ...getTableOptions(data),
   })
 
-  const loading = !data
-  useTraceProps('PoolListTable', { columnFilters, columnVisibility, data, expanded, sorting, loading })
-  useEffect(() => console.log(data), [data])
-
   return (
     <DataTable
+      lazy
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
@@ -98,11 +96,11 @@ export const PoolListTable = ({ rChainId, curve }: { rChainId: ChainId; curve: C
       }
       expandedPanel={PoolMobileExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
-      loading={loading}
+      loading={isLoading}
     >
       <TableFilters<PoolColumnId>
         title={TITLE}
-        loading={loading}
+        loading={isLoading}
         // todo: onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}

@@ -12,7 +12,7 @@ export const PoolListPage = () => {
   const rChainId = useChainId(params.network)
   return (
     <ListPageWrapper>
-      {rChainId && <PoolListTable rChainId={rChainId} curve={curveApi} />}
+      {rChainId && <PoolListTable chainId={rChainId} curve={curveApi} />}
       <Settings showScrollButton />
     </ListPageWrapper>
   )

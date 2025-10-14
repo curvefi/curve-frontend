@@ -20,4 +20,4 @@ export const filterByText =
     filter
       .toLowerCase()
       .split(/\s+/)
-      .every((filterWord) => fields.some((field) => get(row.original, field).toLowerCase().includes(filterWord)))
+      .every((filterWord) => fields.some((field) => get(row.original, field)?.toLowerCase?.().includes(filterWord)))

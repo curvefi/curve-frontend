@@ -97,11 +97,9 @@ export const DataTable = <T extends TableItem>({
           ) : rows.length === 0 ? (
             emptyState
           ) : (
-            <>
-              {rows.map((row, index) => (
-                <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
-              ))}
-            </>
+            rows.map((row, index) => (
+              <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+            ))
           )}
         </TableBody>
       </Table>
