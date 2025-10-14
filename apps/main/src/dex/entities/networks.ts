@@ -17,13 +17,20 @@ const {
 
 export const useNetworksQuery = () => useQuery({})
 export const fetchNetworks = () => fetchNetworksQuery({})
-export const getNetworks = () => getNetworksQuery({})
+export const getNetworks = () => {
+  const result = getNetworksQuery({})
+  if (!result) {
+    throw new Error('Do not use this hook while loading, it should be after RootLayout has loaded the networks')
+  }
+  return result
+}
 
 /** Only use this after the networks have been fetched in the RootLayout. Used for legacy code only. */
 export const useNetworks = () => {
   const { data, isPending } = useNetworksQuery()
-  if (isPending)
+  if (isPending) {
     throw new Error('Do not use this hook while loading, it should be after RootLayout has loaded the networks')
+  }
   return { data: data ?? defaultNetworks }
 }
 
