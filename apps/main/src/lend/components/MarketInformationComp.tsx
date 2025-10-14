@@ -3,7 +3,7 @@ import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import { useUserBandsData } from '@/lend/hooks/useUserBandsData'
+import { useBandsData } from '@/lend/hooks/useBandsData'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/widgets/bands-chart/BandsChart'
@@ -37,7 +37,7 @@ export const MarketInformationComp = ({
   const { rChainId, rOwmId, market } = pageProps
   const theme = useTheme()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { userBandsBalances, marketBandsBalances } = useUserBandsData({
+  const { userBandsBalances, marketBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
     rChainId,
     rOwmId,
     api: pageProps.api,
@@ -50,7 +50,7 @@ export const MarketInformationComp = ({
         <Stack
           display="grid"
           gridTemplateColumns="1fr 0.5fr"
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
             rChainId={rChainId}
@@ -58,7 +58,13 @@ export const MarketInformationComp = ({
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          <BandsChart userBandsBalances={userBandsBalances ?? []} marketBandsBalances={marketBandsBalances ?? []} />
+          <BandsChart
+            userBandsBalances={userBandsBalances ?? []}
+            marketBandsBalances={marketBandsBalances ?? []}
+            liquidationBand={liquidationBand}
+            oraclePrice={oraclePrice}
+            oraclePriceBand={oraclePriceBand}
+          />
         </Stack>
       )}
       {type === 'borrow' && isAdvancedMode && (
