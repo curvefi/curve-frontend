@@ -3,6 +3,7 @@ import { LlamaMarket, LlamaMarketKey } from '@/llamalend/entities/llama-markets'
 import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -10,7 +11,6 @@ import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from './columns.enum'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 

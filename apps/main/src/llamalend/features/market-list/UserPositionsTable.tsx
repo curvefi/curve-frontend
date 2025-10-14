@@ -13,14 +13,12 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
 const LOCAL_STORAGE_KEYS = {

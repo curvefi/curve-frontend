@@ -1,12 +1,12 @@
 import { useCallback, useRef } from 'react'
 import Box from '@mui/material/Box'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 import { SearchField, SearchFieldProps } from '@ui-kit/shared/ui/SearchField'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 

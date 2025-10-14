@@ -6,9 +6,9 @@ import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import type { LlamaMarketColumnId } from '../columns.enum'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 /**
  * Get the maximum value from a field in an array of objects.
