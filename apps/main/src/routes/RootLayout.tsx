@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import useDaoStore from '@/dao/store/useStore'
-import { useNetworks } from '@/dex/entities/networks'
+import { useNetworksQuery } from '@/dex/entities/networks'
 import useDexStore from '@/dex/store/useStore'
 import useLendStore from '@/lend/store/useStore'
 import useLoanStore from '@/loan/store/useStore'
@@ -42,7 +42,7 @@ function useHydrationMethods(): HydratorMap {
 
 // Inner component that uses TanStack Query hooks
 const NetworkAwareLayout = () => {
-  const { data: networks, isError } = useNetworks()
+  const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
@@ -50,9 +50,6 @@ const NetworkAwareLayout = () => {
   const config = useWagmiConfig(networks)
 
   useLayoutStoreResponsive()
-
-  // Fall back to the error boundary if after many retries TanStack failed to query all (required) networks
-  if (isError) throw new Error('Could not load networks')
 
   return (
     config &&

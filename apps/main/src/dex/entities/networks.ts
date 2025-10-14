@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
+import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
-import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
 const {
-  useQuery: useNetworksQuery,
+  useQuery: useQuery,
   fetchQuery: fetchNetworksQuery,
   getQueryData: getNetworksQuery,
 } = queryFactory({
@@ -12,22 +12,24 @@ const {
   queryFn: getNetworksLib,
   staleTime: '1h',
   refetchInterval: '1h',
-  validationSuite: curveApiValidationSuite,
+  validationSuite: createValidationSuite(() => undefined),
 })
 
+export const useNetworksQuery = () => useQuery({})
 export const fetchNetworks = () => fetchNetworksQuery({})
 export const getNetworks = () => getNetworksQuery({})
 
-/** Helper method to initialize data as empty object by default, a lot of legacy code depends on that behavior */
+/** Only use this after the networks have been fetched in the RootLayout. Used for legacy code only. */
 export const useNetworks = () => {
-  const { data: networks, isError } = useNetworksQuery({})
-  return { data: isError ? defaultNetworks : networks, isError }
+  const { data, isPending } = useNetworksQuery()
+  if (isPending)
+    throw new Error('Do not use this hook while loading, it should be after RootLayout has loaded the networks')
+  return { data: data ?? defaultNetworks }
 }
 
 export const useNetworkByChain = ({ chainId }: { chainId: number }) => {
   const { data: networks } = useNetworks()
-  if (!networks) throw new Error('Networks not loaded')
   const network = useMemo(() => networks[chainId], [chainId, networks])
-  if (!network) throw new Error(`Network not found for chainId ${chainId}`)
+  if (!network) throw new Error(`Network not found with chainId ${chainId}`)
   return { data: network }
 }
