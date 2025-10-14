@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { CaretSortIcon } from '@ui-kit/shared/icons/CaretSort'
+import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer'
@@ -45,20 +46,25 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
     >
       <DrawerHeader title={t`Sort by`} />
       <Stack direction="column" sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}>
-        {sortOptions.map(({ id, label }) => (
-          <InvertOnHover hoverEl={menuRef.current} key={id}>
-            <MenuItem
-              ref={menuRef}
-              value={id}
-              className={selectedOption?.id === id ? 'Mui-selected' : ''}
-              onClick={() => handleSort(id, label)}
-            >
-              <Typography component="span" variant="bodyMBold">
-                {label}
-              </Typography>
-            </MenuItem>
-          </InvertOnHover>
-        ))}
+        {sortOptions.map(({ id, label }) => {
+          const isSelected = selectedOption?.id === id
+          return (
+            <InvertOnHover hoverEl={menuRef.current} key={id}>
+              <MenuItem
+                ref={menuRef}
+                value={id}
+                className={isSelected ? 'Mui-selected' : ''}
+                onClick={() => handleSort(id, label)}
+                sx={{ justifyContent: 'space-between' }}
+              >
+                <Typography component="span" variant="bodyMBold">
+                  {label}
+                </Typography>
+                {isSelected && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+              </MenuItem>
+            </InvertOnHover>
+          )
+        })}
       </Stack>
     </SwipeableDrawer>
   )
