@@ -1,5 +1,6 @@
+import { useCallback, useMemo } from 'react'
 import { enforce, group, test } from 'vest'
-import { useQueries } from '@tanstack/react-query'
+import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
@@ -33,17 +34,26 @@ export const {
       })
     })
   }),
+  disableLog: true, // too much noise in the logs
 })
+
+type UseTokenOptions = ReturnType<typeof getTokenUsdRateQueryOptions>
 
 /**
  * Hook to fetch USD rates for multiple tokens on a specific blockchain.
  * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
  */
 export const useTokenUsdRates = ({ chainId, tokenAddresses = [] }: ChainParams & { tokenAddresses?: string[] }) => {
-  const uniqueAddresses = Array.from(new Set(tokenAddresses))
-
+  const uniqueAddresses = useMemo(() => Array.from(new Set(tokenAddresses)), [tokenAddresses])
   return useQueries({
-    queries: uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
-    combine: (results) => combineQueriesToObject(results, uniqueAddresses),
+    queries: useMemo(
+      (): UseTokenOptions[] =>
+        uniqueAddresses.map((tokenAddress) => getTokenUsdRateQueryOptions({ chainId, tokenAddress })),
+      [chainId, uniqueAddresses],
+    ),
+    combine: useCallback(
+      (results: QueriesResults<UseTokenOptions[]>) => combineQueriesToObject(results, uniqueAddresses),
+      [uniqueAddresses],
+    ),
   })
 }
