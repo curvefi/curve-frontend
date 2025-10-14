@@ -10,7 +10,7 @@ import {
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@cy/support/helpers/lending-mocks'
-import { LLAMA_FILTERS_V0, LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
+import { LLAMA_FILTERS_V1, LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
@@ -23,7 +23,7 @@ import {
   RETRY_IN_CI,
 } from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { LlamaMarketType, MarketRateType } from '@ui-kit/types/market'
+import { MarketRateType } from '@ui-kit/types/market'
 
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
@@ -310,18 +310,17 @@ describe(`LlamaLend Storage Migration`, () => {
     setupMocks()
   })
 
-  it('migrates old liquidity filter to TVL', () => {
-    const otherFilter = { id: 'type', value: oneOf(LlamaMarketType.Lend, LlamaMarketType.Mint) }
+  it('migrates old filter to remove deprecated markets', () => {
     visitAndWait(oneViewport(), {
       onBeforeLoad({ localStorage }) {
         localStorage.clear()
-        localStorage.setItem('table-filters-llamalend-markets', JSON.stringify([...LLAMA_FILTERS_V0, otherFilter]))
+        localStorage.setItem('table-filters-llamalend-markets-v1', JSON.stringify(LLAMA_FILTERS_V1))
       },
     })
     cy.window().then(({ localStorage }) => {
-      expect(localStorage.getItem('table-filters-llamalend-markets')).to.be.null
-      const newValue = JSON.parse(localStorage.getItem('table-filters-llamalend-markets-v1')!)
-      expect(newValue).to.deep.equal([{ id: 'tvl', value: [10000, null] }, otherFilter])
+      expect(localStorage.getItem('table-filters-llamalend-markets-v1')).to.be.null
+      const newValue = JSON.parse(localStorage.getItem('table-filters-llamalend-markets-v2')!)
+      expect(newValue).to.deep.equal([{ id: 'deprecatedMessage', value: false }, ...LLAMA_FILTERS_V1])
     })
   })
 

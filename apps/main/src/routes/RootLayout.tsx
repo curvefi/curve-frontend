@@ -2,12 +2,11 @@ import { useMemo } from 'react'
 import { StyleSheetManager } from 'styled-components'
 import { WagmiProvider } from 'wagmi'
 import useDaoStore from '@/dao/store/useStore'
-import { getNetworkDefs } from '@/dex/lib/networks'
+import { useNetworksQuery } from '@/dex/entities/networks'
 import useDexStore from '@/dex/store/useStore'
 import useLendStore from '@/lend/store/useStore'
 import useLoanStore from '@/loan/store/useStore'
 import { GlobalLayout } from '@/routes/GlobalLayout'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
 import { HeadContent, Outlet } from '@tanstack/react-router'
@@ -25,7 +24,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
-import { rootRoute } from './root.routes'
 
 /**
  * This implements the default behavior from styled-components v5
@@ -42,41 +40,53 @@ function useHydrationMethods(): HydratorMap {
   return useMemo(() => ({ crvusd, dao, dex, lend }), [crvusd, dao, dex, lend])
 }
 
-export const RootLayout = () => {
-  const networkDefs = rootRoute.useLoaderData() as Awaited<ReturnType<typeof getNetworkDefs>>
-  const networks = useMemo(() => recordValues(networkDefs), [networkDefs])
+// Inner component that uses TanStack Query hooks
+const NetworkAwareLayout = () => {
+  const { data: networks } = useNetworksQuery()
   const network = useNetworkFromUrl(networks)
-  const theme = useUserProfileStore((state) => state.theme)
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
+  const hydrate = useHydrationMethods()
+  const config = useWagmiConfig(networks)
+
   useLayoutStoreResponsive()
 
-  const hydrate = useHydrationMethods()
+  return (
+    config &&
+    networks && (
+      <WagmiProvider config={config}>
+        {network && (
+          <ConnectionProvider
+            app={currentApp}
+            network={network}
+            onChainUnavailable={onChainUnavailable}
+            hydrate={hydrate}
+          >
+            <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+              <HeadContent />
+              <Outlet />
+              <TanStackRouterDevtools />
+            </GlobalLayout>
+          </ConnectionProvider>
+        )}
+      </WagmiProvider>
+    )
+  )
+}
+
+export const RootLayout = () => {
+  const theme = useUserProfileStore((state) => state.theme)
+
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
-        <OverlayProvider>
-          <WagmiProvider config={useWagmiConfig(networks)}>
+        <ErrorBoundary title={t`Layout error`}>
+          <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
-              {network && (
-                <ErrorBoundary title={t`Layout error`}>
-                  <ConnectionProvider
-                    app={currentApp}
-                    network={network}
-                    onChainUnavailable={onChainUnavailable}
-                    hydrate={hydrate}
-                  >
-                    <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
-                      <HeadContent />
-                      <Outlet />
-                      <TanStackRouterDevtools />
-                    </GlobalLayout>
-                  </ConnectionProvider>
-                </ErrorBoundary>
-              )}
+              <NetworkAwareLayout />
             </QueryProvider>
-          </WagmiProvider>
-        </OverlayProvider>
+          </OverlayProvider>
+        </ErrorBoundary>
       </ThemeProvider>
     </StyleSheetManager>
   )

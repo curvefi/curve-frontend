@@ -181,11 +181,10 @@ describe('Header', () => {
   }
 
   function switchEthToArbitrum() {
-    const [eth, arbitrum] = [1, 42161]
-    cy.get(`[data-testid='chain-icon-${eth}']`, LOAD_TIMEOUT).should('be.visible')
+    cy.get(`[data-testid='chain-icon-ethereum']`, LOAD_TIMEOUT).should('be.visible')
     cy.get(`[data-testid='btn-change-chain']`).click()
-    cy.get(`[data-testid='menu-item-chain-${arbitrum}']`).click()
+    cy.get(`[data-testid='menu-item-chain-arbitrum']`).click()
     cy.get(`[data-testid^='menu-item-chain-']`, API_LOAD_TIMEOUT).should('not.exist')
-    cy.get(`[data-testid='chain-icon-${arbitrum}']`).should('be.visible')
+    cy.get(`[data-testid='chain-icon-arbitrum']`).should('be.visible')
   }
 })

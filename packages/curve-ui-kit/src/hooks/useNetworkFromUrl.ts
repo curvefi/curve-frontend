@@ -1,21 +1,29 @@
 import { useEffect, useMemo } from 'react'
-import type { NetworkDef } from '@ui/utils'
+import { recordValues } from '@curvefi/prices-api/objects.util'
+import type { NetworkMapping } from '@ui/utils'
 import { useNavigate, usePathname } from '@ui-kit/hooks/router'
 import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
 import { getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
 
-export function useNetworkFromUrl(networks: NetworkDef[]) {
+export function useNetworkFromUrl<T extends NetworkMapping>(networks: T | undefined) {
   const navigate = useNavigate()
   const pathname = usePathname()
   const networkId = getCurrentNetwork(pathname)
-  const network = useMemo(() => networks.find((n) => n.id == networkId), [networkId, networks])
+  const network = useMemo(
+    () => networks && recordValues(networks).find((n) => n.id == networkId),
+    [networkId, networks],
+  )
   useEffect(() => {
-    if (network || !pathname) {
+    if (network || !pathname || !networks) {
       return
     }
-    const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(window.location)
-    console.warn(`Network unknown in ${window.location.href}, redirecting to ${redirectUrl}...`)
+    const { location } = window
+    const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(location)
+    const ids = recordValues(networks)
+      .map((n) => n.id)
+      .join(', ')
+    console.warn(`Network unknown in ${location.href}, redirecting to ${redirectUrl}... Supported networks: ${ids}`)
     navigate(redirectUrl, { replace: true })
-  }, [network, networkId, pathname, navigate])
+  }, [network, networkId, pathname, navigate, networks])
   return network
 }

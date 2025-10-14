@@ -12,6 +12,7 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
+import { scanTxPath } from '@ui/utils'
 import { type CurveApi, isLoading, notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -64,7 +65,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
         const txDescription = t`Lock amount updated`
-        setTxInfoBar(<TxInfoBar description={txDescription} txHash={networks[curve.chainId].scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={txDescription} txHash={scanTxPath(networks[curve.chainId], resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },

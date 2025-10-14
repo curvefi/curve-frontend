@@ -47,7 +47,7 @@ function useTvl(chainId: ChainId | undefined) {
 
 export function useLoanAppStats(chainId: ChainId | undefined) {
   const { data: crvusdPrice } = useTokenUsdRate({ chainId, tokenAddress: CRVUSD_ADDRESS })
-  const { data: dailyVolume } = useAppStatsDailyVolume({})
+  const { data: dailyVolume } = useAppStatsDailyVolume({}, !!chainId)
   const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
   return [
     {

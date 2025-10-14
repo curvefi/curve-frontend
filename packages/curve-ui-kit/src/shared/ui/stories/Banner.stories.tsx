@@ -109,7 +109,6 @@ export const MaintenanceExample: Story = {
 export const ApiErrorExample: Story = {
   args: {
     severity: 'alert',
-    children:
-      'There is an issue connecting to the API. You can try switching your RPC or, if you are connected to a wallet, please switch to a different one.',
+    children: 'There is an issue connecting to the API. Please try to switch your RPC in your wallet settings.',
   },
 }

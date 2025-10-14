@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { Route } from '@/dex/components/PageRouterSwap/types'
 import { ROUTE } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
+import { useNetworks } from '@/dex/entities/networks'
 import { type UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import Icon from '@ui/Icon'
@@ -25,11 +25,9 @@ const DetailInfoTradeRouteRoute = ({
 }) => {
   const inputToken = tokensNameMapper[route.inputCoinAddress] ?? shortenAddress(route.inputCoinAddress) ?? ''
   const outputToken = tokensNameMapper[route.outputCoinAddress] ?? shortenAddress(route.outputCoinAddress) ?? ''
-  const networks = useStore((state) => state.networks.networks)
-  const networksIdMapper = useStore((state) => state.networks.networksIdMapper)
-  const networkId = params?.network ? networksIdMapper[params.network] : null
-  const network = networkId ? networks[networkId] : null
-  const { swapCustomRouteRedirect } = network || {}
+  const { data: networks } = useNetworks()
+  const { swapCustomRouteRedirect } =
+    Object.values(networks).find(({ networkId }) => networkId === params.network) || {}
 
   const path = useMemo(() => {
     if (route.poolId && swapCustomRouteRedirect?.[route.poolId]) {

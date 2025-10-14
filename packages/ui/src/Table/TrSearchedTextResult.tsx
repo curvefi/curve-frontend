@@ -4,7 +4,7 @@ import { styled } from 'styled-components'
 import Icon from 'ui/src/Icon'
 import IconButton from 'ui/src/IconButton'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import { breakpoints } from 'ui/src/utils'
+import { breakpoints, scanAddressPath, type BaseConfig } from 'ui/src/utils'
 
 type Result = { [key: string]: { value: string } }
 
@@ -15,18 +15,10 @@ interface Props {
   colSpan: number
   result: Result
   searchTermMapper: { [key: string]: { label?: string } } | undefined
-  scanAddressPath(hash: string): string
+  network: BaseConfig
 }
 
-const TrSearchedTextResult = ({
-  className = '',
-  id,
-  isMobile,
-  colSpan,
-  result,
-  searchTermMapper,
-  scanAddressPath,
-}: Props) => {
+const TrSearchedTextResult = ({ className = '', id, isMobile, colSpan, result, searchTermMapper, network }: Props) => {
   const parsedResult = useMemo(() => removeDuplicateValues(result), [result])
 
   return (
@@ -41,7 +33,7 @@ const TrSearchedTextResult = ({
                 <li key={`${id}${key}${idx}`}>
                   <strong>{label ?? ''}:</strong>{' '}
                   <span>
-                    <StyledExternalLink href={scanAddressPath(value)}>
+                    <StyledExternalLink href={scanAddressPath(network, value)}>
                       {isMobile ? shortenAddress(value) : value}
                       <Icon name="Launch" size={16} />
                     </StyledExternalLink>

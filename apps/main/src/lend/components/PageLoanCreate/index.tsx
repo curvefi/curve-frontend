@@ -69,22 +69,15 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         options={tabs}
         fullWidth={releaseChannel !== ReleaseChannel.Beta}
       />
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <AppFormContentWrapper>
-          {releaseChannel === ReleaseChannel.Beta ? (
-            <BorrowTabContents
-              networks={networks}
-              chainId={rChainId}
-              market={market ?? undefined}
-              onUpdate={onUpdate}
-            />
-          ) : rFormType === 'leverage' ? (
-            <LoanFormCreate isLeverage {...pageProps} />
-          ) : (
-            <LoanFormCreate {...pageProps} />
-          )}
-        </AppFormContentWrapper>
-      </Stack>
+      {releaseChannel === ReleaseChannel.Beta ? (
+        <BorrowTabContents networks={networks} chainId={rChainId} market={market ?? undefined} onUpdate={onUpdate} />
+      ) : (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <AppFormContentWrapper>
+            <LoanFormCreate isLeverage={rFormType === 'leverage'} {...pageProps} />
+          </AppFormContentWrapper>
+        </Stack>
+      )}
     </>
   )
 }

@@ -8,7 +8,7 @@ import useStore from '@/dao/store/useStore'
 import { GaugeFormattedData } from '@/dao/types/dao.types'
 import { getChainIdFromGaugeData } from '@/dao/utils'
 import Box from '@ui/Box'
-import { formatDate, formatNumber } from '@ui/utils/'
+import { formatDate, formatNumber, scanAddressPath } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
@@ -40,7 +40,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
                 <StyledMetricsColumnData>{shortenAddress(gaugeAddress)}</StyledMetricsColumnData>
                 <BigScreenButtonsWrapper>
                   <ExternalLinkIconButton
-                    href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
+                    href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
                     tooltip={t`View on explorer`}
                   />
                   <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
@@ -50,7 +50,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
           />
           <SmallScreenButtonsWrapper>
             <ExternalLinkIconButton
-              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeAddress)}
+              href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeAddress)}
               tooltip={t`View on explorer`}
             />
             <CopyIconButton copyContent={gaugeAddress} tooltip={t`Copy address`} />
@@ -145,7 +145,7 @@ const GaugeMetrics = ({ gaugeData, dataLoading }: GaugeMetricsProps) => {
             />
             <SmallScreenButtonsWrapper>
               <ExternalLinkIconButton
-                href={networks[chainId].scanAddressPath(gaugeData?.pool?.address)}
+                href={scanAddressPath(networks[chainId], gaugeData?.pool?.address)}
                 tooltip={t`View on explorer`}
               />
               <CopyIconButton copyContent={gaugeData?.pool?.address} tooltip={t`Copy address`} />

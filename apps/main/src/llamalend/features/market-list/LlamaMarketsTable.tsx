@@ -30,15 +30,18 @@ const { isEqual } = lodash
 const LOCAL_STORAGE_KEY = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
-  useMemo(() => [{ id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] }], [minLiquidity])
+  useMemo(
+    () => [
+      { id: LlamaMarketColumnId.DeprecatedMessage, value: false },
+      { id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] },
+    ],
+    [minLiquidity],
+  )
 
 const migration: MigrationOptions<ColumnFiltersState> = {
-  version: 1,
-  // migration from v0 to v1: remove default liquidity filter
-  migrate: (oldValue, initialValue) => [
-    ...initialValue.filter((i) => !oldValue.some((o) => o.id === i.id)),
-    ...oldValue.filter((o) => !isEqual(o, { id: LlamaMarketColumnId.LiquidityUsd, value: [10000, null] })),
-  ],
+  version: 2,
+  // migration from v1 to v2: add deprecated filter
+  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
 }
 
 export const LlamaMarketsTable = ({
