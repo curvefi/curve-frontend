@@ -1,8 +1,10 @@
 import { countBy } from 'lodash'
+import { useCallback, useMemo } from 'react'
 import { ethAddress } from 'viem'
 import { Chain } from '@curvefi/prices-api'
 import { recordValues } from '@curvefi/prices-api/objects.util'
 import { useQueries } from '@tanstack/react-query'
+import type { QueriesResults } from '@tanstack/react-query'
 import { type DeepKeys } from '@tanstack/table-core'
 import { combineCampaigns, type CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternalOptions } from '@ui-kit/entities/campaigns/campaigns-external'
@@ -270,6 +272,17 @@ function createCountMarket(data: MintMarket[] | undefined = []) {
   return (m: MintMarket) => marketCountByCollateral[getName(m)]--
 }
 
+type LlamaMarketsQueries = [
+  ReturnType<typeof getLendingVaultsOptions>,
+  ReturnType<typeof getMintMarketOptions>,
+  ReturnType<typeof getCampaignsExternalOptions>,
+  ReturnType<typeof getCampaignsMerklOptions>,
+  ReturnType<typeof getFavoriteMarketOptions>,
+  ReturnType<typeof getUserLendingVaultsOptions>,
+  ReturnType<typeof getUserLendingSuppliesOptions>,
+  ReturnType<typeof getUserMintMarketsOptions>,
+]
+
 /**
  * Query hook combining all lend and mint markets of all chains into a single list, converting them to a common format.
  * It also fetches the user's favorite markets and user's positions list (without the details).
@@ -278,72 +291,80 @@ function createCountMarket(data: MintMarket[] | undefined = []) {
  */
 export const useLlamaMarkets = (userAddress?: Address, enabled = true) =>
   useQueries({
-    queries: [
-      getLendingVaultsOptions({}, enabled),
-      getMintMarketOptions({}, enabled),
-      getCampaignsExternalOptions({}, enabled),
-      getCampaignsMerklOptions({}, enabled),
-      getFavoriteMarketOptions({}, enabled),
-      getUserLendingVaultsOptions({ userAddress }, enabled),
-      getUserLendingSuppliesOptions({ userAddress }, enabled),
-      getUserMintMarketsOptions({ userAddress }, enabled),
-    ],
-    combine: (results): PartialQueryResult<LlamaMarketsResult> => {
-      const [
-        lendingVaults,
-        mintMarkets,
-        externalCampaigns,
-        merklCampaigns,
-        favoriteMarkets,
-        userLendingVaults,
-        userSuppliedMarkets,
-        userMintMarkets,
-      ] = results
-      const favoriteMarketsSet = new Set(favoriteMarkets.data)
-      const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
-      const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
-      const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
-      const countMarket = createCountMarket(mintMarkets.data)
-      const campaigns = combineCampaigns({
-        campaigns: [externalCampaigns.data, merklCampaigns.data],
-      })
+    queries: useMemo<LlamaMarketsQueries>(
+      () => [
+        getLendingVaultsOptions({}, enabled),
+        getMintMarketOptions({}, enabled),
+        getCampaignsExternalOptions({}, enabled),
+        getCampaignsMerklOptions({}, enabled),
+        getFavoriteMarketOptions({}, enabled),
+        getUserLendingVaultsOptions({ userAddress }, enabled),
+        getUserLendingSuppliesOptions({ userAddress }, enabled),
+        getUserMintMarketsOptions({ userAddress }, enabled),
+      ],
+      [enabled, userAddress],
+    ),
+    combine: useCallback(
+      (results: QueriesResults<LlamaMarketsQueries>): PartialQueryResult<LlamaMarketsResult> => {
+        if (!enabled) {
+          // the query is used in the header, let's make sure we don't waste resources when llamalend isn't selected
+          return { isLoading: false, isPending: false, isError: false, isFetching: false, data: undefined }
+        }
+        const [
+          lendingVaults,
+          mintMarkets,
+          externalCampaigns,
+          merklCampaigns,
+          favoriteMarkets,
+          userLendingVaults,
+          userSuppliedMarkets,
+          userMintMarkets,
+        ] = results
+        const favoriteMarketsSet = new Set(favoriteMarkets.data)
+        const userBorrows = new Set(recordValues(userLendingVaults.data ?? {}).flat())
+        const userMints = new Set(recordValues(userMintMarkets.data ?? {}).flat())
+        const userSupplied = new Set(recordValues(userSuppliedMarkets.data ?? {}).flat())
+        const countMarket = createCountMarket(mintMarkets.data)
+        const campaigns = combineCampaigns(externalCampaigns.data, merklCampaigns.data)
 
-      // only render table when both lending and mint markets are ready, however show one of them if the other is in error
-      const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
-      const showUserData =
-        !userAddress ||
-        (userLendingVaults.data && userSuppliedMarkets.data && userMintMarkets.data) ||
-        userLendingVaults.isError ||
-        userSuppliedMarkets.isError ||
-        userMintMarkets.isError
+        // only render table when both lending and mint markets are ready, however show one of them if the other is in error
+        const showData = (lendingVaults.data && mintMarkets.data) || lendingVaults.isError || mintMarkets.isError
+        const showUserData =
+          !userAddress ||
+          (userLendingVaults.data && userSuppliedMarkets.data && userMintMarkets.data) ||
+          userLendingVaults.isError ||
+          userSuppliedMarkets.isError ||
+          userMintMarkets.isError
 
-      const data: LlamaMarketsResult | undefined =
-        showData && showUserData
-          ? {
-              userHasPositions:
-                userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
-                  ? {
-                      [LlamaMarketType.Mint]: {
-                        [MarketRateType.Borrow]: userMints.size > 0,
-                        [MarketRateType.Supply]: false,
-                      },
-                      [LlamaMarketType.Lend]: {
-                        [MarketRateType.Borrow]: userBorrows.size > 0,
-                        [MarketRateType.Supply]: userSupplied.size > 0,
-                      },
-                    }
-                  : null,
-              hasFavorites: favoriteMarketsSet.size > 0,
-              markets: [
-                ...(lendingVaults.data ?? []).map((vault) =>
-                  convertLendingVault(vault, favoriteMarketsSet, campaigns, userBorrows, userSupplied),
-                ),
-                ...(mintMarkets.data ?? []).map((market) =>
-                  convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
-                ),
-              ],
-            }
-          : undefined
-      return { ...combineQueriesMeta(results), data }
-    },
+        const data: LlamaMarketsResult | undefined =
+          showData && showUserData
+            ? {
+                userHasPositions:
+                  userBorrows.size > 0 || userMints.size > 0 || userSupplied.size > 0
+                    ? {
+                        [LlamaMarketType.Mint]: {
+                          [MarketRateType.Borrow]: userMints.size > 0,
+                          [MarketRateType.Supply]: false,
+                        },
+                        [LlamaMarketType.Lend]: {
+                          [MarketRateType.Borrow]: userBorrows.size > 0,
+                          [MarketRateType.Supply]: userSupplied.size > 0,
+                        },
+                      }
+                    : null,
+                hasFavorites: favoriteMarketsSet.size > 0,
+                markets: [
+                  ...(lendingVaults.data ?? []).map((vault) =>
+                    convertLendingVault(vault, favoriteMarketsSet, campaigns, userBorrows, userSupplied),
+                  ),
+                  ...(mintMarkets.data ?? []).map((market) =>
+                    convertMintMarket(market, favoriteMarketsSet, campaigns, userMints, countMarket(market)),
+                  ),
+                ],
+              }
+            : undefined
+        return { ...combineQueriesMeta(results), data }
+      },
+      [enabled, userAddress],
+    ),
   })

@@ -16,6 +16,7 @@ import { DEFAULT_EST_GAS, DEFAULT_EXCHANGE_OUTPUT, getSwapTokens } from '@/dex/c
 import type { PageTransferProps, Seed } from '@/dex/components/PagePool/types'
 import DetailInfoExchangeRate from '@/dex/components/PageRouterSwap/components/DetailInfoExchangeRate'
 import DetailInfoPriceImpact from '@/dex/components/PageRouterSwap/components/DetailInfoPriceImpact'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { Balances, CurveApi, PoolAlert, PoolData, TokensMapper } from '@/dex/types/main.types'
 import { toTokenOption } from '@/dex/utils'
@@ -30,7 +31,7 @@ import { getActiveStep, getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
@@ -83,7 +84,8 @@ const Swap = ({
   const resetState = useStore((state) => state.poolSwap.resetState)
   const setFormValues = useStore((state) => state.poolSwap.setFormValues)
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = (chainId && networks[chainId]) || null
   const [releaseChannel] = useReleaseChannel()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
@@ -152,7 +154,7 @@ const Swap = ({
         setTxInfoBar(
           <TxInfoBar
             description={`Swapped ${fromAmount} ${fromToken}.`}
-            txHash={network.scanTxPath(resp.hash)}
+            txHash={scanTxPath(network, resp.hash)}
             onClose={() => {
               updateFormValues({}, null, null)
             }}

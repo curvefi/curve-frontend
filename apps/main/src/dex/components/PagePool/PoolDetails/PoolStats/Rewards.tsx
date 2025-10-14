@@ -4,7 +4,7 @@ import { DescriptionChip, StyledIconButton, StyledStats } from '@/dex/components
 import ChipVolatileBaseApy from '@/dex/components/PagePoolList/components/ChipVolatileBaseApy'
 import PoolRewardsCrv from '@/dex/components/PoolRewardsCrv'
 import { LARGE_APY } from '@/dex/constants'
-import useStore from '@/dex/store/useStore'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId, RewardsApy, PoolData } from '@/dex/types/main.types'
 import { shortenTokenName } from '@/dex/utils'
 import { haveRewardsApy } from '@/dex/utils/utilsCurvejs'
@@ -16,7 +16,7 @@ import Spacer from '@ui/Spacer'
 import Tooltip from '@ui/Tooltip/TooltipButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { FORMAT_OPTIONS, formatNumber, scanTokenPath } from '@ui/utils'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { copyToClipboard, type Address } from '@ui-kit/utils'
@@ -30,12 +30,12 @@ type RewardsProps = {
 const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
   const { base, other } = rewardsApy ?? {}
   const { haveBase, haveOther, haveCrv } = haveRewardsApy(rewardsApy ?? {})
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: network.networkId as Chain,
     address: poolData.pool.address as Address,
   })
-  const { isLite, scanTokenPath } = useStore((state) => state.networks.networks[chainId])
+  const { isLite } = network
 
   const baseAPYS = [
     { label: t`Daily`, value: base?.day ?? '' },
@@ -112,7 +112,7 @@ const Rewards = ({ chainId, poolData, rewardsApy }: RewardsProps) => {
               other?.map(({ apy, symbol, tokenAddress }) => (
                 <StyledStyledStats key={symbol} flex flexJustifyContent="space-between" padding>
                   <Box flex flexAlignItems="center">
-                    <StyledExternalLink href={chainId ? scanTokenPath(tokenAddress) : ''}>
+                    <StyledExternalLink href={chainId ? scanTokenPath(network, tokenAddress) : ''}>
                       <TokenWrapper flex flexAlignItems="center" padding="var(--spacing-1) 0">
                         {shortenTokenName(symbol)} <Icon name="Launch" size={16} />
                       </TokenWrapper>

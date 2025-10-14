@@ -54,7 +54,6 @@ export const {
   queryKey: () => ['campaigns-external'] as const,
   queryFn: async () => {
     const now = Date.now() // refresh is handled by refetchInterval
-
     return mapRecord(REWARDS, (_, rewards) =>
       rewards.filter(({ period }) => {
         if (!period) return true

@@ -11,6 +11,7 @@ import {
   UserCollateralEvent as LendingUserCollateralEvent,
   UserCollateralEvents as LendingUserCollateralEvents,
 } from '@curvefi/prices-api/lending'
+import { scanTxPath, type BaseConfig } from '@ui/utils'
 
 type UserCollateralEvent = LendingUserCollateralEvent | CrvUsdUserCollateralEvent
 type UserCollateralEvents = LendingUserCollateralEvents | CrvUsdUserCollateralEvents
@@ -77,7 +78,7 @@ type UseUserCollateralEventsProps = {
   chain: Chain | undefined
   collateralToken: CollateralEventToken | undefined
   borrowToken: CollateralEventToken | undefined
-  scanTxPath: (txHash: string) => string
+  network: BaseConfig
 }
 
 export const useUserCollateralEvents = ({
@@ -87,12 +88,11 @@ export const useUserCollateralEvents = ({
   chain,
   collateralToken,
   borrowToken,
-  scanTxPath,
+  network,
 }: UseUserCollateralEventsProps): {
   data?: ParsedUserCollateralEvents
   isLoading: boolean
   isError: boolean
-  scanTxPath: (txHash: string) => string
 } => {
   const params = {
     blockchainId: chain,
@@ -114,7 +114,7 @@ export const useUserCollateralEvents = ({
               .map((event, index) => ({
                 ...event,
                 type: parseEventType(event, data?.events[index - 1]),
-                txUrl: scanTxPath(event.txHash),
+                txUrl: scanTxPath(network, event.txHash),
                 borrowToken,
                 collateralToken,
               }))
@@ -123,8 +123,7 @@ export const useUserCollateralEvents = ({
       }),
       isLoading,
       isError,
-      scanTxPath,
     }),
-    [data, isLoading, isError, scanTxPath, borrowToken, collateralToken],
+    [data, isLoading, isError, network, borrowToken, collateralToken],
   )
 }

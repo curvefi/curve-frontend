@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { buildServer } from '../src/server'
+import { createRouterApiServer } from '../src/server'
 
 describe('health endpoint', () => {
   it('responds with service metadata', async () => {
-    const server = buildServer()
+    const server = createRouterApiServer()
 
     try {
       const response = await server.inject({ method: 'GET', url: '/health' })

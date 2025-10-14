@@ -68,7 +68,9 @@ export function useStoredState<T>({
   oldKey,
 }: StoredStateOptions<T>): GetAndSet<T> {
   const fullKey = `${key}${version ? `-v${version}` : ''}`
-  const [stateValue, setStateValue] = useState<T>(get(fullKey, initialValue))
+  const [stateValue, setState] = useState<T>(get(fullKey, initialValue))
+  const setStateValue = useCallback((value: T) => setState((old) => (isEqual(old, value) ? old : value)), [])
+
   const setValue = useCallback(
     (setter: SetStateAction<T>) => {
       const value: T = typeof setter === 'function' ? (setter as (prev: T) => T)(get(fullKey, initialValue)) : setter
@@ -76,7 +78,7 @@ export function useStoredState<T>({
       setStateValue(value)
       storageEvent.dispatchEvent(new Event(fullKey))
     },
-    [get, initialValue, fullKey, set],
+    [get, initialValue, fullKey, set, setStateValue],
   )
 
   useEffect(() => {
@@ -87,7 +89,7 @@ export function useStoredState<T>({
     // Update state when other components update the local storage
     storageEvent.addEventListener(fullKey, listener)
     return () => storageEvent.removeEventListener(fullKey, listener)
-  }, [get, initialValue, fullKey, set, migrate, version, key, oldKey])
+  }, [get, initialValue, fullKey, set, migrate, version, key, oldKey, setStateValue])
 
   return [stateValue, setValue]
 }

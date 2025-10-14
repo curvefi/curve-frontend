@@ -56,7 +56,7 @@ export const ErrorPage = ({
       <Typography component="h1" variant="headingXxl" data-testid="error-title">
         {title}
       </Typography>
-      <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle">
+      <Typography component="h2" variant="headingXsMedium" data-testid="error-subtitle" sx={{ textTransform: 'none' }}>
         {subtitle}
       </Typography>
       <Stack direction="row" spacing={2} margin={2}>

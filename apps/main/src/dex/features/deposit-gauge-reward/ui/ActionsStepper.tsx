@@ -1,14 +1,15 @@
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react'
 import { useFormContext } from 'react-hook-form'
 import { useDepositReward, useDepositRewardApprove, useGaugeDepositRewardIsApproved } from '@/dex/entities/gauge'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { DepositRewardFormValues, DepositRewardStep } from '@/dex/features/deposit-gauge-reward/types'
 import { StepperContainer } from '@/dex/features/deposit-gauge-reward/ui'
-import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
+import { scanTxPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 
@@ -26,7 +27,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
     setError,
     handleSubmit,
   } = useFormContext<DepositRewardFormValues>()
-  const { scanTxPath } = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
 
   const amount = watch('amount')
   const rewardTokenId = watch('rewardTokenId')
@@ -46,7 +47,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
       setValue('step', DepositRewardStep.DEPOSIT, { shouldValidate: true })
       setLatestTxInfo({
         description: t`Reward approved`,
-        txHash: scanTxPath(data[0]),
+        txHash: scanTxPath(network, data[0]),
       })
     }
 
@@ -61,7 +62,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
       },
       { onSuccess: onApproveSuccess, onError: onApproveError },
     )
-  }, [depositRewardApprove, getValues, setError, setValue, scanTxPath])
+  }, [depositRewardApprove, getValues, setError, setValue, network])
 
   const onSubmitDeposit = useCallback(() => {
     depositReward(
@@ -75,7 +76,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
           setValue('step', DepositRewardStep.CONFIRMATION)
           setLatestTxInfo({
             description: t`Reward deposited`,
-            txHash: scanTxPath(data),
+            txHash: scanTxPath(network, data),
           })
         },
         onError: (error: Error) => {
@@ -83,7 +84,7 @@ export const DepositStepper = ({ chainId, poolId }: { chainId: ChainId; poolId: 
         },
       },
     )
-  }, [depositReward, getValues, setError, setValue, scanTxPath])
+  }, [depositReward, getValues, setError, setValue, network])
 
   const { data: isDepositRewardApproved, isLoading: isLoadingDepositRewardApproved } = useGaugeDepositRewardIsApproved({
     chainId,

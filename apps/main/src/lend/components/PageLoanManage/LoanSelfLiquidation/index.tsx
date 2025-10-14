@@ -32,7 +32,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
@@ -149,7 +149,7 @@ const LoanSelfLiquidation = ({
               setTxInfoBar(
                 <TxInfoBar
                   description={TxDescription}
-                  txHash={networks[chainId].scanTxPath(resp.hash)}
+                  txHash={scanTxPath(networks[chainId], resp.hash)}
                   onClose={reset}
                 />,
               )

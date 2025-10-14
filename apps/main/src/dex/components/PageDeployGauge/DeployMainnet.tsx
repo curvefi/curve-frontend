@@ -10,6 +10,7 @@ import {
   STABLESWAPOLD,
 } from '@/dex/components/PageDeployGauge/constants'
 import type { PoolType } from '@/dex/components/PageDeployGauge/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box/Box'
@@ -27,7 +28,7 @@ const DeployMainnet = ({ chainId }: Props) => {
   const poolAddress = useStore((state) => state.deployGauge.poolAddress)
   const setPoolAddress = useStore((state) => state.deployGauge.setPoolAddress)
 
-  const network = useStore((state) => state.networks.networks[mainnet])
+  const { data: network } = useNetworkByChain({ chainId: mainnet })
 
   const poolTypesList: PoolType[] = useMemo(() => {
     const list: PoolType[] = []

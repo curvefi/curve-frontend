@@ -9,9 +9,11 @@ import {
   AddressLink,
 } from '@/dex/components/PageCreatePool/Summary/styles'
 import type { TokenState } from '@/dex/components/PageCreatePool/types'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
+import { scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
@@ -66,7 +68,7 @@ const OracleSummary = ({ chainId }: Props) => {
 }
 
 const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) => {
-  const network = useStore((state) => state.networks.networks[chainId])
+  const { data: network } = useNetworkByChain({ chainId })
   return (
     <OracleTokenWrapper>
       <CategoryDataRow>
@@ -78,7 +80,7 @@ const OracleTokenSummary = ({ chainId, token, title }: OracleTokenSummaryProps) 
           <SummaryDataPlaceholder>{t`No address set`}</SummaryDataPlaceholder>
         ) : isAddress(token.oracleAddress) ? (
           <SummaryData>
-            <AddressLink href={network.scanAddressPath(token.oracleAddress)}>
+            <AddressLink href={scanAddressPath(network, token.oracleAddress)}>
               {shortenAddress(token.oracleAddress)}
               <Icon name={'Launch'} size={16} aria-label={t`Link to address`} />
             </AddressLink>

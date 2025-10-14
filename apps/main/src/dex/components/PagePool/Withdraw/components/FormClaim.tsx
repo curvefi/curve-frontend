@@ -6,6 +6,7 @@ import TransferActions from '@/dex/components/PagePool/components/TransferAction
 import type { TransferProps } from '@/dex/components/PagePool/types'
 import type { FormStatus, FormValues } from '@/dex/components/PagePool/Withdraw/types'
 import { DEFAULT_FORM_STATUS, getClaimText } from '@/dex/components/PagePool/Withdraw/utils'
+import { useNetworks } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { CurveApi, PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
@@ -16,7 +17,7 @@ import { getStepStatus } from '@ui/Stepper/helpers'
 import Stepper from '@ui/Stepper/Stepper'
 import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
-import { formatNumber } from '@ui/utils'
+import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
@@ -32,7 +33,8 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const setStateByKey = useStore((state) => state.poolWithdraw.setStateByKey)
   const setFormValues = useStore((state) => state.poolWithdraw.setFormValues)
   const resetState = useStore((state) => state.poolWithdraw.resetState)
-  const network = useStore((state) => (chainId ? state.networks.networks[chainId] : null))
+  const { data: networks } = useNetworks()
+  const network = (chainId && networks[chainId]) || null
 
   const [slippageConfirmed, setSlippageConfirmed] = useState(false)
   const [steps, setSteps] = useState<Step[]>([])
@@ -68,7 +70,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           ? 'CRV'
           : `${formValues.claimableRewards.map((r) => r.symbol).join(', ')} rewards`
         const TxDescription = `Claimed ${claimedLabel}`
-        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={network.scanTxPath(resp.hash)} />)
+        setTxInfoBar(<TxInfoBar description={TxDescription} txHash={scanTxPath(network, resp.hash)} />)
       }
       if (typeof dismiss === 'function') dismiss()
     },
