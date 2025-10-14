@@ -33,11 +33,11 @@ function getNetworkPathname(pathname: string, networkId: string) {
 export function ChainList({
   options,
   showTestnets,
-  selectedNetwork,
+  selectedNetworkId,
 }: {
   options: NetworkDef[]
   showTestnets: boolean
-  selectedNetwork: NetworkDef | undefined
+  selectedNetworkId: string | undefined
 }) {
   const pathname = usePathname() || ''
   const [searchValue, setSearchValue] = useState('')
@@ -73,14 +73,14 @@ export function ChainList({
                 {showTestnets && <MenuSectionHeader>{chainTypeNames[key as ChainType]}</MenuSectionHeader>}
                 <MenuList>
                   {networks.map((network) => (
-                    <MenuItem<number, typeof Link>
-                      data-testid={`menu-item-chain-${network.chainId}`}
-                      key={network.chainId}
-                      value={network.chainId}
+                    <MenuItem<string, typeof Link>
+                      data-testid={`menu-item-chain-${network.id}`}
+                      key={network.id}
+                      value={network.id}
                       component={Link}
                       href={getNetworkPathname(pathname, network.id)}
-                      isSelected={network.chainId == selectedNetwork?.chainId}
-                      icon={<ChainSwitcherIcon network={network} size={36} />}
+                      isSelected={network.id == selectedNetworkId}
+                      icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
                       label={network.name}
                     />
                   ))}

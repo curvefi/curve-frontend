@@ -9,7 +9,7 @@ import Box from '@ui/Box'
 import Icon from '@ui/Icon'
 import { ExternalLink } from '@ui/Link'
 import { Chip } from '@ui/Typography'
-import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
+import { convertToLocaleTimestamp, formatDate, formatNumber, scanAddressPath } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Chain, shortenAddress } from '@ui-kit/utils'
 
@@ -39,11 +39,11 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
             <StatsRow>
               {gaugeData.pool?.address && (
                 <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-                  <StyledExternalLink href={networks[chainId].scanAddressPath(gaugeData.pool.address)}>
+                  <StyledExternalLink href={scanAddressPath(networks[chainId], gaugeData.pool.address)}>
                     {shortenAddress(gaugeData.pool.address)}
                   </StyledExternalLink>
                   <ExternalLinkIconButton
-                    href={networks[chainId].scanAddressPath(gaugeData.pool.address)}
+                    href={scanAddressPath(networks[chainId], gaugeData.pool.address)}
                     tooltip={t`View on explorer`}
                   />
                   <CopyIconButton tooltip={t`Copy Pool Address`} copyContent={gaugeData.pool.address} />
@@ -77,11 +77,11 @@ const GaugeDetails = ({ gaugeData, className }: { gaugeData: GaugeFormattedData;
         </StatsTitleRow>
         <StatsRow>
           <Box flex flexAlignItems="center" flexGap="var(--spacing-1)">
-            <StyledExternalLink href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}>
+            <StyledExternalLink href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}>
               {shortenAddress(gaugeData.address)}
             </StyledExternalLink>
             <ExternalLinkIconButton
-              href={networks[ETHEREUM_CHAIN_ID].scanAddressPath(gaugeData.address)}
+              href={scanAddressPath(networks[ETHEREUM_CHAIN_ID], gaugeData.address)}
               tooltip={t`View on explorer`}
             />
             <CopyIconButton tooltip={t`Copy Gauge Address`} copyContent={gaugeData.address} />

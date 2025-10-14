@@ -93,7 +93,7 @@ const Page = () => {
       name: llamma?.collateralSymbol,
     },
     borrowToken: CRVUSD,
-    scanTxPath: network.scanTxPath,
+    network,
   })
 
   useEffect(() => {

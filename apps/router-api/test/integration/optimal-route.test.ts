@@ -1,10 +1,9 @@
-import dotenv from 'dotenv'
 import type { FastifyInstance } from 'fastify'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { ADDRESS_HEX_PATTERN, type OptimalRouteQuery, type RouteResponse } from '../../src/routes/optimal-route.schemas'
-import { buildServer } from '../../src/server'
+import { createRouterApiServer } from '../../src/server'
 
-dotenv.config()
+process.loadEnvFile()
 
 const CHAIN_ID_ETHEREUM = '1'
 const ETHEREUM_USDC = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'
@@ -103,7 +102,7 @@ const failureCases: Record<string, FailureCase> = {
 
 describe.sequential('GET /api/router/optimal-route integration', () => {
   let server: FastifyInstance
-  beforeAll(() => (server = buildServer()))
+  beforeAll(() => (server = createRouterApiServer()))
   afterAll(() => server.close())
 
   Object.entries(successCases).forEach(([label, { query }]) => {

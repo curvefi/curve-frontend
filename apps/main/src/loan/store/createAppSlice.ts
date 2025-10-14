@@ -41,7 +41,7 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     )
   },
 
-  hydrate: async (curveApi, prevCurveApi, wallet) => {
+  hydrate: async (curveApi, prevCurveApi) => {
     if (!curveApi) return
 
     const { loans, collaterals } = get()
@@ -49,7 +49,6 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
     log('Hydrate crvUSD', curveApi?.chainId, {
-      wallet: wallet?.chainId ?? '',
       isNetworkSwitched,
       isUserSwitched,
     })

@@ -19,6 +19,7 @@ import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { fetchNetworks } from '../entities/networks'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -129,9 +130,10 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
         // get max amount for native token
         if (fromAddress.toLowerCase() === ethAddress) {
+          const networks = await fetchNetworks()
           const { basePlusPriority } = await fetchGasInfoAndUpdateLib({
             chainId,
-            networks: state.networks.networks,
+            networks,
           })
           const firstBasePlusPriority = basePlusPriority?.[0]
 

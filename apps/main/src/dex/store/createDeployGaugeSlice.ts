@@ -7,6 +7,7 @@ import { ChainId, CurveApi } from '@/dex/types/main.types'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenString } from '@ui-kit/utils'
+import { getNetworks } from '../entities/networks'
 
 type NetworkWithFactory = {
   chainId: ChainId
@@ -95,10 +96,7 @@ const createDeployGaugeSlice = (set: StoreApi<State>['setState'], get: StoreApi<
 
     setCurveNetworks: () => {
       const networksWithFactory: NetworksWithFactory = {}
-
-      const {
-        networks: { networks },
-      } = get()
+      const networks = getNetworks()
 
       Object.entries(networks).forEach(([key, chain]) => {
         if (chain.hasFactory) {

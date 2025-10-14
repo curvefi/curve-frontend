@@ -1,10 +1,11 @@
 import { ComponentProps, ReactNode } from 'react'
 import { styled } from 'styled-components'
 import { StyledIconButton } from '@/dex/components/PagePool/PoolDetails/PoolStats/styles'
-import useStore from '@/dex/store/useStore'
+import { useNetworkByChain } from '@/dex/entities/networks'
 import { ChainId } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
+import { scanAddressPath } from '@ui/utils'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
 import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
@@ -20,13 +21,13 @@ const ContractComp = ({
   label: ReactNode
   showBottomBorder: boolean
 }) => {
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   return (
     <div>
       <InnerWrapper isBorderBottom={showBottomBorder}>
         <Label>{label}</Label>
         <span>
-          <StyledExternalLink href={network.scanAddressPath(address)}>
+          <StyledExternalLink href={scanAddressPath(network, address)}>
             {shortenAddress(address)}
             <Icon name="Launch" size={16} />
           </StyledExternalLink>
@@ -69,7 +70,7 @@ export default function DetailInfoAddressLookup({
   address,
 }: ComponentProps<typeof ContractComp>) {
   const [releaseChannel] = useReleaseChannel()
-  const network = useStore((state) => state.networks.networks[rChainId])
+  const { data: network } = useNetworkByChain({ chainId: rChainId })
   return releaseChannel === ReleaseChannel.Beta ? (
     <AddressActionInfo network={network} title={label} isBorderBottom={showBottomBorder} address={address} />
   ) : (
