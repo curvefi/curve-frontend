@@ -1,8 +1,10 @@
+import { BandsChart } from '@/llamalend/widgets/bands-chart/BandsChart'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
+import { useBandsData } from '@/loan/hooks/useBandsData'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -31,16 +33,31 @@ export const MarketInformationComp = ({
 }: MarketInformationCompProps) => {
   const theme = useTheme()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const { userBandsBalances, marketBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+    llammaId,
+    llamma,
+  })
 
   return (
     <>
       {!chartExpanded && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack
+          display="grid"
+          gridTemplateColumns="1fr 0.5fr"
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+        >
           <ChartOhlcWrapper
             rChainId={chainId}
             llammaId={llammaId}
             llamma={llamma}
             betaBackgroundColor={theme.design.Layer[1].Fill}
+          />
+          <BandsChart
+            userBandsBalances={userBandsBalances ?? []}
+            marketBandsBalances={marketBandsBalances ?? []}
+            liquidationBand={liquidationBand}
+            oraclePrice={oraclePrice}
+            oraclePriceBand={oraclePriceBand}
           />
         </Stack>
       )}

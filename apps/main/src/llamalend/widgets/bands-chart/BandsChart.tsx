@@ -42,10 +42,20 @@ type ChartDataPoint = {
 type BandsChartProps = {
   userBandsBalances: BandsBalancesData[]
   marketBandsBalances: BandsBalancesData[]
+  liquidationBand: number | null | undefined
+  oraclePrice: string | undefined
+  oraclePriceBand: number | null | undefined
   height?: number
 }
 
-export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 500 }: BandsChartProps) => {
+export const BandsChart = ({
+  userBandsBalances,
+  marketBandsBalances,
+  liquidationBand,
+  oraclePrice,
+  oraclePriceBand,
+  height = 500,
+}: BandsChartProps) => {
   const theme = useTheme()
   const [brushStartIndex, setBrushStartIndex] = useState<number | undefined>(undefined)
   const [brushEndIndex, setBrushEndIndex] = useState<number | undefined>(undefined)
@@ -124,11 +134,6 @@ export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 50
 
     return Array.from(bandsMap.values()).sort((a, b) => Number(a.n) - Number(b.n))
   }, [userBandsBalances, marketBandsBalances])
-
-  const oraclePrice = useMemo(() => {
-    const oracleBand = chartData.find((band) => band.isOraclePriceBand)
-    return oracleBand ? oracleBand.pUpDownMedian : null
-  }, [chartData])
 
   const defaultBrushWindow = 20
 
@@ -290,12 +295,12 @@ export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 50
                       </Box>
                       {data.marketCollateral > 0 && (
                         <Box sx={{ fontSize: '12px', color: textColor }}>
-                          Market Collateral: ${formatNumber(data.marketCollateral, { notation: 'compact' })}
+                          Market Collateral: ${formatNumber(data.marketCollateral, { maximumFractionDigits: 4 })}
                         </Box>
                       )}
                       {data.userCollateral > 0 && (
                         <Box sx={{ fontSize: '12px', color: textColor }}>
-                          User Collateral: ${formatNumber(data.userCollateral, { notation: 'compact' })}
+                          User Collateral: ${formatNumber(data.userCollateral, { maximumFractionDigits: 4 })}
                         </Box>
                       )}
                       {data.p_up && (
@@ -320,7 +325,7 @@ export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 50
                 label={
                   <CustomLabelWithBackground
                     value={`$${formatNumber(userBandsPriceRange.lowerBandPriceDown, {
-                      maximumFractionDigits: 4,
+                      notation: 'compact',
                     })}`}
                     fill={textColor}
                   />
@@ -336,7 +341,7 @@ export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 50
                 label={
                   <CustomLabelWithBackground
                     value={`$${formatNumber(userBandsPriceRange.upperBandPriceUp, {
-                      maximumFractionDigits: 4,
+                      notation: 'compact',
                     })}`}
                     fill={textColor}
                   />
@@ -352,7 +357,7 @@ export const BandsChart = ({ userBandsBalances, marketBandsBalances, height = 50
                 label={
                   <CustomLabelWithBackground
                     value={`Oracle Price: $${formatNumber(oraclePrice, {
-                      maximumFractionDigits: 4,
+                      notation: 'compact',
                     })}`}
                     fill={textColor}
                   />
