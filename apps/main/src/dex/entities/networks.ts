@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { curveApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
-import type { NetworkConfig } from '../types/main.types'
 
 const {
   useQuery: useNetworksQuery,
@@ -17,17 +16,18 @@ const {
 })
 
 export const fetchNetworks = () => fetchNetworksQuery({})
-export const getNetworks = () => getNetworksQuery({}) ?? defaultNetworks
+export const getNetworks = () => getNetworksQuery({})
 
 /** Helper method to initialize data as empty object by default, a lot of legacy code depends on that behavior */
 export const useNetworks = () => {
-  const { data: networks = defaultNetworks, ...rest } = useNetworksQuery({})
-  return { data: networks, ...rest }
+  const { data: networks, isError } = useNetworksQuery({})
+  return { data: isError ? defaultNetworks : networks, isError }
 }
 
 export const useNetworkByChain = ({ chainId }: { chainId: number }) => {
-  const { data: networks, ...rest } = useNetworks()
-  const network = useMemo(() => (chainId ? networks[chainId] : ({} as NetworkConfig)), [chainId, networks])
-
-  return { data: network, ...rest }
+  const { data: networks } = useNetworks()
+  if (!networks) throw new Error('Networks not loaded')
+  const network = useMemo(() => networks[chainId], [chainId, networks])
+  if (!network) throw new Error(`Network not found for chainId ${chainId}`)
+  return { data: network }
 }

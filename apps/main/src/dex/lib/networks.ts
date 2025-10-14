@@ -1,6 +1,6 @@
 import { ethAddress } from 'viem'
 import { DEFAULT_NETWORK_CONFIG } from '@/dex/constants'
-import { ChainId, NetworkConfig, type NetworkEnum } from '@/dex/types/main.types'
+import { ChainId, NetworkConfig, type NetworkEnum, type Networks } from '@/dex/types/main.types'
 import curve from '@curvefi/api'
 import { getBaseNetworksConfig, NETWORK_BASE_CONFIG } from '@ui/utils/utilsNetworks'
 import { CRVUSD_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
@@ -348,44 +348,41 @@ export const defaultNetworks = Object.entries({
 
 export async function getNetworks() {
   const resp = await curve.getCurveLiteNetworks() // returns [] in case of error
-  const liteNetworks = Object.values(resp).reduce(
-    (prev, { chainId, ...config }) => {
-      const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
-      const isUpgraded = !!baseConfig // networks upgraded from lite to full
-      const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko // networks that has only been upgraded to show pool rewards APY
-      prev[chainId] = {
-        ...DEFAULT_NETWORK_CONFIG,
-        ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
-        ...(isUpgraded && {
-          poolFilters: [
-            'all',
-            'usd',
-            'btc',
-            'eth',
-            'crypto',
-            'crvusd',
-            'tricrypto',
-            'stableng',
-            'cross-chain',
-            'others',
-            'user',
-          ],
-        }),
-        chainId,
-        hasFactory: true,
-        stableswapFactory: true,
-        twocryptoFactory: true,
-        tricryptoFactory: true,
-        pricesApi: isUpgraded,
-        isLite: !isUpgraded,
-        isCrvRewardsEnabled: isUpgraded,
-        ...(isOnlyPoolRewardsUpgraded && {
-          isCrvRewardsEnabled: true,
-        }),
-      }
-      return prev
-    },
-    {} as Record<number, NetworkConfig>,
-  )
+  const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
+    const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
+    const isUpgraded = !!baseConfig // networks upgraded from lite to full
+    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko // networks that has only been upgraded to show pool rewards APY
+    prev[chainId] = {
+      ...DEFAULT_NETWORK_CONFIG,
+      ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),
+      ...(isUpgraded && {
+        poolFilters: [
+          'all',
+          'usd',
+          'btc',
+          'eth',
+          'crypto',
+          'crvusd',
+          'tricrypto',
+          'stableng',
+          'cross-chain',
+          'others',
+          'user',
+        ],
+      }),
+      chainId,
+      hasFactory: true,
+      stableswapFactory: true,
+      twocryptoFactory: true,
+      tricryptoFactory: true,
+      pricesApi: isUpgraded,
+      isLite: !isUpgraded,
+      isCrvRewardsEnabled: isUpgraded,
+      ...(isOnlyPoolRewardsUpgraded && {
+        isCrvRewardsEnabled: true,
+      }),
+    }
+    return prev
+  }, {} as Networks)
   return { ...defaultNetworks, ...liteNetworks }
 }

@@ -7,7 +7,6 @@ import useDexStore from '@/dex/store/useStore'
 import useLendStore from '@/lend/store/useStore'
 import useLoanStore from '@/loan/store/useStore'
 import { GlobalLayout } from '@/routes/GlobalLayout'
-import { recordValues } from '@curvefi/prices-api/objects.util'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
 import { HeadContent, Outlet } from '@tanstack/react-router'
@@ -43,12 +42,12 @@ function useHydrationMethods(): HydratorMap {
 
 // Inner component that uses TanStack Query hooks
 const NetworkAwareLayout = () => {
-  const { data: networkDefs, isError } = useNetworks()
-  const networks = useMemo(() => recordValues(networkDefs), [networkDefs])
+  const { data: networks, isError } = useNetworks()
   const network = useNetworkFromUrl(networks)
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
   const hydrate = useHydrationMethods()
+  const config = useWagmiConfig(networks)
 
   useLayoutStoreResponsive()
 
@@ -56,22 +55,25 @@ const NetworkAwareLayout = () => {
   if (isError) throw new Error('Could not load networks')
 
   return (
-    <WagmiProvider config={useWagmiConfig(networks)}>
-      {network && (
-        <ConnectionProvider
-          app={currentApp}
-          network={network}
-          onChainUnavailable={onChainUnavailable}
-          hydrate={hydrate}
-        >
-          <GlobalLayout currentApp={currentApp} network={network} networks={networkDefs}>
-            <HeadContent />
-            <Outlet />
-            <TanStackRouterDevtools />
-          </GlobalLayout>
-        </ConnectionProvider>
-      )}
-    </WagmiProvider>
+    config &&
+    networks && (
+      <WagmiProvider config={config}>
+        {network && (
+          <ConnectionProvider
+            app={currentApp}
+            network={network}
+            onChainUnavailable={onChainUnavailable}
+            hydrate={hydrate}
+          >
+            <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
+              <HeadContent />
+              <Outlet />
+              <TanStackRouterDevtools />
+            </GlobalLayout>
+          </ConnectionProvider>
+        )}
+      </WagmiProvider>
+    )
   )
 }
 
