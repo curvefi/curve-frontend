@@ -124,7 +124,7 @@ const meta: Meta<typeof LargeTokenInput> = {
   args: {
     maxBalance: {
       showBalance: true,
-      showSlider: true,
+      showSlider: false,
       showChips: true,
     },
     message: '',
@@ -164,12 +164,12 @@ export const NoMaxBalance: Story = {
   },
 }
 
-export const WithoutSlider: Story = {
+export const WithSlider: Story = {
   args: {
     maxBalance: {
       symbol: 'ETH',
       showBalance: true,
-      showSlider: false,
+      showSlider: true,
     },
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
