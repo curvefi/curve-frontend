@@ -37,7 +37,13 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
   return (
     <SwipeableDrawer
       button={
-        <Button variant="outlined" size="small" fullWidth onClick={() => setOpen(true)}>
+        <Button
+          variant="outlined"
+          size="small"
+          fullWidth
+          onClick={() => setOpen(true)}
+          data-testid="btn-drawer-sort-lamalend-markets"
+        >
           Sort <CaretSortIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
@@ -45,7 +51,11 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       setOpen={setOpen}
     >
       <DrawerHeader title={t`Sort by`} />
-      <Stack direction="column" sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}>
+      <Stack
+        direction="column"
+        sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
+        data-testid="drawer-sort-menu-lamalend-markets"
+      >
         {sortOptions.map(({ id, label }) => {
           const isSelected = selectedOption?.id === id
           return (

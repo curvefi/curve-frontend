@@ -38,7 +38,13 @@ export const MarketListFilterDrawer = ({
   return (
     <SwipeableDrawer
       button={
-        <Button variant="outlined" size="small" fullWidth onClick={() => setOpen(true)}>
+        <Button
+          variant="outlined"
+          size="small"
+          fullWidth
+          onClick={() => setOpen(true)}
+          data-testid="btn-drawer-filter-lamalend-markets"
+        >
           Filter {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
@@ -52,7 +58,12 @@ export const MarketListFilterDrawer = ({
           hasFilters={hasFilters}
         />
       </DrawerHeader>
-      <Stack direction="column" sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }} gap={Spacing.sm}>
+      <Stack
+        direction="column"
+        sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
+        gap={Spacing.sm}
+        data-testid="drawer-filter-menu-lamalend-markets"
+      >
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
           <MarketTypeFilterChips {...filterProps} />
