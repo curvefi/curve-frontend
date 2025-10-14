@@ -39,7 +39,6 @@ export const MultiSelectFilter = <T,>({
   id: LlamaMarketColumnId
   renderItem?: (value: string) => ReactNode
 }) => {
-  console.log('columnFilters select', columnFilters)
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []

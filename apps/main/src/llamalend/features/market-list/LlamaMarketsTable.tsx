@@ -97,7 +97,14 @@ export const LlamaMarketsTable = ({
         hasSearchBar
         onSearch={onSearch}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={<LendingMarketsFilters data={data} minLiquidity={minLiquidity} {...filterProps} />}
+        collapsible={
+          <LendingMarketsFilters
+            data={data}
+            minLiquidity={minLiquidity}
+            columnFilters={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+          />
+        }
         chips={
           <>
             <ChainFilterChipWrapper data={data} {...filterProps} />

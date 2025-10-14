@@ -25,7 +25,7 @@ export const HiddenMarketsResetFilters = ({
     <Tooltip title={tooltip}>
       <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
         <Stack direction="row" gap={1} alignItems="center">
-          <Typography variant="bodyXsRegular">{t`Hidden`}</Typography>
+          <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
           <Typography variant="highlightS">{hiddenMarketCount}</Typography>
         </Stack>
         {hasFilters && <ResetFiltersButton onClick={resetFilters} />}

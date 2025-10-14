@@ -82,10 +82,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <MarketFilterChipWrapper
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          >
+          <>
             <UserPositionFilterChips
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
@@ -95,9 +92,16 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               onSearch={onSearch}
               testId={title}
             />
-          </MarketFilterChipWrapper>
+            {/* <MarketFilterChipWrapper
+              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              resetFilters={resetFilters}
+              userHasPositions={userHasPositions}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
+              data={data}
+            /> */}
+          </>
         }
-        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )
