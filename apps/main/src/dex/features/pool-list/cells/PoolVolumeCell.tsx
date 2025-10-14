@@ -6,7 +6,7 @@ import type { PoolListItem } from '../types'
 
 export const PoolVolumeCell = ({ column, getValue, table }: CellContext<PoolListItem, number | undefined>) => (
   <Chip
-    isBold={isSortedBy(table, column)}
+    isBold={isSortedBy(table, column.id)}
     size="md"
     tooltip={formatNumber(getValue(), FORMAT_OPTIONS.USD)}
     tooltipProps={{ placement: 'bottom-end' }}

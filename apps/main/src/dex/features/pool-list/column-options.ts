@@ -3,13 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 import type { VisibilityGroup } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { PoolColumnId } from './columns'
 
-const createVisibility = ({
-  isLite,
-  isCrvRewardsEnabled,
-}: {
-  isLite: boolean
-  isCrvRewardsEnabled: boolean
-}): VisibilityGroup<PoolColumnId>[] => [
+const createVisibility = ({ isLite }: { isLite: boolean }): VisibilityGroup<PoolColumnId>[] => [
   {
     label: t`Markets`,
     options: [
@@ -21,11 +15,7 @@ const createVisibility = ({
       },
       {
         label: t`Rewards`,
-        columns: notFalsy(
-          PoolColumnId.RewardsBase,
-          isCrvRewardsEnabled && PoolColumnId.RewardsCrv,
-          PoolColumnId.RewardsOther,
-        ),
+        columns: notFalsy(PoolColumnId.RewardsBase, PoolColumnId.RewardsOther),
         active: true,
         enabled: true,
       },
@@ -46,9 +36,7 @@ const createVisibility = ({
 ]
 
 export const POOL_LIST_COLUMN_OPTIONS = {
-  fullWithCrvReward: createVisibility({ isCrvRewardsEnabled: true, isLite: false }),
-  fullNoCrvReward: createVisibility({ isCrvRewardsEnabled: false, isLite: false }),
-  liteWithCrvReward: createVisibility({ isCrvRewardsEnabled: true, isLite: true }),
-  liteNoCrvReward: createVisibility({ isCrvRewardsEnabled: false, isLite: true }),
+  full: createVisibility({ isLite: false }),
+  lite: createVisibility({ isLite: true }),
 }
 export type PoolColumnVariant = keyof typeof POOL_LIST_COLUMN_OPTIONS

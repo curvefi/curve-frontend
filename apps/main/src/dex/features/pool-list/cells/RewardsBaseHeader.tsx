@@ -4,5 +4,5 @@ import { t } from '@ui-kit/lib/i18n'
 import { PoolColumnId } from '../columns'
 import type { PoolListItem } from '../types'
 
-export const RewardsHeader = ({ table }: HeaderContext<PoolListItem, RewardBase>) =>
-  table.getColumn(PoolColumnId.RewardsOther)?.getIsVisible() ? t`Base vAPY` : t`Rewards`
+export const RewardsBaseHeader = ({ table }: HeaderContext<PoolListItem, RewardBase>) =>
+  table.getColumn(PoolColumnId.RewardsOther)?.getIsVisible() ? t`Base vAPY` : t`Rewards tAPR`

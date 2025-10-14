@@ -94,4 +94,4 @@ export function getCellSx<T extends TableItem>({
   return [sx, showCollapseIcon ? wrapperSx : {}]
 }
 
-export const isSortedBy = <T>(table: Table<T>, column: Column<T>) => table.getState().columnOrder.includes(column.id)
+export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)

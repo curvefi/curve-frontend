@@ -22,15 +22,13 @@ export function usePoolListVisibilitySettings(
   title: string,
   {
     isLite,
-    isCrvRewardsEnabled,
     sorting,
   }: {
     isLite: boolean
-    isCrvRewardsEnabled: boolean
     sorting: SortingState
   },
 ) {
-  const variant = `${isLite ? 'lite' : 'full'}${isCrvRewardsEnabled ? 'With' : 'No'}CrvReward` as PoolColumnVariant
+  const variant: PoolColumnVariant = isLite ? 'lite' : 'full'
   const sortField = (sorting.length ? sorting : DEFAULT_SORT)[0].id as PoolColumnId
   const visibilitySettings = useVisibilitySettings(
     title,

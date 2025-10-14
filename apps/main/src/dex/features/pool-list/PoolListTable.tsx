@@ -1,7 +1,6 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
-import { useNetworkByChain } from '@/dex/entities/networks'
-import { ChainId } from '@/dex/types/main.types'
+import { type NetworkConfig } from '@/dex/types/main.types'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -45,11 +44,10 @@ const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: 
     useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || undefined), [setColumnFilter]),
   ] as const
 
-export const PoolListTable = ({ chainId, curve }: { chainId: ChainId; curve: CurveApi | null }) => {
+export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curve: CurveApi | null }) => {
   // todo: this needs to be more complicated, we need to show at least the top 10 per chain
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const { data: network } = useNetworkByChain({ chainId })
-  const { isCrvRewardsEnabled, isLite } = network
+  const { isLite } = network
   const { signerAddress } = curve ?? {}
 
   // todo: use isReady to show a loading spinner close to the data
@@ -64,7 +62,6 @@ export const PoolListTable = ({ chainId, curve }: { chainId: ChainId; curve: Cur
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = usePoolListVisibilitySettings(TITLE, {
     isLite,
-    isCrvRewardsEnabled,
     sorting,
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})

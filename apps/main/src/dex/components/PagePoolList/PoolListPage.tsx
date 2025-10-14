@@ -1,18 +1,15 @@
-import { useChainId } from '@/dex/hooks/useChainId'
+import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import Settings from '@/dex/layout/default/Settings'
-import type { NetworkUrlParams } from '@/dex/types/main.types'
 import { useConnection } from '@ui-kit/features/connect-wallet'
-import { useParams } from '@ui-kit/hooks/router'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { PoolListTable } from '../../features/pool-list/PoolListTable'
 
 export const PoolListPage = () => {
-  const params = useParams<NetworkUrlParams>()
+  const network = useNetworkFromUrl()
   const { curveApi = null } = useConnection()
-  const rChainId = useChainId(params.network)
   return (
     <ListPageWrapper>
-      {rChainId && <PoolListTable chainId={rChainId} curve={curveApi} />}
+      {network && <PoolListTable network={network} curve={curveApi} />}
       <Settings showScrollButton />
     </ListPageWrapper>
   )

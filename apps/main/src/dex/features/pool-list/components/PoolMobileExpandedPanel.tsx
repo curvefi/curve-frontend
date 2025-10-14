@@ -6,6 +6,7 @@ import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/Tab
 import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
 import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
 import { ROUTE } from '@/dex/constants'
+import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
@@ -40,7 +41,7 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
   const sortBy = table.getState().sorting[0]?.id
   const { volume, tvl, rewards: rewards } = poolData
 
-  const hasRewardsCrv = table.getColumn(PoolColumnId.RewardsCrv)?.getIsVisible()
+  const hasRewardsCrv = useNetworkFromUrl()
   const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
   return (
     <>

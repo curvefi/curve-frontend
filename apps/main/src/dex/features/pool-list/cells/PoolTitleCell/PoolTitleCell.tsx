@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import usePoolAlert from '@/dex/hooks/usePoolAlert'
 import useTokenAlert from '@/dex/hooks/useTokenAlert'
@@ -30,11 +30,6 @@ export const PoolTitleCell = ({
     () => lodash.zip(tokens, tokenAddresses).map(([symbol, address]) => ({ symbol: symbol!, address: address! })),
     [tokens, tokenAddresses],
   )
-  useEffect(() => {
-    if (new Set(tokenList.map((t) => t.address)).size !== tokenList.length) {
-      console.log({ tokenList, pool: pool.name, id: pool.id })
-    }
-  }, [pool.id, pool.name, tokenList])
   const poolAlert = usePoolAlert(poolData)
   const tokenAlert = useTokenAlert(tokenAddressesAll)
 

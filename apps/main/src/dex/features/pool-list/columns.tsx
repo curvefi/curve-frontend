@@ -1,14 +1,16 @@
+import { sum } from 'lodash'
 import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
+import { AccessorFn } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import { boolFilterFn, filterByText, inListFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
+import { boolFilterFn, filterByText, inListFilterFn, multiFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
 import { PoolTvlCell } from './cells/PoolTvlCell'
 import { PoolVolumeCell } from './cells/PoolVolumeCell'
 import { RewardsBaseCell } from './cells/RewardsBaseCell'
-import { RewardsCrvCell } from './cells/RewardsCrvCell'
-import { RewardsHeader } from './cells/RewardsHeader'
+import { RewardsBaseHeader } from './cells/RewardsBaseHeader'
 import { RewardsOtherCell } from './cells/RewardsOtherCell'
+import { RewardsOtherHeader } from './cells/RewardsOtherHeader'
 import type { PoolListItem } from './types'
 
 export enum PoolColumnId {
@@ -16,7 +18,8 @@ export enum PoolColumnId {
   PoolName = 'PoolName',
   RewardsBase = 'RewardsBase',
   RewardsCrv = 'RewardsCrv',
-  RewardsOther = 'RewardsOther',
+  RewardsIncentives = 'RewardsIncentives',
+  RewardsOther = 'RewardsOther', // == RewardsCrv + RewardsIncentives
   Volume = 'volume',
   Tvl = 'tvl',
   PoolTags = 'tags',
@@ -26,9 +29,8 @@ const columnHelper = createColumnHelper<PoolListItem>()
 
 const headers = {
   [PoolColumnId.PoolName]: t`Pool`,
-  [PoolColumnId.RewardsBase]: RewardsHeader,
-  [PoolColumnId.RewardsCrv]: t`CRV`,
-  [PoolColumnId.RewardsOther]: t`Incentives`,
+  [PoolColumnId.RewardsBase]: RewardsBaseHeader,
+  [PoolColumnId.RewardsOther]: RewardsOtherHeader,
   [PoolColumnId.Volume]: t`Volume`,
   [PoolColumnId.Tvl]: t`TVL`,
 }
@@ -36,8 +38,11 @@ const headers = {
 type PoolColumn = ColumnDef<PoolListItem, any>
 
 /** Define a hidden column. */
-const hidden = (field: DeepKeys<PoolListItem>, id: PoolColumnId, filterFn: FilterFnOption<PoolListItem>) =>
-  columnHelper.accessor(field, { id, filterFn, meta: { hidden: true } })
+const hidden = (
+  id: PoolColumnId,
+  accessor: DeepKeys<PoolListItem> | AccessorFn<PoolListItem>,
+  filterFn: FilterFnOption<PoolListItem>,
+) => columnHelper.accessor(accessor, { id, filterFn, meta: { hidden: true }, sortUndefined: 'last' })
 
 export const POOL_LIST_COLUMNS = [
   columnHelper.accessor('pool.name', {
@@ -69,16 +74,12 @@ export const POOL_LIST_COLUMNS = [
       },
     },
   }),
-  columnHelper.accessor((row) => row.rewards?.crv, {
-    id: PoolColumnId.RewardsCrv,
-    header: headers[PoolColumnId.RewardsCrv],
-    meta: { type: 'numeric' },
-    cell: RewardsCrvCell,
-  }),
-  columnHelper.accessor((row) => row.rewards?.other, {
+  columnHelper.accessor('rewards', {
     id: PoolColumnId.RewardsOther,
     header: headers[PoolColumnId.RewardsOther],
     cell: RewardsOtherCell,
+    enableSorting: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
+    enableMultiSort: false, // that's done in the separate columns RewardsCrv and RewardsIncentives
     meta: { type: 'numeric', tooltip: { title: t`Token APR based on current prices of tokens and reward rates` } },
   }),
   columnHelper.accessor((row) => (row.volume ? +row.volume?.value : null), {
@@ -97,4 +98,6 @@ export const POOL_LIST_COLUMNS = [
   }),
   hidden(PoolColumnId.UserHasPositions, PoolColumnId.UserHasPositions, boolFilterFn),
   hidden(PoolColumnId.PoolTags, PoolColumnId.PoolTags, inListFilterFn),
+  hidden(PoolColumnId.RewardsCrv, (row) => row.rewards?.crv, multiFilterFn),
+  hidden(PoolColumnId.RewardsIncentives, (row) => (row.rewards ? sum(row.rewards.other) : undefined), multiFilterFn),
 ] satisfies PoolColumn[]

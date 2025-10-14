@@ -14,7 +14,7 @@ export const RewardsBaseCell = ({ table, row, getValue, column }: CellContext<Po
   const base = getValue()
   const failedFetching24hOldVprice =
     poolData && 'failedFetching24hOldVprice' in poolData && poolData.failedFetching24hOldVprice
-  const isHighlight = isSortedBy(table, column)
+  const isHighlight = isSortedBy(table, column.id)
   return failedFetching24hOldVprice ? (
     <span>
       -<IconTooltip>Not available currently</IconTooltip>
