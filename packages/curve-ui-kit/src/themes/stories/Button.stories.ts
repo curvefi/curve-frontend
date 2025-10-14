@@ -62,7 +62,7 @@ export const Secondary: Story = {
 
 export const Outlined: Story = {
   args: {
-    color: undefined,
+    color: 'outlined',
     children: 'Outlined',
   },
 }
