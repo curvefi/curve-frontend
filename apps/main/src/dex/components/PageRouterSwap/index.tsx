@@ -454,7 +454,7 @@ const QuickSwap = ({
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
                 showSlider: false,
-                showChips: true,
+                chips: 'range',
               }}
               isError={!!formValues.fromError}
               disabled={isDisable}

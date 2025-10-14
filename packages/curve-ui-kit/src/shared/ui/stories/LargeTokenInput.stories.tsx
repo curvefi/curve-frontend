@@ -67,7 +67,7 @@ const LargeTokenInputWithTokenSelector = (props: any) => {
           notionalValueUsd: tokenInfo.balance * 2, // Mock USD value
           showBalance: props.maxBalance.showBalance,
           showSlider: props.maxBalance.showSlider,
-          showChips: props.maxBalance.showChips,
+          chips: props.maxBalance.chips,
         }
 
   return (
@@ -125,7 +125,7 @@ const meta: Meta<typeof LargeTokenInput> = {
     maxBalance: {
       showBalance: true,
       showSlider: false,
-      showChips: true,
+      chips: undefined,
     },
     message: '',
     label: 'You pay',
@@ -177,6 +177,42 @@ export const WithSlider: Story = {
     docs: {
       description: {
         story: 'Large input without the percentage slider',
+      },
+    },
+  },
+}
+
+export const WithChipsRange: Story = {
+  args: {
+    maxBalance: {
+      symbol: 'ETH',
+      showBalance: true,
+      chips: 'range',
+    },
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input with the usual percentage chips',
+      },
+    },
+  },
+}
+
+export const WithChipsCustom: Story = {
+  args: {
+    maxBalance: {
+      symbol: 'ETH',
+      showBalance: true,
+      chips: [{ label: 'Yolo', newBalance: () => '1337.42' }],
+    },
+  },
+  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
+  parameters: {
+    docs: {
+      description: {
+        story: 'Large input with a custom input chip',
       },
     },
   },
