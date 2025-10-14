@@ -22,36 +22,36 @@ const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigato
  * @param param0 button: React.ReactNode, children: React.ReactNode, open: boolean, setOpen: (open: boolean) => void
  */
 export const SwipeableDrawer = ({ button, children, open, setOpen }: Props) => (
-    <Box sx={{ height: '100%' }}>
-      {button}
-      <MuiSwipeableDrawer
-        disableBackdropTransition={!iOS}
-        disableDiscovery={iOS}
-        anchor="bottom"
-        open={open}
-        onClose={() => setOpen(false)}
-        onOpen={() => setOpen(true)}
-        disableSwipeToOpen={false}
-        keepMounted={false}
-        slotProps={{
-          paper: {
-            sx: (t) => ({
-              backgroundColor: t.design.Layer[1].Fill,
-              maxHeight: MaxHeight.drawer,
-              display: 'flex',
-              flexDirection: 'column',
-            }),
-          },
-        }}
-      >
-        <Box sx={{ pt: 2 }}>
-          <Puller />
-        </Box>
+  <Box sx={{ height: '100%' }}>
+    {button}
+    <MuiSwipeableDrawer
+      disableBackdropTransition={!iOS}
+      disableDiscovery={iOS}
+      anchor="bottom"
+      open={open}
+      onClose={() => setOpen(false)}
+      onOpen={() => setOpen(true)}
+      disableSwipeToOpen={false}
+      keepMounted={false}
+      slotProps={{
+        paper: {
+          sx: (t) => ({
+            backgroundColor: t.design.Layer[1].Fill,
+            maxHeight: MaxHeight.drawer,
+            display: 'flex',
+            flexDirection: 'column',
+          }),
+        },
+      }}
+    >
+      <Box sx={{ pt: 2 }}>
+        <Puller />
+      </Box>
 
-        {children}
-      </MuiSwipeableDrawer>
-    </Box>
-  )
+      {children}
+    </MuiSwipeableDrawer>
+  </Box>
+)
 
 export const Puller = styled('div')(({ theme }) => ({
   width: 80,

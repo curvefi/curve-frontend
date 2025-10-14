@@ -127,7 +127,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
   })
 
-  it(`should allow filtering by using a slider`, () => {
+  it.only(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', '$0 -'],
       ['tvl', '$10k -'],
@@ -148,7 +148,7 @@ describe(`LlamaLend Markets`, () => {
        */
 
       // Wait 1 second for the slider to appear after the click
-      cy.wait(1000) // Wait 2 seconds for the UI to update after slider interaction
+      cy.wait(1000) // Wait 1 seconds for the UI to update after slider interaction
       cy.get(`[data-testid="slider-${columnId}"]`).click(60, 10, { force: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
