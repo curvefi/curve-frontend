@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import type { LlamaMarketColumnId } from '../columns.enum'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -48,6 +49,7 @@ export const RangeSliderFilter = <T,>({
     const [min, max] = (columnFilters?.[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
+  const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce(
     defaultValue,
@@ -72,7 +74,14 @@ export const RangeSliderFilter = <T,>({
       size="small"
       displayEmpty
       data-testid={`minimum-slider-filter-${id}`}
-      renderValue={() => <Typography variant="bodySBold">{range.map(format).join(' - ')}</Typography>}
+      renderValue={() => (
+        <Typography variant="bodySRegular">
+          {isMobile && `${title}: `}
+          <Typography component="span" variant="bodySBold">
+            {range.map(format).join(' - ')}
+          </Typography>
+        </Typography>
+      )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
       MenuProps={{ elevation: 3 }}
     >

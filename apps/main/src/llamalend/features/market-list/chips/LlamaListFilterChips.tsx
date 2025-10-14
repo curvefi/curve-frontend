@@ -36,6 +36,7 @@ export const LlamaListFilterChips = ({
           icon={<PersonIcon />}
           data-testid="chip-my-markets"
           disabled={!userHasPositions}
+          size={{ mobile: 12, tablet: 'auto' }}
         />
       )}
       <GridChip

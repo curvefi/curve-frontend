@@ -97,16 +97,7 @@ export const TableFilters = <ColumnIds extends string>({
           {chips}
         </Grid>
       </Grid>
-      {isCollapsible && (
-        <Collapse in={filterExpanded}>
-          {collapsible}
-          {isMobile && chips && (
-            <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-              {chips}
-            </Box>
-          )}
-        </Collapse>
-      )}
+      {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
 
       {visibilitySettingsOpen != null && settingsRef.current && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>

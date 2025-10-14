@@ -59,7 +59,12 @@ export const MarketListFilterDrawer = ({
           <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
-        <LendingMarketsFilters data={data} minLiquidity={minLiquidity} {...filterProps} />
+        <LendingMarketsFilters
+          columnFilters={filterProps.columnFiltersById}
+          setColumnFilter={filterProps.setColumnFilter}
+          data={data}
+          minLiquidity={minLiquidity}
+        />
       </Stack>
     </SwipeableDrawer>
   )

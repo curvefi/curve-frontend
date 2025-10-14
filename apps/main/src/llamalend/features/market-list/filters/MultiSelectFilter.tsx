@@ -13,6 +13,7 @@ import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import type { LlamaMarketColumnId } from '../columns.enum'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 
@@ -24,6 +25,7 @@ export const MultiSelectFilter = <T,>({
   setColumnFilter,
   data,
   defaultText,
+  defaultTextMobile,
   renderItem,
   field,
   id,
@@ -32,14 +34,17 @@ export const MultiSelectFilter = <T,>({
   setColumnFilter?: (id: string, value: unknown) => void
   data?: T[]
   defaultText: string
+  defaultTextMobile: string
   field: DeepKeys<T>
   id: LlamaMarketColumnId
   renderItem?: (value: string) => ReactNode
 }) => {
+  console.log('columnFilters select', columnFilters)
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
+  const isMobile = useIsMobile()
   // data can be undefined when the drawer renders for mobile
   const options = useMemo(() => (data ? getUniqueSortedStrings(data, field) : []), [data, field])
   const selectedOptions = (columnFilters?.[id] as string[] | undefined) ?? undefined
@@ -95,7 +100,7 @@ export const MultiSelectFilter = <T,>({
               </MenuItem>
             ))
           ) : (
-            <Typography variant="bodySBold">{defaultText}</Typography>
+            <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>
           )
         }
       ></Select>

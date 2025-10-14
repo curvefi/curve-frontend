@@ -10,6 +10,7 @@ import { formatPercent, formatUsd } from '@ui-kit/utils'
 import { LlamaMarketColumnId } from './columns.enum'
 import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 
@@ -57,63 +58,69 @@ export const LendingMarketsFilters = ({
 }: {
   data?: LlamaMarket[]
   minLiquidity?: number
-  columnFiltersById: Record<LlamaMarketKey, unknown>
+  columnFilters: Record<LlamaMarketKey, unknown>
   setColumnFilter: (id: string, value: unknown) => void
-}) => (
-  <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
-    <LendingMarketsFilterWrapper title={t`Collateral Tokens`}>
-      <MultiSelectFilter
-        id={LlamaMarketColumnId.CollateralSymbol}
-        field="assets.collateral.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
-        defaultText={t`All`}
-        data={data}
-        {...filterProps}
-      />
-    </LendingMarketsFilterWrapper>
+}) => {
+  const isMobile = useIsMobile()
 
-    <LendingMarketsFilterWrapper title={t`Debt Tokens`}>
-      <MultiSelectFilter
-        id={LlamaMarketColumnId.BorrowedSymbol}
-        field="assets.borrowed.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
-        defaultText={t`All`}
-        data={data}
-        {...filterProps}
-      />
-    </LendingMarketsFilterWrapper>
+  return (
+    <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
+      <LendingMarketsFilterWrapper title={!isMobile ? t`Collateral Tokens` : undefined}>
+        <MultiSelectFilter
+          id={LlamaMarketColumnId.CollateralSymbol}
+          field="assets.collateral.symbol"
+          renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
+          defaultText={t`All`}
+          defaultTextMobile={t`All Collateral Tokens`}
+          data={data}
+          {...filterProps}
+        />
+      </LendingMarketsFilterWrapper>
 
-    <LendingMarketsFilterWrapper title={t`TVL`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.Tvl}
-        field={LlamaMarketColumnId.Tvl}
-        title={t`TVL`}
-        format={formatUsd}
-        data={data}
-        {...filterProps}
-      />
-    </LendingMarketsFilterWrapper>
+      <LendingMarketsFilterWrapper title={!isMobile ? t`Debt Tokens` : undefined}>
+        <MultiSelectFilter
+          id={LlamaMarketColumnId.BorrowedSymbol}
+          field="assets.borrowed.symbol"
+          renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
+          defaultText={t`All`}
+          defaultTextMobile={t`All Debt Tokens`}
+          data={data}
+          {...filterProps}
+        />
+      </LendingMarketsFilterWrapper>
 
-    <LendingMarketsFilterWrapper title={t`Available liquidity`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.LiquidityUsd}
-        field={LlamaMarketColumnId.LiquidityUsd}
-        title={t`Liquidity`}
-        format={formatUsd}
-        data={data}
-        {...filterProps}
-      />
-    </LendingMarketsFilterWrapper>
+      <LendingMarketsFilterWrapper title={!isMobile ? t`TVL` : undefined}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.Tvl}
+          field={LlamaMarketColumnId.Tvl}
+          title={t`TVL`}
+          format={formatUsd}
+          data={data}
+          {...filterProps}
+        />
+      </LendingMarketsFilterWrapper>
 
-    <LendingMarketsFilterWrapper title={t`Utilization`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.UtilizationPercent}
-        field={LlamaMarketColumnId.UtilizationPercent}
-        title={t`Utilization`}
-        format={formatPercent}
-        data={data}
-        {...filterProps}
-      />
-    </LendingMarketsFilterWrapper>
-  </Grid>
-)
+      <LendingMarketsFilterWrapper title={!isMobile ? t`Available liquidity` : undefined}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.LiquidityUsd}
+          field={LlamaMarketColumnId.LiquidityUsd}
+          title={t`Liquidity`}
+          format={formatUsd}
+          data={data}
+          {...filterProps}
+        />
+      </LendingMarketsFilterWrapper>
+
+      <LendingMarketsFilterWrapper title={!isMobile ? t`Utilization` : undefined}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.UtilizationPercent}
+          field={LlamaMarketColumnId.UtilizationPercent}
+          title={t`Utilization`}
+          format={formatPercent}
+          data={data}
+          {...filterProps}
+        />
+      </LendingMarketsFilterWrapper>
+    </Grid>
+  )
+}
