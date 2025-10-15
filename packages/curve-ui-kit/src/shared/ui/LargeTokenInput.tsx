@@ -239,7 +239,7 @@ export const LargeTokenInput = <T extends Amount>({
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
-  const showSlider = maxBalance && maxBalance.showSlider === true
+  const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
 
   const handlePercentageChange = useCallback(
