@@ -8,7 +8,7 @@ import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
-import { type FilterProps, getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
@@ -69,7 +69,7 @@ export const LlamaMarketsTable = ({
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const filterProps: FilterProps<string> = { columnFiltersById, setColumnFilter }
+  const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,

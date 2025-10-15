@@ -1,7 +1,6 @@
 import React from 'react'
 import { Box, styled } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 type Props = {
   button: React.ReactNode
   children: React.ReactNode

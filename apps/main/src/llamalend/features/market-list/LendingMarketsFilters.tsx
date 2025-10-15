@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
@@ -32,7 +31,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
  */
 export const LendingMarketsFilters = ({
   minLiquidity = 0,
-  ...props
+  data,
+  ...filterProps
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -44,7 +44,7 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.CollateralSymbol}
         field="assets.collateral.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="collateral" />}
+        renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
         defaultText={t`All`}
         defaultTextMobile={t`All Collateral Tokens`}
         data={data}
@@ -56,7 +56,7 @@ export const LendingMarketsFilters = ({
       <MultiSelectFilter
         id={LlamaMarketColumnId.BorrowedSymbol}
         field="assets.borrowed.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={props.data} field="borrowed" />}
+        renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
         defaultText={t`All`}
         defaultTextMobile={t`All Debt Tokens`}
         data={data}
@@ -70,7 +70,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.Tvl}
         title={t`TVL`}
         format={formatUsd}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </TableFilterColumn>
 
@@ -80,7 +81,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.LiquidityUsd}
         title={t`Liquidity`}
         format={formatUsd}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </TableFilterColumn>
 
@@ -90,7 +92,8 @@ export const LendingMarketsFilters = ({
         field={LlamaMarketColumnId.UtilizationPercent}
         title={t`Utilization`}
         format={formatPercent}
-        {...props}
+        data={data}
+        {...filterProps}
       />
     </TableFilterColumn>
   </Grid>
