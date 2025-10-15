@@ -189,7 +189,7 @@ export const Metric = ({
   label,
   labelTooltip,
   valueTooltip,
-  copyText,
+  copyText = t`Value has been copied to clipboard`,
 
   notional,
 
