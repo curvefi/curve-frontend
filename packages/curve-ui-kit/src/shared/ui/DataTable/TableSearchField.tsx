@@ -34,40 +34,36 @@ export const TableSearchField = ({
     }
   }, [onBlur, collapsible, value, toggleExpanded])
 
-  if (collapsible) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          transition: TransitionFunction,
-          flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
-          width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
-        }}
-      >
-        {!isExpanded ? (
-          <TableButton
-            onClick={handleExpand}
-            icon={SearchIcon}
-            active={isExpanded}
-            testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
-          />
-        ) : (
-          <StyledSearchField
-            value={value}
-            searchInputRef={searchInputRef}
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={handleBlur}
-            isFocused={isFocused}
-            testId={testId}
-            sx={{ flex: '1 1 auto', minWidth: 0 }}
-          />
-        )}
-      </Box>
-    )
-  }
-
-  return (
+  return collapsible ? (
+    <Box
+      sx={{
+        display: 'flex',
+        transition: TransitionFunction,
+        flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
+        width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
+      }}
+    >
+      {!isExpanded ? (
+        <TableButton
+          onClick={handleExpand}
+          icon={SearchIcon}
+          active={isExpanded}
+          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
+        />
+      ) : (
+        <StyledSearchField
+          value={value}
+          searchInputRef={searchInputRef}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={handleBlur}
+          isFocused={isFocused}
+          testId={testId}
+          sx={{ flex: '1 1 auto', minWidth: 0 }}
+        />
+      )}
+    </Box>
+  ) : (
     <Box
       sx={{
         width: '478px',
