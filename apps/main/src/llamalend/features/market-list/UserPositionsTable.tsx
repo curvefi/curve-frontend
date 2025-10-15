@@ -76,6 +76,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         filterExpandedKey={title}
         leftChildren={<TableFiltersTitles title={t`${title}`} />}
         loading={loading}
+        hasSearchBar
         visibilityGroups={columnSettings}
         searchText={searchText}
         onSearch={onSearch}

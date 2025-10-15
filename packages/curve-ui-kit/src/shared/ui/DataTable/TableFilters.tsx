@@ -83,7 +83,6 @@ export const TableFilters = <ColumnIds extends string>({
           {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
           {hasSearchBar && (
             <TableSearchField
-              collapsible
               value={searchText}
               onChange={onSearch}
               testId={filterExpandedKey}

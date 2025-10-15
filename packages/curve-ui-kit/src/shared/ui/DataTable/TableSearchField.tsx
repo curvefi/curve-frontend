@@ -13,26 +13,19 @@ const { Spacing } = SizesAndSpaces
 type Props = {
   value: string
   onChange: (value: string) => void
-  collapsible?: boolean
   testId?: string
-  toggleExpanded: () => void
-  isExpanded: boolean
+  toggleExpanded?: () => void
+  isExpanded?: boolean
 }
 
-export const TableSearchField = ({
-  value,
-  onChange,
-  collapsible = false,
-  testId,
-  toggleExpanded,
-  isExpanded,
-}: Props) => {
+export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
   const isMobile = useIsMobile()
+  const collapsible = !!toggleExpanded
 
   const handleExpand = useCallback(() => {
-    toggleExpanded()
+    toggleExpanded?.()
     // Focus the input when expanding
     setTimeout(() => {
       searchInputRef.current?.focus()
@@ -43,7 +36,7 @@ export const TableSearchField = ({
     onBlur()
     // Collapse when unfocused and empty in collapsible mode
     if (collapsible && !value) {
-      toggleExpanded()
+      toggleExpanded?.()
     }
   }, [onBlur, collapsible, value, toggleExpanded])
 
