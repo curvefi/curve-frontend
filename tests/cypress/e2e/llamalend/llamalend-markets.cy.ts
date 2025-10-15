@@ -147,8 +147,7 @@ describe(`LlamaLend Markets`, () => {
        * The application behavior works correctly despite this test accommodation.
        */
 
-      // Wait 1 second for the slider to appear after the click
-      cy.wait(1000) // Wait 1 seconds for the UI to update after slider interaction
+      cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
       cy.get(`[data-testid="slider-${columnId}"]`).click(60, 10, { force: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
