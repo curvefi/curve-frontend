@@ -1,8 +1,8 @@
 import Typography from '@mui/material/Typography'
 import { flexRender, type Header } from '@tanstack/react-table'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
-import { WithTooltip } from '@ui-kit/shared/ui/WithTooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Tooltip } from '../Tooltip'
 import { getAlignment, getExtraColumnPadding, type TableItem } from './data-table.utils'
 
 const { Spacing, Sizing } = SizesAndSpaces
@@ -54,11 +54,11 @@ export const HeaderCell = <T extends TableItem>({
       data-sortable={`${canSort}`}
       variant="tableHeaderS"
     >
-      <WithTooltip {...tooltip}>
+      <Tooltip title={tooltip?.title} {...tooltip}>
         <Sortable column={column} isEnabled={canSort}>
           {headerEl}
         </Sortable>
-      </WithTooltip>
+      </Tooltip>
     </Typography>
   )
 }
