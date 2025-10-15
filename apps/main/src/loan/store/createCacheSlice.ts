@@ -1,4 +1,4 @@
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { State } from '@/loan/store/useStore'
 import { CollateralDataCacheMapper } from '@/loan/types/loan.types'
 import { sleep } from '@/loan/utils/helpers'
@@ -26,7 +26,7 @@ const DEFAULT_STATE: SliceState = {
 
 const TIMEOUT_MS = 4000
 
-const createCacheSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createCacheSlice = (set: SetState<State>, get: GetState<State>) => ({
   storeCache: {
     ...DEFAULT_STATE,
 

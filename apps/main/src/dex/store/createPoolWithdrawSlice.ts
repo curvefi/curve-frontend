@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { LoadMaxAmount } from '@/dex/components/PagePool/Deposit/types'
 import type { EstimatedGas as FormEstGas, Slippage } from '@/dex/components/PagePool/types'
 import { type Amount, DEFAULT_SLIPPAGE } from '@/dex/components/PagePool/utils'
@@ -80,10 +80,7 @@ const DEFAULT_STATE: SliceState = {
   slippage: {},
 }
 
-const createPoolWithdrawSlice = (
-  _: StoreApi<State>['setState'],
-  get: StoreApi<State>['getState'],
-): PoolWithdrawSlice => ({
+const createPoolWithdrawSlice = (set: SetState<State>, get: GetState<State>): PoolWithdrawSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

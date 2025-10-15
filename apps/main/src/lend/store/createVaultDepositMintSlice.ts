@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultDepositMint/types'
@@ -59,10 +59,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultMint = (
-  set: StoreApi<State>['setState'],
-  get: StoreApi<State>['getState'],
-): VaultDepositMintSlice => ({
+const createVaultMint = (set: SetState<State>, get: GetState<State>): VaultDepositMintSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

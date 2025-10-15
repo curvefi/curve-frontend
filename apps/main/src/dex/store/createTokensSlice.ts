@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import { updateHaveSameTokenNames } from '@/dex/store/createPoolsSlice'
 import type { State } from '@/dex/store/useStore'
 import { Token, TokensMapper, TokensNameMapper, PoolData, type CurveApi } from '@/dex/types/main.types'
@@ -43,7 +43,7 @@ const DEFAULT_STATE: SliceState = {
   loading: true,
 }
 
-const createTokensSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): TokensSlice => ({
+const createTokensSlice = (set: SetState<State>, get: GetState<State>): TokensSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

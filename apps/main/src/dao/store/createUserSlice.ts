@@ -1,6 +1,6 @@
 import { Contract } from 'ethers'
 import { produce } from 'immer'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import { ABI_VECRV } from '@/dao/abis/vecrv'
 import { CONTRACT_VECRV } from '@/dao/constants'
 import type { State } from '@/dao/store/useStore'
@@ -102,7 +102,7 @@ const DEFAULT_STATE: SliceState = {
 
 // key user address for user specific snapshots, votes, mappers
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     updateUserData: async (curve: CurveApi, wallet: Wallet) => {

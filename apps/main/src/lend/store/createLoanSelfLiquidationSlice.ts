@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
@@ -61,10 +61,7 @@ const DEFAULT_STATE: SliceState = {
 
 const { loanSelfLiquidation } = apiLending
 
-const createLoanSelfLiquidationSlice = (
-  set: StoreApi<State>['setState'],
-  get: StoreApi<State>['getState'],
-): LoanSelfLiquidationSlice => ({
+const createLoanSelfLiquidationSlice = (set: SetState<State>, get: GetState<State>): LoanSelfLiquidationSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

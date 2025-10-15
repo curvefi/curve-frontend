@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -80,7 +80,7 @@ const DEFAULT_STATE: SliceState = {
   maxRecv: {},
 }
 
-const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanIncrease = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

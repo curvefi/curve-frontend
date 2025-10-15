@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
-import { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import type { State } from '@/lend/store/useStore'
 import { Api, Wallet } from '@/lend/types/lend.types'
@@ -20,7 +20,7 @@ export interface AppSlice {
   resetAppState<T>(sliceKey: SliceKey, defaultState: T): void
 }
 
-const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AppSlice => ({
+const createAppSlice = (set: SetState<State>, get: GetState<State>): AppSlice => ({
   hydrate: async (api, prevApi) => {
     if (!api) return
 

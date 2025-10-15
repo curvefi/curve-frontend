@@ -1,7 +1,7 @@
 import Fuse from 'fuse.js'
 import { produce } from 'immer'
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FilterKey, FormStatus, FormValues } from '@/loan/components/PageIntegrations/types'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
@@ -54,7 +54,7 @@ const DEFAULT_STATE: SliceState = {
   results: null,
 }
 
-const createIntegrationsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createIntegrationsSlice = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     init: async (chainId: ChainId) => {

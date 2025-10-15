@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type {
   DetailInfo,
   DetailInfoLeverage,
@@ -85,7 +85,7 @@ const DEFAULT_STATE: SliceState = {
 const { loanCreate } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanCreateSlice => ({
+const createLoanCreate = (set: SetState<State>, get: GetState<State>): LoanCreateSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

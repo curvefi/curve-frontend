@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type {
   FilterKey,
   FormStatus,
@@ -92,7 +92,7 @@ const DEFAULT_STATE: SliceState = {
 
 const sliceKey = 'poolList'
 
-const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolListSlice => ({
+const createPoolListSlice = (set: SetState<State>, get: GetState<State>): PoolListSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

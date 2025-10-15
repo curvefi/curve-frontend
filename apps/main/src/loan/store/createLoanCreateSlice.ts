@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
@@ -124,7 +124,7 @@ const DEFAULT_STATE: SliceState = {
   isEditLiqRange: false,
 }
 
-const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanCreate = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

@@ -8,7 +8,7 @@ import type {
   LlamaBaselinePriceData,
   OraclePriceData,
 } from 'ui/src/Chart/types'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
@@ -175,7 +175,7 @@ const DEFAULT_STATE: SliceState = {
   liqRangeNewVisible: true,
 }
 
-const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createOhlcChart = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setChartTimeOption: (timeOption: TimeOptions) => {

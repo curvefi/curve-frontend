@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type {
   FormLpTokenExpected,
   FormStatus,
@@ -96,10 +96,7 @@ const DEFAULT_STATE: SliceState = {
   slippage: {},
 }
 
-const createPoolDepositSlice = (
-  set: StoreApi<State>['setState'],
-  get: StoreApi<State>['getState'],
-): PoolDepositSlice => ({
+const createPoolDepositSlice = (set: SetState<State>, get: GetState<State>): PoolDepositSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
