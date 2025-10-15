@@ -47,7 +47,7 @@ export const TableFilters = <ColumnIds extends string>({
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
-
+  // search is here because we remove the table title when searching on mobile
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely

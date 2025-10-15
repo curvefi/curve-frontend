@@ -91,14 +91,6 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               onSearch={onSearch}
               testId={title}
             />
-            {/* <MarketFilterChipWrapper
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-              resetFilters={resetFilters}
-              userHasPositions={userHasPositions}
-              onSortingChange={onSortingChange}
-              sortField={sortField}
-              data={data}
-            /> */}
           </>
         }
       />

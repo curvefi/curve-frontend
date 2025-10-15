@@ -16,20 +16,24 @@ export const HiddenMarketsResetFilters = ({
 }: HiddenMarketsResetFiltersProps) => {
   const tooltip =
     !hasFilters && hiddenMarketCount
-      ? t`Some markets are hidden by default due to low liquidity. You may change that in the liquidity filter.`
+      ? [
+          t`Some markets are hidden by default due to low TVL.`,
+          t`You may change that in the TVL filter.`,
+          t`Note that deprecated markets are only visible for users that have an active position.`,
+        ].join(' ')
       : null
 
-  if (hiddenMarketCount == null) return null
-
   return (
-    <Tooltip title={tooltip}>
-      <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
-        <Stack direction="row" gap={1} alignItems="center">
-          <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
-          <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+    hiddenMarketCount != null && (
+      <Tooltip title={tooltip}>
+        <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
+          <Stack direction="row" gap={1} alignItems="center">
+            <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
+            <Typography variant="highlightS">{hiddenMarketCount}</Typography>
+          </Stack>
+          {hasFilters && <ResetFiltersButton onClick={resetFilters} />}
         </Stack>
-        {hasFilters && <ResetFiltersButton onClick={resetFilters} />}
-      </Stack>
-    </Tooltip>
+      </Tooltip>
+    )
   )
 }

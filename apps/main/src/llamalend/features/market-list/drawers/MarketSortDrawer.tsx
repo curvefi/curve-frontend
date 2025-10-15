@@ -3,6 +3,7 @@ import { Button, MenuItem, Stack } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { CaretSortIcon } from '@ui-kit/shared/icons/CaretSort'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
@@ -20,7 +21,7 @@ type Props = {
 }
 
 export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
-  const [open, setOpen] = React.useState(false)
+  const [open, openDrawer, closeDrawer] = useSwitch(false)
   const sortOptions = useLlamaMarketSortOptions()
   const menuRef = useRef<HTMLLIElement | null>(null)
 
@@ -29,9 +30,9 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const handleSort = useCallback(
     (id: LlamaMarketColumnId, label: React.ReactNode) => {
       onSortingChange([{ id, desc: true }])
-      setOpen(false)
+      closeDrawer()
     },
-    [onSortingChange],
+    [onSortingChange, closeDrawer],
   )
 
   return (
@@ -41,14 +42,14 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
           variant="outlined"
           size="small"
           fullWidth
-          onClick={() => setOpen(true)}
+          onClick={openDrawer}
           data-testid="btn-drawer-sort-lamalend-markets"
         >
-          Sort <CaretSortIcon sx={{ marginLeft: Spacing.sm }} />
+          {t`Sort`} <CaretSortIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
       open={open}
-      setOpen={setOpen}
+      setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Sort by`} />
       <Stack

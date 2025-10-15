@@ -19,7 +19,7 @@ export const TableFilterColumn = ({
   <Grid size={size} {...gridProps}>
     <Stack>
       {title && (
-        <Typography variant="bodyXsRegular" color="textTertiary">
+        <Typography display={{ mobile: 'none', tablet: 'block' }} variant="bodyXsRegular" color="textTertiary">
           {title}
         </Typography>
       )}

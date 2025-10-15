@@ -2,6 +2,7 @@ import React from 'react'
 import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { Button, Grid, Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
@@ -34,7 +35,7 @@ export const MarketListFilterDrawer = ({
   hasFilters,
   ...filterProps
 }: Props) => {
-  const [open, setOpen] = React.useState(false)
+  const [open, openDrawer, closeDrawer] = useSwitch(false)
   return (
     <SwipeableDrawer
       button={
@@ -42,14 +43,14 @@ export const MarketListFilterDrawer = ({
           variant="outlined"
           size="small"
           fullWidth
-          onClick={() => setOpen(true)}
+          onClick={openDrawer}
           data-testid="btn-drawer-filter-lamalend-markets"
         >
-          Filter {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
+          {t`Filter`} {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
       open={open}
-      setOpen={setOpen}
+      setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Filters`}>
         <HiddenMarketsResetFilters

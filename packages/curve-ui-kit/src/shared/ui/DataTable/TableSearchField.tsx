@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -8,14 +8,14 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
 
-const { Spacing } = SizesAndSpaces
+const { ButtonSize } = SizesAndSpaces
 
 type Props = {
   value: string
   onChange: (value: string) => void
   testId?: string
-  toggleExpanded?: () => void
-  isExpanded?: boolean
+  toggleExpanded: () => void
+  isExpanded: boolean
 }
 
 export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
@@ -45,9 +45,9 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       sx={{
         display: 'flex',
         // on mobile when search is de-expanded, animation doesn't look good
-        transition: isMobile ? (isExpanded ? TransitionFunction : 'none') : TransitionFunction,
-        flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
-        width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
+        transition: isMobile && !isExpanded ? 'none' : TransitionFunction,
+        flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
+        width: isExpanded ? 0 : `${ButtonSize.sm}`,
       }}
     >
       {!isExpanded ? (
