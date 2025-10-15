@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
@@ -24,10 +24,6 @@ export const TableSearchField = ({
 
   const handleExpand = useCallback(() => {
     toggleExpanded()
-    // Focus the input when expanding
-    setTimeout(() => {
-      searchInputRef.current?.focus()
-    }, 50)
   }, [toggleExpanded])
 
   const handleBlur = useCallback(() => {
