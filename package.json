@@ -61,7 +61,6 @@
     "@eslint/js": "9.37.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.1",
-    "babel-plugin-react-compiler": "1.0.0",
     "bignumber.js": "9.3.1",
     "eslint": "9.37.0",
     "ethers": "6.15.0",

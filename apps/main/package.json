@@ -57,7 +57,6 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "^5.0.4",
-    "babel-plugin-react-compiler": "*",
     "babel-plugin-styled-components": "^2.1.4",
     "eslint": "*",
     "eslint-config-custom": "*",

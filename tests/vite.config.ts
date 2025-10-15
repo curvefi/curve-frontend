@@ -4,14 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
-  plugins: [
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler', { target: '19' }]],
-      },
-    }),
-    tsconfigPaths(),
-  ],
+  plugins: [react(), tsconfigPaths()],
   resolve: {
     alias: [
       { find: '@cy', replacement: resolve(__dirname, './cypress') },
