@@ -119,4 +119,36 @@ describe('NumericTextField', () => {
     cy.get('input').click().type('.5').blur()
     cy.get('[data-testid="state-value"]').should('contain', '0.5')
   })
+
+  it('changing the amount of zeros in the decimal should not cause rounding to just 0', () => {
+    cy.mount(<TestComponent />)
+
+    // Start with empty input
+    cy.get('input').click().clear()
+
+    // Type "0.0001" character by character
+    cy.get('input').type('0')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0')
+
+    cy.get('input').type('.')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0')
+
+    cy.get('input').type('0')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.0')
+
+    cy.get('input').type('0')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.00')
+
+    cy.get('input').type('0')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.000')
+
+    cy.get('input').type('1')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.0001')
+
+    cy.get('input').type('{backspace}')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.000')
+
+    cy.get('input').type('2')
+    cy.get('[data-testid="state-temp-value"]').should('contain', '0.0002')
+  })
 })

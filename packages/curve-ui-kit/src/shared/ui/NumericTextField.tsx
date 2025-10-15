@@ -100,6 +100,14 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
   const parseAndClamp = (validatedValue: string, { shouldClamp = false }: { shouldClamp?: boolean }) => {
     if (validatedValue === '') return undefined
     const result = shouldClamp ? clamp(validatedValue, min, max) : new BigNumber(validatedValue)
+
+    // Preserve original formatting for zero values with trailing zeros (e.g., "0.00", "0.000")
+    // This prevents the input from jumping to "0" when the user is still typing
+    const decimalPart = validatedValue.split('.')[1]
+    if (!shouldClamp && result.isEqualTo(0) && decimalPart && /^0+$/.test(decimalPart)) {
+      return validatedValue as Decimal
+    }
+
     return result.toString() as Decimal
   }
 
