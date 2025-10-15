@@ -10,7 +10,7 @@ import { GridChip } from './GridChip'
 
 const { Spacing } = SizesAndSpaces
 
-export const ChainFilterChipWrapper = ({
+export const ChainFilterChip = ({
   data,
   columnFiltersById,
   setColumnFilter,

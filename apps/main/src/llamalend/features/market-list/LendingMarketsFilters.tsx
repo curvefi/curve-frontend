@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
-import { Stack } from '@mui/material'
 import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
+import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
@@ -12,6 +11,7 @@ import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
+const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 3, desktop: 2.4 } as const
 
 /**
  * Displays a token with its icon and symbol.
@@ -26,19 +26,6 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
 }
 
-const LendingMarketsFilterWrapper = ({ title, children }: { title?: string; children: React.ReactNode }) => (
-    <Grid size={{ mobile: 12, tablet: 3, desktop: 2.4 }}>
-      <Stack>
-        {title && (
-          <Typography variant="bodyXsRegular" color="textTertiary">
-            {title}
-          </Typography>
-        )}
-        {children}
-      </Stack>
-    </Grid>
-  )
-
 /**
  * Filters for the lending markets table. Includes filters for chain, collateral token, debt token, liquidity, and utilization.
  */
@@ -52,7 +39,7 @@ export const LendingMarketsFilters = ({
   minLiquidity?: number
 }) => (
   <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
-    <LendingMarketsFilterWrapper title={t`Collateral Tokens`}>
+    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
       <MultiSelectFilter
         id={LlamaMarketColumnId.CollateralSymbol}
         field="assets.collateral.symbol"
@@ -60,9 +47,9 @@ export const LendingMarketsFilters = ({
         defaultText={t`All`}
         {...props}
       />
-    </LendingMarketsFilterWrapper>
+    </TableFilterColumn>
 
-    <LendingMarketsFilterWrapper title={t`Debt Tokens`}>
+    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
       <MultiSelectFilter
         id={LlamaMarketColumnId.BorrowedSymbol}
         field="assets.borrowed.symbol"
@@ -70,9 +57,9 @@ export const LendingMarketsFilters = ({
         defaultText={t`All`}
         {...props}
       />
-    </LendingMarketsFilterWrapper>
+    </TableFilterColumn>
 
-    <LendingMarketsFilterWrapper title={t`TVL`}>
+    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
       <RangeSliderFilter
         id={LlamaMarketColumnId.Tvl}
         field={LlamaMarketColumnId.Tvl}
@@ -80,9 +67,9 @@ export const LendingMarketsFilters = ({
         format={formatUsd}
         {...props}
       />
-    </LendingMarketsFilterWrapper>
+    </TableFilterColumn>
 
-    <LendingMarketsFilterWrapper title={t`Available liquidity`}>
+    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
       <RangeSliderFilter
         id={LlamaMarketColumnId.LiquidityUsd}
         field={LlamaMarketColumnId.LiquidityUsd}
@@ -90,9 +77,9 @@ export const LendingMarketsFilters = ({
         format={formatUsd}
         {...props}
       />
-    </LendingMarketsFilterWrapper>
+    </TableFilterColumn>
 
-    <LendingMarketsFilterWrapper title={t`Utilization`}>
+    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
       <RangeSliderFilter
         id={LlamaMarketColumnId.UtilizationPercent}
         field={LlamaMarketColumnId.UtilizationPercent}
@@ -100,6 +87,6 @@ export const LendingMarketsFilters = ({
         format={formatPercent}
         {...props}
       />
-    </LendingMarketsFilterWrapper>
+    </TableFilterColumn>
   </Grid>
 )
