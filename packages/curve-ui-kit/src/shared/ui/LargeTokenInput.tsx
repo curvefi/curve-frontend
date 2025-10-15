@@ -56,11 +56,14 @@ type InputChip = {
   newBalance: (maxBalance?: Amount) => Amount | undefined
 }
 
-const CHIPS_MAX: InputChip[] = [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }]
-const CHIPS_RANGE: InputChip[] = [25, 50, 75, 100].map((p) => ({
-  label: `${p}%`,
-  newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal, 4),
-}))
+type ChipsPreset = 'max' | 'range'
+const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
+  max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
+  range: [25, 50, 75, 100].map((p) => ({
+    label: `${p}%`,
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal, 4),
+  })),
+}
 
 type BalanceTextFieldProps<T> = {
   balance: T | undefined
@@ -127,7 +130,7 @@ type MaxBalanceProps<T> = Partial<
 > & {
   showBalance?: boolean
   showSlider?: boolean
-  chips?: 'max' | 'range' | InputChip[]
+  chips?: ChipsPreset | InputChip[]
 }
 
 type Props<T> = DataType<T> & {
@@ -272,8 +275,7 @@ export const LargeTokenInput = <T extends Amount>({
   const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
 
-  const chips =
-    maxBalance?.chips === 'max' ? CHIPS_MAX : maxBalance?.chips === 'range' ? CHIPS_RANGE : maxBalance?.chips
+  const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
 
   const handlePercentageChange = useCallback(
