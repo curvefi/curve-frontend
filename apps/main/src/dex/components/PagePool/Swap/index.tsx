@@ -461,7 +461,6 @@ const Swap = ({
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
-                showSlider: false,
                 chips: 'range',
                 ...(toUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
@@ -590,7 +589,6 @@ const Swap = ({
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
-              showSlider: false,
               ...(toUsdRate != null &&
                 userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
             }}
