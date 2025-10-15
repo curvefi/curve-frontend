@@ -374,7 +374,7 @@ export const LargeTokenInput = <T extends Amount>({
                 symbol={maxBalance?.symbol ?? ''}
                 balance={maxBalance?.balance}
                 notionalValueUsd={maxBalance?.notionalValueUsd}
-                max="off"
+                max="balance"
                 onMax={onMax}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
