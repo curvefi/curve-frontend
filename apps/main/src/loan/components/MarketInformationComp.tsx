@@ -8,8 +8,10 @@ import { useBandsData } from '@/loan/hooks/useBandsData'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -32,6 +34,8 @@ export const MarketInformationComp = ({
   page = 'manage',
 }: MarketInformationCompProps) => {
   const theme = useTheme()
+  const [releaseChannel] = useReleaseChannel()
+  const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const { userBandsBalances, marketBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
     llammaId,
@@ -42,8 +46,8 @@ export const MarketInformationComp = ({
     <>
       {!chartExpanded && (
         <Stack
-          display="grid"
-          gridTemplateColumns="1fr 0.5fr"
+          display={isBeta ? 'grid' : undefined}
+          gridTemplateColumns={isBeta ? '1fr 0.5fr' : undefined}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
@@ -52,16 +56,18 @@ export const MarketInformationComp = ({
             llamma={llamma}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          <BandsChart
-            userBandsBalances={userBandsBalances ?? []}
-            marketBandsBalances={marketBandsBalances ?? []}
-            liquidationBand={liquidationBand}
-            oraclePrice={oraclePrice}
-            oraclePriceBand={oraclePriceBand}
-          />
+          {isBeta && (
+            <BandsChart
+              userBandsBalances={userBandsBalances ?? []}
+              marketBandsBalances={marketBandsBalances ?? []}
+              liquidationBand={liquidationBand}
+              oraclePrice={oraclePrice}
+              oraclePriceBand={oraclePriceBand}
+            />
+          )}
         </Stack>
       )}
-      {isAdvancedMode && (
+      {isAdvancedMode && !isBeta && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp llamma={llamma} llammaId={llammaId} page={page} />
         </Stack>
