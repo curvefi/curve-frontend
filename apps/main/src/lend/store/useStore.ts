@@ -1,4 +1,4 @@
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import createAppSlice, { AppSlice } from '@/lend/store/createAppSlice'
@@ -39,7 +39,7 @@ export type State = AppSlice &
   VaultClaimSlice &
   OhlcChartSlice
 
-const store = (set: SetState<State>, get: GetState<State>): State => ({
+const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createAppSlice(set, get),
   ...createChartBandsSlice(set, get),
   ...createMarketsSlice(set, get),

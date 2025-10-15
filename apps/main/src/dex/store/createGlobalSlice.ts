@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi, NetworkConfigFromApi, Wallet } from '@/dex/types/main.types'
@@ -37,7 +37,7 @@ const DEFAULT_STATE = {
   hasRouter: {},
 } satisfies GlobalState
 
-const createGlobalSlice = (set: SetState<State>, get: GetState<State>): GlobalSlice => ({
+const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): GlobalSlice => ({
   ...DEFAULT_STATE,
 
   getNetworkConfigFromApi: (chainId: ChainId | '') => {
