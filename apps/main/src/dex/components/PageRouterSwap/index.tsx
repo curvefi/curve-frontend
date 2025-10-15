@@ -453,7 +453,6 @@ const QuickSwap = ({
                 ...(searchedParams.fromAddress === ethAddress && {
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
-                showSlider: false,
                 showChips: true,
               }}
               isError={!!formValues.fromError}
@@ -546,7 +545,6 @@ const QuickSwap = ({
               ...(searchedParams.fromAddress === ethAddress && {
                 tooltip: t`'Balance'`,
               }),
-              showSlider: false,
             }}
             disabled={isDisable}
             testId="to-amount"

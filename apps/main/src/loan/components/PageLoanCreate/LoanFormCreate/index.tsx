@@ -336,7 +336,6 @@ const LoanCreate = ({
               loading: haveSigner && userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: llamma?.collateralSymbol,
-              showSlider: false,
               ...(collateralUsdRate != null &&
                 userWalletBalances.collateral != null && {
                   notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
@@ -401,7 +400,6 @@ const LoanCreate = ({
               balance: decimal(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,
               ...(stablecoinUsdRate != null && maxRecv && { notionalValueUsd: stablecoinUsdRate * +maxRecv }),
-              showSlider: false,
               maxTestId: 'debtMax',
             }}
             label={t`Borrow amount:`}

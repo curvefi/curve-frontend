@@ -60,7 +60,6 @@ const FieldLpToken = ({
       maxBalance={{
         balance: decimal(balance),
         symbol: t`LP Tokens`,
-        showSlider: false,
         loading: balanceLoading,
       }}
       balance={decimal(amount)}

@@ -344,7 +344,6 @@ const LoanDeleverage = ({
             loading: userWalletBalancesLoading,
             balance: decimal(userState?.collateral),
             symbol: collateralName,
-            showSlider: false,
             ...(collateralUsdRate != null &&
               userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
           }}
