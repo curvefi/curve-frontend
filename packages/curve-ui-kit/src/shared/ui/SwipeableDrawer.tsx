@@ -9,9 +9,8 @@ type Props = {
   setOpen: (open: boolean) => void
 }
 
-const { MaxHeight } = SizesAndSpaces
 /**
- * The following properties are used in this documentation website for optimal usability of the component:
+ * The following properties are advised for optimal usability: https://mui.com/material-ui/react-drawer/#swipeable
  * iOS is hosted on high-end devices. The backdrop transition can be enabled without dropping frames. The performance will be good enough.
  * iOS has a "swipe to go back" feature that interferes with the discovery feature, so discovery has to be disabled.
  */
@@ -33,16 +32,6 @@ export const SwipeableDrawer = ({ button, children, open, setOpen }: Props) => (
       onOpen={() => setOpen(true)}
       disableSwipeToOpen={false}
       keepMounted={false}
-      slotProps={{
-        paper: {
-          sx: (t) => ({
-            backgroundColor: t.design.Layer[1].Fill,
-            maxHeight: MaxHeight.drawer,
-            display: 'flex',
-            flexDirection: 'column',
-          }),
-        },
-      }}
     >
       <Box sx={{ pt: 2 }}>
         <Puller />
