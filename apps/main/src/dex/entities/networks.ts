@@ -1,24 +1,20 @@
 import { useMemo } from 'react'
-import { createValidationSuite } from '@ui-kit/lib'
+import { EmptyValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { defaultNetworks, getNetworks as getNetworksLib } from '../lib/networks'
 
-const {
-  useQuery: useQuery,
-  fetchQuery: fetchNetworksQuery,
-  getQueryData: getNetworksQuery,
-} = queryFactory({
+const { useQuery, fetchQuery, getQueryData } = queryFactory({
   queryKey: () => ['networks'] as const,
   queryFn: getNetworksLib,
   staleTime: '1h',
   refetchInterval: '1h',
-  validationSuite: createValidationSuite(() => undefined),
+  validationSuite: EmptyValidationSuite, // no args
 })
 
 export const useNetworksQuery = () => useQuery({})
-export const fetchNetworks = () => fetchNetworksQuery({})
+export const fetchNetworks = () => fetchQuery({})
 export const getNetworks = () => {
-  const result = getNetworksQuery({})
+  const result = getQueryData({})
   if (!result) {
     throw new Error('Do not use this hook while loading, it should be after RootLayout has loaded the networks')
   }
