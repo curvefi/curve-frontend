@@ -10,9 +10,13 @@ import {
   YAxis,
   ReferenceArea,
   ReferenceLine,
+  Cell,
 } from 'recharts'
+import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
+import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack, useTheme } from '@mui/material'
 import { formatNumber } from '@ui/utils'
+import { DesignSystem } from '@ui-kit/themes/design'
 
 export type BandsBalancesData = {
   borrowed: string
@@ -40,6 +44,8 @@ type ChartDataPoint = {
 }
 
 type BandsChartProps = {
+  collateralToken?: Token
+  borrowToken?: Token
   userBandsBalances: BandsBalancesData[]
   marketBandsBalances: BandsBalancesData[]
   liquidationBand: number | null | undefined
@@ -48,7 +54,40 @@ type BandsChartProps = {
   height?: number
 }
 
+const CustomLabelWithBackground = ({
+  value,
+  viewBox,
+  fill,
+  backgroundColor,
+}: {
+  value: string
+  viewBox?: { x: number; y: number; width: number }
+  fill: string
+  backgroundColor: string
+}) => {
+  if (!viewBox) return null
+
+  const { x, y, width } = viewBox
+  const textWidth = String(value).length * 6.5 + 8
+  const textHeight = 18
+  const rectX = x + width + 5
+  const rectY = y - textHeight / 2
+  const textX = rectX + 4
+  const textY = y + 4
+
+  return (
+    <g>
+      <rect x={rectX} y={rectY} width={textWidth} height={textHeight} fill={backgroundColor} />
+      <text x={textX} y={textY} fill={fill} fontSize={12}>
+        {value}
+      </text>
+    </g>
+  )
+}
+
 export const BandsChart = ({
+  collateralToken,
+  borrowToken,
   userBandsBalances,
   marketBandsBalances,
   liquidationBand,
@@ -56,13 +95,14 @@ export const BandsChart = ({
   oraclePriceBand,
   height = 500,
 }: BandsChartProps) => {
+  // theming
   const theme = useTheme()
-  const [brushStartIndex, setBrushStartIndex] = useState<number | undefined>(undefined)
-  const [brushEndIndex, setBrushEndIndex] = useState<number | undefined>(undefined)
+  const { theme: currentThemeName } = theme.design
+  const invertedDesign = DesignSystem[currentThemeName]({ inverted: true })
 
-  // Theme colors from CSS variables
   const backgroundColor = theme.design.Layer[1].Fill
   const textColor = theme.design.Text.TextColors.Primary
+  const textColorInverted = invertedDesign.Text.TextColors.Primary
   const gridColor = theme.design.Color.Neutral[300]
   const marketBandColor = theme.design.Color.Neutral[300]
   const userBandColor = theme.design.Color.Neutral[500]
@@ -70,35 +110,28 @@ export const BandsChart = ({
   const userRangeHighlightColor = theme.design.Color.Tertiary[200]
   const userRangeLabelBackgroundColor = theme.design.Color.Tertiary[300]
   const oraclePriceLineColor = theme.design.Color.Primary[500]
+  const liquidationBandOutlineColor = theme.design.Color.Tertiary[600]
 
-  const CustomLabelWithBackground = (props: any) => {
-    const { value, viewBox, fill } = props
-    if (!viewBox) return null
+  const [brushStartIndex, setBrushStartIndex] = useState<number | undefined>(undefined)
+  const [brushEndIndex, setBrushEndIndex] = useState<number | undefined>(undefined)
 
-    const { x, y, width } = viewBox
-    const textWidth = String(value).length * 6.5 + 8
-    const textHeight = 18
-    const rectX = x + width + 5
-    const rectY = y - textHeight / 2
-    const textX = rectX + 4
-    const textY = y + 4
+  const filteredMarketBandsBalances = useMemo(() => {
+    if (!marketBandsBalances) return []
 
-    return (
-      <g>
-        <rect x={rectX} y={rectY} width={textWidth} height={textHeight} fill={userRangeLabelBackgroundColor} />
-        <text x={textX} y={textY} fill={fill} fontSize={12}>
-          {value}
-        </text>
-      </g>
-    )
-  }
+    const bandsWithOracle = marketBandsBalances.map((band) => ({
+      ...band,
+      isOraclePriceBand: Number(band.n) === oraclePriceBand,
+    }))
+
+    return _parseData(bandsWithOracle)
+  }, [marketBandsBalances, oraclePriceBand])
 
   // Merge and sort data by n in ascending order, creating separate fields for market and user collateral
   const chartData = useMemo(() => {
     const bandsMap = new Map<string, ChartDataPoint>()
 
     // Add market bands
-    marketBandsBalances.forEach((band) => {
+    filteredMarketBandsBalances.forEach((band) => {
       const key = String(band.n)
       bandsMap.set(key, {
         n: Number(band.n),
@@ -133,16 +166,22 @@ export const BandsChart = ({
     })
 
     return Array.from(bandsMap.values()).sort((a, b) => Number(a.n) - Number(b.n))
-  }, [userBandsBalances, marketBandsBalances])
+  }, [userBandsBalances, filteredMarketBandsBalances])
 
   const defaultBrushWindow = 20
 
   const defaultStartIndex = useMemo(() => {
     if (userBandsBalances.length > 0) {
       // Get the range of user band numbers
-      const userBandNumbers = userBandsBalances.map((band) => Number(band.n))
-      const minUserBandNumber = Math.min(...userBandNumbers)
-      const maxUserBandNumber = Math.max(...userBandNumbers)
+      const { minUserBandNumber, maxUserBandNumber } = userBandsBalances.reduce(
+        (acc, band) => {
+          const n = Number(band.n)
+          if (n < acc.minUserBandNumber) acc.minUserBandNumber = n
+          if (n > acc.maxUserBandNumber) acc.maxUserBandNumber = n
+          return acc
+        },
+        { minUserBandNumber: Infinity, maxUserBandNumber: -Infinity },
+      )
 
       // Find the indices of these bands in the sorted chart data
       const minUserIndex = chartData.findIndex((band) => Number(band.n) === minUserBandNumber)
@@ -162,10 +201,19 @@ export const BandsChart = ({
         return minUserIndex
       }
     } else {
-      // No user bands, use the original logic (show last bands)
+      // No user bands, center on oracle price band
+      if (oraclePriceBand !== null && oraclePriceBand !== undefined) {
+        const oracleBandIndex = chartData.findIndex((band) => Number(band.n) === oraclePriceBand)
+        if (oracleBandIndex !== -1) {
+          const halfWindow = Math.floor(defaultBrushWindow / 2)
+          const desiredStartIndex = oracleBandIndex - halfWindow
+          return Math.max(0, Math.min(desiredStartIndex, chartData.length - defaultBrushWindow))
+        }
+      }
+      // Fallback to original logic if oracle price band is not found
       return Math.max(0, chartData.length - defaultBrushWindow)
     }
-  }, [userBandsBalances, chartData, defaultBrushWindow])
+  }, [userBandsBalances, chartData, defaultBrushWindow, oraclePriceBand])
 
   const defaultEndIndex = useMemo(
     () => Math.min(chartData.length - 1, defaultStartIndex + defaultBrushWindow - 1),
@@ -196,12 +244,20 @@ export const BandsChart = ({
     if (userBandsBalances.length === 0) return null
 
     const userBandNumbers = new Set(userBandsBalances.map((band) => String(band.n)))
-    const userBandsInData = chartData.filter((band) => userBandNumbers.has(String(band.n)))
 
-    if (userBandsInData.length === 0) return null
+    const minUserBand = chartData.find((band) => userBandNumbers.has(String(band.n)))
 
-    const minUserBand = userBandsInData[0]
-    const maxUserBand = userBandsInData[userBandsInData.length - 1]
+    if (!minUserBand) return null
+
+    let maxUserBand: ChartDataPoint | undefined
+    for (let i = chartData.length - 1; i >= 0; i--) {
+      if (userBandNumbers.has(String(chartData[i].n))) {
+        maxUserBand = chartData[i]
+        break
+      }
+    }
+
+    if (!maxUserBand) return null
 
     return {
       lowerBandMedianPrice: minUserBand.pUpDownMedian,
@@ -229,7 +285,9 @@ export const BandsChart = ({
             color: textColor,
           }}
         >
-          No band data available
+          <SpinnerWrapper>
+            <Spinner size={18} />
+          </SpinnerWrapper>
         </Box>
       </Box>
     )
@@ -244,18 +302,17 @@ export const BandsChart = ({
       }}
     >
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="99%" height="100%">
           <ComposedChart layout="vertical" data={chartData} margin={{ top: 20, right: 0, bottom: 20, left: 20 }}>
             {userBandsPriceRange && (
               <ReferenceArea
                 y1={userBandsPriceRange.lowerBandPriceDown}
                 y2={userBandsPriceRange.upperBandPriceUp}
                 fill={userRangeHighlightColor}
-                fillOpacity={0.3}
                 stroke="none"
               />
             )}
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} opacity={0.3} />
+            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} opacity={0.5} />
             <XAxis
               type="number"
               reversed={true}
@@ -314,8 +371,32 @@ export const BandsChart = ({
                 return null
               }}
             />
-            <Bar dataKey="marketCollateral" fill={marketBandColor} stackId="bands" />
-            <Bar dataKey="userCollateral" fill={userBandColor} stackId="bands" />
+            <Bar dataKey="marketCollateral" stackId="bands">
+              {visibleData.map((entry, index) => {
+                const isLiquidation = entry.isLiquidationBand === 'SL'
+                return (
+                  <Cell
+                    key={`cell-market-${index}`}
+                    fill={marketBandColor}
+                    stroke={isLiquidation ? liquidationBandOutlineColor : 'none'}
+                    strokeWidth={isLiquidation ? 2 : 0}
+                  />
+                )
+              })}
+            </Bar>
+            <Bar dataKey="userCollateral" stackId="bands">
+              {visibleData.map((entry, index) => {
+                const isLiquidation = entry.isLiquidationBand === 'SL'
+                return (
+                  <Cell
+                    key={`cell-user-${index}`}
+                    fill={userBandColor}
+                    stroke={isLiquidation ? liquidationBandOutlineColor : 'none'}
+                    strokeWidth={isLiquidation ? 2 : 0}
+                  />
+                )
+              })}
+            </Bar>
             {userBandsPriceRange && (
               <ReferenceLine
                 y={userBandsPriceRange.lowerBandPriceDown}
@@ -324,6 +405,7 @@ export const BandsChart = ({
                 strokeDasharray="3 3"
                 label={
                   <CustomLabelWithBackground
+                    backgroundColor={userRangeLabelBackgroundColor}
                     value={`$${formatNumber(userBandsPriceRange.lowerBandPriceDown, {
                       notation: 'compact',
                     })}`}
@@ -344,6 +426,7 @@ export const BandsChart = ({
                       notation: 'compact',
                     })}`}
                     fill={textColor}
+                    backgroundColor={userRangeLabelBackgroundColor}
                   />
                 }
               />
@@ -353,13 +436,14 @@ export const BandsChart = ({
               <ReferenceLine
                 y={oraclePrice}
                 stroke={oraclePriceLineColor}
-                strokeDasharray="2 4"
+                strokeDasharray="3 3"
                 label={
                   <CustomLabelWithBackground
-                    value={`Oracle Price: $${formatNumber(oraclePrice, {
+                    value={`$${formatNumber(oraclePrice, {
                       notation: 'compact',
                     })}`}
-                    fill={textColor}
+                    fill={textColorInverted}
+                    backgroundColor={oraclePriceLineColor}
                   />
                 }
               />
@@ -367,11 +451,10 @@ export const BandsChart = ({
 
             {chartData.length > defaultBrushWindow && (
               <Brush
-                dataKey="pUpDownMedian"
+                dataKey="n"
                 height={30}
                 stroke={gridColor}
                 fill={backgroundColor}
-                tickFormatter={(value) => `$${formatNumber(value, { notation: 'compact' })}`}
                 startIndex={brushStartIndex ?? defaultStartIndex}
                 endIndex={brushEndIndex ?? defaultEndIndex}
                 onChange={handleBrushChange}
@@ -383,4 +466,25 @@ export const BandsChart = ({
       </Box>
     </Stack>
   )
+}
+
+function _findDataIndex(d: BandsBalancesData & { isOraclePriceBand: boolean }) {
+  return (
+    +d.collateral !== 0 ||
+    d.collateralBorrowedUsd !== 0 ||
+    d.isLiquidationBand === 'SL' ||
+    d.isOraclePriceBand ||
+    +d.borrowed > 0
+  )
+}
+
+function _parseData(data: (BandsBalancesData & { isOraclePriceBand: boolean })[]) {
+  const firstDataIdx = data.findIndex(_findDataIndex)
+  const lastDataIdx = data.findLastIndex(_findDataIndex)
+
+  if (firstDataIdx === -1) {
+    return data
+  }
+
+  return data.slice(firstDataIdx, lastDataIdx + 1)
 }
