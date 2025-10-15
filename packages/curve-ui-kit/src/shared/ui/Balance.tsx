@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -79,9 +78,7 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
   </WithSkeleton>
 )
 
-/**
- * Props for the Balance component
- */
+/** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
   symbol: string

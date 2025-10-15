@@ -239,7 +239,6 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
         </div>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="inpCollateral"
           isError={!!formValues.amountError}
           message={
