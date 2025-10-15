@@ -264,7 +264,6 @@ const VaultWithdrawRedeem = ({
           maxBalance={{
             balance: decimal(max),
             loading: !!signerAddress && userBalances == null,
-            showSlider: false,
             notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
             symbol: t`Vault shares`,
           }}

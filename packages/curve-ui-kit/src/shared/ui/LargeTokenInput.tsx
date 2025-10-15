@@ -102,7 +102,7 @@ export interface LargeTokenInputRef {
  * @property {boolean} [showBalance=true] - Whether to display the balance component.
  *                                        When true, shows the token balance and notional value.
  *                                        When false, hides the balance display.
- * @property {boolean} [showSlider=true] - Whether to display the percentage slider.
+ * @property {boolean} [showSlider=false] - Whether to display the percentage slider.
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
  */
@@ -239,8 +239,7 @@ export const LargeTokenInput = <T extends Amount>({
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
-  // Set defaults for showSlider and showBalance to true if maxBalance is provided
-  const showSlider = maxBalance && maxBalance.showSlider !== false
+  const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
 
   const handlePercentageChange = useCallback(

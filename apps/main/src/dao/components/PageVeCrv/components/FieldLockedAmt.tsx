@@ -109,7 +109,6 @@ const FieldLockedAmt = ({
       maxBalance={{
         balance: decimal(crv),
         loading: haveSigner && crv === '',
-        showSlider: false,
         symbol: 'CRV',
       }}
       tokenSelector={<TokenLabel blockchainId="ethereum" address={CRV_ADDRESS} label="CRV" />}
