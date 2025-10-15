@@ -36,6 +36,8 @@ module.exports = {
     ],
     '@typescript-eslint/no-floating-promises': 'warn',
     '@typescript-eslint/no-unused-vars': 'off',
+    'react-hooks/rules-of-hooks': 'error',
+    'react-hooks/exhaustive-deps': 'warn',
 
     // todo: remove the following rules
     'no-empty-pattern': 'off',
@@ -47,8 +49,6 @@ module.exports = {
     '@typescript-eslint/no-unused-expressions': 'off',
     '@typescript-eslint/triple-slash-reference': 'off',
     'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
-    'react-hooks/rules-of-hooks': 'error',
-    'react-hooks/exhaustive-deps': 'warn',
     'react-hooks/purity': 'off',
     'react-hooks/preserve-manual-memoization': 'off',
     'react-hooks/refs': 'off',
