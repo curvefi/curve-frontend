@@ -1,6 +1,6 @@
 import { produce } from 'immer'
 import lodash from 'lodash'
-import { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dao/components/PageVeCrv/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/dao/components/PageVeCrv/utils'
 import { invalidateLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
@@ -74,7 +74,7 @@ export const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LockedCrvSlice => ({
+const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setFormValues: async (curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset) => {

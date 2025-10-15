@@ -1,6 +1,5 @@
 import { createWalletClient, http, type Chain, type Hex } from 'viem'
 import { privateKeyToAccount } from 'viem/accounts'
-import { Address } from '@ui-kit/utils'
 import { createConnector, type CreateConnectorFn } from '@wagmi/core'
 
 type Options = {
@@ -9,10 +8,6 @@ type Options = {
   /** The testnet chain configuration */
   chain: Chain
 }
-
-type ConnectParams<T> = { chainId?: number; isReconnecting?: boolean; withCapabilities: T }
-type ConnectResult<T> = { accounts: readonly T[]; chainId: number }
-type Account = { address: Address; capabilities: Record<string, unknown> }
 
 /**
  * Cypress test connector for Wagmi.
@@ -29,21 +24,12 @@ export function createTestConnector({ privateKey, chain }: Options): CreateConne
     transport: http(chain.rpcUrls.default.http[0]),
   })
 
-  // A connect function with overloads to satisfy Wagmi's conditional return type
-  function connect(params: ConnectParams<true>): Promise<ConnectResult<Account>>
-  function connect(params?: ConnectParams<false>): Promise<ConnectResult<Address>>
-  async function connect(params?: ConnectParams<boolean>): Promise<ConnectResult<Account | Address>> {
-    return params?.withCapabilities
-      ? { accounts: [{ address: account.address, capabilities: {} }], chainId: chain.id }
-      : { accounts: [account.address], chainId: chain.id }
-  }
-
   return createConnector(() => ({
     id: 'test',
     name: 'Test Connector',
     type: 'test',
 
-    connect,
+    connect: async () => ({ accounts: [account.address], chainId: chain.id }),
     disconnect: async () => {},
 
     getAccounts: async () => [account.address],

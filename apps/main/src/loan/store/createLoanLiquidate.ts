@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormStatus } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/loan/components/PageLoanManage/utils'
@@ -65,7 +65,7 @@ const DEFAULT_STATE: SliceState = {
   liquidationAmt: '',
 }
 
-const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanLiquidate = (set: SetState<State>, get: GetState<State>) => ({
   loanLiquidate: {
     ...DEFAULT_STATE,
 

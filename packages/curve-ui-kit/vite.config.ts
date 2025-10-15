@@ -2,7 +2,6 @@ import { defineConfig } from 'vite'
 import { resolve } from 'path'
 import react from '@vitejs/plugin-react'
 
-/** Configuration for Vite (used for storybook) */
 export default defineConfig({
   plugins: [react()],
   resolve: {

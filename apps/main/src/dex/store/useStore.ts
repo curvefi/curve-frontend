@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { create, StoreApi } from 'zustand'
+import { create, type GetState, type SetState } from 'zustand'
 import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import createCacheSlice, { CacheSlice } from '@/dex/store/createCacheSlice'
 import createCreatePoolSlice, { CreatePoolSlice } from '@/dex/store/createCreatePoolSlice'
@@ -37,7 +37,7 @@ export type State = GlobalSlice &
   IntegrationsSlice &
   DeployGaugeSlice
 
-const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
+const store = (set: SetState<State>, get: GetState<State>): State => ({
   ...createGlobalSlice(set, get),
   ...createCacheSlice(set, get),
   ...createPoolListSlice(set, get),

@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import { Balances, CurveApi, UserPoolListMapper } from '@/dex/types/main.types'
@@ -57,7 +57,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 }
 
-const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): UserSlice => ({
+const createUserSlice = (set: SetState<State>, get: GetState<State>): UserSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

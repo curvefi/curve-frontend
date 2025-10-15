@@ -2,7 +2,7 @@ import { produce } from 'immer'
 import type { UTCTimestamp } from 'lightweight-charts'
 import lodash from 'lodash'
 import { zeroAddress } from 'viem'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import curvejsApi from '@/dex/lib/curvejs'
 import type { State } from '@/dex/store/useStore'
 import {
@@ -167,7 +167,7 @@ const DEFAULT_STATE: SliceState = {
   error: '',
 } as const
 
-const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolsSlice => ({
+const createPoolsSlice = (set: SetState<State>, get: GetState<State>): PoolsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

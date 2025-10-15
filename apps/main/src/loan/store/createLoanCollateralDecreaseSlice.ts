@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { StoreApi } from 'zustand'
+import type { GetState, SetState } from 'zustand'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -73,7 +73,7 @@ const DEFAULT_STATE: SliceState = {
   maxRemovable: '',
 }
 
-const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
+const createLoanCollateralDecrease = (set: SetState<State>, get: GetState<State>) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
