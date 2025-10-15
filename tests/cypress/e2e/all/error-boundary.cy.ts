@@ -20,7 +20,8 @@ describe('Error Boundary', () => {
     cy.visit('/llamalend/ethereum/markets')
     cy.wait('@error', LOAD_TIMEOUT)
     cy.get('[data-testid="error-title"]', LOAD_TIMEOUT).should('contain.text', 'Unexpected Error')
-    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Cannot read properties of undefined')
+    // Firefox: `can't access property "toLowerCase", a is undefined`, Chromium: `Cannot read properties of undefined`
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'undefined')
     cy.window().then((win) => {
       win.console.log(win.localStorage)
       win.localStorage.clear() // empty react-query cache
