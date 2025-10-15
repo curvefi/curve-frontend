@@ -103,6 +103,26 @@ export const defineMuiButton = ({ Button, Text }: DesignSystem): Components['Mui
           },
         },
       },
+      {
+        props: { variant: 'outlined' },
+        style: {
+          backgroundColor: 'transparent',
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          borderColor: Outlined.Default.Outline,
+          color: Outlined.Default.Label,
+          '&:hover': {
+            backgroundColor: 'transparent',
+            borderColor: Outlined.Hover.Outline,
+            color: Outlined.Hover.Label,
+          },
+          '&:disabled': Outlined.Disabled && {
+            backgroundColor: 'transparent',
+            borderColor: Outlined.Disabled.Outline,
+            color: Outlined.Disabled.Label,
+          },
+        },
+      },
     ],
     styleOverrides: {
       root: {
