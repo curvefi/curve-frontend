@@ -30,6 +30,7 @@ const integrationsRedirectRoute = createRoute({
 })
 
 export const router = createRouter({
+  scrollRestoration: true,
   routeTree: rootRoute.addChildren([
     indexRoute,
     crvusdRoutes,

@@ -60,7 +60,7 @@ type BalanceTextProps<T> = {
 
 const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
-    <Tooltip title={t`Wallet balance`} body={notFalsy(balance?.toString(), symbol).join(' ')} clickable>
+    <Tooltip title={t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
       <Stack direction="row" gap={Spacing.xs} alignItems="center">
         <Typography
           className="balance"
