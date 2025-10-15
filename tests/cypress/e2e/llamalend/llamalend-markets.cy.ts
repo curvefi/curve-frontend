@@ -127,7 +127,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
   })
 
-  it.only(`should allow filtering by using a slider`, () => {
+  it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', '$0 -'],
       ['tvl', '$10k -'],
