@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import Box from '@mui/material/Box'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -40,41 +40,37 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
     }
   }, [onBlur, collapsible, value, toggleExpanded])
 
-  if (collapsible) {
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          // on mobile when search is de-expanded, animation doesn't look good
-          transition: isMobile ? (isExpanded ? TransitionFunction : 'none') : TransitionFunction,
-          flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
-          width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
-        }}
-      >
-        {!isExpanded ? (
-          <TableButton
-            onClick={handleExpand}
-            icon={SearchIcon}
-            active={isExpanded}
-            testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
-          />
-        ) : (
-          <StyledSearchField
-            value={value}
-            searchInputRef={searchInputRef}
-            onChange={onChange}
-            onFocus={onFocus}
-            onBlur={handleBlur}
-            isFocused={isFocused}
-            testId={testId}
-            sx={{ flex: '1 1 auto', minWidth: 0 }}
-          />
-        )}
-      </Box>
-    )
-  }
-
-  return (
+  return collapsible ? (
+    <Box
+      sx={{
+        display: 'flex',
+        // on mobile when search is de-expanded, animation doesn't look good
+        transition: isMobile ? (isExpanded ? TransitionFunction : 'none') : TransitionFunction,
+        flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
+        width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
+      }}
+    >
+      {!isExpanded ? (
+        <TableButton
+          onClick={handleExpand}
+          icon={SearchIcon}
+          active={isExpanded}
+          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
+        />
+      ) : (
+        <StyledSearchField
+          value={value}
+          searchInputRef={searchInputRef}
+          onChange={onChange}
+          onFocus={onFocus}
+          onBlur={handleBlur}
+          isFocused={isFocused}
+          testId={testId}
+          sx={{ flex: '1 1 auto', minWidth: 0 }}
+        />
+      )}
+    </Box>
+  ) : (
     <Box
       sx={{
         width: '478px',

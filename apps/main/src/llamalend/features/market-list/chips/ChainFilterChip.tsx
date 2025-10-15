@@ -10,7 +10,7 @@ import { GridChip } from './GridChip'
 
 const { Spacing } = SizesAndSpaces
 
-export const ChainFilterChipWrapper = ({
+export const ChainFilterChip = ({
   data,
   columnFiltersById,
   setColumnFilter,
@@ -21,16 +21,17 @@ export const ChainFilterChipWrapper = ({
   const selectedChains = columnFiltersById?.[LlamaMarketColumnId.Chain] as string[] | undefined
 
   const toggleChain = useCallback(
-    (chain: string) => {
-      const isSelected = selectedChains?.includes(chain)
-      const newSelection = isSelected
-        ? (selectedChains?.filter((c) => c !== chain) ?? [])
-        : [...(selectedChains ?? []), chain]
-      setColumnFilter?.(LlamaMarketColumnId.Chain, newSelection.length ? newSelection : undefined)
-    },
+    (chain: string) =>
+      setColumnFilter(
+        LlamaMarketColumnId.Chain,
+        selectedChains?.includes(chain)
+          ? selectedChains.length === 1
+            ? undefined
+            : selectedChains.filter((c) => c !== chain)
+          : [...(selectedChains ?? []), chain],
+      ),
     [selectedChains, setColumnFilter],
   )
-
   return (
     <Grid
       container
