@@ -453,7 +453,7 @@ const QuickSwap = ({
                 ...(searchedParams.fromAddress === ethAddress && {
                   tooltip: t`'Balance minus estimated gas'`,
                 }),
-                showChips: true,
+                chips: 'range',
               }}
               isError={!!formValues.fromError}
               disabled={isDisable}
