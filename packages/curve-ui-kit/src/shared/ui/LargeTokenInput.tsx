@@ -274,7 +274,7 @@ export const LargeTokenInput = <T extends Amount>({
 
   const chips =
     maxBalance?.chips === 'max' ? CHIPS_MAX : maxBalance?.chips === 'range' ? CHIPS_RANGE : maxBalance?.chips
-  const showChips = chips?.length
+  const showChips = !!chips?.length
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
