@@ -5,6 +5,6 @@ import { ChipGridItem } from './ChipGridItem'
 /** A <GridItem> with a SelectableChip inside */
 export const GridChip = ({ size, ...props }: Omit<SelectableChipProps, 'size'> & { size?: GridProps['size'] }) => (
   <ChipGridItem size={size}>
-    <SelectableChip {...props} size="small" sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
+    <SelectableChip {...props} sx={{ width: 'auto' }} />
   </ChipGridItem>
 )

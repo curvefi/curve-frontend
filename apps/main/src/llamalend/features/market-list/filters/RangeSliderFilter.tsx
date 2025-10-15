@@ -34,19 +34,19 @@ export const RangeSliderFilter = <T,>({
   id,
   defaultMinimum = 0,
 }: {
-  columnFilters?: Record<string, unknown>
-  setColumnFilter?: (id: string, value: unknown) => void
-  data?: T[]
+  columnFilters: Record<string, unknown>
+  setColumnFilter: (id: string, value: unknown) => void
+  data: T[]
   title: string
   field: DeepKeys<T>
   id: LlamaMarketColumnId
   format: (value: number) => string
   defaultMinimum?: number
 }) => {
-  const maxValue = useMemo(() => (data ? Math.ceil(getMaxValueFromData(data, field)) : 0), [data, field]) // todo: round this to a nice number
+  const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const defaultValue = useMemo((): NumberRange => {
-    const [min, max] = (columnFilters?.[id] as NumberRange) ?? []
+    const [min, max] = (columnFilters[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
   const isMobile = useIsMobile()
@@ -55,7 +55,7 @@ export const RangeSliderFilter = <T,>({
     defaultValue,
     useCallback(
       (newRange: NumberRange) =>
-        setColumnFilter?.(
+        setColumnFilter(
           id,
           newRange.every((value, i) => value === defaultValue[i])
             ? undefined // remove the filter if the range is the same as the default

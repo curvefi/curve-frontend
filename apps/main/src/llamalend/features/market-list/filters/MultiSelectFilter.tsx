@@ -31,9 +31,9 @@ export const MultiSelectFilter = <T,>({
   field,
   id,
 }: {
-  columnFilters?: Record<string, unknown>
-  setColumnFilter?: (id: string, value: unknown) => void
-  data?: T[]
+  columnFilters: Record<string, unknown>
+  setColumnFilter: (id: string, value: unknown) => void
+  data: T[]
   defaultText: string
   defaultTextMobile: string
   field: DeepKeys<T>
@@ -44,14 +44,12 @@ export const MultiSelectFilter = <T,>({
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
-  const isMobile = useIsMobile()
-  // data can be undefined when the drawer renders for mobile
-  const options = useMemo(() => (data ? getUniqueSortedStrings(data, field) : []), [data, field])
-  const selectedOptions = (columnFilters?.[id] as string[] | undefined) ?? undefined
+  const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
+  const selectedOptions = columnFilters[id] as string[] | undefined
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      setColumnFilter?.(id, undefined)
+      setColumnFilter(id, undefined)
       close()
     },
     [id, setColumnFilter, close],
@@ -64,7 +62,7 @@ export const MultiSelectFilter = <T,>({
       const options = selectedOptions?.includes(value)
         ? selectedOptions.filter((v) => v !== value)
         : [...(selectedOptions ?? []), value]
-      setColumnFilter?.(id, options.length ? options : undefined)
+      setColumnFilter(id, options.length ? options : undefined)
     },
     [setColumnFilter, id, selectedOptions],
   )

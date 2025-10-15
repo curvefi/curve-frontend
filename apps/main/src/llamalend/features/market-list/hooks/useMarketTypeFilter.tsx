@@ -9,14 +9,13 @@ import { LlamaMarketColumnId } from '../columns.enum'
  * @returns marketTypes - object with keys for each market type and boolean values indicating if the type is selected
  * @returns toggles - object with keys for each market type and functions to toggle the type
  */
-export function useMarketTypeFilter(filterProps: FilterProps<LlamaMarketKey>) {
-  const { columnFiltersById, setColumnFilter } = filterProps || {}
-  const filter = columnFiltersById?.[LlamaMarketColumnId.Type] as LlamaMarketType[] | undefined
+export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: FilterProps<LlamaMarketKey>) {
+  const filter = columnFiltersById[LlamaMarketColumnId.Type] as LlamaMarketType[] | undefined
 
   /** Helper function to toggle the market type filter by updating the column filter state */
   const toggleMarketType = useCallback(
     (type: LlamaMarketType) => {
-      setColumnFilter?.(
+      setColumnFilter(
         LlamaMarketColumnId.Type,
         filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type],
       )
