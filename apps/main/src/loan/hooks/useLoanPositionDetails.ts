@@ -36,13 +36,14 @@ export const useLoanPositionDetails = ({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
-  const {
-    userState: { collateral, stablecoin, debt } = {},
-    userPrices,
-    userBands,
-    userStatus,
-    loading: userLoanDetailsLoading,
-  } = useStore((state) => state.loans.userDetailsMapper[llammaId]) ?? {}
+  const userState = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState)
+  const collateral = userState?.collateral
+  const stablecoin = userState?.stablecoin
+  const debt = userState?.debt
+  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
+  const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
+  const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
+  const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const { oraclePriceBand } = loanDetails ?? {}

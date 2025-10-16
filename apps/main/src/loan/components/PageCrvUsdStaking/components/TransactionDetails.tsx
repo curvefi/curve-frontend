@@ -16,9 +16,11 @@ const { IconSize } = SizesAndSpaces
 
 export const TransactionDetails = () => {
   const { address } = useAccount()
-  const { preview, scrvUsdExchangeRate, approveInfinite, setApproveInfinite, stakingModule } = useStore(
-    (state) => state.scrvusd,
-  )
+  const preview = useStore((state) => state.scrvusd.preview)
+  const scrvUsdExchangeRate = useStore((state) => state.scrvusd.scrvUsdExchangeRate)
+  const approveInfinite = useStore((state) => state.scrvusd.approveInfinite)
+  const setApproveInfinite = useStore((state) => state.scrvusd.setApproveInfinite)
+  const stakingModule = useStore((state) => state.scrvusd.stakingModule)
   const fetchStatus = useStore((state) => state.scrvusd.estGas.fetchStatus)
   const estimateGas = useStore((state) => state.scrvusd.getEstimateGas(address ?? ''))
 

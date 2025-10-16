@@ -52,7 +52,9 @@ const Page = () => {
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
-  const { llamma } = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]) ?? {}
+  const llamma = useStore(
+    (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]?.llamma,
+  )
   const llammaId = llamma?.id || ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
@@ -61,7 +63,8 @@ const Page = () => {
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect: connectWallet } = useWallet()
 
   const [loaded, setLoaded] = useState(false)
