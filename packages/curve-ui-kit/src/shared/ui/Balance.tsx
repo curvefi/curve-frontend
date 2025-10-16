@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
