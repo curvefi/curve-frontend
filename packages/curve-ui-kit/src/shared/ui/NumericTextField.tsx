@@ -11,10 +11,9 @@ import { type Decimal } from '@ui-kit/utils'
  *
  * @param value - The new input value to validate
  * @param current - The current input value to fall back to if validation fails
- * @param allowNegative - Whether to allow negative numbers
  * @returns The validated and normalized input value, or the current value if invalid
  */
-const sanitize = (value: string, current: string, allowNegative: boolean): string => {
+const sanitize = (value: string, current: string): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
@@ -28,13 +27,8 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
     return current
   }
 
-  // If negative numbers are not allowed and value starts with minus, ignore the change
-  if (!allowNegative && minusIndex === 0) {
-    return current
-  }
-
   // Check if it contains only valid characters (numbers, optional minus at start if allowed, and one optional decimal)
-  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/ : /^[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
+  const pattern = /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
   return pattern.test(normalizedValue) ? normalizedValue : current
 }
 
@@ -107,7 +101,7 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         onFocus?.(e)
       }}
       onChange={(e) => {
-        const sanitizedValue = sanitize(e.target.value, inputValue, min == null || +min < 0)
+        const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
         onChange?.(sanitizedValue)
         setLastChangeValue(sanitizedValue)
