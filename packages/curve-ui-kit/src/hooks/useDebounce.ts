@@ -7,7 +7,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  * @param initialValue - The initial value to use
  * @param debounceMs - The debounce period in milliseconds
  * @param callback - Callback function that is called after the debounce period
- * @returns A tuple containing the current value and a setter function
+ * @returns A triple containing the current value, a setter function and a cancel function
  *
  * @example
  * ```tsx
@@ -28,7 +28,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  *
  * // With a controlled component
  * // The hook will update its internal value when initialValue changes
- * const [debouncedValue, setDebouncedValue] = useDebounce(externalValue, 200, handleChange);
+ * const [debouncedValue, setDebouncedValue, cancel] = useDebounce(externalValue, 200, handleChange);
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
@@ -49,15 +49,18 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
     [],
   )
 
+  // Clear any existing timer
+  const cancel = () => {
+    if (timerRef.current !== null) {
+      clearTimeout(timerRef.current)
+    }
+  }
+
   // Sets the internal value, but calls the callback after a delay unless retriggered again.
   const setDebouncedValue = useCallback(
     (newValue: T) => {
       setValue(newValue)
-
-      // Clear any existing timer
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-      }
+      cancel()
 
       // Initiate a new timer
       timerRef.current = window.setTimeout(() => {
@@ -68,7 +71,7 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
     [callback, debounceMs],
   )
 
-  return [value, setDebouncedValue] as const
+  return [value, setDebouncedValue, cancel] as const
 }
 
 /**
@@ -138,6 +141,6 @@ export function useUniqueDebounce<T>({
     },
     [callback, equals],
   )
-  const [value, setValue] = useDebounce(defaultValue, debounceMs, debounceCallback)
-  return [value, setValue] as const
+
+  return useDebounce(defaultValue, debounceMs, debounceCallback)
 }
