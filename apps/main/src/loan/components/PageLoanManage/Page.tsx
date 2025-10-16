@@ -52,9 +52,7 @@ const Page = () => {
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
-  const llamma = useStore(
-    (state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]?.llamma,
-  )
+  const llamma = useStore((state) => state.collaterals.collateralDatasMapper[rChainId]?.[rCollateralId]?.llamma)
   const llammaId = llamma?.id || ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
