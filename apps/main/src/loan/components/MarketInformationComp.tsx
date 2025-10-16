@@ -5,6 +5,7 @@ import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import { useBandsData } from '@/loan/hooks/useBandsData'
+import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -37,10 +38,19 @@ export const MarketInformationComp = ({
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { userBandsBalances, marketBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+  const { chartData, userBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
     llammaId,
-    llamma,
   })
+  const collateralToken = llamma && {
+    symbol: llamma?.collateralSymbol,
+    address: llamma?.coinAddresses[1],
+    chain: networks[chainId].id,
+  }
+  const borrowToken = llamma && {
+    symbol: llamma?.coins[0],
+    address: llamma?.coinAddresses[0],
+    chain: networks[chainId].id,
+  }
 
   return (
     <>
@@ -58,8 +68,10 @@ export const MarketInformationComp = ({
           />
           {isBeta && (
             <BandsChart
+              collateralToken={collateralToken}
+              borrowToken={borrowToken}
+              chartData={chartData}
               userBandsBalances={userBandsBalances ?? []}
-              marketBandsBalances={marketBandsBalances ?? []}
               liquidationBand={liquidationBand}
               oraclePrice={oraclePrice}
               oraclePriceBand={oraclePriceBand}

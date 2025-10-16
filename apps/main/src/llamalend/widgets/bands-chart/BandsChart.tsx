@@ -1,101 +1,34 @@
-import { useMemo, useState } from 'react'
-import {
-  Bar,
-  Brush,
-  CartesianGrid,
-  ComposedChart,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-  ReferenceArea,
-  ReferenceLine,
-  Cell,
-} from 'recharts'
+import type { EChartsOption } from 'echarts-for-react'
+import ReactECharts from 'echarts-for-react'
+import { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { Token } from '@/llamalend/features/borrow/types'
+import { ChartDataPoint, BandsBalancesData } from '@/llamalend/widgets/bands-chart/types'
 import { Box, Stack, useTheme } from '@mui/material'
 import { formatNumber } from '@ui/utils'
 import { DesignSystem } from '@ui-kit/themes/design'
 
-export type BandsBalancesData = {
-  borrowed: string
-  collateral: string
-  collateralUsd: string
-  collateralBorrowedUsd: number
-  isLiquidationBand: string
-  isOraclePriceBand: boolean
-  isNGrouped: boolean
-  n: number | string
-  p_up: string
-  p_down: string
-  pUpDownMedian: string
-}
-
-type ChartDataPoint = {
-  n: number | string
-  pUpDownMedian: number
-  p_up: number
-  p_down: number
-  marketCollateral: number
-  userCollateral: number
-  isLiquidationBand: string
-  isOraclePriceBand: boolean
-}
-
 type BandsChartProps = {
   collateralToken?: Token
   borrowToken?: Token
+  chartData: ChartDataPoint[]
   userBandsBalances: BandsBalancesData[]
-  marketBandsBalances: BandsBalancesData[]
   liquidationBand: number | null | undefined
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
   height?: number
 }
 
-const CustomLabelWithBackground = ({
-  value,
-  viewBox,
-  fill,
-  backgroundColor,
-}: {
-  value: string
-  viewBox?: { x: number; y: number; width: number }
-  fill: string
-  backgroundColor: string
-}) => {
-  if (!viewBox) return null
-
-  const { x, y, width } = viewBox
-  const textWidth = String(value).length * 6.5 + 8
-  const textHeight = 18
-  const rectX = x + width + 5
-  const rectY = y - textHeight / 2
-  const textX = rectX + 4
-  const textY = y + 4
-
-  return (
-    <g>
-      <rect x={rectX} y={rectY} width={textWidth} height={textHeight} fill={backgroundColor} />
-      <text x={textX} y={textY} fill={fill} fontSize={12}>
-        {value}
-      </text>
-    </g>
-  )
-}
-
 export const BandsChart = ({
   collateralToken,
   borrowToken,
+  chartData,
   userBandsBalances,
-  marketBandsBalances,
   liquidationBand,
   oraclePrice,
   oraclePriceBand,
   height = 500,
 }: BandsChartProps) => {
-  // theming
   const theme = useTheme()
   const { theme: currentThemeName } = theme.design
   const invertedDesign = DesignSystem[currentThemeName]({ inverted: true })
@@ -112,165 +45,537 @@ export const BandsChart = ({
   const oraclePriceLineColor = theme.design.Color.Primary[500]
   const liquidationBandOutlineColor = theme.design.Color.Tertiary[600]
 
-  const [brushStartIndex, setBrushStartIndex] = useState<number | undefined>(undefined)
-  const [brushEndIndex, setBrushEndIndex] = useState<number | undefined>(undefined)
-
-  const filteredMarketBandsBalances = useMemo(() => {
-    if (!marketBandsBalances) return []
-
-    const bandsWithOracle = marketBandsBalances.map((band) => ({
-      ...band,
-      isOraclePriceBand: Number(band.n) === oraclePriceBand,
-    }))
-
-    return _parseData(bandsWithOracle)
-  }, [marketBandsBalances, oraclePriceBand])
-
-  // Merge and sort data by n in ascending order, creating separate fields for market and user collateral
-  const chartData = useMemo(() => {
-    const bandsMap = new Map<string, ChartDataPoint>()
-
-    // Add market bands
-    filteredMarketBandsBalances.forEach((band) => {
-      const key = String(band.n)
-      bandsMap.set(key, {
-        n: Number(band.n),
-        pUpDownMedian: Number(band.pUpDownMedian),
-        p_up: Number(band.p_up),
-        p_down: Number(band.p_down),
-        marketCollateral: band.collateralBorrowedUsd,
-        userCollateral: 0,
-        isLiquidationBand: band.isLiquidationBand,
-        isOraclePriceBand: band.isOraclePriceBand,
-      })
-    })
-
-    // Add user bands
-    userBandsBalances.forEach((band) => {
-      const key = String(band.n)
-      const existing = bandsMap.get(key)
-      if (existing) {
-        existing.userCollateral = band.collateralBorrowedUsd
-      } else {
-        bandsMap.set(key, {
-          n: Number(band.n),
-          pUpDownMedian: Number(band.pUpDownMedian),
-          p_up: Number(band.p_up),
-          p_down: Number(band.p_down),
-          marketCollateral: 0,
-          userCollateral: band.collateralBorrowedUsd,
-          isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: band.isOraclePriceBand,
-        })
-      }
-    })
-
-    return Array.from(bandsMap.values()).sort((a, b) => Number(a.n) - Number(b.n))
-  }, [userBandsBalances, filteredMarketBandsBalances])
-
-  const defaultBrushWindow = 20
-
-  const defaultStartIndex = useMemo(() => {
-    if (userBandsBalances.length > 0) {
-      // Get the range of user band numbers
-      const { minUserBandNumber, maxUserBandNumber } = userBandsBalances.reduce(
-        (acc, band) => {
-          const n = Number(band.n)
-          if (n < acc.minUserBandNumber) acc.minUserBandNumber = n
-          if (n > acc.maxUserBandNumber) acc.maxUserBandNumber = n
-          return acc
-        },
-        { minUserBandNumber: Infinity, maxUserBandNumber: -Infinity },
-      )
-
-      // Find the indices of these bands in the sorted chart data
-      const minUserIndex = chartData.findIndex((band) => Number(band.n) === minUserBandNumber)
-      const maxUserIndex = chartData.findIndex((band) => Number(band.n) === maxUserBandNumber)
-      const userBandSpan = maxUserIndex - minUserIndex + 1
-
-      // User bands should take up ~40% of the visible window
-      const targetUserBandWindow = Math.ceil(defaultBrushWindow * 0.4)
-      const remainingWindow = defaultBrushWindow - targetUserBandWindow
-
-      if (userBandSpan <= targetUserBandWindow) {
-        // User bands fit in 40% of window, center them with padding
-        const padding = Math.floor(remainingWindow / 2)
-        return Math.max(0, minUserIndex - padding)
-      } else {
-        // User bands span more than 40% of window, start from first user band
-        return minUserIndex
-      }
-    } else {
-      // No user bands, center on oracle price band
-      if (oraclePriceBand !== null && oraclePriceBand !== undefined) {
-        const oracleBandIndex = chartData.findIndex((band) => Number(band.n) === oraclePriceBand)
-        if (oracleBandIndex !== -1) {
-          const halfWindow = Math.floor(defaultBrushWindow / 2)
-          const desiredStartIndex = oracleBandIndex - halfWindow
-          return Math.max(0, Math.min(desiredStartIndex, chartData.length - defaultBrushWindow))
-        }
-      }
-      // Fallback to original logic if oracle price band is not found
-      return Math.max(0, chartData.length - defaultBrushWindow)
-    }
-  }, [userBandsBalances, chartData, defaultBrushWindow, oraclePriceBand])
-
-  const defaultEndIndex = useMemo(
-    () => Math.min(chartData.length - 1, defaultStartIndex + defaultBrushWindow - 1),
-    [chartData.length, defaultStartIndex, defaultBrushWindow],
+  const palette = useMemo(
+    () => ({
+      backgroundColor,
+      textColor,
+      textColorInverted,
+      gridColor,
+      marketBandColor,
+      userBandColor,
+      borderColor,
+      userRangeHighlightColor,
+      userRangeLabelBackgroundColor,
+      oraclePriceLineColor,
+      liquidationBandOutlineColor,
+    }),
+    [
+      backgroundColor,
+      textColor,
+      textColorInverted,
+      gridColor,
+      marketBandColor,
+      userBandColor,
+      borderColor,
+      userRangeHighlightColor,
+      userRangeLabelBackgroundColor,
+      oraclePriceLineColor,
+      liquidationBandOutlineColor,
+    ],
   )
 
-  const visibleData = useMemo(() => {
-    const startIndex = brushStartIndex ?? defaultStartIndex
-    const endIndex = brushEndIndex ?? defaultEndIndex
-    return chartData.slice(startIndex, endIndex + 1)
-  }, [brushStartIndex, brushEndIndex, chartData, defaultStartIndex, defaultEndIndex])
-
-  const yDomain = useMemo(() => {
-    if (visibleData.length === 0) {
-      return undefined // let recharts decide
-    }
-
-    const prices = visibleData.flatMap((d) => [d.p_up, d.p_down])
-    const minPrice = Math.min(...prices)
-    const maxPrice = Math.max(...prices)
-
-    const padding = (maxPrice - minPrice) * 0.05
-
-    return [minPrice - padding, maxPrice + padding]
-  }, [visibleData])
+  const defaultBrushWindow = 50
 
   const userBandsPriceRange = useMemo(() => {
     if (userBandsBalances.length === 0) return null
 
     const userBandNumbers = new Set(userBandsBalances.map((band) => String(band.n)))
 
-    const minUserBand = chartData.find((band) => userBandNumbers.has(String(band.n)))
+    // Since chartData is sorted descending by price:
+    // - First user band found = HIGHEST price user band
+    // - Last user band found = LOWEST price user band
+    const highestPriceUserBand = chartData.find((band) => userBandNumbers.has(String(band.n)))
 
-    if (!minUserBand) return null
+    if (!highestPriceUserBand) return null
 
-    let maxUserBand: ChartDataPoint | undefined
+    let lowestPriceUserBand: ChartDataPoint | undefined
     for (let i = chartData.length - 1; i >= 0; i--) {
       if (userBandNumbers.has(String(chartData[i].n))) {
-        maxUserBand = chartData[i]
+        lowestPriceUserBand = chartData[i]
         break
       }
     }
 
-    if (!maxUserBand) return null
+    if (!lowestPriceUserBand) return null
 
     return {
-      lowerBandMedianPrice: minUserBand.pUpDownMedian,
-      lowerBandPriceDown: minUserBand.p_down,
-      upperBandMedianPrice: maxUserBand.pUpDownMedian,
-      upperBandPriceUp: maxUserBand.p_up,
+      // Highest price in user's range (will appear at top of chart)
+      upperBandPriceUp: highestPriceUserBand.p_up,
+      upperBandMedianPrice: highestPriceUserBand.pUpDownMedian,
+      // Lowest price in user's range (will appear at bottom of chart)
+      lowerBandPriceDown: lowestPriceUserBand.p_down,
+      lowerBandMedianPrice: lowestPriceUserBand.pUpDownMedian,
     }
   }, [userBandsBalances, chartData])
 
-  const handleBrushChange = (newIndex: { startIndex?: number; endIndex?: number }) => {
-    setBrushStartIndex(newIndex.startIndex)
-    setBrushEndIndex(newIndex.endIndex)
-  }
+  // Precompute axis and series arrays in a single pass
+  const derived = useMemo(() => {
+    const len = chartData.length
+    const yAxisData = new Array<number>(len)
+    const marketData = new Array<number>(len)
+    const userData = new Array<number>(len)
+    const isLiquidation = new Array<boolean>(len)
+
+    for (let i = 0; i < len; i++) {
+      const d = chartData[i]
+      yAxisData[i] = d.pUpDownMedian
+      marketData[i] = d.bandCollateralValueUsd + d.bandBorrowedValueUsd
+      userData[i] = d.userBandCollateralValueUsd + d.userBandBorrowedValueUsd
+      isLiquidation[i] = d.isLiquidationBand === 'SL'
+    }
+
+    return { yAxisData, marketData, userData, isLiquidation }
+  }, [chartData])
+
+  // Helper finders, memoized
+  const findBandIndexByPrice = useCallback(
+    (price: number) => chartData.findIndex((d) => price >= d.p_down && price <= d.p_up),
+    [chartData],
+  )
+  const findClosestBandIndex = useCallback(
+    (price: number) => {
+      let closestIdx = 0
+      let minDiff = Math.abs(chartData[0].pUpDownMedian - price)
+      for (let i = 1; i < chartData.length; i++) {
+        const diff = Math.abs(chartData[i].pUpDownMedian - price)
+        if (diff < minDiff) {
+          minDiff = diff
+          closestIdx = i
+        }
+      }
+      return closestIdx
+    },
+    [chartData],
+  )
+
+  const hasBrush = chartData.length > defaultBrushWindow
+
+  // Compute initial zoom indices:
+  // - If user has a position: include entire user range AND the oracle price band
+  // - If no user position: show the full range
+  const initialZoomIndices = useMemo(() => {
+    const len = chartData.length
+    if (len === 0) return null
+
+    const fullRange = { startIndex: 0, endIndex: len - 1 }
+
+    if (userBandsBalances.length === 0) {
+      return fullRange
+    }
+
+    // Determine indices covering user's band range
+    const userBandNumbers = new Set(userBandsBalances.map((b) => String(b.n)))
+    let minUserIdx = Number.POSITIVE_INFINITY
+    let maxUserIdx = Number.NEGATIVE_INFINITY
+    for (let i = 0; i < len; i++) {
+      if (userBandNumbers.has(String(chartData[i].n))) {
+        if (i < minUserIdx) minUserIdx = i
+        if (i > maxUserIdx) maxUserIdx = i
+      }
+    }
+
+    if (!Number.isFinite(minUserIdx) || !Number.isFinite(maxUserIdx)) {
+      // Safety: if we couldn't map user's bands to chart data, show full range
+      return fullRange
+    }
+
+    // Try to find oracle price band index
+    let oracleIdx = chartData.findIndex((d) => d.isOraclePriceBand)
+    if (oracleIdx === -1 && oraclePrice) {
+      const target = Number(oraclePrice)
+      if (!Number.isNaN(target) && len > 0) {
+        let closestIdx = 0
+        let minDiff = Math.abs(chartData[0].pUpDownMedian - target)
+        for (let i = 1; i < len; i++) {
+          const diff = Math.abs(chartData[i].pUpDownMedian - target)
+          if (diff < minDiff) {
+            minDiff = diff
+            closestIdx = i
+          }
+        }
+        oracleIdx = closestIdx
+      }
+    }
+
+    let startIndex = minUserIdx
+    let endIndex = maxUserIdx
+    if (oracleIdx !== -1) {
+      startIndex = Math.min(startIndex, oracleIdx)
+      endIndex = Math.max(endIndex, oracleIdx)
+    }
+
+    // Add a padding of 2 bands as required
+    const pad = 2
+    startIndex = Math.max(0, startIndex - pad)
+    endIndex = Math.min(len - 1, endIndex + pad)
+
+    return { startIndex, endIndex }
+  }, [chartData, userBandsBalances, oraclePrice])
+
+  const option: EChartsOption = useMemo(() => {
+    if (chartData.length === 0) return {}
+
+    const markAreas: Array<{ yAxis: number }[]> = []
+    if (userBandsPriceRange) {
+      let upperIdx = findBandIndexByPrice(userBandsPriceRange.upperBandPriceUp)
+      let lowerIdx = findBandIndexByPrice(userBandsPriceRange.lowerBandPriceDown)
+      if (upperIdx === -1) upperIdx = findClosestBandIndex(userBandsPriceRange.upperBandPriceUp)
+      if (lowerIdx === -1) lowerIdx = findClosestBandIndex(userBandsPriceRange.lowerBandPriceDown)
+      if (upperIdx !== -1 && lowerIdx !== -1) {
+        markAreas.push([{ yAxis: upperIdx }, { yAxis: lowerIdx }])
+      }
+    }
+
+    const markLines: Array<{
+      yAxis: number
+      label: { formatter: string; position?: string }
+      lineStyle: { color: string; type: string; width: number }
+    }> = []
+
+    if (userBandsPriceRange) {
+      let lowerIdx = findBandIndexByPrice(userBandsPriceRange.lowerBandPriceDown)
+      let upperIdx = findBandIndexByPrice(userBandsPriceRange.upperBandPriceUp)
+      if (lowerIdx === -1) lowerIdx = findClosestBandIndex(userBandsPriceRange.lowerBandPriceDown)
+      if (upperIdx === -1) upperIdx = findClosestBandIndex(userBandsPriceRange.upperBandPriceUp)
+
+      if (lowerIdx !== -1) {
+        markLines.push({
+          yAxis: lowerIdx,
+          label: {
+            formatter: `$${formatNumber(userBandsPriceRange.lowerBandPriceDown, { notation: 'compact' })}`,
+            position: 'insideEndTop',
+          },
+          lineStyle: {
+            color: palette.userRangeLabelBackgroundColor,
+            type: 'dashed',
+            width: 2,
+          },
+        })
+      }
+
+      if (upperIdx !== -1) {
+        markLines.push({
+          yAxis: upperIdx,
+          label: {
+            formatter: `$${formatNumber(userBandsPriceRange.upperBandPriceUp, { notation: 'compact' })}`,
+            position: 'insideEndTop',
+          },
+          lineStyle: {
+            color: palette.userRangeLabelBackgroundColor,
+            type: 'dashed',
+            width: 2,
+          },
+        })
+      }
+    }
+
+    if (oraclePrice) {
+      let oracleIdx = findBandIndexByPrice(Number(oraclePrice))
+      if (oracleIdx === -1) oracleIdx = findClosestBandIndex(Number(oraclePrice))
+
+      if (oracleIdx !== -1) {
+        markLines.push({
+          yAxis: oracleIdx,
+          label: {
+            formatter: `$${formatNumber(oraclePrice, { notation: 'compact' })}`,
+            position: 'insideEndTop',
+          },
+          lineStyle: {
+            color: palette.oraclePriceLineColor,
+            type: 'dashed',
+            width: 2,
+          },
+        })
+      }
+    }
+
+    const dataZoomWidth = 20
+
+    return {
+      backgroundColor: 'transparent',
+      animation: false,
+      grid: {
+        left: 0,
+        right: 20 + dataZoomWidth,
+        top: 40,
+        bottom: 40,
+        containLabel: true,
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        backgroundColor: palette.backgroundColor,
+        borderColor: palette.borderColor,
+        borderWidth: 1,
+        textStyle: { color: palette.textColor, fontSize: 12 },
+        confine: true,
+        formatter: (params: unknown) => {
+          if (!Array.isArray(params) || params.length === 0) return ''
+          const dataIndex = (params[0] as Record<string, number>).dataIndex
+          const data = chartData[dataIndex]
+          if (!data) return ''
+
+          const parts = [`<div style="font-weight: bold; margin-bottom: 6px; font-size: 13px;">Band ${data.n}</div>`]
+          const hasMarketData = data.bandCollateralValueUsd > 0 || data.bandBorrowedValueUsd > 0
+          if (hasMarketData) {
+            parts.push(
+              `<div style="margin-bottom: 4px;"><span style="display:inline-block;width:8px;height:8px;background:${palette.marketBandColor};margin-right:6px;"></span><strong>Market:</strong></div>`,
+            )
+            parts.push(
+              `<div style="margin-left: 14px; font-size: 11px;">${collateralToken?.symbol ?? 'Collateral'}: $${formatNumber(data.bandCollateralValueUsd, { maximumFractionDigits: 2 })}</div>`,
+            )
+            parts.push(
+              `<div style="margin-left: 14px; font-size: 11px; margin-bottom: 4px;">${borrowToken?.symbol ?? 'Borrowed'}: $${formatNumber(data.bandBorrowedValueUsd, { maximumFractionDigits: 2 })}</div>`,
+            )
+          }
+
+          const hasUserData = data.userBandCollateralValueUsd > 0 || data.userBandBorrowedValueUsd > 0
+          if (hasUserData) {
+            parts.push(
+              `<div style="margin-bottom: 4px;"><span style="display:inline-block;width:8px;height:8px;background:${palette.userBandColor};margin-right:6px;"></span><strong>User:</strong></div>`,
+            )
+            parts.push(
+              `<div style="margin-left: 14px; font-size: 11px;">${collateralToken?.symbol ?? 'Collateral'}: $${formatNumber(data.userBandCollateralValueUsd, { maximumFractionDigits: 2 })}</div>`,
+            )
+            parts.push(
+              `<div style="margin-left: 14px; font-size: 11px; margin-bottom: 4px;">${borrowToken?.symbol ?? 'Borrowed'}: $${formatNumber(data.userBandBorrowedValueUsd, { maximumFractionDigits: 2 })}</div>`,
+            )
+          }
+
+          if (data.p_up) {
+            parts.push(
+              `<div style="margin-top: 4px; padding-top: 4px; border-top: 1px solid ${palette.borderColor}; font-size: 11px; opacity: 0.8;">Price: $${formatNumber(data.p_down)} - $${formatNumber(data.p_up)}</div>`,
+            )
+          }
+
+          return parts.join('')
+        },
+      },
+      xAxis: {
+        type: 'value',
+        inverse: true,
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: palette.gridColor,
+          fontSize: 12,
+          hideOverlap: true,
+          interval: 'auto',
+          margin: 8,
+          formatter: (value: number) => `$${formatNumber(value, { notation: 'compact' })}`,
+        },
+        splitLine: {
+          show: true,
+          lineStyle: { color: palette.gridColor, opacity: 0.5, type: 'dashed' },
+        },
+      },
+      yAxis: [
+        {
+          type: 'category',
+          position: 'right',
+          inverse: true,
+          axisLine: { show: false },
+          axisTick: { show: false },
+          axisLabel: {
+            color: palette.gridColor,
+            fontSize: 12,
+            formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
+          },
+          splitLine: { show: true, lineStyle: { color: palette.gridColor, opacity: 0.5, type: 'dashed' } },
+          data: derived.yAxisData,
+          boundaryGap: true,
+        },
+      ],
+      series: [
+        {
+          name: 'Market Collateral',
+          type: 'bar',
+          stack: 'total',
+          animation: false,
+          progressive: 500,
+          progressiveThreshold: 3000,
+          progressiveChunkMode: 'mod',
+          data: derived.marketData.map((value, index) => ({
+            value,
+            itemStyle: {
+              color: palette.marketBandColor,
+              borderColor: derived.isLiquidation[index] ? palette.liquidationBandOutlineColor : 'transparent',
+              borderWidth: derived.isLiquidation[index] ? 2 : 0,
+            },
+          })),
+          emphasis: {
+            focus: 'series',
+            itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' },
+          },
+          animationDuration: 300,
+          animationEasing: 'cubicOut',
+          barCategoryGap: '20%',
+          markArea:
+            markAreas.length > 0
+              ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
+              : undefined,
+          markLine:
+            markLines.length > 0
+              ? {
+                  silent: false,
+                  symbol: 'none',
+                  lineStyle: { width: 2 },
+                  label: { position: 'insideEndTop', padding: [2, 4], fontSize: 12 },
+                  data: markLines.map((line) => ({
+                    ...line,
+                    label: {
+                      ...line.label,
+                      backgroundColor:
+                        line.lineStyle.color === palette.oraclePriceLineColor
+                          ? palette.oraclePriceLineColor
+                          : palette.userRangeLabelBackgroundColor,
+                      color:
+                        line.lineStyle.color === palette.oraclePriceLineColor
+                          ? palette.textColorInverted
+                          : palette.textColor,
+                    },
+                  })),
+                }
+              : undefined,
+        },
+        {
+          name: 'User Collateral',
+          type: 'bar',
+          stack: 'total',
+          animation: false,
+          progressive: 500,
+          progressiveThreshold: 3000,
+          progressiveChunkMode: 'mod',
+          data: derived.userData.map((value, index) => ({
+            value,
+            itemStyle: {
+              color: palette.userBandColor,
+              borderColor: derived.isLiquidation[index] ? palette.liquidationBandOutlineColor : 'transparent',
+              borderWidth: derived.isLiquidation[index] ? 2 : 0,
+            },
+          })),
+          emphasis: {
+            focus: 'series',
+            itemStyle: { shadowBlur: 10, shadowOffsetX: 0, shadowColor: 'rgba(0, 0, 0, 0.3)' },
+          },
+          animationDuration: 300,
+          animationEasing: 'cubicOut',
+          barCategoryGap: '20%',
+        },
+      ],
+      dataZoom: hasBrush
+        ? [
+            {
+              type: 'slider',
+              yAxisIndex: 0,
+              orient: 'vertical',
+              right: 10,
+              width: dataZoomWidth,
+              brushSelect: false,
+              showDataShadow: false,
+              borderColor: palette.gridColor,
+              fillerColor: 'rgba(128, 128, 128, 0.2)',
+              handleSize: '80%',
+              handleStyle: { color: palette.gridColor, borderColor: palette.gridColor },
+              textStyle: { color: palette.gridColor, fontSize: 10 },
+              labelFormatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
+              dataBackground: {
+                lineStyle: { color: palette.gridColor, opacity: 0.5 },
+                areaStyle: { color: palette.gridColor, opacity: 0.2 },
+              },
+              zoomLock: false,
+              moveOnMouseMove: true,
+              moveOnMouseWheel: true,
+              preventDefaultMouseMove: true,
+            },
+            { type: 'inside', yAxisIndex: 0, orient: 'vertical', zoomOnMouseWheel: 'shift', moveOnMouseWheel: true },
+          ]
+        : [],
+    }
+  }, [
+    chartData,
+    derived,
+    hasBrush,
+    userBandsPriceRange,
+    oraclePrice,
+    palette,
+    collateralToken,
+    borrowToken,
+    findBandIndexByPrice,
+    findClosestBandIndex,
+  ])
+
+  // Persist dataZoom (start/end) across renders
+  const [zoom, setZoom] = useState<{ start?: number; end?: number }>({})
+  const initializedZoomRef = useRef(false)
+  const lastZoomRef = useRef<{ start?: number; end?: number }>({})
+  useEffect(() => {
+    if (!initializedZoomRef.current && chartData.length > 0 && initialZoomIndices) {
+      const start = (initialZoomIndices.startIndex / chartData.length) * 100
+      const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
+      setZoom({ start, end })
+      lastZoomRef.current = { start, end }
+      initializedZoomRef.current = true
+    }
+  }, [chartData.length, initialZoomIndices])
+
+  // If initial zoom happened before user data arrived (showing full range),
+  // re-apply zoom once user range and/or oracle data are available.
+  useEffect(() => {
+    if (chartData.length === 0 || !initialZoomIndices) return
+    const prev = lastZoomRef.current
+    const isUninitialized = prev.start == null || prev.end == null
+    const isFullRange =
+      !isUninitialized &&
+      prev.start !== undefined &&
+      prev.end !== undefined &&
+      prev.start <= 0.0001 &&
+      prev.end >= 99.999
+    // Only override if we are still at full-range default (or uninitialized)
+    if (isUninitialized || isFullRange) {
+      const start = (initialZoomIndices.startIndex / chartData.length) * 100
+      const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
+      // Avoid setting identical values to prevent loops
+      if (prev.start !== start || prev.end !== end) {
+        setZoom({ start, end })
+        lastZoomRef.current = { start, end }
+      }
+    }
+  }, [chartData.length, userBandsBalances.length, oraclePrice, initialZoomIndices])
+
+  const onEvents = useMemo(
+    () => ({
+      dataZoom: (evt: any) => {
+        const payload = Array.isArray(evt?.batch) && evt.batch.length ? evt.batch[0] : evt
+        const s = payload?.start
+        const e = payload?.end
+        if (typeof s === 'number' && typeof e === 'number') {
+          const prev = lastZoomRef.current
+          if (prev.start !== s || prev.end !== e) {
+            lastZoomRef.current = { start: s, end: e }
+            setZoom({ start: s, end: e })
+          }
+        }
+      },
+    }),
+    [],
+  )
+
+  const optionWithZoom: EChartsOption = useMemo(() => {
+    if ((option as any).dataZoom && Array.isArray((option as any).dataZoom) && zoom) {
+      const dz = (option as any).dataZoom.map((z: any) =>
+        z.type === 'slider'
+          ? {
+              ...z,
+              ...(zoom.start != null ? { start: zoom.start } : {}),
+              ...(zoom.end != null ? { end: zoom.end } : {}),
+            }
+          : z,
+      )
+      return { ...option, dataZoom: dz }
+    }
+    return option
+  }, [option, zoom])
 
   if (chartData.length === 0) {
     return (
@@ -282,7 +587,7 @@ export const BandsChart = ({
             justifyContent: 'center',
             height: '100%',
             fontSize: '14px',
-            color: textColor,
+            color: palette.textColor,
           }}
         >
           <SpinnerWrapper>
@@ -294,197 +599,16 @@ export const BandsChart = ({
   }
 
   return (
-    <Stack
-      sx={{
-        position: 'relative',
-        width: '100%',
-        minHeight: `${height}px`,
-      }}
-    >
+    <Stack sx={{ position: 'relative', width: '100%', minHeight: `${height}px` }}>
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
-        <ResponsiveContainer width="99%" height="100%">
-          <ComposedChart layout="vertical" data={chartData} margin={{ top: 20, right: 0, bottom: 20, left: 20 }}>
-            {userBandsPriceRange && (
-              <ReferenceArea
-                y1={userBandsPriceRange.lowerBandPriceDown}
-                y2={userBandsPriceRange.upperBandPriceUp}
-                fill={userRangeHighlightColor}
-                stroke="none"
-              />
-            )}
-            <CartesianGrid strokeDasharray="3 3" stroke={gridColor} opacity={0.5} />
-            <XAxis
-              type="number"
-              reversed={true}
-              stroke={gridColor}
-              tick={{ fill: gridColor, fontSize: 12 }}
-              tickFormatter={(value) => `$${formatNumber(value, { notation: 'compact' })}`}
-              axisLine={false}
-            />
-            <YAxis
-              type="number"
-              dataKey="pUpDownMedian"
-              orientation="right"
-              stroke={gridColor}
-              tick={{ fill: gridColor, fontSize: 12 }}
-              tickFormatter={(value) => `$${formatNumber(value, { notation: 'compact' })}`}
-              axisLine={false}
-              domain={yDomain}
-              reversed={true}
-            />
-
-            <Tooltip
-              content={({ active, payload }) => {
-                if (active && payload && payload.length) {
-                  const data = payload[0].payload as ChartDataPoint
-                  return (
-                    <Stack
-                      sx={{
-                        padding: '10px',
-                        borderRadius: '4px',
-                        backgroundColor,
-                        border: `1px solid ${borderColor}`,
-                        gap: '4px',
-                      }}
-                    >
-                      <Box sx={{ fontSize: '12px', color: textColor }}>
-                        <strong>Band {data.n}</strong>
-                      </Box>
-                      {data.marketCollateral > 0 && (
-                        <Box sx={{ fontSize: '12px', color: textColor }}>
-                          Market Collateral: ${formatNumber(data.marketCollateral, { maximumFractionDigits: 4 })}
-                        </Box>
-                      )}
-                      {data.userCollateral > 0 && (
-                        <Box sx={{ fontSize: '12px', color: textColor }}>
-                          User Collateral: ${formatNumber(data.userCollateral, { maximumFractionDigits: 4 })}
-                        </Box>
-                      )}
-                      {data.p_up && (
-                        <Box sx={{ fontSize: '12px', color: textColor }}>
-                          Price Range: ${formatNumber(data.p_down)} - ${formatNumber(data.p_up)}
-                        </Box>
-                      )}
-                    </Stack>
-                  )
-                }
-                return null
-              }}
-            />
-            <Bar dataKey="marketCollateral" stackId="bands">
-              {visibleData.map((entry, index) => {
-                const isLiquidation = entry.isLiquidationBand === 'SL'
-                return (
-                  <Cell
-                    key={`cell-market-${index}`}
-                    fill={marketBandColor}
-                    stroke={isLiquidation ? liquidationBandOutlineColor : 'none'}
-                    strokeWidth={isLiquidation ? 2 : 0}
-                  />
-                )
-              })}
-            </Bar>
-            <Bar dataKey="userCollateral" stackId="bands">
-              {visibleData.map((entry, index) => {
-                const isLiquidation = entry.isLiquidationBand === 'SL'
-                return (
-                  <Cell
-                    key={`cell-user-${index}`}
-                    fill={userBandColor}
-                    stroke={isLiquidation ? liquidationBandOutlineColor : 'none'}
-                    strokeWidth={isLiquidation ? 2 : 0}
-                  />
-                )
-              })}
-            </Bar>
-            {userBandsPriceRange && (
-              <ReferenceLine
-                y={userBandsPriceRange.lowerBandPriceDown}
-                stroke={userRangeLabelBackgroundColor}
-                strokeWidth={2}
-                strokeDasharray="3 3"
-                label={
-                  <CustomLabelWithBackground
-                    backgroundColor={userRangeLabelBackgroundColor}
-                    value={`$${formatNumber(userBandsPriceRange.lowerBandPriceDown, {
-                      notation: 'compact',
-                    })}`}
-                    fill={textColor}
-                  />
-                }
-              />
-            )}
-            {userBandsPriceRange && (
-              <ReferenceLine
-                y={userBandsPriceRange.upperBandPriceUp}
-                stroke={userRangeLabelBackgroundColor}
-                strokeWidth={2}
-                strokeDasharray="3 3"
-                label={
-                  <CustomLabelWithBackground
-                    value={`$${formatNumber(userBandsPriceRange.upperBandPriceUp, {
-                      notation: 'compact',
-                    })}`}
-                    fill={textColor}
-                    backgroundColor={userRangeLabelBackgroundColor}
-                  />
-                }
-              />
-            )}
-
-            {oraclePrice && (
-              <ReferenceLine
-                y={oraclePrice}
-                stroke={oraclePriceLineColor}
-                strokeDasharray="3 3"
-                label={
-                  <CustomLabelWithBackground
-                    value={`$${formatNumber(oraclePrice, {
-                      notation: 'compact',
-                    })}`}
-                    fill={textColorInverted}
-                    backgroundColor={oraclePriceLineColor}
-                  />
-                }
-              />
-            )}
-
-            {chartData.length > defaultBrushWindow && (
-              <Brush
-                dataKey="n"
-                height={30}
-                stroke={gridColor}
-                fill={backgroundColor}
-                startIndex={brushStartIndex ?? defaultStartIndex}
-                endIndex={brushEndIndex ?? defaultEndIndex}
-                onChange={handleBrushChange}
-                travellerWidth={10}
-              />
-            )}
-          </ComposedChart>
-        </ResponsiveContainer>
+        <ReactECharts
+          option={optionWithZoom}
+          style={{ width: '100%', height: '100%' }}
+          opts={{ renderer: 'canvas' }}
+          onEvents={onEvents}
+          lazyUpdate
+        />
       </Box>
     </Stack>
   )
-}
-
-function _findDataIndex(d: BandsBalancesData & { isOraclePriceBand: boolean }) {
-  return (
-    +d.collateral !== 0 ||
-    d.collateralBorrowedUsd !== 0 ||
-    d.isLiquidationBand === 'SL' ||
-    d.isOraclePriceBand ||
-    +d.borrowed > 0
-  )
-}
-
-function _parseData(data: (BandsBalancesData & { isOraclePriceBand: boolean })[]) {
-  const firstDataIdx = data.findIndex(_findDataIndex)
-  const lastDataIdx = data.findLastIndex(_findDataIndex)
-
-  if (firstDataIdx === -1) {
-    return data
-  }
-
-  return data.slice(firstDataIdx, lastDataIdx + 1)
 }
