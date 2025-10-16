@@ -59,7 +59,11 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       value={percentage}
       min="0"
       max="100"
-      onChange={(newPercentage) => onChange?.(newPercentage)}
+      onChange={(newPercentage) => {
+        // Temporary values may not be valid bignums, and we only want to trigger the change event when it is.
+        const bigNum = new BigNumber(newPercentage!)
+        return onChange?.(bigNum.isNaN() ? undefined : (bigNum.toString() as Decimal))
+      }}
       onBlur={(newPercentage) => onCommit?.(newPercentage)}
       disabled={disabled}
       slotProps={{

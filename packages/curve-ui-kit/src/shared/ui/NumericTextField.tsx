@@ -72,8 +72,8 @@ type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' 
   min?: Decimal
   /** Maximum allowed value (default: Infinity) */
   max?: Decimal
-  /** Callback fired when the numeric value changes */
-  onChange?: (value: Decimal | undefined) => void
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange?: (value: string | undefined) => void
   /** Callback fired when the numeric is being submitted */
   onBlur?: (value: Decimal | undefined) => void
 }
@@ -82,34 +82,13 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
   // Internal value that might be incomplete, like "4.".
   const [inputValue, setInputValue] = useState(getDisplayValue(value))
 
-  const [lastChangeValue, setLastChangeValue] = useState(value)
+  const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
 
   // Update input value when value changes externally
   useEffect(() => {
     setInputValue(getDisplayValue(value))
   }, [value])
-
-  /**
-   * Converts a string input to a numeric value with optional clamping.
-   *
-   * @param validatedValue - The sanitized string input
-   * @param shouldClamp - Whether to apply min/max bounds
-   * @returns Numeric value, undefined for empty/invalid input
-   */
-  const parseAndClamp = (validatedValue: string, { shouldClamp = false }: { shouldClamp?: boolean }) => {
-    if (validatedValue === '') return undefined
-    const result = shouldClamp ? clamp(validatedValue, min, max) : new BigNumber(validatedValue)
-
-    // Preserve original formatting for zero values with trailing zeros (e.g., "0.00", "0.000")
-    // This prevents the input from jumping to "0" when the user is still typing
-    const decimalPart = validatedValue.split('.')[1]
-    if (!shouldClamp && result.isEqualTo(0) && decimalPart && /^0+$/.test(decimalPart)) {
-      return validatedValue as Decimal
-    }
-
-    return result.toString() as Decimal
-  }
 
   return (
     <TextField
@@ -130,17 +109,12 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
       onChange={(e) => {
         const sanitizedValue = sanitize(e.target.value, inputValue, min == null || +min < 0)
         setInputValue(sanitizedValue)
-
-        const changedValue = parseAndClamp(sanitizedValue, { shouldClamp: false })
-
-        if (changedValue !== lastChangeValue) {
-          onChange?.(changedValue)
-          setLastChangeValue(changedValue)
-        }
+        onChange?.(sanitizedValue)
+        setLastChangeValue(sanitizedValue)
       }}
       onBlur={() => {
         // Replace a sole minus with just empty input as it's not really valid.
-        const finalValue = parseAndClamp(inputValue === '-' ? '' : inputValue, { shouldClamp: true })
+        const finalValue = inputValue !== '-' ? (clamp(inputValue, min, max).toString() as Decimal) : undefined
         setInputValue(getDisplayValue(finalValue))
 
         // Also emit the changed event, because due to clamping and such the final value

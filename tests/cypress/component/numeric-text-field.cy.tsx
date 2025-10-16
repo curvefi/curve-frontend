@@ -4,7 +4,7 @@ import type { Decimal } from '@ui-kit/utils'
 
 function TestComponent({ initialValue = '5', max }: { initialValue?: Decimal; max?: Decimal }) {
   const [value, setValue] = useState<Decimal | undefined>(initialValue)
-  const [tempValue, setTempValue] = useState<Decimal | undefined>(initialValue)
+  const [tempValue, setTempValue] = useState<string | undefined>(initialValue)
 
   return (
     <>

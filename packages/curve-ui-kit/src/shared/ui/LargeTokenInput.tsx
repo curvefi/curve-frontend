@@ -70,7 +70,7 @@ type BalanceTextFieldProps = {
   maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: Decimal | undefined) => void
+  onCommit: (balance: string | undefined) => void
   name: string
 }
 
@@ -261,7 +261,7 @@ export const LargeTokenInput = ({
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
-  const [balance, setBalance] = useUniqueDebounce({
+  const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
     callback: onBalance,
     debounceMs: Duration.FormDebounce,
@@ -287,14 +287,24 @@ export const LargeTokenInput = ({
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: Decimal | undefined) => {
-      if (newBalance == null) return
-      setBalance(newBalance)
+    (newBalance: string | undefined) => {
+      // The number may not be a valid number, e.g. if the user is typing "5."
+      // If so, cancel the debounce such that the input won't reset to the last valid value (5)
+      const bigNum = new BigNumber(newBalance!)
+      if (bigNum.isNaN()) {
+        cancelSetBalance()
+        return
+      }
+
+      // We're treating the newBalance string as a Decimal to keep original formatting such as "5." or "0.00".
+      // We've already verified above that it's a valid number.
+      const decimalBalance = newBalance as Decimal
+      setBalance(decimalBalance)
       setPercentage(
-        maxBalance?.balance && newBalance ? calculateNewPercentage(newBalance, maxBalance.balance) : undefined,
+        maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, setBalance],
+    [maxBalance?.balance, setBalance, cancelSetBalance],
   )
 
   const handleChip = useCallback(
