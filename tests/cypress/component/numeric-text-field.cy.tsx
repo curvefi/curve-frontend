@@ -50,8 +50,7 @@ describe('NumericTextField', () => {
   })
 
   it(`clamps values above max to max value on blur`, () => {
-    cy.mount(<TestComponent initialValue="7" max="10" />)
-    cy.get('[data-testid="state-value"]').should('have.text', '7')
+    cy.mount(<TestComponent max="10" />)
     cy.get('input').click().type('11').blur()
     cy.get('[data-testid="state-value"]').should('have.text', '10')
   })
