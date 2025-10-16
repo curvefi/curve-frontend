@@ -4,7 +4,7 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
+import { useDebounce, useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -261,7 +261,10 @@ export const LargeTokenInput = ({
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
-  const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
+  const [balance, setBalance] = useUniqueDebounce(externalBalance, onBalance, Duration.FormDebounce, (a, b) =>
+    // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
+    new BigNumber(a ?? 0).isEqualTo(b ?? 0),
+  )
 
   const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
