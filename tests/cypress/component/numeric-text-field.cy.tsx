@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
 import type { Decimal } from '@ui-kit/utils'
 
-function TestComponent({ initialValue = '5', max }: { initialValue?: Decimal; max?: Decimal }) {
+const INITIAL_VALUE = '5'
+
+function TestComponent({ initialValue = INITIAL_VALUE, max }: { initialValue?: Decimal; max?: Decimal }) {
   const [value, setValue] = useState<Decimal | undefined>(initialValue)
   const [tempValue, setTempValue] = useState<string | undefined>(initialValue)
 
@@ -21,30 +23,33 @@ function TestComponent({ initialValue = '5', max }: { initialValue?: Decimal; ma
 }
 
 describe('NumericTextField', () => {
+  it('has an initial value', () => {
+    cy.mount(<TestComponent />)
+    cy.get('[data-testid="state-value"]').should('contain', INITIAL_VALUE)
+    cy.get('[data-testid="state-temp-value"]').should('contain', INITIAL_VALUE)
+  })
+
   it(`updates state value on blur`, () => {
     cy.mount(<TestComponent />)
-    cy.get('[data-testid="state-value"]').should('contain', '5')
     cy.get('input').click().type('6').blur()
     cy.get('[data-testid="state-value"]').should('contain', '6')
   })
 
   it(`clamps negative values to 0 on blur`, () => {
     cy.mount(<TestComponent />)
-    cy.get('[data-testid="state-value"]').should('contain', '5')
     cy.get('input').click().type('-10').blur()
     cy.get('[data-testid="state-value"]').should('contain', '0')
   })
 
   it(`clamps values above max to max value on blur`, () => {
-    cy.mount(<TestComponent initialValue="5" max="10" />)
-    cy.get('[data-testid="state-value"]').should('contain', '5')
+    cy.mount(<TestComponent initialValue="7" max="10" />)
+    cy.get('[data-testid="state-value"]').should('contain', '7')
     cy.get('input').click().type('11').blur()
     cy.get('[data-testid="state-value"]').should('contain', '10')
   })
 
   it(`handles multiple commas and decimals correctly`, () => {
     cy.mount(<TestComponent />)
-    cy.get('[data-testid="state-value"]').should('contain', '5')
     cy.get('input').click().type('4,55,.').blur()
     cy.get('[data-testid="state-value"]').should('contain', '4.55')
   })
@@ -69,16 +74,23 @@ describe('NumericTextField', () => {
   })
 
   it('handles empty input correctly', () => {
-    cy.mount(<TestComponent initialValue="5" />)
+    cy.mount(<TestComponent />)
     cy.get('input').click().blur()
     cy.get('[data-testid="state-value"]').should('contain', '')
   })
 
-  it('handles sole minus sign input', () => {
-    cy.mount(<TestComponent />)
-    cy.get('input').click().type('-').blur()
-    cy.get('[data-testid="state-value"]').should('contain', '')
-  })
+  const soleCharacterCases = ['-', '.']
+  for (const character of soleCharacterCases) {
+    it(`handles a sole ${character} as character input`, () => {
+      cy.mount(<TestComponent />)
+      cy.get('input').click().type(character)
+      cy.get('[data-testid="state-value"]').should('contain', INITIAL_VALUE)
+      cy.get('[data-testid="state-temp-value"]').should('contain', character)
+      cy.get('input').blur()
+      cy.get('[data-testid="state-value"]').should('contain', '')
+      cy.get('[data-testid="state-temp-value"]').should('contain', '')
+    })
+  }
 
   it('handles decimal-only input', () => {
     cy.mount(<TestComponent />)
