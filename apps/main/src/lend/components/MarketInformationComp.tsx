@@ -41,12 +41,22 @@ export const MarketInformationComp = ({
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { userBandsBalances, marketBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+  const { chartData, userBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
     rChainId,
     rOwmId,
     api: pageProps.api,
     market: pageProps.market,
   })
+  const collateralToken = market && {
+    symbol: market?.collateral_token.symbol,
+    address: market?.collateral_token.address,
+    chain: networks[rChainId].id,
+  }
+  const borrowToken = market && {
+    symbol: market?.borrowed_token.symbol,
+    address: market?.borrowed_token.address,
+    chain: networks[rChainId].id,
+  }
 
   return (
     <>
@@ -62,18 +72,18 @@ export const MarketInformationComp = ({
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          {isBeta && (
-            <BandsChart
-              userBandsBalances={userBandsBalances ?? []}
-              marketBandsBalances={marketBandsBalances ?? []}
-              liquidationBand={liquidationBand}
-              oraclePrice={oraclePrice}
-              oraclePriceBand={oraclePriceBand}
-            />
-          )}
+          <BandsChart
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
+            chartData={chartData}
+            userBandsBalances={userBandsBalances ?? []}
+            liquidationBand={liquidationBand}
+            oraclePrice={oraclePrice}
+            oraclePriceBand={oraclePriceBand}
+          />
         </Stack>
       )}
-      {type === 'borrow' && isAdvancedMode && !isBeta && (
+      {type === 'borrow' && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>
