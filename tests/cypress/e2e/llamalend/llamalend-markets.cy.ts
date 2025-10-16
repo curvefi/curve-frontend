@@ -148,7 +148,7 @@ describe(`LlamaLend Markets`, () => {
        */
 
       cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
-      cy.get(`[data-testid="slider-${columnId}"]`).click(60, 10, { force: true })
+      cy.get(`[data-testid="slider-${columnId}"]`).click(40, 10, { force: true, waitForAnimations: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
     })
