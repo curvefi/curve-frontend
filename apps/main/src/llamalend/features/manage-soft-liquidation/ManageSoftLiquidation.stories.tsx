@@ -3,36 +3,33 @@ import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
-import type { TokenOption } from '@ui-kit/features/select-token'
-import { CRVUSD_ADDRESS, type Decimal } from '@ui-kit/utils'
+import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 import { ManageSoftLiquidation, type Props, type ImproveHealthProps, type ClosePositionProps } from './'
 
-type Token = TokenOption & { amount: Decimal }
-
-const debtToken: Token = {
+const debtToken: ImproveHealthProps['debtToken'] = {
   symbol: 'crvUSD',
   address: CRVUSD_ADDRESS,
   amount: '321.01',
 }
 
-const collateralToRecover = [
+const collateralToRecover: ClosePositionProps['collateralToRecover'] = [
   {
     symbol: 'ETH',
     address: ethAddress,
-    amount: '26539422' as Decimal,
-    usd: '638000' as Decimal,
+    amount: '26539422',
+    usd: '638000',
   },
   {
     symbol: 'crvUSD',
     address: CRVUSD_ADDRESS,
-    amount: '12450' as Decimal,
-    usd: '12450' as Decimal,
+    amount: '12450',
+    usd: '12450',
   },
 ]
 
-const canClose = {
-  requiredToClose: '100' as Decimal,
-  missing: '42' as Decimal,
+const canClose: ClosePositionProps['canClose'] = {
+  requiredToClose: '100',
+  missing: '42',
 }
 
 type ImproveHealthStatus = ImproveHealthProps['status']
