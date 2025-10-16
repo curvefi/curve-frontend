@@ -93,14 +93,26 @@ export function useDebouncedValue<T>(
 const SearchDebounceMs = 166 // 10 frames at 60fps
 
 /**
- * A hook that debounces a search value and calls a callback when the debounce period has elapsed.
+ * A hook that debounces a value and only calls the callback when the value has actually changed.
+ * This prevents unnecessary callback executions when the debounced value hasn't changed.
+ *
+ * @param defaultValue - The initial value to use
+ * @param callback - Function called when the debounced value changes
+ * @param debounceMs - The debounce period in milliseconds (default: 166ms)
+ * @param equals - Optional custom equality function to compare values
+ * @returns A tuple containing the current value and a setter function
  */
-export function useUniqueDebounce<T>(
-  defaultValue: T,
-  callback: (value: T) => void,
+export function useUniqueDebounce<T>({
+  defaultValue,
+  callback,
   debounceMs = SearchDebounceMs,
-  equals?: (a: T, b: T) => boolean,
-) {
+  equals,
+}: {
+  defaultValue: T
+  callback: (value: T) => void
+  debounceMs?: number
+  equals?: (a: T, b: T) => boolean
+}) {
   const lastValue = useRef(defaultValue)
 
   /**
@@ -118,16 +130,14 @@ export function useUniqueDebounce<T>(
 
   const debounceCallback = useCallback(
     (value: T) => {
-      if (typeof value === 'string') {
-        value = value.trim() as unknown as T
-      }
-      if ((equals && !equals(value, lastValue.current)) || (equals == null && value !== lastValue.current)) {
+      const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
+      if (!isEqual) {
         lastValue.current = value
         callback(value)
       }
     },
     [callback, equals],
   )
-  const [search, setSearch] = useDebounce(defaultValue, debounceMs, debounceCallback)
-  return [search, setSearch] as const
+  const [value, setValue] = useDebounce(defaultValue, debounceMs, debounceCallback)
+  return [value, setValue] as const
 }

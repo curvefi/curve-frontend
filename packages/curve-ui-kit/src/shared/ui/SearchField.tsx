@@ -23,7 +23,11 @@ export const SearchField = ({
   inputRef,
   ...props
 }: SearchFieldProps) => {
-  const [search, setSearch] = useUniqueDebounce<string>(value, onSearch)
+  const [search, setSearch] = useUniqueDebounce<string>({
+    defaultValue: value,
+    callback: onSearch,
+    equals: (a, b) => a.trim() === b.trim(),
+  })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   const ref = inputRef || localInputRef
   const resetSearch = useCallback(() => {

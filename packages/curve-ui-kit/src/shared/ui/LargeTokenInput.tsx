@@ -261,10 +261,13 @@ export const LargeTokenInput = ({
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
-  const [balance, setBalance] = useUniqueDebounce(externalBalance, onBalance, Duration.FormDebounce, (a, b) =>
+  const [balance, setBalance] = useUniqueDebounce({
+    defaultValue: externalBalance,
+    callback: onBalance,
+    debounceMs: Duration.FormDebounce,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
-    new BigNumber(a ?? 0).isEqualTo(b ?? 0),
-  )
+    equals: (a, b) => new BigNumber(a ?? 0).isEqualTo(b ?? 0),
+  })
 
   const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false

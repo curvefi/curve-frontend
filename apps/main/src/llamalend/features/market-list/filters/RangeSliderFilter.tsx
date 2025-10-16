@@ -49,9 +49,9 @@ export const RangeSliderFilter = <T,>({
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
 
-  const [range, setRange] = useUniqueDebounce(
+  const [range, setRange] = useUniqueDebounce({
     defaultValue,
-    useCallback(
+    callback: useCallback(
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
@@ -61,7 +61,7 @@ export const RangeSliderFilter = <T,>({
         ),
       [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
     ),
-  )
+  })
 
   const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as NumberRange), [setRange])
 
