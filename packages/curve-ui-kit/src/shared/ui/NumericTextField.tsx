@@ -107,8 +107,11 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         setLastChangeValue(sanitizedValue)
       }}
       onBlur={() => {
-        // Replace a sole minus with just empty input as it's not really valid.
-        const finalValue = inputValue !== '-' ? (clamp(inputValue, min, max).toString() as Decimal) : undefined
+        // Replace a sole invalid values with just empty input as they're not really valid.
+        const invalidValues = ['-', '.', ',', '']
+        const finalValue = !invalidValues.includes(inputValue)
+          ? (clamp(inputValue, min, max).toString() as Decimal)
+          : undefined
         setInputValue(getDisplayValue(finalValue))
 
         // Also emit the changed event, because due to clamping and such the final value
