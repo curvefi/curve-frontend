@@ -45,14 +45,22 @@ describe('NumericTextField', () => {
 
   it(`clamps negative values to 0 on blur`, () => {
     cy.mount(<TestComponent min="0" />)
+    cy.get('input').click().type('-10')
+    cy.get('[data-testid="state-value"]').should('have.text', INITIAL_VALUE)
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '-10')
     cy.get('input').click().clear().type('-10').blur()
     cy.get('[data-testid="state-value"]').should('have.text', '0')
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '0')
   })
 
   it(`clamps values above max to max value on blur`, () => {
     cy.mount(<TestComponent max="10" />)
-    cy.get('input').click().type('11').blur()
+    cy.get('input').click().type('11')
+    cy.get('[data-testid="state-value"]').should('have.text', INITIAL_VALUE)
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '11')
+    cy.get('input').click().clear().type('11').blur()
     cy.get('[data-testid="state-value"]').should('have.text', '10')
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '10')
   })
 
   it(`handles multiple commas and decimals correctly`, () => {
@@ -66,7 +74,7 @@ describe('NumericTextField', () => {
     cy.get('input').click().type('1-2-3').blur()
     cy.get('input').should('have.value', '123')
 
-    cy.get('input').click().type('-1-2-3')
+    cy.get('input').click().type('-1-2-3').blur()
     cy.get('input').should('have.value', '-123')
   })
 
@@ -93,7 +101,7 @@ describe('NumericTextField', () => {
       cy.get('input').click().type(character)
       cy.get('[data-testid="state-value"]').should('have.text', INITIAL_VALUE)
       cy.get('[data-testid="state-temp-value"]').should('have.text', character === ',' ? '.' : character)
-      cy.get('input').click().type(character).blur()
+      cy.get('input').click().clear().type(character).blur()
       cy.get('[data-testid="state-value"]').should('have.text', '')
       cy.get('[data-testid="state-temp-value"]').should('have.text', '')
     })
@@ -101,25 +109,32 @@ describe('NumericTextField', () => {
 
   it('handles decimal-only input', () => {
     cy.mount(<TestComponent />)
-    cy.get('input').click().type('.5').blur()
+    cy.get('input').click().type('.5')
+    cy.get('[data-testid="state-value"]').should('have.text', INITIAL_VALUE)
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '.5')
+    cy.get('input').click().clear().type('.5').blur()
     cy.get('[data-testid="state-value"]').should('have.text', '0.5')
   })
 
   it('prevents multiple decimal points during typing', () => {
     cy.mount(<TestComponent />)
-    cy.get('input').click().type('1.2.3')
+    cy.get('input').click().type('1.2.3').blur()
     cy.get('input').should('have.value', '1.23')
   })
 
   it('handles leading zeros correctly', () => {
     cy.mount(<TestComponent />)
-    cy.get('input').click().type('007.50').blur()
+    cy.get('input').click().type('007.50')
+    cy.get('[data-testid="state-value"]').should('have.text', INITIAL_VALUE)
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '007.50')
+    cy.get('input').click().clear().type('007.50').blur()
     cy.get('[data-testid="state-value"]').should('have.text', '7.5')
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '7.5')
   })
 
   it('handles non-numeric characters gracefully', () => {
     cy.mount(<TestComponent />)
-    cy.get('input').click().type('1a2b3')
+    cy.get('input').click().type('1a2b3').blur()
     cy.get('input').should('have.value', '123')
   })
 
@@ -141,9 +156,6 @@ describe('NumericTextField', () => {
 
   it('changing the amount of zeros in the decimal should not cause rounding to just 0', () => {
     cy.mount(<TestComponent />)
-
-    // Start with empty input
-    cy.get('input').click().clear()
 
     // Type "0.0001" character by character
     cy.get('input').type('0')
