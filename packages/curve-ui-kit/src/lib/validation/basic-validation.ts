@@ -1,4 +1,4 @@
-import { enforce } from 'vest'
+import { enforce } from '@ui-kit/lib/validation/lib'
 
 // TODO: move to Token validation lib
 export const tokenIdValidationFn = <T>(value: T) => {

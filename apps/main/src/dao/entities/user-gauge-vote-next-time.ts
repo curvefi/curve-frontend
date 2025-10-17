@@ -1,4 +1,4 @@
-import { enforce, group, test } from 'vest'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import type { ChainId } from '@/dao/types/dao.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import type { ChainQuery, UserQuery } from '@ui-kit/lib/model/query'

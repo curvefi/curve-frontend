@@ -1,4 +1,4 @@
-import { group } from 'vest'
+import { group } from '@ui-kit/lib/validation/lib'
 import { getLlamaMarket, hasLeverage } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'

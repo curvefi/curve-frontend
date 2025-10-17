@@ -1,4 +1,4 @@
-import { enforce, group, test } from 'vest'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import useStore from '@/dex/store/useStore'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'

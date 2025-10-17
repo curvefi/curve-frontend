@@ -1,5 +1,5 @@
-import { enforce, group, test } from 'vest'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import { chainNameValidationGroup } from './chain-name-validation'
 import { ContractParams } from './root-keys'
 

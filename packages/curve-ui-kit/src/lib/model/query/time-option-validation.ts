@@ -1,6 +1,6 @@
-import { enforce, group, test } from 'vest'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 
 type TimeOptionParams = { timeOption: TimeOption }
 

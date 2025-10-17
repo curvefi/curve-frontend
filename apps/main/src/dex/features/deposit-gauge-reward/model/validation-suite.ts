@@ -1,4 +1,4 @@
-import { enforce, test } from 'vest'
+import { enforce, test } from '@ui-kit/lib/validation/lib'
 import { gaugeDepositRewardValidationGroup } from '@/dex/entities/gauge'
 import { DepositRewardStep, type DepositRewardFormValues } from '@/dex/features/deposit-gauge-reward/types'
 import { createValidationSuite } from '@ui-kit/lib/validation'

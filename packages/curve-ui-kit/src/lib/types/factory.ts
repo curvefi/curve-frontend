@@ -1,10 +1,10 @@
 import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
-import type { Suite } from 'vest'
 import type { CB } from 'vest-utils'
 import type { DefaultError } from '@tanstack/query-core'
 import type { FetchQueryOptions, QueryKey, UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import type { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import type { FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import type { Suite } from '@ui-kit/lib/validation/lib'
 
 // Checks if T is a string literal or an object with one property
 type IsLiteralOrSingleKeyObject<T> =
