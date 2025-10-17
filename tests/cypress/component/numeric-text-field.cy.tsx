@@ -157,29 +157,21 @@ describe('NumericTextField', () => {
   it('changing the amount of zeros in the decimal should not cause rounding to just 0', () => {
     cy.mount(<TestComponent />)
 
-    // Type "0.0001" character by character
-    cy.get('input').type('0')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0')
+    const action = [
+      ['0', '0'],
+      ['.', '0.'],
+      ['0', '0.0'],
+      ['0', '0.00'],
+      ['0', '0.000'],
+      ['1', '0.0001'],
+      ['{backspace}', '0.000'],
+      ['2', '0.0002'],
+    ]
 
-    cy.get('input').type('.')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.')
-
-    cy.get('input').type('0')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.0')
-
-    cy.get('input').type('0')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.00')
-
-    cy.get('input').type('0')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.000')
-
-    cy.get('input').type('1')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.0001')
-
-    cy.get('input').type('{backspace}')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.000')
-
-    cy.get('input').type('2')
-    cy.get('[data-testid="state-temp-value"]').should('have.text', '0.0002')
+    // Type "0.0001" and then modify to "0.0002" character by character
+    for (const [character, expectedTempValue] of action) {
+      cy.get('input').type(character)
+      cy.get('[data-testid="state-temp-value"]').should('have.text', expectedTempValue)
+    }
   })
 })
