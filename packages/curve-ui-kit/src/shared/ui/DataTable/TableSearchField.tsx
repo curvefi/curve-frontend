@@ -1,57 +1,59 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 import Box from '@mui/material/Box'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 import { SearchField, SearchFieldProps } from '@ui-kit/shared/ui/SearchField'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
 
-export const TableSearchField = ({
-  value,
-  onChange,
-  collapsible = false,
-  testId,
-}: {
+const { ButtonSize } = SizesAndSpaces
+
+type Props = {
   value: string
   onChange: (value: string) => void
-  collapsible?: boolean
   testId?: string
-}) => {
+  toggleExpanded?: () => void
+  isExpanded: boolean
+}
+
+export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
-  const [isExpanded, , , toggleExpanded] = useSwitch(false)
+  const isMobile = useIsMobile()
+  const collapsible = !!toggleExpanded
 
   const handleExpand = useCallback(() => {
-    toggleExpanded()
+    toggleExpanded?.()
+    // Focus the input when expanding
+    const timeout = setTimeout(() => {
+      searchInputRef.current?.focus()
+    }, Duration.Focus)
+    return () => clearTimeout(timeout)
   }, [toggleExpanded])
 
   const handleBlur = useCallback(() => {
     onBlur()
     // Collapse when unfocused and empty in collapsible mode
     if (collapsible && !value) {
-      toggleExpanded()
+      toggleExpanded?.()
     }
-  }, [onBlur, collapsible, value, toggleExpanded])
+  }, [onBlur, value, collapsible, toggleExpanded])
 
   return collapsible ? (
     <Box
       sx={{
         display: 'flex',
-        transition: TransitionFunction,
-        flex: isExpanded ? '1 1 auto' : `0 0 ${SizesAndSpaces.ButtonSize.sm}`,
-        width: isExpanded ? 0 : `${SizesAndSpaces.ButtonSize.sm}`,
+        // on mobile when search is de-expanded, animation doesn't look good
+        transition: isMobile && !isExpanded ? 'none' : `${TransitionFunction}`,
+        flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
+        width: isExpanded ? 0 : `${ButtonSize.sm}`,
+        overflow: 'hidden',
       }}
     >
-      {!isExpanded ? (
-        <TableButton
-          onClick={handleExpand}
-          icon={SearchIcon}
-          active={isExpanded}
-          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
-        />
-      ) : (
-        <StyledSearchField
+      {isExpanded ? (
+        <SearchFieldWithTransition
           value={value}
           searchInputRef={searchInputRef}
           onChange={onChange}
@@ -61,16 +63,23 @@ export const TableSearchField = ({
           testId={testId}
           sx={{ flex: '1 1 auto', minWidth: 0 }}
         />
+      ) : (
+        <TableButton
+          onClick={handleExpand}
+          icon={SearchIcon}
+          active={isExpanded}
+          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
+        />
       )}
     </Box>
   ) : (
     <Box
       sx={{
-        width: '478px',
+        width: { mobile: '100%', tablet: '478px' },
         maxWidth: '100%',
       }}
     >
-      <StyledSearchField
+      <SearchFieldWithTransition
         value={value}
         searchInputRef={searchInputRef}
         onChange={onChange}
@@ -84,7 +93,7 @@ export const TableSearchField = ({
   )
 }
 
-const StyledSearchField = ({
+const SearchFieldWithTransition = ({
   isFocused,
   searchInputRef,
   onChange,

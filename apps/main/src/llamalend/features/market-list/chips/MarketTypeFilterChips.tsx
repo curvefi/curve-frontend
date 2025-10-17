@@ -1,23 +1,22 @@
 import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
-import Grid from '@mui/material/Grid'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { useMarketTypeFilter } from '../hooks/useMarketTypeFilter'
 import { GridChip } from './GridChip'
 
-const { Spacing } = SizesAndSpaces
-
 export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
+  const isMobile = useIsMobile()
   return (
-    <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+    <>
       <GridChip
         label={t`Mint Markets`}
         onDelete={toggleMarkets.Mint}
         selected={marketTypes.Mint}
         toggle={toggleMarkets.Mint}
         data-testid="chip-mint"
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
       <GridChip
         label={t`Lend Markets`}
@@ -25,7 +24,8 @@ export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
         selected={marketTypes.Lend}
         toggle={toggleMarkets.Lend}
         data-testid="chip-lend"
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
-    </Grid>
+    </>
   )
 }

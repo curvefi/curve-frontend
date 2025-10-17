@@ -1,5 +1,4 @@
-import { ReactNode, useRef } from 'react'
-import Box from '@mui/material/Box'
+import { ReactNode, useMemo, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -30,7 +29,6 @@ export const TableFilters = <ColumnIds extends string>({
   hasSearchBar,
   collapsible,
   chips,
-  sort,
   searchText,
   onSearch,
 }: {
@@ -43,21 +41,33 @@ export const TableFilters = <ColumnIds extends string>({
   hasSearchBar?: boolean
   collapsible?: ReactNode // filters that may be collapsed
   chips?: ReactNode // buttons that are part of the collapsible (on mobile) or always visible (on larger screens)
-  sort: ReactNode // sorting options, only used for mobile (larger screens can use the table header)
   searchText: string // text to search for, only used for mobile
   onSearch: (value: string) => void
 }) => {
   const [filterExpanded, setFilterExpanded] = useFilterExpanded(filterExpandedKey)
   const [visibilitySettingsOpen, openVisibilitySettings, closeVisibilitySettings] = useSwitch()
   const settingsRef = useRef<HTMLButtonElement>(null)
+  // search is here because we remove the table title when searching on mobile
+  const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
+  const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
   return (
-    <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
-      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md}>
-        <Grid size={{ mobile: 6 }}>{leftChildren}</Grid>
-        <Grid size={{ mobile: 6 }} display="flex" justifyContent="flex-end" gap={Spacing.xs} flexWrap="wrap">
+    <Stack
+      paddingBlockEnd={{ mobile: Spacing.sm.tablet }}
+      paddingBlockStart={{ mobile: Spacing.md.tablet }}
+      maxWidth={maxWidth}
+    >
+      <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
+        {!(isExpandedOrValue && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
+        <Grid
+          size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
+          display="flex"
+          justifyContent="flex-end"
+          gap={Spacing.xs}
+          flexWrap="wrap"
+        >
           {!isMobile && toggleVisibility && (
             <TableButton
               ref={settingsRef}
@@ -67,7 +77,7 @@ export const TableFilters = <ColumnIds extends string>({
               active={visibilitySettingsOpen}
             />
           )}
-          {isCollapsible && (
+          {isCollapsible && !isMobile && (
             <TableButton
               onClick={() => setFilterExpanded((prev) => !prev)}
               active={filterExpanded}
@@ -75,38 +85,22 @@ export const TableFilters = <ColumnIds extends string>({
               testId="btn-expand-filters"
             />
           )}
-          {onReload && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
-          {!isMobile && hasSearchBar && (
-            <TableSearchField collapsible value={searchText} onChange={onSearch} testId={filterExpandedKey} />
+          {onReload && !isMobile && <TableButton onClick={onReload} icon={ReloadIcon} loading={loading} />}
+          {hasSearchBar && (
+            <TableSearchField
+              value={searchText}
+              onChange={onSearch}
+              testId={filterExpandedKey}
+              toggleExpanded={toggleSearchExpanded}
+              isExpanded={isExpandedOrValue}
+            />
           )}
         </Grid>
-        {isMobile ? (
-          <>
-            <Grid size={12}>
-              <TableSearchField value={searchText} onChange={onSearch} testId={`${filterExpandedKey}-mobile`} />
-            </Grid>
-            <Grid size={{ mobile: 12 }} display={{ tablet: 'none' }}>
-              {sort}
-            </Grid>
-          </>
-        ) : (
-          chips && (
-            <Grid container size={12} gap={Spacing.xs} justifyContent="space-between">
-              {chips}
-            </Grid>
-          )
-        )}
+        <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
+          {chips}
+        </Grid>
       </Grid>
-      {isCollapsible && (
-        <Collapse in={filterExpanded}>
-          {collapsible}
-          {isMobile && chips && (
-            <Box paddingInline={Spacing.md} marginBlockStart={Spacing.md}>
-              {chips}
-            </Box>
-          )}
-        </Collapse>
-      )}
+      {isCollapsible && !isMobile && <Collapse in={filterExpanded}>{collapsible}</Collapse>}
 
       {visibilitySettingsOpen != null && settingsRef.current && toggleVisibility && (
         <TableVisibilitySettingsPopover<ColumnIds>

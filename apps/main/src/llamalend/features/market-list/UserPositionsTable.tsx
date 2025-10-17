@@ -13,14 +13,12 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
 const LOCAL_STORAGE_KEYS = {
@@ -66,6 +64,8 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
     onExpandedChange,
     ...getTableOptions(result),
   })
+
+  const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
   return (
     <DataTable
       table={table}
@@ -78,14 +78,12 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         filterExpandedKey={title}
         leftChildren={<TableFiltersTitles title={t`${title}`} />}
         loading={loading}
+        hasSearchBar
         visibilityGroups={columnSettings}
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <MarketFilterChipWrapper
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          >
+          showChips && (
             <UserPositionFilterChips
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
@@ -95,9 +93,8 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               onSearch={onSearch}
               testId={title}
             />
-          </MarketFilterChipWrapper>
+          )
         }
-        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )

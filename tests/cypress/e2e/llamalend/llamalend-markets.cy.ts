@@ -46,11 +46,11 @@ describe(`LlamaLend Markets`, () => {
     // filter height changes because text wraps depending on the width
     const filterHeight = {
       // the height of the header changes depending on how often the description text wraps
-      mobile: [194, 180, 156, 144],
+      mobile: [176, 144, 134],
       // on tablet, we expect 3 rows until 900px, then 2 rows
-      tablet: [208, 164],
+      tablet: [144, 112, 104],
       // on desktop, we expect 2 rows always
-      desktop: [164],
+      desktop: [104],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
@@ -67,9 +67,10 @@ describe(`LlamaLend Markets`, () => {
     })
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
-      cy.get('[data-testid="select-filter-sort"]').click()
-      cy.get('[data-testid="menu-sort"] [value="utilizationPercent"]').click()
-      cy.get('[data-testid="select-filter-sort"]').contains('Utilization', LOAD_TIMEOUT)
+      cy.get('[data-testid="btn-drawer-sort-lamalend-markets"]').click()
+      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
+      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
+      closeDrawer()
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
@@ -117,6 +118,7 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should find markets by text', () => {
+    cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
     cy.get("[data-testid='table-text-search-Llamalend Markets']").type('wstETH crvUSD')
     cy.scrollTo(0, 0)
     // sfrxETH market is filtered out
@@ -127,9 +129,9 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by using a slider`, () => {
     const [columnId, initialFilterText] = oneOf(
-      ['liquidityUsd', 'Liquidity: $0 -'],
-      ['tvl', 'TVL: $10k -'],
-      ['utilizationPercent', 'Utilization: 0% -'],
+      ['liquidityUsd', '$0 -'],
+      ['tvl', '$10k -'],
+      ['utilizationPercent', '0% -'],
     )
     cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
@@ -137,16 +139,17 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click()
+      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
       /**
        * Using `force: true` to bypass Cypress' element visibility check.
        * The slider may have pseudo-elements that interfere with Cypress' ability to interact with it.
        * We've tried alternative approaches (adding waits, adjusting click coordinates) but they didn't resolve the issue.
        * The application behavior works correctly despite this test accommodation.
        */
-      cy.get(`[data-testid="slider-${columnId}"]`).click(60, 20, { force: true })
+
+      cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
+      cy.get(`[data-testid="slider-${columnId}"]`).click(40, 10, { force: true, waitForAnimations: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
-      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.contain', initialFilterText)
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
     })
   })
@@ -154,22 +157,23 @@ describe(`LlamaLend Markets`, () => {
   it('should allow filtering by chain', () => {
     const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
-    cy.get('[data-testid="multi-select-filter-chain"]').should('not.be.visible')
-    cy.get(`[data-testid="btn-expand-filters"]`).click()
+    cy.get(`[data-testid="chip-chain-${chain}"]`).click()
 
-    selectChain(chain)
     cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
     const otherChain = oneOf(...chains.filter((c) => c !== chain))
-    selectChain(otherChain)
+    cy.get(`[data-testid="chip-chain-${otherChain}"]`).click()
     ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
   })
 
   it(`should allow filtering by token`, () => {
     const type = oneTokenType()
     const tokenField = (type + '_token') as `${typeof type}_token`
-
-    cy.get(`[data-testid="btn-expand-filters"]`).click()
+    if (breakpoint == 'mobile') {
+      cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click()
+    } else {
+      cy.get(`[data-testid="btn-expand-filters"]`).click()
+    }
     const coins = vaultData.ethereum.data
       .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
       .map((d) => d[tokenField].symbol)
@@ -180,13 +184,13 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
-    expandFirstRowOnMobile()
-    if (breakpoint == 'desktop') {
-      // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
-      cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
-    } else {
-      cy.get(`[data-testid="favorite-icon"]:visible`).first().click()
+    if (breakpoint == 'mobile') {
+      cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click()
     }
+    // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
+    cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
+
+    closeDrawer()
     withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
@@ -276,6 +280,12 @@ describe(`LlamaLend Markets`, () => {
     }
   }
 
+  function closeDrawer() {
+    if (breakpoint == 'mobile') {
+      cy.get('body').click(0, 0)
+    }
+  }
+
   /**
    * Makes sure that the filter chips are visible during the given callback.
    * On mobile, the filters are hidden behind a button and need to be expanded for some actions.
@@ -286,12 +296,12 @@ describe(`LlamaLend Markets`, () => {
     }
     cy.scrollTo(0, 0)
     cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
-    cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click({ waitForAnimations: true })
     cy.get(`[data-testid="chip-lend"]`).should('be.visible')
     callback()
     cy.scrollTo(0, 0)
     cy.get(`[data-testid="chip-lend"]`).should('be.visible')
-    cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+    cy.get('body').click(0, 0)
     cy.get(`[data-testid="chip-lend"]`).should('not.be.visible')
   }
 

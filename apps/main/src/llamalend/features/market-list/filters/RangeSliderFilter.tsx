@@ -6,6 +6,7 @@ import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
@@ -48,6 +49,7 @@ export const RangeSliderFilter = <T,>({
     const [min, max] = (columnFilters[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
+  const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce(
     defaultValue,
@@ -69,10 +71,17 @@ export const RangeSliderFilter = <T,>({
     // this is not a real select, but we reuse the component so the design is correct
     <Select
       fullWidth
-      size="small"
+      size={isMobile ? 'medium' : 'small'}
       displayEmpty
       data-testid={`minimum-slider-filter-${id}`}
-      renderValue={() => <Typography variant="bodySBold">{range.map(format).join(' - ')}</Typography>}
+      renderValue={() => (
+        <Typography variant="bodySRegular">
+          {isMobile && `${title}: `}
+          <Typography component="span" variant="bodySBold">
+            {range.map(format).join(' - ')}
+          </Typography>
+        </Typography>
+      )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
       MenuProps={{ elevation: 3 }}
     >

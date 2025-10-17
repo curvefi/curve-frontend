@@ -15,16 +15,13 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { ChainFilterChip } from './chips/ChainFilterChip'
-import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
 import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
-import { MarketTypeFilterChips } from './chips/MarketTypeFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
 const LOCAL_STORAGE_KEY = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
@@ -105,10 +102,10 @@ export const LlamaMarketsTable = ({
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={
           <LendingMarketsFilters
-            columnFilters={columnFiltersById}
-            setColumnFilter={setColumnFilter}
             data={data}
             minLiquidity={minLiquidity}
+            columnFilters={columnFiltersById}
+            setColumnFilter={setColumnFilter}
           />
         }
         chips={
@@ -118,13 +115,16 @@ export const LlamaMarketsTable = ({
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
               resetFilters={resetFilters}
-            >
-              <MarketTypeFilterChips {...filterProps} />
-              <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-            </MarketFilterChipWrapper>
+              userHasPositions={userHasPositions}
+              hasFavorites={hasFavorites}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
+              data={data}
+              minLiquidity={minLiquidity}
+              {...filterProps}
+            />
           </>
         }
-        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )

@@ -6,9 +6,11 @@ import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
@@ -24,7 +26,9 @@ export const MultiSelectFilter = <T,>({
   setColumnFilter,
   data,
   defaultText,
+  defaultTextMobile,
   renderItem,
+  selectedItemRender,
   field,
   id,
 }: {
@@ -32,10 +36,13 @@ export const MultiSelectFilter = <T,>({
   setColumnFilter: (id: string, value: unknown) => void
   data: T[]
   defaultText: string
+  defaultTextMobile: string
   field: DeepKeys<T>
   id: LlamaMarketColumnId
   renderItem?: (value: string) => ReactNode
+  selectedItemRender?: (value: string) => ReactNode
 }) => {
+  const isMobile = useIsMobile()
   const selectRef = useRef<HTMLDivElement | null>(null)
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selectWidth] = useResizeObserver(selectRef) ?? []
@@ -77,7 +84,7 @@ export const MultiSelectFilter = <T,>({
         fullWidth
         value=""
         data-testid={`multi-select-filter-${id}`}
-        size="small"
+        size={isMobile ? 'medium' : 'small'}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             selectedOptions.map((optionId, index) => (
@@ -90,11 +97,11 @@ export const MultiSelectFilter = <T,>({
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
-                {renderItem?.(optionId) ?? optionId}
+                {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
               </MenuItem>
             ))
           ) : (
-            <Typography variant="bodySBold">{defaultText}</Typography>
+            <Typography variant="bodySBold">{isMobile ? defaultTextMobile : defaultText}</Typography>
           )
         }
       ></Select>
@@ -105,7 +112,10 @@ export const MultiSelectFilter = <T,>({
           onClose={close}
           anchorEl={selectRef.current}
           anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
-          slotProps={{ list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } } }}
+          slotProps={{
+            list: { sx: { minWidth: Math.round(selectWidth || 100) + 'px', paddingBlock: 0 } },
+            paper: { sx: { maxWidth: '100%' } },
+          }}
         >
           <Stack
             direction="row"
@@ -122,18 +132,23 @@ export const MultiSelectFilter = <T,>({
               sx={{ paddingInline: 0 }}
             >{t`Clear Selection`}</Button>
           </Stack>
-          {options.map((optionId) => (
-            <InvertOnHover hoverEl={menuRef.current} key={optionId}>
-              <MenuItem
-                ref={menuRef}
-                value={optionId}
-                className={selectedOptions?.includes(optionId) ? 'Mui-selected' : ''}
-                onClick={onItemClicked}
-              >
-                {renderItem?.(optionId) ?? optionId}
-              </MenuItem>
-            </InvertOnHover>
-          ))}
+          {options.map((optionId) => {
+            const isSelected = selectedOptions?.includes(optionId)
+            return (
+              <InvertOnHover hoverEl={menuRef.current} key={optionId}>
+                <MenuItem
+                  ref={menuRef}
+                  value={optionId}
+                  className={isSelected ? 'Mui-selected' : ''}
+                  onClick={onItemClicked}
+                  sx={{ justifyContent: 'space-between' }}
+                >
+                  {renderItem?.(optionId) ?? optionId}
+                  {isSelected && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+                </MenuItem>
+              </InvertOnHover>
+            )
+          })}
         </Menu>
       )}
     </>
