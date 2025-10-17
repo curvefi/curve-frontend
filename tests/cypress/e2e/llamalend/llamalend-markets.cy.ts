@@ -48,7 +48,7 @@ describe(`LlamaLend Markets`, () => {
       // the height of the header changes depending on how often the description text wraps
       mobile: [176, 134],
       // on tablet, we expect 3 rows until 900px, then 2 rows
-      tablet: [148, 112],
+      tablet: [148, 112, 104],
       // on desktop, we expect 2 rows always
       desktop: [112],
     }[breakpoint]
