@@ -13,12 +13,13 @@ import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useNavigate, useSearchParams, useParams, usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PageRouterSwap = () => {
   const props = useParams<NetworkUrlParams>()
   const push = useNavigate()
+  const pathname = usePathname() || ''
   const searchParams = useSearchParams()
   const searchParamsString = searchParams?.toString() || ''
   const { curveApi = null, connectState } = useConnection()
@@ -52,10 +53,11 @@ export const PageRouterSwap = () => {
     (to: string, from: string) => {
       const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
       if (search !== searchParamsString) {
-        push(getPath(props, `${ROUTE.PAGE_SWAP}${search}`))
+        const basePath = pathname.split('?')[0] // keep current app/network, only update query
+        push(`${basePath}${search}`)
       }
     },
-    [searchParamsString, push, props],
+    [searchParamsString, push, pathname],
   )
 
   // redirect to poolList if Swap is excluded from route
