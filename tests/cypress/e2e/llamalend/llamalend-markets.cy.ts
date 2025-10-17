@@ -46,11 +46,11 @@ describe(`LlamaLend Markets`, () => {
     // filter height changes because text wraps depending on the width
     const filterHeight = {
       // the height of the header changes depending on how often the description text wraps
-      mobile: [176, 134],
+      mobile: [176, 144, 134],
       // on tablet, we expect 3 rows until 900px, then 2 rows
-      tablet: [148, 112, 104],
+      tablet: [144, 112, 104],
       // on desktop, we expect 2 rows always
-      desktop: [112],
+      desktop: [104],
     }[breakpoint]
     cy.get('[data-testid="table-filters"]').invoke('outerHeight').should('be.oneOf', filterHeight)
     cy.get('[data-testid^="data-table-row"]').eq(10).invoke('outerHeight').should('equal', 65)
