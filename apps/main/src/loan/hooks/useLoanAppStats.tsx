@@ -20,7 +20,7 @@ export function useLoanAppStats(chainId: ChainId | undefined) {
   return [
     {
       label: 'TVL',
-      value: formatNumber(tvl?.tvl, { currency: 'USD', notation: 'compact' }),
+      value: formatNumber(tvl, { currency: 'USD', notation: 'compact' }),
     },
     {
       label: t`Daily volume`,
