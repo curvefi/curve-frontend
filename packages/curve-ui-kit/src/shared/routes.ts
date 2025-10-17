@@ -1,8 +1,8 @@
 import { t } from '@ui-kit/lib/i18n'
 import { AppPage, AppRoute, AppRoutes } from '@ui-kit/widgets/Header/types'
 
-export const PAGE_INTEGRATIONS = '/integrations'
-export const PAGE_LEGAL = '/legal'
+export const PAGE_INTEGRATIONS = '/integrations' as const
+export const PAGE_LEGAL = '/legal' as const
 
 export const DEX_ROUTES = {
   PAGE_SWAP: '/swap',
@@ -13,13 +13,13 @@ export const DEX_ROUTES = {
   PAGE_COMPENSATION: '/compensation',
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
-}
+} as const
 
 export const LEND_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
-}
+} as const
 
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
@@ -27,13 +27,13 @@ export const CRVUSD_ROUTES = {
   PAGE_LEGAL,
   PAGE_PSR: '/psr',
   PAGE_INTEGRATIONS,
-}
+} as const
 
 export const LLAMALEND_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
-}
+} as const
 
 export const DAO_ROUTES = {
   PAGE_VECRV_CREATE: '/vecrv/create',
@@ -45,7 +45,7 @@ export const DAO_ROUTES = {
   DISCUSSION: 'https://gov.curve.finance/',
   PAGE_LEGAL,
   PAGE_INTEGRATIONS,
-}
+} as const
 
 export const AppNames = ['dex', 'lend', 'crvusd', 'dao', 'llamalend'] as const
 export type AppName = (typeof AppNames)[number]

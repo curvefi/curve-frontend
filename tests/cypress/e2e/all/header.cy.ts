@@ -1,9 +1,11 @@
 import {
   API_LOAD_TIMEOUT,
   AppPath,
+  type AppRoute,
   checkIsDarkMode,
+  getRouteApp,
   LOAD_TIMEOUT,
-  oneAppPath,
+  oneAppRoute,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
   SCROLL_WIDTH,
@@ -26,19 +28,19 @@ describe('Header', () => {
 
   describe('Desktop', () => {
     let isDarkMode: boolean // when running locally, the dark mode might be the default
-    let appPath: AppPath
+    let route: AppRoute
 
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
-      appPath = oneAppPath()
-      cy.visit(`/${appPath}`, {
+      route = oneAppRoute()
+      cy.visit(`/${route}`, {
         onBeforeLoad: (win) => {
           win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`)
           isDarkMode = checkIsDarkMode(win)
         },
       })
-      waitIsLoaded(appPath)
+      waitIsLoaded(route)
     })
 
     it('should have the right size', () => {
@@ -81,7 +83,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['dao'].includes(appPath)) {
+      if (['dao'].includes(route)) {
         // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
@@ -94,16 +96,16 @@ describe('Header', () => {
   })
 
   describe('mobile or tablet', () => {
-    let appPath: AppPath
+    let route: AppRoute
 
     beforeEach(() => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
-      appPath = oneAppPath()
-      cy.visit(`/${appPath}`, {
+      route = oneAppRoute()
+      cy.visit(`/${route}`, {
         onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
       })
-      waitIsLoaded(appPath)
+      waitIsLoaded(route)
     })
 
     it(`should have the right size`, () => {
@@ -131,7 +133,7 @@ describe('Header', () => {
 
       cy.url().then((url) => {
         const pathname = new URL(url).pathname
-        const index = llamalendApps.includes(appPath) ? 1 : 0 // LlamaLend's first option is the default page
+        const index = llamalendApps.includes(getRouteApp(route)) ? 1 : 0 // LlamaLend's first option is the default page
         cy.get('[data-testid^="sidebar-item-"]').eq(index).should('have.attr', 'href').and('not.equal', pathname)
         cy.get('[data-testid^="sidebar-item-"]').eq(index).click()
         cy.url(LOAD_TIMEOUT).should('not.equal', url)
@@ -158,7 +160,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['dao'].includes(appPath)) {
+      if (['dao'].includes(route)) {
         // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
@@ -173,8 +175,8 @@ describe('Header', () => {
     })
   })
 
-  function waitIsLoaded(appPath: AppPath) {
-    const app = appPath || 'dex'
+  function waitIsLoaded(appPath: AppRoute) {
+    const app = getRouteApp(appPath)
     const llamalend = 'data-table-head'
     const id = { dao: 'proposal-title', crvusd: llamalend, lend: llamalend, llamalend, dex: 'inp-search-pools' }[app]
     cy.get(`[data-testid='${id}']`, API_LOAD_TIMEOUT).should('be.visible')
