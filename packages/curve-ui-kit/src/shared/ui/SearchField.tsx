@@ -12,6 +12,9 @@ type SearchFieldProps = TextFieldProps & {
   inputRef?: RefObject<HTMLInputElement | null>
 }
 
+/** Compares two strings, ignoring leading and trailing whitespace. */
+const searchFieldEquals = (a: string, b: string) => a.trim() === b.trim()
+
 /**
  * Search field with debounced search. It is cleared and focused when clicking the close button.
  */
@@ -26,7 +29,7 @@ export const SearchField = ({
   const [search, setSearch] = useUniqueDebounce<string>({
     defaultValue: value,
     callback: onSearch,
-    equals: (a, b) => a.trim() === b.trim(),
+    equals: searchFieldEquals,
   })
   const localInputRef = useRef<HTMLInputElement | null>(null)
   const ref = inputRef || localInputRef

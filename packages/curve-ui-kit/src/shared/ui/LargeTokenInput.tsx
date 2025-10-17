@@ -245,6 +245,9 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
+/** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
+const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
+
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -266,7 +269,7 @@ export const LargeTokenInput = ({
     callback: onBalance,
     debounceMs: Duration.FormDebounce,
     // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
-    equals: (a, b) => new BigNumber(a ?? 0).isEqualTo(b ?? 0),
+    equals: bigNumEquals,
   })
 
   const showSlider = !!maxBalance?.showSlider
