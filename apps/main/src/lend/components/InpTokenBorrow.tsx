@@ -91,7 +91,6 @@ const InpTokenBorrow = ({
         balance: decimal(maxRecv),
         symbol: tokenSymbol,
         notionalValueUsd: usdRate != null && maxRecv != null ? usdRate * +maxRecv : undefined,
-        showSlider: false,
       }}
       label={t`Borrow amount:`}
       balance={decimal(inpValue)}

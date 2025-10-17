@@ -5,6 +5,7 @@ import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
+import { t } from '@ui-kit/lib/i18n'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, type Amount, type Decimal } from '@ui-kit/utils'
@@ -46,6 +47,23 @@ const HelperMessage = ({ message, isError }: HelperMessageProps) => (
     )}
   </Box>
 )
+
+/** A chip can be something like 50% or 'Max', and is shown on the top right on hover on desktop or always visible on tablet and lower. */
+type InputChip = {
+  /** The chip button label. */
+  label: string
+  /** The function that returns the new input amount, possibly based on the max balance. */
+  newBalance: (maxBalance?: Amount) => Amount | undefined
+}
+
+type ChipsPreset = 'max' | 'range'
+const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
+  max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
+  range: [25, 50, 75, 100].map((p) => ({
+    label: `${p}%`,
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal, 4),
+  })),
+}
 
 type BalanceTextFieldProps<T> = {
   balance: T | undefined
@@ -102,16 +120,17 @@ export interface LargeTokenInputRef {
  * @property {boolean} [showBalance=true] - Whether to display the balance component.
  *                                        When true, shows the token balance and notional value.
  *                                        When false, hides the balance display.
- * @property {boolean} [showSlider=true] - Whether to display the percentage slider.
+ * @property {boolean} [showSlider=false] - Whether to display the percentage slider.
  *                                       When true, shows the slider for percentage-based input.
  *                                       When false, hides the slider but still allows direct input.
+ * @property {('max' | 'range' | InputChip[])} [chips] - Custom or preset chips to show.
  */
 type MaxBalanceProps<T> = Partial<
   Pick<BalanceProps<T>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
-  showChips?: boolean
+  chips?: ChipsPreset | InputChip[]
 }
 
 type Props<T> = DataType<T> & {
@@ -193,7 +212,17 @@ type Props<T> = DataType<T> & {
 }
 
 /**
- * Calculate the new balance based on max balance and percentage, rounding to specified decimals
+ * Calculates a new balance based on a percentage of the maximum balance.
+ *
+ * This function is used when users interact with percentage-based inputs (like sliders or percentage chips)
+ * to determine the corresponding token amount. It handles precision concerns and ensures the result
+ * never exceeds the maximum balance due to rounding.
+ *
+ * @param max - The maximum balance available (e.g., wallet balance)
+ * @param newPercentage - The percentage to calculate (0-100, can have decimals like "25.5")
+ * @param balanceDecimals - Optional number of decimal places to round to. If undefined, no rounding is applied
+ *
+ * @returns The calculated balance amount, maintaining the same type as the input `max`
  */
 function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, balanceDecimals: number | undefined): T {
   // Avoid loss of precision when clicking 'Max'
@@ -209,6 +238,13 @@ function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, b
 
 /**
  * Calculate percentage based on the new balance and round to 2 decimal places.
+ *
+ * This function is the inverse of `calculateNewBalance` and is used to update the slider
+ * position when the user directly inputs a balance amount. It converts the current balance
+ * to a percentage value that can be displayed on UI elements like sliders or progress bars.
+ *
+ * @param newBalance - The current balance amount to convert to percentage
+ * @param max - The maximum balance to calculate percentage against
  */
 const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
   new BigNumber(newBalance)
@@ -216,9 +252,6 @@ const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
     .times(100)
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
-
-/** Small chip buttons that set the input value to a certain percentage of the maxBalance */
-const EASY_CHIPS = [25, 50, 75, 100]
 
 export const LargeTokenInput = <T extends Amount>({
   ref,
@@ -239,9 +272,11 @@ export const LargeTokenInput = <T extends Amount>({
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
-  // Set defaults for showSlider and showBalance to true if maxBalance is provided
-  const showSlider = maxBalance && maxBalance.showSlider !== false
+  const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
+
+  const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
+  const showChips = !!chips?.length
 
   const handlePercentageChange = useCallback(
     (newPercentage: Decimal | undefined) => {
@@ -263,6 +298,13 @@ export const LargeTokenInput = <T extends Amount>({
       )
     },
     [maxBalance?.balance, setBalance],
+  )
+
+  const handleChip = useCallback(
+    (chip: InputChip) => {
+      handleBalanceChange(chip.newBalance(maxBalance?.balance) as T)
+    },
+    [handleBalanceChange, maxBalance?.balance],
   )
 
   /**
@@ -306,7 +348,7 @@ export const LargeTokenInput = <T extends Amount>({
     >
       <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
-        {(label || maxBalance?.showChips) && (
+        {(label || showChips) && (
           <Stack direction="row" alignItems="center">
             {label && (
               <Typography variant="bodyXsRegular" color="textSecondary">
@@ -314,7 +356,7 @@ export const LargeTokenInput = <T extends Amount>({
               </Typography>
             )}
 
-            {maxBalance?.showChips && (
+            {showChips && (
               <Stack
                 direction="row"
                 gap={Spacing.xxs}
@@ -330,14 +372,14 @@ export const LargeTokenInput = <T extends Amount>({
                   },
                 }}
               >
-                {EASY_CHIPS.map((percent) => (
+                {chips.map((chip) => (
                   <Chip
-                    key={`input-chip-${percent}`}
-                    label={`${percent}%`}
+                    key={`input-chip-${chip.label}`}
+                    label={chip.label}
                     size="extraSmall"
                     color="default"
                     clickable
-                    onClick={() => handlePercentageChange(`${percent}`)}
+                    onClick={() => handleChip(chip)}
                   ></Chip>
                 ))}
               </Stack>
@@ -375,7 +417,7 @@ export const LargeTokenInput = <T extends Amount>({
                 symbol={maxBalance?.symbol ?? ''}
                 balance={maxBalance?.balance}
                 notionalValueUsd={maxBalance?.notionalValueUsd}
-                max="off"
+                max="balance"
                 onMax={onMax}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />

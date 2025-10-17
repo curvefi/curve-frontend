@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { notFalsy } from '@curvefi/prices-api/objects.util'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -60,7 +59,7 @@ type BalanceTextProps<T> = {
 
 const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
-    <Tooltip title={t`Wallet balance`} body={notFalsy(balance?.toString(), symbol).join(' ')} clickable>
+    <Tooltip title={t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
       <Stack direction="row" gap={Spacing.xs} alignItems="center">
         <Typography
           className="balance"

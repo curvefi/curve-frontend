@@ -207,7 +207,6 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
           maxBalance={{
             balance: decimal(userBalances?.gauge),
             loading: !!signerAddress && typeof userBalances === 'undefined',
-            showSlider: false,
             notionalValueUsd: decimal(formValues?.amount),
             symbol: t`Vault shares`,
           }}

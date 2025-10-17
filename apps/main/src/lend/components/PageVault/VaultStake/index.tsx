@@ -223,7 +223,6 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
           maxBalance={{
             balance: decimal(userBalances?.vaultShares),
             loading: !!signerAddress && userBalances == null,
-            showSlider: false,
             notionalValueUsd: decimal(formValues?.amount),
             symbol: t`Vault shares`,
           }}
