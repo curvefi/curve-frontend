@@ -11,8 +11,8 @@ import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
 
 const Page = () => {
-  const props = useParams<NetworkUrlParams>()
-  const rChainId = useChainId(props.network)
+  const { network } = useParams<NetworkUrlParams>()
+  const rChainId = useChainId(network)
   const init = useStore((state) => state.integrations.init)
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
@@ -41,7 +41,7 @@ const Page = () => {
             <Spinner />
           </SpinnerWrapper>
         ) : (
-          <IntegrationsComp rChainId={rChainId} params={props} integrationsTags={integrationsTags} />
+          <IntegrationsComp rChainId={rChainId} integrationsTags={integrationsTags} />
         )}
       </ContainerContent>
     </Container>
