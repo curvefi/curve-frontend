@@ -1,7 +1,7 @@
+import { ChipProps } from '@mui/material/Chip'
 import { type GridProps } from '@mui/material/Grid'
 import { SelectableChip, type SelectableChipProps } from '@ui-kit/shared/ui/SelectableChip'
 import { ChipGridItem } from './ChipGridItem'
-import { ChipProps } from '@mui/material/Chip'
 
 /** A <GridItem> with a SelectableChip inside */
 export const GridChip = ({

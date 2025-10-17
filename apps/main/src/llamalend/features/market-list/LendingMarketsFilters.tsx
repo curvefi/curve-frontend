@@ -11,7 +11,7 @@ import { MultiSelectFilter } from './filters/MultiSelectFilter'
 import { RangeSliderFilter } from './filters/RangeSliderFilter'
 
 const { Spacing } = SizesAndSpaces
-const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 3, desktop: 2.4 } as const
+const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 12 / 4, desktop: 12 / 5 } as const
 
 /**
  * Displays a token with its icon and symbol.
@@ -39,7 +39,12 @@ export const LendingMarketsFilters = ({
   data: LlamaMarket[]
   minLiquidity?: number
 }) => (
-  <Grid container spacing={Spacing.sm} paddingBlockStart={Spacing.sm} paddingInline={Spacing.md}>
+  <Grid
+    container
+    spacing={Spacing.sm}
+    paddingBlockStart={Spacing.sm}
+    paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
+  >
     <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
       <MultiSelectFilter
         id={LlamaMarketColumnId.CollateralSymbol}

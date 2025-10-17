@@ -4,7 +4,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
 import { SearchField, SearchFieldProps } from '@ui-kit/shared/ui/SearchField'
-import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
+import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
 
@@ -27,9 +27,10 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
   const handleExpand = useCallback(() => {
     toggleExpanded?.()
     // Focus the input when expanding
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       searchInputRef.current?.focus()
-    }, 50)
+    }, Duration.Focus)
+    return () => clearTimeout(timeout)
   }, [toggleExpanded])
 
   const handleBlur = useCallback(() => {
@@ -52,7 +53,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       }}
     >
       {isExpandedOrValue ? (
-        <StyledSearchField
+        <SearchFieldWithTransition
           value={value}
           searchInputRef={searchInputRef}
           onChange={onChange}
@@ -78,7 +79,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
         maxWidth: '100%',
       }}
     >
-      <StyledSearchField
+      <SearchFieldWithTransition
         value={value}
         searchInputRef={searchInputRef}
         onChange={onChange}
@@ -92,7 +93,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
   )
 }
 
-const StyledSearchField = ({
+const SearchFieldWithTransition = ({
   isFocused,
   searchInputRef,
   onChange,

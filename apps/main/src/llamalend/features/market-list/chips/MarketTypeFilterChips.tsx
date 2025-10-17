@@ -1,9 +1,9 @@
 import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useMarketTypeFilter } from '../hooks/useMarketTypeFilter'
 import { GridChip } from './GridChip'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)

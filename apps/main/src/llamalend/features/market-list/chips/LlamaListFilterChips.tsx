@@ -1,17 +1,14 @@
 import { useAccount } from 'wagmi'
 import type { LlamaMarketKey, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 import { GridChip } from './GridChip'
-import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-
-const { Spacing } = SizesAndSpaces
 
 export const LlamaListFilterChips = ({
   userHasPositions,

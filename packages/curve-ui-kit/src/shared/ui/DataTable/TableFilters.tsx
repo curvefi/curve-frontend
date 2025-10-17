@@ -96,7 +96,7 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
         </Grid>
-        <Grid container size={12} gap={Spacing.sm} justifyContent="space-between">
+        <Grid container size={12} spacing={Spacing.sm} justifyContent="space-between">
           {chips}
         </Grid>
       </Grid>

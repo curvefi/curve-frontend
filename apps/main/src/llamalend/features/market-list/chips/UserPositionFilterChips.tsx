@@ -2,9 +2,9 @@ import type { LlamaMarketKey, LlamaMarketsResult } from '@/llamalend/entities/ll
 import Grid from '@mui/material/Grid'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { MarketTypeFilterChips } from './MarketTypeFilterChips'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
