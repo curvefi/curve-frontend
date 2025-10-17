@@ -50,11 +50,7 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
   )
 
   // Clear any existing timer
-  const cancel = () => {
-    if (timerRef.current !== null) {
-      clearTimeout(timerRef.current)
-    }
-  }
+  const cancel = useCallback(() => timerRef.current && clearTimeout(timerRef.current), [])
 
   // Sets the internal value, but calls the callback after a delay unless retriggered again.
   const setDebouncedValue = useCallback(
@@ -68,7 +64,7 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
         timerRef.current = null
       }, debounceMs)
     },
-    [callback, debounceMs],
+    [callback, cancel, debounceMs],
   )
 
   return [value, setDebouncedValue, cancel] as const
