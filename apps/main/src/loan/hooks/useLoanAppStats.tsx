@@ -1,7 +1,7 @@
 import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useAppStatsDailyVolume } from '@/loan/entities/appstats-daily-volume'
-import { useAppStatsTotalCrvusdSupply } from '@/loan/entities/appstats-total-crvusd-supply'
+import { useCrvUsdTotalSupply } from '@/loan/entities/appstats-total-crvusd-supply'
 import { useCrvUsdTvl } from '@/loan/entities/tvl'
 import networks from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
@@ -16,7 +16,7 @@ export function useLoanAppStats(chainId: ChainId | undefined) {
   const { data: tvl } = useCrvUsdTvl({ blockchainId })
   const { data: crvusdPrice } = useTokenUsdPrice({ blockchainId, contractAddress: CRVUSD_ADDRESS })
   const { data: dailyVolume } = useAppStatsDailyVolume({}, !!chainId)
-  const { data: crvusdTotalSupply } = useAppStatsTotalCrvusdSupply({ chainId })
+  const { data: crvusdTotalSupply } = useCrvUsdTotalSupply({ chainId })
   return [
     {
       label: 'TVL',
