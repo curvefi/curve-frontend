@@ -15,10 +15,10 @@ type Props = {
   onChange: (value: string) => void
   testId?: string
   toggleExpanded?: () => void
-  isExpandedOrValue: boolean
+  isExpanded: boolean
 }
 
-export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpandedOrValue = true }: Props) => {
+export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
   const isMobile = useIsMobile()
@@ -46,13 +46,13 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       sx={{
         display: 'flex',
         // on mobile when search is de-expanded, animation doesn't look good
-        transition: isMobile && !isExpandedOrValue ? 'none' : `${TransitionFunction}`,
-        flex: isExpandedOrValue ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
-        width: isExpandedOrValue ? 0 : `${ButtonSize.sm}`,
+        transition: isMobile && !isExpanded ? 'none' : `${TransitionFunction}`,
+        flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
+        width: isExpanded ? 0 : `${ButtonSize.sm}`,
         overflow: 'hidden',
       }}
     >
-      {isExpandedOrValue ? (
+      {isExpanded ? (
         <SearchFieldWithTransition
           value={value}
           searchInputRef={searchInputRef}
@@ -67,7 +67,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
         <TableButton
           onClick={handleExpand}
           icon={SearchIcon}
-          active={isExpandedOrValue}
+          active={isExpanded}
           testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
         />
       )}

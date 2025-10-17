@@ -92,7 +92,7 @@ export const TableFilters = <ColumnIds extends string>({
               onChange={onSearch}
               testId={filterExpandedKey}
               toggleExpanded={toggleSearchExpanded}
-              isExpandedOrValue={isExpandedOrValue}
+              isExpanded={isExpandedOrValue}
             />
           )}
         </Grid>
