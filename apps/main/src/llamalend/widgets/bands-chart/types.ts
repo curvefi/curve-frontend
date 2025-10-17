@@ -32,3 +32,31 @@ export type BandsBalancesData = {
   borrowed?: string // Optional
   collateralBorrowedUsd?: number // Optional
 }
+
+export type BandsChartPalette = {
+  backgroundColor: string
+  textColor: string
+  textColorInverted: string
+  gridColor: string
+  marketBandColor: string
+  userBandColor: string
+  borderColor: string
+  userRangeHighlightColor: string
+  userRangeLabelBackgroundColor: string
+  oraclePriceLineColor: string
+  liquidationBandOutlineColor: string
+}
+
+export type UserBandsPriceRange = {
+  minUserIdx: number
+  maxUserIdx: number
+  upperBandPriceUp: number
+  lowerBandPriceDown: number
+} | null
+
+export type DerivedChartData = {
+  yAxisData: number[]
+  marketData: number[]
+  userData: number[]
+  isLiquidation: boolean[]
+}
