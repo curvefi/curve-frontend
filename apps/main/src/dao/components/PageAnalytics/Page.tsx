@@ -3,7 +3,7 @@ import Analytics from '@/dao/components/PageAnalytics/index'
 import { breakpoints } from '@ui/utils'
 
 export const PageAnalytics = () => (
-  <Container>
+  <Container data-testid="analytics-page">
     <Analytics />
   </Container>
 )

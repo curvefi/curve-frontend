@@ -1,11 +1,9 @@
+import { AppRoute, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
   AppPath,
-  type AppRoute,
   checkIsDarkMode,
-  getRouteApp,
   LOAD_TIMEOUT,
-  oneAppRoute,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
   SCROLL_WIDTH,
@@ -175,11 +173,8 @@ describe('Header', () => {
     })
   })
 
-  function waitIsLoaded(appPath: AppRoute) {
-    const app = getRouteApp(appPath)
-    const llamalend = 'data-table-head'
-    const id = { dao: 'proposal-title', crvusd: llamalend, lend: llamalend, llamalend, dex: 'inp-search-pools' }[app]
-    cy.get(`[data-testid='${id}']`, API_LOAD_TIMEOUT).should('be.visible')
+  function waitIsLoaded(route: AppRoute) {
+    cy.get(`[data-testid='${getRouteTestId(route)}']`, API_LOAD_TIMEOUT).should('be.visible')
   }
 
   function switchEthToArbitrum() {

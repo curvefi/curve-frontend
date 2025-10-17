@@ -104,7 +104,7 @@ export const PageRouterSwap = () => {
   if (!provider) {
     return (
       <Box display="flex" fillWidth flexJustifyContent="center">
-        <ConnectWalletWrapper>
+        <ConnectWalletWrapper data-testid="swap-page">
           <ConnectWalletPrompt
             description="Connect wallet to swap"
             connectText="Connect Wallet"
@@ -117,7 +117,7 @@ export const PageRouterSwap = () => {
     )
   }
   return (
-    <StyledQuickSwapWrapper variant="primary" shadowed>
+    <StyledQuickSwapWrapper variant="primary" shadowed data-testid="swap-page">
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}

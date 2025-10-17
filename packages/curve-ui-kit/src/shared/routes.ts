@@ -24,8 +24,8 @@ export const LEND_ROUTES = {
 export const CRVUSD_ROUTES = {
   PAGE_MARKETS: '/markets',
   PAGE_CRVUSD_STAKING: '/scrvUSD',
-  PAGE_LEGAL,
   PAGE_PSR: '/psr',
+  PAGE_LEGAL,
   PAGE_INTEGRATIONS,
 } as const
 

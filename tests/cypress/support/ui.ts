@@ -1,5 +1,4 @@
 import { oneInt, oneOf } from '@cy/support/generators'
-import { CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES, LLAMALEND_ROUTES } from '@ui-kit/shared/routes'
 
 export const [MIN_WIDTH, TABLET_BREAKPOINT, DESKTOP_BREAKPOINT, MAX_WIDTH] = [320, 820, 1200, 2000]
 const [MIN_HEIGHT, MAX_HEIGHT] = [600, 1000]
@@ -37,18 +36,6 @@ const oneDexPath = () => oneOf('', 'dex')
 export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd', 'llamalend'] as const))
 
 export type AppPath = ReturnType<typeof oneAppPath>
-export type AppRoute = `${AppPath}/${string}`
-
-export const oneAppRoute = () =>
-  ({
-    dex: () => `dex${oneOf(...Object.values(DEX_ROUTES))}`,
-    lend: () => `lend${oneOf(...Object.values(LEND_ROUTES))}`,
-    crvusd: () => `crvusd${oneOf(...Object.values(CRVUSD_ROUTES))}`,
-    llamalend: () => `llamalend${oneOf(...Object.values(LLAMALEND_ROUTES))}`,
-    dao: () => `dao${oneOf(...Object.values(DAO_ROUTES))}`,
-  })[oneAppPath() || 'dex']() as AppRoute
-
-export const getRouteApp = (route: AppRoute) => route.split('/')[0] as Exclude<AppPath, ''>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }
 export const API_LOAD_TIMEOUT = { timeout: 120000 } // unfortunately the prices API can be REAL SLOW 😭
