@@ -36,10 +36,7 @@ export const useLoanPositionDetails = ({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
-  const userState = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState)
-  const collateral = userState?.collateral
-  const stablecoin = userState?.stablecoin
-  const debt = userState?.debt
+  const { collateral, stablecoin, debt } = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState) ?? {}
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
   const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
   const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)

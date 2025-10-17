@@ -14,7 +14,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@curvefi/api": "2.68.10",
+    "@curvefi/api": "2.68.11",
     "fastify": "^5.6.1"
   },
   "devDependencies": {

@@ -753,18 +753,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.10":
-  version: 2.68.10
-  resolution: "@curvefi/api@npm:2.68.10"
-  dependencies:
-    "@curvefi/ethcall": "npm:^6.0.16"
-    bignumber.js: "npm:^9.3.1"
-    ethers: "npm:^6.15.0"
-    memoizee: "npm:^0.4.17"
-  checksum: 10c0/534d83da3056866e41b7a9879e625d077b3312a2865f25ce514bd140067d4cd524bd7821f284e3734be599ca880b3fa064bf449187bcdbf141083d093ba6d396
-  languageName: node
-  linkType: hard
-
 "@curvefi/api@npm:2.68.11":
   version: 2.68.11
   resolution: "@curvefi/api@npm:2.68.11"
@@ -14664,7 +14652,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
-    "@curvefi/api": "npm:2.68.10"
+    "@curvefi/api": "npm:2.68.11"
     "@types/node": "npm:24.7.1"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
