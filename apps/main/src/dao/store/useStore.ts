@@ -1,5 +1,4 @@
-import type { SetState, GetState } from 'zustand'
-import { create } from 'zustand'
+import { create, StoreApi } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import createAnalyticsSlice, { AnalyticsSlice } from '@/dao/store/createAnalyticsSlice'
 import createAppSlice, { AppSlice } from '@/dao/store/createAppSlice'
@@ -10,7 +9,7 @@ import createLockedCrvSlice, { LockedCrvSlice } from './createLockedCrvSlice'
 
 export type State = AppSlice & ProposalsSlice & UserSlice & GaugesSlice & AnalyticsSlice & LockedCrvSlice
 
-const store = (set: SetState<State>, get: GetState<State>): State => ({
+const store = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): State => ({
   ...createAppSlice(set, get),
   ...createProposalsSlice(set, get),
   ...createGaugesSlice(set, get),

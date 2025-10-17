@@ -66,7 +66,8 @@ const Page = () => {
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 

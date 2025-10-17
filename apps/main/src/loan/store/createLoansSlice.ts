@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
@@ -52,7 +52,7 @@ const DEFAULT_STATE: SliceState = {
   userWalletBalancesLoading: false,
 }
 
-const createLoansSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

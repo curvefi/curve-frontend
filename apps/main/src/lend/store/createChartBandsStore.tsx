@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { State } from '@/lend/store/useStore'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -23,7 +23,7 @@ const DEFAULT_STATE: SliceState = {
   xAxisDisplayType: 'price',
 }
 
-const createChartBandsSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createChartBandsSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
@@ -33,7 +33,7 @@ const createChartBandsSlice = (set: SetState<State>, get: GetState<State>) => ({
     setStateByKey: <T,>(key: StateKey, value: T) => {
       get().setAppStateByKey(sliceKey, key, value)
     },
-    setStateByKeys: <T,>(sliceState: Partial<SliceState>) => {
+    setStateByKeys: (sliceState: Partial<SliceState>) => {
       get().setAppStateByKeys(sliceKey, sliceState)
     },
     resetState: () => {

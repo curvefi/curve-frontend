@@ -27,7 +27,9 @@ const GaugeWeightDistribution = ({ isUserVotes, userAddress }: GaugeWeightDistri
     chainId: Chain.Ethereum, // DAO is only used on mainnet
     userAddress: userAddress ?? '',
   })
-  const { getGauges, gaugesLoading, gaugeMapper } = useStore((state) => state.gauges)
+  const getGauges = useStore((state) => state.gauges.getGauges)
+  const gaugesLoading = useStore((state) => state.gauges.gaugesLoading)
+  const gaugeMapper = useStore((state) => state.gauges.gaugeMapper)
 
   const isLoading = isUserVotes ? userGaugeWeightsLoading : gaugesLoading === 'LOADING'
   const isError = isUserVotes ? userGaugeWeightsError : gaugesLoading === 'ERROR'

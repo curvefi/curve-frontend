@@ -21,13 +21,15 @@ export const PageRouterSwap = () => {
   const push = useNavigate()
   const pathname = usePathname() || ''
   const searchParams = useSearchParams()
+  const searchParamsString = searchParams?.toString() || ''
   const { curveApi = null, connectState } = useConnection()
   const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
   const getNetworkConfigFromApi = useStore((state) => state.getNetworkConfigFromApi)
-  const routerCached = useStore((state) => state.storeCache.routerFormValues[rChainId])
+  const routerCachedFromAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.fromAddress)
+  const routerCachedToAddress = useStore((state) => state.storeCache.routerFormValues[rChainId]?.toAddress)
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
 
@@ -50,12 +52,12 @@ export const PageRouterSwap = () => {
   const redirect = useCallback(
     (to: string, from: string) => {
       const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
-      if (search !== searchParams?.toString()) {
+      if (search !== searchParamsString) {
         const basePath = pathname.split('?')[0] // keep current app/network, only update query
         push(`${basePath}${search}`)
       }
     },
-    [searchParams, push, pathname],
+    [searchParamsString, push, pathname],
   )
 
   // redirect to poolList if Swap is excluded from route
@@ -82,8 +84,8 @@ export const PageRouterSwap = () => {
           !isValidParamsToAddress ||
           paramsToAddress === paramsFromAddress
         ) {
-          const fromAddress = routerCached?.fromAddress ?? routerDefault.fromAddress
-          const toAddress = routerCached?.toAddress ?? routerDefault.toAddress
+          const fromAddress = routerCachedFromAddress ?? routerDefault.fromAddress
+          const toAddress = routerCachedToAddress ?? routerDefault.toAddress
           if (!!toAddress && !!fromAddress) redirect(toAddress, fromAddress)
         } else {
           setLoaded(true)
@@ -99,8 +101,8 @@ export const PageRouterSwap = () => {
     paramsMaxSlippage,
     rChainId,
     tokensMapperStr,
-    routerCached?.fromAddress,
-    routerCached?.toAddress,
+    routerCachedFromAddress,
+    routerCachedToAddress,
   ])
 
   if (!provider) {

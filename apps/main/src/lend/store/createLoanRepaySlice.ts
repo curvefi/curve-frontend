@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormDetailInfoLeverage, FormStatus, FormValues } from '@/lend/components/PageLoanManage/LoanRepay/types'
 import {
   _parseValues,
@@ -67,7 +67,7 @@ const DEFAULT_STATE: SliceState = {
 const { getUserActiveKey, isTooMuch } = helpers
 const { loanRepay } = apiLending
 
-const createLoanRepaySlice = (set: SetState<State>, get: GetState<State>): LoanRepaySlice => ({
+const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LoanRepaySlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

@@ -1,4 +1,4 @@
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
@@ -44,7 +44,7 @@ const DEFAULT_STATE: SliceState = {
 
 const TIMEOUT_MS = 4000
 
-const createCacheSlice = (_: SetState<State>, get: GetState<State>): CacheSlice => ({
+const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['getState']): CacheSlice => ({
   storeCache: {
     ...DEFAULT_STATE,
 

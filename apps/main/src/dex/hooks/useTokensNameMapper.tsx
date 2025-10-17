@@ -3,16 +3,14 @@ import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 
 const useTokensNameMapper = (rChainId: ChainId | '') => {
-  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId] ?? {})
-  const tokensNameMapperStr = useMemo(
-    () =>
-      Object.keys(tokensNameMapper).reduce((str, address) => {
-        str += address.charAt(5)
-        return str
-      }, ''),
-    [tokensNameMapper],
-  )
-  return { tokensNameMapper, tokensNameMapperStr }
+  const tokensNameMapper = useStore((state) => state.tokens.tokensNameMapper[rChainId])
+  return {
+    tokensNameMapper: tokensNameMapper || {},
+    tokensNameMapperStr: useMemo(
+      () => Object.keys(tokensNameMapper || {}).reduce((str, address) => str + address.charAt(5), ''),
+      [tokensNameMapper],
+    ),
+  }
 }
 
 export default useTokensNameMapper

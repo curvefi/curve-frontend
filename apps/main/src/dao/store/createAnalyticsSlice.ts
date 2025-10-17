@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { State } from '@/dao/store/useStore'
 import { FetchingState, TopHoldersSortBy, AllHoldersSortBy } from '@/dao/types/dao.types'
 import { type Locker, type LocksDaily, getLocksDaily, getLockers } from '@curvefi/prices-api/dao'
@@ -83,7 +83,7 @@ const DEFAULT_STATE: SliceState = {
   },
 }
 
-const createAnalyticsSlice = (set: SetState<State>, get: GetState<State>): AnalyticsSlice => ({
+const createAnalyticsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): AnalyticsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     getVeCrvFees: async () => {

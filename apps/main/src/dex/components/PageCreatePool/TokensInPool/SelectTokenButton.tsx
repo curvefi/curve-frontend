@@ -53,8 +53,9 @@ const SelectTokenButton = ({
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
   const updateUserAddedTokens = useStore((state) => state.createPool.updateUserAddedTokens)
 
-  const { basePools, basePoolsLoading } = useStore((state) => state.pools)
-  const { swapType } = useStore((state) => state.createPool)
+  const basePools = useStore((state) => state.pools.basePools)
+  const basePoolsLoading = useStore((state) => state.pools.basePoolsLoading)
+  const swapType = useStore((state) => state.createPool.swapType)
 
   const [error, setError] = useState<string>()
   const [filterValue, setFilterValue] = useState('')

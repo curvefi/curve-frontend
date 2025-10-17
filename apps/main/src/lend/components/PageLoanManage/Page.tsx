@@ -54,7 +54,8 @@ const Page = () => {
   const fetchAllMarketDetails = useStore((state) => state.markets.fetchAll)
   const fetchAllUserMarketDetails = useStore((state) => state.user.fetchAll)
   const setMarketsStateKey = useStore((state) => state.markets.setStateByKey)
-  const { chartExpanded, setChartExpanded } = useStore((state) => state.ohlcCharts)
+  const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
+  const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect } = useWallet()
 
   const { signerAddress } = api ?? {}

@@ -1,7 +1,7 @@
 import { Contract, Interface, JsonRpcProvider } from 'ethers'
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { ExchangeOutput, FormStatus, FormValues, RouterSwapOutput } from '@/dex/components/PagePool/Swap/types'
 import {
   DEFAULT_EST_GAS,
@@ -79,7 +79,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createPoolSwapSlice = (set: SetState<State>, get: GetState<State>): PoolSwapSlice => ({
+const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): PoolSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
