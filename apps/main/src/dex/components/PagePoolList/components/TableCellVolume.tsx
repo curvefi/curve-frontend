@@ -4,7 +4,7 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 
 type Props = {
   isHighLight: boolean
-  volumeCached: { value: string } | undefined
+  volumeCached?: { value: string }
   volume: Volume | undefined
 }
 

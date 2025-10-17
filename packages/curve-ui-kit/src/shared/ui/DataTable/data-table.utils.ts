@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
   type useReactTable,
 } from '@tanstack/react-table'
+import type { Table } from '@tanstack/table-core'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -92,3 +93,5 @@ export function getCellSx<T extends TableItem>({
   }
   return [sx, showCollapseIcon ? wrapperSx : {}]
 }
+
+export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)

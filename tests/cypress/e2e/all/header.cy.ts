@@ -176,7 +176,7 @@ describe('Header', () => {
   function waitIsLoaded(appPath: AppPath) {
     const app = appPath || 'dex'
     const llamalend = 'data-table-head'
-    const id = { dao: 'proposal-title', crvusd: llamalend, lend: llamalend, llamalend, dex: 'inp-search-pools' }[app]
+    const id = { dao: 'proposal-title', crvusd: llamalend, lend: llamalend, llamalend, dex: 'table-text-search' }[app]
     cy.get(`[data-testid='${id}']`, API_LOAD_TIMEOUT).should('be.visible')
   }
 
