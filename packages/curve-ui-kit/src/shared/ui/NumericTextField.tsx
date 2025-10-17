@@ -109,9 +109,9 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
       onBlur={() => {
         // Replace a sole invalid values with just empty input as they're not really valid.
         const invalidValues = ['-', '.', ',', '']
-        const finalValue = !invalidValues.includes(inputValue)
-          ? (clamp(inputValue, min, max).toString() as Decimal)
-          : undefined
+        const finalValue = invalidValues.includes(inputValue)
+          ? undefined
+          : (clamp(inputValue, min, max).toString() as Decimal)
         setInputValue(getDisplayValue(finalValue))
 
         // Also emit the changed event, because due to clamping and such the final value
