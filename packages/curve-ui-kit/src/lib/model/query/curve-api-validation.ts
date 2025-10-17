@@ -1,6 +1,6 @@
-import { enforce, group, test } from 'vest'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import { chainValidationGroup } from './chain-validation'
 import { ChainParams } from './root-keys'
 

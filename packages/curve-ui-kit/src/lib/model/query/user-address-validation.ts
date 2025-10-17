@@ -1,6 +1,5 @@
-import { enforce, group, test } from 'vest'
-import { isAddress } from 'viem'
 import { createValidationSuite } from '@ui-kit/lib/validation'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import { UserParams } from './root-keys'
 
 export const userAddressValidationGroup = <T extends string>({ userAddress }: UserParams<T>) =>
@@ -11,7 +10,7 @@ export const userAddressValidationGroup = <T extends string>({ userAddress }: Us
 
     test('userAddress', 'Invalid EVM address', () => {
       if (userAddress) {
-        enforce(isAddress(userAddress)).equals(true)
+        enforce(userAddress).isAddress()
       }
     })
   })
