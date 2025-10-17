@@ -82,7 +82,7 @@ export const MultiSelectFilter = <T,>({
         fullWidth
         value=""
         data-testid={`multi-select-filter-${id}`}
-        size="small"
+        size={isMobile ? 'medium' : 'small'}
         renderValue={() =>
           selectedOptions?.length && selectedOptions.length < options.length ? (
             selectedOptions.map((optionId, index) => (

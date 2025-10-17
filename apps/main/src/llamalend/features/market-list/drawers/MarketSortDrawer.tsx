@@ -13,7 +13,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, ButtonSize } = SizesAndSpaces
 
 type Props = {
   onSortingChange: OnChangeFn<SortingState>
@@ -66,7 +66,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
                 value={id}
                 className={isSelected ? 'Mui-selected' : ''}
                 onClick={() => handleSort(id, label)}
-                sx={{ justifyContent: 'space-between' }}
+                sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
               >
                 <Typography component="span" variant="bodyMBold">
                   {label}

@@ -71,7 +71,7 @@ export const RangeSliderFilter = <T,>({
     // this is not a real select, but we reuse the component so the design is correct
     <Select
       fullWidth
-      size="small"
+      size={isMobile ? 'medium' : 'small'}
       displayEmpty
       data-testid={`minimum-slider-filter-${id}`}
       renderValue={() => (
