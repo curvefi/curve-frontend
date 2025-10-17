@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { CLASS_BORDERLESS, SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { NumericTextField } from './NumericTextField'
 
 const { Spacing } = SizesAndSpaces
@@ -59,11 +59,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       value={percentage}
       min="0"
       max="100"
-      onChange={(newPercentage) => {
-        // Temporary values may not be valid bignums, and we only want to trigger the change event when it is.
-        const bigNum = new BigNumber(newPercentage!)
-        return onChange?.(bigNum.isNaN() ? undefined : (bigNum.toString() as Decimal))
-      }}
+      onChange={(newPercentage) => onChange?.(decimal(newPercentage))}
       onBlur={(newPercentage) => onCommit?.(newPercentage)}
       disabled={disabled}
       slotProps={{
