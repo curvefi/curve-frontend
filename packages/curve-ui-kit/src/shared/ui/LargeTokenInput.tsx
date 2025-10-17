@@ -291,17 +291,14 @@ export const LargeTokenInput = ({
 
   const handleBalanceChange = useCallback(
     (newBalance: string | undefined) => {
-      // The number may not be a valid number, e.g. if the user is typing "5."
-      // If so, cancel the debounce such that the input won't reset to the last valid value (5)
-      if (decimal(newBalance) == null) {
+      // In case the input is somehow invalid, although we do our best to sanitize it in NumericTextField,
+      // we cancel the debounce such that the input won't reset while still typing.
+      const decimalBalance = decimal(newBalance)
+      if (decimalBalance == null) {
         cancelSetBalance()
         return
       }
 
-      // We're treating the newBalance string as a Decimal to keep original formatting such as "5." or "0.00",
-      // given that bignumber.js removes trailing decimal points and zeros. Usually good, but not in this case.
-      // We've already verified above that it's a valid number.
-      const decimalBalance = newBalance as Decimal
       setBalance(decimalBalance)
       setPercentage(
         maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,

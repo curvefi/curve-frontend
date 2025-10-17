@@ -5,15 +5,19 @@ describe('decimal', () => {
   it('handles basic, normal numbers', () => {
     expect(decimal('1')).toBe('1')
     expect(decimal('3.14')).toBe('3.14')
-    expect(decimal('-4.20')).toBe('-4.2') // bignumber.js removes trailing zeros
-    expect(decimal('1.55e20')).toBe('1.55e+20') // bignumber.js adds the plus sign for positive exponents
+    expect(decimal('-4.20')).toBe('-4.20')
+    expect(decimal('1.55e20')).toBe('1.55e20')
     expect(decimal('1e-10')).toBe('1e-10')
   })
 
   it('handles zero and negative zero', () => {
     expect(decimal('0')).toBe('0')
-    expect(decimal('0.00')).toBe('0')
-    expect(decimal('-0')).toBe('0') // bignumber.js removes the minus sign, I think that's ok?
+    expect(decimal('0.00')).toBe('0.00')
+    expect(decimal('-0')).toBe('-0')
+  })
+
+  it('handles incomplete numbers', () => {
+    expect(decimal('5.')).toBe('5.') // trailing decimal still converts fine to numbers
   })
 
   it.each(['Infinity', '-Infinity', undefined, null, '', '?', '-', NaN])('handles edge cases', (invalidCharacter) => {
