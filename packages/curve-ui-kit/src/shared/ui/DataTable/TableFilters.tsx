@@ -1,4 +1,4 @@
-import { ReactNode, useRef } from 'react'
+import { ReactNode, useMemo, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
@@ -52,12 +52,13 @@ export const TableFilters = <ColumnIds extends string>({
   const isMobile = useIsMobile()
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
+  const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
   return (
     <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
-        {!(isSearchExpanded && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
+        {!(isExpandedOrValue && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
         <Grid
-          size={{ mobile: isSearchExpanded ? 12 : 'auto', tablet: 6 }}
+          size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
           display="flex"
           justifyContent="flex-end"
           gap={Spacing.xs}
@@ -87,7 +88,7 @@ export const TableFilters = <ColumnIds extends string>({
               onChange={onSearch}
               testId={filterExpandedKey}
               toggleExpanded={toggleSearchExpanded}
-              isExpanded={isSearchExpanded}
+              isExpandedOrValue={isExpandedOrValue}
             />
           )}
         </Grid>

@@ -14,11 +14,11 @@ type Props = {
   value: string
   onChange: (value: string) => void
   testId?: string
-  toggleExpanded: () => void
-  isExpanded: boolean
+  toggleExpanded?: () => void
+  isExpandedOrValue: boolean
 }
 
-export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {
+export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpandedOrValue = true }: Props) => {
   const searchInputRef = useRef<HTMLInputElement>(null)
   const [isFocused, onFocus, onBlur] = useSwitch()
   const isMobile = useIsMobile()
@@ -38,26 +38,20 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
     if (collapsible && !value) {
       toggleExpanded?.()
     }
-  }, [onBlur, collapsible, value, toggleExpanded])
+  }, [onBlur, value, collapsible, toggleExpanded])
 
   return collapsible ? (
     <Box
       sx={{
         display: 'flex',
         // on mobile when search is de-expanded, animation doesn't look good
-        transition: isMobile && !isExpanded ? 'none' : TransitionFunction,
-        flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
-        width: isExpanded ? 0 : `${ButtonSize.sm}`,
+        transition: isMobile && !isExpandedOrValue ? 'none' : `${TransitionFunction}`,
+        flex: isExpandedOrValue ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
+        width: isExpandedOrValue ? 0 : `${ButtonSize.sm}`,
+        overflow: 'hidden',
       }}
     >
-      {!isExpanded ? (
-        <TableButton
-          onClick={handleExpand}
-          icon={SearchIcon}
-          active={isExpanded}
-          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
-        />
-      ) : (
+      {isExpandedOrValue ? (
         <StyledSearchField
           value={value}
           searchInputRef={searchInputRef}
@@ -68,12 +62,19 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
           testId={testId}
           sx={{ flex: '1 1 auto', minWidth: 0 }}
         />
+      ) : (
+        <TableButton
+          onClick={handleExpand}
+          icon={SearchIcon}
+          active={isExpandedOrValue}
+          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
+        />
       )}
     </Box>
   ) : (
     <Box
       sx={{
-        width: '478px',
+        width: { mobile: '100%', tablet: '478px' },
         maxWidth: '100%',
       }}
     >
