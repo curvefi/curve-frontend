@@ -3,9 +3,11 @@ import { t } from '@ui-kit/lib/i18n'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useMarketTypeFilter } from '../hooks/useMarketTypeFilter'
 import { GridChip } from './GridChip'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
+  const isMobile = useIsMobile()
   return (
     <>
       <GridChip
@@ -14,6 +16,7 @@ export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
         selected={marketTypes.Mint}
         toggle={toggleMarkets.Mint}
         data-testid="chip-mint"
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
       <GridChip
         label={t`Lend Markets`}
@@ -21,6 +24,7 @@ export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
         selected={marketTypes.Lend}
         toggle={toggleMarkets.Lend}
         data-testid="chip-lend"
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
     </>
   )

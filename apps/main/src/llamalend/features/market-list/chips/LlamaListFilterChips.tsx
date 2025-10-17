@@ -9,6 +9,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 import { GridChip } from './GridChip'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 
 const { Spacing } = SizesAndSpaces
 
@@ -25,6 +26,7 @@ export const LlamaListFilterChips = ({
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPositions, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
+  const isMobile = useIsMobile()
   return (
     <>
       {isConnected && (
@@ -37,6 +39,7 @@ export const LlamaListFilterChips = ({
           data-testid="chip-my-markets"
           disabled={!userHasPositions}
           size={{ mobile: 12, tablet: 'auto' }}
+          selectableChipSize={isMobile ? 'large' : 'small'}
         />
       )}
       <GridChip
@@ -47,6 +50,7 @@ export const LlamaListFilterChips = ({
         icon={<HeartIcon />}
         data-testid="chip-favorites"
         disabled={!hasFavorites}
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
       <GridChip
         label={t`Points`}
@@ -55,6 +59,7 @@ export const LlamaListFilterChips = ({
         onDelete={toggleRewards}
         icon={<PointsIcon />}
         data-testid="chip-rewards"
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
     </>
   )
