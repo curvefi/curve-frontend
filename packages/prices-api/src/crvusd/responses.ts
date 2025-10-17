@@ -183,3 +183,8 @@ export type GetUserCollateralEventsResponse = {
     },
   ]
 }
+
+export type GetCrvUsdTvlResponse = {
+  chain: Chain
+  tvl: number
+}
