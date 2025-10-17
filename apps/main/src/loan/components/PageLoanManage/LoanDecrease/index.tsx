@@ -303,7 +303,6 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
-            showSlider: false,
             ...(stablecoinUsdRate != null &&
               userWalletBalances.stablecoin != null && {
                 notionalValueUsd: stablecoinUsdRate * +userWalletBalances.stablecoin,

@@ -461,8 +461,7 @@ const Swap = ({
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
-                showSlider: false,
-                showChips: true,
+                chips: 'range',
                 ...(toUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
                 ...(formValues.fromAddress.toLowerCase() === ethAddress && {
@@ -590,7 +589,6 @@ const Swap = ({
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
-              showSlider: false,
               ...(toUsdRate != null &&
                 userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
             }}

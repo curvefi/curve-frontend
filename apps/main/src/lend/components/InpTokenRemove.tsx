@@ -106,7 +106,6 @@ const InpTokenRemove = ({
         loading: tokenBalance == null,
         balance: decimal(maxRemovable),
         symbol: tokenSymbol,
-        showSlider: false,
         notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
       }}
       balance={decimal(inpValue)}

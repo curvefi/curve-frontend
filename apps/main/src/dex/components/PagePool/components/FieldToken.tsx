@@ -103,7 +103,6 @@ const FieldToken = ({
           loading: isMaxLoading,
           onMax,
           showBalance: showAvailableBalance,
-          showSlider: false,
           symbol: token,
         },
       })}
