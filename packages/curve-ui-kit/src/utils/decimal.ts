@@ -1,3 +1,5 @@
+import { BigNumber } from 'bignumber.js'
+
 /**
  * A template literal type representing a decimal number as a string.
  * This type ensures that the string consists of numeric characters, optionally including a decimal point.
@@ -18,14 +20,17 @@ export type Decimal = `${number}`
  */
 export type Amount = number | Decimal
 
-/**
- * Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values.
- */
+/** Converts a string to a number, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: string | undefined | null): Decimal | undefined => {
-  if (!['', null, undefined, '-', '?'].includes(value)) {
-    const number = Number(value)
-    if (Number.isFinite(number)) {
-      return value as Decimal
+  if (!['', null, undefined, '-', '?', 'Infinity', '-Infinity'].includes(value)) {
+    const number = new BigNumber(value!)
+
+    if (!number.isNaN()) {
+      // Using .toString() would convert really big numbers to exponentials, which we don't want,
+      // unless the original number was an exponential in the first place.
+      return value!.includes('e') || value!.includes('E')
+        ? (number.toExponential() as Decimal)
+        : (number.toFixed() as Decimal)
     }
   }
 }
