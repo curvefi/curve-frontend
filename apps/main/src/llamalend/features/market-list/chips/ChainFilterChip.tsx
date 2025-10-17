@@ -35,8 +35,7 @@ export const ChainFilterChip = ({
   return (
     <Grid
       container
-      rowSpacing={Spacing.xs}
-      columnSpacing={Spacing.xs}
+      spacing={Spacing.xs}
       size={{ mobile: 12, tablet: 'auto' }}
       sx={{
         flexWrap: { mobile: 'nowrap', tablet: 'wrap' },

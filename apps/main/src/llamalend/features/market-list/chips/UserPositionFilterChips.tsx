@@ -4,6 +4,9 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { MarketRateType } from '@ui-kit/types/market'
 import { MarketTypeFilterChips } from './MarketTypeFilterChips'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 export const UserPositionFilterChips = ({
   tab,
@@ -20,14 +23,10 @@ export const UserPositionFilterChips = ({
   testId: string
 }) => {
   const isMobile = useIsMobile()
-  const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
+
   return (
-    <Grid container size={12} columnSpacing={1}>
-      {showChips && (
-        <Grid size={isMobile ? 12 : 6}>
-          <MarketTypeFilterChips {...filterProps} />
-        </Grid>
-      )}
+    <Grid container size={12} spacing={Spacing.sm}>
+      <MarketTypeFilterChips {...filterProps} />
     </Grid>
   )
 }

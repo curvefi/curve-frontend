@@ -54,7 +54,11 @@ export const TableFilters = <ColumnIds extends string>({
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
   return (
-    <Stack paddingBlock={Spacing.md} maxWidth={maxWidth}>
+    <Stack
+      paddingBlockEnd={{ mobile: Spacing.sm.tablet }}
+      paddingBlockStart={{ mobile: Spacing.md.tablet }}
+      maxWidth={maxWidth}
+    >
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
         {!(isExpandedOrValue && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
         <Grid
@@ -92,7 +96,7 @@ export const TableFilters = <ColumnIds extends string>({
             />
           )}
         </Grid>
-        <Grid container size={12} gap={Spacing.xs} justifyContent="space-between">
+        <Grid container size={12} gap={Spacing.sm} justifyContent="space-between">
           {chips}
         </Grid>
       </Grid>

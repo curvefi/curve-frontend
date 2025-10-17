@@ -41,9 +41,9 @@ export const MarketFilterChipWrapper = ({
 }: MarketsFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
-    <Grid container rowSpacing={Spacing.xs} columnSpacing={Spacing.md} size={{ mobile: 12, tablet: 'auto' }}>
+    <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
       {isMobile ? (
-        <Grid container columnSpacing={Spacing.xs} size={12}>
+        <Grid container columnSpacing={Spacing.sm} size={12}>
           <Grid size={6}>
             {onSortingChange && sortField && (
               <MarketSortDrawer onSortingChange={onSortingChange} sortField={sortField} />

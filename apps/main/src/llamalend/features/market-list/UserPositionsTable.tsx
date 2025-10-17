@@ -64,6 +64,8 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
     onExpandedChange,
     ...getTableOptions(result),
   })
+
+  const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
   return (
     <DataTable
       table={table}
@@ -81,7 +83,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <>
+          showChips && (
             <UserPositionFilterChips
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
@@ -91,7 +93,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               onSearch={onSearch}
               testId={title}
             />
-          </>
+          )
         }
       />
     </DataTable>
