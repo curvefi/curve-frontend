@@ -39,7 +39,7 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
   small: {
     font: 'buttonXs',
     height: IconSize.md,
-    iconSize: IconSize.md,
+    iconSize: IconSize.sm,
     paddingInline: Spacing.xs,
     lineHeight: LineHeight.xs,
   },

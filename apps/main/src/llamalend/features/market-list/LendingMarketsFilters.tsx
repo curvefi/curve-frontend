@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
+import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatPercent, formatUsd } from '@ui-kit/utils'
@@ -24,6 +26,27 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
   )
 
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
+}
+
+/**
+ * Displays a selected token with its icon and symbol.
+ * This is used in the lending markets filters to display selected collateral and debt tokens.
+ */
+const SelectedToken = ({
+  symbol,
+  data,
+  field,
+}: {
+  symbol: string
+  data: LlamaMarket[]
+  field: 'collateral' | 'borrowed'
+}) => {
+  const { chain, address } = useMemo(
+    () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
+    [data, field, symbol],
+  )
+
+  return <Chip label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
 }
 
 /**
@@ -50,6 +73,7 @@ export const LendingMarketsFilters = ({
         id={LlamaMarketColumnId.CollateralSymbol}
         field="assets.collateral.symbol"
         renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
+        selectedItemRender={(symbol) => <SelectedToken symbol={symbol} data={data} field="collateral" />}
         defaultText={t`All`}
         defaultTextMobile={t`All Collateral Tokens`}
         data={data}
@@ -62,6 +86,7 @@ export const LendingMarketsFilters = ({
         id={LlamaMarketColumnId.BorrowedSymbol}
         field="assets.borrowed.symbol"
         renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
+        selectedItemRender={(symbol) => <SelectedToken symbol={symbol} data={data} field="collateral" />}
         defaultText={t`All`}
         defaultTextMobile={t`All Debt Tokens`}
         data={data}

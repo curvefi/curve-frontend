@@ -49,8 +49,7 @@ export const defineMuiSelect = (
     root: {
       border: 'none',
       '& .MuiOutlinedInput-notchedOutline': {
-        border: 'none',
-        borderBottom: `1px solid ${design.Layer[3].Outline}`,
+        border: `1px solid ${design.Layer[2].Outline}`,
       },
       '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
         border: `2px solid ${design.Inputs.Base.Default.Border.Active}`,

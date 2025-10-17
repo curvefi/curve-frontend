@@ -28,6 +28,7 @@ export const MultiSelectFilter = <T,>({
   defaultText,
   defaultTextMobile,
   renderItem,
+  selectedItemRender,
   field,
   id,
 }: {
@@ -39,6 +40,7 @@ export const MultiSelectFilter = <T,>({
   field: DeepKeys<T>
   id: LlamaMarketColumnId
   renderItem?: (value: string) => ReactNode
+  selectedItemRender?: (value: string) => ReactNode
 }) => {
   const isMobile = useIsMobile()
   const selectRef = useRef<HTMLDivElement | null>(null)
@@ -95,7 +97,7 @@ export const MultiSelectFilter = <T,>({
                   ...(index > 0 && { ':before': { content: '", "' } }),
                 }}
               >
-                {renderItem?.(optionId) ?? optionId}
+                {selectedItemRender?.(optionId) ?? renderItem?.(optionId) ?? optionId}
               </MenuItem>
             ))
           ) : (
