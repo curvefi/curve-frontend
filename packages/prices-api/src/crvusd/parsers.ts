@@ -164,3 +164,8 @@ export const parseUserCollateralEvents = (
     isPositionClosed: y.is_position_closed,
   })),
 })
+
+export const parseCrvUsdTvl = (x: Responses.GetCrvUsdTvlResponse): Models.CrvUsdTvl => ({
+  chain: x.chain,
+  tvl: x.tvl,
+})
