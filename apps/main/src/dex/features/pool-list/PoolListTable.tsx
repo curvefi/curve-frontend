@@ -15,6 +15,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolListFilterChips } from './components/PoolListFilterChips'
@@ -22,6 +23,8 @@ import { PoolListSort } from './components/PoolListSort'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { DEFAULT_SORT, usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
+
+const { Sizing } = SizesAndSpaces
 
 const TITLE = 'Pools'
 
@@ -94,13 +97,14 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
       expandedPanel={PoolMobileExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
+      minRowHeight={Sizing.xxl}
     >
       <TableFilters<PoolColumnId>
         title={TITLE}
         loading={isLoading}
         // todo: onReload={onReload}
         visibilityGroups={columnSettings}
-        toggleVisibility={toggleVisibility}
+        // toggleVisibility={toggleVisibility} we don't have any optional columns yet
         searchText={searchText}
         onSearch={onSearch}
         chips={

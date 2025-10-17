@@ -31,7 +31,7 @@ const migration: MigrationOptions<Record<LlamaColumnVariant, VisibilityGroup<Lla
     isEqual(
       Object.keys(LLAMA_MARKETS_COLUMN_OPTIONS),
       // double check if we have the TVL column, as that was added later (in that case no migration needed)
-      oldValue && oldValue.noPositions?.[0].options.find((o) => o.label === 'TVL'),
+      oldValue && oldValue.noPositions?.[0].options.find((o) => o.columns.includes(LlamaMarketColumnId.Tvl)),
     )
       ? oldValue
       : null, // use default value
