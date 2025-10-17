@@ -40,7 +40,7 @@ export const PageVeCrv = () => {
 
   return (
     <>
-      <Container variant="primary" shadowed>
+      <Container variant="primary" shadowed data-testid="vecrv-page">
         <BoxHeader className="title-text">
           <IconButton hidden />
           {t`CRV Locker`}

@@ -12,14 +12,14 @@ export const PageCreatePool = () => {
 
   if (address && curveApi) {
     return (
-      <Container>
+      <Container data-testid="create-pool-page">
         <PoolCreation curve={curveApi} />
       </Container>
     )
   }
   return (
     <Box display="flex" fillWidth>
-      <ConnectWalletWrapper>
+      <ConnectWalletWrapper data-testid="create-pool-page">
         <ConnectWalletPrompt
           description="Connect wallet to access pool creation"
           connectText="Connect Wallet"

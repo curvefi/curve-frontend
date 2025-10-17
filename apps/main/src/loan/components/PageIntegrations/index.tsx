@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/loan/components/PageIntegrations/types'
-import { ROUTE } from '@/loan/constants'
 import useStore from '@/loan/store/useStore'
 import { ChainId, type NetworkUrlParams } from '@/loan/types/loan.types'
-import { getPath } from '@/loan/utils/utilsRouter'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -69,8 +67,7 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) =>
-    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
+  const updateRouteFilterKey = (filterKey: FilterKey) => push(`?filter=${filterKey}`)
 
   const parsedResults = results === null ? integrationsList : results
 

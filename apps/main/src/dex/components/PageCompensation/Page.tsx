@@ -44,7 +44,7 @@ export const PageCompensation = () => {
 
   return (
     <>
-      <Container variant="primary" shadowed>
+      <Container variant="primary" shadowed data-testid="compensation-page">
         <BoxHeader className="title-text">
           <IconButton hidden />
           {t`Compensation`}

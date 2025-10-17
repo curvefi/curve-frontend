@@ -39,7 +39,7 @@ export function ChainList({
   showTestnets: boolean
   selectedNetworkId: string | undefined
 }) {
-  const pathname = usePathname() || ''
+  const pathname = usePathname()
   const [searchValue, setSearchValue] = useState('')
   const groupedOptions = useMemo(
     () =>

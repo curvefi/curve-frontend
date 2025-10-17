@@ -13,8 +13,7 @@ const { IconSize } = SizesAndSpaces
  * Opens in a new tab and dynamically determines the network based on the current pathname.
  */
 export const ButtonGetCrvUsd = () => {
-  const pathname = usePathname()
-  const networkId = getCurrentNetwork(pathname) ?? 'ethereum'
+  const networkId = getCurrentNetwork(usePathname()) ?? 'ethereum'
   return (
     <Button
       component={Link}

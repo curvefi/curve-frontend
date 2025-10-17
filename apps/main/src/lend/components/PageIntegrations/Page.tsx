@@ -25,7 +25,7 @@ const Page = () => {
 
   return (
     <>
-      <Container>
+      <Container data-testid="integrations-page">
         <ContainerContent>
           <Title>Curve Integrations</Title>
           <Subtitle>
@@ -42,12 +42,7 @@ const Page = () => {
             </Trans>
           </Subtitle>
           {integrationsTags !== null ? (
-            <IntegrationsComp
-              rChainId={rChainId}
-              params={params}
-              searchParams={searchParams}
-              integrationsTags={integrationsTags}
-            />
+            <IntegrationsComp rChainId={rChainId} searchParams={searchParams} integrationsTags={integrationsTags} />
           ) : (
             <SpinnerWrapper>
               <Spinner />

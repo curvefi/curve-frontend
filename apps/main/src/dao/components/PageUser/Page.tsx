@@ -7,7 +7,7 @@ import { useParams } from '@ui-kit/hooks/router'
 export const PageUser = () => {
   const params = useParams<UserUrlParams>()
   return (
-    <Container>
+    <Container data-testid="user-page">
       <UserPage routerParams={params} />
     </Container>
   )

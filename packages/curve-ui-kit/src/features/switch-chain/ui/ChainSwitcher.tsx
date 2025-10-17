@@ -26,8 +26,7 @@ export type ChainSwitcherProps = {
 }
 
 export const ChainSwitcher = ({ networks }: ChainSwitcherProps) => {
-  const pathname = usePathname()
-  const networkId = getCurrentNetwork(pathname)
+  const networkId = getCurrentNetwork(usePathname())
   const [isOpen, , close, toggle] = useSwitch()
   const [isSnackbarOpen, openSnackbar, hideSnackbar] = useSwitch()
   const [isSettingsOpen, openSettings, closeSettings] = useSwitch()

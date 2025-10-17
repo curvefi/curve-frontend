@@ -34,6 +34,7 @@ export const checkIsDarkMode = (win: Cypress.AUTWindow) => win.matchMedia('(pref
 
 const oneDexPath = () => oneOf('', 'dex')
 export const oneAppPath = () => oneOf(...([oneDexPath(), 'lend', 'dao', 'crvusd', 'llamalend'] as const))
+
 export type AppPath = ReturnType<typeof oneAppPath>
 
 export const LOAD_TIMEOUT = { timeout: 30000 }

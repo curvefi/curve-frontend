@@ -3,7 +3,7 @@ import type { INetworkName as CurveNetworkId } from '@curvefi/api/lib/interfaces
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Grid, Box } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { usePathname, useSearchParams, useParams } from '@ui-kit/hooks/router'
+import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import type { AppName } from '@ui-kit/shared/routes'
 import { TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -34,7 +34,6 @@ function useAfterHydration(result: string) {
 
 export const LegalPage = ({ currentApp }: LegalPageProps) => {
   const { network } = useParams() as { network: CurveNetworkId | LlamaNetworkId }
-  const pathname = usePathname()
   const searchParams = useSearchParams()
   const tabParam = searchParams?.get('tab')
   const tab: Tab = tabParam !== null && VALID_TABS.has(tabParam as Tab) ? (tabParam as Tab) : 'terms'
@@ -49,11 +48,11 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
       ...TABS.map(({ value, ...props }) => ({
         ...props,
         value,
-        href: { query: { tab: value }, pathname },
+        href: { query: { tab: value } },
         onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { tab: value }),
       })),
     ],
-    [pathname],
+    [],
   )
 
   const disclaimerTabs = useMemo(
@@ -61,11 +60,11 @@ export const LegalPage = ({ currentApp }: LegalPageProps) => {
       ...DISCLAIMER_TABS.map(({ value, ...props }) => ({
         ...props,
         value,
-        href: { query: { tab: 'disclaimers', subtab: value }, pathname },
+        href: { query: { tab: 'disclaimers', subtab: value } },
         onClick: (e: MouseEvent<HTMLAnchorElement>) => pushSearchParams(e, { subtab: value }),
       })),
     ],
-    [pathname],
+    [],
   )
 
   return (
