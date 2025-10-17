@@ -322,7 +322,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             balance: decimal(maxRecv),
             symbol: getTokenName(llamma).stablecoin,
             notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
-            showSlider: false,
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={
@@ -381,7 +380,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               loading: userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,
-              showSlider: false,
               ...(collateralUsdRate != null &&
                 userWalletBalances.collateral != null && {
                   notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,

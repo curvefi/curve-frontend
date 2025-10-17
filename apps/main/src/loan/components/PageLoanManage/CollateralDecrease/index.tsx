@@ -275,7 +275,6 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
               maxBalance={{
                 balance: decimal(maxRemovable),
                 symbol: getTokenName(llamma).collateral,
-                showSlider: false,
                 ...(collateralUsdRate != null &&
                   maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
               }}

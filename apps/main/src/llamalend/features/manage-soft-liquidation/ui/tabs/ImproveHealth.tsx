@@ -64,7 +64,6 @@ export const ImproveHealth = ({
     () => ({
       balance: debtToken && userBalance && Math.min(debtToken.amount, userBalance),
       symbol: debtToken?.symbol,
-      showSlider: false,
     }),
     [debtToken, userBalance],
   )
