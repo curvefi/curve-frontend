@@ -83,7 +83,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['dao'].includes(route)) {
+      if (['dao'].includes(getRouteApp(route))) {
         // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
@@ -160,7 +160,7 @@ describe('Header', () => {
     })
 
     it('should change chains', () => {
-      if (['dao'].includes(route)) {
+      if (['dao'].includes(getRouteApp(route))) {
         // only ethereum supported
         cy.get(`[data-testid='btn-change-chain']`).click()
         cy.get(`[data-testid='alert-eth-only']`).should('be.visible')
