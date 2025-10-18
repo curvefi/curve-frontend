@@ -420,7 +420,6 @@ const Swap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
-              dataType="decimal"
               name="fromAmount"
               onBalance={setFromAmount}
               balance={decimal(formValues.fromAmount)}
@@ -550,7 +549,6 @@ const Swap = ({
         ) : (
           <LargeTokenInput
             label={t`Buy`}
-            dataType="decimal"
             name="toAmount"
             onBalance={setToAmount}
             inputBalanceUsd={

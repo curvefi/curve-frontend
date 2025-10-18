@@ -56,15 +56,14 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={4} display="flex" alignItems="flex-end" direction="row">
         <NumericTextField
-          dataType="number"
           aria-label={t`Bands`}
-          value={sliderValue}
+          value={`${sliderValue}`}
           name="range"
           variant="standard"
           size="tiny"
-          min={minValue}
-          max={maxValue}
-          onChange={(val) => val && setSliderValue(val)}
+          min={`${minValue}`}
+          max={`${maxValue}`}
+          onChange={(val) => val && setSliderValue(Number(val))}
           onBlur={() => setRange(sliderValue)}
           slotProps={{
             input: {

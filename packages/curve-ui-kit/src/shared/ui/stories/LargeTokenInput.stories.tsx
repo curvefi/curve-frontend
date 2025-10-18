@@ -131,7 +131,7 @@ const meta: Meta<typeof LargeTokenInput> = {
     label: 'You pay',
     isError: false,
     balanceDecimals: 4,
-    inputBalanceUsd: 1337,
+    inputBalanceUsd: '1337',
     onBalance: fn(),
   },
 }

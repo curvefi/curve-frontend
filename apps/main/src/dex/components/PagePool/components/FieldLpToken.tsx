@@ -53,7 +53,6 @@ const FieldLpToken = ({
     </InputProvider>
   ) : (
     <LargeTokenInput
-      dataType="decimal"
       name="lpTokens"
       disabled={disabled}
       isError={hasError}

@@ -265,7 +265,6 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
         ) : (
           <>
             <LargeTokenInput
-              dataType="decimal"
               name="collateral"
               isError={!!formValues.collateralError}
               {...(formValues.collateralError === 'too-much' && {

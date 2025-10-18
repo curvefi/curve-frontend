@@ -1,20 +1,14 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
+import type { Decimal } from '@ui-kit/utils'
 
-function TestComponent({ initialValue = 5, max }: { initialValue?: number; max?: number }) {
-  const [value, setValue] = useState<number | undefined>(initialValue)
-  const [tempValue, setTempValue] = useState<number | undefined>(initialValue)
+function TestComponent({ initialValue = '5', max }: { initialValue?: Decimal; max?: Decimal }) {
+  const [value, setValue] = useState<Decimal | undefined>(initialValue)
+  const [tempValue, setTempValue] = useState<Decimal | undefined>(initialValue)
 
   return (
     <>
-      <NumericTextField
-        dataType="number"
-        value={value}
-        onBlur={setValue}
-        onChange={setTempValue}
-        min={-Infinity}
-        max={max}
-      />
+      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} max={max} />
       <div>
         Comitted value: <span data-testid="state-value">{value}</span>
       </div>
@@ -42,7 +36,7 @@ describe('NumericTextField', () => {
   })
 
   it(`clamps values above max to max value on blur`, () => {
-    cy.mount(<TestComponent initialValue={5} max={10} />)
+    cy.mount(<TestComponent initialValue="5" max="10" />)
     cy.get('[data-testid="state-value"]').should('contain', '5')
     cy.get('input').click().type('11').blur()
     cy.get('[data-testid="state-value"]').should('contain', '10')
@@ -65,7 +59,7 @@ describe('NumericTextField', () => {
   })
 
   it(`selects all text when input is clicked`, () => {
-    cy.mount(<TestComponent initialValue={12345} />)
+    cy.mount(<TestComponent initialValue="12345" />)
     cy.get('input').click()
     cy.window().then((win) => {
       const input = win.document.querySelector('input') as HTMLInputElement
@@ -75,7 +69,7 @@ describe('NumericTextField', () => {
   })
 
   it('handles empty input correctly', () => {
-    cy.mount(<TestComponent initialValue={5} />)
+    cy.mount(<TestComponent initialValue="5" />)
     cy.get('input').click().blur()
     cy.get('[data-testid="state-value"]').should('contain', '')
   })

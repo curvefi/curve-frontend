@@ -4,6 +4,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import type { Decimal } from '@ui-kit/utils'
 import type { Token } from '../../types'
 import { AlertAdditionalCrvUsd } from '../alerts/AlertAdditionalCrvUsd'
 import { AlertClosePosition } from '../alerts/AlertClosePosition'
@@ -15,11 +16,11 @@ type Status = 'idle' | 'close'
 
 type ClosePositionProps = {
   /** The token that's been borrowed that has to be paid back */
-  debtToken?: Token & { amount: number }
+  debtToken?: Token & { amount: Decimal }
   /** The tokens the user gets when closing his position */
-  collateralToRecover?: (Token & { amount?: number; usd: number })[]
+  collateralToRecover?: (Token & { amount?: Decimal; usd: Decimal })[]
   /** Whether the user has sufficient stablecoins to close the position */
-  canClose: { requiredToClose: number; missing: number }
+  canClose: { requiredToClose: Decimal; missing: Decimal }
   /** Current operation status */
   status: Status
 }
@@ -39,7 +40,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
         label={t`Debt to repay`}
-        value={debtToken?.amount}
+        value={+(debtToken?.amount ?? '0')}
         valueOptions={{ abbreviate: true }}
         notional={debtToken?.symbol ?? ''}
         alignment="center"
@@ -48,12 +49,12 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
 
       <Metric
         label={t`Collateral to recover`}
-        value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
+        value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + +x.usd, 0)}
         valueOptions={{ unit: 'dollar' }}
         notional={(collateralToRecover ?? [])
-          .filter((x) => x.amount ?? 0 > 0)
+          .filter((x) => +(x.amount ?? '0') > 0)
           .map((x) => ({
-            value: x.amount!,
+            value: +x.amount!,
             unit: { symbol: ` ${x.symbol}`, position: 'suffix' },
             abbreviate: true,
           }))}
@@ -63,13 +64,13 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
     </Stack>
 
     <AlertClosePosition />
-    {canClose.missing > 0 && debtToken?.symbol && (
-      <AlertAdditionalCrvUsd debtTokenSymbol={debtToken?.symbol} missing={canClose.missing} />
+    {+canClose.missing > 0 && debtToken?.symbol && (
+      <AlertAdditionalCrvUsd debtTokenSymbol={debtToken?.symbol} missing={+canClose.missing} />
     )}
 
     <Stack gap={Spacing.xs}>
       <Button
-        disabled={status === 'close' || canClose.missing > 0 || (debtToken?.amount ?? 0) <= 0}
+        disabled={status === 'close' || +canClose.missing > 0 || +(debtToken?.amount ?? '') <= 0}
         onClick={() => onClose(debtToken, collateralToRecover)}
         sx={{ position: 'relative' }}
       >

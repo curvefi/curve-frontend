@@ -194,7 +194,6 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
         </div>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="amount"
           disabled={disabled}
           balance={decimal(formValues.amount)}

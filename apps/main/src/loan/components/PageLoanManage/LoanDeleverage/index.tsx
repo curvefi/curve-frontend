@@ -330,7 +330,6 @@ const LoanDeleverage = ({
         </Box>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="collateral"
           testId="inpCollateral"
           isError={!!formValues.collateralError}

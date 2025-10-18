@@ -438,7 +438,6 @@ const QuickSwap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
-              dataType="decimal"
               onBalance={setFromAmount}
               name="fromAmount"
               inputBalanceUsd={
@@ -530,7 +529,6 @@ const QuickSwap = ({
         ) : (
           <LargeTokenInput
             label={t`Buy`}
-            dataType="decimal"
             balance={decimal(formValues.toAmount)}
             inputBalanceUsd={
               toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'

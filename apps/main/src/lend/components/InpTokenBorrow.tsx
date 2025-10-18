@@ -80,7 +80,6 @@ const InpTokenBorrow = ({
     </Box>
   ) : (
     <LargeTokenInput
-      dataType="decimal"
       name={id}
       testId={testId ?? `${id}Amt`}
       isError={!!inpError}

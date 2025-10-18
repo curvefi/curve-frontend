@@ -8,9 +8,9 @@ import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, type Amount, type Decimal } from '@ui-kit/utils'
+import { formatNumber, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
-import { type DataType, NumericTextField } from './NumericTextField'
+import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
@@ -53,7 +53,7 @@ type InputChip = {
   /** The chip button label. */
   label: string
   /** The function that returns the new input amount, possibly based on the max balance. */
-  newBalance: (maxBalance?: Amount) => Amount | undefined
+  newBalance: (maxBalance?: Decimal) => Decimal | undefined
 }
 
 type ChipsPreset = 'max' | 'range'
@@ -65,25 +65,17 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   })),
 }
 
-type BalanceTextFieldProps<T> = {
-  balance: T | undefined
-  maxBalance?: T
+type BalanceTextFieldProps = {
+  balance: Decimal | undefined
+  maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: T | undefined) => void
+  onCommit: (balance: Decimal | undefined) => void
   name: string
-} & DataType<T>
+}
 
-const BalanceTextField = <T extends Amount>({
-  balance,
-  name,
-  isError,
-  onCommit,
-  disabled,
-  dataType,
-}: BalanceTextFieldProps<T>) => (
-  <NumericTextField<T>
-    dataType={dataType}
+const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: BalanceTextFieldProps) => (
+  <NumericTextField
     placeholder="0.00"
     variant="standard"
     value={balance}
@@ -125,22 +117,22 @@ export interface LargeTokenInputRef {
  *                                       When false, hides the slider but still allows direct input.
  * @property {('max' | 'range' | InputChip[])} [chips] - Custom or preset chips to show.
  */
-type MaxBalanceProps<T> = Partial<
-  Pick<BalanceProps<T>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
+type MaxBalanceProps = Partial<
+  Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
   chips?: ChipsPreset | InputChip[]
 }
 
-type Props<T> = DataType<T> & {
+type Props = {
   ref?: Ref<LargeTokenInputRef>
 
   /**
    * The current balance value of the input.
    * If undefined, the input is considered uncontrolled.
    */
-  balance?: T
+  balance?: Decimal
 
   /**
    * The token selector UI element to be rendered.
@@ -164,10 +156,10 @@ type Props<T> = DataType<T> & {
    * Maximum balance configuration for the input.
    * {@link MaxBalanceProps}
    */
-  maxBalance?: MaxBalanceProps<T>
+  maxBalance?: MaxBalanceProps
 
   /** Optional usd value of the balance given as input. */
-  inputBalanceUsd?: T
+  inputBalanceUsd?: Decimal
 
   /**
    * Optional message to display below the input, called the 'helper message'.
@@ -208,7 +200,7 @@ type Props<T> = DataType<T> & {
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
-  onBalance: (balance: T | undefined) => void
+  onBalance: (balance: Decimal | undefined) => void
 }
 
 /**
@@ -224,7 +216,7 @@ type Props<T> = DataType<T> & {
  *
  * @returns The calculated balance amount, maintaining the same type as the input `max`
  */
-function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, balanceDecimals: number | undefined): T {
+function calculateNewBalance(max: Decimal, newPercentage: Decimal, balanceDecimals: number | undefined): Decimal {
   // Avoid loss of precision when clicking 'Max'
   if (Number(newPercentage) === 100) return max
 
@@ -233,7 +225,7 @@ function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, b
     // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
     newBalance = BigNumber.min(newBalance.toFixed(balanceDecimals), max)
   }
-  return (typeof max !== 'number' ? newBalance.toString() : newBalance.toNumber()) as T
+  return newBalance.toString() as Decimal
 }
 
 /**
@@ -246,14 +238,14 @@ function calculateNewBalance<T extends Amount>(max: T, newPercentage: Decimal, b
  * @param newBalance - The current balance amount to convert to percentage
  * @param max - The maximum balance to calculate percentage against
  */
-const calculateNewPercentage = <T extends Amount>(newBalance: T, max: T) =>
+const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
   new BigNumber(newBalance)
     .div(max)
     .times(100)
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
-export const LargeTokenInput = <T extends Amount>({
+export const LargeTokenInput = ({
   ref,
   tokenSelector,
   maxBalance,
@@ -267,8 +259,7 @@ export const LargeTokenInput = <T extends Amount>({
   balance: externalBalance,
   inputBalanceUsd,
   testId,
-  dataType,
-}: Props<T>) => {
+}: Props) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
 
@@ -290,7 +281,7 @@ export const LargeTokenInput = <T extends Amount>({
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: T | undefined) => {
+    (newBalance: Decimal | undefined) => {
       if (newBalance == null) return
       setBalance(newBalance)
       setPercentage(
@@ -302,7 +293,7 @@ export const LargeTokenInput = <T extends Amount>({
 
   const handleChip = useCallback(
     (chip: InputChip) => {
-      handleBalanceChange(chip.newBalance(maxBalance?.balance) as T)
+      handleBalanceChange(chip.newBalance(maxBalance?.balance))
     },
     [handleBalanceChange, maxBalance?.balance],
   )
@@ -389,14 +380,13 @@ export const LargeTokenInput = <T extends Amount>({
 
         {/** Second row containing the token selector and balance input text */}
         <Stack direction="row" alignItems="center" gap={Spacing.md}>
-          <BalanceTextField<T>
+          <BalanceTextField
             disabled={disabled}
             balance={balance}
             name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
             onCommit={handleBalanceChange}
-            dataType={dataType}
           />
 
           {tokenSelector}

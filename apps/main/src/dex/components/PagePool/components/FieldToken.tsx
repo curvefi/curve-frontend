@@ -93,7 +93,6 @@ const FieldToken = ({
     </InputProvider>
   ) : (
     <LargeTokenInput
-      dataType="decimal"
       name={token}
       disabled={disabled}
       isError={hasError}

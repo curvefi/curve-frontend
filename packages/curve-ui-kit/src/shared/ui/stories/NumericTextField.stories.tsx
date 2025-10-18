@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import type { Decimal } from '@ui-kit/utils'
 import { NumericTextField } from '../NumericTextField'
 
 const NumericTextFieldWrapper = (props: any) => {
-  const [value, setValue] = useState<number | undefined>(undefined)
+  const [value, setValue] = useState<Decimal | undefined>(undefined)
   return (
     <NumericTextField
       {...props}
       value={value}
-      onBlur={(newValue: number) => {
+      onBlur={(newValue) => {
         setValue(newValue)
         props.onBlur?.(newValue)
       }}
@@ -58,8 +59,8 @@ const meta: Meta<typeof NumericTextField> = {
   },
   args: {
     value: undefined,
-    min: 0,
-    max: Infinity,
+    min: '0',
+    max: undefined,
     label: 'Amount',
     onChange: fn(),
     onBlur: fn(),
@@ -82,8 +83,8 @@ export const Default: Story = {
 
 export const WithMinMax: Story = {
   args: {
-    min: 10,
-    max: 100,
+    min: '10',
+    max: '100',
     label: 'Value (10-100)',
     helperText: 'Enter a value between 10 and 100',
   },
@@ -99,8 +100,8 @@ export const WithMinMax: Story = {
 
 export const NoMinimum: Story = {
   args: {
-    min: -Infinity,
-    max: Infinity,
+    min: undefined,
+    max: undefined,
     label: 'Any Number',
     helperText: 'Enter any positive or negative number',
   },
