@@ -104,13 +104,6 @@ const FieldToken = ({
           loading: isMaxLoading,
         },
       })}
-      {...(!hideMaxButton &&
-        !isMaxLoading && {
-          maxBalance: {
-            balance: decimal(balance),
-            chips: 'max',
-          },
-        })}
       tokenSelector={
         <TokenLabel
           blockchainId={blockchainId}
