@@ -540,9 +540,6 @@ const QuickSwap = ({
               balance: decimal(userToBalance),
               symbol: toToken?.symbol || '',
               ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              ...(searchedParams.fromAddress === ethAddress && {
-                tooltip: t`'Balance'`,
-              }),
             }}
             disabled={isDisable}
             testId="to-amount"
