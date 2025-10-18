@@ -96,13 +96,12 @@ const FieldToken = ({
       name={token}
       disabled={disabled}
       isError={hasError}
-      {...(!hideMaxButton && {
-        maxBalance: {
+      {...(showAvailableBalance && {
+        walletBalance: {
           balance: decimal(balance),
-          loading: isMaxLoading,
-          onMax,
-          showBalance: showAvailableBalance,
           symbol: token,
+          onClick: onMax,
+          loading: isMaxLoading,
         },
       })}
       tokenSelector={

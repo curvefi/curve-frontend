@@ -106,12 +106,12 @@ const InpToken = ({
               : undefined
       }
       disabled={inpDisabled}
-      maxBalance={{
+      walletBalance={{
         loading: inpLabelLoading,
         balance: decimal(tokenBalance),
         symbol: tokenSymbol,
         notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
-        maxTestId,
+        clickTestId: maxTestId,
       }}
       label={inpTopLabel}
       balance={decimal(inpValue)}

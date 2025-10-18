@@ -101,11 +101,16 @@ const InpTokenRemove = ({
             : undefined
       }
       disabled={inpDisabled}
-      maxBalance={{
+      inputBalanceUsd={usdRate ? decimal((usdRate * +inpValue).toString()) : undefined}
+      walletBalance={{
         loading: tokenBalance == null,
-        balance: decimal(maxRemovable),
+        balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
+        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
+      }}
+      maxBalance={{
+        balance: decimal(maxRemovable),
+        chips: 'max',
       }}
       balance={decimal(inpValue)}
       tokenSelector={

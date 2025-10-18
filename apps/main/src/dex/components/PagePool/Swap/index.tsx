@@ -456,16 +456,16 @@ const Swap = ({
                 message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
               })}
               disabled={isDisabled}
-              maxBalance={{
+              walletBalance={{
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
-                chips: 'range',
                 ...(toUsdRate != null &&
                   userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
-                ...(formValues.fromAddress.toLowerCase() === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
+                chips: 'range',
               }}
             />
           )}
@@ -583,7 +583,7 @@ const Swap = ({
                 sx={LargeSxProps}
               />
             }
-            maxBalance={{
+            walletBalance={{
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
