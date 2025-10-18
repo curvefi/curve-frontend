@@ -103,9 +103,13 @@ const InpTokenRemove = ({
       disabled={inpDisabled}
       walletBalance={{
         loading: tokenBalance == null,
-        balance: decimal(maxRemovable),
+        balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && maxRemovable != null ? usdRate * +maxRemovable : undefined,
+        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
+      }}
+      maxBalance={{
+        balance: decimal(maxRemovable),
+        chips: 'max',
       }}
       balance={decimal(inpValue)}
       tokenSelector={
