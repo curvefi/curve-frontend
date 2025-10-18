@@ -78,6 +78,7 @@ const Swap = ({
   const hasRouter = useStore((state) => state.hasRouter)
   const isMaxLoading = useStore((state) => state.poolSwap.isMaxLoading)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const fetchUserPoolList = useStore((state) => state.user.fetchUserPoolList)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
@@ -273,8 +274,16 @@ const Swap = ({
 
   // get user balances
   useEffect(() => {
-    if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(curve, poolId, true)
+    if (
+      curve &&
+      !curve.isNoRPC &&
+      poolId &&
+      haveSigner &&
+      (isUndefined(userFromBalance) || isUndefined(userToBalance))
+    ) {
+      void fetchUserPoolList(curve).then(() => {
+        void fetchUserPoolInfo(curve, poolId, true)
+      })
     }
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
 
