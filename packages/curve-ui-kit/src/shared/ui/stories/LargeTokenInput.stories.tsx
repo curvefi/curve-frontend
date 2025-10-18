@@ -227,7 +227,7 @@ export const WithReactNodeMessage: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large token inputwith a complex message composed of multiple typography elements',
+        story: 'Large token input with a complex message composed of multiple typography elements',
       },
     },
   },
