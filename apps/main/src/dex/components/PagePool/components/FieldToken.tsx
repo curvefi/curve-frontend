@@ -100,7 +100,7 @@ const FieldToken = ({
         maxBalance: {
           balance: decimal(balance),
           loading: isMaxLoading,
-          onMax,
+          onClick: onMax,
           showBalance: showAvailableBalance,
           symbol: token,
         },

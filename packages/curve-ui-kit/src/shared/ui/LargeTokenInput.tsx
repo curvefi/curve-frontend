@@ -118,7 +118,7 @@ export interface LargeTokenInputRef {
  * @property {('max' | 'range' | InputChip[])} [chips] - Custom or preset chips to show.
  */
 type MaxBalanceProps = Partial<
-  Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'maxTestId' | 'max' | 'onMax'>
+  Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'clickTestId' | 'onClick'>
 > & {
   showBalance?: boolean
   showSlider?: boolean
@@ -337,8 +337,8 @@ export const LargeTokenInput = ({
 
   const onMax = useCallback(() => {
     handlePercentageChange('100')
-    maxBalance?.onMax?.call(null)
-  }, [handlePercentageChange, maxBalance?.onMax])
+    maxBalance?.onClick?.call(null)
+  }, [handlePercentageChange, maxBalance?.onClick])
 
   const componentId = useId()
 
@@ -420,11 +420,11 @@ export const LargeTokenInput = ({
             {showWalletBalance && (
               <Balance
                 disabled={disabled}
+                clickable
                 symbol={maxBalance?.symbol ?? ''}
                 balance={maxBalance?.balance}
                 notionalValueUsd={maxBalance?.notionalValueUsd}
-                max="balance"
-                onMax={onMax}
+                onClick={onMax}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
             )}

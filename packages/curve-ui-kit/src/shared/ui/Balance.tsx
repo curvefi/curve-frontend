@@ -8,21 +8,20 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber, type SxProps } from '@ui-kit/utils'
+import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-type MaxButtonProps = {
+type BalanceButtonProps = {
   children: ReactNode
-  underline?: boolean
-  sx?: SxProps
   onClick?: () => void
   loading?: boolean
   disabled?: boolean
   testId?: string
 }
 
-/** Reusable Max button component with consistent styling */
-const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId }: MaxButtonProps) => (
+/** Button wrapper for clickable balance text */
+const BalanceButton = ({ children, onClick, loading, disabled, testId }: BalanceButtonProps) => (
   <Button
     variant="inline"
     color="ghost"
@@ -31,21 +30,7 @@ const MaxButton = ({ children, underline, sx, onClick, loading, disabled, testId
     loading={loading}
     disabled={disabled}
     data-testid={testId}
-    sx={{
-      /**
-       * Remove any properties that cause the total height component to change
-       * depending on the value of the 'max' property of BalanceText.
-       * Under normal circumstances, we want the ghost link to have a bit of
-       * white space and thus breathing room. However, in this case we want the
-       * link to be embedded into the typography and be as compact as possible.
-       */
-      ...(underline && {
-        '&:hover .balance': {
-          textDecoration: 'underline',
-        },
-      }),
-      ...sx,
-    }}
+    sx={{ '&:hover .balance': { textDecoration: 'underline' } }}
   >
     {children}
   </Button>
@@ -82,66 +67,55 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
 export type Props<T> = {
   /** The token symbol to display */
   symbol: string
-  /** Controls how the max value is displayed:
-   * - 'balance': Shows the balance as a clickable link
-   * - 'button': Shows a separate 'Max' button
-   * - 'off': No max functionality is shown
-   */
-  max: 'balance' | 'button' | 'off'
+  /** Whether the balance is clickable or not */
+  clickable?: boolean
   /** The token balance amount (optional, in case of loading) */
   balance?: T
   /** The USD value of the balance (optional) */
   notionalValueUsd?: T | number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
-  sx?: SxProps
-  /**
-   * Callback function when max button/balance is clicked.
-   * When using LargeTokenInput, onChange will be called with the max value before this.
-   **/
-  onMax?: () => void
   /** Whether the balance is loading */
   loading?: boolean
-  /** Whether the max button is disabled */
+  /** Whether the clickable balance is disabled (something might be loading?) */
   disabled?: boolean
-  /** Optional test ID for the button */
-  maxTestId?: string
+  sx?: SxProps
+  /** Optional test ID for the clickable balance button */
+  clickTestId?: string
+  /** Callback function when balance is clicked (if enabled). */
+  onClick?: () => void
 }
 
 export const Balance = <T extends Amount>({
   symbol,
-  max,
+  clickable,
   loading = false,
   balance,
   notionalValueUsd,
   hideIcon,
   sx,
-  onMax,
+  onClick,
   disabled,
-  maxTestId,
+  clickTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
 
-    {max === 'balance' && balance != null ? (
-      <MaxButton underline onClick={onMax} loading={loading} testId={maxTestId}>
-        <BalanceText symbol={symbol} balance={balance} loading={loading} />
-      </MaxButton>
-    ) : (
+    <WithWrapper
+      Wrapper={BalanceButton}
+      wrap={!!clickable && balance != null}
+      underline
+      onClick={onClick}
+      disabled={disabled}
+      testId={clickTestId}
+    >
       <BalanceText symbol={symbol} balance={balance} loading={loading} />
-    )}
+    </WithWrapper>
 
     {notionalValueUsd != null && !loading && (
       <Typography variant="bodyXsRegular" color="textTertiary">
         {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
       </Typography>
-    )}
-
-    {max === 'button' && balance != null && (
-      // Right-align without flexGrow for a precise click area
-      <MaxButton loading={loading} onClick={onMax} sx={{ marginLeft: 'auto' }} disabled={disabled} testId={maxTestId}>
-        {t`Max`}
-      </MaxButton>
     )}
   </Stack>
 )
