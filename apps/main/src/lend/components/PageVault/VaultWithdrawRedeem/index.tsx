@@ -261,10 +261,13 @@ const VaultWithdrawRedeem = ({
                 : undefined
           }
           walletBalance={{
-            balance: decimal(max),
+            balance: decimal(userBalances?.vaultSharesConverted),
             loading: !!signerAddress && userBalances == null,
-            notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
             symbol: t`Vault shares`,
+          }}
+          maxBalance={{
+            balance: decimal(max),
+            chips: 'max',
           }}
           onBalance={onBalance}
           testId="inpCollateral"

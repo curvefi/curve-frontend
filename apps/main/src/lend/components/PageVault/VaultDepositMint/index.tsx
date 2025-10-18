@@ -256,6 +256,10 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
             notionalValueUsd:
               usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
           }}
+          maxBalance={{
+            balance: decimal(maxResp?.max),
+            chips: 'max',
+          }}
           balance={decimal(formValues.amount)}
           tokenSelector={
             <TokenLabel
