@@ -46,8 +46,9 @@ export const BorrowFormTokenInput = ({
     isError={isError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
     message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
     walletBalance={useMemo(
-      () => ({ balance: max, symbol: token?.symbol, loading: isLoading }),
-      [max, isLoading, token],
+      () => ({ balance: undefined, symbol: token?.symbol, loading: isLoading }),
+      [isLoading, token],
     )}
+    maxBalance={useMemo(() => ({ balance: max, chips: 'max' }), [max])}
   />
 )
