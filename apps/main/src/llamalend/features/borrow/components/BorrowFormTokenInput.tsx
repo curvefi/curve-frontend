@@ -45,7 +45,6 @@ export const BorrowFormTokenInput = ({
     onBalance={useCallback((v?: Decimal) => form.setValue(name, v, setValueOptions), [form, name])}
     isError={isError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
     message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
-    balanceDecimals={2}
     walletBalance={useMemo(
       () => ({ balance: max, symbol: token?.symbol, loading: isLoading }),
       [max, isLoading, token],

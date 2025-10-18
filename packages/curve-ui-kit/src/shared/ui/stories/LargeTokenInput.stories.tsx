@@ -15,7 +15,7 @@ const TOKEN_OPTIONS: Token[] = [
 ]
 
 const DEFAULT_MAX_BALANCE: LargeTokenInputProps['maxBalance'] = {
-  balance: '420420',
+  balance: '420420.1337',
   showSlider: true,
   chips: 'range',
 }
@@ -102,10 +102,6 @@ const meta: Meta<typeof LargeTokenInput> = {
       control: 'object',
       description: 'React component to use for token selection',
     },
-    balanceDecimals: {
-      control: 'number',
-      description: 'Number of decimal places to round balance values to when calculating from percentage',
-    },
     inputBalanceUsd: {
       control: 'number',
       description: 'Optional dollar value of the given input balance',
@@ -117,7 +113,6 @@ const meta: Meta<typeof LargeTokenInput> = {
     message: 'This is a helpful message',
     label: 'You pay',
     isError: false,
-    balanceDecimals: 4,
     inputBalanceUsd: '1337',
     onBalance: fn(),
   },
@@ -233,34 +228,6 @@ export const WithReactNodeMessage: Story = {
     docs: {
       description: {
         story: 'Large token inputwith a complex message composed of multiple typography elements',
-      },
-    },
-  },
-}
-
-export const HighPrecisionDecimals: Story = {
-  args: {
-    balanceDecimals: 8,
-  },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large token inputwith 8 decimal places for high precision calculations',
-      },
-    },
-  },
-}
-
-export const LowPrecisionDecimals: Story = {
-  args: {
-    balanceDecimals: 2,
-  },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large token input with 2 decimal places for lower precision calculations',
       },
     },
   },

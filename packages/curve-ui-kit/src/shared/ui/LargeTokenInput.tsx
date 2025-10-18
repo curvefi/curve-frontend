@@ -61,7 +61,7 @@ const CHIPS_PRESETS: Record<ChipsPreset, InputChip[]> = {
   max: [{ label: t`Max`, newBalance: (maxBalance) => maxBalance }],
   range: [25, 50, 75, 100].map((p) => ({
     label: `${p}%`,
-    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal, 4),
+    newBalance: (maxBalance) => maxBalance && calculateNewBalance(maxBalance, `${p}` as Decimal),
   })),
 }
 
@@ -182,12 +182,6 @@ export type LargeTokenInputProps = {
   disabled?: boolean
 
   /**
-   * Number of decimal places to round balance values to when calculating from percentage.
-   * @default 4
-   */
-  balanceDecimals?: number
-
-  /**
    * Callback function triggered when the balance changes.
    * @param balance The new balance value
    */
@@ -198,25 +192,18 @@ export type LargeTokenInputProps = {
  * Calculates a new balance based on a percentage of the maximum balance.
  *
  * This function is used when users interact with percentage-based inputs (like sliders or percentage chips)
- * to determine the corresponding token amount. It handles precision concerns and ensures the result
- * never exceeds the maximum balance due to rounding.
+ * to determine the corresponding token amount.
  *
  * @param max - The maximum balance available (e.g., wallet balance)
  * @param newPercentage - The percentage to calculate (0-100, can have decimals like "25.5")
- * @param balanceDecimals - Optional number of decimal places to round to. If undefined, no rounding is applied
  *
  * @returns The calculated balance amount, maintaining the same type as the input `max`
  */
-function calculateNewBalance(max: Decimal, newPercentage: Decimal, balanceDecimals: number | undefined): Decimal {
-  // Avoid loss of precision when clicking 'Max'
+function calculateNewBalance(max: Decimal, newPercentage: Decimal): Decimal {
+  // Avoid loss of precision when clicking 'Max' or '100%'.
   if (Number(newPercentage) === 100) return max
 
-  let newBalance = new BigNumber(max).times(newPercentage).div(100)
-  if (balanceDecimals != null) {
-    // toFixed can make the newBalance>max due to rounding, so ensure it doesn't exceed maxBalance
-    newBalance = BigNumber.min(newBalance.toFixed(balanceDecimals), max)
-  }
-  return newBalance.toString() as Decimal
+  return new BigNumber(max).times(newPercentage).div(100).toString() as Decimal
 }
 
 /**
@@ -249,7 +236,6 @@ export const LargeTokenInput = ({
   name,
   isError = false,
   disabled,
-  balanceDecimals = 4,
   onBalance,
   balance: externalBalance,
   inputBalanceUsd,
@@ -274,11 +260,9 @@ export const LargeTokenInput = ({
     (newPercentage: Decimal | undefined) => {
       setPercentage(newPercentage)
       if (maxBalance?.balance == null) return
-      setBalance(
-        newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage, balanceDecimals),
-      )
+      setBalance(newPercentage == null ? undefined : calculateNewBalance(maxBalance.balance, newPercentage))
     },
-    [maxBalance?.balance, balanceDecimals, setBalance],
+    [maxBalance?.balance, setBalance],
   )
 
   const handleBalanceChange = useCallback(
