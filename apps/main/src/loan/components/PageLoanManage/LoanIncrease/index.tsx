@@ -316,7 +316,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
           }
           disabled={disabled}
-          maxBalance={{
+          walletBalance={{
             loading: maxRecv == null || maxRecv == '',
             balance: decimal(maxRecv),
             symbol: getTokenName(llamma).stablecoin,
@@ -374,7 +374,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}
-            maxBalance={{
+            walletBalance={{
               loading: userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,

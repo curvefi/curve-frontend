@@ -85,7 +85,7 @@ export const ImproveHealth = ({
             label={debtToken?.symbol ?? '?'}
           />
         }
-        maxBalance={maxBalance}
+        walletBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
         onBalance={(balance) => {
           balance ??= '0'

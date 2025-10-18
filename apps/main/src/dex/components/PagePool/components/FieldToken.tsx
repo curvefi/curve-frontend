@@ -96,15 +96,21 @@ const FieldToken = ({
       name={token}
       disabled={disabled}
       isError={hasError}
-      {...(!hideMaxButton && {
-        maxBalance: {
+      {...(showAvailableBalance && {
+        walletBalance: {
           balance: decimal(balance),
-          loading: isMaxLoading,
-          onClick: onMax,
-          showBalance: showAvailableBalance,
           symbol: token,
+          onClick: onMax,
+          loading: isMaxLoading,
         },
       })}
+      {...(!hideMaxButton &&
+        !isMaxLoading && {
+          maxBalance: {
+            balance: decimal(balance),
+            chips: 'max',
+          },
+        })}
       tokenSelector={
         <TokenLabel
           blockchainId={blockchainId}

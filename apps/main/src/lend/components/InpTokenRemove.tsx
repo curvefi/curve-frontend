@@ -101,7 +101,7 @@ const InpTokenRemove = ({
             : undefined
       }
       disabled={inpDisabled}
-      maxBalance={{
+      walletBalance={{
         loading: tokenBalance == null,
         balance: decimal(maxRemovable),
         symbol: tokenSymbol,

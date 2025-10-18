@@ -260,7 +260,7 @@ const VaultWithdrawRedeem = ({
                 ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
                 : undefined
           }
-          maxBalance={{
+          walletBalance={{
             balance: decimal(max),
             loading: !!signerAddress && userBalances == null,
             notionalValueUsd: decimal(userBalances?.vaultSharesConverted),

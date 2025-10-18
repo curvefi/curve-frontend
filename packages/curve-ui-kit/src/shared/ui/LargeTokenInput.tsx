@@ -102,30 +102,21 @@ export interface LargeTokenInputRef {
   resetBalance: () => void
 }
 
-/**
- * Configuration for maximum balance display and input.
- * When provided, enables percentage-based input via the slider.
- *
- * @property {number} [balance] - The maximum numerical balance available for this input.
- * @property {number} [notionalValueUsd] - The notional value (in USD) of the maximum balance.
- * @property {string} [symbol] - The token symbol (e.g., 'ETH').
- * @property {boolean} [showBalance=true] - Whether to display the balance component.
- *                                        When true, shows the token balance and notional value.
- *                                        When false, hides the balance display.
- * @property {boolean} [showSlider=false] - Whether to display the percentage slider.
- *                                       When true, shows the slider for percentage-based input.
- *                                       When false, hides the slider but still allows direct input.
- * @property {('max' | 'range' | InputChip[])} [chips] - Custom or preset chips to show.
- */
-type MaxBalanceProps = Partial<
+/** Configuration for wallet balance display and input. */
+type WalletBalanceProps = Partial<
   Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'clickTestId' | 'onClick'>
-> & {
-  showBalance?: boolean
+>
+
+/** Configuration for max balance behavior, which for now are the slider and chips. */
+type MaxBalanceProps = {
+  balance?: Decimal
+  /** Whether to display the percentage slider. */
   showSlider?: boolean
+  /** Custom or preset chips to show. */
   chips?: ChipsPreset | InputChip[]
 }
 
-type Props = {
+export type LargeTokenInputProps = {
   ref?: Ref<LargeTokenInputRef>
 
   /**
@@ -152,10 +143,10 @@ type Props = {
    */
   tokenSelector?: ReactNode
 
-  /**
-   * Maximum balance configuration for the input.
-   * {@link MaxBalanceProps}
-   */
+  /** Optional wallet balance configuration. */
+  walletBalance?: WalletBalanceProps
+
+  /** Optional max balance configuration */
   maxBalance?: MaxBalanceProps
 
   /** Optional usd value of the balance given as input. */
@@ -251,6 +242,7 @@ const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqual
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
+  walletBalance,
   maxBalance,
   message,
   label,
@@ -262,7 +254,7 @@ export const LargeTokenInput = ({
   balance: externalBalance,
   inputBalanceUsd,
   testId,
-}: Props) => {
+}: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
     defaultValue: externalBalance,
@@ -272,8 +264,8 @@ export const LargeTokenInput = ({
     equals: bigNumEquals,
   })
 
-  const showSlider = !!maxBalance?.showSlider
-  const showWalletBalance = maxBalance && maxBalance.showBalance !== false
+  const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
+  const showWalletBalance = !!walletBalance
 
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
@@ -335,10 +327,10 @@ export const LargeTokenInput = ({
   // Expose reset balance function for parent user to reset both balance and percentage, without lifting up state.
   useImperativeHandle(ref, () => ({ resetBalance }), [resetBalance])
 
-  const onMax = useCallback(() => {
-    handlePercentageChange('100')
-    maxBalance?.onClick?.call(null)
-  }, [handlePercentageChange, maxBalance?.onClick])
+  const onWalletBalance = useCallback(() => {
+    handleBalanceChange(walletBalance?.balance)
+    walletBalance?.onClick?.call(null)
+  }, [handleBalanceChange, walletBalance?.balance, walletBalance?.onClick])
 
   const componentId = useId()
 
@@ -421,10 +413,10 @@ export const LargeTokenInput = ({
               <Balance
                 disabled={disabled}
                 clickable
-                symbol={maxBalance?.symbol ?? ''}
-                balance={maxBalance?.balance}
-                notionalValueUsd={maxBalance?.notionalValueUsd}
-                onClick={onMax}
+                symbol={walletBalance?.symbol ?? ''}
+                balance={walletBalance?.balance}
+                notionalValueUsd={walletBalance?.notionalValueUsd}
+                onClick={onWalletBalance}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
             )}

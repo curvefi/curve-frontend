@@ -339,7 +339,7 @@ const LoanDeleverage = ({
               : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
           }
           disabled={disable}
-          maxBalance={{
+          walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userState?.collateral),
             symbol: collateralName,

@@ -298,7 +298,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
                 : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
           }
           disabled={disable || formValues.isFullRepay}
-          maxBalance={{
+          walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,

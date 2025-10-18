@@ -331,7 +331,7 @@ const LoanCreate = ({
               message: t`Amount is greater than ${formatNumber(userWalletBalances.collateral)}`,
             })}
             disabled={disabled}
-            maxBalance={{
+            walletBalance={{
               loading: haveSigner && userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: llamma?.collateralSymbol,
@@ -393,7 +393,7 @@ const LoanCreate = ({
               formValues.debtError === 'too-much' ? t`Amount is greater than ${formatNumber(maxRecv)}` : undefined
             }
             disabled={disabled}
-            maxBalance={{
+            walletBalance={{
               loading: !maxRecv,
               balance: decimal(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,

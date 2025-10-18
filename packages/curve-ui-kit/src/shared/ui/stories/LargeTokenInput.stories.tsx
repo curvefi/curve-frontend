@@ -2,20 +2,29 @@ import { useRef, useState } from 'react'
 import { fn } from 'storybook/test'
 import { Select, MenuItem, Typography, Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { LargeTokenInput, type LargeTokenInputRef } from '../LargeTokenInput'
+import type { Decimal } from '@ui-kit/utils'
+import { LargeTokenInput, type LargeTokenInputRef, type LargeTokenInputProps } from '../LargeTokenInput'
 
-const TOKEN_OPTIONS = [
-  { name: 'Inferium', symbol: 'ETH', balance: 1000 },
-  { name: 'Bitcorn', symbol: 'BTC', balance: 2500 },
-  { name: 'The Ripple', symbol: 'RPL', balance: 5000 },
-  { name: 'Decimalator', symbol: 'DEC', balance: 69.4201337 },
+// Test options for token selector with corresponding pre-seeded wallet balances
+type Token = { name: string; walletBalance: { symbol: string; balance: Decimal; notionalValueUsd?: Decimal } }
+const TOKEN_OPTIONS: Token[] = [
+  { name: 'Inferium', walletBalance: { symbol: 'ETH', balance: '1000', notionalValueUsd: '2000' } },
+  { name: 'Bitcorn', walletBalance: { symbol: 'BTC', balance: '2500', notionalValueUsd: '125000' } },
+  { name: 'The Ripple', walletBalance: { symbol: 'RPL', balance: '5000', notionalValueUsd: '10000' } },
+  { name: 'Decimalator', walletBalance: { symbol: 'DEC', balance: '69.4201337', notionalValueUsd: '138.84' } },
 ]
 
-type TokenSelectorProps = {
-  onTokenChange: (tokenInfo: { balance: number; symbol: string }) => void
+const DEFAULT_MAX_BALANCE: LargeTokenInputProps['maxBalance'] = {
+  balance: '420420',
+  showSlider: true,
+  chips: 'range',
 }
 
-const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
+const TokenSelector = ({
+  onTokenChange,
+}: {
+  onTokenChange: (tokenInfo: { balance: Decimal; symbol: string }) => void
+}) => {
   const [value, setValue] = useState(TOKEN_OPTIONS[0].name)
 
   return (
@@ -25,13 +34,7 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
         const selectedToken = e.target.value
         setValue(selectedToken)
         const selectedOption = TOKEN_OPTIONS.find((option) => option.name === selectedToken)
-
-        if (selectedOption) {
-          onTokenChange({
-            balance: selectedOption.balance,
-            symbol: selectedOption.symbol,
-          })
-        }
+        selectedOption && onTokenChange(selectedOption.walletBalance)
       }}
       size="small"
       displayEmpty
@@ -50,36 +53,19 @@ const TokenSelector = ({ onTokenChange }: TokenSelectorProps) => {
   )
 }
 
-const LargeTokenInputWithTokenSelector = (props: any) => {
-  const [tokenInfo, setTokenInfo] = useState({
-    balance: TOKEN_OPTIONS[0].balance,
-    symbol: TOKEN_OPTIONS[0].symbol,
-  })
-
+const LargeTokenInputWithTokenSelector = (props: LargeTokenInputProps) => {
   const inputRef = useRef<LargeTokenInputRef>(null)
-
-  const maxBalance =
-    props.maxBalance === undefined
-      ? undefined
-      : {
-          balance: tokenInfo.balance,
-          symbol: tokenInfo.symbol,
-          notionalValueUsd: tokenInfo.balance * 2, // Mock USD value
-          showBalance: props.maxBalance.showBalance,
-          showSlider: props.maxBalance.showSlider,
-          chips: props.maxBalance.chips,
-        }
+  const [walletBalance, setWalletBalance] = useState(props.walletBalance)
 
   return (
     <LargeTokenInput
       {...props}
-      name="amount"
-      maxBalance={maxBalance}
-      inputBalanceUsd={props.inputBalanceUsd}
+      walletBalance={walletBalance}
       tokenSelector={
         <TokenSelector
           onTokenChange={(newToken) => {
-            setTokenInfo(newToken)
+            // Check if for the WithoutWalletBalance story so selecting a token won't make pop up the wallet balance.
+            walletBalance && setWalletBalance(newToken)
             inputRef.current?.resetBalance()
           }}
         />
@@ -92,9 +78,13 @@ const meta: Meta<typeof LargeTokenInput> = {
   title: 'UI Kit/Widgets/LargeTokenInput',
   component: LargeTokenInput,
   argTypes: {
+    walletBalance: {
+      control: 'object',
+      description: 'Configuration for wallet balance, token symbol, and display options',
+    },
     maxBalance: {
       control: 'object',
-      description: 'Configuration for maximum balance, token symbol, and display options',
+      description: 'Configuration for max balance behavior, including slider and chips',
     },
     message: {
       control: 'object',
@@ -122,12 +112,9 @@ const meta: Meta<typeof LargeTokenInput> = {
     },
   },
   args: {
-    maxBalance: {
-      showBalance: true,
-      showSlider: false,
-      chips: undefined,
-    },
-    message: '',
+    walletBalance: TOKEN_OPTIONS[0].walletBalance,
+    maxBalance: DEFAULT_MAX_BALANCE,
+    message: 'This is a helpful message',
     label: 'You pay',
     isError: false,
     balanceDecimals: 4,
@@ -143,58 +130,39 @@ export const Default: Story = {
   parameters: {
     docs: {
       description: {
-        component: 'Large input component for token selection and amount input',
-        story: 'Default state of the large input component',
+        component: 'Large token input component for token selection and amount input',
+        story: 'Large token input with all bells and whistles enabled',
       },
     },
   },
 }
 
-export const NoMaxBalance: Story = {
+export const WithoutWalletBalance: Story = {
   args: {
-    maxBalance: undefined,
+    walletBalance: undefined,
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
-        story: 'Large input without a maximum balance',
+        story: 'Large token input without a wallet balance',
       },
     },
   },
 }
 
-export const WithSlider: Story = {
-  args: {
-    maxBalance: {
-      symbol: 'ETH',
-      showBalance: true,
-      showSlider: true,
-    },
-  },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large input without the percentage slider',
-      },
-    },
-  },
-}
-
-export const WithChipsRange: Story = {
+export const WithoutMaxBalanceSlider: Story = {
   args: {
     maxBalance: {
-      symbol: 'ETH',
-      showBalance: true,
-      chips: 'range',
+      ...DEFAULT_MAX_BALANCE,
+      showSlider: false,
     },
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
-        story: 'Large input with the usual percentage chips',
+        story: 'Large token input without the max balance percentage slider',
       },
     },
   },
@@ -203,8 +171,7 @@ export const WithChipsRange: Story = {
 export const WithChipsCustom: Story = {
   args: {
     maxBalance: {
-      symbol: 'ETH',
-      showBalance: true,
+      ...DEFAULT_MAX_BALANCE,
       chips: [{ label: 'Yolo', newBalance: () => '1337.42' }],
     },
   },
@@ -212,39 +179,21 @@ export const WithChipsCustom: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large input with a custom input chip',
+        story: 'Large token input with a custom input chip',
       },
     },
   },
 }
 
-export const WithoutBalance: Story = {
+export const WithoutMessage: Story = {
   args: {
-    maxBalance: {
-      showBalance: false,
-      showSlider: true,
-    },
-    inputBalanceUsd: undefined,
+    message: undefined,
   },
   render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
   parameters: {
     docs: {
       description: {
-        story: 'Large input without the balance display',
-      },
-    },
-  },
-}
-
-export const WithMessage: Story = {
-  args: {
-    message: 'This is a helpful message',
-  },
-  render: (args) => <LargeTokenInputWithTokenSelector {...args} />,
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large input with an informational message',
+        story: 'Large token input without an informational message',
       },
     },
   },
@@ -259,7 +208,7 @@ export const WithError: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large input in an error state with an error message',
+        story: 'Large token input in an error state with an error message',
       },
     },
   },
@@ -283,7 +232,7 @@ export const WithReactNodeMessage: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large input with a complex message composed of multiple typography elements',
+        story: 'Large token inputwith a complex message composed of multiple typography elements',
       },
     },
   },
@@ -297,7 +246,7 @@ export const HighPrecisionDecimals: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large input with 8 decimal places for high precision calculations',
+        story: 'Large token inputwith 8 decimal places for high precision calculations',
       },
     },
   },
@@ -311,7 +260,7 @@ export const LowPrecisionDecimals: Story = {
   parameters: {
     docs: {
       description: {
-        story: 'Large input with 2 decimal places for lower precision calculations',
+        story: 'Large token input with 2 decimal places for lower precision calculations',
       },
     },
   },

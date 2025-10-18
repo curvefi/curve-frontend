@@ -286,7 +286,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                 message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
               })}
               disabled={disabled}
-              maxBalance={{
+              walletBalance={{
                 loading: userWalletBalancesLoading,
                 balance: decimal(userWalletBalances.collateral),
                 symbol: getTokenName(llamma).collateral,

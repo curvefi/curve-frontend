@@ -85,7 +85,7 @@ const InpTokenBorrow = ({
       isError={!!inpError}
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
-      maxBalance={{
+      walletBalance={{
         loading: maxRecv == null,
         balance: decimal(maxRecv),
         symbol: tokenSymbol,

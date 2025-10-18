@@ -249,7 +249,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
                 : undefined
           }
           disabled={disabled}
-          maxBalance={{
+          walletBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
             balance: decimal(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
