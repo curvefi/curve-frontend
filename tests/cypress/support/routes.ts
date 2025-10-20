@@ -1,5 +1,5 @@
 import { recordValues } from '@curvefi/prices-api/objects.util'
-import { oneOf } from '@cy/support/generators'
+import { oneAddress, oneOf } from '@cy/support/generators'
 import { type AppPath, oneAppPath } from '@cy/support/ui'
 import {
   CRVUSD_ROUTES,
@@ -11,18 +11,22 @@ import {
   PAGE_LEGAL,
 } from '@ui-kit/shared/routes'
 
-const oneNetwork = () => oneOf('ethereum', 'arbitrum')
-
 /**
  * Returns a random app route for testing
  */
 export const oneAppRoute = () =>
   ({
-    dex: () => `dex/${oneNetwork()}${oneOf(...recordValues(DEX_ROUTES))}`,
-    lend: () => `lend/${oneNetwork()}${oneOf(...recordValues(LEND_ROUTES))}`,
-    crvusd: () => `crvusd/${oneNetwork()}${oneOf(...recordValues(CRVUSD_ROUTES))}`,
-    llamalend: () => `llamalend/${oneNetwork()}${oneOf(...recordValues(LLAMALEND_ROUTES))}`,
-    dao: () => `dao/ethereum${oneOf(...recordValues(DAO_ROUTES).filter((route) => !route.startsWith('https://')))}`,
+    dex: () => `dex/ethereum${oneOf(...recordValues(DEX_ROUTES))}`,
+    lend: () => `lend/ethereum${oneOf(...recordValues(LEND_ROUTES))}`,
+    crvusd: () => `crvusd/ethereum${oneOf(...recordValues(CRVUSD_ROUTES))}`,
+    llamalend: () => `llamalend/ethereum${oneOf(...recordValues(LLAMALEND_ROUTES))}`,
+    dao: () =>
+      `dao/ethereum${oneOf(
+        ...recordValues({ ...DAO_ROUTES, PAGE_USER: `${DAO_ROUTES.PAGE_USER}/${oneAddress()}` }).filter(
+          // exclude external links, hide the integrations page which redirects to the dex app
+          (route) => !route.startsWith('https://') && !route.includes(DAO_ROUTES.PAGE_INTEGRATIONS),
+        ),
+      )}`,
   })[oneAppPath() || 'dex']() as AppRoute
 type AppName = Exclude<AppPath, ''>
 
@@ -73,8 +77,9 @@ const ROUTE_TEST_IDS = {
  */
 export const getRouteTestId = (route: AppRoute) => {
   const app = getRouteApp(route)
-  const afterNetwork = route.split('/').slice(2).join('/')
-  const testId = ROUTE_TEST_IDS[app][afterNetwork as keyof (typeof ROUTE_TEST_IDS)[AppName]]
-  if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}`)
+  const appRoutes = ROUTE_TEST_IDS[app]
+  const afterNetwork = `/${route.split('/').slice(2).join('/')}` as keyof typeof appRoutes
+  const testId = appRoutes[afterNetwork]
+  if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
   return testId
 }
