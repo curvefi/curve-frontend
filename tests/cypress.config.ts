@@ -9,15 +9,6 @@ export default defineConfig({
   e2e: {
     baseUrl: 'http://localhost:3000',
     specPattern: 'cypress/e2e/**/*',
-    setupNodeEvents(on, config) {
-      // Register a task that logs to the terminal
-      on('task', {
-        log(message) {
-          console.log(message)
-          return null
-        },
-      })
-    },
   },
   component: {
     devServer: {
