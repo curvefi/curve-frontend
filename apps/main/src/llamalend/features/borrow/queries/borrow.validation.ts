@@ -16,12 +16,13 @@ const validateUserCollateral = (userCollateral: Decimal | undefined | null) =>
     enforce(userCollateral).isNumeric().gt(0)
   })
 
-const validateDebt = (debt: Decimal | undefined | null, required: boolean) =>
+export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
   test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
     if (required || debt != null) {
       enforce(debt).isNumeric().gt(0)
     }
   })
+}
 
 const validateSlippage = (slippage: Decimal | null | undefined) =>
   test('slippage', 'Slippage must be a number between 0 and 100', () => {

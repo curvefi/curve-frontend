@@ -121,3 +121,9 @@ export async function getUserMarketCollateralEvents(
 
   return Parsers.parseUserCollateralEvents(resp)
 }
+
+export async function getCrvUsdTvl(chain: Chain, options?: Options) {
+  const host = getHost(options)
+  const resp = await fetch<Responses.GetCrvUsdTvlResponse>(`${host}/v1/crvusd/markets/${chain}/tvl`)
+  return Parsers.parseCrvUsdTvl(resp)
+}

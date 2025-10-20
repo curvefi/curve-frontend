@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import { StoreApi } from 'zustand'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -76,7 +76,10 @@ const DEFAULT_STATE: SliceState = {
 const { loanBorrowMore } = apiLending
 const { isTooMuch } = helpers
 
-const createLoanBorrowMore = (_: SetState<State>, get: GetState<State>): LoanBorrowMoreSlice => ({
+const createLoanBorrowMore = (
+  _: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanBorrowMoreSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
