@@ -1,4 +1,4 @@
-import type { Eip1193Provider } from 'ethers'
+import type { EIP1193Provider } from 'viem'
 
 declare global {
   type Eip6963ProviderInfo = {
@@ -9,13 +9,14 @@ declare global {
   }
   type Eip6963Provider = {
     info: Eip6963ProviderInfo
-    provider: Eip1193Provider
+    provider: EIP1193Provider
   }
 
   interface Window {
     clipboardData: any
-    ethereum: Eip1193Provider & { eip6963ProviderDetails: Eip6963Provider[] }
-    exodus?: Eip1193Provider
-    enkrypt?: { providers: { ethereum: Eip1193Provider } }
+    ethereum: EIP1193Provider & { eip6963ProviderDetails: Eip6963Provider[] }
+    exodus?: EIP1193Provider
+    enkrypt?: { providers: { ethereum: EIP1193Provider } }
+    binancew3w?: { ethereum?: EIP1193Provider }
   }
 }
