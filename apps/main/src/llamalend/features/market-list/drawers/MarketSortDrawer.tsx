@@ -37,6 +37,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
 
   return (
     <SwipeableDrawer
+      paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
         <Button
           variant="outlined"

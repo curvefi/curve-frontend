@@ -1,7 +1,7 @@
 import * as Cypress from 'cypress'
 import lodash from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, oneTokenType, range, shuffle, type TokenType } from '@cy/support/generators'
+import { oneOf, range, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
   createLendingVaultChainsResponse,

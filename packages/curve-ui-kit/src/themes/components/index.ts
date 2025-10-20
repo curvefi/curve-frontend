@@ -157,7 +157,6 @@ export const createComponents = (
     styleOverrides: {
       paper: {
         backgroundColor: design.Layer[1].Fill,
-        maxHeight: SizesAndSpaces.MaxHeight.drawer,
         display: 'flex',
         flexDirection: 'column',
       },

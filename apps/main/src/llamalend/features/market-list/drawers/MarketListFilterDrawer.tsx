@@ -38,6 +38,7 @@ export const MarketListFilterDrawer = ({
   const [open, openDrawer, closeDrawer] = useSwitch(false)
   return (
     <SwipeableDrawer
+      paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
         <Button
           variant="outlined"

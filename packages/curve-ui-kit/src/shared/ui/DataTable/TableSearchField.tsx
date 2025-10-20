@@ -3,7 +3,7 @@ import Box from '@mui/material/Box'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { SearchIcon } from '@ui-kit/shared/icons/SearchIcon'
-import { SearchField, SearchFieldProps } from '@ui-kit/shared/ui/SearchField'
+import { SearchField } from '@ui-kit/shared/ui/SearchField'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { TableButton } from './TableButton'
@@ -41,7 +41,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
     }
   }, [onBlur, value, collapsible, toggleExpanded])
 
-  const searchField = () => (
+  const searchField = (
     <SearchField
       value={value}
       onFocus={onFocus}
@@ -76,7 +76,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       }}
     >
       {isExpanded ? (
-        searchField()
+        searchField
       ) : (
         <TableButton
           onClick={handleExpand}
@@ -93,7 +93,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
         maxWidth: '100%',
       }}
     >
-      {searchField()}
+      {searchField}
     </Box>
   )
 }
