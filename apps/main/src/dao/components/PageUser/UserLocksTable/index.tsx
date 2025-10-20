@@ -5,7 +5,7 @@ import { type UserLockFormatted, invalidateUserLocks, useUserLocksQuery } from '
 import useStore from '@/dao/store/useStore'
 import { SortDirection, UserLocksSortBy } from '@/dao/types/dao.types'
 import { LockType } from '@curvefi/prices-api/dao/models'
-import { formatDate, formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
+import { formatLocaleDateFromTimestamp, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { LOCKS_LABELS } from '../constants'
 

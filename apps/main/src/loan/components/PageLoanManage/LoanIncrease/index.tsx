@@ -307,7 +307,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
         </Box>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           label={t`Borrow amount:`}
           name="debt"
           isError={!!formValues.debtError}
@@ -372,7 +371,6 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
           </>
         ) : (
           <LargeTokenInput
-            dataType="decimal"
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}

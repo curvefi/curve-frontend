@@ -91,7 +91,6 @@ const InpTokenRemove = ({
     </Box>
   ) : (
     <LargeTokenInput
-      dataType="decimal"
       name="collateral"
       isError={!!inpError}
       message={

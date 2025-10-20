@@ -1,4 +1,4 @@
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
 import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
@@ -71,7 +71,7 @@ const DEFAULT_STATE: SliceState = {
   vaultPricePerShare: {},
 }
 
-const createMarketsSlice = (set: SetState<State>, get: GetState<State>): MarketsSlice => ({
+const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDatas: async (key, api, markets, shouldRefetch) => {

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { ethAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type {
   FormEstGas,
   FormStatus,
@@ -94,7 +94,7 @@ const DEFAULT_STATE: SliceState = {
   tokenList: {},
 }
 
-const createQuickSwapSlice = (set: SetState<State>, get: GetState<State>): QuickSwapSlice => ({
+const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): QuickSwapSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

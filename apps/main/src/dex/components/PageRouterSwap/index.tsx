@@ -359,7 +359,7 @@ const QuickSwap = ({
       toToken?.symbol ?? toToken?.address ?? '',
       fromToken?.symbol ?? fromToken?.address ?? '',
     )
-    setSteps(updatedSteps)
+    setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
@@ -438,7 +438,6 @@ const QuickSwap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
-              dataType="decimal"
               onBalance={setFromAmount}
               name="fromAmount"
               inputBalanceUsd={
@@ -530,7 +529,6 @@ const QuickSwap = ({
         ) : (
           <LargeTokenInput
             label={t`Buy`}
-            dataType="decimal"
             balance={decimal(formValues.toAmount)}
             inputBalanceUsd={
               toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
