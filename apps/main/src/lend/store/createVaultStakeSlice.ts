@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import type { FormStatus, FormValues } from '@/lend/components/PageVault/VaultStake/types'
@@ -53,7 +53,7 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createVaultStake = (set: SetState<State>, get: GetState<State>): VaultStakeSlice => ({
+const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): VaultStakeSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
