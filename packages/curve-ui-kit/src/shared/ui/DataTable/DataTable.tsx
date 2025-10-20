@@ -49,7 +49,7 @@ export const DataTable = <T extends TableItem>({
   useScrollToTopOnFilterChange(table)
 
   return (
-    <WithWrapper Wrapper={Box} wrap={!!maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+    <WithWrapper Wrapper={Box} wrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
       <Table
         sx={{
           backgroundColor: (t) => t.design.Layer[1].Fill,

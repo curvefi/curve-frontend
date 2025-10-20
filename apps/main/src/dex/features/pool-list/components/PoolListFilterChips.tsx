@@ -29,7 +29,7 @@ export const PoolListFilterChips = ({ setColumnFilter, columnFiltersById }: Filt
   return (
     <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
       {FILTER_GROUPS.map((group) => (
-        <Stack key={group[0].key} rowGap={2}>
+        <Stack key={group[0].key} rowGap={2} direction="row" alignItems="center">
           {group.map(({ key, label }) => (
             <GridChip
               key={key}
