@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -50,7 +50,10 @@ const DEFAULT_STATE: SliceState = {
   formValues: DEFAULT_FORM_VALUES,
 }
 
-const createLoanDeleverageSlice = (set: SetState<State>, get: GetState<State>): LoanDeleverageSlice => ({
+const createLoanDeleverageSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): LoanDeleverageSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     fetchDetailInfo: async (activeKey, curve, llamma, formValues, maxSlippage, userState) => {

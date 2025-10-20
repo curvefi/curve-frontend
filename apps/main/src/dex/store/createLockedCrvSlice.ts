@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import type { FormEstGas, FormStatus, FormType, FormValues, VecrvInfo } from '@/dex/components/PageCrvLocker/types'
 import {
   DEFAULT_FORM_EST_GAS,
@@ -64,7 +64,7 @@ export const DEFAULT_STATE: SliceState = {
   vecrvInfo: {},
 }
 
-const createLockedCrvSlice = (set: SetState<State>, get: GetState<State>): LockedCrvSlice => ({
+const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): LockedCrvSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 

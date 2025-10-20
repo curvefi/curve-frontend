@@ -1,4 +1,4 @@
-import type { Address } from '..'
+import type { Address, Chain } from '..'
 
 export type Market = {
   name: string
@@ -160,4 +160,9 @@ export type UserCollateralEvents = {
   totalBorrowed: number
   totalBorrowedPrecise: string
   events: UserCollateralEvent[]
+}
+
+export type CrvUsdTvl = {
+  chain: Chain
+  tvl: number
 }

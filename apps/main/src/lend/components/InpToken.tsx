@@ -93,7 +93,6 @@ const InpToken = ({
     </Box>
   ) : (
     <LargeTokenInput
-      dataType="decimal"
       name={id}
       testId={testId ?? `${id}Amt`}
       isError={!!inpError}
