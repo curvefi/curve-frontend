@@ -1,4 +1,4 @@
-import { group } from 'vest'
+import { group } from '@ui-kit/lib/validation/lib'
 import { validateDebt } from '@/llamalend/features/borrow/queries/borrow.validation'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'

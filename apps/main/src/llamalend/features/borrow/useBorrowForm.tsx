@@ -7,10 +7,11 @@ import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
-import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
+import { suiteResolver } from '@ui-kit/lib/model'
 import { formDefaultOptions } from '@ui-kit/lib/model'
+import type { Suite } from '@ui-kit/lib/validation/lib'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES } from './constants'
@@ -35,7 +36,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   const form = useForm<BorrowForm>({
     ...formDefaultOptions,
     // todo: also validate maxLeverage and maxCollateral
-    resolver: vestResolver(borrowFormValidationSuite),
+    resolver: suiteResolver(borrowFormValidationSuite as Suite<string>),
     defaultValues: {
       userCollateral: undefined,
       userBorrowed: `0` satisfies Decimal,

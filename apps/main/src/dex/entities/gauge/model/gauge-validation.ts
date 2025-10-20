@@ -1,4 +1,4 @@
-import { enforce, group, test } from 'vest'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import useStore from '@/dex/store/useStore'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
@@ -65,7 +65,7 @@ function validateAmount({ rewardTokenId, amount }: DepositRewardApproveParams) {
 
   if (!tokenBalance) return
 
-  enforce(amount).condition((amount) => ({
+  enforce(amount).condition((amount: number | string) => ({
     pass: +amount < +tokenBalance,
     message: t`Amount ${formatNumber(amount, { decimals: 5 })} > wallet balance ${formatNumber(tokenBalance, { decimals: 5 })}`,
   }))

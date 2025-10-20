@@ -1,10 +1,9 @@
 import type { IsStringLiteral, SingleKeyObject } from 'type-fest'
-import type { Suite } from 'vest'
-import type { CB } from 'vest-utils'
 import type { DefaultError } from '@tanstack/query-core'
 import type { FetchQueryOptions, QueryKey, UseQueryOptions, UseQueryResult } from '@tanstack/react-query'
 import type { REFRESH_INTERVAL } from '@ui-kit/lib/model/time'
 import type { FieldName, FieldsOf } from '@ui-kit/lib/validation'
+import type { Suite } from '@ui-kit/lib/validation/lib'
 
 // Checks if T is a string literal or an object with one property
 type IsLiteralOrSingleKeyObject<T> =
@@ -36,10 +35,9 @@ export type QueryFactoryInput<
   TParams extends FieldsOf<TValidParams> = FieldsOf<TValidParams>,
   TField extends string = FieldName<TValidParams>,
   TGroup extends string = string,
-  TCallback extends CB = CB<TValidParams, TField[]>,
 > = {
   queryKey: (params: TParams) => QueryKeyTuple<TKey>
-  validationSuite: Suite<TField, TGroup, TCallback>
+  validationSuite: Suite<TField, TGroup>
   queryFn: (params: TValidParams) => Promise<TData>
   gcTime?: keyof typeof REFRESH_INTERVAL
   staleTime?: keyof typeof REFRESH_INTERVAL

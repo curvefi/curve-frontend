@@ -13,7 +13,7 @@ import {
   FormActions,
   TokenSelector,
 } from '@/dex/features/add-gauge-reward-token/ui'
-import { vestResolver } from '@hookform/resolvers/vest'
+import { suiteResolver } from '@ui-kit/lib/model/form'
 import { FormErrorsDisplay } from '@ui/FormErrorsDisplay'
 import { FlexContainer, FormContainer, FormFieldsContainer } from '@ui/styled-containers'
 import TxInfoBar from '@ui/TxInfoBar'
@@ -31,7 +31,7 @@ export const AddRewardToken = ({ chainId, poolId }: AddRewardTokenProps) => {
 
   const methods = useForm<AddRewardFormValues>({
     ...formDefaultOptions,
-    resolver: vestResolver(addGaugeRewardTokenValidationSuite),
+    resolver: suiteResolver(addGaugeRewardTokenValidationSuite),
     defaultValues: {
       rewardTokenId: zeroAddress,
       distributorId: signerAddress ?? zeroAddress,

@@ -1,6 +1,5 @@
 import { FunctionComponent, useCallback, useMemo } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { ErrorMessage } from '@hookform/error-message'
 import { ErrorContainer } from '../styled-containers'
 import type { FormError } from './error-types'
 
@@ -41,16 +40,10 @@ export const FormErrorsDisplay = <T extends Record<string, any>>({
   }, [errorKeys, errors])
 
   const renderErrorMessage = useCallback(
-    (key: string, error: any) => (
-      <ErrorMessage
-        key={key}
-        name={key}
-        render={() => {
-          const errorMessage = getErrorMessage(error as FormError)
-          return <Component errorKey={errorMessage} handleBtnClose={() => clearErrors(key as any)} />
-        }}
-      />
-    ),
+    (key: string, error: any) => {
+      const errorMessage = getErrorMessage(error as FormError)
+      return <Component key={key} errorKey={errorMessage} handleBtnClose={() => clearErrors(key as any)} />
+    },
     [Component, clearErrors],
   )
 

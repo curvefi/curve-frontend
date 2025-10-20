@@ -1,4 +1,3 @@
-import { CB } from 'vest-utils'
 import { QueryFunctionContext, queryOptions, useQuery } from '@tanstack/react-query'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { logQuery } from '@ui-kit/lib/logging'
@@ -16,7 +15,6 @@ export function queryFactory<
   TParams extends FieldsOf<TQuery> = FieldsOf<TQuery>,
   TField extends FieldName<TQuery> = FieldName<TQuery>,
   TGroup extends string = string,
-  TCallback extends CB = CB<TQuery, TField[]>,
 >({
   queryFn: runQuery,
   queryKey,
@@ -27,12 +25,7 @@ export function queryFactory<
   dependencies,
   disableLog,
   ...options
-}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup, TCallback>): QueryFactoryOutput<
-  TQuery,
-  TKey,
-  TData,
-  TParams
-> {
+}: QueryFactoryInput<TQuery, TKey, TData, TParams, TField, TGroup>): QueryFactoryOutput<TQuery, TKey, TData, TParams> {
   const getQueryOptions = (params: TParams, enabled = true) =>
     queryOptions({
       queryKey: queryKey(params),

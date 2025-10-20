@@ -1,4 +1,4 @@
-import { enforce, group, test } from 'vest'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'

@@ -1,10 +1,10 @@
 import { useCallback, useMemo } from 'react'
-import { enforce, group, test } from 'vest'
 import { type QueriesResults, useQueries } from '@tanstack/react-query'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { combineQueriesToObject, createValidationSuite } from '@ui-kit/lib'
 import { queryFactory, rootKeys, type ChainParams, type TokenParams, type TokenQuery } from '@ui-kit/lib/model/query'
 import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
+import { enforce, group, test } from '@ui-kit/lib/validation/lib'
 
 const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 

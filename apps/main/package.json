@@ -20,8 +20,6 @@
     "@curvefi/api": "2.68.11",
     "@curvefi/llamalend-api": "1.0.33",
     "@ethersproject/abi": "^5.8.0",
-    "@hookform/error-message": "^2.0.1",
-    "@hookform/resolvers": "^5.2.2",
     "@supercharge/promise-pool": "^3.2.0",
     "@tanstack/react-router": "^1.132.47",
     "@tanstack/react-router-devtools": "^1.132.51",
@@ -35,7 +33,6 @@
     "recharts": "2.15.4",
     "solid-js": "^1.9.9",
     "ui": "*",
-    "vest": "^5.4.6",
     "vite-plugin-svgr": "^4.5.0",
     "vite-plugin-vercel": "9.0.7"
   },
