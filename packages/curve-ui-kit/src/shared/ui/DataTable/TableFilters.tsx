@@ -1,10 +1,12 @@
 import { ReactNode, useMemo, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
+import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
 import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { FilterIcon } from '../../icons/FilterIcon'
 import { ReloadIcon } from '../../icons/ReloadIcon'
@@ -53,6 +55,7 @@ export const TableFilters = <ColumnIds extends string>({
   const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
+  const hideTitle = isExpandedOrValue && isMobile
   return (
     <Stack
       paddingBlockEnd={{ mobile: Spacing.sm.tablet }}
@@ -60,7 +63,11 @@ export const TableFilters = <ColumnIds extends string>({
       maxWidth={maxWidth}
     >
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
-        {!(isExpandedOrValue && isMobile) && <Grid size={{ mobile: 'auto', tablet: 6 }}>{leftChildren}</Grid>}
+        <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
+          <Grid size={{ mobile: 'auto', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
+            {leftChildren}
+          </Grid>
+        </Fade>
         <Grid
           size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
           display="flex"
