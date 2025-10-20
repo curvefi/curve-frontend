@@ -55,7 +55,18 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   } = useMarketFutureRates(params, isOpen)
   const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
 
-  const loanToValue = useLoanToValue({ params, collateralToken, borrowToken })
+  const {
+    data: loanToValue,
+    isLoading: isLtvLoading,
+    error: ltvError,
+  } = useLoanToValue(
+    {
+      params,
+      collateralToken,
+      borrowToken,
+    },
+    isOpen,
+  )
   const theme = useTheme()
 
   return (
@@ -109,9 +120,13 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
             loading={ratesLoading || futureRatesLoading}
             testId="borrow-apr"
           />
-          {loanToValue != null && (
-            <ActionInfo label={t`Loan to value ratio`} value={formatPercent(loanToValue)} testId="borrow-ltv" />
-          )}
+          <ActionInfo
+            label={t`Loan to value ratio`}
+            value={loanToValue ? formatPercent(loanToValue) : '...'}
+            testId="borrow-ltv"
+            error={ltvError}
+            loading={isLtvLoading}
+          />
           <ActionInfo
             label={t`Estimated tx cost (step 1 of 2)`}
             value={formatNumber(gas?.createLoanApprove?.estGasCostUsd, { currency: 'USD', defaultValue: '-' })}

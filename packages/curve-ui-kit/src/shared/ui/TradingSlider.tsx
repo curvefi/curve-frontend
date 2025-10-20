@@ -53,7 +53,6 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
     />
 
     <NumericTextField
-      dataType="decimal"
       placeholder="0"
       size="tiny"
       variant="standard"

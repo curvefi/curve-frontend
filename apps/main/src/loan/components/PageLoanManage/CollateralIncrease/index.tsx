@@ -279,7 +279,6 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             </>
           ) : (
             <LargeTokenInput
-              dataType="decimal"
               name="collateral"
               testId="inpCollateral"
               isError={!!formValues.collateralError}

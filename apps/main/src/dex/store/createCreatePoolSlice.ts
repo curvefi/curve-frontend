@@ -2,7 +2,7 @@ import { BigNumber } from 'bignumber.js'
 import type { ContractTransactionResponse } from 'ethers'
 import { produce } from 'immer'
 import { zeroAddress } from 'viem'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import {
   CRYPTOSWAP,
   POOL_PRESETS,
@@ -272,7 +272,10 @@ const calculateInitialPrice = (tokenA: number, tokenB: number) => {
   return initialPrice.toPrecision(4).toString()
 }
 
-const createCreatePoolSlice = (set: SetState<State>, get: GetState<State>): CreatePoolSlice => ({
+const createCreatePoolSlice = (
+  set: StoreApi<State>['setState'],
+  get: StoreApi<State>['getState'],
+): CreatePoolSlice => ({
   createPool: {
     ...DEFAULT_CREATE_POOL_STATE,
     setNavigationIndex: (index: number) => {

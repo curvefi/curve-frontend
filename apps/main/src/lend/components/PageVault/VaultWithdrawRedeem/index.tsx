@@ -249,7 +249,6 @@ const VaultWithdrawRedeem = ({
         </div>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="amount"
           disabled={disabled}
           balance={decimal(formValues.amount)}
