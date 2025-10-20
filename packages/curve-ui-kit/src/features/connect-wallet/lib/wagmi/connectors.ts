@@ -4,21 +4,21 @@ import type { CreateConnectorFn } from '@wagmi/core'
 // project managed at https://cloud.reown.com/ set up by Schiavini, Michael also has access.
 const WALLET_CONNECT_PROJECT_ID = '982ea4bdf92e49746bd040a981283b36'
 
-const BINANCE_CONNECTOR_TYPE = 'wallet.binance.com'
+export const BINANCE_CONNECTOR = 'wallet.binance.com'
 
 export type ConnectorType =
   | typeof injected.type
   | typeof coinbaseWallet.type
   | typeof safe.type
   | typeof walletConnect.type
-  | typeof BINANCE_CONNECTOR_TYPE
+  | typeof BINANCE_CONNECTOR
 
 export const connectors: Record<ConnectorType, CreateConnectorFn> = {
   [injected.type]: injected(),
-  [BINANCE_CONNECTOR_TYPE]: injected({
+  [BINANCE_CONNECTOR]: injected({
     target: {
       // Provide the injected target to avoid window.ethereum provider overwrite conflict
-      id: BINANCE_CONNECTOR_TYPE,
+      id: BINANCE_CONNECTOR,
       name: 'Binance Wallet Injected',
       provider: () => window.binancew3w?.ethereum,
     },

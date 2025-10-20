@@ -1,5 +1,5 @@
 import { createSvgIcon } from '@mui/material/utils'
-import type { ConnectorType } from '@ui-kit/features/connect-wallet/lib/wagmi/connectors'
+import { BINANCE_CONNECTOR, type ConnectorType } from '@ui-kit/features/connect-wallet/lib/wagmi/connectors'
 import { BinanceWalletIcon } from '@ui-kit/shared/icons/BinanceWalletIcon'
 import { BrowserWalletIcon } from '@ui-kit/shared/icons/BrowserWalletIcon'
 import { CoinbaseWalletIcon } from '@ui-kit/shared/icons/CoinbaseWalletIcon'
@@ -21,7 +21,7 @@ const isInIframe = typeof window !== 'undefined' && window !== window.parent
 export const supportedWallets = [
   { label: `Browser Wallet`, icon: BrowserWalletIcon, connector: 'injected' },
   { label: `Wallet Connect`, icon: WalletConnectIcon, connector: 'walletConnect' },
-  { label: `Binance Wallet`, icon: BinanceWalletIcon, connector: 'wallet.binance.com' },
+  { label: `Binance Wallet`, icon: BinanceWalletIcon, connector: BINANCE_CONNECTOR },
   { label: `Coinbase`, icon: CoinbaseWalletIcon, connector: 'coinbaseWallet' },
   ...(isInIframe ? [{ label: 'Safe', icon: SafeWalletIcon, connector: 'safe' } as const] : []),
 ] satisfies WalletType[]
