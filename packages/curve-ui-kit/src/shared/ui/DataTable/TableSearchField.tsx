@@ -41,11 +41,11 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
     }
   }, [onBlur, value, collapsible, toggleExpanded])
 
-  const searchField = (onBlurProp: SearchFieldProps['onBlur']) => (
+  const searchField = () => (
     <SearchField
       value={value}
       onFocus={onFocus}
-      onBlur={onBlurProp}
+      onBlur={handleBlur}
       inputRef={searchInputRef}
       onSearch={onChange}
       data-testid={testId ? `table-text-search-${testId}` : 'table-text-search'}
@@ -76,7 +76,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       }}
     >
       {isExpanded ? (
-        searchField(handleBlur)
+        searchField()
       ) : (
         <TableButton
           onClick={handleExpand}
@@ -93,7 +93,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
         maxWidth: '100%',
       }}
     >
-      {searchField(onBlur)}
+      {searchField()}
     </Box>
   )
 }
