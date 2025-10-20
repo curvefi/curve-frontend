@@ -29,7 +29,7 @@ export const {
     group('apiValidation', () => {
       test('api', 'API chain ID mismatch', () => {
         enforce(getLib('llamaApi')?.chainId === chainId || getLib('curveApi')?.chainId === chainId)
-          .isTrue()
+          .isTruthy()
           .message(`No matching API library found for chain ID ${chainId}`)
       })
     })

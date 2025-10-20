@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
@@ -36,7 +36,7 @@ const DEFAULT_STATE: SliceState = {
   collateralDatasMapper: {},
 }
 
-const createCollateralsSlice = (set: SetState<State>, get: GetState<State>) => ({
+const createCollateralsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']) => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
 
