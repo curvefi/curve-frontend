@@ -288,7 +288,6 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         </Box>
       ) : (
         <LargeTokenInput
-          dataType="decimal"
           name="debt"
           isError={!!formValues.debtError}
           message={

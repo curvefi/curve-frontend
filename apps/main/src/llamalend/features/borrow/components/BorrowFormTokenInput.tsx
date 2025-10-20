@@ -31,7 +31,6 @@ export const BorrowFormTokenInput = ({
   testId?: string
 }) => (
   <LargeTokenInput
-    dataType="decimal"
     name={name}
     label={label}
     testId={testId}

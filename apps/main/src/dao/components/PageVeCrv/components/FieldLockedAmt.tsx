@@ -83,8 +83,7 @@ const FieldLockedAmt = ({
       ) : null}
     </div>
   ) : (
-    <LargeTokenInput<Decimal>
-      dataType="decimal"
+    <LargeTokenInput
       name="lockedAmt"
       disabled={disabled}
       balance={decimal(lockedAmt)}
