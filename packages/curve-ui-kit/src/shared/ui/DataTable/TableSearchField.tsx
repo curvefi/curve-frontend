@@ -41,6 +41,29 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
     }
   }, [onBlur, value, collapsible, toggleExpanded])
 
+  const searchField = (onBlurProp: SearchFieldProps['onBlur']) => (
+    <SearchField
+      value={value}
+      onFocus={onFocus}
+      onBlur={onBlurProp}
+      inputRef={searchInputRef}
+      onSearch={onChange}
+      data-testid={testId ? `table-text-search-${testId}` : 'table-text-search'}
+      size="small"
+      sx={[
+        (t) => ({
+          transition: t.design.Button.Transition,
+          ...(!isFocused && {
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: `transparent transparent ${t.design.Inputs.Base.Default.Border.Default} transparent`,
+            },
+          }),
+        }),
+        { flex: '1 1 auto', minWidth: 0 },
+      ]}
+    />
+  )
+
   return collapsible ? (
     <Box
       sx={{
@@ -53,16 +76,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       }}
     >
       {isExpanded ? (
-        <SearchFieldWithTransition
-          value={value}
-          searchInputRef={searchInputRef}
-          onChange={onChange}
-          onFocus={onFocus}
-          onBlur={handleBlur}
-          isFocused={isFocused}
-          testId={testId}
-          sx={{ flex: '1 1 auto', minWidth: 0 }}
-        />
+        searchField(handleBlur)
       ) : (
         <TableButton
           onClick={handleExpand}
@@ -79,49 +93,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
         maxWidth: '100%',
       }}
     >
-      <SearchFieldWithTransition
-        value={value}
-        searchInputRef={searchInputRef}
-        onChange={onChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        isFocused={isFocused}
-        testId={testId}
-        sx={{ flex: '1 1 auto', minWidth: 0 }}
-      />
+      {searchField(onBlur)}
     </Box>
   )
 }
-
-const SearchFieldWithTransition = ({
-  isFocused,
-  searchInputRef,
-  onChange,
-  sx,
-  testId,
-  ...props
-}: {
-  isFocused?: boolean
-  searchInputRef: React.RefObject<HTMLInputElement | null>
-  onChange: (value: string) => void
-  testId?: string
-} & Omit<SearchFieldProps, 'inputRef' | 'onSearch' | 'onChange'>) => (
-  <SearchField
-    inputRef={searchInputRef}
-    onSearch={onChange}
-    data-testid={testId ? `table-text-search-${testId}` : 'table-text-search'}
-    size="small"
-    {...props}
-    sx={[
-      (t) => ({
-        transition: t.design.Button.Transition,
-        ...(!isFocused && {
-          '& .MuiOutlinedInput-notchedOutline': {
-            borderColor: `transparent transparent ${t.design.Inputs.Base.Default.Border.Default} transparent`,
-          },
-        }),
-      }),
-      ...(Array.isArray(sx) ? sx : sx ? [sx] : []),
-    ]}
-  />
-)
