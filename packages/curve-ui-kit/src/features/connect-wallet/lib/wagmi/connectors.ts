@@ -11,7 +11,7 @@ export type ConnectorType =
   | typeof coinbaseWallet.type
   | typeof safe.type
   | typeof walletConnect.type
-  | 'binance'
+  | 'wallet.binance.com'
 
 export const connectors: Record<ConnectorType, CreateConnectorFn> = {
   [injected.type]: injected(),
