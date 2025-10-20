@@ -24,7 +24,7 @@ import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const { isEqual } = lodash
-const LOCAL_STORAGE_KEY = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(

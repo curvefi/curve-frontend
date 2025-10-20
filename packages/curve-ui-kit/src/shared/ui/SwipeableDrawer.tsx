@@ -32,7 +32,7 @@ export const SwipeableDrawer = ({ button, children, open, setOpen }: Props) => (
       disableSwipeToOpen={false}
       keepMounted={false}
     >
-      <Box sx={{ pt: 2 }}>
+      <Box sx={{ paddingBlockStart: 2 }}>
         <Puller />
       </Box>
 
@@ -41,9 +41,13 @@ export const SwipeableDrawer = ({ button, children, open, setOpen }: Props) => (
   </Box>
 )
 
-export const Puller = styled('div')(({ theme }) => ({
-  width: 80,
-  height: 4,
-  backgroundColor: theme.design.Color.Neutral[500],
-  margin: '0 auto',
-}))
+export const Puller = () => (
+  <Box
+    sx={{
+      width: 80,
+      height: 4,
+      backgroundColor: (t) => t.design.Color.Neutral[500],
+      margin: '0 auto',
+    }}
+  />
+)
