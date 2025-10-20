@@ -78,9 +78,7 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
   </WithSkeleton>
 )
 
-/**
- * Props for the Balance component
- */
+/** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
   symbol: string

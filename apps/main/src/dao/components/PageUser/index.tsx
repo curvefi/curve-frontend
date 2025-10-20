@@ -27,7 +27,8 @@ type UserPageProps = {
 const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps) => {
   const veCrvHolders = useStore((state) => state.analytics.veCrvHolders)
   const getVeCrvHolders = useStore((state) => state.analytics.getVeCrvHolders)
-  const { getUserEns, userMapper } = useStore((state) => state.user)
+  const getUserEns = useStore((state) => state.user.getUserEns)
+  const userMapper = useStore((state) => state.user.userMapper)
   const { provider } = useWallet()
   const [tab, setTab] = useState<Tab>('proposals')
 

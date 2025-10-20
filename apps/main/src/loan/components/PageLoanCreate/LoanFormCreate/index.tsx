@@ -325,7 +325,6 @@ const LoanCreate = ({
           </>
         ) : (
           <LargeTokenInput
-            dataType="decimal"
             name="collateral"
             isError={!!formValues.collateralError}
             {...(formValues.collateralError && {
@@ -388,7 +387,6 @@ const LoanCreate = ({
           </>
         ) : (
           <LargeTokenInput
-            dataType="decimal"
             name="debt"
             isError={!!formValues.debtError}
             message={

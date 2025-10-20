@@ -1,5 +1,5 @@
 import { produce } from 'immer'
-import type { GetState, SetState } from 'zustand'
+import type { StoreApi } from 'zustand'
 import { invalidateProposalPricesApi } from '@/dao/entities/proposal-prices-api'
 import { invalidateUserProposalVotesQuery } from '@/dao/entities/user-proposal-votes'
 import { helpers } from '@/dao/lib/curvejs'
@@ -68,7 +68,7 @@ const DEFAULT_STATE: SliceState = {
   activeSortDirection: 'desc',
 }
 
-const createProposalsSlice = (set: SetState<State>, get: GetState<State>): ProposalsSlice => ({
+const createProposalsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): ProposalsSlice => ({
   [sliceKey]: {
     ...DEFAULT_STATE,
     setSearchValue: (filterValue) => {

@@ -91,7 +91,7 @@ const ActionInfo = ({
   labelColor,
   prevValue,
   prevValueColor,
-  value: value,
+  value,
   valueColor,
   valueLeft,
   valueRight,
