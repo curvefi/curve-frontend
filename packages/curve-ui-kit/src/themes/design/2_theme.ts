@@ -7,6 +7,18 @@ const Transition = `all ${TransitionFunction}`
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
 
+/** 
+ Same background colors accross all themes
+*/
+const SliderBackground = {
+  Trading: {
+    25: Greens[400],
+    50: Reds[200],
+    75: Reds[400],
+    100: Reds[500],
+  },
+} as const
+
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
     Neutral: Grays,
@@ -298,7 +310,11 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: InputBaseDefaultFill,
       },
     },
+  } as const
+
+  const Sliders = {
     SliderThumbImage: '/mui/slider-thumb-white.svg',
+    SliderBackground,
   } as const
 
   const Switch = {
@@ -327,6 +343,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }
 
@@ -711,6 +728,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }
 
@@ -1005,7 +1023,11 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: InputBaseDefaultFill,
       },
     },
+  } as const
+
+  const Sliders = {
     SliderThumbImage: '/mui/slider-thumb-white.svg',
+    SliderBackground,
   } as const
 
   const Switch = {
@@ -1034,5 +1056,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }
