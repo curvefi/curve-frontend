@@ -205,7 +205,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
     Default: {
       Label: Text.TextColors.Secondary,
-      Fill: Layer[2].Fill,
+      Fill: Layer[1].Fill,
       Stroke: Layer[2].Outline,
     },
     Hover: {
@@ -585,7 +585,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
     Default: {
       Label: Text.TextColors.Secondary,
-      Fill: Layer[2].Fill,
+      Fill: Layer[1].Fill,
       Stroke: Layer[2].Outline,
     },
     Hover: {

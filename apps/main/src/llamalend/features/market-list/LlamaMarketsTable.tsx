@@ -4,7 +4,7 @@ import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
@@ -13,20 +13,18 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
-import { LlamaListFilterChips } from './chips/LlamaListFilterChips'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
-import { MarketTypeFilterChips } from './chips/MarketTypeFilterChips'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { ChainFilterChip } from './chips/ChainFilterChip'
+import { MarketFilterChip } from './chips/MarketFilterChip'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
-const TITLE = 'Llamalend Markets' // not using the t`` here as the value is used as a key in the local storage
+const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(
@@ -59,19 +57,18 @@ export const LlamaMarketsTable = ({
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    TITLE,
+    LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
-    TITLE,
+    LOCAL_STORAGE_KEY,
     sorting,
     userHasPositions,
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const isMobile = useIsMobile()
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
@@ -94,34 +91,40 @@ export const LlamaMarketsTable = ({
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={TITLE}
-        subtitle={t`Borrow with the power of Curve soft liquidations`}
+        filterExpandedKey={LOCAL_STORAGE_KEY}
         loading={loading}
         onReload={onReload}
         visibilityGroups={columnSettings}
         toggleVisibility={toggleVisibility}
         searchText={searchText}
+        hasSearchBar
         onSearch={onSearch}
+        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         collapsible={
           <LendingMarketsFilters
-            columnFilters={columnFiltersById}
-            setColumnFilter={setColumnFilter}
             data={data}
             minLiquidity={minLiquidity}
+            columnFilters={columnFiltersById}
+            setColumnFilter={setColumnFilter}
           />
         }
         chips={
-          <MarketFilterChipWrapper
-            hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          >
-            {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
-            <MarketTypeFilterChips {...filterProps} />
-            <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          </MarketFilterChipWrapper>
+          <>
+            <ChainFilterChip data={data} {...filterProps} />
+            <MarketFilterChip
+              hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
+              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              resetFilters={resetFilters}
+              userHasPositions={userHasPositions}
+              hasFavorites={hasFavorites}
+              onSortingChange={onSortingChange}
+              sortField={sortField}
+              data={data}
+              minLiquidity={minLiquidity}
+              {...filterProps}
+            />
+          </>
         }
-        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )
