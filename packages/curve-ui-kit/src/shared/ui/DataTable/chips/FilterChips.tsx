@@ -18,6 +18,7 @@ type MarketsFilterChipsProps = {
   children?: ReactNode
 }
 
+// todo: update to the new design like `MarketFilterChips`
 export const FilterChips = ({ hiddenMarketCount, resetFilters, hasFilters, children }: MarketsFilterChipsProps) => {
   const tooltip =
     !hasFilters && hiddenMarketCount

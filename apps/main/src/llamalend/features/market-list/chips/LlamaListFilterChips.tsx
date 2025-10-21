@@ -1,17 +1,14 @@
 import { useAccount } from 'wagmi'
 import type { LlamaMarketKey, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import PersonIcon from '@mui/icons-material/Person'
-import Grid from '@mui/material/Grid'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { HeartIcon } from '@ui-kit/shared/icons/HeartIcon'
 import { PointsIcon } from '@ui-kit/shared/icons/PointsIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
-
-const { Spacing } = SizesAndSpaces
 
 export const LlamaListFilterChips = ({
   userHasPositions,
@@ -26,34 +23,41 @@ export const LlamaListFilterChips = ({
   const [myMarkets, toggleMyMarkets] = useToggleFilter(LlamaMarketColumnId.UserHasPositions, props)
   const [favorites, toggleFavorites] = useToggleFilter(LlamaMarketColumnId.IsFavorite, props)
   const [rewards, toggleRewards] = useToggleFilter(LlamaMarketColumnId.Rewards, props)
+  const isMobile = useIsMobile()
   return (
-    <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+    <>
       {isConnected && (
         <GridChip
           label={t`My Markets`}
           selected={myMarkets}
           toggle={toggleMyMarkets}
+          onDelete={toggleMyMarkets}
           icon={<PersonIcon />}
           data-testid="chip-my-markets"
           disabled={!userHasPositions}
+          size={{ mobile: 12, tablet: 'auto' }}
+          selectableChipSize={isMobile ? 'large' : 'small'}
         />
       )}
       <GridChip
         label={t`Favorites`}
         selected={favorites}
         toggle={toggleFavorites}
+        onDelete={toggleFavorites}
         icon={<HeartIcon />}
         data-testid="chip-favorites"
         disabled={!hasFavorites}
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
       <GridChip
         label={t`Points`}
         selected={rewards}
         toggle={toggleRewards}
+        onDelete={toggleRewards}
         icon={<PointsIcon />}
         data-testid="chip-rewards"
-        {...(isConnected && { size: 12 })}
+        selectableChipSize={isMobile ? 'large' : 'small'}
       />
-    </Grid>
+    </>
   )
 }

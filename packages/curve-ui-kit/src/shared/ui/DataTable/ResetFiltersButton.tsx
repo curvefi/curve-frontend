@@ -5,7 +5,7 @@ import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 export const ResetFiltersButton = ({ onClick, hidden }: { onClick: () => void; hidden: boolean }) => (
   <Button
     color="ghost"
-    size="small"
+    size="extraSmall"
     onClick={onClick}
     data-testid="reset-filter"
     sx={{

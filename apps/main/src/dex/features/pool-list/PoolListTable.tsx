@@ -8,12 +8,14 @@ import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
+import { t } from '@ui-kit/lib/i18n'
 import { FilterChips } from '@ui-kit/shared/ui/DataTable/chips/FilterChips'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
@@ -26,7 +28,7 @@ import { DEFAULT_SORT, usePoolListVisibilitySettings } from './hooks/usePoolList
 
 const { Sizing } = SizesAndSpaces
 
-const TITLE = 'Pools'
+const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 
@@ -58,15 +60,18 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
 
   const defaultFilters = useDefaultPoolsFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    TITLE,
+    LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = usePoolListVisibilitySettings(TITLE, {
-    isLite,
-    sorting,
-  })
+  const { columnSettings, columnVisibility, toggleVisibility, sortField } = usePoolListVisibilitySettings(
+    LOCAL_STORAGE_KEY,
+    {
+      isLite,
+      sorting,
+    },
+  )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const isMobile = useIsMobile()
@@ -100,7 +105,8 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
       minRowHeight={Sizing.xxl}
     >
       <TableFilters<PoolColumnId>
-        title={TITLE}
+        filterExpandedKey={LOCAL_STORAGE_KEY}
+        leftChildren={<TableFiltersTitles title={t`Markets`} />}
         loading={isLoading}
         // todo: onReload={onReload}
         visibilityGroups={columnSettings}
@@ -115,9 +121,9 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
           >
             {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
             <PoolListFilterChips {...filterProps} />
+            <PoolListSort onSortingChange={onSortingChange} sortField={sortField} />
           </FilterChips>
         }
-        sort={<PoolListSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )
