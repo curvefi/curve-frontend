@@ -294,5 +294,6 @@ export const SizesAndSpaces = {
     popover: '17rem', // 272px
     tokenSelector: '47rem', // 752px
     userEventsTable: '28.875rem', // 462px
+    drawer: '80vh',
   },
 } as const
