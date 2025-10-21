@@ -45,7 +45,6 @@ export const MarketInformationComp = ({
     rChainId,
     rOwmId,
     api: pageProps.api,
-    market: pageProps.market,
   })
   const collateralToken = market && {
     symbol: market?.collateral_token.symbol,
