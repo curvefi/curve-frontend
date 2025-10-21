@@ -9,8 +9,8 @@ const DetailInfoPriceImpact = ({
   isHighImpact,
 }: {
   loading: boolean
-  priceImpact: number | null
-  isHighImpact: boolean | null
+  priceImpact: number | undefined | null
+  isHighImpact: boolean | undefined
 }) => (
   <DetailInfo
     isBold={isHighImpact}

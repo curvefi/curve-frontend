@@ -579,7 +579,7 @@ const QuickSwap = ({
         <DetailInfoPriceImpact
           loading={routesAndOutputLoading}
           priceImpact={routesAndOutput?.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact ?? null}
+          isHighImpact={slippageImpact?.isHighImpact}
         />
         <DetailInfoTradeRoute
           params={params}
