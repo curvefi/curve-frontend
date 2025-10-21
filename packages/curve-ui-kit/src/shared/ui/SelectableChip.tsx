@@ -11,12 +11,13 @@ export type SelectableChipProps = {
  * This customizes the MUI Chip component to change color and icon based on selection state.
  * The delete icon is always visible, but hidden when the chip is not selected with some transition.
  */
-export const SelectableChip = ({ selected, toggle, ...props }: SelectableChipProps) => (
+export const SelectableChip = ({ selected, toggle, onDelete, ...props }: SelectableChipProps) => (
   <Chip
-    size="large"
+    size="small"
     clickable
     color={selected ? 'selected' : 'unselected'}
-    onDelete={toggle}
+    // CancelIcon is rendered if there is a onDelete handler
+    onDelete={onDelete}
     onClick={toggle}
     deleteIcon={
       <CancelIcon

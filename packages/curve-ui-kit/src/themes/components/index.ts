@@ -153,5 +153,14 @@ export const createComponents = (
   },
   MuiRadio: defineMuiRadio(),
   MuiSwitch: defineMuiSwitch(design),
+  MuiDrawer: {
+    styleOverrides: {
+      paper: {
+        backgroundColor: design.Layer[1].Fill,
+        display: 'flex',
+        flexDirection: 'column',
+      },
+    },
+  },
   MuiTypography: defineMuiTypography(design),
 })
