@@ -114,10 +114,14 @@ jobs:
       - run: yarn build
 
       - name: Start dev server
-        run: yarn start 2>&1 | tee dev-server.log &
+        run: yarn start 2>&1 | tee ../../e2e-dev.log &
         working-directory: apps/main
 
-      - run: yarn run cy:run:e2e --browser ${{ matrix.browser }}
+      - name: Start api server
+        run: yarn dev 2>&1 | tee ../../e2e-api.log &
+        working-directory: apps/router-api
+
+      - run: yarn run cy:run:e2e --browser ${{ matrix.browser }} | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
         working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
@@ -136,4 +140,4 @@ jobs:
         with:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
-          path: apps/main/dev-server.log
+          path: e2e-*.log
