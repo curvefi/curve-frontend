@@ -678,7 +678,11 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: InputBaseDefaultFill,
       },
     },
-    SliderThumbImage: '/mui/slider-thumb-black.svg',
+  } as const
+
+  const Sliders = {
+    SliderThumbImage: '/mui/slider-thumb-blue.svg',
+    SliderBackground,
   } as const
 
   const Switch = {

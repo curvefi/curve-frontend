@@ -25,8 +25,6 @@ const heights: Record<Size, Responsive> = {
 // Equalizes track and thumb height with support for responsiveness
 const trackAndThumbHeights = {
   ...handleBreakpoints({ height: heights['small'] }),
-  borderRadius: 0,
-  border: 'none',
 
   '&.MuiSlider-sizeMedium, .MuiSlider-sizeMedium &': handleBreakpoints({ height: heights['medium'] }),
 }
@@ -82,9 +80,10 @@ const leftExtension = (design: DesignSystem) => ({
   },
   // Only fill the left border gap if there's a single thumb
   [`&${singleThumbSelector}::before`]: {
-    backgroundColor: design.Button.Primary.Default.Fill,
+    backgroundColor: design.Color.Primary[500],
   },
-  [`&.Mui-disabled${singleThumbSelector}::before`]: {
+  // Increase specificity so disabled wins over default when both apply
+  [`&&.Mui-disabled${singleThumbSelector}::before`]: {
     backgroundColor: 'var(--mui-palette-grey-400)',
   },
 })
@@ -97,37 +96,69 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     root: {
       ...trackAndThumbHeights,
       borderRadius: 0,
+      border: 'none',
       // Nesting required as otherwise it'll break in mobile for some reason
       '&': { paddingBlock: 0 },
       position: 'relative',
+      paddingInline: 0,
       ...rightExtension(design),
       ...leftExtension(design),
       [`&.${CLASS_BORDERLESS}::after`]: {
         border: 0,
       },
+      '::after': {
+        // Disable pointer events so it doesn't block "hover" detection on the thumb
+        pointerEvents: 'none',
+        border: 'none',
+      },
     },
 
     thumb: {
-      ...trackAndThumbHeights,
       width: THUMB_WIDTH,
-      background: `${design.Color.Neutral[950]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+      background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
       transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
+      border: `1px solid ${design.Color.Neutral[25]}`,
+      borderRadius: 0,
+      // 2px for the border to be outside the rail
+      height: `calc(100% + 2px)`,
+
       '&:hover': {
         backdropFilter: 'invert(1)', // This won't work for background images
         // Instead, explicitly set an inverted background
-        background: `${design.Color.Neutral[50]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+        background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
         backgroundBlendMode: 'difference', // This inverts colors in the background
-        border: `1px solid ${design.Color.Primary[500]}`,
+        border: `1px solid ${design.Button.Primary.Default.Fill}`,
       },
       '&:hover, &.Mui-focusVisible': {
         boxShadow: 'none', // Remove default MUI focus ring
       },
       '&.Mui-disabled': {
-        background: `${design.Color.Neutral[600]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
+        background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
       },
     },
 
-    track: trackAndThumbHeights,
-    rail: { height: 0 },
+    track: {
+      ...trackAndThumbHeights,
+      borderRadius: 0,
+      border: 'none',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        left: -THUMB_WIDTH / 2,
+        width: THUMB_WIDTH / 2,
+        height: '100%',
+        backgroundColor: design.Color.Primary[500],
+      },
+      '.Mui-disabled &::before': {
+        backgroundColor: 'currentColor',
+      },
+    },
+    rail: {
+      backgroundColor: 'transparent',
+      left: -THUMB_WIDTH / 2,
+      right: -THUMB_WIDTH / 2,
+      width: `calc(100% + ${THUMB_WIDTH}px)`,
+      pointerEvents: 'none',
+    },
   },
 })
