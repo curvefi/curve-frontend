@@ -1,0 +1,24 @@
+import { LOAD_TIMEOUT } from '@cy/support/ui'
+
+describe('DEX Swap', () => {
+  const FROM_USDT = '0xdac17f958d2ee523a2206206994597c13d831ec7'
+  const TO_ETH = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+
+  it('shows quotes via router API when disconnected', () => {
+    cy.visit(`/dex/ethereum/swap?from=${FROM_USDT}&to=${TO_ETH}`)
+    cy.get('[data-testid="btn-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, LOAD_TIMEOUT).should('be.visible')
+
+    // Enter an amount to trigger quote
+    cy.get('[data-testid="from-amount"] [name="fromAmount"]').as('from')
+    cy.get('[data-testid="to-amount"] [name="toAmount"]').as('to')
+
+    cy.get('@from').should('be.enabled')
+    cy.get('@from').type('1234')
+    cy.get('@to').click()
+
+    cy.get(`[data-testid="exchange-rate-value"]`).contains('/')
+    cy.get(`[data-testid="price-impact-value"]`).contains('%')
+    cy.get('@to').should('not.contain', '0.0')
+  })
+})

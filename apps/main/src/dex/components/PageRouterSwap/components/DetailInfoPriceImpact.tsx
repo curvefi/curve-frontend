@@ -23,6 +23,7 @@ const DetailInfoPriceImpact = ({
         {t`Price change in the market that happens when a trader buys or sells an asset.`}
       </IconTooltip>
     }
+    testId="price-impact"
   >
     {formatNumber(priceImpact, { style: 'percent', ...getFractionDigitsOptions(priceImpact, 5) })}
   </DetailInfo>
