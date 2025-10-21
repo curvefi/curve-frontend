@@ -9,16 +9,14 @@ describe('DEX Swap', () => {
     cy.get('[data-testid="btn-connect-wallet"]', LOAD_TIMEOUT).should('be.enabled')
     cy.get(`[data-testid="token-icon-${FROM_USDT}"]`, LOAD_TIMEOUT).should('be.visible')
 
-    // Enter an amount to trigger quote
     cy.get('[data-testid="from-amount"] [name="fromAmount"]').as('from')
     cy.get('[data-testid="to-amount"] [name="toAmount"]').as('to')
-
     cy.get('@from').should('be.enabled')
     cy.get('@from').type('1234')
     cy.get('@to').click()
 
+    cy.get('@to', LOAD_TIMEOUT).should('not.contain', '0.0')
     cy.get(`[data-testid="exchange-rate-value"]`).contains('/')
     cy.get(`[data-testid="price-impact-value"]`).contains('%')
-    cy.get('@to').should('not.contain', '0.0')
   })
 })
