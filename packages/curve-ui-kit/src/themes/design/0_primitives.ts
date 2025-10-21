@@ -104,6 +104,8 @@ export const Duration = {
   Tooltip: { Enter: 500, Exit: 500 },
   Flicker: 1000,
   FormDebounce: 500,
+  Transition: 256,
+  Focus: 50,
 }
 
-export const TransitionFunction = `ease-out 256ms`
+export const TransitionFunction = `ease-out ${Duration.Transition}ms`
