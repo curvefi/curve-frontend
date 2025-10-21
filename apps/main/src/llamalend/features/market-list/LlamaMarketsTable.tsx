@@ -15,7 +15,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
-import { MarketFilterChip } from './chips/MarketFilterChip'
+import { LlamaMarketsFilterChips } from './chips/LlamaMarketsFilterChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
@@ -111,7 +111,7 @@ export const LlamaMarketsTable = ({
         chips={
           <>
             <ChainFilterChip data={data} {...filterProps} />
-            <MarketFilterChip
+            <LlamaMarketsFilterChips
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
               hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
               resetFilters={resetFilters}

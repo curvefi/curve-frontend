@@ -27,7 +27,7 @@ type MarketsFilterChipsProps = {
   minLiquidity: number
 } & FilterProps<string>
 
-export const MarketFilterChip = ({
+export const LlamaMarketsFilterChips = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
