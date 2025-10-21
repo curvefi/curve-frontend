@@ -15,6 +15,7 @@ import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Address, type Decimal, decimal } from '@ui-kit/utils'
 
+/** Calculate exchange rates for display */
 const calculateExchangeRates = (
   amountOut: Decimal,
   fromAmount: string,
@@ -30,9 +31,11 @@ const calculateExchangeRates = (
   ]
 }
 
+/** Get max slippage from user profile store depending on route type */
 const getMaxSlippage = (isStableswapRoute: boolean) =>
   useUserProfileStore.getState().maxSlippage[isStableswapRoute ? 'stable' : 'crypto']
 
+/** Convert the API response to the format used in the app */
 const convertRoute = (
   { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute }: RouterApiResponse[0],
   { fromAddress, toAddress }: SearchedParams,
@@ -84,6 +87,10 @@ const convertRoute = (
   }
 }
 
+/**
+ * Hook to fetch optimal swap routes from the router API and update the store accordingly.
+ * This hook uses the `useOptimalRoute` hook to fetch data and processes it to fit the application's state.
+ */
 export function useRouterApi(
   {
     chainId,
