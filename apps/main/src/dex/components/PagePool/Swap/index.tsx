@@ -632,7 +632,7 @@ const Swap = ({
         <DetailInfoPriceImpact
           loading={exchangeOutput.loading}
           priceImpact={exchangeOutput.priceImpact}
-          isHighImpact={slippageImpact?.isHighImpact ?? null}
+          isHighImpact={slippageImpact?.isHighImpact}
         />
 
         {haveSigner && (

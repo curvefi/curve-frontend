@@ -5,7 +5,7 @@ import { Address, zeroAddress } from 'viem'
 import type { IRoute, IRouteStep } from '@curvefi/api/lib/interfaces'
 import { PoolTemplate } from '@curvefi/api/lib/pools'
 import { type CurveJS, loadCurve } from '../curvejs'
-import { type Decimal, type OptimalRouteQuery, type RouteResponse } from './optimal-route.schemas'
+import { type Decimal, type OptimalRouteQuery, type RouteResponse, type RouteStep } from './optimal-route.schemas'
 
 export const notFalsy = <T>(...items: (T | null | undefined | false | 0)[]): T[] => items.filter(Boolean) as T[]
 
@@ -65,11 +65,10 @@ async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyB
 
   const curve = await loadCurve(chainId, log)
   const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
-  const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
+  const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
 
-  const [toAmount, priceImpact, toStoredRate] = await Promise.all([
-    curve.router.expected(fromToken, toToken, fromAmount),
+  const [priceImpact, toStoredRate] = await Promise.all([
     curve.router.priceImpact(fromToken, toToken, fromAmount),
     routerGetToStoredRate(routes, curve, toToken),
   ])
@@ -93,19 +92,23 @@ async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyB
 
   return [
     {
-      amountOut: output,
+      amountIn: fromAmount,
+      amountOut: toAmount as Decimal,
       priceImpact,
       createdAt: Date.now(),
+      isStableswapRoute,
       warnings: notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage'),
-      route: parsedRoutes.map(({ name, inputCoinAddress, outputCoinAddress, ...args }) => ({
-        primary: name,
-        action: 'swap',
-        tokenIn: [inputCoinAddress as Address],
-        tokenOut: [outputCoinAddress as Address],
-        protocol: 'curve',
-        chainId,
-        args,
-      })),
+      route: parsedRoutes.map(
+        ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
+          name,
+          action: 'swap',
+          tokenIn: [inputCoinAddress as Address],
+          tokenOut: [outputCoinAddress as Address],
+          protocol: 'curve',
+          chainId,
+          args,
+        }),
+      ),
     },
   ]
 }
