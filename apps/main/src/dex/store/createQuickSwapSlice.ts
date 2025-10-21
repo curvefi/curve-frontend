@@ -174,6 +174,8 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       if ((cFormValues.isFrom && +cFormValues.fromAmount <= 0) || (!cFormValues.isFrom && +cFormValues.toAmount <= 0))
         return
 
+      if (!signerAddress) return // If no signer, routing handled via `useRouterApi`
+
       // loading state
       if (cFormValues.isFrom) {
         cFormValues.toAmount = ''
@@ -232,8 +234,6 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
               },
             },
           })
-
-          if (!signerAddress) return
 
           // validation
           const { fromAmount } = await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, '')

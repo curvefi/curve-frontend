@@ -11,7 +11,7 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate, useSearchParams, useParams, usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +23,6 @@ export const PageRouterSwap = () => {
   const searchParams = useSearchParams()
   const searchParamsString = searchParams?.toString() || ''
   const { curveApi = null, connectState } = useConnection()
-  const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
@@ -104,22 +103,6 @@ export const PageRouterSwap = () => {
     routerCachedFromAddress,
     routerCachedToAddress,
   ])
-
-  if (!provider) {
-    return (
-      <Box display="flex" fillWidth flexJustifyContent="center">
-        <ConnectWalletWrapper>
-          <ConnectWalletPrompt
-            description="Connect wallet to swap"
-            connectText="Connect Wallet"
-            loadingText="Connecting"
-            connectWallet={() => connectWallet()}
-            isLoading={isConnecting}
-          />
-        </ConnectWalletWrapper>
-      </Box>
-    )
-  }
   return (
     <StyledQuickSwapWrapper variant="primary" shadowed>
       <BoxHeader className="title-text">
@@ -154,9 +137,4 @@ const StyledQuickSwapWrapper = styled(Box)`
     margin: 1.5rem auto;
     max-width: var(--transfer-min-width);
   }
-`
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  margin: var(--spacing-3) auto;
 `

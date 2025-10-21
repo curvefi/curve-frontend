@@ -93,9 +93,11 @@ async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyB
 
   return [
     {
-      amountOut: output,
+      amountIn: fromAmount,
+      amountOut: output as Decimal,
       priceImpact,
       createdAt: Date.now(),
+      isStableswapRoute,
       warnings: notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage'),
       route: parsedRoutes.map(({ name, inputCoinAddress, outputCoinAddress, ...args }) => ({
         primary: name,
