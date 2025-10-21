@@ -1,5 +1,6 @@
 import { enforce, test } from 'vest'
 import { httpFetcher } from '@/dex/lib/utils'
+import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { createValidationSuite } from '@ui-kit/lib'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -14,13 +15,10 @@ export type OptimalRouteQuery = {
 }
 
 export type RouterApiRouteStep = {
-  args: {
-    poolId: string
-    poolAddress: Address
-    swapAddress: Address
-    swapParams: number[] | [number, number, number, Decimal, Decimal]
-    [key: string]: unknown
-  }
+  name: string
+  args: Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
+  tokenIn: [Address]
+  tokenOut: [Address]
 }
 
 export type RouterApiResponse = {

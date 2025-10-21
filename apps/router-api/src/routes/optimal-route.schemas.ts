@@ -91,7 +91,8 @@ export const OptimalRouteOpts = { schema: OptimalRouteSchema } as const
 
 type RouteArgs = Omit<IRouteStep, 'inputCoinAddress' | 'outputCoinAddress' | 'poolId'> & { poolId?: string }
 
-type RouteStep = {
+export type RouteStep = {
+  name: string
   tokenIn: [Address]
   tokenOut: [Address]
   protocol: 'curve'

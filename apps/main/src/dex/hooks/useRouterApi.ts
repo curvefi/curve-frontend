@@ -6,14 +6,83 @@ import type {
   RoutesAndOutputModal,
   SearchedParams,
 } from '@/dex/components/PageRouterSwap/types'
-import { useOptimalRoute } from '@/dex/entities/router.query'
+import { type RouterApiResponse, useOptimalRoute } from '@/dex/entities/router.query'
 import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
 import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import useStore from '@/dex/store/useStore'
-import { ChainId } from '@/dex/types/main.types'
+import { ChainId, TokensNameMapper } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { Address, decimal } from '@ui-kit/utils'
+import { Address, type Decimal, decimal } from '@ui-kit/utils'
+
+const calculateExchangeRates = (
+  amountOut: Decimal,
+  fromAmount: string,
+  { fromAddress, toAddress }: SearchedParams,
+  tokensNameMapper: TokensNameMapper,
+) => {
+  const [rateAB, rateBA] = getExchangeRates(amountOut, fromAmount)
+  const fromLabel = tokensNameMapper[fromAddress] ?? fromAddress
+  const toLabel = tokensNameMapper[toAddress] ?? toAddress
+  return [
+    { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` },
+    { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` },
+  ]
+}
+
+const getMaxSlippage = (isStableswapRoute: boolean) =>
+  useUserProfileStore.getState().maxSlippage[isStableswapRoute ? 'stable' : 'crypto']
+
+const convertRoute = (
+  { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute }: RouterApiResponse[0],
+  { fromAddress, toAddress }: SearchedParams,
+  tokensNameMapper: TokensNameMapper,
+  isPending: boolean,
+): RoutesAndOutput => {
+  const formValues = useStore.getState().quickSwap.formValues
+  const modalArgs = {
+    isExchangeRateLow: warnings.includes('low-exchange-rate'),
+    priceImpact,
+    toAmount: formValues.toAmount,
+    fromAmount: formValues.fromAmount,
+    toAmountOutput: amountOut,
+    fetchedToAmount: amountOut,
+  }
+
+  return {
+    loading: isPending,
+    exchangeRates: calculateExchangeRates(
+      amountOut,
+      formValues.isFrom ? formValues.fromAmount : amountIn,
+      { fromAddress, toAddress },
+      tokensNameMapper,
+    ),
+    isHighSlippage: warnings.includes('high-slippage'),
+    isStableswapRoute,
+    routes: route.map(
+      ({
+        args: { poolId = '', ...args },
+        name,
+        tokenIn: [inputCoinAddress],
+        tokenOut: [outputCoinAddress],
+      }): Route => ({
+        inputCoinAddress,
+        outputCoinAddress,
+        name,
+        routeUrlId: poolId ?? '',
+        poolId: poolId,
+        ...args,
+      }),
+    ),
+    modal: getRouterWarningModal(
+      modalArgs,
+      { toAddress, fromAddress },
+      getMaxSlippage(isStableswapRoute),
+      tokensNameMapper,
+    ) as RoutesAndOutputModal | null,
+    ...modalArgs,
+  }
+}
 
 export function useRouterApi(
   {
@@ -70,62 +139,13 @@ export function useRouterApi(
   }, [error, response])
 
   return {
-    data: useMemo((): RoutesAndOutput | undefined => {
-      if (!response?.length) return undefined
-
-      const { amountIn, amountOut, priceImpact, route, warnings = [], isStableswapRoute } = response[0]
-
-      const routes: Route[] = route.map((step: any) => ({
-        inputCoinAddress: step.tokenIn[0],
-        outputCoinAddress: step.tokenOut[0],
-        ...step.args,
-        name: step.primary,
-        routeUrlId: step.args?.poolId ?? '',
-      }))
-
-      const fromAmount = formValues.isFrom ? formValues.fromAmount : amountIn
-      const [rateAB, rateBA] = getExchangeRates(amountOut, fromAmount)
-      const fromLabel = tokensNameMapper[fromAddress] ?? fromAddress
-      const toLabel = tokensNameMapper[toAddress] ?? toAddress
-
-      const args = {
-        isExchangeRateLow: warnings.includes('low-exchange-rate'),
-        priceImpact,
-        toAmount: formValues.toAmount,
-        fromAmount: formValues.fromAmount,
-        toAmountOutput: amountOut,
-        fetchedToAmount: amountOut,
-      }
-
-      const maxSlippage = useUserProfileStore.getState().maxSlippage[isStableswapRoute ? 'stable' : 'crypto']
-
-      return {
-        loading: isPending,
-        exchangeRates: [
-          { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` },
-          { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` },
-        ],
-        isHighSlippage: warnings.includes('high-slippage'),
-        isStableswapRoute,
-        routes,
-        modal: getRouterWarningModal(
-          args,
-          { toAddress, fromAddress },
-          maxSlippage,
-          tokensNameMapper,
-        ) as RoutesAndOutputModal | null,
-        ...args,
-      }
-    }, [
-      response,
-      isPending,
-      tokensNameMapper,
-      fromAddress,
-      toAddress,
-      formValues.isFrom,
-      formValues.toAmount,
-      formValues.fromAmount,
-    ]),
+    data: useMemo(
+      () =>
+        response?.length
+          ? convertRoute(response[0], { fromAddress, toAddress }, tokensNameMapper, isPending)
+          : undefined,
+      [response, isPending, fromAddress, toAddress, tokensNameMapper],
+    ),
     isLoading,
   }
 }
