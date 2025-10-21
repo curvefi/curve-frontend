@@ -8,6 +8,7 @@ import { useBandsData } from '@/loan/hooks/useBandsData'
 import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -34,12 +35,15 @@ export const MarketInformationComp = ({
   chartExpanded,
   page = 'manage',
 }: MarketInformationCompProps) => {
+  const api = getLib('llamaApi')
   const theme = useTheme()
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { chartData, userBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+  const { chartData, userBands, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+    chainId,
     llammaId,
+    api,
   })
   const collateralToken = llamma && {
     symbol: llamma?.collateralSymbol,
@@ -71,7 +75,7 @@ export const MarketInformationComp = ({
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}
-              userBandsBalances={userBandsBalances ?? []}
+              userBandsBalances={userBands ?? []}
               liquidationBand={liquidationBand}
               oraclePrice={oraclePrice}
               oraclePriceBand={oraclePriceBand}

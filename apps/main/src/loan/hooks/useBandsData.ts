@@ -1,22 +1,35 @@
 import { useMemo } from 'react'
-import { shallow } from 'zustand/shallow'
-import { BandsBalancesData } from '@/llamalend/widgets/bands-chart/types'
-import useStore from '@/loan/store/useStore'
 import { useProcessedBandsData } from '@/llamalend/hooks/useBandsData'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useMarketBands } from '@/llamalend/widgets/bands-chart/queries/market-bands.query'
+import { useMarketOraclePrices } from '@/llamalend/widgets/bands-chart/queries/market-oracle-prices.query'
+import { useUserBands } from '@/llamalend/widgets/bands-chart/queries/user-bands.query'
+import { BandsBalancesData } from '@/llamalend/widgets/bands-chart/types'
+import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
-export const useBandsData = ({ llammaId }: { llammaId: string }) => {
-  const { marketBandsBalances, priceInfo, userBandsBalances, userLiquidationBand } = useStore((state) => {
-    const loanDetails = state.loans.detailsMapper[llammaId]
-    const userDetails = state.loans.userDetailsMapper[llammaId]
-    return {
-      marketBandsBalances: loanDetails?.bandsBalances,
-      priceInfo: loanDetails?.priceInfo,
-      userBandsBalances: userDetails?.userBandsBalances,
-      userLiquidationBand: userDetails?.userLiquidationBand,
-    }
-  }, shallow)
+export const useBandsData = ({
+  chainId,
+  llammaId,
+  api,
+}: {
+  chainId: number
+  llammaId: string
+  api: LlamaApi | undefined
+}) => {
+  const { data: marketBands } = useMarketBands({ chainId, marketId: llammaId })
+  const { data: marketOraclePrices } = useMarketOraclePrices({ chainId, marketId: llammaId })
+  const { data: loanExists } = useLoanExists({ chainId, marketId: llammaId, userAddress: api?.signerAddress })
+  const { data: userBands } = useUserBands({
+    chainId,
+    marketId: llammaId,
+    userAddress: api?.signerAddress,
+    loanExists: loanExists,
+  })
 
-  const { oraclePrice, oraclePriceBand } = priceInfo ?? {}
+  const marketBandsBalances = marketBands?.bandsBalances
+  const liquidationBand = marketBands?.liquidationBand
+
+  const { oraclePrice, oraclePriceBand } = marketOraclePrices ?? {}
 
   const normalizedMarketBands = useMemo(
     () =>
@@ -30,12 +43,12 @@ export const useBandsData = ({ llammaId }: { llammaId: string }) => {
 
   const normalizedUserBands = useMemo(
     () =>
-      userBandsBalances?.map((band: BandsBalancesData) => ({
+      userBands?.map((band: BandsBalancesData) => ({
         ...band,
         borrowed: band.stablecoin ?? '0',
         collateralUsd: String(band.collateralStablecoinUsd ?? 0),
       })) ?? [],
-    [userBandsBalances],
+    [userBands],
   )
 
   const chartData = useProcessedBandsData({
@@ -46,8 +59,8 @@ export const useBandsData = ({ llammaId }: { llammaId: string }) => {
 
   return {
     chartData,
-    userBandsBalances, // Pass original for brush calculation
-    liquidationBand: userLiquidationBand,
+    userBands,
+    liquidationBand,
     oraclePrice,
     oraclePriceBand,
   }

@@ -1,3 +1,5 @@
+import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
+
 export type ChartDataPoint = {
   n: number | string
   pUpDownMedian: number
@@ -59,4 +61,22 @@ export type DerivedChartData = {
   marketData: number[]
   userData: number[]
   isLiquidation: boolean[]
+}
+
+export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
+export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
+
+// Parsed bands balance type used in chart data
+export type ParsedBandsBalances = {
+  borrowed: string
+  collateral: string
+  collateralUsd: string
+  collateralBorrowedUsd: number
+  isLiquidationBand: string
+  isOraclePriceBand: boolean
+  isNGrouped: boolean
+  n: number | string
+  p_up: any
+  p_down: any
+  pUpDownMedian: string
 }

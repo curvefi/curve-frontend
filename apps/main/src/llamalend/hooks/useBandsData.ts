@@ -11,8 +11,8 @@ export const useProcessedBandsData = ({
   marketBandsBalances,
   userBandsBalances,
   oraclePriceBand,
-}: ProcessedBandsData) => {
-  return useMemo(() => {
+}: ProcessedBandsData) =>
+  useMemo(() => {
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
 
@@ -82,7 +82,6 @@ export const useProcessedBandsData = ({
     const slicedData = parsedData.slice(firstDataIdx, lastDataIdx + 1)
     return slicedData.sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
   }, [marketBandsBalances, userBandsBalances, oraclePriceBand])
-}
 
 function _findDataIndex(d: ChartDataPoint) {
   return (
