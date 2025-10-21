@@ -65,11 +65,10 @@ async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyB
 
   const curve = await loadCurve(chainId, log)
   const fromAmount = amountIn ?? ((await curve.router.required(fromToken, toToken, amountOut?.[0] ?? '0')) as Decimal)
-  const { route: routes, output } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
+  const { route: routes, output: toAmount } = await curve.router.getBestRouteAndOutput(fromToken, toToken, fromAmount)
   if (!routes.length) return []
 
-  const [toAmount, priceImpact, toStoredRate] = await Promise.all([
-    curve.router.expected(fromToken, toToken, fromAmount),
+  const [priceImpact, toStoredRate] = await Promise.all([
     curve.router.priceImpact(fromToken, toToken, fromAmount),
     routerGetToStoredRate(routes, curve, toToken),
   ])
@@ -94,7 +93,7 @@ async function buildOptimalRouteResponse(query: OptimalRouteQuery, log: FastifyB
   return [
     {
       amountIn: fromAmount,
-      amountOut: output as Decimal,
+      amountOut: toAmount as Decimal,
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,

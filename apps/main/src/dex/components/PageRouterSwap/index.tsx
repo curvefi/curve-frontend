@@ -87,18 +87,9 @@ const QuickSwap = ({
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
 
+  const haveSigner = !!signerAddress
   const cryptoMaxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const stableMaxSlippage = useUserProfileStore((state) => state.maxSlippage.stable)
-
-  const [confirmedLoss, setConfirmedLoss] = useState(false)
-  const [steps, setSteps] = useState<Step[]>([])
-  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
-
-  const { fromAddress, toAddress } = searchedParams
-
-  const isReady = pageLoaded && isPageVisible
-  const haveSigner = !!signerAddress
-
   const { data: apiRoutes, isLoading: apiRoutesLoading } = useRouterApi({ chainId, searchedParams }, !haveSigner)
 
   const routesAndOutput = haveSigner ? rpcRoutesAndOutput : apiRoutes
@@ -107,6 +98,14 @@ const QuickSwap = ({
   const slippageImpact = routesAndOutput
     ? getSlippageImpact({ maxSlippage: storeMaxSlippage, ...routesAndOutput })
     : null
+
+  const [confirmedLoss, setConfirmedLoss] = useState(false)
+  const [steps, setSteps] = useState<Step[]>([])
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
+
+  const { fromAddress, toAddress } = searchedParams
+
+  const isReady = pageLoaded && isPageVisible
 
   const userFromBalance = userBalancesMapper[fromAddress]
   const userToBalance = userBalancesMapper[toAddress]
@@ -353,7 +352,7 @@ const QuickSwap = ({
 
   // steps
   useEffect(() => {
-    if (!curve || !haveSigner) return
+    if (!curve?.signerAddress) return
     const updatedSteps = getSteps(
       activeKey,
       curve,
@@ -366,17 +365,7 @@ const QuickSwap = ({
     )
     setSteps((prev) => (lodash.isEqual(prev, updatedSteps) ? prev : updatedSteps))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    isReady,
-    confirmedLoss,
-    routesAndOutput,
-    formEstGas,
-    formStatus,
-    formValues,
-    searchedParams,
-    userBalancesLoading,
-    haveSigner,
-  ])
+  }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisable = formStatus.formProcessing || apiRoutesLoading
@@ -628,7 +617,7 @@ const QuickSwap = ({
       />
 
       {/* actions */}
-      <FormConnectWallet loading={haveSigner ? !steps.length : false}>
+      <FormConnectWallet loading={haveSigner && !steps.length}>
         {txInfoBar}
         <Stepper steps={steps} testId="swap" />
       </FormConnectWallet>

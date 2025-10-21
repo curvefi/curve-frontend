@@ -535,7 +535,7 @@ export function getRouterSwapsExchangeRates(
   ]
 }
 
-function getRouterWarningModal(
+export function getRouterWarningModal(
   {
     isExchangeRateLow,
     priceImpact,

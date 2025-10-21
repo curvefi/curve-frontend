@@ -1,10 +1,18 @@
 import { useEffect, useMemo } from 'react'
-import type { FormValues, Route, RoutesAndOutput, SearchedParams } from '@/dex/components/PageRouterSwap/types'
+import type {
+  FormValues,
+  Route,
+  RoutesAndOutput,
+  RoutesAndOutputModal,
+  SearchedParams,
+} from '@/dex/components/PageRouterSwap/types'
 import { useOptimalRoute } from '@/dex/entities/router.query'
 import useTokensNameMapper from '@/dex/hooks/useTokensNameMapper'
+import { getRouterWarningModal } from '@/dex/store/createQuickSwapSlice'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import { getExchangeRates } from '@/dex/utils/utilsSwap'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { Address, decimal } from '@ui-kit/utils'
 
 export function useRouterApi(
@@ -80,24 +88,44 @@ export function useRouterApi(
       const fromLabel = tokensNameMapper[fromAddress] ?? fromAddress
       const toLabel = tokensNameMapper[toAddress] ?? toAddress
 
+      const args = {
+        isExchangeRateLow: warnings.includes('low-exchange-rate'),
+        priceImpact,
+        toAmount: formValues.toAmount,
+        fromAmount: formValues.fromAmount,
+        toAmountOutput: amountOut,
+        fetchedToAmount: amountOut,
+      }
+
+      const maxSlippage = useUserProfileStore.getState().maxSlippage[isStableswapRoute ? 'stable' : 'crypto']
+
       return {
         loading: isPending,
         exchangeRates: [
           { from: fromLabel, to: toLabel, fromAddress, value: rateAB, label: `${fromLabel}/${toLabel}` },
           { from: toLabel, to: fromLabel, fromAddress: toAddress, value: rateBA, label: `${toLabel}/${fromLabel}` },
         ],
-        isExchangeRateLow: warnings.includes('low-exchange-rate'),
         isHighSlippage: warnings.includes('high-slippage'),
         isStableswapRoute,
-        priceImpact,
         routes,
-        toAmount: amountOut,
-        toAmountOutput: amountOut,
-        fromAmount,
-        fetchedToAmount: '', // todo fetchedToAmount not needed?!
-        modal: null, // todo getRouterWarningModal
+        modal: getRouterWarningModal(
+          args,
+          { toAddress, fromAddress },
+          maxSlippage,
+          tokensNameMapper,
+        ) as RoutesAndOutputModal | null,
+        ...args,
       }
-    }, [response, isPending, tokensNameMapper, fromAddress, toAddress, formValues.isFrom, formValues.fromAmount]),
+    }, [
+      response,
+      isPending,
+      tokensNameMapper,
+      fromAddress,
+      toAddress,
+      formValues.isFrom,
+      formValues.toAmount,
+      formValues.fromAmount,
+    ]),
     isLoading,
   }
 }
