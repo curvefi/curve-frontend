@@ -12,6 +12,8 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { shortenAddress } from '@ui-kit/utils'
 
+const DEFAULT_WITHDRAW_AMOUNTS: string[] = []
+
 const MySharesStats = ({
   className,
   curve,
@@ -32,7 +34,8 @@ const MySharesStats = ({
   const userCrvApy = useStore((state) => state.user.userCrvApy[userPoolActiveKey])
   const userLiquidityUsd = useStore((state) => state.user.userLiquidityUsd[userPoolActiveKey])
   const userShare = useStore((state) => state.user.userShare[userPoolActiveKey])
-  const userWithdrawAmounts = useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey] ?? [])
+  const userWithdrawAmounts =
+    useStore((state) => state.user.userWithdrawAmounts[userPoolActiveKey]) ?? DEFAULT_WITHDRAW_AMOUNTS
 
   const haveBoosting = rChainId === 1
   const haveCrvRewards = rewardsApy?.crv?.[0] !== 0
