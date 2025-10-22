@@ -261,7 +261,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
         width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))`,
         pointerEvents: 'none',
-        border: railBackground === 'default' ? `1px solid ${design.Color.Neutral[500]}` : 'none',
+        border: 'none',
         opacity: 1,
         ...(railBackground === 'bordered' ? borderedRailBackground(design, direction) : null),
         ...(gradientStops
