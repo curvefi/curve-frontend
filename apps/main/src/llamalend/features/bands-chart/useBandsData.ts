@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import type { ChartDataPoint, BandsBalancesData } from '@/llamalend/widgets/bands-chart/types'
+import type { ChartDataPoint, BandsBalancesData } from '@/llamalend/features/bands-chart/types'
 
 type ProcessedBandsData = {
   marketBandsBalances: BandsBalancesData[]

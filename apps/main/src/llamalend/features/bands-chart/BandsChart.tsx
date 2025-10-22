@@ -1,10 +1,9 @@
-import { DataZoomComponentOption } from 'echarts'
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, useRef, useEffect, useState, useCallback } from 'react'
+import { useMemo, useRef, useCallback, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
+import { ChartDataPoint, BandsBalancesData, BandsChartPalette } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
-import { ChartDataPoint, BandsBalancesData, BandsChartPalette } from '@/llamalend/widgets/bands-chart/types'
 import { Box, Stack, useTheme, ThemeProvider } from '@mui/material'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { getChartOptions } from './chartOptions'
@@ -21,12 +20,6 @@ type BandsChartProps = {
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
   height?: number
-}
-
-type DataZoomEvent = {
-  start?: number
-  end?: number
-  batch?: { start?: number; end?: number }[]
 }
 
 export const BandsChart = ({
@@ -147,76 +140,17 @@ export const BandsChart = ({
     ],
   )
 
-  // Persist dataZoom (start/end) across renders
-  const [zoom, setZoom] = useState<{ start?: number; end?: number }>({})
-  const initializedZoomRef = useRef(false)
-  const lastZoomRef = useRef<{ start?: number; end?: number }>({})
-  const chartRef = useRef<ReactECharts | null>(null)
+  const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
 
   useEffect(() => {
-    if (!initializedZoomRef.current && chartData.length > 0 && initialZoomIndices) {
+    if (chartData.length > 0 && initialZoomIndices) {
       const start = (initialZoomIndices.startIndex / chartData.length) * 100
       const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
-      setZoom({ start, end })
-      lastZoomRef.current = { start, end }
-      initializedZoomRef.current = true
+      setInitialZoom({ start, end })
     }
   }, [chartData.length, initialZoomIndices])
 
-  useEffect(() => {
-    if (chartData.length === 0 || !initialZoomIndices) return
-
-    const isFullRange =
-      lastZoomRef.current.start !== undefined &&
-      lastZoomRef.current.end !== undefined &&
-      lastZoomRef.current.start <= 0.0001 &&
-      lastZoomRef.current.end >= 99.999
-
-    if (Object.keys(lastZoomRef.current).length === 0 || isFullRange) {
-      const start = (initialZoomIndices.startIndex / chartData.length) * 100
-      const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
-
-      if (lastZoomRef.current.start !== start || lastZoomRef.current.end !== end) {
-        setZoom({ start, end })
-        lastZoomRef.current = { start, end }
-      }
-    }
-  }, [chartData.length, userBandsBalances.length, oraclePrice, initialZoomIndices])
-
-  const onEvents = useMemo(
-    () => ({
-      dataZoom: (evt: DataZoomEvent) => {
-        const payload = Array.isArray(evt?.batch) && evt.batch.length ? evt.batch[0] : evt
-        const s = payload?.start
-        const e = payload?.end
-        if (typeof s === 'number' && typeof e === 'number') {
-          const prev = lastZoomRef.current
-          if (prev.start !== s || prev.end !== e) {
-            lastZoomRef.current = { start: s, end: e }
-            setZoom({ start: s, end: e })
-          }
-        }
-      },
-    }),
-    [],
-  )
-
-  const optionWithZoom: EChartsOption = useMemo(() => {
-    if (option.dataZoom && Array.isArray(option.dataZoom) && zoom) {
-      const dz = option.dataZoom.map((z: DataZoomComponentOption) => {
-        if (z && 'type' in z && z.type === 'slider') {
-          return {
-            ...z,
-            ...(zoom.start != null ? { start: zoom.start } : {}),
-            ...(zoom.end != null ? { end: zoom.end } : {}),
-          }
-        }
-        return z
-      })
-      return { ...option, dataZoom: dz }
-    }
-    return option
-  }, [option, zoom])
+  const chartRef = useRef<ReactECharts | null>(null)
 
   if (chartData.length === 0) {
     return (
@@ -244,10 +178,21 @@ export const BandsChart = ({
       <Box sx={{ width: '99%', fontVariantNumeric: 'tabular-nums', height }}>
         <ReactECharts
           ref={chartRef}
-          option={optionWithZoom}
+          option={{
+            ...option,
+            dataZoom: option.dataZoom?.map((z: any) => {
+              if (z && 'type' in z && z.type === 'slider') {
+                return {
+                  ...z,
+                  ...(initialZoom.start != null ? { start: initialZoom.start } : {}),
+                  ...(initialZoom.end != null ? { end: initialZoom.end } : {}),
+                }
+              }
+              return z
+            }),
+          }}
           style={{ width: '100%', height: '100%' }}
-          opts={{ renderer: 'svg' }}
-          onEvents={onEvents}
+          opts={{ renderer: 'canvas' }}
           lazyUpdate
         />
       </Box>

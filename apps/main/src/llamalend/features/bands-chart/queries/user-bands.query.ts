@@ -7,11 +7,9 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import { sortLendBands, sortMintBands, fetchLendChartBandBalancesData, fetchMintChartBandBalancesData } from './utils'
 
-// Extend UserMarketQuery locally to include loanExists
 type UserBandsQuery = UserMarketQuery & { loanExists: boolean | undefined | null }
 type UserBandsParams = UserMarketParams & { loanExists: boolean | undefined | null }
 
-// Create custom validation suite that includes both user market validation and loan exists validation
 const userBandsValidationSuite = createValidationSuite((params: UserBandsParams) => {
   userMarketValidationSuite(params)
   loanExistsValidationGroup({ loanExists: params.loanExists })

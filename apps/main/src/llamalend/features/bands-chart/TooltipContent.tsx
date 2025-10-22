@@ -1,6 +1,6 @@
 import { Token } from '@/llamalend/features/borrow/types'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
-import { Box, Stack, useTheme } from '@mui/material'
+import { Box, useTheme } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
