@@ -40,7 +40,7 @@ const createSeriesData = (data: number[], derived: DerivedChartData, color: stri
   }))
 
 // Common series configuration
-const createSeriesConfig = (name: string, data: any[], markArea?: any, markLine?: any) => ({
+const createSeriesConfig = (name: string, data: any[], markArea?: any, markLine?: any, stack?: string) => ({
   name,
   type: 'bar',
   stack: 'total',
@@ -186,10 +186,14 @@ export const getChartOptions = (
               })),
             }
           : undefined,
+        'total',
       ),
       createSeriesConfig(
         'User Collateral',
         createSeriesData(derived.userData, derived, palette.userBandColor, palette.liquidationBandOutlineColor),
+        undefined,
+        undefined,
+        'total', // Stack user bands on top of market bands
       ),
     ],
     dataZoom: [

@@ -36,7 +36,7 @@ const BandsChartComponent = ({
 }: BandsChartProps) => {
   const theme = useTheme()
   const tooltipRef = useRef<HTMLDivElement | null>(null)
-  const tooltipRootRef = useRef<any>(null)
+  const tooltipRootRef = useRef<ReturnType<typeof createRoot> | null>(null)
   const { theme: currentThemeName } = theme.design
   const invertedDesign = DesignSystem[currentThemeName]({ inverted: true })
 
@@ -81,13 +81,13 @@ const BandsChartComponent = ({
 
       const dataPoint = Array.isArray(params) && params.length > 0 ? chartData[params[0].dataIndex] : null
 
-      if (dataPoint) {
+      if (dataPoint && tooltipRootRef.current) {
         tooltipRootRef.current.render(
           <ThemeProvider theme={theme}>
             <TooltipContent data={dataPoint} collateralToken={collateralToken} borrowToken={borrowToken} />
           </ThemeProvider>,
         )
-      } else {
+      } else if (tooltipRootRef.current) {
         tooltipRootRef.current.render(null)
       }
 
