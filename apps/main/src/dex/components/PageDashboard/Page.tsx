@@ -18,7 +18,7 @@ export const PageDashboard = () => {
     <>
       {!provider ? (
         <Box display="flex" fillWidth flexJustifyContent="center">
-          <ConnectWalletWrapper>
+          <ConnectWalletWrapper data-testid="dashboard-page">
             <ConnectWalletPrompt
               description="Connect wallet to view dashboard"
               connectText="Connect Wallet"
@@ -29,7 +29,7 @@ export const PageDashboard = () => {
           </ConnectWalletWrapper>
         </Box>
       ) : (
-        <Container>
+        <Container data-testid="dashboard-page">
           {rChainId ? (
             <Dashboard curve={curveApi} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
           ) : (
