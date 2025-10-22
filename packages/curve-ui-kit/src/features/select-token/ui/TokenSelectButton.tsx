@@ -8,7 +8,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ReleaseChannel } from '@ui-kit/utils'
 import type { TokenOption } from '../types'
 
-const { Spacing, ButtonSize, MinWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export type TokenSelectButtonCallbacks = {
   onClick: () => void
