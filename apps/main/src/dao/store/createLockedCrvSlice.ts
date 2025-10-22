@@ -373,8 +373,4 @@ export function getActiveKey(formType: FormType | '', chainId: ChainId | undefin
   return `${formType}-${chainId ?? ''}-${walletAddress ? shortenAccount(walletAddress) : ''}`
 }
 
-export function getActiveKeyVecrvInfo(curve: CurveApi, walletAddress: string) {
-  return `${curve.chainId}-${shortenAccount(walletAddress)}`
-}
-
 export default createLockedCrvSlice
