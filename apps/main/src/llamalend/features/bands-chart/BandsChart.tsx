@@ -7,8 +7,8 @@ import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack, useTheme, ThemeProvider } from '@mui/material'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { getChartOptions } from './chartOptions'
+import { useBandsChartCalculations } from './hooks/useBandsChartCalculations'
 import { TooltipContent } from './TooltipContent'
-import { useBandsChartCalculations } from './useBandsChartCalculations'
 import { findBandIndexByPrice, findClosestBandIndex } from './utils'
 
 type BandsChartProps = {

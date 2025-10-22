@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, BandsBalancesData, UserBandsPriceRange, DerivedChartData } from './types'
+import { ChartDataPoint, BandsBalancesData, UserBandsPriceRange, DerivedChartData } from '../types'
 
 type UseBandsChartCalculationsReturn = {
   userBandsPriceRange: UserBandsPriceRange
