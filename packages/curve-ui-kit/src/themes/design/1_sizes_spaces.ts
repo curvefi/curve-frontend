@@ -182,6 +182,42 @@ const MappedButtonSize = {
   lg: Sizing[650], // 56px
 }
 
+const SliderHeight = {
+  small: {
+    mobile: Sizing[200],
+    tablet: Sizing[200],
+    desktop: Sizing[200],
+  },
+  medium: {
+    mobile: Sizing[300],
+    tablet: Sizing[300],
+    desktop: Sizing[300],
+  },
+  large: {
+    mobile: Sizing[300],
+    tablet: Sizing[300],
+    desktop: Sizing[300],
+  },
+} as const
+
+const SliderThumbWidth = {
+  small: {
+    mobile: Sizing[200],
+    tablet: Sizing[200],
+    desktop: Sizing[200],
+  },
+  medium: {
+    mobile: Sizing[200],
+    tablet: Sizing[200],
+    desktop: Sizing[200],
+  },
+  large: {
+    mobile: Sizing[200],
+    tablet: Sizing[200],
+    desktop: Sizing[200],
+  },
+} as const
+
 const MappedFontWeight = {
   Extra_Light: 200,
   Light: 300,
@@ -262,6 +298,10 @@ export const SizesAndSpaces = {
   FontWeight: MappedFontWeight,
   LineHeight: MappedLineHeight,
   OutlineWidth: '0.125rem', // 2px
+  Slider: {
+    Height: SliderHeight,
+    ThumbWidth: SliderThumbWidth,
+  },
   Width: {
     modal: MappedModalWidth,
     column: MappedColumnWidth,

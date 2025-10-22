@@ -1,4 +1,4 @@
-import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
+import { Blues, Grays, Greens, Reds, TransitionFunction } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
@@ -11,9 +11,15 @@ const InsetUnderline = 'auto 0 0' as const // Bottom border only
  Same background colors accross all themes
 */
 const SliderBackground = {
-  Trading: {
-    25: Greens[400],
-    50: Reds[200],
+  Safe: {
+    25: Reds[400],
+    50: Reds[300],
+    75: Reds[200],
+    100: Greens[500],
+  },
+  Danger: {
+    25: Reds[200],
+    50: Reds[300],
     75: Reds[400],
     100: Reds[500],
   },
