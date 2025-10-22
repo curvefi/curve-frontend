@@ -61,7 +61,7 @@ export const TooltipItem = ({
   titleIcon?: { blockchainId: string; address: string; size: Size }
   imageId?: string
 }) => (
-  <Stack direction="row" justifyContent="space-between">
+  <Stack direction="row" gap={Spacing.sm} justifyContent="space-between">
     <Stack direction="row" gap={Spacing.xxs} alignItems="center">
       {titleIcon && (
         <TokenIcon
