@@ -1,10 +1,10 @@
 import type { Property } from 'csstype'
-import { Slider } from './Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Decimal } from '@ui-kit/utils'
 import { NumericTextField } from './NumericTextField'
+import { Slider } from './Slider'
 
 const { Spacing } = SizesAndSpaces
 
