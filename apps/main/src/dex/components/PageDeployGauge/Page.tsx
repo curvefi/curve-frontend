@@ -7,7 +7,7 @@ import { useParams } from '@ui-kit/hooks/router'
 export const PageDeployGauge = () => {
   const props = useParams<NetworkUrlParams>()
   return (
-    <Container>
+    <Container data-testid="deploy-gauge-page">
       <DeployGauge {...props} />
     </Container>
   )

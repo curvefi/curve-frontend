@@ -11,19 +11,17 @@ import { getPath } from '@/dex/utils/utilsRouter'
 import Box, { BoxHeader } from '@ui/Box'
 import IconButton from '@ui/IconButton'
 import { breakpoints } from '@ui/utils'
-import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
+import { isLoading, useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useNavigate, useSearchParams, useParams, usePathname } from '@ui-kit/hooks/router'
+import { useNavigate, useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 
 export const PageRouterSwap = () => {
   const props = useParams<NetworkUrlParams>()
   const push = useNavigate()
-  const pathname = usePathname() || ''
   const searchParams = useSearchParams()
   const searchParamsString = searchParams?.toString() || ''
   const { curveApi = null, connectState } = useConnection()
-  const { connect: connectWallet, provider } = useWallet()
   const rChainId = useChainId(props.network)
   const isConnecting = isLoading(connectState)
 
@@ -53,11 +51,10 @@ export const PageRouterSwap = () => {
     (to: string, from: string) => {
       const search = from || to ? `?${new URLSearchParams({ ...(from && { from }), ...(to && { to }) })}` : ''
       if (search !== searchParamsString) {
-        const basePath = pathname.split('?')[0] // keep current app/network, only update query
-        push(`${basePath}${search}`)
+        push(search)
       }
     },
-    [searchParamsString, push, pathname],
+    [searchParamsString, push],
   )
 
   // redirect to poolList if Swap is excluded from route
@@ -104,24 +101,8 @@ export const PageRouterSwap = () => {
     routerCachedFromAddress,
     routerCachedToAddress,
   ])
-
-  if (!provider) {
-    return (
-      <Box display="flex" fillWidth flexJustifyContent="center">
-        <ConnectWalletWrapper>
-          <ConnectWalletPrompt
-            description="Connect wallet to swap"
-            connectText="Connect Wallet"
-            loadingText="Connecting"
-            connectWallet={() => connectWallet()}
-            isLoading={isConnecting}
-          />
-        </ConnectWalletWrapper>
-      </Box>
-    )
-  }
   return (
-    <StyledQuickSwapWrapper variant="primary" shadowed>
+    <StyledQuickSwapWrapper variant="primary" shadowed data-testid="swap-page">
       <BoxHeader className="title-text">
         <IconButton testId="hidden" hidden />
         {t`Swap`}
@@ -154,9 +135,4 @@ const StyledQuickSwapWrapper = styled(Box)`
     margin: 1.5rem auto;
     max-width: var(--transfer-min-width);
   }
-`
-
-const ConnectWalletWrapper = styled.div`
-  display: flex;
-  margin: var(--spacing-3) auto;
 `

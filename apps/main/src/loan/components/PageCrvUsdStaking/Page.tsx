@@ -17,6 +17,7 @@ const Page = () => {
   return (
     <>
       <Stack
+        data-testid="scrvusd-page"
         direction="column"
         margin={'0 auto'}
         marginBottom={PrimitiveSpacing[600]}
