@@ -37,8 +37,8 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       railBackground="danger"
       size="medium"
       value={percentage ? +percentage : 0}
-      onChange={(_event, newValue) => onChange?.(Array.isArray(newValue) ? newValue[0] : newValue)}
-      onChangeCommitted={(_event, newValue) => onCommit?.(Array.isArray(newValue) ? newValue[0] : newValue)}
+      onChange={(_event, newValue) => onChange?.(Array.isArray(newValue) ? `${newValue[0]}` : `${newValue}`)}
+      onChangeCommitted={(_event, newValue) => onCommit?.(Array.isArray(newValue) ? `${newValue[0]}` : `${newValue}`)}
       min={0}
       max={100}
       step={step}
