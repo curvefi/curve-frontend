@@ -1,7 +1,6 @@
 import { Token } from '@/llamalend/features/borrow/types'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
-import { Box, useTheme } from '@mui/material'
-import Typography from '@mui/material/Typography'
+import { Box, Stack, Typography, useTheme } from '@mui/material'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -19,14 +18,22 @@ const AmountDisplay = ({ amount, valueUsd }: { amount: number; valueUsd: number 
   }
   return (
     <>
-      {formatNumber(amount, { unit: 'dollar' })} ≈ ${formatNumber(valueUsd, { unit: 'dollar' })}
+      {formatNumber(amount, { notation: 'compact' })} ≈ ${formatNumber(valueUsd, { notation: 'compact' })}
     </>
   )
 }
 
+const SubTitleComp = ({ title, color }: { title: string; color: string }) => (
+  <Stack direction="row" alignItems="center" gap={Spacing.sm}>
+    <ColorSquare color={color} />
+    {title}
+  </Stack>
+)
+
 interface DataSectionProps {
   title: string
-  color: string
+  collateralColor: string
+  borrowedColor: string
   collateralAmount: number
   collateralValueUsd: number
   borrowedAmount: number
@@ -37,7 +44,8 @@ interface DataSectionProps {
 
 const DataSection = ({
   title,
-  color,
+  collateralColor,
+  borrowedColor,
   collateralAmount,
   collateralValueUsd,
   borrowedAmount,
@@ -45,19 +53,13 @@ const DataSection = ({
   collateralTokenSymbol,
   borrowTokenSymbol,
 }: DataSectionProps) => (
-  <TooltipItems>
-    <TooltipItem title={title} variant="independent" />
-    <TooltipItem title={collateralTokenSymbol ?? t`Collateral`}>
-      <span>
-        <ColorSquare color={color} />
-        <AmountDisplay amount={collateralAmount} valueUsd={collateralValueUsd} />
-      </span>
+  <TooltipItems secondary>
+    <TooltipItem title={title} variant="primary" />
+    <TooltipItem title={<SubTitleComp title={collateralTokenSymbol ?? t`Collateral`} color={collateralColor} />}>
+      <AmountDisplay amount={collateralAmount} valueUsd={collateralValueUsd} />
     </TooltipItem>
-    <TooltipItem title={borrowTokenSymbol ?? t`Borrowed`}>
-      <span>
-        <ColorSquare color={color} />
-        <AmountDisplay amount={borrowedAmount} valueUsd={borrowedValueUsd} />
-      </span>
+    <TooltipItem title={<SubTitleComp title={borrowTokenSymbol ?? t`Borrowed`} color={borrowedColor} />}>
+      <AmountDisplay amount={borrowedAmount} valueUsd={borrowedValueUsd} />
     </TooltipItem>
   </TooltipItems>
 )
@@ -70,22 +72,30 @@ interface TooltipContentProps {
 
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const theme = useTheme()
-  const marketBandColor = theme.design.Color.Neutral[300]
-  const userBandColor = theme.design.Color.Neutral[500]
+  const collateralColor = theme.design.Color.Neutral[300]
+  const borrowedColor = theme.design.Color.Neutral[500]
 
   const hasMarketData = data.bandCollateralValueUsd > 0 || data.bandBorrowedValueUsd > 0
   const hasUserData = data.userBandCollateralValueUsd > 0 || data.userBandBorrowedValueUsd > 0
 
   return (
-    <Box sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill }}>
-      <Typography variant="bodyMBold" color="textPrimary" component="div">
-        {t`Band`} {data.n}
-      </Typography>
+    <Box sx={{ padding: Spacing.sm, backgroundColor: (t) => t.design.Layer[3].Fill }}>
       <TooltipWrapper>
+        <TooltipItems>
+          <Typography variant="bodyMBold" color="textPrimary" component="div">
+            {t`Band`} {data.n}
+          </Typography>
+          {data.p_up && (
+            <TooltipItem
+              title={`$${formatNumber(data.p_down, { unit: 'dollar' })} - $${formatNumber(data.p_up, { unit: 'dollar' })}`}
+            />
+          )}
+        </TooltipItems>
         {hasMarketData && (
           <DataSection
-            title={t`Market`}
-            color={marketBandColor}
+            title={t`Band balances`}
+            collateralColor={collateralColor}
+            borrowedColor={borrowedColor}
             collateralAmount={data.bandCollateralAmount}
             collateralValueUsd={data.bandCollateralValueUsd}
             borrowedAmount={data.bandBorrowedAmount}
@@ -97,8 +107,9 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
 
         {hasUserData && (
           <DataSection
-            title={t`User`}
-            color={userBandColor}
+            title={t`User band balances`}
+            collateralColor={collateralColor}
+            borrowedColor={borrowedColor}
             collateralAmount={data.userBandCollateralAmount}
             collateralValueUsd={data.userBandCollateralValueUsd}
             borrowedAmount={data.userBandBorrowedAmount}
@@ -106,16 +117,6 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             collateralTokenSymbol={collateralToken?.symbol}
             borrowTokenSymbol={borrowToken?.symbol}
           />
-        )}
-
-        {data.p_up && (
-          <TooltipItems>
-            <TooltipItem title={t`Range`}>
-              <span>
-                ${formatNumber(data.p_down, { unit: 'dollar' })} - ${formatNumber(data.p_up, { unit: 'dollar' })}
-              </span>
-            </TooltipItem>
-          </TooltipItems>
         )}
       </TooltipWrapper>
     </Box>

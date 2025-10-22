@@ -1,5 +1,5 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, useRef, useCallback, useState, useEffect } from 'react'
+import { useMemo, useRef, useCallback, useState, useEffect, memo } from 'react'
 import { createRoot } from 'react-dom/client'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, BandsBalancesData, BandsChartPalette } from '@/llamalend/features/bands-chart/types'
@@ -7,7 +7,9 @@ import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack, useTheme, ThemeProvider } from '@mui/material'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { getChartOptions } from './chartOptions'
-import { useBandsChartCalculations } from './hooks/useBandsChartCalculations'
+import { useDerivedChartData } from './hooks/useDerivedChartData'
+import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
+import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 import { TooltipContent } from './TooltipContent'
 import { findBandIndexByPrice, findClosestBandIndex } from './utils'
 
@@ -22,7 +24,7 @@ type BandsChartProps = {
   height?: number
 }
 
-export const BandsChart = ({
+const BandsChartComponent = ({
   collateralToken,
   borrowToken,
   chartData,
@@ -38,20 +40,20 @@ export const BandsChart = ({
   const { theme: currentThemeName } = theme.design
   const invertedDesign = DesignSystem[currentThemeName]({ inverted: true })
 
-  const backgroundColor = theme.design.Layer[1].Fill
-  const textColor = theme.design.Text.TextColors.Primary
-  const textColorInverted = invertedDesign.Text.TextColors.Primary
-  const gridColor = theme.design.Color.Neutral[300]
-  const marketBandColor = theme.design.Color.Neutral[300]
-  const userBandColor = theme.design.Color.Neutral[500]
-  const borderColor = theme.design.Layer[1].Outline
-  const userRangeHighlightColor = theme.design.Color.Tertiary[200]
-  const userRangeLabelBackgroundColor = theme.design.Color.Tertiary[300]
-  const oraclePriceLineColor = theme.design.Color.Primary[500]
-  const liquidationBandOutlineColor = theme.design.Color.Tertiary[600]
+  const palette: BandsChartPalette = useMemo(() => {
+    const backgroundColor = theme.design.Layer[1].Fill
+    const textColor = theme.design.Text.TextColors.Primary
+    const textColorInverted = invertedDesign.Text.TextColors.Primary
+    const gridColor = theme.design.Color.Neutral[300]
+    const marketBandColor = theme.design.Color.Neutral[300]
+    const userBandColor = theme.design.Color.Neutral[500]
+    const borderColor = theme.design.Layer[1].Outline
+    const userRangeHighlightColor = theme.design.Color.Tertiary[200]
+    const userRangeLabelBackgroundColor = theme.design.Color.Tertiary[300]
+    const oraclePriceLineColor = theme.design.Color.Primary[500]
+    const liquidationBandOutlineColor = theme.design.Color.Tertiary[600]
 
-  const palette: BandsChartPalette = useMemo(
-    () => ({
+    return {
       backgroundColor,
       textColor,
       textColorInverted,
@@ -63,30 +65,12 @@ export const BandsChart = ({
       userRangeLabelBackgroundColor,
       oraclePriceLineColor,
       liquidationBandOutlineColor,
-    }),
-    [
-      backgroundColor,
-      textColor,
-      textColorInverted,
-      gridColor,
-      marketBandColor,
-      userBandColor,
-      borderColor,
-      userRangeHighlightColor,
-      userRangeLabelBackgroundColor,
-      oraclePriceLineColor,
-      liquidationBandOutlineColor,
-    ],
-  )
+    }
+  }, [theme.design, invertedDesign])
 
-  const { userBandsPriceRange, derived, initialZoomIndices } = useBandsChartCalculations(
-    chartData,
-    userBandsBalances,
-    oraclePrice,
-  )
-
-  const defaultBrushWindow = 50
-  const hasBrush = chartData.length > defaultBrushWindow
+  const derived = useDerivedChartData(chartData)
+  const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
+  const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
 
   const tooltipFormatter = useCallback(
     (params: any) => {
@@ -117,7 +101,6 @@ export const BandsChart = ({
       getChartOptions(
         chartData,
         derived,
-        hasBrush,
         userBandsPriceRange,
         oraclePrice,
         palette,
@@ -127,17 +110,7 @@ export const BandsChart = ({
         findClosestBandIndex,
         tooltipFormatter,
       ),
-    [
-      chartData,
-      derived,
-      hasBrush,
-      userBandsPriceRange,
-      oraclePrice,
-      palette,
-      collateralToken,
-      borrowToken,
-      tooltipFormatter,
-    ],
+    [chartData, derived, userBandsPriceRange, oraclePrice, palette, collateralToken, borrowToken, tooltipFormatter],
   )
 
   const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
@@ -192,10 +165,11 @@ export const BandsChart = ({
             }),
           }}
           style={{ width: '100%', height: '100%' }}
-          opts={{ renderer: 'canvas' }}
-          lazyUpdate
+          opts={{ renderer: 'svg' }}
         />
       </Box>
     </Stack>
   )
 }
+
+export const BandsChart = memo(BandsChartComponent)
