@@ -10,8 +10,12 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
 
     for (const d of chartData) {
       yAxisData.push(d.pUpDownMedian)
-      marketData.push(d.bandCollateralValueUsd + d.bandBorrowedValueUsd)
-      userData.push(d.userBandCollateralValueUsd + d.userBandBorrowedValueUsd)
+      const totalBandValue = d.bandCollateralValueUsd + d.bandBorrowedValueUsd
+      const userBandValue = d.userBandCollateralValueUsd + d.userBandBorrowedValueUsd
+      const marketBandValue = totalBandValue - userBandValue
+
+      marketData.push(marketBandValue)
+      userData.push(userBandValue)
       isLiquidation.push(d.isLiquidationBand === 'SL')
     }
 
