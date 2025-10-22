@@ -1,5 +1,3 @@
-import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-
 export type ChartDataPoint = {
   n: number | string
   pUpDownMedian: number

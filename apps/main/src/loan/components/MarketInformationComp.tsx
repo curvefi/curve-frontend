@@ -1,4 +1,4 @@
-import { BandsChart } from '@/llamalend/widgets/bands-chart/BandsChart'
+import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
