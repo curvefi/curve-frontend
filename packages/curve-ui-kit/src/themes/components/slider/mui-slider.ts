@@ -1,8 +1,9 @@
 /// <reference types="./mui-slider.d.ts" />
 import { sliderClasses } from '@mui/material/Slider'
+import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
-import { DesignSystem } from '@ui-kit/themes/design'
+import { type DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -18,11 +19,6 @@ type SliderSizeDefinition = {
 }
 
 export const SLIDER_RAIL_GRADIENT_STOPS_VAR = '--slider-rail-gradient-stops'
-export const SLIDER_RAIL_BACKGROUND_CLASSES = {
-  bordered: 'CurveSlider-railBackgroundBordered',
-  safe: 'CurveSlider-railBackgroundSafe',
-  danger: 'CurveSlider-railBackgroundDanger',
-} as const
 
 /**
  * CSS custom property name for customizing the slider background color.
@@ -64,15 +60,16 @@ const defaultSliderSize = sliderSizes.small
  * @param design - The design system containing color definitions
  * @returns CSS style object for the right extension pseudo-element
  */
-const rightExtension = (design: DesignSystem) => ({
+const rightExtension = (design: DesignSystem, borderColor?: string) => ({
   '&::after': {
     content: '""',
     position: 'absolute',
     inset: 0,
     right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
     left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-    border: `1px solid ${design.Color.Neutral[500]}`,
+    border: borderColor ? `1px solid ${borderColor}` : 'none',
     backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
+    zIndex: 0,
   },
 })
 
@@ -97,6 +94,7 @@ const leftExtension = (design: DesignSystem) => ({
     left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
     width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
     height: '100%',
+    zIndex: 0,
   },
   // Only fill the left border gap if there's a single thumb
   [`&${singleThumbSelector}::before`]: {
@@ -140,130 +138,146 @@ const createGradientStopsString = (stops: GradientStopsDefinition) => {
   return parts.join(', ')
 }
 
-export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => {
-  const borderedSelector = `&.${SLIDER_RAIL_BACKGROUND_CLASSES.bordered}`
+const orientationToDirection = (orientation: SliderProps['orientation']): 'to right' | 'to top' =>
+  orientation === 'vertical' ? 'to top' : 'to right'
 
-  const rootStyle: Record<string, any> = {
-    ...handleBreakpoints({
-      [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
-      [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
-    }),
-    height: `var(${SLIDER_HEIGHT_VAR})`,
-    borderRadius: 0,
+const getGradientStopsForBackground = (
+  design: DesignSystem,
+  railBackground: SliderProps['railBackground'],
+): string | undefined => {
+  if (railBackground === 'safe') {
+    return createGradientStopsString(design.Sliders.SliderBackground.Safe)
+  }
+  if (railBackground === 'danger') {
+    return createGradientStopsString(design.Sliders.SliderBackground.Danger)
+  }
+  return undefined
+}
+
+const baseRootStyle: Record<string, any> = {
+  ...handleBreakpoints({
+    [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
+    [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
+  }),
+  height: `var(${SLIDER_HEIGHT_VAR})`,
+  borderRadius: 0,
+  border: 'none',
+  // Nesting required as otherwise it'll break in mobile for some reason
+  '&': { paddingBlock: 0 },
+  position: 'relative',
+  paddingInline: 0,
+  // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
+  marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+  '::after': {
+    // Disable pointer events so it doesn't block "hover" detection on the thumb
+    pointerEvents: 'none',
     border: 'none',
-    // Nesting required as otherwise it'll break in mobile for some reason
-    '&': { paddingBlock: 0 },
-    position: 'relative',
-    paddingInline: 0,
-    // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
-    marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
-    ...rightExtension(design),
-    ...leftExtension(design),
-    [`&.${sliderClasses.vertical}`]: {
-      height: '100%',
-      width: `var(${SLIDER_HEIGHT_VAR})`,
-      paddingBlock: 0,
-      paddingInline: 0,
-    },
-    [`${borderedSelector}:not(.${sliderClasses.vertical}) .${sliderClasses.rail}`]: borderedRailBackground(
-      design,
-      'to right',
-    ),
-    [`${borderedSelector}.${sliderClasses.vertical} .${sliderClasses.rail}`]: borderedRailBackground(design, 'to top'),
-    '::after': {
-      // Disable pointer events so it doesn't block "hover" detection on the thumb
-      pointerEvents: 'none',
-      border: 'none',
-    },
-  }
+  },
+}
 
-  const gradientDefinitions: Array<[string, GradientStopsDefinition]> = [
-    [SLIDER_RAIL_BACKGROUND_CLASSES.safe, design.Sliders.SliderBackground.Safe],
-    [SLIDER_RAIL_BACKGROUND_CLASSES.danger, design.Sliders.SliderBackground.Danger],
-  ]
+export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
+  defaultProps: {
+    size: 'small',
+    railBackground: 'default',
+  },
+  styleOverrides: {
+    root: ({ ownerState }) => {
+      const { orientation = 'horizontal', railBackground = 'default' } = ownerState
+      const gradientStops = getGradientStopsForBackground(design, railBackground)
+      const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
 
-  for (const [className, stops] of gradientDefinitions) {
-    const stopsString = createGradientStopsString(stops)
-    const gradientStopsVar = `var(${SLIDER_RAIL_GRADIENT_STOPS_VAR}, ${stopsString})`
-
-    rootStyle[`&.${className}`] = {
-      [SLIDER_RAIL_GRADIENT_STOPS_VAR]: stopsString,
-    }
-    rootStyle[`&.${className}:not(.${sliderClasses.vertical}) .${sliderClasses.rail}`] = {
-      backgroundImage: `linear-gradient(to right, ${gradientStopsVar})`,
-      opacity: 1,
-      border: 0,
-    }
-    rootStyle[`&.${className}.${sliderClasses.vertical} .${sliderClasses.rail}`] = {
-      backgroundImage: `linear-gradient(to top, ${gradientStopsVar})`,
-      opacity: 1,
-      border: 0,
-    }
-  }
-
-  return {
-    defaultProps: {
-      size: 'small',
-    },
-    styleOverrides: {
-      root: rootStyle,
-
-      thumb: {
-        width: `var(${SLIDER_THUMB_WIDTH_VAR})`,
-        background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-        transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
-        border: `1px solid ${design.Color.Neutral[25]}`,
-        borderRadius: 0,
-        // 2px for the border to be outside the rail
-        height: `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
-
-        '&:hover': {
-          backdropFilter: 'invert(1)', // This won't work for background images
-          // Instead, explicitly set an inverted background
-          background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-          backgroundBlendMode: 'difference', // This inverts colors in the background
-          border: `1px solid ${design.Button.Primary.Default.Fill}`,
-        },
-        '&:hover, &.Mui-focusVisible': {
-          boxShadow: 'none', // Remove default MUI focus ring
-        },
-        '&.Mui-disabled': {
-          background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-        },
-      },
-
-      track: {
-        height: `var(${SLIDER_HEIGHT_VAR})`,
-        borderRadius: 0,
-        border: 'none',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-          width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+      return {
+        ...baseRootStyle,
+        ...rightExtension(design, borderColor),
+        ...leftExtension(design),
+        [`&.${sliderClasses.vertical}`]: {
           height: '100%',
-          backgroundColor: design.Color.Primary[500],
+          width: `var(${SLIDER_HEIGHT_VAR})`,
+          paddingBlock: 0,
+          paddingInline: 0,
         },
-        '.Mui-disabled &::before': {
-          backgroundColor: 'currentColor',
-        },
+        ...(orientation === 'vertical'
+          ? {
+              marginInline: 0,
+            }
+          : null),
+        ...(gradientStops
+          ? {
+              [SLIDER_RAIL_GRADIENT_STOPS_VAR]: gradientStops,
+            }
+          : null),
+      }
+    },
+
+    thumb: {
+      width: `var(${SLIDER_THUMB_WIDTH_VAR})`,
+      background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+      transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
+      border: `1px solid ${design.Color.Neutral[25]}`,
+      borderRadius: 0,
+      // 2px for the border to be outside the rail
+      height: `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
+      zIndex: 1,
+
+      '&:hover': {
+        backdropFilter: 'invert(1)', // This won't work for background images
+        // Instead, explicitly set an inverted background
+        background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+        backgroundBlendMode: 'difference', // This inverts colors in the background
+        border: `1px solid ${design.Button.Primary.Default.Fill}`,
       },
-      rail: {
+      '&:hover, &.Mui-focusVisible': {
+        boxShadow: 'none', // Remove default MUI focus ring
+      },
+      '&.Mui-disabled': {
+        background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+      },
+    },
+
+    track: {
+      height: `var(${SLIDER_HEIGHT_VAR})`,
+      borderRadius: 0,
+      border: 'none',
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
+        width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+        height: '100%',
+        backgroundColor: design.Color.Primary[500],
+      },
+      '.Mui-disabled &::before': {
+        backgroundColor: 'currentColor',
+      },
+    },
+    rail: ({ ownerState }) => {
+      const { orientation = 'horizontal', railBackground = 'default' } = ownerState
+      const direction = orientationToDirection(orientation)
+      const gradientStops = getGradientStopsForBackground(design, railBackground)
+
+      return {
         backgroundColor: 'transparent',
         left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
         right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
         width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))`,
         pointerEvents: 'none',
-        border: `1px solid ${design.Color.Neutral[500]}`,
+        border: railBackground === 'default' ? `1px solid ${design.Color.Neutral[500]}` : 'none',
         opacity: 1,
-      },
+        ...(railBackground === 'bordered' ? borderedRailBackground(design, direction) : null),
+        ...(gradientStops
+          ? {
+              backgroundImage: `linear-gradient(${direction}, var(${SLIDER_RAIL_GRADIENT_STOPS_VAR}, ${gradientStops}))`,
+              opacity: 1,
+            }
+          : null),
+      }
     },
-    variants: Object.entries(sliderSizes).map(([size, { height, thumbWidth }]) => ({
-      props: { size: size as SliderSize },
-      style: handleBreakpoints({
-        [SLIDER_HEIGHT_VAR]: height,
-        [SLIDER_THUMB_WIDTH_VAR]: thumbWidth,
-      }),
-    })),
-  }
-}
+  },
+  variants: Object.entries(sliderSizes).map(([size, { height, thumbWidth }]) => ({
+    props: { size: size as SliderSize },
+    style: handleBreakpoints({
+      [SLIDER_HEIGHT_VAR]: height,
+      [SLIDER_THUMB_WIDTH_VAR]: thumbWidth,
+    }),
+  })),
+})
