@@ -53,6 +53,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => {
       sx={{
         backgroundColor: (t) => t.design.Layer[1].Fill,
         ...(releaseChannel !== ReleaseChannel.Beta && {
+          marginBlock: 'auto',
           border: 'none',
           borderBottom: (t: any) => `2px solid ${t.design.Layer[1].Outline}`,
           ...(!disabled && {
