@@ -5,7 +5,7 @@ import { BorrowTabContents } from '@/llamalend/features/borrow/components/Borrow
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import networks from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
-import { ClientWrapper } from '@cy/support/helpers/ClientWrapper'
+import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
 import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
@@ -80,7 +80,7 @@ describe('BorrowTabContents Component Tests', () => {
   })
 
   const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
-    <ClientWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
+    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
       <ConnectionProvider
         app="llamalend"
         network={networks[chainId]}
@@ -91,7 +91,7 @@ describe('BorrowTabContents Component Tests', () => {
           <BorrowTabTest {...props} />
         </Box>
       </ConnectionProvider>
-    </ClientWrapper>
+    </ComponentTestWrapper>
   )
 
   const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
