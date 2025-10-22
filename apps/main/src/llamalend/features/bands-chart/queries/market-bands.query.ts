@@ -8,7 +8,6 @@ import { sortBands, fetchChartBandBalancesData } from './utils'
 
 const isMarket = true
 
-// TODO: refactor to reduce code duplication
 export const { useQuery: useMarketBands } = queryFactory({
   queryKey: ({ chainId, marketId }: MarketParams) =>
     [...rootKeys.market({ chainId, marketId }), 'market-bands'] as const,

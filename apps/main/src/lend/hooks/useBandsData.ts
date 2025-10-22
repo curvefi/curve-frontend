@@ -6,10 +6,17 @@ import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-band
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 
 export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, 'rChainId' | 'api' | 'rOwmId'>) => {
-  const { data: marketOraclePrices } = useMarketOraclePrices({ chainId: rChainId, marketId: rOwmId })
-  const { data: marketBands } = useMarketBands({ chainId: rChainId, marketId: rOwmId })
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: rOwmId, userAddress: api?.signerAddress })
-  const { data: userBands } = useUserBands({
+  const { data: marketOraclePrices, isLoading: isMarketOraclePricesLoading } = useMarketOraclePrices({
+    chainId: rChainId,
+    marketId: rOwmId,
+  })
+  const { data: marketBands, isLoading: isMarketBandsLoading } = useMarketBands({ chainId: rChainId, marketId: rOwmId })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId: rChainId,
+    marketId: rOwmId,
+    userAddress: api?.signerAddress,
+  })
+  const { data: userBands, isLoading: isUserBandsLoading } = useUserBands({
     chainId: rChainId,
     marketId: rOwmId,
     userAddress: api?.signerAddress,
@@ -22,7 +29,10 @@ export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, '
     oraclePriceBand: marketOraclePrices?.oraclePriceBand,
   })
 
+  const isLoading = isMarketBandsLoading || isUserBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading
+
   return {
+    isLoading,
     chartData,
     userBandsBalances: userBands ?? [],
     liquidationBand: marketBands?.liquidationBand,

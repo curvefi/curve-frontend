@@ -40,7 +40,14 @@ export const MarketInformationComp = ({
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { chartData, userBands, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+  const {
+    chartData,
+    userBands,
+    liquidationBand,
+    oraclePrice,
+    oraclePriceBand,
+    isLoading: isBandsLoading,
+  } = useBandsData({
     chainId,
     llammaId,
     api,
@@ -72,6 +79,7 @@ export const MarketInformationComp = ({
           />
           {isBeta && (
             <BandsChart
+              isLoading={isBandsLoading}
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}

@@ -5,7 +5,10 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 import { createValidationSuite } from '@ui-kit/lib/validation'
-import { sortLendBands, sortMintBands, fetchLendChartBandBalancesData, fetchMintChartBandBalancesData } from './utils'
+import type { BandsBalances } from '../types'
+import { sortBands, fetchChartBandBalancesData } from './utils'
+
+const isMarket = false
 
 type UserBandsQuery = UserMarketQuery & { loanExists: boolean | undefined | null }
 type UserBandsParams = UserMarketParams & { loanExists: boolean | undefined | null }
@@ -20,19 +23,30 @@ export const { useQuery: useUserBands } = queryFactory({
     [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'user-bands'] as const,
   queryFn: async ({ marketId, userAddress }: UserBandsQuery) => {
     const market = getLlamaMarket(marketId)
+
     if (market instanceof LendMarketTemplate) {
       const [userBandsBalances, bandInfo] = await Promise.all([
         market.userBandsBalances(userAddress),
         market.stats.bandsInfo(),
       ])
+
       const { liquidationBand } = bandInfo
-      return fetchLendChartBandBalancesData(sortLendBands(userBandsBalances), liquidationBand, market, false)
+
+      return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
     } else {
       const [userBandsBalances, liquidationBand] = await Promise.all([
         market.userBandsBalances(userAddress),
         market.stats.liquidatingBand(),
       ])
-      return fetchMintChartBandBalancesData(sortMintBands(userBandsBalances), liquidationBand, market)
+
+      const formattedUserBandsBalances: BandsBalances = Object.fromEntries(
+        Object.entries(userBandsBalances).map(([key, value]) => [
+          key,
+          { borrowed: value.stablecoin, collateral: value.collateral },
+        ]),
+      )
+
+      return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
     }
   },
   validationSuite: userBandsValidationSuite,
