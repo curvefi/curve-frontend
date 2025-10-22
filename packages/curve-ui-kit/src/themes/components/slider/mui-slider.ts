@@ -144,7 +144,11 @@ const orientationToDirection = (orientation: SliderProps['orientation']): 'to ri
 const getGradientStopsForBackground = (
   design: DesignSystem,
   railBackground: SliderProps['railBackground'],
+  disabled?: boolean,
 ): string | undefined => {
+  if (disabled && railBackground !== 'default' && railBackground !== undefined) {
+    return createGradientStopsString(design.Sliders.SliderBackground.Disabled)
+  }
   if (railBackground === 'safe') {
     return createGradientStopsString(design.Sliders.SliderBackground.Safe)
   }
@@ -183,7 +187,6 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
   styleOverrides: {
     root: ({ ownerState }) => {
       const { orientation = 'horizontal', railBackground = 'default' } = ownerState
-      const gradientStops = getGradientStopsForBackground(design, railBackground)
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
 
       return {
@@ -199,11 +202,6 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         ...(orientation === 'vertical'
           ? {
               marginInline: 0,
-            }
-          : null),
-        ...(gradientStops
-          ? {
-              [SLIDER_RAIL_GRADIENT_STOPS_VAR]: gradientStops,
             }
           : null),
       }
@@ -251,9 +249,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       },
     },
     rail: ({ ownerState }) => {
-      const { orientation = 'horizontal', railBackground = 'default' } = ownerState
+      const { orientation = 'horizontal', railBackground = 'default', disabled = false } = ownerState
       const direction = orientationToDirection(orientation)
-      const gradientStops = getGradientStopsForBackground(design, railBackground)
+      const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
 
       return {
         backgroundColor: 'transparent',
@@ -262,8 +260,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))`,
         pointerEvents: 'none',
         border: 'none',
+        backgroundImage: 'none',
         opacity: 1,
-        ...(railBackground === 'bordered' ? borderedRailBackground(design, direction) : null),
+        ...(railBackground === 'bordered' && borderedRailBackground(design, direction)),
         ...(gradientStops
           ? {
               backgroundImage: `linear-gradient(${direction}, var(${SLIDER_RAIL_GRADIENT_STOPS_VAR}, ${gradientStops}))`,

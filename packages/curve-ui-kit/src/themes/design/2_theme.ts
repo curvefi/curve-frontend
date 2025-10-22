@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material'
 import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
@@ -22,6 +23,12 @@ const SliderBackground = {
     50: Reds[300],
     75: Reds[400],
     100: Reds[500],
+  },
+  Disabled: {
+    25: alpha(Grays[300], 0.5),
+    50: alpha(Grays[300], 0.5),
+    75: alpha(Grays[300], 0.5),
+    100: alpha(Grays[300], 0.5),
   },
 } as const
 

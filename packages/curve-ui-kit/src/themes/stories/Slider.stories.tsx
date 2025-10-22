@@ -3,17 +3,20 @@ import type { SliderProps } from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'
 
-type SliderValue = Exclude<SliderProps['value'], undefined>
-
 const SlierStory = (
   props: SliderProps & {
     containerWidth?: number | string
   },
 ) => {
-  const { containerWidth = 320, ...sliderProps } = props
+  const { containerWidth = 320, orientation = 'horizontal', ...sliderProps } = props
   return (
-    <Box sx={{ width: containerWidth }}>
-      <Slider {...sliderProps} />
+    <Box
+      sx={{
+        width: orientation === 'horizontal' ? containerWidth : '40px',
+        height: orientation === 'horizontal' ? 'auto' : containerWidth,
+      }}
+    >
+      <Slider orientation={orientation} {...sliderProps} />
     </Box>
   )
 }
@@ -28,6 +31,7 @@ const meta: Meta<typeof Slider> = {
     max: 100,
     step: 1,
     defaultValue: 50,
+    orientation: 'horizontal',
   },
   argTypes: {
     railBackground: {
@@ -53,6 +57,11 @@ const meta: Meta<typeof Slider> = {
     step: {
       control: 'number',
     },
+    orientation: {
+      control: 'select',
+      options: ['horizontal', 'vertical'],
+      description: 'The orientation of the slider.',
+    },
   },
   parameters: {
     layout: 'centered',
@@ -66,18 +75,21 @@ export const Default: Story = {}
 export const RailBackgroundBordered: Story = {
   args: {
     railBackground: 'bordered',
+    defaultValue: 40,
   },
 }
 
 export const RailBackgroundSafe: Story = {
   args: {
     railBackground: 'safe',
+    defaultValue: 15,
   },
 }
 
 export const RailBackgroundDanger: Story = {
   args: {
     railBackground: 'danger',
+    defaultValue: 15,
   },
 }
 
@@ -99,6 +111,14 @@ export const DisabledSafeRail: Story = {
   args: {
     disabled: true,
     railBackground: 'safe',
+    defaultValue: 60,
+  },
+}
+
+export const DisabledBorderedRail: Story = {
+  args: {
+    disabled: true,
+    railBackground: 'bordered',
     defaultValue: 60,
   },
 }
