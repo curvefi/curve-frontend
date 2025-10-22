@@ -157,6 +157,8 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     '&': { paddingBlock: 0 },
     position: 'relative',
     paddingInline: 0,
+    // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
+    marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
     ...rightExtension(design),
     ...leftExtension(design),
     [`&.${CLASS_BORDERLESS}::after`]: {
@@ -172,10 +174,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       design,
       'to right',
     ),
-    [`${borderedSelector}.${sliderClasses.vertical} .${sliderClasses.rail}`]: borderedRailBackground(
-      design,
-      'to top',
-    ),
+    [`${borderedSelector}.${sliderClasses.vertical} .${sliderClasses.rail}`]: borderedRailBackground(design, 'to top'),
     '::after': {
       // Disable pointer events so it doesn't block "hover" detection on the thumb
       pointerEvents: 'none',

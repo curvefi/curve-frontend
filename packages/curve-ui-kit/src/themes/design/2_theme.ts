@@ -1,4 +1,4 @@
-import { Blues, Grays, Greens, Reds, TransitionFunction } from './0_primitives'
+import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText

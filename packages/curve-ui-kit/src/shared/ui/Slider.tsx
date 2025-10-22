@@ -44,17 +44,23 @@ export const Slider = (props: SliderProps) => {
     return undefined
   })()
 
-  const sliderEl = (
-    <MuiSlider
-      orientation={orientation}
-      className={clsx(className, railClass)}
-      sx={sx}
-      size={size}
-      {...muiProps}
-      value={value as any}
-      defaultValue={defaultValue as any}
-    />
+  return (
+    <Box
+      sx={{
+        width: '100%',
+        // we need this to prevent height issues and overflows
+        display: 'flex',
+      }}
+    >
+      <MuiSlider
+        orientation={orientation}
+        className={clsx(className, railClass)}
+        sx={sx}
+        size={size}
+        {...muiProps}
+        value={value as any}
+        defaultValue={defaultValue as any}
+      />
+    </Box>
   )
-
-  return <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>{sliderEl}</Box>
 }
