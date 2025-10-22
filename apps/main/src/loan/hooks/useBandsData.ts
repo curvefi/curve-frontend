@@ -14,10 +14,17 @@ export const useBandsData = ({
   llammaId: string
   api: LlamaApi | undefined
 }) => {
-  const { data: marketBands } = useMarketBands({ chainId, marketId: llammaId })
-  const { data: marketOraclePrices } = useMarketOraclePrices({ chainId, marketId: llammaId })
-  const { data: loanExists } = useLoanExists({ chainId, marketId: llammaId, userAddress: api?.signerAddress })
-  const { data: userBands } = useUserBands({
+  const { data: marketBands, isLoading: isMarketBandsLoading } = useMarketBands({ chainId, marketId: llammaId })
+  const { data: marketOraclePrices, isLoading: isMarketOraclePricesLoading } = useMarketOraclePrices({
+    chainId,
+    marketId: llammaId,
+  })
+  const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
+    chainId,
+    marketId: llammaId,
+    userAddress: api?.signerAddress,
+  })
+  const { data: userBands, isLoading: isUserBandsLoading } = useUserBands({
     chainId,
     marketId: llammaId,
     userAddress: api?.signerAddress,
@@ -35,7 +42,10 @@ export const useBandsData = ({
     oraclePriceBand,
   })
 
+  const isLoading = isMarketBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading || isUserBandsLoading
+
   return {
+    isLoading,
     chartData,
     userBands,
     liquidationBand,

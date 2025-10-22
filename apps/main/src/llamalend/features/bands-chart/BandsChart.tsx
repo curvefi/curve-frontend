@@ -2,7 +2,7 @@ import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useMemo, useRef, useCallback, useState, useEffect, memo } from 'react'
 import { createRoot } from 'react-dom/client'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
-import { ChartDataPoint, BandsBalancesData, BandsChartPalette } from '@/llamalend/features/bands-chart/types'
+import { ChartDataPoint, ParsedBandsBalances, BandsChartPalette } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack, useTheme, ThemeProvider } from '@mui/material'
 import { DesignSystem } from '@ui-kit/themes/design'
@@ -17,7 +17,8 @@ type BandsChartProps = {
   collateralToken?: Token
   borrowToken?: Token
   chartData: ChartDataPoint[]
-  userBandsBalances: BandsBalancesData[]
+  isLoading: boolean
+  userBandsBalances: ParsedBandsBalances[]
   liquidationBand: number | null | undefined
   oraclePrice: string | undefined
   oraclePriceBand: number | null | undefined
@@ -28,14 +29,17 @@ const BandsChartComponent = ({
   collateralToken,
   borrowToken,
   chartData,
+  isLoading,
   userBandsBalances,
   liquidationBand,
   oraclePrice,
   oraclePriceBand,
   height = 500,
 }: BandsChartProps) => {
+  const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
   const theme = useTheme()
   const tooltipRef = useRef<HTMLDivElement | null>(null)
+  const chartRef = useRef<ReactECharts | null>(null)
   const tooltipRootRef = useRef<ReturnType<typeof createRoot> | null>(null)
   const { theme: currentThemeName } = theme.design
   const invertedDesign = DesignSystem[currentThemeName]({ inverted: true })
@@ -113,8 +117,6 @@ const BandsChartComponent = ({
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, collateralToken, borrowToken, tooltipFormatter],
   )
 
-  const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
-
   useEffect(() => {
     if (chartData.length > 0 && initialZoomIndices) {
       const start = (initialZoomIndices.startIndex / chartData.length) * 100
@@ -123,9 +125,15 @@ const BandsChartComponent = ({
     }
   }, [chartData.length, initialZoomIndices])
 
-  const chartRef = useRef<ReactECharts | null>(null)
+  // Cleanup on unmount
+  useEffect(
+    () => () => {
+      tooltipRootRef.current?.unmount()
+    },
+    [],
+  )
 
-  if (chartData.length === 0) {
+  if (!chartData || chartData.length === 0) {
     return (
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
         <Box
@@ -166,6 +174,14 @@ const BandsChartComponent = ({
           }}
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'svg' }}
+          notMerge={true}
+          lazyUpdate={true}
+          onChartReady={(chart) => {
+            // Ensure chart is properly initialized
+            if (chart && typeof chart.getZr === 'function') {
+              chart.getZr().off('disconnect')
+            }
+          }}
         />
       </Box>
     </Stack>

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, BandsBalancesData, UserBandsPriceRange } from '../types'
+import { ChartDataPoint, ParsedBandsBalances, UserBandsPriceRange } from '../types'
 
 export const useUserBandsPriceRange = (
   chartData: ChartDataPoint[],
-  userBandsBalances: BandsBalancesData[],
+  userBandsBalances: ParsedBandsBalances[],
 ): UserBandsPriceRange =>
   useMemo(() => {
     if (userBandsBalances.length === 0) return null

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { ChartDataPoint, BandsBalancesData } from '../types'
+import { ChartDataPoint, ParsedBandsBalances } from '../types'
 
 export const useInitialZoomIndices = (
   chartData: ChartDataPoint[],
-  userBandsBalances: BandsBalancesData[],
+  userBandsBalances: ParsedBandsBalances[],
   oraclePrice: string | undefined,
 ): { startIndex: number; endIndex: number } | null =>
   useMemo(() => {

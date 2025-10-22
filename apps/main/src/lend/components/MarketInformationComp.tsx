@@ -41,7 +41,14 @@ export const MarketInformationComp = ({
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const { chartData, userBandsBalances, liquidationBand, oraclePrice, oraclePriceBand } = useBandsData({
+  const {
+    chartData,
+    userBandsBalances,
+    liquidationBand,
+    oraclePrice,
+    oraclePriceBand,
+    isLoading: isBandsLoading,
+  } = useBandsData({
     rChainId,
     rOwmId,
     api: pageProps.api,
@@ -72,6 +79,7 @@ export const MarketInformationComp = ({
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
           <BandsChart
+            isLoading={isBandsLoading}
             collateralToken={collateralToken}
             borrowToken={borrowToken}
             chartData={chartData}
