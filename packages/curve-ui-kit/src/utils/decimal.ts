@@ -22,7 +22,7 @@ export type Amount = number | Decimal
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
 export const decimal = (value: string | undefined | null): Decimal | undefined => {
-  if (!['', null, undefined, '-', '?', 'Infinity', '-Infinity'].includes(value)) {
-    return new BigNumber(value!).isNaN() ? undefined : (value as Decimal)
+  if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
+    return value as Decimal
   }
 }
