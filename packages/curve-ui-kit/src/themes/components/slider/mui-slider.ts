@@ -17,13 +17,6 @@ type SliderSizeDefinition = {
   thumbWidth: Responsive
 }
 
-export const CLASS_BORDERLESS = 'borderless'
-
-/**
- * CSS custom property name for customizing the slider background color.
- * Used to set a background color for the slider rail.
- */
-export const SLIDER_BACKGROUND_VAR = '--slider-background'
 export const SLIDER_RAIL_GRADIENT_STOPS_VAR = '--slider-rail-gradient-stops'
 export const SLIDER_RAIL_BACKGROUND_CLASSES = {
   bordered: 'CurveSlider-railBackgroundBordered',
@@ -31,6 +24,11 @@ export const SLIDER_RAIL_BACKGROUND_CLASSES = {
   danger: 'CurveSlider-railBackgroundDanger',
 } as const
 
+/**
+ * CSS custom property name for customizing the slider background color.
+ * Used to set a background color for the slider rail.
+ */
+const SLIDER_BACKGROUND_VAR = '--slider-background'
 const SLIDER_HEIGHT_VAR = '--slider-height'
 const SLIDER_THUMB_WIDTH_VAR = '--slider-thumb-width'
 
@@ -161,9 +159,6 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
     ...rightExtension(design),
     ...leftExtension(design),
-    [`&.${CLASS_BORDERLESS}::after`]: {
-      border: 0,
-    },
     [`&.${sliderClasses.vertical}`]: {
       height: '100%',
       width: `var(${SLIDER_HEIGHT_VAR})`,

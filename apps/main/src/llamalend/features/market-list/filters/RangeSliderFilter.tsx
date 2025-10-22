@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
-import Slider from '@mui/material/Slider'
 import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -9,6 +8,7 @@ import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import type { LlamaMarketColumnId } from '../columns.enum'
+import { Slider } from '@ui-kit/shared/ui/Slider'
 
 /**
  * Get the maximum value from a field in an array of objects.
