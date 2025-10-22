@@ -10,19 +10,18 @@ import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
+import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
-import { MarketFilterChipWrapper } from './chips/MarketFilterChipWrapper'
 import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
-import { LlamaMarketSort } from './LlamaMarketSort'
 
 const { isEqual } = lodash
-const TITLES = {
+const LOCAL_STORAGE_KEYS = {
   // not using the t`` here as the value is used as a key in the local storage
   [MarketRateType.Borrow]: 'My Borrow Positions',
   [MarketRateType.Supply]: 'My Supply Positions',
@@ -47,7 +46,7 @@ const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
-  const title = TITLES[tab]
+  const title = LOCAL_STORAGE_KEYS[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
     title,
     migration,
@@ -65,6 +64,8 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
     onExpandedChange,
     ...getTableOptions(result),
   })
+
+  const showChips = userHasPositions?.Lend[tab] && userHasPositions?.Mint[tab]
   return (
     <DataTable
       table={table}
@@ -74,16 +75,15 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
       loading={loading}
     >
       <TableFilters<LlamaMarketColumnId>
-        title={title}
+        filterExpandedKey={title}
+        leftChildren={<TableFiltersTitles title={t`${title}`} />}
         loading={loading}
+        hasSearchBar
         visibilityGroups={columnSettings}
         searchText={searchText}
         onSearch={onSearch}
         chips={
-          <MarketFilterChipWrapper
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
-            resetFilters={resetFilters}
-          >
+          showChips && (
             <UserPositionFilterChips
               columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
@@ -91,10 +91,10 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
               tab={tab}
               searchText={searchText}
               onSearch={onSearch}
+              testId={title}
             />
-          </MarketFilterChipWrapper>
+          )
         }
-        sort={<LlamaMarketSort onSortingChange={onSortingChange} sortField={sortField} />}
       />
     </DataTable>
   )

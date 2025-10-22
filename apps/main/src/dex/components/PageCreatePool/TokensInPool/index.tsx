@@ -23,7 +23,7 @@ import { useNetworkByChain } from '@/dex/entities/networks'
 import useTokensMapper from '@/dex/hooks/useTokensMapper'
 import { DEFAULT_CREATE_POOL_STATE } from '@/dex/store/createCreatePoolSlice'
 import useStore from '@/dex/store/useStore'
-import { CurveApi, ChainId } from '@/dex/types/main.types'
+import { CurveApi, ChainId, BasePool } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
@@ -33,6 +33,8 @@ type Props = {
   haveSigner: boolean
   chainId: ChainId
 }
+
+const DEFAULT_POOLS: BasePool[] = []
 
 const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const userAddedTokens = useStore((state) => state.createPool.userAddedTokens)
@@ -44,7 +46,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
   const updateTokensInPool = useStore((state) => state.createPool.updateTokensInPool)
   const updateTokenAmount = useStore((state) => state.createPool.updateTokenAmount)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
-  const basePools = useStore((state) => state.pools.basePools[chainId] ?? [])
+  const basePools = useStore((state) => state.pools.basePools[chainId]) ?? DEFAULT_POOLS
   const userBalances = useStore((state) => state.userBalances.userBalancesMapper)
   const { tokensMapper } = useTokensMapper(chainId)
   const nativeToken = curve.getNetworkConstants().NATIVE_TOKEN

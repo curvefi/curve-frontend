@@ -24,8 +24,8 @@ const RouterSwapAlerts = ({
   formStatus: FormStatus
   formValues: FormValues
   maxSlippage: string
-  toAmountOutput: string
-  isExchangeRateLow: boolean
+  toAmountOutput: string | undefined
+  isExchangeRateLow: boolean | undefined
   isHighImpact?: boolean
   isExpectedToAmount?: boolean
   searchedParams: SearchedParams

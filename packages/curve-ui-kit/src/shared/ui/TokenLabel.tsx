@@ -20,14 +20,17 @@ type TokenLabelProps = TokenIconProps & {
 export const TokenLabel = ({ label, ...tokenIconProps }: TokenLabelProps) => (
   <Stack direction="row" gap={Spacing[LABEL_SPACING[tokenIconProps.size ?? DEFAULT_SIZE]]} alignItems="center">
     <TokenIcon {...tokenIconProps} />
-    <Typography
-      variant="bodyMBold"
-      color={tokenIconProps.disabled ? 'textDisabled' : undefined}
-      // Remove line-height to ensure proper vertical centering with TokenIcon
-      // MUI Typography's default line-height prevents perfect vertical alignment
-      sx={{ '&': { lineHeight: 'unset' } }}
-    >
-      {label}
-    </Typography>
+    <Stack>
+      <Typography
+        variant="bodyMBold"
+        color={tokenIconProps.disabled ? 'textDisabled' : undefined}
+        // Remove line-height to ensure proper vertical centering with TokenIcon
+        // MUI Typography's default line-height prevents perfect vertical alignment
+        sx={{ '&': { lineHeight: 'unset' } }}
+      >
+        {label}
+      </Typography>
+      {/* TODO: add token description */}
+    </Stack>
   </Stack>
 )
