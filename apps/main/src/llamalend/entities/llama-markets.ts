@@ -65,7 +65,7 @@ export type LlamaMarket = {
   rewards: CampaignPoolRewards[]
   isFavorite: boolean
   leverage: number
-  deprecatedMessage?: string
+  deprecatedMessage: string | null
   userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
 }
 
@@ -77,9 +77,13 @@ export type LlamaMarketsResult = {
 
 export type LlamaMarketKey = DeepKeys<LlamaMarket>
 
-const DEPRECATED_LLAMAS: Record<string, () => string> = {
-  '0x136e783846ef68C8Bd00a3369F787dF8d683a696': () =>
-    t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
+const DEPRECATED_LLAMAS: Record<Address, string> = {
+  // sfrxETH v1 mint market
+  '0x136e783846ef68C8Bd00a3369F787dF8d683a696': t`Please note this market is being phased out. We recommend migrating to the sfrxETH v2 market which uses an updated oracle.`,
+  // swBTC-crvUSD lend market
+  '0x276B8C8873079eEACCF4Dd241De14be92D733b45': t`This market is empty (it's never been used) and the oracle cannot be trusted.`,
+  //wstUSR-crvUSD lend market
+  '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
 }
 
 const convertLendingVault = (
@@ -166,6 +170,7 @@ const convertLendingVault = (
       chain,
       `${LEND_ROUTES.PAGE_MARKETS}/${controller}/${hasBorrowed || hasSupplied ? 'manage' : 'create'}`,
     ),
+    deprecatedMessage: DEPRECATED_LLAMAS[controller] ?? null,
     isFavorite: favoriteMarkets.has(vault),
     rewards: [...(campaigns[vault.toLowerCase()] ?? []), ...(campaigns[controller.toLowerCase()] ?? [])],
     leverage,
@@ -248,7 +253,7 @@ const convertMintMarket = (
       incentives: [],
     },
     type: LlamaMarketType.Mint,
-    deprecatedMessage: DEPRECATED_LLAMAS[llamma]?.(),
+    deprecatedMessage: DEPRECATED_LLAMAS[llamma] ?? null,
     url: getInternalUrl(
       'crvusd',
       chain,
