@@ -3,8 +3,10 @@ import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { MarketQuery, MarketParams } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
-import { decimal, Decimal } from '@ui-kit/utils'
-import { sortLendBands, sortMintBands, fetchLendChartBandBalancesData, fetchMintChartBandBalancesData } from './utils'
+import type { BandsBalances } from '../types'
+import { sortBands, fetchChartBandBalancesData } from './utils'
+
+const isMarket = true
 
 // TODO: refactor to reduce code duplication
 export const { useQuery: useMarketBands } = queryFactory({
@@ -14,40 +16,40 @@ export const { useQuery: useMarketBands } = queryFactory({
     const market = getLlamaMarket(marketId)
     // lend
     if (market instanceof LendMarketTemplate) {
-      const [balances, bandsInfo, bandsBalances] = await Promise.all([
-        market.stats.balances(),
-        market.stats.bandsInfo(),
-        market.stats.bandsBalances(),
-      ])
+      const [bandsInfo, bandsBalances] = await Promise.all([market.stats.bandsInfo(), market.stats.bandsBalances()])
 
-      const { activeBand, minBand, maxBand, liquidationBand } = bandsInfo
-      const maxMinBands = [maxBand, minBand]
+      const { liquidationBand } = bandsInfo
 
-      const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
-      const parsedBandsBalances = await fetchLendChartBandBalancesData(
-        sortLendBands(bandsBalances),
+      const parsedBandsBalances = await fetchChartBandBalancesData(
+        sortBands(bandsBalances),
         liquidationBand,
         market,
-        true,
+        isMarket,
       )
 
-      return { balances, maxMinBands, activeBand, liquidationBand, bandBalances, bandsBalances: parsedBandsBalances }
+      return { liquidationBand, bandsBalances: parsedBandsBalances }
       // mint
     } else {
-      const [balances, bandsBalances, liquidationBand] = await Promise.all([
-        market.stats.balances(),
+      const [bandsBalances, liquidationBand] = await Promise.all([
         market.stats.bandsBalances(),
         market.stats.liquidatingBand(),
       ])
 
-      const parsedBandsBalances = await fetchMintChartBandBalancesData(
-        sortMintBands(bandsBalances),
+      const formattedBandsBalances: BandsBalances = Object.fromEntries(
+        Object.entries(bandsBalances).map(([key, value]) => [
+          key,
+          { borrowed: value.stablecoin, collateral: value.collateral },
+        ]),
+      )
+
+      const parsedBandsBalances = await fetchChartBandBalancesData(
+        sortBands(formattedBandsBalances),
         liquidationBand,
         market,
+        isMarket,
       )
-      // mint
       return {
-        balances,
+        liquidationBand,
         bandsBalances: parsedBandsBalances,
       }
     }

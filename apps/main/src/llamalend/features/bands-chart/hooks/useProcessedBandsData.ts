@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import type { ChartDataPoint, BandsBalancesData } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 
 type ProcessedBandsData = {
-  marketBandsBalances: BandsBalancesData[]
-  userBandsBalances: BandsBalancesData[]
+  marketBandsBalances: ParsedBandsBalances[]
+  userBandsBalances: ParsedBandsBalances[]
   oraclePriceBand: number | null | undefined
 }
 
@@ -26,10 +26,10 @@ export const useProcessedBandsData = ({
         p_up: Number(band.p_up),
         p_down: Number(band.p_down),
         bandCollateralAmount: Number(band.collateral),
-        bandCollateralValueUsd: Number(band.collateralUsd ?? band.collateralStablecoinUsd ?? 0),
-        bandBorrowedAmount: Number(band.borrowed ?? band.stablecoin ?? '0'),
-        bandBorrowedValueUsd: Number(band.borrowed ?? band.stablecoin ?? '0'),
-        bandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0),
+        bandCollateralValueUsd: Number(band.collateralUsd),
+        bandBorrowedAmount: Number(band.borrowed ?? 0),
+        bandBorrowedValueUsd: Number(band.collateralBorrowedUsd ?? 0),
+        bandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0),
         userBandCollateralAmount: 0,
         userBandCollateralValueUsd: 0,
         userBandBorrowedAmount: 0,
@@ -45,10 +45,11 @@ export const useProcessedBandsData = ({
       const existing = bandsMap.get(key)
       if (existing) {
         existing.userBandCollateralAmount = Number(band.collateral)
-        existing.userBandCollateralValueUsd = Number(band.collateralUsd ?? band.collateralStablecoinUsd ?? 0)
-        existing.userBandBorrowedAmount = Number(band.borrowed ?? band.stablecoin ?? '0')
-        existing.userBandBorrowedValueUsd = Number(band.borrowed ?? band.stablecoin ?? '0')
-        existing.userBandTotalCollateralValueUsd = Number(band.collateralBorrowedUsd ?? 0)
+        existing.userBandCollateralValueUsd = Number(band.collateralUsd ?? 0)
+        existing.userBandBorrowedAmount = Number(band.borrowed ?? 0)
+        existing.userBandBorrowedValueUsd = Number(band.collateralBorrowedUsd ?? 0)
+        existing.userBandTotalCollateralValueUsd =
+          Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0)
       } else {
         bandsMap.set(key, {
           n: Number(band.n),
@@ -61,10 +62,10 @@ export const useProcessedBandsData = ({
           bandBorrowedValueUsd: 0,
           bandTotalCollateralValueUsd: 0,
           userBandCollateralAmount: Number(band.collateral),
-          userBandCollateralValueUsd: Number(band.collateralUsd ?? band.collateralStablecoinUsd ?? 0),
-          userBandBorrowedAmount: Number(band.borrowed ?? band.stablecoin ?? '0'),
-          userBandBorrowedValueUsd: Number(band.borrowed ?? band.stablecoin ?? '0'),
-          userBandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0),
+          userBandCollateralValueUsd: Number(band.collateralUsd ?? 0),
+          userBandBorrowedAmount: Number(band.borrowed ?? 0),
+          userBandBorrowedValueUsd: Number(band.collateralBorrowedUsd ?? 0),
+          userBandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0),
           isLiquidationBand: band.isLiquidationBand,
           isOraclePriceBand: Number(band.n) === oraclePriceBand,
         })
