@@ -1,143 +1,119 @@
-import { useState } from 'react'
-import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
-import Slider from '@mui/material/Slider'
+import type { SliderProps } from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { CLASS_BORDERLESS } from '../components/slider'
+import { Slider } from '@ui-kit/shared/ui/Slider'
 
-const SliderComponent = (props: React.ComponentProps<typeof Slider>) => {
-  const [value, setValue] = useState<number | number[]>(props.defaultValue as number | number[])
+type SliderValue = Exclude<SliderProps['value'], undefined>
 
-  const handleChange = (_event: Event, newValue: number | number[]) => {
-    setValue(newValue)
-  }
-
+const SlierStory = (
+  props: SliderProps & {
+    containerWidth?: number | string
+  },
+) => {
+  const { containerWidth = 320, ...sliderProps } = props
   return (
-    <Box sx={{ width: '200px' }}>
-      <Slider {...props} value={value} onChange={handleChange} />
+    <Box sx={{ width: containerWidth }}>
+      <Slider {...sliderProps} />
     </Box>
   )
 }
 
 const meta: Meta<typeof Slider> = {
   title: 'UI Kit/Primitives/Slider',
-  component: SliderComponent,
+  component: SlierStory,
+  args: {
+    railBackground: 'default',
+    size: 'medium',
+    min: 0,
+    max: 100,
+    step: 1,
+    defaultValue: 50,
+  },
   argTypes: {
-    defaultValue: {
-      control: 'number',
-      description: 'The default value of the slider',
-    },
-    min: {
-      control: 'number',
-      description: 'The minimum allowed value of the slider',
-    },
-    max: {
-      control: 'number',
-      description: 'The maximum allowed value of the slider',
-    },
-    step: {
-      control: 'number',
-      description: 'The step increment value',
-    },
-    disabled: {
-      control: 'boolean',
-      description: 'The disabled state of the component',
-    },
-    valueLabelDisplay: {
+    railBackground: {
       control: 'select',
-      options: ['auto', 'on', 'off'],
-      description: 'Controls when the value label is displayed',
+      options: ['default', 'bordered', 'safe', 'danger'],
+      description: 'Background pattern applied to the rail background.',
     },
     size: {
       control: 'select',
       options: ['small', 'medium'],
-      description: 'The size of the slider',
+      description: 'Slider height and thumb sizing.',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Disable user interaction.',
+    },
+    min: {
+      control: 'number',
+    },
+    max: {
+      control: 'number',
+    },
+    step: {
+      control: 'number',
     },
   },
-  args: {
-    defaultValue: 50,
-    min: 0,
-    max: 100,
-    step: 1,
-    disabled: false,
-    valueLabelDisplay: 'off',
-    onChange: fn(),
-    size: 'small',
+  parameters: {
+    layout: 'centered',
   },
 }
 
 type Story = StoryObj<typeof Slider>
 
-export const Default: Story = {
-  parameters: {
-    docs: {
-      description: {
-        component: 'Slider component with custom styling',
-        story: 'Default slider with custom track and thumb',
-      },
-    },
-  },
-}
+export const Default: Story = {}
 
-export const WithValueLabel: Story = {
+export const RailBackgroundBordered: Story = {
   args: {
-    valueLabelDisplay: 'on',
+    railBackground: 'bordered',
   },
 }
 
-export const Disabled: Story = {
+export const RailBackgroundSafe: Story = {
+  args: {
+    railBackground: 'safe',
+  },
+}
+
+export const RailBackgroundDanger: Story = {
+  args: {
+    railBackground: 'danger',
+  },
+}
+
+export const SmallSize: Story = {
+  args: {
+    size: 'small',
+    defaultValue: 40,
+  },
+}
+
+export const DisabledDefault: Story = {
   args: {
     disabled: true,
+    defaultValue: 60,
   },
 }
 
-export const CustomRange: Story = {
+export const DisabledSafeRail: Story = {
   args: {
-    min: 0,
-    max: 1000,
-    step: 100,
-    defaultValue: 500,
+    disabled: true,
+    railBackground: 'safe',
+    defaultValue: 60,
   },
 }
 
-export const MediumSize: Story = {
+export const Range: Story = {
   args: {
-    size: 'medium',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Large-sized slider variant',
-      },
-    },
+    defaultValue: [25, 75],
+    railBackground: 'default',
   },
 }
 
-export const RangeSlider: Story = {
+export const ValueLabelDisplay: Story = {
   args: {
-    defaultValue: [20, 80],
     valueLabelDisplay: 'auto',
-    size: 'medium',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Range slider with two thumbs for selecting a range of values',
-      },
-    },
-  },
-}
-
-export const Borderless: Story = {
-  args: {
-    className: CLASS_BORDERLESS,
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Slider with borderless styling',
-      },
-    },
+    railBackground: 'default',
   },
 }
 
