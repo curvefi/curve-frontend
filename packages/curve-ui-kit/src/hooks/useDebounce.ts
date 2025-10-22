@@ -7,7 +7,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  * @param initialValue - The initial value to use
  * @param debounceMs - The debounce period in milliseconds
  * @param callback - Callback function that is called after the debounce period
- * @returns A tuple containing the current value and a setter function
+ * @returns A triple containing the current value, a setter function and a cancel function
  *
  * @example
  * ```tsx
@@ -28,7 +28,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
  *
  * // With a controlled component
  * // The hook will update its internal value when initialValue changes
- * const [debouncedValue, setDebouncedValue] = useDebounce(externalValue, 200, handleChange);
+ * const [debouncedValue, setDebouncedValue, cancel] = useDebounce(externalValue, 200, handleChange);
  */
 export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (value: T) => void) {
   const [value, setValue] = useState<T>(initialValue)
@@ -49,15 +49,14 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
     [],
   )
 
+  // Clear any existing timer
+  const cancel = useCallback(() => timerRef.current && clearTimeout(timerRef.current), [])
+
   // Sets the internal value, but calls the callback after a delay unless retriggered again.
   const setDebouncedValue = useCallback(
     (newValue: T) => {
       setValue(newValue)
-
-      // Clear any existing timer
-      if (timerRef.current !== null) {
-        clearTimeout(timerRef.current)
-      }
+      cancel()
 
       // Initiate a new timer
       timerRef.current = window.setTimeout(() => {
@@ -65,10 +64,10 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
         timerRef.current = null
       }, debounceMs)
     },
-    [callback, debounceMs],
+    [callback, cancel, debounceMs],
   )
 
-  return [value, setDebouncedValue] as const
+  return [value, setDebouncedValue, cancel] as const
 }
 
 /**
@@ -93,9 +92,26 @@ export function useDebouncedValue<T>(
 const SearchDebounceMs = 166 // 10 frames at 60fps
 
 /**
- * A hook that debounces a search value and calls a callback when the debounce period has elapsed.
+ * A hook that debounces a value and only calls the callback when the value has actually changed.
+ * This prevents unnecessary callback executions when the debounced value hasn't changed.
+ *
+ * @param defaultValue - The initial value to use
+ * @param callback - Function called when the debounced value changes
+ * @param debounceMs - The debounce period in milliseconds (default: 166ms)
+ * @param equals - Optional custom equality function to compare values
+ * @returns A tuple containing the current value and a setter function
  */
-export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => void, debounceMs = SearchDebounceMs) {
+export function useUniqueDebounce<T>({
+  defaultValue,
+  callback,
+  debounceMs = SearchDebounceMs,
+  equals,
+}: {
+  defaultValue: T
+  callback: (value: T) => void
+  debounceMs?: number
+  equals?: (a: T, b: T) => boolean
+}) {
   const lastValue = useRef(defaultValue)
 
   /**
@@ -113,16 +129,14 @@ export function useUniqueDebounce<T>(defaultValue: T, callback: (value: T) => vo
 
   const debounceCallback = useCallback(
     (value: T) => {
-      if (typeof value === 'string') {
-        value = value.trim() as unknown as T
-      }
-      if (value !== lastValue.current) {
+      const isEqual = equals ? equals(value, lastValue.current) : value === lastValue.current
+      if (!isEqual) {
         lastValue.current = value
         callback(value)
       }
     },
-    [callback],
+    [callback, equals],
   )
-  const [search, setSearch] = useDebounce(defaultValue, debounceMs, debounceCallback)
-  return [search, setSearch] as const
+
+  return useDebounce(defaultValue, debounceMs, debounceCallback)
 }
