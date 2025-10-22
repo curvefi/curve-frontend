@@ -3,13 +3,14 @@ import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 
 export type Config = ResolvedRegister['config']
 
 type Props = {
-  config: Config
+  config?: Config
   children: ReactElement
-  autoConnect: boolean
+  autoConnect?: boolean
 }
 
 /**
@@ -20,7 +21,7 @@ type Props = {
  *
  * Similar to apps/main/src/app/ClientWrapper.tsx but optimized for the testing environment.
  */
-export function ClientWrapper({ config, children, autoConnect }: Props) {
+export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   // Create a minimal router for testing environment
   const router = createRouter({
     routeTree: createRootRoute({
@@ -34,11 +35,11 @@ export function ClientWrapper({ config, children, autoConnect }: Props) {
   return (
     <>
       <ThemeProvider theme="light">
-        <WagmiProvider config={config} reconnectOnMount={autoConnect}>
+        <WithWrapper Wrapper={WagmiProvider} wrap={!!config} config={config!} reconnectOnMount={autoConnect}>
           <QueryProvider persister={persister} queryClient={queryClient}>
             <RouterProvider router={router} />
           </QueryProvider>
-        </WagmiProvider>
+        </WithWrapper>
       </ThemeProvider>
     </>
   )

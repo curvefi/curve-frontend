@@ -26,7 +26,7 @@ const OldDetailInfoTradeRoute = ({
 }: {
   params: NetworkUrlParams
   loading: boolean
-  routes: Route[]
+  routes: Route[] | undefined
   tokensNameMapper: TokensNameMapper
 }) => {
   const routesLength = Array.isArray(routes) ? routes.length : 0
@@ -55,7 +55,7 @@ const OldDetailInfoTradeRoute = ({
               </RouteTravelDecor>
             )}
             <ul>
-              {routes.map((route) => (
+              {routes?.map((route) => (
                 <Item key={`${route.poolId}-${route.outputCoinAddress}`}>
                   <Box flex flexAlignItems="baseline">
                     <DetailInfoTradeRouteRoute

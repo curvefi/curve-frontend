@@ -1,6 +1,6 @@
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import { SEARCH_TERM } from '@/dex/hooks/useSearchTermMapper'
-import { CurveApi, ChainId, type NetworkUrlParams } from '@/dex/types/main.types'
+import { CurveApi, ChainId } from '@/dex/types/main.types'
 
 export type FormStatus = {
   error: string
@@ -64,7 +64,6 @@ export type PagePoolList = {
   rChainId: ChainId
   curve: CurveApi | null
   isLite: boolean
-  params: NetworkUrlParams
   tableLabels: PoolListTableLabel
   searchParams: SearchParams
   searchTermMapper: SearchTermMapper

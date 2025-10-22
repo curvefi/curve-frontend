@@ -27,7 +27,7 @@ type MarketsFilterChipsProps = {
   minLiquidity: number
 } & FilterProps<string>
 
-export const MarketFilterChipWrapper = ({
+export const MarketFilterChip = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,

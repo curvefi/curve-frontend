@@ -2,7 +2,7 @@ import type { Property } from 'csstype'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { NumericTextField } from './NumericTextField'
 import { Slider } from './Slider'
 
@@ -52,7 +52,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
       value={percentage}
       min="0"
       max="100"
-      onChange={(newPercentage) => onChange?.(newPercentage)}
+      onChange={(newPercentage) => onChange?.(decimal(newPercentage))}
       onBlur={(newPercentage) => onCommit?.(newPercentage)}
       disabled={disabled}
       slotProps={{

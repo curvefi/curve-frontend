@@ -5,7 +5,7 @@ import { breakpoints } from '@ui/utils'
 
 export const PageGauges = () => (
   <>
-    <Container>
+    <Container data-testid="gauges-page">
       <Gauges />
     </Container>
     <Settings showScrollButton />

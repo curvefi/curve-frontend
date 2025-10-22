@@ -11,10 +11,9 @@ import { type Decimal } from '@ui-kit/utils'
  *
  * @param value - The new input value to validate
  * @param current - The current input value to fall back to if validation fails
- * @param allowNegative - Whether to allow negative numbers
  * @returns The validated and normalized input value, or the current value if invalid
  */
-const sanitize = (value: string, current: string, allowNegative: boolean): string => {
+const sanitize = (value: string, current: string): string => {
   const normalizedValue = value.replace(/,/g, '.')
 
   // If more than one decimal point, return the current value (ignore the change)
@@ -28,13 +27,8 @@ const sanitize = (value: string, current: string, allowNegative: boolean): strin
     return current
   }
 
-  // If negative numbers are not allowed and value starts with minus, ignore the change
-  if (!allowNegative && minusIndex === 0) {
-    return current
-  }
-
   // Check if it contains only valid characters (numbers, optional minus at start if allowed, and one optional decimal)
-  const pattern = allowNegative ? /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/ : /^[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
+  const pattern = /^-?[0-9]*\.?[0-9]*([eE][-+]?[0-9]+)?$/
   return pattern.test(normalizedValue) ? normalizedValue : current
 }
 
@@ -72,8 +66,8 @@ type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' 
   min?: Decimal
   /** Maximum allowed value (default: Infinity) */
   max?: Decimal
-  /** Callback fired when the numeric value changes */
-  onChange?: (value: Decimal | undefined) => void
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange?: (value: string | undefined) => void
   /** Callback fired when the numeric is being submitted */
   onBlur?: (value: Decimal | undefined) => void
 }
@@ -82,26 +76,13 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
   // Internal value that might be incomplete, like "4.".
   const [inputValue, setInputValue] = useState(getDisplayValue(value))
 
-  const [lastChangeValue, setLastChangeValue] = useState(value)
+  const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
 
   // Update input value when value changes externally
   useEffect(() => {
     setInputValue(getDisplayValue(value))
   }, [value])
-
-  /**
-   * Converts a string input to a numeric value with optional clamping.
-   *
-   * @param validatedValue - The sanitized string input
-   * @param shouldClamp - Whether to apply min/max bounds
-   * @returns Numeric value, undefined for empty/invalid input
-   */
-  const parseAndClamp = (validatedValue: string, { shouldClamp = false }: { shouldClamp?: boolean }) => {
-    if (validatedValue === '') return undefined
-    const result = shouldClamp ? clamp(validatedValue, min, max) : new BigNumber(validatedValue)
-    return result.toString() as Decimal
-  }
 
   return (
     <TextField
@@ -120,19 +101,17 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         onFocus?.(e)
       }}
       onChange={(e) => {
-        const sanitizedValue = sanitize(e.target.value, inputValue, min == null || +min < 0)
+        const sanitizedValue = sanitize(e.target.value, inputValue)
         setInputValue(sanitizedValue)
-
-        const changedValue = parseAndClamp(sanitizedValue, { shouldClamp: false })
-
-        if (changedValue !== lastChangeValue) {
-          onChange?.(changedValue)
-          setLastChangeValue(changedValue)
-        }
+        onChange?.(sanitizedValue)
+        setLastChangeValue(sanitizedValue)
       }}
       onBlur={() => {
-        // Replace a sole minus with just empty input as it's not really valid.
-        const finalValue = parseAndClamp(inputValue === '-' ? '' : inputValue, { shouldClamp: true })
+        // Replace a sole invalid values with just empty input as they're not really valid.
+        const invalidValues = ['-', '.', ',', '']
+        const finalValue = invalidValues.includes(inputValue)
+          ? undefined
+          : (clamp(inputValue, min, max).toString() as Decimal)
         setInputValue(getDisplayValue(finalValue))
 
         // Also emit the changed event, because due to clamping and such the final value

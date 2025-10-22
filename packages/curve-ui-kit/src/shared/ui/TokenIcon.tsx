@@ -44,7 +44,7 @@ export const TokenIcon = ({
   <Tooltip title={tooltip} placement="top">
     <Box
       component="img"
-      data-testid={`token-icon-${tooltip}`}
+      data-testid={`token-icon-${tooltip || address}`}
       className={`${className}`}
       alt={tooltip}
       onError={({ currentTarget }) => {

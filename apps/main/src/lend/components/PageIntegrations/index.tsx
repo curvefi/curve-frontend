@@ -1,10 +1,8 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { styled } from 'styled-components'
 import type { FilterKey, FormValues } from '@/lend/components/PageIntegrations/types'
-import { ROUTE } from '@/lend/constants'
 import useStore from '@/lend/store/useStore'
-import { ChainId, type NetworkUrlParams } from '@/lend/types/lend.types'
-import { getPath } from '@/lend/utils/utilsRouter'
+import { ChainId } from '@/lend/types/lend.types'
 import { useFocusRing } from '@react-aria/focus'
 import Box from '@ui/Box'
 import IntegrationAppComp from '@ui/Integration/IntegrationApp'
@@ -20,12 +18,10 @@ import { Trans } from '@ui-kit/lib/i18n'
 // Update integrations list repo: https://github.com/curvefi/curve-external-integrations
 const IntegrationsComp = ({
   integrationsTags,
-  params,
   rChainId,
   searchParams,
 }: {
   integrationsTags: IntegrationsTags
-  params: NetworkUrlParams
   rChainId: ChainId | ''
   searchParams: URLSearchParams | null
 }) => {
@@ -69,8 +65,7 @@ const IntegrationsComp = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parsedSearchParams.filterKey, rChainId])
 
-  const updateRouteFilterKey = (filterKey: FilterKey) =>
-    push(getPath(params, `${ROUTE.PAGE_INTEGRATIONS}?filter=${filterKey}`))
+  const updateRouteFilterKey = (filterKey: FilterKey) => push(`?filter=${filterKey}`)
 
   const parsedResults = results === null ? integrationsList : results
 

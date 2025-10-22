@@ -22,6 +22,7 @@ const DetailInfoExchangeRate = ({
     }
     loading={loading}
     loadingSkeleton={[150, 38]}
+    testId="exchange-rate"
   >
     {Array.isArray(exchangeRates) && exchangeRates.length > 0 ? (
       <Box grid>
