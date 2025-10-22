@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
+import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-bands.query'
 import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
 import { BandsBalancesData } from '@/llamalend/features/bands-chart/types'
-import { useProcessedBandsData } from '@/llamalend/features/bands-chart/useBandsData'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
