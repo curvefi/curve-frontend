@@ -1,9 +1,7 @@
-import { useMemo } from 'react'
-import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-bands.query'
 import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
-import { BandsBalancesData } from '@/llamalend/features/bands-chart/types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
@@ -31,29 +29,9 @@ export const useBandsData = ({
 
   const { oraclePrice, oraclePriceBand } = marketOraclePrices ?? {}
 
-  const normalizedMarketBands = useMemo(
-    () =>
-      marketBandsBalances?.map((band: BandsBalancesData) => ({
-        ...band,
-        borrowed: band.stablecoin ?? '0',
-        collateralUsd: String(band.collateralStablecoinUsd ?? 0),
-      })) ?? [],
-    [marketBandsBalances],
-  )
-
-  const normalizedUserBands = useMemo(
-    () =>
-      userBands?.map((band: BandsBalancesData) => ({
-        ...band,
-        borrowed: band.stablecoin ?? '0',
-        collateralUsd: String(band.collateralStablecoinUsd ?? 0),
-      })) ?? [],
-    [userBands],
-  )
-
   const chartData = useProcessedBandsData({
-    marketBandsBalances: normalizedMarketBands,
-    userBandsBalances: normalizedUserBands,
+    marketBandsBalances: marketBandsBalances ?? [],
+    userBandsBalances: userBands ?? [],
     oraclePriceBand,
   })
 

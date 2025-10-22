@@ -1,5 +1,5 @@
 import { PageContentProps } from '@/lend/types/lend.types'
-import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-bands.query'
 import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
