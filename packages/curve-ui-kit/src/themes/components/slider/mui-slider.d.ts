@@ -1,6 +1,6 @@
 import '@mui/material/Slider'
 
-type SliderSizes = 'small' | 'medium' | 'large'
+type SliderSizes = 'small' | 'medium'
 type SliderSizeOverrides = { [key in SliderSizes]: true }
 
 export type SliderRailBackground = 'default' | 'bordered' | 'safe' | 'danger'

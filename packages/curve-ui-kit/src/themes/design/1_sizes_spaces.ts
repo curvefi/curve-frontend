@@ -193,11 +193,6 @@ const SliderHeight = {
     tablet: Sizing[300],
     desktop: Sizing[300],
   },
-  large: {
-    mobile: Sizing[300],
-    tablet: Sizing[300],
-    desktop: Sizing[300],
-  },
 } as const
 
 const SliderThumbWidth = {

@@ -11,7 +11,7 @@ const {
   Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
 } = SizesAndSpaces
 
-type SliderSize = 'small' | 'medium' | 'large'
+type SliderSize = NonNullable<SliderProps['size']>
 
 type SliderSizeDefinition = {
   height: Responsive
@@ -39,10 +39,6 @@ const sliderSizes: Record<SliderSize, SliderSizeDefinition> = {
   medium: {
     height: SliderHeight.medium,
     thumbWidth: SliderThumbWidth.medium,
-  },
-  large: {
-    height: SliderHeight.large,
-    thumbWidth: SliderThumbWidth.large,
   },
 }
 
