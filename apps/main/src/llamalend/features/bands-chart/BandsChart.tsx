@@ -28,12 +28,13 @@ type TooltipParams = {
 }[]
 
 /**
- * BandsChart - Visualizes liquidity bands for lending markets
+ * BandsChart - Visualizes bands for lending markets
  *
  * Shows stacked bar chart with:
  * - Market collateral distribution across price bands
- * - User's specific positions
- * - Liquidation zones and oracle price markers
+ * - User position liquidation range
+ * - User price line markers for start and end of liquidation range
+ * - Oracle price line marker
  */
 const BandsChartComponent = ({
   collateralToken,
@@ -50,6 +51,8 @@ const BandsChartComponent = ({
   const tooltipRef = useRef<HTMLDivElement | null>(null)
   const chartRef = useRef<ReactECharts | null>(null)
   const tooltipRootRef = useRef<Root | null>(null)
+  const hasInitializedZoomRef = useRef<boolean>(false)
+  const prevUserBandsRef = useRef<Set<string>>(new Set())
 
   const { theme: currentThemeName } = theme.design
   const invertedDesign = useMemo(() => DesignSystem[currentThemeName]({ inverted: true }), [currentThemeName])
@@ -114,15 +117,27 @@ const BandsChartComponent = ({
   )
 
   // Calculate initial zoom range based on user bands and oracle price
+  // Only set zoom on initial mount or when user's bands change
   useEffect(() => {
-    if (chartData.length > 0 && initialZoomIndices) {
+    const currentUserBands = new Set(userBandsBalances.map((band) => String(band.n)))
+    const prevUserBands = prevUserBandsRef.current
+
+    // Check if bands have changed
+    const bandsChanged =
+      currentUserBands.size !== prevUserBands.size ||
+      Array.from(currentUserBands).some((band) => !prevUserBands.has(band))
+
+    // Apply zoom on initial mount or when user's bands change
+    if (chartData.length > 0 && initialZoomIndices && (!hasInitializedZoomRef.current || bandsChanged)) {
       const start = (initialZoomIndices.startIndex / chartData.length) * 100
       const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
       setInitialZoom({ start, end })
+      hasInitializedZoomRef.current = true
+      prevUserBandsRef.current = currentUserBands
     }
-  }, [chartData.length, initialZoomIndices])
+  }, [chartData.length, initialZoomIndices, userBandsBalances])
 
-  // Cleanup tooltip React root on unmount to prevent memory leaks
+  // Cleanup tooltip React root on unmount
   useEffect(
     () => () => {
       tooltipRootRef.current?.unmount()
@@ -188,7 +203,7 @@ const BandsChartComponent = ({
           option={finalOption}
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'svg' }}
-          notMerge={true}
+          notMerge={false}
           lazyUpdate={true}
         />
       </Box>
