@@ -3,7 +3,7 @@ import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-
 import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import type { LlamaApi } from '@ui-kit/features/connect-wallet'
+import { type LlamaApi } from '@ui-kit/features/connect-wallet'
 
 export const useBandsData = ({
   chainId,
@@ -42,7 +42,8 @@ export const useBandsData = ({
     oraclePriceBand,
   })
 
-  const isLoading = isMarketBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading || isUserBandsLoading
+  const isLoading =
+    !api || isMarketBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading || isUserBandsLoading
 
   return {
     isLoading,

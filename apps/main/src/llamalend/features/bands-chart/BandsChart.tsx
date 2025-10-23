@@ -4,7 +4,8 @@ import { createRoot } from 'react-dom/client'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances, BandsChartPalette } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
-import { Box, Stack, useTheme, ThemeProvider } from '@mui/material'
+import { Box, Stack, useTheme, ThemeProvider, Typography } from '@mui/material'
+import { t } from '@ui-kit/lib/i18n'
 import { DesignSystem } from '@ui-kit/themes/design'
 import { getChartOptions } from './chartOptions'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
@@ -76,6 +77,7 @@ const BandsChartComponent = ({
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
 
+  // Echarts can't handle custom tooltips that uses a theme provider, so we need to create a custom tooltip formatter
   const tooltipFormatter = useCallback(
     (params: any) => {
       if (!tooltipRef.current) {
@@ -146,9 +148,17 @@ const BandsChartComponent = ({
             color: palette.textColor,
           }}
         >
-          <SpinnerWrapper>
-            <Spinner size={18} />
-          </SpinnerWrapper>
+          {isLoading ? (
+            // TODO: update loading feedback when a design is available
+            <SpinnerWrapper>
+              <Spinner size={18} />
+            </SpinnerWrapper>
+          ) : (
+            // TODO: replace error message when a design is available
+            <Typography variant="bodyMRegular" color="textPrimary" component="div">
+              {t`No bands data found...`}
+            </Typography>
+          )}
         </Box>
       </Box>
     )
@@ -176,12 +186,6 @@ const BandsChartComponent = ({
           opts={{ renderer: 'svg' }}
           notMerge={true}
           lazyUpdate={true}
-          onChartReady={(chart) => {
-            // Ensure chart is properly initialized
-            if (chart && typeof chart.getZr === 'function') {
-              chart.getZr().off('disconnect')
-            }
-          }}
         />
       </Box>
     </Stack>
