@@ -221,7 +221,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
           height: isHorizontal ? '100%' : `calc(var(${SLIDER_HEIGHT_VAR}) / 2)`,
         },
         // Only fill the left border gap if there's a single thumb
-        [`.MuiSlider-root${singleThumbSelector}::before`]: {
+        [`.MuiSlider-root${singleThumbSelector} &::before`]: {
           backgroundColor: design.Color.Primary[500],
         },
 
