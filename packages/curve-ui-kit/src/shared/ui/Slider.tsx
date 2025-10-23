@@ -7,15 +7,19 @@ export type SliderProps = MuiSliderProps
  * @param props - SliderProps
  * @returns Slider component with custom rail background and flex wrapper to prevent height issues and overflows
  */
-export const Slider = (props: SliderProps) => (
-  <Box
-    sx={{
-      width: props.orientation === 'horizontal' ? '100%' : 'auto',
-      // we need this to prevent height issues and overflows
-      height: props.orientation === 'horizontal' ? 'auto' : '100%',
-      display: 'flex',
-    }}
-  >
-    <MuiSlider {...props} />
-  </Box>
-)
+export const Slider = (props: SliderProps) => {
+  const { orientation = 'horizontal' } = props
+  const isHorizontal = orientation === 'horizontal'
+  return (
+    <Box
+      sx={{
+        width: isHorizontal ? '100%' : 'auto',
+        height: isHorizontal ? 'auto' : '100%',
+        // we need this to prevent height issues and overflows
+        display: 'flex',
+      }}
+    >
+      <MuiSlider {...props} />
+    </Box>
+  )
+}
