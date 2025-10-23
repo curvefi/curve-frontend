@@ -17,25 +17,6 @@ export type ChartDataPoint = {
   isOraclePriceBand: boolean
 }
 
-/**
- * Unified type for both lend and mint bands
- */
-export type BandsBalancesData = {
-  collateral: string
-  collateralUsd?: string
-  collateralStablecoinUsd?: number
-  isLiquidationBand: string
-  isOraclePriceBand: boolean
-  isNGrouped: boolean
-  n: string | number
-  p_up: string
-  p_down: string
-  pUpDownMedian: string
-  stablecoin?: string
-  borrowed?: string
-  collateralBorrowedUsd?: number
-}
-
 export type BandsChartPalette = {
   backgroundColor: string
   textColor: string
