@@ -40,6 +40,7 @@ interface DataSectionProps {
   borrowedValueUsd: number
   collateralTokenSymbol: string | undefined
   borrowTokenSymbol: string | undefined
+  isLiquidationBand: boolean
 }
 
 const DataSection = ({
@@ -52,15 +53,21 @@ const DataSection = ({
   borrowedValueUsd,
   collateralTokenSymbol,
   borrowTokenSymbol,
+  isLiquidationBand,
 }: DataSectionProps) => (
   <TooltipItems secondary>
     <TooltipItem title={title} variant="primary" />
-    <TooltipItem title={<SubTitleComp title={collateralTokenSymbol ?? t`Collateral`} color={collateralColor} />}>
-      <AmountDisplay amount={collateralAmount} valueUsd={collateralValueUsd} />
-    </TooltipItem>
-    <TooltipItem title={<SubTitleComp title={borrowTokenSymbol ?? t`Borrowed`} color={borrowedColor} />}>
-      <AmountDisplay amount={borrowedAmount} valueUsd={borrowedValueUsd} />
-    </TooltipItem>
+    <TooltipItem
+      title={
+        <SubTitleComp
+          title={`${collateralTokenSymbol ?? t`Collateral`} ${isLiquidationBand ? t`(Soft liquidation)` : ''}`}
+          color={collateralColor}
+        />
+      }
+    />
+    <TooltipItem title={<AmountDisplay amount={collateralAmount} valueUsd={collateralValueUsd} />} />
+    <TooltipItem title={<SubTitleComp title={borrowTokenSymbol ?? t`Borrowed`} color={borrowedColor} />} />
+    <TooltipItem title={<AmountDisplay amount={borrowedAmount} valueUsd={borrowedValueUsd} />} />
   </TooltipItems>
 )
 
@@ -102,6 +109,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             borrowedValueUsd={data.bandBorrowedValueUsd}
             collateralTokenSymbol={collateralToken?.symbol}
             borrowTokenSymbol={borrowToken?.symbol}
+            isLiquidationBand={data.isLiquidationBand === 'SL'}
           />
         )}
 
@@ -116,6 +124,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             borrowedValueUsd={data.userBandBorrowedValueUsd}
             collateralTokenSymbol={collateralToken?.symbol}
             borrowTokenSymbol={borrowToken?.symbol}
+            isLiquidationBand={data.isLiquidationBand === 'SL'}
           />
         )}
       </TooltipWrapper>

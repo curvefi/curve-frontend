@@ -78,19 +78,21 @@ export const MarketInformationComp = ({
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          <BandsChart
-            isLoading={isBandsLoading}
-            collateralToken={collateralToken}
-            borrowToken={borrowToken}
-            chartData={chartData}
-            userBandsBalances={userBandsBalances ?? []}
-            liquidationBand={liquidationBand}
-            oraclePrice={oraclePrice}
-            oraclePriceBand={oraclePriceBand}
-          />
+          {isBeta && (
+            <BandsChart
+              isLoading={isBandsLoading}
+              collateralToken={collateralToken}
+              borrowToken={borrowToken}
+              chartData={chartData}
+              userBandsBalances={userBandsBalances ?? []}
+              liquidationBand={liquidationBand}
+              oraclePrice={oraclePrice}
+              oraclePriceBand={oraclePriceBand}
+            />
+          )}
         </Stack>
       )}
-      {type === 'borrow' && isAdvancedMode && (
+      {type === 'borrow' && !isBeta && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>

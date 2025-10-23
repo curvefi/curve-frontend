@@ -22,14 +22,14 @@ export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, '
     userAddress: api?.signerAddress,
     loanExists: loanExists,
   })
-
   const chartData = useProcessedBandsData({
     marketBandsBalances: marketBands?.bandsBalances ?? [],
     userBandsBalances: userBands ?? [],
     oraclePriceBand: marketOraclePrices?.oraclePriceBand,
   })
 
-  const isLoading = isMarketBandsLoading || isUserBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading
+  const isLoading =
+    !api || isMarketBandsLoading || isUserBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading
 
   return {
     isLoading,
