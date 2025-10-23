@@ -1,34 +1,11 @@
 import type { EChartsOption } from 'echarts-for-react'
-import { Token } from '@/llamalend/features/borrow/types'
 import { formatNumber } from '@ui/utils'
+import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
-// Helper function to create label styling
-const createLabelStyle = (lineStyle: { color: string }, palette: BandsChartPalette) => ({
-  padding: [2, 4],
-  fontSize: 12,
-  backgroundColor:
-    lineStyle.color === palette.oraclePriceLineColor
-      ? palette.oraclePriceLineColor
-      : palette.userRangeLabelBackgroundColor,
-  color: lineStyle.color === palette.oraclePriceLineColor ? palette.textColorInverted : palette.textColor,
-})
-
-// Helper function to create mark line
-const createMarkLine = (
-  yAxis: number,
-  formatter: string,
-  position: string,
-  color: string,
-  type: string = 'dashed',
-  width: number = 2,
-) => ({
-  yAxis,
-  label: { formatter, position },
-  lineStyle: { color, type, width },
-})
-
-// Helper function to create series data
+/**
+ * Creates series data with conditional styling for liquidation bands
+ */
 const createSeriesData = (data: number[], derived: DerivedChartData, color: string, liquidationOutlineColor: string) =>
   data.map((value: number, index: number) => ({
     value,
@@ -39,34 +16,41 @@ const createSeriesData = (data: number[], derived: DerivedChartData, color: stri
     },
   }))
 
-// Common series configuration
-const createSeriesConfig = (name: string, data: any[], markArea?: any, markLine?: any, stack?: string) => ({
-  name,
-  type: 'bar',
-  stack: 'total',
-  animation: false,
-  progressive: 500,
-  progressiveThreshold: 3000,
-  progressiveChunkMode: 'mod',
-  data,
-  animationDuration: 300,
-  animationEasing: 'cubicOut',
-  barCategoryGap: '20%',
-  ...(markArea && { markArea }),
-  ...(markLine && { markLine }),
-})
+/**
+ * Creates base series configuration with common properties
+ */
+const createSeriesConfig = (
+  name: string,
+  data: unknown[],
+  markArea?: Record<string, unknown> | null,
+  markLine?: Record<string, unknown> | null,
+) => {
+  const baseConfig = {
+    name,
+    type: 'bar' as const,
+    stack: 'total',
+    animation: false,
+    data,
+    animationDuration: 300,
+  }
 
+  return {
+    ...baseConfig,
+    ...(markArea ? { markArea } : {}),
+    ...(markLine ? { markLine } : {}),
+  }
+}
+
+/**
+ * Generates complete ECharts configuration for bands visualization
+ */
 export const getChartOptions = (
   chartData: ChartDataPoint[],
   derived: DerivedChartData,
   userBandsPriceRange: UserBandsPriceRange,
   oraclePrice: string | undefined,
   palette: BandsChartPalette,
-  collateralToken: Token | undefined,
-  borrowToken: Token | undefined,
-  findBandIndexByPrice: (chartData: ChartDataPoint[], price: number) => number,
-  findClosestBandIndex: (chartData: ChartDataPoint[], price: number) => number,
-  tooltipFormatter: (params: any) => HTMLElement,
+  tooltipFormatter: (params: unknown) => HTMLElement,
 ): EChartsOption => {
   if (chartData.length === 0) return {}
 
@@ -74,46 +58,13 @@ export const getChartOptions = (
   const gridPadding = { left: 0, top: 40, bottom: 40 }
   const gridRight = 20 + dataZoomWidth
 
+  // Generate mark areas for user band range highlighting
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.minUserIdx }, { yAxis: userBandsPriceRange.maxUserIdx }]]
     : []
 
-  const markLines = [
-    // User range lines
-    ...(userBandsPriceRange
-      ? [
-          createMarkLine(
-            userBandsPriceRange.maxUserIdx,
-            `$${formatNumber(userBandsPriceRange.lowerBandPriceDown, { notation: 'compact' })}`,
-            'insideEndTop',
-            palette.userRangeLabelBackgroundColor,
-          ),
-          createMarkLine(
-            userBandsPriceRange.minUserIdx,
-            `$${formatNumber(userBandsPriceRange.upperBandPriceUp, { notation: 'compact' })}`,
-            'insideEndBottom',
-            palette.userRangeLabelBackgroundColor,
-          ),
-        ]
-      : []),
-    // Oracle price line
-    ...(oraclePrice
-      ? (() => {
-          let oracleIdx = findBandIndexByPrice(chartData, Number(oraclePrice))
-          if (oracleIdx === -1) oracleIdx = findClosestBandIndex(chartData, Number(oraclePrice))
-          return oracleIdx !== -1
-            ? [
-                createMarkLine(
-                  oracleIdx,
-                  `$${formatNumber(oraclePrice, { notation: 'compact' })}`,
-                  'insideEndTop',
-                  palette.oraclePriceLineColor,
-                ),
-              ]
-            : []
-        })()
-      : []),
-  ].flat()
+  // Generate all mark lines (user range + oracle price)
+  const markLines = generateMarkLines(chartData, userBandsPriceRange, oraclePrice, palette)
 
   return {
     backgroundColor: 'transparent',
@@ -148,7 +99,11 @@ export const getChartOptions = (
       },
       splitLine: {
         show: true,
-        lineStyle: { color: palette.gridColor, opacity: 0.5, type: 'dashed' },
+        lineStyle: {
+          color: palette.gridColor,
+          opacity: 0.5,
+          type: 'dashed',
+        },
       },
     },
     yAxis: [
@@ -163,9 +118,15 @@ export const getChartOptions = (
           fontSize: 12,
           formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
         },
-        splitLine: { show: true, lineStyle: { color: palette.gridColor, opacity: 0.5, type: 'dashed' } },
+        splitLine: {
+          show: true,
+          lineStyle: {
+            color: palette.gridColor,
+            opacity: 0.5,
+            type: 'dashed',
+          },
+        },
         data: derived.yAxisData,
-        boundaryGap: true,
       },
     ],
     series: [
@@ -186,14 +147,10 @@ export const getChartOptions = (
               })),
             }
           : undefined,
-        'total',
       ),
       createSeriesConfig(
         'User Collateral',
         createSeriesData(derived.userData, derived, palette.userBandColor, palette.liquidationBandOutlineColor),
-        undefined,
-        undefined,
-        'total', // Stack user bands on top of market bands
       ),
     ],
     dataZoom: [
@@ -212,13 +169,15 @@ export const getChartOptions = (
         textStyle: { color: palette.gridColor, fontSize: 10 },
         labelFormatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
         dataBackground: {
-          lineStyle: { color: palette.gridColor, opacity: 0.5 },
-          areaStyle: { color: palette.gridColor, opacity: 0.2 },
+          lineStyle: {
+            color: palette.gridColor,
+            opacity: 0.5,
+          },
+          areaStyle: {
+            color: palette.gridColor,
+            opacity: 0.2,
+          },
         },
-        zoomLock: false,
-        moveOnMouseMove: true,
-        moveOnMouseWheel: true,
-        preventDefaultMouseMove: true,
       },
       {
         type: 'inside',
