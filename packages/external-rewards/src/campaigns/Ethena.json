@@ -99,7 +99,7 @@
       "network": "ethereum",
       "multiplier": "30x",
       "tags": ["points"],
-      "lock": "true"
+      "lock": "false"
     },
     {
       "id": "null",
@@ -119,7 +119,7 @@
       "description": "LP tokens staked in gauge are excluded from Ethena campaign.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0x68984391a8ce6203067ee65ff7eed38c7e0d2d88",
+      "address": "0x765Cbd88947fcBc5df1F763d02E384B0a2DD285E",
       "network": "ethereum",
       "multiplier": "30x",
       "tags": ["points"],
@@ -239,18 +239,6 @@
       "description": "LP tokens staked in gauge are excluded from Ethena campaign.",
       "campaignStart": "0",
       "campaignEnd": "1770000000",
-      "address": "0xF16f226Baa419d9DC9D92C040CCBC8c0E25F36D7",
-      "network": "fraxtal",
-      "multiplier": "30x",
-      "tags": ["points"],
-      "lock": "false"
-    },
-    {
-      "id": "null",
-      "action": "lp",
-      "description": "LP tokens staked in gauge are excluded from Ethena campaign.",
-      "campaignStart": "0",
-      "campaignEnd": "1770000000",
       "address": "0xAA00BF46394774938922E282f6C4B07F5059651F",
       "network": "hyperliquid",
       "multiplier": "30x",
@@ -325,6 +313,30 @@
       "campaignEnd": "1770000000",
       "address": "0x5C2ab69Eb2BF12A2f4572D178687Bd4660512972",
       "network": "ethereum",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x1E8D78e9b3f0152D54d32904B7933f1cFE439Df1",
+      "network": "plasma",
+      "multiplier": "30x",
+      "tags": ["points"],
+      "lock": "false"
+    },
+    {
+      "id": "null",
+      "action": "lp",
+      "description": "LP tokens staked in gauge are excluded from Ethena campaign.",
+      "campaignStart": "0",
+      "campaignEnd": "1770000000",
+      "address": "0x2D84D79C852f6842AbE0304b70bBaA1506AdD457",
+      "network": "plasma",
       "multiplier": "30x",
       "tags": ["points"],
       "lock": "false"
