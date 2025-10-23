@@ -75,7 +75,7 @@ export const TooltipItem = ({
       <Typography
         color={titleTypographyColor[variant]}
         variant={titleTypographyVariant[variant]}
-        component="div"
+        component="span"
         {...(variant === 'subItem' &&
           titleIcon == null &&
           imageId == null && {
@@ -95,7 +95,7 @@ export const TooltipItem = ({
           const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'textSecondary'
 
           return (
-            <Typography variant={typographyVariant} color={typographyColor} component="div">
+            <Typography variant={typographyVariant} color={typographyColor} component="span">
               {child}
             </Typography>
           )
@@ -134,7 +134,7 @@ export const TooltipWrapper = ({ children }: { children: ReactNode }) => (
 )
 
 export const TooltipDescription = ({ text }: { text: ReactNode | string }) => (
-  <Typography variant="bodySRegular" component="div">
+  <Typography variant="bodySRegular" component="span">
     {text}
   </Typography>
 )
