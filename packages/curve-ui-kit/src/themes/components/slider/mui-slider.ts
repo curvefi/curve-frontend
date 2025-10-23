@@ -72,6 +72,8 @@ const SliderExtension = (design: DesignSystem, isHorizontal: boolean, borderColo
     border: borderColor ? `1px solid ${borderColor}` : 'none',
     backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
     zIndex: 0,
+    // Disable pointer events so it doesn't block "hover" detection on the thumb
+    pointerEvents: 'none',
   },
 })
 
@@ -133,7 +135,7 @@ const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<stri
     [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
   }),
   height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}) )`,
-  width: isHorizontal ? `100%` : `var(${SLIDER_HEIGHT_VAR})`,
+  width: isHorizontal ? '100%' : `var(${SLIDER_HEIGHT_VAR})`,
   borderRadius: 0,
   border: 'none',
   // Nesting required as otherwise it'll break in mobile for some reason
@@ -144,11 +146,6 @@ const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<stri
   // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
   marginInline: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)` : 0,
   marginBlock: isHorizontal ? 0 : `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
-  '::after': {
-    // Disable pointer events so it doesn't block "hover" detection on the thumb
-    pointerEvents: 'none',
-    border: 'none',
-  },
 })
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
@@ -171,11 +168,13 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     thumb: ({ ownerState }) => {
       const { orientation = 'horizontal' } = ownerState
       const isHorizontal = orientation === 'horizontal'
+      const sliderThumbImage = isHorizontal ? design.Sliders.SliderThumbImage : design.Sliders.SliderThumbImageVertical
 
       return {
-        width: isHorizontal ? `var(${SLIDER_THUMB_WIDTH_VAR})` : `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
-        height: isHorizontal ? `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)` : `var(${SLIDER_THUMB_WIDTH_VAR})`,
-        background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+        // Add 2px to the thumb width and height to compensate the border
+        width: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)` : `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
+        height: isHorizontal ? `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)` : `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)`,
+        background: `${design.Layer.Highlight.Fill} url(${sliderThumbImage}) center no-repeat`,
         transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
         border: `1px solid ${design.Color.Neutral[25]}`,
         borderRadius: 0,
@@ -184,7 +183,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         '&:hover': {
           backdropFilter: 'invert(1)', // This won't work for background images
           // Instead, explicitly set an inverted background
-          background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+          background: `${design.Color.Neutral[50]} url(${sliderThumbImage}) center no-repeat`,
           backgroundBlendMode: 'difference', // This inverts colors in the background
           border: `1px solid ${design.Button.Primary.Default.Fill}`,
         },
@@ -192,7 +191,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
           boxShadow: 'none', // Remove default MUI focus ring
         },
         '&.Mui-disabled': {
-          background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+          background: `${design.Color.Neutral[600]} url(${sliderThumbImage}) center no-repeat`,
         },
       }
     },
@@ -225,7 +224,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
           backgroundColor: design.Color.Primary[500],
         },
 
-        '.Mui-disabled &::before': {
+        '.Mui-disabled &&::before': {
           backgroundColor: 'currentColor',
         },
       }

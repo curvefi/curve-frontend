@@ -327,6 +327,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
 
   const Sliders = {
     SliderThumbImage: '/mui/slider-thumb-white.svg',
+    SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
     SliderBackground,
   } as const
 
@@ -712,6 +713,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 
   const Sliders = {
     SliderThumbImage: '/mui/slider-thumb-blue.svg',
+    SliderThumbImageVertical: '/mui/slider-thumb-blue-90.svg',
     SliderBackground,
   } as const
 
@@ -1040,6 +1042,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
 
   const Sliders = {
     SliderThumbImage: '/mui/slider-thumb-white.svg',
+    SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
     SliderBackground,
   } as const
 
