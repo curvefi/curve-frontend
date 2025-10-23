@@ -132,8 +132,8 @@ const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<stri
     [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
     [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
   }),
-  height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_HEIGHT_VAR}) )`,
-  width: isHorizontal ? `calc(100% - var(${SLIDER_HEIGHT_VAR}))` : `var(${SLIDER_HEIGHT_VAR})`,
+  height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}) )`,
+  width: isHorizontal ? `100%` : `var(${SLIDER_HEIGHT_VAR})`,
   borderRadius: 0,
   border: 'none',
   // Nesting required as otherwise it'll break in mobile for some reason
