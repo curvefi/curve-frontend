@@ -10,8 +10,9 @@ export type SliderProps = MuiSliderProps
 export const Slider = (props: SliderProps) => (
   <Box
     sx={{
-      width: '100%',
+      width: props.orientation === 'horizontal' ? '100%' : 'auto',
       // we need this to prevent height issues and overflows
+      height: props.orientation === 'horizontal' ? 'auto' : '100%',
       display: 'flex',
     }}
   >

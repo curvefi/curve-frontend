@@ -48,57 +48,30 @@ const defaultSliderSize = sliderSizes.small
  * Creates a pseudo-element style object for slider right extension
  *
  * This function generates styles for a pseudo-element that creates a border around the slider
- * and extends beyond the slider's right edge by half the thumb width to prevent
+ * and extends beyond the slider's right and left edge by half the thumb width to prevent
  * the thumb from overlapping with the border when at 100% position.
  *
  * Also provides a background fill area that can be customized via CSS custom properties.
  *
  * @param design - The design system containing color definitions
+ * @param isHorizontal - Whether the slider is horizontal or vertical
+ * @param borderColor - The color of the border
  * @returns CSS style object for the right extension pseudo-element
  */
-const rightExtension = (design: DesignSystem, borderColor?: string) => ({
+const SliderExtension = (design: DesignSystem, isHorizontal: boolean, borderColor?: string) => ({
   '&::after': {
     content: '""',
     position: 'absolute',
     inset: 0,
-    right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-    left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
+    ...(isHorizontal
+      ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
+      : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
+    ...(isHorizontal
+      ? { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
+      : { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
     border: borderColor ? `1px solid ${borderColor}` : 'none',
     backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
     zIndex: 0,
-  },
-})
-
-/**
- * Creates a pseudo-element style object for slider left extension
- *
- * This function generates styles for a pseudo-element that extends the slider's
- * left side by half the thumb width and fills it with the primary button color
- * for single-thumb sliders. This creates visual continuity between the track
- * and the extended border area.
- *
- * When the slider is disabled, it uses the standard MUI disabled color to match
- * the disabled track appearance.
- *
- * @param design - The design system containing color definitions
- * @returns CSS style object for the left extension pseudo-element
- */
-const leftExtension = (design: DesignSystem) => ({
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-    width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
-    height: '100%',
-    zIndex: 0,
-  },
-  // Only fill the left border gap if there's a single thumb
-  [`&${singleThumbSelector}::before`]: {
-    backgroundColor: design.Color.Primary[500],
-  },
-  // Increase specificity so disabled wins over default when both apply
-  [`&&.Mui-disabled${singleThumbSelector}::before`]: {
-    backgroundColor: 'var(--mui-palette-grey-400)',
   },
 })
 
@@ -154,26 +127,29 @@ const getGradientStopsForBackground = (
   return undefined
 }
 
-const baseRootStyle: Record<string, any> = {
+const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<string, any> => ({
   ...handleBreakpoints({
     [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
     [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
   }),
-  height: `var(${SLIDER_HEIGHT_VAR})`,
+  height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_HEIGHT_VAR}) )`,
+  width: isHorizontal ? `calc(100% - var(${SLIDER_HEIGHT_VAR}))` : `var(${SLIDER_HEIGHT_VAR})`,
   borderRadius: 0,
   border: 'none',
   // Nesting required as otherwise it'll break in mobile for some reason
   '&': { paddingBlock: 0 },
   position: 'relative',
   paddingInline: 0,
+  paddingBlock: 0,
   // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
-  marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+  marginInline: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)` : 0,
+  marginBlock: isHorizontal ? 0 : `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
   '::after': {
     // Disable pointer events so it doesn't block "hover" detection on the thumb
     pointerEvents: 'none',
     border: 'none',
   },
-}
+})
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
@@ -184,76 +160,94 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     root: ({ ownerState }) => {
       const { orientation = 'horizontal', railBackground = 'default' } = ownerState
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
+      const isHorizontal = orientation === 'horizontal'
 
       return {
-        ...baseRootStyle,
-        ...rightExtension(design, borderColor),
-        ...leftExtension(design),
-        [`&.${sliderClasses.vertical}`]: {
-          height: '100%',
-          width: `var(${SLIDER_HEIGHT_VAR})`,
-          paddingBlock: 0,
-          paddingInline: 0,
-        },
-        ...(orientation === 'vertical'
-          ? {
-              marginInline: 0,
-            }
-          : null),
+        ...baseRootStyle(design, isHorizontal),
+        ...SliderExtension(design, isHorizontal, borderColor),
       }
     },
 
-    thumb: {
-      width: `var(${SLIDER_THUMB_WIDTH_VAR})`,
-      background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-      transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
-      border: `1px solid ${design.Color.Neutral[25]}`,
-      borderRadius: 0,
-      // 2px for the border to be outside the rail
-      height: `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
-      zIndex: 1,
+    thumb: ({ ownerState }) => {
+      const { orientation = 'horizontal' } = ownerState
+      const isHorizontal = orientation === 'horizontal'
 
-      '&:hover': {
-        backdropFilter: 'invert(1)', // This won't work for background images
-        // Instead, explicitly set an inverted background
-        background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-        backgroundBlendMode: 'difference', // This inverts colors in the background
-        border: `1px solid ${design.Button.Primary.Default.Fill}`,
-      },
-      '&:hover, &.Mui-focusVisible': {
-        boxShadow: 'none', // Remove default MUI focus ring
-      },
-      '&.Mui-disabled': {
-        background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
-      },
+      return {
+        width: isHorizontal ? `var(${SLIDER_THUMB_WIDTH_VAR})` : `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
+        height: isHorizontal ? `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)` : `var(${SLIDER_THUMB_WIDTH_VAR})`,
+        background: `${design.Layer.Highlight.Fill} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+        transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
+        border: `1px solid ${design.Color.Neutral[25]}`,
+        borderRadius: 0,
+        zIndex: 1,
+
+        '&:hover': {
+          backdropFilter: 'invert(1)', // This won't work for background images
+          // Instead, explicitly set an inverted background
+          background: `${design.Color.Neutral[50]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+          backgroundBlendMode: 'difference', // This inverts colors in the background
+          border: `1px solid ${design.Button.Primary.Default.Fill}`,
+        },
+        '&:hover, &.Mui-focusVisible': {
+          boxShadow: 'none', // Remove default MUI focus ring
+        },
+        '&.Mui-disabled': {
+          background: `${design.Color.Neutral[600]} url(${design.Sliders.SliderThumbImage}) center no-repeat`,
+        },
+      }
     },
 
-    track: {
-      height: `var(${SLIDER_HEIGHT_VAR})`,
-      borderRadius: 0,
-      border: 'none',
-      '&::before': {
-        content: '""',
-        position: 'absolute',
-        left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-        width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
-        height: '100%',
-        backgroundColor: design.Color.Primary[500],
-      },
-      '.Mui-disabled &::before': {
-        backgroundColor: 'currentColor',
-      },
+    track: ({ ownerState }) => {
+      const { orientation = 'horizontal' } = ownerState
+      const isHorizontal = orientation === 'horizontal'
+      return {
+        ...(isHorizontal ? { height: `var(${SLIDER_HEIGHT_VAR})` } : { width: `var(${SLIDER_HEIGHT_VAR})` }),
+        borderRadius: 0,
+        border: 'none',
+        /**
+         * Creates a pseudo-element style object for slider continuity
+         *
+         * This styles add pseudo-element to the track
+         * left side by half the thumb width and fills it with the primary button color
+         * for single-thumb
+         */
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          ...(isHorizontal
+            ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
+            : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
+          width: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)` : '100%',
+          height: isHorizontal ? '100%' : `calc(var(${SLIDER_HEIGHT_VAR}) / 2)`,
+        },
+        // Only fill the left border gap if there's a single thumb
+        [`.MuiSlider-root${singleThumbSelector}::before`]: {
+          backgroundColor: design.Color.Primary[500],
+        },
+
+        '.Mui-disabled &::before': {
+          backgroundColor: 'currentColor',
+        },
+      }
     },
+
     rail: ({ ownerState }) => {
       const { orientation = 'horizontal', railBackground = 'default', disabled = false } = ownerState
       const direction = orientationToDirection(orientation)
       const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
+      const isHorizontal = orientation === 'horizontal'
 
       return {
         backgroundColor: 'transparent',
-        left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-        right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`,
-        width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))`,
+        ...(isHorizontal
+          ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
+          : { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
+        ...(isHorizontal
+          ? { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
+          : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
+        ...(isHorizontal
+          ? { width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` }
+          : { height: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` }),
         pointerEvents: 'none',
         border: 'none',
         backgroundImage: 'none',

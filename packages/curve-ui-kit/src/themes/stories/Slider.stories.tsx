@@ -78,35 +78,30 @@ export const RailBackgroundBordered: Story = {
     defaultValue: 40,
   },
 }
-
 export const RailBackgroundSafe: Story = {
   args: {
     railBackground: 'safe',
     defaultValue: 15,
   },
 }
-
 export const RailBackgroundDanger: Story = {
   args: {
     railBackground: 'danger',
     defaultValue: 15,
   },
 }
-
 export const SmallSize: Story = {
   args: {
     size: 'small',
     defaultValue: 40,
   },
 }
-
 export const DisabledDefault: Story = {
   args: {
     disabled: true,
     defaultValue: 60,
   },
 }
-
 export const DisabledSafeRail: Story = {
   args: {
     disabled: true,
@@ -114,7 +109,6 @@ export const DisabledSafeRail: Story = {
     defaultValue: 60,
   },
 }
-
 export const DisabledBorderedRail: Story = {
   args: {
     disabled: true,
@@ -122,18 +116,22 @@ export const DisabledBorderedRail: Story = {
     defaultValue: 60,
   },
 }
-
 export const Range: Story = {
   args: {
     defaultValue: [25, 75],
     railBackground: 'default',
   },
 }
-
 export const ValueLabelDisplay: Story = {
   args: {
     valueLabelDisplay: 'auto',
     railBackground: 'default',
+  },
+}
+export const DefaultVertical: Story = {
+  args: {
+    railBackground: 'default',
+    orientation: 'vertical',
   },
 }
 
