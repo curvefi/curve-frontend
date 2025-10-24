@@ -5,7 +5,7 @@ import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { useMarketTypeFilter } from '../hooks/useMarketTypeFilter'
 
-export const MarketTypeFilterChips = (props: FilterProps<LlamaMarketKey>) => {
+export const LlamaListMarketChips = (props: FilterProps<LlamaMarketKey>) => {
   const [marketTypes, toggleMarkets] = useMarketTypeFilter(props)
   const isMobile = useIsMobile()
   return (

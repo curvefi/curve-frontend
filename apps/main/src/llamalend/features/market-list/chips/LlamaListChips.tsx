@@ -4,17 +4,17 @@ import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 import { MarketSortDrawer } from '../drawers/MarketSortDrawer'
-import { HiddenMarketsResetFilters } from './HiddenMarketsResetFilters'
-import { LlamaListFilterChips } from './LlamaListFilterChips'
-import { MarketTypeFilterChips } from './MarketTypeFilterChips'
+import { LlamaListMarketChips } from './LlamaListMarketChips'
+import { LlamaListUserChips } from './LlamaListUserChips'
 
 const { Spacing } = SizesAndSpaces
 
-type MarketsFilterChipsProps = {
+type LlamaListChipsProps = {
   hiddenMarketCount?: number
   resetFilters: () => void
   hasFilters: boolean
@@ -27,7 +27,7 @@ type MarketsFilterChipsProps = {
   minLiquidity: number
 } & FilterProps<string>
 
-export const LlamaMarketsFilterChips = ({
+export const LlamaListChips = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
@@ -38,7 +38,7 @@ export const LlamaMarketsFilterChips = ({
   data,
   minLiquidity,
   ...filterProps
-}: MarketsFilterChipsProps) => {
+}: LlamaListChipsProps) => {
   const isMobile = useIsMobile()
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
@@ -65,10 +65,10 @@ export const LlamaMarketsFilterChips = ({
       ) : (
         <>
           <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <MarketTypeFilterChips {...filterProps} />
+            <LlamaListMarketChips {...filterProps} />
           </Grid>
           <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <LlamaListFilterChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
           </Grid>
         </>
       )}

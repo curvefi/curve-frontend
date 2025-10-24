@@ -10,25 +10,31 @@ import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaMarketColumnId } from '../columns.enum'
-import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
+import { PoolColumnId } from '../columns'
 
 const { Spacing, ButtonSize } = SizesAndSpaces
 
 type Props = {
   onSortingChange: OnChangeFn<SortingState>
-  sortField: LlamaMarketColumnId
+  sortField: PoolColumnId
 }
 
-export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
+// Temporary minimal sort options until full options are defined
+const useDexPoolSortOptions = () =>
+  [
+    { id: PoolColumnId.Volume, label: t`Volume` },
+    { id: PoolColumnId.Tvl, label: t`Total Value Locked` },
+  ] as const
+
+export const PoolSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
-  const sortOptions = useLlamaMarketSortOptions()
+  const sortOptions = useDexPoolSortOptions()
   const menuRef = useRef<HTMLLIElement | null>(null)
 
   const selectedOption = useMemo(() => sortOptions.find((option) => option.id === sortField), [sortOptions, sortField])
 
   const handleSort = useCallback(
-    (id: LlamaMarketColumnId, label: React.ReactNode) => {
+    (id: PoolColumnId) => {
       onSortingChange([{ id, desc: true }])
       closeDrawer()
     },
@@ -39,13 +45,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
     <SwipeableDrawer
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
       button={
-        <Button
-          variant="outlined"
-          size="small"
-          fullWidth
-          onClick={openDrawer}
-          data-testid="btn-drawer-sort-lamalend-markets"
-        >
+        <Button variant="outlined" size="small" fullWidth onClick={openDrawer} data-testid="btn-drawer-sort-dex-pools">
           {t`Sort`} <CaretSortIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
       }
@@ -56,7 +56,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       <Stack
         direction="column"
         sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 }}
-        data-testid="drawer-sort-menu-lamalend-markets"
+        data-testid="drawer-sort-menu-dex-pools"
       >
         {sortOptions.map(({ id, label }) => {
           const isSelected = selectedOption?.id === id
@@ -66,7 +66,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
                 ref={menuRef}
                 value={id}
                 className={isSelected ? 'Mui-selected' : ''}
-                onClick={() => handleSort(id, label)}
+                onClick={() => handleSort(id)}
                 sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
               >
                 <Typography component="span" variant="bodyMBold">

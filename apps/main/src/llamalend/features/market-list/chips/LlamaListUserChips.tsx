@@ -10,7 +10,7 @@ import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useToggleFilter } from '../hooks/useToggleFilter'
 
-export const LlamaListFilterChips = ({
+export const LlamaListUserChips = ({
   userHasPositions,
   hasFavorites,
   ...props

@@ -5,23 +5,20 @@ import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/reac
 import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
-import { useIsMobile, useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
-import { FilterChips } from '@ui-kit/shared/ui/DataTable/chips/FilterChips'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
-import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
-import { PoolListFilterChips } from './components/PoolListFilterChips'
-import { PoolListSort } from './components/PoolListSort'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { DEFAULT_SORT, usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
@@ -74,7 +71,6 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const isMobile = useIsMobile()
   const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
@@ -106,23 +102,25 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
     >
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
-        leftChildren={<TableFiltersTitles title={t`Markets`} />}
+        leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
         loading={isLoading}
         // todo: onReload={onReload}
         visibilityGroups={columnSettings}
         // toggleVisibility={toggleVisibility} we don't have any optional columns yet
         searchText={searchText}
         onSearch={onSearch}
+        hasSearchBar
         chips={
-          <FilterChips
+          <PoolListChips
             hiddenMarketCount={data ? data.length - table.getFilteredRowModel().rows.length : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
-          >
-            {!isMobile && <TableSearchField value={searchText} onChange={onSearch} />}
-            <PoolListFilterChips {...filterProps} />
-            <PoolListSort onSortingChange={onSortingChange} sortField={sortField} />
-          </FilterChips>
+            onSortingChange={onSortingChange}
+            sortField={sortField}
+            searchText={searchText}
+            onSearch={onSearch}
+            {...filterProps}
+          />
         }
       />
     </DataTable>

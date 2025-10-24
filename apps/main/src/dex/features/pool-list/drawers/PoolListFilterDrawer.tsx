@@ -1,5 +1,4 @@
 import React from 'react'
-import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { Button, Grid, Stack } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -9,30 +8,25 @@ import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMar
 import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LlamaListMarketChips } from '../chips/LlamaListMarketChips'
-import { LlamaListUserChips } from '../chips/LlamaListUserChips'
-import { LendingMarketsFilters } from '../LendingMarketsFilters'
+import { PoolColumnId } from '../columns'
+import { PoolListFilterChips } from '../components/PoolListFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
 type Props = {
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
-  hasFavorites: boolean | undefined
-  data: LlamaMarket[]
-  minLiquidity?: number
   hiddenMarketCount?: number
   resetFilters: () => void
   hasFilters: boolean
-} & FilterProps<string>
+  searchText: string
+  onSearch: (value: string) => void
+} & FilterProps<PoolColumnId>
 
-export const MarketListFilterDrawer = ({
-  userHasPositions,
-  hasFavorites,
-  data,
-  minLiquidity,
+export const PoolListFilterDrawer = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
+  searchText,
+  onSearch,
   ...filterProps
 }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
@@ -45,7 +39,7 @@ export const MarketListFilterDrawer = ({
           size="small"
           fullWidth
           onClick={openDrawer}
-          data-testid="btn-drawer-filter-lamalend-markets"
+          data-testid="btn-drawer-filter-dex-pools"
         >
           {t`Filter`} {hiddenMarketCount ? `(${hiddenMarketCount})` : ''} <FilterIcon sx={{ marginLeft: Spacing.sm }} />
         </Button>
@@ -62,22 +56,14 @@ export const MarketListFilterDrawer = ({
       </DrawerHeader>
       <Stack
         direction="column"
-        sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 }}
+        sx={{ paddingInline: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
         gap={Spacing.sm}
-        data-testid="drawer-filter-menu-lamalend-markets"
+        data-testid="drawer-filter-menu-dex-pools"
       >
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
-          <LlamaListMarketChips {...filterProps} />
-          <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+          <PoolListFilterChips {...filterProps} />
         </Grid>
-        <DrawerHeader title={t`Extras Filters`} />
-        <LendingMarketsFilters
-          columnFilters={filterProps.columnFiltersById}
-          setColumnFilter={filterProps.setColumnFilter}
-          data={data}
-          minLiquidity={minLiquidity}
-        />
       </Stack>
     </SwipeableDrawer>
   )

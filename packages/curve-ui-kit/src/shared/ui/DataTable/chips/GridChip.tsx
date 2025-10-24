@@ -10,7 +10,6 @@ export const GridChip = ({
   ...props
 }: Omit<SelectableChipProps, 'size'> & { size?: GridProps['size']; selectableChipSize?: ChipProps['size'] }) => (
   <ChipGridItem size={size}>
-    <SelectableChip {...props} sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
     <SelectableChip {...props} size={selectableChipSize} sx={{ width: { mobile: '100%', tablet: 'auto' } }} />
   </ChipGridItem>
 )

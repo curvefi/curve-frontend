@@ -1,5 +1,4 @@
 import Grid from '@mui/material/Grid'
-import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
@@ -27,18 +26,26 @@ const FILTER_GROUPS = [
 export const PoolListFilterChips = ({ setColumnFilter, columnFiltersById }: FilterProps<PoolColumnId>) => {
   const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
   return (
-    <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+    <Grid
+      container
+      columnSpacing={Spacing.xs}
+      rowSpacing={Spacing.md}
+      direction="row"
+      justifyContent="flex-end"
+      size={{ mobile: 12, desktop: 'auto' }}
+    >
       {FILTER_GROUPS.map((group) => (
-        <Stack key={group[0].key} rowGap={2} direction="row" alignItems="center">
+        <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
           {group.map(({ key, label }) => (
             <GridChip
+              size={{ mobile: 6, tablet: 'auto' }}
               key={key}
               label={label}
               selected={filterKey == key}
               toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? undefined : key)}
             />
           ))}
-        </Stack>
+        </Grid>
       ))}
     </Grid>
   )
