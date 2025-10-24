@@ -32,7 +32,6 @@ export const useBandsData = ({
   })
 
   const marketBandsBalances = marketBands?.bandsBalances
-  const liquidationBand = marketBands?.liquidationBand
 
   const { oraclePrice, oraclePriceBand } = marketOraclePrices ?? {}
 
@@ -49,8 +48,6 @@ export const useBandsData = ({
     isLoading,
     chartData,
     userBands,
-    liquidationBand,
     oraclePrice,
-    oraclePriceBand,
   }
 }

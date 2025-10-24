@@ -43,9 +43,7 @@ export const MarketInformationComp = ({
   const {
     chartData,
     userBands,
-    liquidationBand,
     oraclePrice,
-    oraclePriceBand,
     isLoading: isBandsLoading,
   } = useBandsData({
     chainId,
@@ -84,9 +82,7 @@ export const MarketInformationComp = ({
               borrowToken={borrowToken}
               chartData={chartData}
               userBandsBalances={userBands ?? []}
-              liquidationBand={liquidationBand}
               oraclePrice={oraclePrice}
-              oraclePriceBand={oraclePriceBand}
             />
           )}
         </Stack>
