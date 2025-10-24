@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Stack } from '@mui/material'
 import MuiSlider, { type SliderProps as MuiSliderProps } from '@mui/material/Slider'
 export type SliderProps = MuiSliderProps
 
@@ -11,15 +11,14 @@ export const Slider = (props: SliderProps) => {
   const { orientation = 'horizontal' } = props
   const isHorizontal = orientation === 'horizontal'
   return (
-    <Box
+    <Stack
+      flexDirection={isHorizontal ? 'row' : 'column'}
       sx={{
         width: isHorizontal ? '100%' : 'auto',
         height: isHorizontal ? 'auto' : '100%',
-        // we need this to prevent height issues and overflows
-        display: 'flex',
       }}
     >
       <MuiSlider {...props} />
-    </Box>
+    </Stack>
   )
 }

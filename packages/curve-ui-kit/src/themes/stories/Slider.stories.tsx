@@ -12,7 +12,7 @@ const SlierStory = (
   return (
     <Box
       sx={{
-        width: orientation === 'horizontal' ? containerWidth : '40px',
+        width: orientation === 'horizontal' ? containerWidth : 'auto',
         height: orientation === 'horizontal' ? 'auto' : containerWidth,
       }}
     >
