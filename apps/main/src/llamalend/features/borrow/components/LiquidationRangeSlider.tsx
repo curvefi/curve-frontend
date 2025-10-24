@@ -42,7 +42,7 @@ export const LiquidationRangeSlider = ({
         </Grid>
         <Grid size={12}>
           <Slider
-            railBackground="safe"
+            rail-background="safe"
             aria-label={t`Bands`}
             getAriaValueText={format}
             value={sliderValue}

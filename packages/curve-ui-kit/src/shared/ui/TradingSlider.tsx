@@ -34,7 +34,7 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
     }}
   >
     <Slider
-      railBackground="danger"
+      rail-background="danger"
       size="medium"
       value={percentage ? +percentage : 0}
       onChange={(_event, newValue) => onChange?.(Array.isArray(newValue) ? `${newValue[0]}` : `${newValue}`)}

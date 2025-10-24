@@ -1,11 +1,11 @@
 /// <reference types="./mui-slider.d.ts" />
+import { sortBy } from 'lodash'
 import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
 import { type DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { sortBy } from 'lodash'
 
 const {
   Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
@@ -101,7 +101,7 @@ const orientationToDirection = (orientation: SliderProps['orientation']): 'to ri
 
 const getGradientStopsForBackground = (
   design: DesignSystem,
-  railBackground: SliderProps['railBackground'],
+  railBackground: SliderProps['rail-background'],
   disabled?: boolean,
 ): string | undefined => {
   if (disabled && railBackground !== 'default' && railBackground !== undefined) {
@@ -139,11 +139,11 @@ const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<stri
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
     size: 'small',
-    railBackground: 'default',
+    'rail-background': 'default',
   },
   styleOverrides: {
     root: ({ ownerState }) => {
-      const { orientation = 'horizontal', railBackground = 'default' } = ownerState
+      const { orientation = 'horizontal', 'rail-background': railBackground = 'default' } = ownerState
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
       const isHorizontal = orientation === 'horizontal'
 
@@ -219,7 +219,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     },
 
     rail: ({ ownerState }) => {
-      const { orientation = 'horizontal', railBackground = 'default', disabled = false } = ownerState
+      const { orientation = 'horizontal', 'rail-background': railBackground = 'default', disabled = false } = ownerState
       const direction = orientationToDirection(orientation)
       const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
       const isHorizontal = orientation === 'horizontal'
