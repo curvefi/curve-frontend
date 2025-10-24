@@ -61,10 +61,19 @@ export const ImproveHealth = ({
     'approve-infinite': onApproveInfinite,
   }
 
+  const walletBalance = useMemo(
+    () => ({
+      balance: userBalance,
+      symbol: debtToken?.symbol,
+      loading: !userBalance,
+    }),
+    [debtToken?.symbol, userBalance],
+  )
+
   const maxBalance = useMemo(
     () => ({
       balance: debtToken && userBalance ? decimal(Math.min(+debtToken.amount, +userBalance).toString()) : undefined,
-      symbol: debtToken?.symbol,
+      chips: 'max' as const,
     }),
     [debtToken, userBalance],
   )
@@ -85,6 +94,7 @@ export const ImproveHealth = ({
             label={debtToken?.symbol ?? '?'}
           />
         }
+        walletBalance={walletBalance}
         maxBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
         onBalance={(balance) => {
