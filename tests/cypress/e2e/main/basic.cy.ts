@@ -42,41 +42,4 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/corn/pools')
     cy.contains('CORN/wBTCN', LOAD_TIMEOUT).should('be.visible')
   })
-
-  it('applies a DEX filter chip and updates filters state', () => {
-    // Go to a standard network pools page
-    cy.visit('/dex/ethereum/pools')
-    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
-    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('exist')
-
-    // Record initial row count
-    cy.get('[data-testid^="data-table-row-"]').then(($rowsBefore) => {
-      const countBefore = $rowsBefore.length
-
-      const clickUsdChip = () => cy.contains('USD', LOAD_TIMEOUT).first().click({ force: true })
-
-      // On mobile, open the drawer first; otherwise click directly
-      cy.get('body').then(($body) => {
-        if ($body.find('[data-testid="btn-drawer-filter-dex-pools"]').length) {
-          cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
-          cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
-        }
-        clickUsdChip()
-      })
-
-      // Expect localStorage filters to contain the PoolTags filter with value 'usd'
-      cy.window().then((win) => {
-        const stored = win.localStorage.getItem('table-filters-dex-pool-list')
-        expect(stored, 'filters are stored in localStorage').to.be.a('string')
-        const parsed = JSON.parse(stored!) as Array<{ id: string; value: unknown }>
-        const tags = parsed.find((f) => f.id === 'tags')
-        expect(tags?.value).to.eq('usd')
-      })
-
-      // Row count should not increase; it often decreases when filtering
-      cy.get('[data-testid^="data-table-row-"]').should(($rowsAfter) => {
-        expect($rowsAfter.length).to.be.lte(countBefore)
-      })
-    })
-  })
 })

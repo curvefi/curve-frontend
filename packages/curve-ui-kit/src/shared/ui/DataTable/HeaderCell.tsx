@@ -50,8 +50,6 @@ export const HeaderCell = <T extends TableItem>({
       colSpan={header.colSpan}
       onClick={column.getToggleSortingHandler()}
       data-testid={`data-table-header-${column.id}`}
-      data-colId={column.id}
-      data-sortable={`${canSort}`}
       variant="tableHeaderS"
     >
       <Tooltip title={tooltip?.title} {...tooltip}>
