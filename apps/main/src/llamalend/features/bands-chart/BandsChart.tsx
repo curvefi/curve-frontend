@@ -63,6 +63,7 @@ const BandsChartComponent = ({
       textColor: theme.design.Text.TextColors.Primary,
       textColorInverted: invertedDesign.Text.TextColors.Primary,
       gridColor: theme.design.Color.Neutral[300],
+      scaleLabelsColor: theme.design.Text.TextColors.Tertiary,
       marketBandColor: theme.design.Color.Neutral[300],
       userBandColor: theme.design.Color.Neutral[500],
       borderColor: theme.design.Layer[1].Outline,
@@ -70,6 +71,9 @@ const BandsChartComponent = ({
       userRangeLabelBackgroundColor: theme.design.Color.Tertiary[300],
       oraclePriceLineColor: theme.design.Color.Primary[500],
       liquidationBandOutlineColor: theme.design.Color.Tertiary[600],
+      zoomTrackBackgroundColor: theme.design.Color.Primary[200],
+      zoomThumbColor: theme.design.Color.Primary[500],
+      zoomThumbHandleBorderColor: theme.design.Text.TextColors.FilledFeedback.Highlight.Primary,
     }),
     [theme.design, invertedDesign],
   )
@@ -202,7 +206,7 @@ const BandsChartComponent = ({
           ref={chartRef}
           option={finalOption}
           style={{ width: '100%', height: '100%' }}
-          opts={{ renderer: 'svg' }}
+          opts={{ renderer: 'canvas' }}
           notMerge={false}
           lazyUpdate={true}
         />

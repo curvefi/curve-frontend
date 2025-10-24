@@ -90,7 +90,7 @@ export const getChartOptions = (
       axisLine: { show: false },
       axisTick: { show: false },
       axisLabel: {
-        color: palette.gridColor,
+        color: palette.scaleLabelsColor,
         fontSize: 12,
         hideOverlap: true,
         interval: 'auto',
@@ -114,7 +114,7 @@ export const getChartOptions = (
         axisLine: { show: false },
         axisTick: { show: false },
         axisLabel: {
-          color: palette.gridColor,
+          color: palette.scaleLabelsColor,
           fontSize: 12,
           formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
         },
@@ -162,11 +162,12 @@ export const getChartOptions = (
         width: dataZoomWidth,
         brushSelect: false,
         showDataShadow: false,
-        borderColor: palette.gridColor,
-        fillerColor: 'rgba(128, 128, 128, 0.2)',
-        handleSize: '80%',
-        handleStyle: { color: palette.gridColor, borderColor: palette.gridColor },
-        textStyle: { color: palette.gridColor, fontSize: 10 },
+        borderColor: 'none',
+        backgroundColor: palette.zoomTrackBackgroundColor,
+        fillerColor: palette.zoomThumbColor,
+        handleSize: '100%',
+        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.textColorInverted },
+        textStyle: { color: palette.textColorInverted, fontSize: 10 },
         labelFormatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
         dataBackground: {
           lineStyle: {
