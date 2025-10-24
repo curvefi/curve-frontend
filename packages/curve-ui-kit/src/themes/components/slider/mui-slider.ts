@@ -1,140 +1,74 @@
 /// <reference types="./mui-slider.d.ts" />
-import { sortBy } from 'lodash'
 import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
-import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
 import { type DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const {
-  Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
-} = SizesAndSpaces
-
-type SliderSize = NonNullable<SliderProps['size']>
-
-type SliderSizeDefinition = {
-  height: Responsive
-  thumbWidth: Responsive
-}
-
-export const SLIDER_RAIL_GRADIENT_STOPS_VAR = '--slider-rail-gradient-stops'
-
+import { SliderSize } from './types'
+import {
+  borderedRailBackground,
+  orientationToDirection,
+  getOrientationConfig,
+  singleThumbSelector,
+  SLIDER_BACKGROUND_VAR,
+  SLIDER_HEIGHT_VAR,
+  SLIDER_THUMB_WIDTH_VAR,
+  sliderSizes,
+  SLIDER_RAIL_GRADIENT_STOPS_VAR,
+  getGradientStopsForBackground,
+  DEFAULT_SLIDER_SIZE,
+} from './utils'
 /**
- * CSS custom property name for customizing the slider background color.
- * Used to set a background color for the slider rail.
- */
-const SLIDER_BACKGROUND_VAR = '--slider-background'
-const SLIDER_HEIGHT_VAR = '--slider-height'
-const SLIDER_THUMB_WIDTH_VAR = '--slider-thumb-width'
-
-// Shared selector for single-thumb sliders. Only thumbs have [data-index="n"] attribute
-const singleThumbSelector = ':not(:has([data-index="1"]))'
-
-const sliderSizes: Record<SliderSize, SliderSizeDefinition> = {
-  small: {
-    height: SliderHeight.small,
-    thumbWidth: SliderThumbWidth.small,
-  },
-  medium: {
-    height: SliderHeight.medium,
-    thumbWidth: SliderThumbWidth.medium,
-  },
-}
-
-const defaultSliderSize = sliderSizes.small
-
-/**
- * Creates a pseudo-element style object for slider right extension
- *
- * This function generates styles for a pseudo-element that creates a border around the slider
+ * Generates styles for a pseudo-element that creates a border around the slider
  * and extends beyond the slider's right and left edge by half the thumb width to prevent
  * the thumb from overlapping with the border when at 100% position.
- *
- * Also provides a background fill area that can be customized via CSS custom properties.
- *
- * @param design - The design system containing color definitions
- * @param isHorizontal - Whether the slider is horizontal or vertical
- * @param borderColor - The color of the border
- * @returns CSS style object for the right extension pseudo-element
  */
-const SliderExtension = (design: DesignSystem, isHorizontal: boolean, borderColor?: string) => ({
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    ...(isHorizontal
-      ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
-      : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
-    ...(isHorizontal
-      ? { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
-      : { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
-    border: borderColor ? `1px solid ${borderColor}` : 'none',
-    backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
-    zIndex: 0,
-    // Disable pointer events so it doesn't block "hover" detection on the thumb
-    pointerEvents: 'none',
-  },
-})
+const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orientation'], borderColor?: string) => {
+  const {
+    extensionOffsets: { start, end },
+  } = getOrientationConfig(orientation)
 
-const borderedRailBackground = (design: DesignSystem, direction: 'to right' | 'to top') => {
-  const segment = design.Color.Primary[200]
-  const line = design.Color.Neutral[500]
-  const segments = `linear-gradient(${direction}, ${segment} 0%, ${segment} 25%, ${segment} 25%, ${segment} 50%, ${segment} 50%, ${segment} 75%, ${segment} 75%, ${segment} 100%)`
-  const borders = `repeating-linear-gradient(${direction}, transparent 0, transparent calc(25% - 1px), ${line} calc(25% - 1px), ${line} 25%)`
   return {
-    backgroundImage: `${borders}, ${segments}`,
-    opacity: 1,
-    border: 0,
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      ...start,
+      ...end,
+      border: borderColor ? `1px solid ${borderColor}` : 'none',
+      backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
+      zIndex: 0,
+      // Disable pointer events so it doesn't block "hover" detection on the thumb
+      pointerEvents: 'none',
+    },
   }
 }
 
-type GradientStopsDefinition = Readonly<Record<number | `${number}`, string>>
+const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, any> => {
+  const {
+    root: { size, margins },
+  } = getOrientationConfig(orientation)
 
-const createGradientStopsString = (stops: GradientStopsDefinition) =>
-  sortBy(Object.entries(stops), ([percent]) => Number(percent))
-    .map(([percent, color], index, entries) => `${color} ${entries[index - 1]?.[0] ?? [0]}%, ${color} ${percent}%`)
-    .join(', ')
-
-const orientationToDirection = (orientation: SliderProps['orientation']): 'to right' | 'to top' =>
-  orientation === 'vertical' ? 'to top' : 'to right'
-
-const getGradientStopsForBackground = (
-  design: DesignSystem,
-  railBackground: SliderProps['rail-background'],
-  disabled?: boolean,
-): string | undefined => {
-  if (disabled && railBackground !== 'default' && railBackground !== undefined) {
-    return createGradientStopsString(design.Sliders.SliderBackground.Disabled)
+  return {
+    ...handleBreakpoints({
+      [SLIDER_HEIGHT_VAR]: DEFAULT_SLIDER_SIZE.height,
+      [SLIDER_THUMB_WIDTH_VAR]: DEFAULT_SLIDER_SIZE.thumbWidth,
+    }),
+    // remove the slider thumb's width from the vertical orientation to prevent overflows
+    height: size.height,
+    width: size.width,
+    borderRadius: 0,
+    border: 'none',
+    // Nesting required as otherwise it'll break in mobile for some reason
+    '&': { paddingBlock: 0 },
+    position: 'relative',
+    paddingInline: 0,
+    paddingBlock: 0,
+    // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
+    marginInline: margins.marginInline,
+    marginBlock: margins.marginBlock,
   }
-  if (railBackground === 'safe') {
-    return createGradientStopsString(design.Sliders.SliderBackground.Safe)
-  }
-  if (railBackground === 'danger') {
-    return createGradientStopsString(design.Sliders.SliderBackground.Danger)
-  }
-  return undefined
 }
-
-const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<string, any> => ({
-  ...handleBreakpoints({
-    [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
-    [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
-  }),
-  // remove the slider thumb's width from the vertical orientation to prevent overflows
-  height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}) )`,
-  width: isHorizontal ? '100%' : `var(${SLIDER_HEIGHT_VAR})`,
-  borderRadius: 0,
-  border: 'none',
-  // Nesting required as otherwise it'll break in mobile for some reason
-  '&': { paddingBlock: 0 },
-  position: 'relative',
-  paddingInline: 0,
-  paddingBlock: 0,
-  // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
-  marginInline: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)` : 0,
-  marginBlock: isHorizontal ? 0 : `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
-})
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
@@ -145,23 +79,24 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     root: ({ ownerState }) => {
       const { orientation = 'horizontal', 'rail-background': railBackground = 'default' } = ownerState
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
-      const isHorizontal = orientation === 'horizontal'
 
       return {
-        ...baseRootStyle(design, isHorizontal),
-        ...SliderExtension(design, isHorizontal, borderColor),
+        ...baseRootStyle(design, orientation),
+        ...SliderExtension(design, orientation, borderColor),
       }
     },
 
     thumb: ({ ownerState }) => {
       const { orientation = 'horizontal' } = ownerState
-      const isHorizontal = orientation === 'horizontal'
-      const sliderThumbImage = isHorizontal ? design.Sliders.SliderThumbImage : design.Sliders.SliderThumbImageVertical
+      const {
+        thumb: { size, getImage },
+      } = getOrientationConfig(orientation)
+      const sliderThumbImage = getImage(design)
 
       return {
         // Add 2px to the thumb width and height to compensate the border
-        width: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)` : `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
-        height: isHorizontal ? `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)` : `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)`,
+        width: size.width,
+        height: size.height,
         background: `${design.Layer.Highlight.Fill} url(${sliderThumbImage}) center no-repeat`,
         transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
         border: `1px solid ${design.Color.Neutral[25]}`,
@@ -186,26 +121,22 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
 
     track: ({ ownerState }) => {
       const { orientation = 'horizontal' } = ownerState
-      const isHorizontal = orientation === 'horizontal'
+      const {
+        track: { size, beforePosition, beforeSize },
+      } = getOrientationConfig(orientation)
       return {
-        ...(isHorizontal ? { height: `var(${SLIDER_HEIGHT_VAR})` } : { width: `var(${SLIDER_HEIGHT_VAR})` }),
+        ...size,
         borderRadius: 0,
         border: 'none',
         /**
-         * Creates a pseudo-element style object for slider continuity
-         *
-         * This styles add pseudo-element to the track
-         * left side by half the thumb width and fills it with the primary button color
-         * for single-thumb
+         * Add pseudo-element to the track left side by half the thumb width and
+         * fills it with the primary button color for single-thumb
          */
         '&::before': {
           content: '""',
           position: 'absolute',
-          ...(isHorizontal
-            ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
-            : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
-          width: isHorizontal ? `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)` : '100%',
-          height: isHorizontal ? '100%' : `calc(var(${SLIDER_HEIGHT_VAR}) / 2)`,
+          ...beforePosition,
+          ...beforeSize,
         },
         // Only fill the left border gap if there's a single thumb
         [`.MuiSlider-root${singleThumbSelector} &::before`]: {
@@ -222,19 +153,15 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
       const { orientation = 'horizontal', 'rail-background': railBackground = 'default', disabled = false } = ownerState
       const direction = orientationToDirection(orientation)
       const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
-      const isHorizontal = orientation === 'horizontal'
+      const {
+        rail: { startOffset, endOffset, size },
+      } = getOrientationConfig(orientation)
 
       return {
         backgroundColor: 'transparent',
-        ...(isHorizontal
-          ? { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
-          : { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
-        ...(isHorizontal
-          ? { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }
-          : { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` }),
-        ...(isHorizontal
-          ? { width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` }
-          : { height: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` }),
+        ...startOffset,
+        ...endOffset,
+        ...size,
         pointerEvents: 'none',
         border: 'none',
         backgroundImage: 'none',
