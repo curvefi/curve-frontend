@@ -360,6 +360,9 @@ const user = {
     const results: { [userActiveKey: string]: UserLoanDetails } = {}
     const { signerAddress } = api
 
+    // Check if we're in beta mode to skip old bands data fetching
+    const isBeta = typeof window !== 'undefined' && localStorage.getItem('release-channel') === 'Beta'
+
     await PromisePool.for(markets)
       .handleError((errorObj, market) => {
         console.error(errorObj)
@@ -379,10 +382,10 @@ const user = {
             market.userHealth(),
             market.userHealth(false),
             market.userRange(),
-            market.userBands(),
+            isBeta ? Promise.resolve([0, 0]) : market.userBands(),
             market.userPrices(),
-            market.userBandsBalances(),
-            market.oraclePriceBand(),
+            isBeta ? Promise.resolve([]) : market.userBandsBalances(),
+            isBeta ? Promise.resolve(null) : market.oraclePriceBand(),
             market.currentLeverage(signerAddress),
             market.currentPnL(signerAddress),
           ])
@@ -395,21 +398,30 @@ const user = {
           console.error('Failed to fetch user loss:', error)
         }
 
-        const resp = await market.stats.bandsInfo()
-        const { liquidationBand } = resp ?? {}
+        let liquidationBand = null
+        let reversedUserBands = [0, 0]
+        let isCloseToLiquidation = false
+        let parsedBandsBalances: any[] = []
+        let bandsPct = '0'
 
-        const reversedUserBands = _reverseBands(bands)
-        const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
-          reversedUserBands[0],
-          liquidationBand,
-          oraclePriceBand,
-        )
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
-          liquidationBand,
-          market,
-          false,
-        )
+        if (!isBeta) {
+          const resp = await market.stats.bandsInfo()
+          liquidationBand = resp?.liquidationBand ?? null
+
+          reversedUserBands = _reverseBands(bands)
+          isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
+            reversedUserBands[0],
+            liquidationBand,
+            oraclePriceBand,
+          )
+          parsedBandsBalances = await _fetchChartBandBalancesData(
+            _sortBands(bandsBalances),
+            liquidationBand,
+            market,
+            false,
+          )
+          bandsPct = range ? await market.calcRangePct(range) : '0'
+        }
 
         results[userActiveKey] = {
           details: {
@@ -419,7 +431,7 @@ const user = {
             healthNotFull,
             bands: reversedUserBands,
             bandsBalances: parsedBandsBalances,
-            bandsPct: range ? await market.calcRangePct(range) : '0',
+            bandsPct,
             isCloseToLiquidation,
             range,
             prices,
