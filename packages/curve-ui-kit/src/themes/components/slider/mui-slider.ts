@@ -5,6 +5,7 @@ import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
 import { type DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { sortBy } from 'lodash'
 
 const {
   Slider: { Height: SliderHeight, ThumbWidth: SliderThumbWidth },
@@ -27,7 +28,7 @@ const SLIDER_BACKGROUND_VAR = '--slider-background'
 const SLIDER_HEIGHT_VAR = '--slider-height'
 const SLIDER_THUMB_WIDTH_VAR = '--slider-thumb-width'
 
-// Shared selector for single-thumb sliders
+// Shared selector for single-thumb sliders. Only thumbs have [data-index="n"] attribute
 const singleThumbSelector = ':not(:has([data-index="1"]))'
 
 const sliderSizes: Record<SliderSize, SliderSizeDefinition> = {
@@ -90,23 +91,10 @@ const borderedRailBackground = (design: DesignSystem, direction: 'to right' | 't
 
 type GradientStopsDefinition = Readonly<Record<number | `${number}`, string>>
 
-const createGradientStopsString = (stops: GradientStopsDefinition) => {
-  const entries = Object.entries(stops).map(([percent, color]) => ({
-    percent: Number(percent),
-    color,
-  }))
-
-  entries.sort((a, b) => a.percent - b.percent)
-
-  let previous = 0
-  const parts: string[] = []
-  for (const { percent, color } of entries) {
-    parts.push(`${color} ${previous}%`, `${color} ${percent}%`)
-    previous = percent
-  }
-
-  return parts.join(', ')
-}
+const createGradientStopsString = (stops: GradientStopsDefinition) =>
+  sortBy(Object.entries(stops), ([percent]) => Number(percent))
+    .map(([percent, color], index, entries) => `${color} ${entries[index - 1]?.[0] ?? [0]}%, ${color} ${percent}%`)
+    .join(', ')
 
 const orientationToDirection = (orientation: SliderProps['orientation']): 'to right' | 'to top' =>
   orientation === 'vertical' ? 'to top' : 'to right'
