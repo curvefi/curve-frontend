@@ -36,7 +36,7 @@ const meta: Meta<typeof Slider> = {
   argTypes: {
     'data-rail-background': {
       control: 'select',
-      options: ['default', 'bordered', 'safe', 'danger'],
+      options: ['default', 'filled', 'bordered', 'safe', 'danger'],
       description: 'Background pattern applied to the rail background.',
     },
     size: {
@@ -71,6 +71,13 @@ const meta: Meta<typeof Slider> = {
 type Story = StoryObj<typeof Slider>
 
 export const Default: Story = {}
+
+export const RailBackgroundFilled: Story = {
+  args: {
+    'data-rail-background': 'filled',
+    defaultValue: 40,
+  },
+}
 
 export const RailBackgroundBordered: Story = {
   args: {
@@ -120,6 +127,12 @@ export const Range: Story = {
   args: {
     defaultValue: [25, 75],
     'data-rail-background': 'default',
+  },
+}
+export const RangeFilled: Story = {
+  args: {
+    defaultValue: [25, 75],
+    'data-rail-background': 'filled',
   },
 }
 export const ValueLabelDisplay: Story = {

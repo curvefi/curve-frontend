@@ -143,6 +143,7 @@ export const getGradientStopsForBackground = (
   const gradientStops: Record<SliderRailBackground | 'disabled', string | undefined> = {
     default: undefined,
     bordered: undefined,
+    filled: createGradientStopsString(design.Sliders.SliderBackground.Filled),
     disabled: createGradientStopsString(design.Sliders.SliderBackground.Disabled),
     safe: createGradientStopsString(design.Sliders.SliderBackground.Safe),
     danger: createGradientStopsString(design.Sliders.SliderBackground.Danger),
