@@ -206,11 +206,6 @@ const SliderThumbWidth = {
     tablet: Sizing[200],
     desktop: Sizing[200],
   },
-  large: {
-    mobile: Sizing[200],
-    tablet: Sizing[200],
-    desktop: Sizing[200],
-  },
 } as const
 
 const MappedFontWeight = {

@@ -1,5 +1,4 @@
 /// <reference types="./mui-slider.d.ts" />
-import { sliderClasses } from '@mui/material/Slider'
 import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
 import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
@@ -134,6 +133,7 @@ const baseRootStyle = (design: DesignSystem, isHorizontal: boolean): Record<stri
     [SLIDER_HEIGHT_VAR]: defaultSliderSize.height,
     [SLIDER_THUMB_WIDTH_VAR]: defaultSliderSize.thumbWidth,
   }),
+  // remove the slider thumb's width from the vertical orientation to prevent overflows
   height: isHorizontal ? `var(${SLIDER_HEIGHT_VAR})` : `calc(100% - var(${SLIDER_THUMB_WIDTH_VAR}) )`,
   width: isHorizontal ? '100%' : `var(${SLIDER_HEIGHT_VAR})`,
   borderRadius: 0,
