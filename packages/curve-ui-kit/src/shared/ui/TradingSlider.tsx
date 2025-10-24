@@ -1,11 +1,10 @@
 import type { Property } from 'csstype'
-import Slider from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { CLASS_BORDERLESS, SLIDER_BACKGROUND_VAR } from '@ui-kit/themes/components/slider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { NumericTextField } from './NumericTextField'
+import { Slider } from './Slider'
 
 const { Spacing } = SizesAndSpaces
 
@@ -35,21 +34,15 @@ export const TradingSlider = ({ percentage, onChange, onCommit, step = 1, textAl
     }}
   >
     <Slider
-      className={CLASS_BORDERLESS}
+      rail-background="danger"
       size="medium"
       value={percentage ? +percentage : 0}
-      onChange={(_event, newValue) => onChange?.(Array.isArray(newValue) ? newValue[0] : newValue)}
-      onChangeCommitted={(_event, newValue) => onCommit?.(Array.isArray(newValue) ? newValue[0] : newValue)}
+      onChange={(_event, newValue) => onChange?.(Array.isArray(newValue) ? `${newValue[0]}` : `${newValue}`)}
+      onChangeCommitted={(_event, newValue) => onCommit?.(Array.isArray(newValue) ? `${newValue[0]}` : `${newValue}`)}
       min={0}
       max={100}
       step={step}
       disabled={disabled}
-      sx={{
-        [SLIDER_BACKGROUND_VAR]: (t) => t.design.Color.Primary[200],
-        '&.MuiSlider-root::after': {
-          zIndex: -1, // probably due to the background above, the slider is behind the background and becomes invisible
-        },
-      }}
     />
 
     <NumericTextField

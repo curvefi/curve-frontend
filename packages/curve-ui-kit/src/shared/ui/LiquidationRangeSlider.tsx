@@ -1,10 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
-import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
+import { Slider } from './Slider'
 
 // the real type has more fields, but we only use this one
 type LiqRange = { n: number }
