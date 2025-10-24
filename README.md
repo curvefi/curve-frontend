@@ -44,10 +44,6 @@ This repository is organized as follows:
 - `/packages/prices-api`: Package for consuming the Prices API, mapped as `@curvefi/prices-api`. Soon to be to separated its own NPM package.
 - `/tests`: Cypress tests
 
-## Development Guide
-
-For detailed information on development practices and usage of new libraries, please refer to our [Development Guide](./DEVELOPMENT_GUIDE.md).
-
 ## Testing
 
 Check the [README](./tests/README.md) in the `tests` directory for instructions on how to run end-to-end tests using Cypress.
