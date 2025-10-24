@@ -16,6 +16,7 @@ const FormConnectWallet = ({ loading, children }: { loading: boolean; children: 
           variant="filled"
           onClick={() => connectWallet()}
           loading={isLoading(connectState)}
+          testId="connect-wallet"
         >
           {t`Connect Wallet`}
         </Button>

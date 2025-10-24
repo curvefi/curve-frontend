@@ -4,11 +4,11 @@ import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { useDebounce } from '@ui-kit/hooks/useDebounce'
+import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber, type Decimal } from '@ui-kit/utils'
+import { decimal, formatNumber, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -70,11 +70,12 @@ type BalanceTextFieldProps = {
   maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: Decimal | undefined) => void
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange: (balance: string | undefined) => void
   name: string
 }
 
-const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, name, isError, onChange, disabled }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
@@ -93,7 +94,7 @@ const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: Balanc
         },
       },
     }}
-    onChange={onCommit}
+    onChange={onChange}
     disabled={disabled}
   />
 )
@@ -245,6 +246,9 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
     .toFixed(2)
     .replace(/\.?0+$/, '') as Decimal
 
+/** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
+const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
+
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -261,7 +265,13 @@ export const LargeTokenInput = ({
   testId,
 }: Props) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
-  const [balance, setBalance] = useDebounce(externalBalance, Duration.FormDebounce, onBalance)
+  const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
+    defaultValue: externalBalance,
+    callback: onBalance,
+    debounceMs: Duration.FormDebounce,
+    // We don't want to trigger onBalance if the value is effectively the same, e.g. "0.0" and "0.00"
+    equals: bigNumEquals,
+  })
 
   const showSlider = !!maxBalance?.showSlider
   const showWalletBalance = maxBalance && maxBalance.showBalance !== false
@@ -281,14 +291,21 @@ export const LargeTokenInput = ({
   )
 
   const handleBalanceChange = useCallback(
-    (newBalance: Decimal | undefined) => {
-      if (newBalance == null) return
-      setBalance(newBalance)
+    (newBalance: string | undefined) => {
+      // In case the input is somehow invalid, although we do our best to sanitize it in NumericTextField,
+      // we cancel the debounce such that the input won't reset while still typing.
+      const decimalBalance = decimal(newBalance)
+      if (decimalBalance == null) {
+        cancelSetBalance()
+        return
+      }
+
+      setBalance(decimalBalance)
       setPercentage(
-        maxBalance?.balance && newBalance ? calculateNewPercentage(newBalance, maxBalance.balance) : undefined,
+        maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, setBalance],
+    [maxBalance?.balance, setBalance, cancelSetBalance],
   )
 
   const handleChip = useCallback(
@@ -386,7 +403,7 @@ export const LargeTokenInput = ({
             name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
-            onCommit={handleBalanceChange}
+            onChange={handleBalanceChange}
           />
 
           {tokenSelector}

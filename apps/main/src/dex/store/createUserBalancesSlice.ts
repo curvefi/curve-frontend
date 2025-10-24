@@ -47,7 +47,9 @@ const createUserBalancesSlice = (
 
       const storedUserBalancesMapper = sliceState.userBalancesMapper
 
-      const { chainId } = curve
+      const { chainId, signerAddress } = curve
+
+      if (!signerAddress) return {}
 
       // remove bad tokens
       const networks = await fetchNetworks()

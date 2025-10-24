@@ -21,7 +21,7 @@ const Page = () => {
   }, [init, rChainId])
 
   return (
-    <Container>
+    <Container data-testid="integrations-page">
       <ContainerContent>
         <Title>Curve Integrations</Title>
         <Subtitle>

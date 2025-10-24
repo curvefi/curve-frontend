@@ -2,7 +2,6 @@ import Aegis from './Aegis.json'
 import Asymmetry from './Asymmetry.json'
 import Babylon from './Babylon.json'
 import Bills from './Bills.json'
-import DLCLink from './DLCLink.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
 import Elixir from './Elixir.json'
@@ -36,7 +35,6 @@ import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 
 export {
-  DLCLink,
   Elixir,
   Ethena,
   Etherfi,
