@@ -151,7 +151,7 @@ function createDarkSurfaces() {
       Fill: Grays[800],
       Outline: Grays[700],
     },
-    Highlight: Blues[50],
+    Highlight: Blues[500],
     TypeAction: {
       Selected: Blues[900],
       Hover: Grays[800],
