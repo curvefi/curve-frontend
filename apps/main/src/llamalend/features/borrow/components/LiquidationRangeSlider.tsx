@@ -66,6 +66,7 @@ export const LiquidationRangeSlider = ({
           onChange={(val) => val && setSliderValue(Number(val))}
           onBlur={() => setRange(sliderValue)}
           slotProps={{
+            // the normal input font size is too small for this component
             input: {
               sx: { '& input': { color: 'text.primary', fontSize: 'bodyMBold' } },
               endAdornment: (
