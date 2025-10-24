@@ -55,7 +55,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       <DrawerHeader title={t`Sort by`} />
       <Stack
         direction="column"
-        sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
+        sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 }}
         data-testid="drawer-sort-menu-lamalend-markets"
       >
         {sortOptions.map(({ id, label }) => {
