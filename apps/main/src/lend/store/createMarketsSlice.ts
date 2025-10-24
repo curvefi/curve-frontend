@@ -112,9 +112,12 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const chainId = api.chainId
       const marketId = OneWayMarketTemplate.id
 
+      // Check if we're in beta mode to skip old bands data fetching
+      const isBeta = typeof window !== 'undefined' && localStorage.getItem('release-channel') === 'Beta'
+
       const keys = [
         'statsParametersMapper',
-        'statsBandsMapper',
+        ...(isBeta ? [] : ['statsBandsMapper']), // Skip statsBandsMapper in beta mode
         'statsTotalsMapper',
         'statsAmmBalancesMapper',
         'statsCapAndAvailableMapper',
