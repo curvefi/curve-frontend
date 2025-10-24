@@ -35,8 +35,6 @@ export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, '
     isLoading,
     chartData,
     userBandsBalances: userBands ?? [],
-    liquidationBand: marketBands?.liquidationBand,
     oraclePrice: marketOraclePrices?.oraclePrice,
-    oraclePriceBand: marketOraclePrices?.oraclePriceBand,
   }
 }
