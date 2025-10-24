@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import PoolList from '@/dex/components/PagePoolList/index'
+import { PoolListPage } from '@/dex/components/PagePoolList/PoolListPage'
 import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from '@/dex/components/PagePoolList/types'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
@@ -10,7 +11,9 @@ import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 enum SEARCH {
   filter = 'filter',
@@ -19,7 +22,7 @@ enum SEARCH {
   search = 'search',
 }
 
-export const PagePoolList = () => {
+const OldPoolListPage = () => {
   const push = useNavigate()
   const searchParams = useSearchParams()
   const { curveApi = null } = useConnection()
@@ -134,3 +137,8 @@ const Container = styled.div<{ $isLite: boolean }>`
     margin: 1.5rem auto;
   }
 `
+
+export function PagePoolList() {
+  const [releaseChannel] = useReleaseChannel()
+  return releaseChannel === ReleaseChannel.Beta ? <PoolListPage /> : <OldPoolListPage />
+}

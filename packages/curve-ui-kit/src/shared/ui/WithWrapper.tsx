@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 type WithWrapperProps<Props> = Props & {
   /** Whether wrapper should be applied */
-  wrap: boolean
+  wrap: unknown // truthy/falsy value
   /** Component to use as a wrapper */
   Wrapper: (props: Props & { children: ReactNode }) => ReactNode
   /** Children to be wrapped */

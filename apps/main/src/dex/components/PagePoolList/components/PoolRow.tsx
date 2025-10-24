@@ -57,7 +57,6 @@ export const PoolRow = ({
   const push = useNavigate()
   const userActiveKey = getUserActiveKey(curve)
 
-  const formValues = useStore((state) => state.poolList.formValues)
   const isMobile = useIsMobile()
   const poolDataCached = useStore((state) => state.storeCache.poolsMapper[rChainId]?.[poolId])
   const poolData = useStore((state) => state.pools.poolsMapper[rChainId]?.[poolId])
@@ -93,7 +92,6 @@ export const PoolRow = ({
   const tableRowProps: Omit<TableRowProps, 'isMdUp'> = {
     index,
     isCrvRewardsEnabled,
-    formValues,
     searchParams,
     isInPool,
     blockchainId: network.networkId,
