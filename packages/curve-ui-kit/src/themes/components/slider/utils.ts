@@ -136,7 +136,7 @@ export const borderedRailBackground = (design: DesignSystem, direction: 'to righ
 
 export const getGradientStopsForBackground = (
   design: DesignSystem,
-  railBackground: SliderProps['rail-background'] = 'default',
+  railBackground: SliderProps['data-rail-background'] = 'default',
   disabled?: boolean,
 ): string | undefined => {
   const gradientStops: Record<SliderRailBackground | 'disabled', string | undefined> = {

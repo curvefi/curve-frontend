@@ -25,7 +25,7 @@ const meta: Meta<typeof Slider> = {
   title: 'UI Kit/Primitives/Slider',
   component: SlierStory,
   args: {
-    'rail-background': 'default',
+    'data-rail-background': 'default',
     size: 'medium',
     min: 0,
     max: 100,
@@ -34,7 +34,7 @@ const meta: Meta<typeof Slider> = {
     orientation: 'horizontal',
   },
   argTypes: {
-    'rail-background': {
+    'data-rail-background': {
       control: 'select',
       options: ['default', 'bordered', 'safe', 'danger'],
       description: 'Background pattern applied to the rail background.',
@@ -74,19 +74,19 @@ export const Default: Story = {}
 
 export const RailBackgroundBordered: Story = {
   args: {
-    'rail-background': 'bordered',
+    'data-rail-background': 'bordered',
     defaultValue: 40,
   },
 }
 export const RailBackgroundSafe: Story = {
   args: {
-    'rail-background': 'safe',
+    'data-rail-background': 'safe',
     defaultValue: 15,
   },
 }
 export const RailBackgroundDanger: Story = {
   args: {
-    'rail-background': 'danger',
+    'data-rail-background': 'danger',
     defaultValue: 15,
   },
 }
@@ -105,32 +105,32 @@ export const DisabledDefault: Story = {
 export const DisabledSafeRail: Story = {
   args: {
     disabled: true,
-    'rail-background': 'safe',
+    'data-rail-background': 'safe',
     defaultValue: 60,
   },
 }
 export const DisabledBorderedRail: Story = {
   args: {
     disabled: true,
-    'rail-background': 'bordered',
+    'data-rail-background': 'bordered',
     defaultValue: 60,
   },
 }
 export const Range: Story = {
   args: {
     defaultValue: [25, 75],
-    'rail-background': 'default',
+    'data-rail-background': 'default',
   },
 }
 export const ValueLabelDisplay: Story = {
   args: {
     valueLabelDisplay: 'auto',
-    'rail-background': 'default',
+    'data-rail-background': 'default',
   },
 }
 export const DefaultVertical: Story = {
   args: {
-    'rail-background': 'default',
+    'data-rail-background': 'default',
     orientation: 'vertical',
   },
 }

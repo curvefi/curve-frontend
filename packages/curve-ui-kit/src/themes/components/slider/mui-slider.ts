@@ -73,11 +73,11 @@ const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientat
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
     size: 'small',
-    'rail-background': 'default',
+    'data-rail-background': 'default',
   },
   styleOverrides: {
     root: ({ ownerState }) => {
-      const { orientation = 'horizontal', 'rail-background': railBackground = 'default' } = ownerState
+      const { orientation = 'horizontal', 'data-rail-background': railBackground = 'default' } = ownerState
       const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
 
       return {
@@ -150,7 +150,11 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     },
 
     rail: ({ ownerState }) => {
-      const { orientation = 'horizontal', 'rail-background': railBackground = 'default', disabled = false } = ownerState
+      const {
+        orientation = 'horizontal',
+        'data-rail-background': railBackground = 'default',
+        disabled = false,
+      } = ownerState
       const direction = orientationToDirection(orientation)
       const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
       const {

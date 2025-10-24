@@ -9,6 +9,6 @@ declare module '@mui/material/Slider' {
   interface SliderPropsSizeOverrides extends SliderSizeOverrides {}
   interface SliderOwnProps<Value extends number | number[]> {
     // kebab-case instead of camelCase to prevent validation errors from react in the DOM
-    'rail-background'?: SliderRailBackground
+    'data-rail-background'?: SliderRailBackground
   }
 }

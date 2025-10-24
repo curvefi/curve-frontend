@@ -3,7 +3,7 @@ import { type Responsive } from '@ui-kit/themes/basic-theme'
 import { DesignSystem } from '@ui-kit/themes/design'
 
 export type SliderSize = NonNullable<SliderProps['size']>
-export type SliderRailBackground = NonNullable<SliderProps['rail-background']>
+export type SliderRailBackground = NonNullable<SliderProps['data-rail-background']>
 
 export type SliderSizeDefinition = {
   height: Responsive
