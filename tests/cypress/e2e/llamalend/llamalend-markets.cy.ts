@@ -1,4 +1,3 @@
-import * as Cypress from 'cypress'
 import lodash from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { oneOf, range, shuffle, type TokenType } from '@cy/support/generators'
@@ -359,12 +358,6 @@ function visitAndWait([width, height]: [number, number, Breakpoint], options?: P
     ...options,
   })
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
-}
-
-function selectChain(chain: string) {
-  cy.get('[data-testid="multi-select-filter-chain"]').click()
-  cy.get(`[data-testid="menu-chain"] [value="${chain}"]`).click()
-  cy.get(`body`).click(0, 0) // close popover
 }
 
 const selectCoin = (symbol: string, type: TokenType) => {

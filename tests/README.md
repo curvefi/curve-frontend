@@ -1,6 +1,6 @@
 ## Curve DApp Tests
 
-This repository contains tests for the Curve DApp. The setup includes running Hardhat nodes and executing Cypress tests.
+This repository contains tests for the Curve DApp.
 
 ### Installation
 
