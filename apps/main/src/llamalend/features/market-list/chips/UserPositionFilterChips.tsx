@@ -4,7 +4,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
-import { MarketTypeFilterChips } from './MarketTypeFilterChips'
+import { LlamaListMarketChips } from './LlamaListMarketChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -26,7 +26,7 @@ export const UserPositionFilterChips = ({
 
   return (
     <Grid container size={12} spacing={Spacing.sm}>
-      <MarketTypeFilterChips {...filterProps} />
+      <LlamaListMarketChips {...filterProps} />
     </Grid>
   )
 }

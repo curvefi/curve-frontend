@@ -31,7 +31,7 @@ export const HiddenMarketsResetFilters = ({
             <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
             <Typography variant="highlightS">{hiddenMarketCount}</Typography>
           </Stack>
-          {hasFilters && <ResetFiltersButton onClick={resetFilters} />}
+          <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
         </Stack>
       </Tooltip>
     )
