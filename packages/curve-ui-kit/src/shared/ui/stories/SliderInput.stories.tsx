@@ -1,24 +1,46 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { decimal, type Decimal } from '@ui-kit/utils'
 import { SliderInput } from '../SliderInput'
 
-const SliderInputComponent = (props: React.ComponentProps<typeof SliderInput>) => {
+type SliderInputStoryProps = Omit<React.ComponentProps<typeof SliderInput>, 'value'> & {
+  value?: number | [number, number]
+}
+
+const SliderInputComponent = ({ value: initialValue = 40, onChange, ...rest }: SliderInputStoryProps) => {
+  const [value, setValue] = useState<number | [number, number]>(initialValue)
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
   return (
     <Box sx={{ width: '400px' }}>
-      <SliderInput {...props} />
+      <SliderInput
+        {...rest}
+        value={value}
+        onChange={(newValue) => {
+          setValue(newValue)
+          onChange?.(newValue)
+        }}
+      />
     </Box>
   )
 }
 
 const meta: Meta<typeof SliderInput> = {
   title: 'UI Kit/Widgets/SliderInput',
-  component: SliderInputComponent,
+  component: SliderInput,
+  render: (args) => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
   args: {
     layoutDirection: 'row',
     size: 'medium',
+    value: 40,
+    min: 0,
+    max: 100,
+    step: 1,
+    onChange: fn(),
   },
   argTypes: {
     layoutDirection: {
@@ -32,6 +54,29 @@ const meta: Meta<typeof SliderInput> = {
       options: ['small', 'medium'],
       description: 'The size of the slider and inputs.',
     },
+    value: {
+      control: 'object',
+      description: 'Current value controlled by the slider and inputs. Use an array to enable range mode.',
+    },
+    min: {
+      control: 'number',
+      description: 'Minimum value allowed for the slider and inputs.',
+    },
+    max: {
+      control: 'number',
+      description: 'Maximum value allowed for the slider and inputs.',
+    },
+    step: {
+      control: 'number',
+      description: 'Step increment for the slider.',
+    },
+    onChange: {
+      control: false,
+      description: 'Callback triggered when the value changes.',
+    },
+    sliderProps: {
+      control: false,
+    },
   },
 }
 
@@ -44,16 +89,44 @@ export const ColumnLayout: Story = {
     layoutDirection: 'column',
   },
 }
-
 export const SmallSize: Story = {
   args: {
     size: 'small',
   },
 }
-
-export const MediumSize: Story = {
+export const Range: Story = {
   args: {
-    size: 'medium',
+    value: [30, 70],
   },
 }
+export const RangeColumnLayout: Story = {
+  args: {
+    layoutDirection: 'column',
+    value: [30, 70],
+  },
+}
+export const RangeColumnLayoutSmall: Story = {
+  args: {
+    layoutDirection: 'column',
+    value: [30, 70],
+    size: 'small',
+  },
+}
+export const Disabled: Story = {
+  args: {
+    layoutDirection: 'column',
+    value: [30, 70],
+    disabled: true,
+  },
+}
+export const TradingSlider: Story = {
+  args: {
+    layoutDirection: 'row',
+    value: 50,
+    sliderProps: {
+      'data-rail-background': 'danger',
+    },
+  },
+}
+
 export default meta

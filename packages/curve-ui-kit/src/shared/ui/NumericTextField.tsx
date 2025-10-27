@@ -59,7 +59,7 @@ const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
  * Extends Material-UI's TextFieldProps while replacing value and onChange
  * to handle numeric input specifically.
  */
-type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
+export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
   /** The numeric value of the input field */
   value: Decimal | undefined
   /** Minimum allowed value (default: 0) */
