@@ -3,7 +3,7 @@ import Collapse from '@mui/material/Collapse'
 import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
 import Stack from '@mui/material/Stack'
-import { useIsMobile, useIsTiny } from '@ui-kit/hooks/useBreakpoints'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useFilterExpanded } from '@ui-kit/hooks/useLocalStorage'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Duration } from '@ui-kit/themes/design/0_primitives'
@@ -52,16 +52,11 @@ export const TableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
-  const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 16px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
   const hideTitle = isExpandedOrValue && isMobile
   return (
-    <Stack
-      paddingBlockEnd={{ mobile: Spacing.sm.tablet }}
-      paddingBlockStart={{ mobile: Spacing.md.tablet }}
-      maxWidth={maxWidth}
-    >
+    <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
       <Grid container spacing={Spacing.sm} paddingInline={Spacing.md} justifyContent="space-between">
         <Fade in={!hideTitle} timeout={Duration.Transition} mountOnEnter unmountOnExit>
           <Grid size={{ mobile: 'auto', tablet: 6 }} sx={{ position: hideTitle ? 'absolute' : 'relative' }}>
