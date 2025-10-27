@@ -1,4 +1,5 @@
 import { sum } from 'lodash'
+import { Pool } from '@/dex/types/main.types'
 import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
 import { AccessorFn } from '@tanstack/table-core'
@@ -44,21 +45,23 @@ const hidden = (
   filterFn: FilterFnOption<PoolListItem>,
 ) => columnHelper.accessor(accessor, { id, filterFn, meta: { hidden: true }, sortUndefined: 'last' })
 
+export const POOL_TEXT_FIELDS = [
+  'pool.wrappedCoins',
+  'pool.wrappedCoinAddresses',
+  'pool.underlyingCoins',
+  'pool.underlyingCoinAddresses',
+  'pool.name',
+  'pool.address',
+  'pool.gauge.address',
+  'pool.lpToken',
+] satisfies DeepKeys<{ pool: Pool }>[]
+
 export const POOL_LIST_COLUMNS = [
   columnHelper.accessor('pool.name', {
     id: PoolColumnId.PoolName,
     header: t`Pool`,
     cell: PoolTitleCell,
-    filterFn: filterByText(
-      'pool.wrappedCoins',
-      'pool.wrappedCoinAddresses',
-      'pool.underlyingCoins',
-      'pool.underlyingCoinAddresses',
-      'pool.name',
-      'pool.address',
-      'pool.gauge.address',
-      'pool.lpToken',
-    ),
+    filterFn: filterByText(...POOL_TEXT_FIELDS),
   }),
   columnHelper.accessor((row) => row.rewards?.base, {
     id: PoolColumnId.RewardsBase,

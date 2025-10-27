@@ -52,7 +52,7 @@ const PER_PAGE = 50
 export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curve: CurveApi | null }) => {
   // todo: this needs to be more complicated, we need to show at least the top 10 per chain
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const { isLite } = network
+  const { isLite, poolFilters } = network
   const { signerAddress } = curve ?? {}
 
   // todo: use isReady to show a loading spinner close to the data
@@ -72,7 +72,6 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const filterProps = { columnFiltersById, setColumnFilter }
   const table = useReactTable({
     columns: POOL_LIST_COLUMNS,
     data: useMemo(() => data ?? [], [data]),
@@ -84,6 +83,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
     getPaginationRowModel: getPaginationRowModel(),
   })
 
+  const resultCount = table.getFilteredRowModel().rows.length
   return (
     <DataTable
       table={table}
@@ -113,14 +113,17 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
         hasSearchBar
         chips={
           <PoolListChips
-            hiddenMarketCount={data ? data.length - table.getFilteredRowModel().rows.length : 0}
+            poolFilters={poolFilters}
+            hiddenMarketCount={data ? data.length - resultCount : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
             searchText={searchText}
             onSearch={onSearch}
-            {...filterProps}
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            resultCount={data ? resultCount : undefined}
           />
         }
       />

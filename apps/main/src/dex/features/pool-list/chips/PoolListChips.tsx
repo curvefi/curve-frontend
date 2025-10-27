@@ -2,11 +2,10 @@ import { type ReactNode } from 'react'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolColumnId } from '../columns'
-import { PoolListFilterChips } from '../components/PoolListFilterChips'
+import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
 import { PoolListFilterDrawer } from '../drawers/PoolListFilterDrawer'
 import { PoolSortDrawer } from '../drawers/PoolSortDrawer'
 
@@ -30,7 +29,7 @@ export const PoolListChips = ({
   sortField: PoolColumnId
   searchText: string
   onSearch: (value: string) => void
-} & FilterProps<PoolColumnId>) => {
+} & PoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>

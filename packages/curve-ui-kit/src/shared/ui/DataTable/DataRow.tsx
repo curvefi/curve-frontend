@@ -56,7 +56,7 @@ export const DataRow = <T extends TableItem>({
       <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
         <TableRow
           sx={{
-            minHeight: minRowHeight,
+            height: minRowHeight,
             marginBlock: 0,
             cursor: hasUrl ? 'pointer' : 'default',
             transition: `border-bottom ${TransitionFunction}`,

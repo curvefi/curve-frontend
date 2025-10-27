@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
+import { POOL_TEXT_FIELDS } from '@/dex/features/pool-list/columns'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import type { NetworkConfig, PoolData } from '@/dex/types/main.types'
@@ -10,12 +11,15 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES } from '@ui-kit/shared/routes'
+import { matchText } from '@ui-kit/shared/ui/DataTable/filters'
 import type { PoolListItem, PoolTag } from '../types'
 
-const getPoolTags = (hasPosition: boolean, { pool: { address, id, name, referenceAsset } }: PoolData) =>
+const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, referenceAsset } }: PoolData) =>
   notFalsy<PoolTag>(
     hasPosition && 'user',
-    (['btc', 'crypto', 'eth', 'usd', 'kava'] as const).find((asset) => referenceAsset.toLowerCase().includes(asset)),
+    ...(['btc', 'kava', 'eth', 'usd', 'crypto', 'crvusd'] as const).filter(
+      (asset) => referenceAsset.toLowerCase() === asset || matchText({ pool }, POOL_TEXT_FIELDS, asset),
+    ),
     id.startsWith('factory-crvusd') && 'crvusd',
     (id.startsWith('factory-tricrypto') || id.startsWith('tricrypto')) && 'tricrypto',
     id.startsWith('factory-stable-ng') && 'stableng',
