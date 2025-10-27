@@ -52,7 +52,7 @@ export const TableFilters = <ColumnIds extends string>({
   // search is here because we remove the table title when searching on mobile
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
-  const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 20px'})` // in tiny screens we remove the table margins completely
+  const maxWidth = `calc(100vw${useIsTiny() ? '' : ' - 16px'})` // in tiny screens we remove the table margins completely
   const isCollapsible = collapsible || (isMobile && chips)
   const isExpandedOrValue = useMemo(() => isSearchExpanded || !!searchText, [isSearchExpanded, searchText])
   const hideTitle = isExpandedOrValue && isMobile
