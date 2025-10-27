@@ -1,11 +1,12 @@
 import { isEqual } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import { type NetworkConfig } from '@/dex/types/main.types'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ColumnFiltersState, ExpandedState, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
 import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
+import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
@@ -46,6 +47,8 @@ const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: 
     useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || undefined), [setColumnFilter]),
   ] as const
 
+const PER_PAGE = 50
+
 export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curve: CurveApi | null }) => {
   // todo: this needs to be more complicated, we need to show at least the top 10 per chain
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
@@ -62,29 +65,27 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = usePoolListVisibilitySettings(
-    LOCAL_STORAGE_KEY,
-    {
-      isLite,
-      sorting,
-    },
-  )
+  const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
+  const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
+    isLite,
+    sorting,
+  })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter }
-
   const table = useReactTable({
     columns: POOL_LIST_COLUMNS,
     data: useMemo(() => data ?? [], [data]),
-    state: { expanded, sorting, columnVisibility, columnFilters },
+    state: { expanded, sorting, columnVisibility, columnFilters, pagination },
     onSortingChange,
     onExpandedChange,
+    onPaginationChange,
     ...getTableOptions(data),
+    getPaginationRowModel: getPaginationRowModel(),
   })
 
   return (
     <DataTable
-      lazy
       table={table}
       emptyState={
         <EmptyStateRow table={table}>

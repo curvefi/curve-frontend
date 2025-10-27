@@ -3,9 +3,12 @@ import { ReactNode, useEffect, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
@@ -93,6 +96,15 @@ export const DataTable = <T extends TableItem>({
             ))
           )}
         </TableBody>
+        {table.getPageCount() > 1 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={columnCount}>
+                <TablePagination table={table} />
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
     </WithWrapper>
   )
