@@ -1,13 +1,12 @@
 import lodash from 'lodash'
 import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
-import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { Slider } from '@ui-kit/shared/ui/Slider'
+import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
 /**
@@ -19,7 +18,7 @@ const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
 
 type NumberRange = [number, number]
 
-type OnSliderChange = NonNullable<SliderProps['onChange']>
+type OnSliderChange = NonNullable<SliderInputProps['onChange']>
 
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
@@ -65,7 +64,12 @@ export const RangeSliderFilter = <T,>({
     ),
   })
 
-  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as NumberRange), [setRange])
+  const onChange = useCallback<OnSliderChange>(
+    (newRange) => {
+      setRange(newRange as NumberRange)
+    },
+    [setRange],
+  )
 
   return (
     // this is not a real select, but we reuse the component so the design is correct
@@ -85,19 +89,16 @@ export const RangeSliderFilter = <T,>({
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
       MenuProps={{ elevation: 3 }}
     >
-      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6} alignItems="center">
-        <Typography>{format(0)}</Typography>
-        <Slider
-          data-testid={`slider-${id}`}
-          aria-label={title}
-          getAriaValueText={format}
+      <Stack paddingBlock={3} paddingInline={4}>
+        <SliderInput
+          layoutDirection="column"
+          size="small"
           value={range}
           onChange={onChange}
           min={0}
           max={maxValue}
           step={step}
         />
-        <Typography>{format(maxValue)}</Typography>
       </Stack>
     </Select>
   )

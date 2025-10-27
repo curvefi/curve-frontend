@@ -1,16 +1,16 @@
-import Stack from '@mui/material/Stack'
-import { Slider, type SliderProps } from './Slider'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
-import { SliderSize } from '@ui-kit/themes/components/slider/types'
 import { TextFieldProps } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import { SliderSize } from '@ui-kit/themes/components/slider/types'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Decimal } from '@ui-kit/utils'
+import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
+import { Slider, type SliderProps } from './Slider'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
 type RangeValue = [number, number]
 
-type SliderInputProps = {
+export type SliderInputProps = {
   /** The direction of the layout. Row: inputs on the left and right of the slider. Column: inputs below the slider. */
   layoutDirection?: 'column' | 'row'
   /** The size of the slider and inputs. Sizes of the inputs are calculated based on the size of the slider. */
@@ -138,7 +138,7 @@ export const SliderInput = ({
   )
 
   return (
-    <Stack direction={layoutDirection} alignItems="center" columnGap={Spacing.sm} rowGap={Spacing.xs}>
+    <Stack direction={layoutDirection} alignItems="center" columnGap={Spacing.sm} rowGap={Spacing.xs} width="100%">
       {layoutDirection === 'row' ? (
         <>
           {isRange && renderInput(currentFirst, 0)}
