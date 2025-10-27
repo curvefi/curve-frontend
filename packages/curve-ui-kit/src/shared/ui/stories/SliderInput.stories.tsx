@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SliderInput } from '../SliderInput'
 
-type SliderInputStoryProps = Omit<React.ComponentProps<typeof SliderInput>, 'value'> & {
+type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & {
   value?: number | [number, number]
 }
 
@@ -73,9 +73,6 @@ const meta: Meta<typeof SliderInput> = {
     onChange: {
       control: false,
       description: 'Callback triggered when the value changes.',
-    },
-    sliderProps: {
-      control: false,
     },
   },
 }

@@ -17,7 +17,7 @@ type SliderInputProps = {
   size?: SliderSize
   /** Value controlled by the slider and inputs. Pass an array to enable a range slider. */
   value: number | RangeValue
-  /** Change handler shared between the slider and inputs. Receives either a number or tuple, mirroring `value`. */
+  /** Change handler shared between the slider and inputs. Receives either a number or a RangeValue. */
   onChange: (value: number | [number, number]) => void
   /** Minimum allowed value for both inputs and slider */
   min?: number
