@@ -38,7 +38,7 @@ const BandsChartComponent = ({
   isLoading,
   userBandsBalances,
   oraclePrice,
-  height = 500,
+  height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
 }: BandsChartProps) => {
   const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
   const palette = useBandsChartPalette()

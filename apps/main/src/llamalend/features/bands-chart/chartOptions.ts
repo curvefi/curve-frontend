@@ -55,8 +55,8 @@ export const getChartOptions = (
   if (chartData.length === 0) return {}
 
   const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 40, bottom: 40 }
-  const gridRight = 20 + dataZoomWidth
+  const gridPadding = { left: 0, top: 16, bottom: 16 }
+  const gridRight = 16 + dataZoomWidth
 
   // Generate mark areas for user band range highlighting
   const markAreas = userBandsPriceRange
