@@ -71,7 +71,6 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   )
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
-  const filterProps = { columnFiltersById, setColumnFilter }
 
   const table = useReactTable({
     columns: POOL_LIST_COLUMNS,
@@ -82,6 +81,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
     ...getTableOptions(data),
   })
 
+  const resultCount = table.getFilteredRowModel().rows.length
   return (
     <DataTable
       lazy
@@ -113,14 +113,16 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
         chips={
           <PoolListChips
             poolFilters={poolFilters}
-            hiddenMarketCount={data ? data.length - table.getFilteredRowModel().rows.length : 0}
+            hiddenMarketCount={data ? data.length - resultCount : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
             searchText={searchText}
             onSearch={onSearch}
-            {...filterProps}
+            columnFiltersById={columnFiltersById}
+            setColumnFilter={setColumnFilter}
+            resultCount={data ? resultCount : undefined}
           />
         }
       />

@@ -1,13 +1,11 @@
 import { type ReactNode } from 'react'
-import { NetworkConfig } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolColumnId } from '../columns'
-import { PoolListFilterChips } from '../components/PoolListFilterChips'
+import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
 import { PoolListFilterDrawer } from '../drawers/PoolListFilterDrawer'
 import { PoolSortDrawer } from '../drawers/PoolSortDrawer'
 
@@ -21,7 +19,6 @@ export const PoolListChips = ({
   sortField,
   searchText,
   onSearch,
-  poolFilters,
   ...filterProps
 }: {
   hiddenMarketCount?: number
@@ -32,8 +29,7 @@ export const PoolListChips = ({
   sortField: PoolColumnId
   searchText: string
   onSearch: (value: string) => void
-  poolFilters: NetworkConfig['poolFilters']
-} & FilterProps<PoolColumnId>) => {
+} & PoolListFilterChipsProps) => {
   const isMobile = useIsMobile()
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
@@ -55,7 +51,7 @@ export const PoolListChips = ({
         </Grid>
       ) : (
         <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-          <PoolListFilterChips poolFilters={poolFilters} {...filterProps} />
+          <PoolListFilterChips {...filterProps} />
         </Grid>
       )}
       {hiddenMarketCount != null && !isMobile && (

@@ -3,13 +3,11 @@ import { Button, Grid, Stack } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
-import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { PoolColumnId } from '../columns'
-import { PoolListFilterChips } from '../components/PoolListFilterChips'
+import { PoolListFilterChips, PoolListFilterChipsProps } from '../components/PoolListFilterChips'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,7 +17,7 @@ type Props = {
   hasFilters: boolean
   searchText: string
   onSearch: (value: string) => void
-} & FilterProps<PoolColumnId>
+} & PoolListFilterChipsProps
 
 export const PoolListFilterDrawer = ({
   hiddenMarketCount,

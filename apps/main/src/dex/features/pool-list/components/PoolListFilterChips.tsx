@@ -1,4 +1,5 @@
 import { NetworkConfig } from '@/dex/types/main.types'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
@@ -24,11 +25,17 @@ const FILTER_GROUPS = [
   [{ key: 'user', label: t`My Pools` }],
 ] satisfies { key: PoolTag | null; label: string }[][]
 
-type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
+export type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
+  resultCount: number | undefined
   poolFilters: NetworkConfig['poolFilters']
 }
 
-export const PoolListFilterChips = ({ poolFilters, setColumnFilter, columnFiltersById }: PoolListFilterChipsProps) => {
+export const PoolListFilterChips = ({
+  resultCount,
+  poolFilters,
+  setColumnFilter,
+  columnFiltersById,
+}: PoolListFilterChipsProps) => {
   const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
   return (
     <Grid
@@ -48,7 +55,7 @@ export const PoolListFilterChips = ({ poolFilters, setColumnFilter, columnFilter
                   size={{ mobile: 6, tablet: 'auto' }}
                   key={key}
                   data-testid={`filter-chip-${key}`}
-                  label={label}
+                  label={notFalsy(label, filterKey == key && resultCount != null && ` (${resultCount})`).join(' ')}
                   selected={filterKey == key}
                   toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? undefined : key)}
                 />
