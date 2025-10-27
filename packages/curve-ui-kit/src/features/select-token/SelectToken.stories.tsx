@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import { action } from 'storybook/actions'
 import { fn } from 'storybook/test'
 import { ethAddress } from 'viem'
@@ -175,7 +175,7 @@ const defaultDisabledTokens = [defaultTokens[2].address]
 const TokenSelectorComponent = ({
   selectedToken: selectedTokenInit,
   ...props
-}: React.ComponentProps<typeof TokenSelector>) => {
+}: ComponentProps<typeof TokenSelector>) => {
   const [selectedToken, setSelectedToken] = useState(selectedTokenInit)
 
   return (

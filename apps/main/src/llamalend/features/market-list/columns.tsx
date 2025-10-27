@@ -1,3 +1,4 @@
+import { ReactNode } from 'react'
 import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
@@ -49,7 +50,7 @@ const headers = {
 } as const
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-const createTooltip = (id: keyof typeof headers, body: React.ReactNode): Tooltip => ({
+const createTooltip = (id: keyof typeof headers, body: ReactNode): Tooltip => ({
   title: headers[id],
   body,
 })

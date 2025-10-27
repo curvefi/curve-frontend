@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, type MouseEvent } from 'react'
+import { useState, useRef, useCallback, type MouseEvent, type ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Menu from '@mui/material/Menu'
@@ -51,7 +51,7 @@ const MultiSelect = <T extends string>({
 }: {
   options: T[]
   placeholder?: string
-  renderItem?: (value: T) => React.ReactNode
+  renderItem?: (value: T) => ReactNode
 }) => {
   const menuRef = useRef<HTMLLIElement | null>(null)
   const [selected, setSelected] = useState<string[]>([])
@@ -60,7 +60,7 @@ const MultiSelect = <T extends string>({
   const [isOpen, open, close] = useSwitch(false)
 
   const handleClear = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
       setSelected([])
       close()

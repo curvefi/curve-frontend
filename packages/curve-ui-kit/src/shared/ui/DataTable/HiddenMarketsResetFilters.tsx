@@ -14,26 +14,26 @@ export const HiddenMarketsResetFilters = ({
   resetFilters,
   hasFilters,
 }: HiddenMarketsResetFiltersProps) => {
-  const tooltip =
+  const tooltip: string = // do not leave this tooltip empty, it breaks the reset filter transition
     !hasFilters && hiddenMarketCount
       ? [
           t`Some markets are hidden by default due to low TVL.`,
           t`You may change that in the TVL filter.`,
           t`Note that deprecated markets are only visible for users that have an active position.`,
         ].join(' ')
-      : null
+      : hasFilters
+        ? t`You have active filters.`
+        : t`All markets are being displayed`
 
   return (
-    hiddenMarketCount != null && (
-      <Tooltip title={tooltip}>
-        <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
-          <Stack direction="row" gap={1} alignItems="center">
-            <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
-            <Typography variant="highlightS">{hiddenMarketCount}</Typography>
-          </Stack>
-          <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
+    <Tooltip title={tooltip}>
+      <Stack direction="row" gap={{ mobile: 2, tablet: 1 }} alignItems="center" sx={{ marginLeft: 'auto' }}>
+        <Stack direction="row" gap={1} alignItems="center">
+          <Typography variant="bodyXsRegular">{t`Hidden`}:</Typography>
+          <Typography variant="highlightS">{hiddenMarketCount ?? '-'}</Typography>
         </Stack>
-      </Tooltip>
-    )
+        <ResetFiltersButton onClick={resetFilters} hidden={!hasFilters} />
+      </Stack>
+    </Tooltip>
   )
 }

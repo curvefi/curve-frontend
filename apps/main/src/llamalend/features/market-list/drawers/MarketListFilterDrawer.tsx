@@ -1,10 +1,11 @@
 import React from 'react'
 import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
-import { Button, Grid, Stack } from '@mui/material'
+import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { FilterIcon } from '@ui-kit/shared/icons/FilterIcon'
 import { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { DrawerItems } from '@ui-kit/shared/ui/DataTable/DrawerItems'
 import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer'
@@ -60,12 +61,7 @@ export const MarketListFilterDrawer = ({
           hasFilters={hasFilters}
         />
       </DrawerHeader>
-      <Stack
-        direction="column"
-        sx={{ paddingInline: Spacing.sm, paddingBlockEnd: Spacing.md, overflow: 'auto', flex: 1 }}
-        gap={Spacing.sm}
-        data-testid="drawer-filter-menu-lamalend-markets"
-      >
+      <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
           <LlamaListMarketChips {...filterProps} />
@@ -78,7 +74,7 @@ export const MarketListFilterDrawer = ({
           data={data}
           minLiquidity={minLiquidity}
         />
-      </Stack>
+      </DrawerItems>
     </SwipeableDrawer>
   )
 }

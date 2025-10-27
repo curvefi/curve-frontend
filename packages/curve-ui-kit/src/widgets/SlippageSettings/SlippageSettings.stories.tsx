@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
@@ -9,7 +9,7 @@ import { SlippageSettings } from './SlippageSettings'
 const SlippageSettingsComponent = ({
   maxSlippage: initialMaxSlippage,
   ...props
-}: React.ComponentProps<typeof SlippageSettings>) => {
+}: ComponentProps<typeof SlippageSettings>) => {
   const [maxSlippage, setMaxSlippage] = useState(initialMaxSlippage)
 
   // Mock the setMaxSlippage function

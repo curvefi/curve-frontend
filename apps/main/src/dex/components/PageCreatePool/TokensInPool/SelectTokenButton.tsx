@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { type Key, useEffect, useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import { CreateToken } from '@/dex/components/PageCreatePool/types'
@@ -28,7 +28,7 @@ type Props = {
   blockchainId: string
   selectedAddress: string
   tokens: CreateToken[]
-  onSelectionChange: (selectedAddress: React.Key) => void
+  onSelectionChange: (selectedAddress: Key) => void
 }
 
 const SelectTokenButton = ({
