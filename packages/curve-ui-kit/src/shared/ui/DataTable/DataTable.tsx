@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useEffectEvent, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -17,6 +17,9 @@ import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 import { SkeletonRows } from './SkeletonRows'
 
+/**
+ * Scrolls to the top of the window whenever the column filters change.
+ */
 function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
   const { columnFilters } = table.getState()
   useEffect(() => {
@@ -24,6 +27,19 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [columnFilters])
+}
+
+/**
+ * Resets the table pagination to the first page whenever the number of filtered results changes.
+ */
+function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+  const resultCount = table.getFilteredRowModel().rows.length
+  const onPaginationChangeEvent = useEffectEvent(table.setPagination)
+  useEffect(
+    // only reset in the destructor, to make sure we don't break links
+    () => (resultCount ? () => onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 })) : undefined),
+    [resultCount],
+  )
 }
 
 const { Sizing } = SizesAndSpaces
@@ -50,6 +66,7 @@ export const DataTable = <T extends TableItem>({
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)
+  useResetPageOnResultChange(table)
 
   return (
     <WithWrapper Wrapper={Box} wrap={!!maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>

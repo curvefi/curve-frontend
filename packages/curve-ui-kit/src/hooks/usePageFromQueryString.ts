@@ -20,7 +20,7 @@ export function usePageFromQueryString(pageSize: number, fieldName = 'page') {
       const { pageIndex: newPage } =
         typeof newPagination == 'function' ? newPagination({ pageIndex, pageSize }) : newPagination
       const params = new URLSearchParams(searchParams)
-      if (newPage > 0) {
+      if (newPage > 1) {
         params.set(fieldName, (newPage + 1).toString())
       } else {
         params.delete(fieldName)
