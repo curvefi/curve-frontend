@@ -89,7 +89,13 @@ export const RangeSliderFilter = <T,>({
         </Typography>
       )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
-      MenuProps={{ elevation: 3 }}
+      MenuProps={{
+        elevation: 3,
+        MenuListProps: {
+          disableListWrap: true,
+          variant: 'menu',
+        },
+      }}
     >
       <Stack paddingBlock={3} paddingInline={4}>
         <SliderInput
