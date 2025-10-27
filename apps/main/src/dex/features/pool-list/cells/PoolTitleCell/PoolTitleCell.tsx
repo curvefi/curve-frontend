@@ -42,7 +42,7 @@ export const PoolTitleCell = ({
       )}
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
-        <Stack direction="column" justifyContent="center" gap={Spacing.xxs}>
+        <Stack direction="column">
           <Stack direction="row" alignItems="center">
             <PoolAlertTooltips poolAlert={poolAlert} tokenAlert={tokenAlert} />
             {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
