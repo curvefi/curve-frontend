@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { Children, ReactNode } from 'react'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
@@ -89,7 +89,7 @@ export const TooltipItem = ({
     </Stack>
     <WithSkeleton loading={loading}>
       <Stack direction="row" spacing={1}>
-        {React.Children.map(children, (child, index) => {
+        {Children.map(children, (child, index) => {
           const isFirstChild = index === 0
           const typographyVariant = isFirstChild ? valueTypographyVariant[variant] : 'bodySRegular'
           const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'textSecondary'
