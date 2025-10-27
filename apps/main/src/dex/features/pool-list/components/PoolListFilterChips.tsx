@@ -1,3 +1,4 @@
+import { NetworkConfig } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
@@ -23,7 +24,11 @@ const FILTER_GROUPS = [
   [{ key: 'user', label: t`My Pools` }],
 ] satisfies { key: PoolTag | null; label: string }[][]
 
-export const PoolListFilterChips = ({ setColumnFilter, columnFiltersById }: FilterProps<PoolColumnId>) => {
+type PoolListFilterChipsProps = FilterProps<PoolColumnId> & {
+  poolFilters: NetworkConfig['poolFilters']
+}
+
+export const PoolListFilterChips = ({ poolFilters, setColumnFilter, columnFiltersById }: PoolListFilterChipsProps) => {
   const filterKey = columnFiltersById[PoolColumnId.PoolTags] as PoolTag | undefined
   return (
     <Grid
@@ -36,15 +41,19 @@ export const PoolListFilterChips = ({ setColumnFilter, columnFiltersById }: Filt
     >
       {FILTER_GROUPS.map((group) => (
         <Grid container key={group[0].key} size={{ mobile: 12, tablet: 'auto' }} spacing={1}>
-          {group.map(({ key, label }) => (
-            <GridChip
-              size={{ mobile: 6, tablet: 'auto' }}
-              key={key}
-              label={label}
-              selected={filterKey == key}
-              toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? undefined : key)}
-            />
-          ))}
+          {group.map(
+            ({ key, label }) =>
+              poolFilters.includes(key) && (
+                <GridChip
+                  size={{ mobile: 6, tablet: 'auto' }}
+                  key={key}
+                  data-testid={`filter-chip-${key}`}
+                  label={label}
+                  selected={filterKey == key}
+                  toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? undefined : key)}
+                />
+              ),
+          )}
         </Grid>
       ))}
     </Grid>

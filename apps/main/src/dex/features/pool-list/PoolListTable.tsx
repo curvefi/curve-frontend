@@ -49,7 +49,7 @@ const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: 
 export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curve: CurveApi | null }) => {
   // todo: this needs to be more complicated, we need to show at least the top 10 per chain
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
-  const { isLite } = network
+  const { isLite, poolFilters } = network
   const { signerAddress } = curve ?? {}
 
   // todo: use isReady to show a loading spinner close to the data
@@ -112,6 +112,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
         hasSearchBar
         chips={
           <PoolListChips
+            poolFilters={poolFilters}
             hiddenMarketCount={data ? data.length - table.getFilteredRowModel().rows.length : 0}
             hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}

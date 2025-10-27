@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react'
+import { NetworkConfig } from '@/dex/types/main.types'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
@@ -20,6 +21,7 @@ export const PoolListChips = ({
   sortField,
   searchText,
   onSearch,
+  poolFilters,
   ...filterProps
 }: {
   hiddenMarketCount?: number
@@ -30,6 +32,7 @@ export const PoolListChips = ({
   sortField: PoolColumnId
   searchText: string
   onSearch: (value: string) => void
+  poolFilters: NetworkConfig['poolFilters']
 } & FilterProps<PoolColumnId>) => {
   const isMobile = useIsMobile()
   return (
@@ -52,7 +55,7 @@ export const PoolListChips = ({
         </Grid>
       ) : (
         <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-          <PoolListFilterChips {...filterProps} />
+          <PoolListFilterChips poolFilters={poolFilters} {...filterProps} />
         </Grid>
       )}
       {hiddenMarketCount != null && !isMobile && (
