@@ -64,7 +64,6 @@ const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientat
     '&': { paddingBlock: 0 },
     position: 'relative',
     paddingInline: 0,
-    paddingBlock: 0,
     // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
     marginInline: margins.marginInline,
     marginBlock: margins.marginBlock,
