@@ -32,6 +32,7 @@ export const RangeSliderFilter = <T,>({
   field,
   id,
   defaultMinimum = 0,
+  inputEndAdornment,
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -41,6 +42,7 @@ export const RangeSliderFilter = <T,>({
   id: LlamaMarketColumnId
   format: (value: number) => string
   defaultMinimum?: number
+  inputEndAdornment?: SliderInputProps['inputEndAdornment']
 }) => {
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
@@ -98,6 +100,7 @@ export const RangeSliderFilter = <T,>({
           min={0}
           max={maxValue}
           step={step}
+          inputEndAdornment={inputEndAdornment}
         />
       </Stack>
     </Select>

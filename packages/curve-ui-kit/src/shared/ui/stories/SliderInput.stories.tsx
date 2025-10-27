@@ -1,6 +1,7 @@
 import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
+import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SliderInput } from '../SliderInput'
 
@@ -123,6 +124,11 @@ export const TradingSlider: Story = {
     sliderProps: {
       'data-rail-background': 'danger',
     },
+    inputEndAdornment: (
+      <Typography variant="bodySBold" color="textTertiary">
+        %
+      </Typography>
+    ),
   },
 }
 

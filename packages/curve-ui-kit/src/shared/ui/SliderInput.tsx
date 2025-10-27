@@ -1,3 +1,5 @@
+import type { Property } from 'csstype'
+import { type ReactNode } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { SliderSize } from '@ui-kit/themes/components/slider/types'
@@ -31,6 +33,10 @@ export type SliderInputProps = {
   sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled'>
   /** Additional props forwarded to the inputs */
   inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled'>
+  /** End adornment for the inputs */
+  inputEndAdornment?: ReactNode
+  /** Text alignment for the input field */
+  inputTextAlign?: Property.TextAlign
 }
 
 /**
@@ -65,6 +71,8 @@ export const SliderInput = ({
   disabled,
   sliderProps,
   inputProps,
+  inputTextAlign = 'left',
+  inputEndAdornment,
 }: SliderInputProps) => {
   const isRange = Array.isArray(value)
 
@@ -120,6 +128,12 @@ export const SliderInput = ({
       onChange={handleInputChange(index)}
       disabled={disabled}
       sx={{ maxWidth: sliderInputMaxWidthMap[layoutDirection] }}
+      slotProps={{
+        input: {
+          sx: { '& input': { inputTextAlign } },
+          endAdornment: inputEndAdornment,
+        },
+      }}
       {...inputProps}
     />
   )

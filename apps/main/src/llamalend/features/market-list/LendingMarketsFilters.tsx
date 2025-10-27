@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -123,6 +124,11 @@ export const LendingMarketsFilters = ({
         title={t`Utilization`}
         format={formatPercent}
         data={data}
+        inputEndAdornment={
+          <Typography variant="bodySBold" color="textTertiary">
+            %
+          </Typography>
+        }
         {...filterProps}
       />
     </TableFilterColumn>
