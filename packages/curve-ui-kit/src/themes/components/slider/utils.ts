@@ -41,12 +41,18 @@ export const singleThumbSelector = ':not(:has([data-index="1"]))'
 export const SLIDER_HEIGHT_VAR = '--slider-height'
 export const SLIDER_THUMB_WIDTH_VAR = '--slider-thumb-width'
 
+const SLIDER_THUMB_WIDTH_HALF_NEG = `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)`
+const SLIDER_THUMB_WIDTH_HALF_POS = `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`
+const SLIDER_THUMB_WIDTH_PLUS_BORDERS = `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)`
+const SLIDER_HEIGHT_PLUS_BORDERS = `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`
+const SLIDER_FULL_WIDTH_PLUS_THUMB_WIDTH = `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))`
+
 const orientationConfigMap: Record<string, OrientationConfig> = {
   horizontal: {
     gradientDirection: 'to right',
     extensionOffsets: {
-      start: { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      end: { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
+      start: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
+      end: { right: SLIDER_THUMB_WIDTH_HALF_NEG },
     },
     root: {
       size: {
@@ -54,36 +60,36 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
         width: '100%',
       },
       margins: {
-        marginInline: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+        marginInline: SLIDER_THUMB_WIDTH_HALF_POS,
         marginBlock: 0,
       },
     },
     thumb: {
       size: {
-        width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)`,
-        height: `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
+        width: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
+        height: SLIDER_HEIGHT_PLUS_BORDERS,
       },
       getImage: (design) => design.Sliders.SliderThumbImage,
     },
     track: {
       size: { height: `var(${SLIDER_HEIGHT_VAR})` },
-      beforePosition: { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
+      beforePosition: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
       beforeSize: {
-        width: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+        width: SLIDER_THUMB_WIDTH_HALF_POS,
         height: '100%',
       },
     },
     rail: {
-      startOffset: { left: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      endOffset: { right: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      size: { width: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` },
+      startOffset: { left: SLIDER_THUMB_WIDTH_HALF_NEG },
+      endOffset: { right: SLIDER_THUMB_WIDTH_HALF_NEG },
+      size: { width: SLIDER_FULL_WIDTH_PLUS_THUMB_WIDTH },
     },
   },
   vertical: {
     gradientDirection: 'to top',
     extensionOffsets: {
-      start: { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      end: { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
+      start: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG },
+      end: { top: SLIDER_THUMB_WIDTH_HALF_NEG },
     },
     root: {
       size: {
@@ -92,28 +98,28 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
       },
       margins: {
         marginInline: 0,
-        marginBlock: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / 2)`,
+        marginBlock: SLIDER_THUMB_WIDTH_HALF_POS,
       },
     },
     thumb: {
       size: {
-        width: `calc(var(${SLIDER_HEIGHT_VAR}) + 2px)`,
-        height: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) + 2px)`,
+        width: SLIDER_HEIGHT_PLUS_BORDERS,
+        height: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
       },
       getImage: (design) => design.Sliders.SliderThumbImageVertical,
     },
     track: {
       size: { width: `var(${SLIDER_HEIGHT_VAR})` },
-      beforePosition: { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
+      beforePosition: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG },
       beforeSize: {
         width: '100%',
         height: `calc(var(${SLIDER_HEIGHT_VAR}) / 2)`,
       },
     },
     rail: {
-      startOffset: { top: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      endOffset: { bottom: `calc(var(${SLIDER_THUMB_WIDTH_VAR}) / -2)` },
-      size: { height: `calc(100% + var(${SLIDER_THUMB_WIDTH_VAR}))` },
+      startOffset: { top: SLIDER_THUMB_WIDTH_HALF_NEG },
+      endOffset: { bottom: SLIDER_THUMB_WIDTH_HALF_NEG },
+      size: { height: SLIDER_FULL_WIDTH_PLUS_THUMB_WIDTH },
     },
   },
 }
@@ -149,7 +155,7 @@ export const getGradientStopsForBackground = (
     danger: createGradientStopsString(design.Sliders.SliderBackground.Danger),
   }
 
-  const resolvedBackground: SliderRailBackground = railBackground ?? 'default'
+  const resolvedBackground: SliderRailBackground = railBackground
   const backgroundKey: SliderRailBackground | 'disabled' =
     disabled && resolvedBackground !== 'default' ? 'disabled' : resolvedBackground
 
