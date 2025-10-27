@@ -36,7 +36,7 @@ export const MarketInformationComp = ({
   type,
   page = 'manage',
 }: MarketInformationCompProps) => {
-  const { rChainId, rOwmId, market } = pageProps
+  const { api, rChainId, rOwmId, market } = pageProps
   const theme = useTheme()
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
@@ -49,7 +49,7 @@ export const MarketInformationComp = ({
   } = useBandsData({
     rChainId,
     rOwmId,
-    api: pageProps.api,
+    api,
   })
   const collateralToken = market && {
     symbol: market?.collateral_token.symbol,

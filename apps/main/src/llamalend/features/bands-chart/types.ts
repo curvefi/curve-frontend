@@ -3,16 +3,16 @@ export type ChartDataPoint = {
   pUpDownMedian: number
   p_up: number
   p_down: number
-  bandCollateralAmount: number
-  bandCollateralValueUsd: number
-  bandBorrowedAmount: number
-  bandBorrowedValueUsd: number
-  bandTotalCollateralValueUsd: number
-  userBandCollateralAmount: number
-  userBandCollateralValueUsd: number
-  userBandBorrowedAmount: number
-  userBandBorrowedValueUsd: number
-  userBandTotalCollateralValueUsd: number
+  bandCollateralAmount?: number
+  bandCollateralValueUsd?: number
+  bandBorrowedAmount?: number
+  bandBorrowedValueUsd?: number
+  bandTotalCollateralValueUsd?: number
+  userBandCollateralAmount?: number
+  userBandCollateralValueUsd?: number
+  userBandBorrowedAmount?: number
+  userBandBorrowedValueUsd?: number
+  userBandTotalCollateralValueUsd?: number
   isLiquidationBand: string
   isOraclePriceBand: boolean
 }

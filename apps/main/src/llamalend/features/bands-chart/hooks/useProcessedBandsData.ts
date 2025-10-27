@@ -16,11 +16,9 @@ export const useProcessedBandsData = ({
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
 
-    const bandsMap = new Map<string, ChartDataPoint>()
-
-    marketBands.forEach((band) => {
-      const key = String(band.n)
-      bandsMap.set(key, {
+    const marketTuples: [string, ChartDataPoint][] = marketBands.map((band) => [
+      String(band.n),
+      {
         n: Number(band.n),
         pUpDownMedian: Number(band.pUpDownMedian),
         p_up: Number(band.p_up),
@@ -30,42 +28,33 @@ export const useProcessedBandsData = ({
         bandBorrowedAmount: Number(band.borrowed ?? 0),
         bandBorrowedValueUsd: Number(band.collateralBorrowedUsd ?? 0),
         bandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0),
-        userBandCollateralAmount: 0,
-        userBandCollateralValueUsd: 0,
-        userBandBorrowedAmount: 0,
-        userBandBorrowedValueUsd: 0,
-        userBandTotalCollateralValueUsd: 0,
         isLiquidationBand: band.isLiquidationBand,
         isOraclePriceBand: Number(band.n) === oraclePriceBand,
-      })
-    })
+      },
+    ])
+
+    const bandsMap = new Map<string, ChartDataPoint>(marketTuples)
 
     userBands.forEach((band) => {
       const key = String(band.n)
       const existing = bandsMap.get(key)
       if (existing) {
         existing.userBandCollateralAmount = Number(band.collateral)
-        existing.userBandCollateralValueUsd = Number(band.collateralUsd ?? 0)
-        existing.userBandBorrowedAmount = Number(band.borrowed ?? 0)
-        existing.userBandBorrowedValueUsd = Number(band.collateralBorrowedUsd ?? 0)
-        existing.userBandTotalCollateralValueUsd =
-          Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0)
+        existing.userBandCollateralValueUsd = Number(band.collateralUsd)
+        existing.userBandBorrowedAmount = Number(band.borrowed)
+        existing.userBandBorrowedValueUsd = Number(band.collateralBorrowedUsd)
+        existing.userBandTotalCollateralValueUsd = Number(band.collateralBorrowedUsd) + Number(band.collateralUsd)
       } else {
         bandsMap.set(key, {
           n: Number(band.n),
           pUpDownMedian: Number(band.pUpDownMedian),
           p_up: Number(band.p_up),
           p_down: Number(band.p_down),
-          bandCollateralAmount: 0,
-          bandCollateralValueUsd: 0,
-          bandBorrowedAmount: 0,
-          bandBorrowedValueUsd: 0,
-          bandTotalCollateralValueUsd: 0,
           userBandCollateralAmount: Number(band.collateral),
-          userBandCollateralValueUsd: Number(band.collateralUsd ?? 0),
-          userBandBorrowedAmount: Number(band.borrowed ?? 0),
-          userBandBorrowedValueUsd: Number(band.collateralBorrowedUsd ?? 0),
-          userBandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd ?? 0) + Number(band.collateralUsd ?? 0),
+          userBandCollateralValueUsd: Number(band.collateralUsd),
+          userBandBorrowedAmount: Number(band.borrowed),
+          userBandBorrowedValueUsd: Number(band.collateralBorrowedUsd),
+          userBandTotalCollateralValueUsd: Number(band.collateralBorrowedUsd) + Number(band.collateralUsd),
           isLiquidationBand: band.isLiquidationBand,
           isOraclePriceBand: Number(band.n) === oraclePriceBand,
         })
@@ -86,11 +75,11 @@ export const useProcessedBandsData = ({
 
 function _findDataIndex(d: ChartDataPoint) {
   return (
-    d.bandCollateralValueUsd > 0 ||
-    d.bandBorrowedValueUsd > 0 ||
+    (d.bandCollateralValueUsd ?? 0) > 0 ||
+    (d.bandBorrowedValueUsd ?? 0) > 0 ||
     d.isLiquidationBand === 'SL' ||
     d.isOraclePriceBand ||
-    d.userBandCollateralValueUsd > 0 ||
-    d.userBandBorrowedValueUsd > 0
+    (d.userBandCollateralValueUsd ?? 0) > 0 ||
+    (d.userBandBorrowedValueUsd ?? 0) > 0
   )
 }

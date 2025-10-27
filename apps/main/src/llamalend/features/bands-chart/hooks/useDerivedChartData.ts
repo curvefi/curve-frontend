@@ -24,8 +24,8 @@ export const useDerivedChartData = (chartData: ChartDataPoint[]): DerivedChartDa
       // Use median price for y-axis labels
       yAxisData.push(d.pUpDownMedian)
 
-      const totalBandValue = d.bandCollateralValueUsd + d.bandBorrowedValueUsd
-      const userBandValue = d.userBandCollateralValueUsd + d.userBandBorrowedValueUsd
+      const totalBandValue = (d.bandCollateralValueUsd ?? 0) + (d.bandBorrowedValueUsd ?? 0)
+      const userBandValue = (d.userBandCollateralValueUsd ?? 0) + (d.userBandBorrowedValueUsd ?? 0)
       const marketBandValue = totalBandValue - userBandValue
 
       marketData.push(marketBandValue)

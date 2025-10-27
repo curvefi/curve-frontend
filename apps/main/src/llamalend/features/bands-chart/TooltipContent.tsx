@@ -34,10 +34,10 @@ interface DataSectionProps {
   title: string
   collateralColor: string
   borrowedColor: string
-  collateralAmount: number
-  collateralValueUsd: number
-  borrowedAmount: number
-  borrowedValueUsd: number
+  collateralAmount?: number
+  collateralValueUsd?: number
+  borrowedAmount?: number
+  borrowedValueUsd?: number
   collateralTokenSymbol: string | undefined
   borrowTokenSymbol: string | undefined
   isLiquidationBand: boolean
@@ -47,10 +47,10 @@ const DataSection = ({
   title,
   collateralColor,
   borrowedColor,
-  collateralAmount,
-  collateralValueUsd,
-  borrowedAmount,
-  borrowedValueUsd,
+  collateralAmount = 0,
+  collateralValueUsd = 0,
+  borrowedAmount = 0,
+  borrowedValueUsd = 0,
   collateralTokenSymbol,
   borrowTokenSymbol,
   isLiquidationBand,
@@ -82,8 +82,8 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const collateralColor = theme.design.Color.Neutral[300]
   const borrowedColor = theme.design.Color.Neutral[500]
 
-  const hasMarketData = data.bandCollateralValueUsd > 0 || data.bandBorrowedValueUsd > 0
-  const hasUserData = data.userBandCollateralValueUsd > 0 || data.userBandBorrowedValueUsd > 0
+  const hasMarketData = (data.bandCollateralValueUsd ?? 0) > 0 || (data.bandBorrowedValueUsd ?? 0) > 0
+  const hasUserData = (data.userBandCollateralValueUsd ?? 0) > 0 || (data.userBandBorrowedValueUsd ?? 0) > 0
 
   return (
     <Box sx={{ padding: Spacing.sm, backgroundColor: (t) => t.design.Layer[3].Fill }}>
