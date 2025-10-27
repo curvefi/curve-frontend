@@ -312,6 +312,10 @@ export const SizesAndSpaces = {
     actionCard: '29rem', // 464px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px
+    sliderInput: {
+      sm: '5rem', // 80px,
+      md: '6.25rem', // 100px,
+    },
   },
   Height: {
     modal: MappedModalHeight,
