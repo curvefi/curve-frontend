@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
-import { type Row } from '@tanstack/react-table'
+import { type Row, type Table } from '@tanstack/react-table'
 import { getInsetShadow, getShadow } from '@ui-kit/themes/basic-theme/shadows'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TableItem } from './data-table.utils'
@@ -12,17 +12,19 @@ import type { TableItem } from './data-table.utils'
 const { Spacing } = SizesAndSpaces
 
 // Panel used when row is expanded on mobile
-export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T> }) => ReactNode
+export type ExpandedPanel<T extends TableItem> = (props: { row: Row<T>; table: Table<T> }) => ReactNode
 
 /**
  * Expansion bar with that shows a details panel when the row is expanded on mobile.
  */
 export function ExpansionRow<T extends TableItem>({
   row,
+  table,
   expandedPanel: ExpandedPanel,
   colSpan,
 }: {
   row: Row<T>
+  table: Table<T>
   expandedPanel: ExpandedPanel<T>
   colSpan: number
 }) {
@@ -43,7 +45,7 @@ export function ExpansionRow<T extends TableItem>({
               paddingBlockEnd={0}
               direction="column"
             >
-              <ExpandedPanel row={row} />
+              <ExpandedPanel row={row} table={table} />
             </Stack>
           </Collapse>
         </TableCell>

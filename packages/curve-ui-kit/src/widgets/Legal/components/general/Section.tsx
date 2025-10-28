@@ -36,7 +36,7 @@ export const Paragraph = ({ children }: { children?: ReactNode }) => (
   </Typography>
 )
 
-export const Bold = ({ children }: { children: React.ReactNode }) => (
+export const Bold = ({ children }: { children: ReactNode }) => (
   <Typography component="span" variant="bodyMBold" sx={{ display: 'inline' }}>
     {children}
   </Typography>

@@ -56,9 +56,6 @@ dist
 # crash report
 report.*.json
 
-# hardhat
-tests/cache
-
 # storybook
 storybook-static
 *storybook.log

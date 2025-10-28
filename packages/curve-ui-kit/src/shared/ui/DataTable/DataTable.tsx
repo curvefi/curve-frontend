@@ -6,6 +6,7 @@ import TableBody from '@mui/material/TableBody'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
 import { DataRow, type DataRowProps } from './DataRow'
@@ -28,53 +29,48 @@ const { Sizing } = SizesAndSpaces
  * DataTable component to render the table with headers and rows.
  */
 export const DataTable = <T extends TableItem>({
-  table,
   emptyState,
   children,
   loading,
-  options,
+  maxHeight,
   ...rowProps
 }: {
   table: TanstackTable<T>
   emptyState: ReactNode
   children?: ReactNode // passed to <FilterRow />
-  minRowHeight?: number
   loading: boolean
-  options?: {
-    maxHeight: string | number // also sets overflowY to 'auto'
-  }
+  maxHeight?: `${number}rem` // also sets overflowY to 'auto'
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
+  const { table, shouldStickFirstColumn } = rowProps
   const { rows } = table.getRowModel()
-  const { shouldStickFirstColumn } = rowProps
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)
 
   return (
-    <Box
-      style={{
-        ...(options?.maxHeight && {
-          maxHeight: options.maxHeight,
-          overflowY: 'auto',
-        }),
-      }}
-    >
+    <WithWrapper Wrapper={Box} wrap={!!maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
       <Table
-        sx={{
-          backgroundColor: (t) => t.design.Layer[1].Fill,
-          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-        }}
+        sx={useMemo(
+          () => ({
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+            borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+          }),
+          [],
+        )}
         data-testid={!loading && 'data-table'}
       >
         <TableHead
-          sx={(t) => ({
-            position: 'sticky',
-            top: options?.maxHeight ? 0 : top,
-            zIndex: t.zIndex.tableHeader,
-            backgroundColor: t.design.Table.Header.Fill,
-            marginBlock: Sizing['sm'],
-          })}
+          sx={useMemo(
+            () => (t) => ({
+              position: 'sticky',
+              top: maxHeight ? 0 : top,
+              zIndex: t.zIndex.tableHeader,
+              backgroundColor: t.design.Table.Header.Fill,
+              marginBlock: Sizing['sm'],
+            }),
+            [maxHeight, top],
+          )}
           data-testid="data-table-head"
         >
           {children && <FilterRow table={table}>{children}</FilterRow>}
@@ -98,14 +94,12 @@ export const DataTable = <T extends TableItem>({
           ) : rows.length === 0 ? (
             emptyState
           ) : (
-            <>
-              {rows.map((row, index) => (
-                <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
-              ))}
-            </>
+            rows.map((row, index) => (
+              <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+            ))
           )}
         </TableBody>
       </Table>
-    </Box>
+    </WithWrapper>
   )
 }

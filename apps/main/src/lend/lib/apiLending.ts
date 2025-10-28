@@ -591,13 +591,13 @@ const loanCreate = {
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
       resp.error = _detailInfoRespErrorMessage(
+        expectedCollateralResp, // leave this one as first, in case of errors the other ones will fail too
         healthFullResp,
         healthNotFullResp,
         futureRatesResp,
         bandsResp,
         pricesResp,
         routesResp,
-        expectedCollateralResp,
         priceImpactResp,
       )
 
@@ -1122,14 +1122,14 @@ const loanRepay = {
         ..._getPriceImpactResp(priceImpactResp, maxSlippage),
       }
       resp.error = _detailInfoRespErrorMessage(
+        expectedBorrowedResp, // leave this one as first, in case of errors the other ones will fail too
+        repayIsFullResp,
         healthFullResp,
         healthNotFullResp,
         futureRatesResp,
         bandsResp,
         pricesResp,
         routesResp,
-        expectedBorrowedResp,
-        repayIsFullResp,
         repayIsAvailableResp,
       )
       return resp

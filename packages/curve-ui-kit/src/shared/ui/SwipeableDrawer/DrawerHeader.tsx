@@ -1,9 +1,10 @@
+import { ReactNode } from 'react'
 import { Stack, Typography } from '@mui/material'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing, LineHeight } = SizesAndSpaces
 
-export const DrawerHeader = ({ title, children }: { title: string; children?: React.ReactNode }) => (
+export const DrawerHeader = ({ title, children }: { title: string; children?: ReactNode }) => (
   <Stack
     direction="row"
     alignItems="flex-end"

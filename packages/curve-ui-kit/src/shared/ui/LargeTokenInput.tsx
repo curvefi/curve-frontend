@@ -70,11 +70,12 @@ type BalanceTextFieldProps = {
   maxBalance?: Decimal
   isError: boolean
   disabled?: boolean
-  onCommit: (balance: string | undefined) => void
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange: (balance: string | undefined) => void
   name: string
 }
 
-const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: BalanceTextFieldProps) => (
+const BalanceTextField = ({ balance, name, isError, onChange, disabled }: BalanceTextFieldProps) => (
   <NumericTextField
     placeholder="0.00"
     variant="standard"
@@ -93,7 +94,7 @@ const BalanceTextField = ({ balance, name, isError, onCommit, disabled }: Balanc
         },
       },
     }}
-    onChange={onCommit}
+    onChange={onChange}
     disabled={disabled}
   />
 )
@@ -378,7 +379,7 @@ export const LargeTokenInput = ({
             name={name}
             maxBalance={maxBalance?.balance}
             isError={isError}
-            onCommit={handleBalanceChange}
+            onChange={handleBalanceChange}
           />
 
           {tokenSelector}

@@ -37,9 +37,7 @@ export const UserEventsTable = ({ events, loading, isError }: UserEventsTablePro
         <EmptyStateRow table={table}>{isError ? t`Could not load events` : t`No events found`}</EmptyStateRow>
       }
       loading={loading}
-      options={{
-        maxHeight: MaxHeight.userEventsTable,
-      }}
+      maxHeight={MaxHeight.userEventsTable}
       expandedPanel={RowExpandedPanel}
       shouldStickFirstColumn={false}
     />

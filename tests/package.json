@@ -9,8 +9,6 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "run:nodes": "node runHardhatNodes.js",
-    "kill:nodes": "node killHardhatNodes.js",
     "test": "vitest run",
     "test:ui": "vitest --ui",
     "vitest:watch": "vitest --watch",
@@ -30,7 +28,6 @@
     "cypress": "^15.0.0",
     "dotenv-flow": "^4.1.0",
     "ethers": "*",
-    "hardhat": "^3.0.2",
     "typescript": "*",
     "vite": "*",
     "vite-tsconfig-paths": "^5.1.4",
