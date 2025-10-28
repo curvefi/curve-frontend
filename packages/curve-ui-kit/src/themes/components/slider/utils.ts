@@ -34,6 +34,11 @@ export const SLIDER_RAIL_GRADIENT_STOPS_VAR = '--slider-rail-gradient-stops'
  * Used to set a background color for the slider rail.
  */
 export const SLIDER_BACKGROUND_VAR = '--slider-background'
+/**
+ * Number of sections to divide the bordered slider rail into.
+ * Borders will be placed between sections.
+ */
+export const BORDERED_SECTION_COUNT = 4
 
 // Shared selector for single-thumb sliders. Only thumbs have [data-index="n"] attribute
 export const singleThumbSelector = ':not(:has([data-index="1"]))'
@@ -129,13 +134,35 @@ export const getOrientationConfig = (orientation?: SliderProps['orientation']): 
   return orientationConfigMap[key] ?? orientationConfigMap[DEFAULT_ORIENTATION]
 }
 
-export const borderedRailBackground = (design: DesignSystem, direction: 'to right' | 'to top') => {
+export const borderedRailBackground = (
+  design: DesignSystem,
+  direction: 'to right' | 'to top',
+  sectionCount: number = BORDERED_SECTION_COUNT,
+) => {
   const segment = design.Color.Primary[200]
   const line = design.Color.Neutral[500]
-  const segments = `linear-gradient(${direction}, ${segment} 0%, ${segment} 25%, ${segment} 25%, ${segment} 50%, ${segment} 50%, ${segment} 75%, ${segment} 75%, ${segment} 100%)`
-  const borders = `repeating-linear-gradient(${direction}, transparent 0, transparent calc(25% - 1px), ${line} calc(25% - 1px), ${line} 25%)`
+
+  // Calculate the percentage for each section
+  const sectionPercentage = 100 / sectionCount
+
+  // Build the segments gradient stops dynamically
+  const segmentStops = Array.from({ length: sectionCount }, (_, i) => {
+    const start = i * sectionPercentage
+    const end = (i + 1) * sectionPercentage
+    return `${segment} ${start}%, ${segment} ${end}%`
+  }).join(', ')
+
+  const segments = `linear-gradient(${direction}, ${segmentStops})`
+
+  // Build borders only between sections (not at the edges)
+  // For N sections, we need N-1 borders at the boundaries between sections
+  const borderGradients = Array.from({ length: sectionCount - 1 }, (_, i) => {
+    const position = (i + 1) * sectionPercentage
+    return `linear-gradient(${direction}, transparent 0%, transparent calc(${position}% - 0.5px), ${line} calc(${position}% - 0.5px), ${line} calc(${position}% + 0.5px), transparent calc(${position}% + 0.5px), transparent 100%)`
+  }).join(', ')
+
   return {
-    backgroundImage: `${borders}, ${segments}`,
+    backgroundImage: `${borderGradients}, ${segments}`,
     opacity: 1,
     border: 0,
   }
