@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useEffectEvent } from 'react'
 
 type CallbackFunction = () => unknown
 
@@ -24,16 +24,11 @@ type CallbackFunction = () => unknown
  * );
  */
 export default function usePageVisibleInterval(callback: CallbackFunction, delay: number, enabled: boolean) {
-  const savedCallback = useRef<CallbackFunction>(callback)
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
+  const callbackEvent = useEffectEvent(callback)
   useEffect(() => {
     let id: ReturnType<typeof setTimeout>
     const schedule = () => {
-      if (enabled && delay !== null)
-        id = setTimeout(() => Promise.resolve(savedCallback.current()).then(schedule), delay)
+      if (enabled && delay !== null) id = setTimeout(() => Promise.resolve(callbackEvent()).then(schedule), delay)
     }
     schedule()
     return () => clearTimeout(id)

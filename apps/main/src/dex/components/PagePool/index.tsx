@@ -120,13 +120,15 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     return pool.isCrypto ? '0.1' : '0.03'
   }, [storeMaxSlippage, pool])
 
-  const fetchData = useCallback(() => {
-    if (isPageVisible && curve && poolData) {
-      void fetchPoolStats(curve, poolData)
-    }
-  }, [curve, fetchPoolStats, isPageVisible, poolData])
-
-  usePageVisibleInterval(() => fetchData, REFRESH_INTERVAL['5m'], isPageVisible)
+  usePageVisibleInterval(
+    () => {
+      if (isPageVisible && curve && poolData) {
+        void fetchPoolStats(curve, poolData)
+      }
+    },
+    REFRESH_INTERVAL['5m'],
+    isPageVisible,
+  )
 
   useEffect(() => {
     if (

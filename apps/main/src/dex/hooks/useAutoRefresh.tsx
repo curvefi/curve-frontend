@@ -35,12 +35,6 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
-  const refetchPools = useCallback(async () => {
-    if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
-    const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    void fetchPools(curveApi, poolIds, null)
-  }, [curveApi, fetchPools, network])
-
   usePageVisibleInterval(
     () => {
       if (curveApi) {
@@ -55,5 +49,13 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
     isPageVisible,
   )
 
-  usePageVisibleInterval(refetchPools, REFRESH_INTERVAL['11m'], isPageVisible && !!curveApi && !!network)
+  usePageVisibleInterval(
+    async () => {
+      if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
+      const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
+      void fetchPools(curveApi, poolIds, null)
+    },
+    REFRESH_INTERVAL['11m'],
+    isPageVisible && !!curveApi && !!network,
+  )
 }
