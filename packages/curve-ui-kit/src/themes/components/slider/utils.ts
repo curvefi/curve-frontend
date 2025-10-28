@@ -74,7 +74,10 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
         width: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
         height: SLIDER_HEIGHT_PLUS_BORDERS,
       },
-      getImage: (design) => design.Sliders.SliderThumbImage,
+      getImages: (design) => ({
+        default: design.Sliders.default.SliderThumbImage,
+        hover: design.Sliders.hover.SliderThumbImage,
+      }),
     },
     track: {
       size: { height: `var(${SLIDER_HEIGHT_VAR})` },
@@ -111,7 +114,10 @@ const orientationConfigMap: Record<string, OrientationConfig> = {
         width: SLIDER_HEIGHT_PLUS_BORDERS,
         height: SLIDER_THUMB_WIDTH_PLUS_BORDERS,
       },
-      getImage: (design) => design.Sliders.SliderThumbImageVertical,
+      getImages: (design) => ({
+        default: design.Sliders.default.SliderThumbImageVertical,
+        hover: design.Sliders.hover.SliderThumbImageVertical,
+      }),
     },
     track: {
       size: { width: `var(${SLIDER_HEIGHT_VAR})` },

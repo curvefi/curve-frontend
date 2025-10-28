@@ -89,9 +89,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     thumb: ({ ownerState }) => {
       const { orientation = 'horizontal' } = ownerState
       const {
-        thumb: { size, getImage },
+        thumb: { size, getImages },
       } = getOrientationConfig(orientation)
-      const sliderThumbImage = getImage(design)
+      const { default: sliderThumbImage, hover: sliderThumbImageHover } = getImages(design)
 
       return {
         // Add 2px to the thumb width and height to compensate the border
@@ -106,7 +106,7 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         '&:hover': {
           backdropFilter: 'invert(1)', // This won't work for background images
           // Instead, explicitly set an inverted background
-          background: `${design.Color.Neutral[50]} url(${sliderThumbImage}) center no-repeat`,
+          background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
           backgroundBlendMode: 'difference', // This inverts colors in the background
           border: `1px solid ${design.Button.Primary.Default.Fill}`,
         },
