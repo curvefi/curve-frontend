@@ -122,7 +122,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
   usePageVisibleInterval(
     () => {
-      if (isPageVisible && curve && poolData) {
+      if (curve && poolData) {
         void fetchPoolStats(curve, poolData)
       }
     },
