@@ -1,5 +1,5 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useEffect, useEffectEvent, useMemo } from 'react'
+import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -35,11 +35,12 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
 function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
   const resultCount = table.getFilteredRowModel().rows.length
   const onPaginationChangeEvent = useEffectEvent(table.setPagination)
-  useEffect(
-    // only reset in the destructor, to make sure we don't break links
-    () => (resultCount ? () => onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 })) : undefined),
-    [resultCount],
-  )
+  const lastResultCount = useRef<number>(resultCount)
+  useEffect(() => {
+    // Reset to first page, only if we had results before (links must keep working)
+    if (lastResultCount.current) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    lastResultCount.current = resultCount
+  }, [resultCount])
 }
 
 const { Sizing } = SizesAndSpaces

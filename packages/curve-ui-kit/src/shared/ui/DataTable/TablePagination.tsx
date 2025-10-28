@@ -1,3 +1,4 @@
+import { last } from 'lodash'
 import { useCallback, useId } from 'react'
 import { range } from '@curvefi/prices-api/objects.util'
 import IconButton from '@mui/material/IconButton'
@@ -15,6 +16,7 @@ const PageButton = <T extends TableItem>({ page, table }: { page: number; table:
   <ToggleButton
     value={page}
     sx={{ backgroundColor: 'transparent' }}
+    data-testid={`btn-page-${page + 1}`}
     onClick={useCallback(() => table.setPageIndex(page), [table, page])}
   >
     {page + 1}
@@ -29,7 +31,8 @@ const Spacer = () => (
   <ToggleButton
     disabled
     value={useId()} // not used, disabled
-    sx={{ '&': { backgroundColor: 'transparent', minWidth: '0', padding: '0', width: '11px' } }}
+    sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
+    data-testid="page-ellipsis"
   >
     …
   </ToggleButton>
@@ -55,23 +58,33 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
   const { pageIndex } = table.getState().pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (
-    <Stack justifyContent="center" direction="row">
-      <IconButton size="extraSmall" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}>
+    <Stack justifyContent="center" direction="row" data-testid="table-pagination">
+      <IconButton
+        size="extraSmall"
+        onClick={() => table.previousPage()}
+        disabled={!table.getCanPreviousPage()}
+        data-testid="btn-page-prev"
+      >
         <ChevronDownIcon sx={{ transform: `rotate(90deg)` }} />
       </IconButton>
-      <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive>
+      <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
         {firstPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
         ))}
-        {firstPages.length > 0 && <Spacer />}
+        {firstPages.length > 0 && last(firstPages) != aroundPages[0] - 1 && <Spacer />}
         {aroundPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
         ))}
-        {lastPages.length > 0 && <Spacer />}
+        {lastPages.length > 0 && lastPages[0] - 1 != last(aroundPages) && <Spacer />}
         {lastPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
         ))}
-        <IconButton size="extraSmall" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+        <IconButton
+          size="extraSmall"
+          onClick={() => table.nextPage()}
+          disabled={!table.getCanNextPage()}
+          data-testid="btn-page-next"
+        >
           <ChevronDownIcon sx={{ transform: `rotate(-90deg)` }} />
         </IconButton>
       </ToggleButtonGroup>
