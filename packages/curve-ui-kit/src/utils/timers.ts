@@ -5,7 +5,7 @@
  * - Schedules the first run after `delay` ms (like setInterval).
  * - Awaits sync/async callbacks before scheduling the next run to avoid overlap.
  */
-export function setTimeoutInterval(callback: () => void | Promise<void>, delay: number): () => void {
+export function setTimeoutInterval(callback: () => unknown, delay: number): () => void {
   let canceled = false
   let timeoutId: ReturnType<typeof setTimeout> | undefined
 
@@ -24,6 +24,6 @@ export function setTimeoutInterval(callback: () => void | Promise<void>, delay: 
 
   return () => {
     canceled = true
-    if (timeoutId !== undefined) clearTimeout(timeoutId)
+    clearTimeout(timeoutId)
   }
 }

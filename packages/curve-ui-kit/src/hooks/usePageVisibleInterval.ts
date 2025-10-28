@@ -1,4 +1,5 @@
 import { useEffect, useEffectEvent } from 'react'
+import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
 type CallbackFunction = () => unknown
 
@@ -25,12 +26,5 @@ type CallbackFunction = () => unknown
  */
 export default function usePageVisibleInterval(callback: CallbackFunction, delay: number, enabled: boolean) {
   const callbackEvent = useEffectEvent(callback)
-  useEffect(() => {
-    let id: ReturnType<typeof setTimeout>
-    const schedule = () => {
-      if (enabled && delay !== null) id = setTimeout(() => Promise.resolve(callbackEvent()).then(schedule), delay)
-    }
-    schedule()
-    return () => clearTimeout(id)
-  }, [delay, enabled])
+  useEffect(() => (enabled ? setTimeoutInterval(callbackEvent, delay) : undefined), [delay, enabled])
 }
