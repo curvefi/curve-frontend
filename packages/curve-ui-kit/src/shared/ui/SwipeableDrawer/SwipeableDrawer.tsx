@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { Box, SxProps, Theme } from '@mui/material'
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer'
 type Props = {
-  button: React.ReactNode
-  children: React.ReactNode
+  button: ReactNode
+  children: ReactNode
   open: boolean
   setOpen: (open: boolean) => void
   paperSx?: SxProps<Theme>
@@ -18,7 +18,6 @@ const iOS = typeof navigator !== 'undefined' && /iPad|iPhone|iPod/.test(navigato
 
 /**
  * A swipeable drawer component that can be used to display a list of items.
- * @param param0 button: React.ReactNode, children: React.ReactNode, open: boolean, setOpen: (open: boolean) => void
  */
 export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Props) => (
   <Box sx={{ height: '100%' }}>

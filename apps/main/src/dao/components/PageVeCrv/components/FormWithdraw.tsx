@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
 import AlertFormError from '@/dao/components/AlertFormError'
@@ -23,7 +23,7 @@ const { IconSize } = SizesAndSpaces
 const FormWithdraw = ({ rChainId, vecrvInfo }: PageVecrv) => {
   const withdrawLockedCrv = useStore((state) => state.lockedCrv.withdrawLockedCrv)
   const withdrawLockedCrvStatus = useStore((state) => state.lockedCrv.withdrawLockedCrvStatus)
-  const [txInfoBar, setTxInfoBar] = useState<React.ReactNode | null>(null)
+  const [txInfoBar, setTxInfoBar] = useState<ReactNode | null>(null)
 
   const { address } = useAccount()
 
