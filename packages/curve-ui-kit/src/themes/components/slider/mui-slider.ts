@@ -103,14 +103,14 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         borderRadius: 0,
         zIndex: 1,
 
-        '&:hover': {
+        '&:hover, &.Mui-active': {
           backdropFilter: 'invert(1)', // This won't work for background images
           // Instead, explicitly set an inverted background
           background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
           backgroundBlendMode: 'difference', // This inverts colors in the background
           border: `1px solid ${design.Button.Primary.Default.Fill}`,
         },
-        '&:hover, &.Mui-focusVisible': {
+        '&:hover, &.Mui-focusVisible, &.Mui-active': {
           boxShadow: 'none', // Remove default MUI focus ring
         },
         '&.Mui-disabled': {
