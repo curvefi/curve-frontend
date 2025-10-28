@@ -13,9 +13,7 @@ describe('Legal', () => {
     const viewport = oneOf(oneDesktopViewport, oneTabletViewport)()
     it(`it should contain footer legal link for ${viewport.join('x')}`, () => {
       cy.viewport(...viewport)
-      cy.visit(`/${oneAppPath() || 'dex'}/`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-      })
+      cy.visit(`/${oneAppPath() || 'dex'}/`)
 
       //Navigate to legal route from footer link
       cy.get(`[data-testid='footer']`, LOAD_TIMEOUT).should('be.visible')
@@ -29,9 +27,7 @@ describe('Legal', () => {
     const [width, height] = oneViewport()
     it(`should contain multiple tabs for ${width}x${height}`, () => {
       cy.viewport(width, height)
-      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-      })
+      cy.visit(`/${oneAppPath() || 'dex'}/ethereum/legal`)
 
       // Make sure there's tabs available and click one.
       cy.get(`[data-testid='legal-page']`, LOAD_TIMEOUT).should('be.visible')
