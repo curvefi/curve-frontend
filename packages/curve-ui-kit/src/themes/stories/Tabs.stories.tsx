@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TabsSwitcher, type TabOption } from '../../shared/ui/TabsSwitcher'
 
@@ -10,7 +10,7 @@ const tabs: TabOption<Tab>[] = [
   { value: '4' as const, label: 'Tab Four' },
 ]
 
-const TabsSwitcherComponent = (props: React.ComponentProps<typeof TabsSwitcher>) => {
+const TabsSwitcherComponent = (props: ComponentProps<typeof TabsSwitcher>) => {
   const [value, setValue] = useState<Tab>(tabs[0].value)
 
   return <TabsSwitcher {...props} options={tabs} value={value} onChange={setValue} />

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, ChangeEvent } from 'react'
 import { fn } from 'storybook/test'
 import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import FormControl from '@mui/material/FormControl'
@@ -17,7 +17,7 @@ const CheckboxStory = ({ checked, onChange, ...props }: CheckboxProps) => {
     setState((prev) => ({ ...prev, option1: checked ?? false }))
   }, [checked])
 
-  const handleChange = (option: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (option: string) => (event: ChangeEvent<HTMLInputElement>) => {
     const newState = { ...state, [option]: event.target.checked }
     setState(newState)
 

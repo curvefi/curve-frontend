@@ -1,14 +1,15 @@
 import React, { useCallback, useMemo, useRef } from 'react'
-import { Button, MenuItem, Stack } from '@mui/material'
+import { Button, MenuItem } from '@mui/material'
 import Typography from '@mui/material/Typography'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { CaretSortIcon } from '@ui-kit/shared/icons/CaretSort'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
-import { DrawerHeader } from '@ui-kit/shared/ui/DrawerHeader'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
-import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer'
+import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
+import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
+import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { useLlamaMarketSortOptions } from '../hooks/useLlamaMarketSortOptions'
@@ -28,7 +29,7 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
   const selectedOption = useMemo(() => sortOptions.find((option) => option.id === sortField), [sortOptions, sortField])
 
   const handleSort = useCallback(
-    (id: LlamaMarketColumnId, label: React.ReactNode) => {
+    (id: LlamaMarketColumnId) => {
       onSortingChange([{ id, desc: true }])
       closeDrawer()
     },
@@ -53,31 +54,24 @@ export const MarketSortDrawer = ({ onSortingChange, sortField }: Props) => {
       setOpen={closeDrawer}
     >
       <DrawerHeader title={t`Sort by`} />
-      <Stack
-        direction="column"
-        sx={{ px: Spacing.sm, pb: Spacing.md, overflow: 'auto', flex: 1 }}
-        data-testid="drawer-sort-menu-lamalend-markets"
-      >
-        {sortOptions.map(({ id, label }) => {
-          const isSelected = selectedOption?.id === id
-          return (
-            <InvertOnHover hoverEl={menuRef.current} key={id}>
-              <MenuItem
-                ref={menuRef}
-                value={id}
-                className={isSelected ? 'Mui-selected' : ''}
-                onClick={() => handleSort(id, label)}
-                sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
-              >
-                <Typography component="span" variant="bodyMBold">
-                  {label}
-                </Typography>
-                {isSelected && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
-              </MenuItem>
-            </InvertOnHover>
-          )
-        })}
-      </Stack>
+      <DrawerItems data-testid="drawer-sort-menu-lamalend-markets">
+        {sortOptions.map(({ id, label }) => (
+          <InvertOnHover hoverEl={menuRef.current} key={id}>
+            <MenuItem
+              ref={menuRef}
+              value={id}
+              className={selectedOption?.id === id ? 'Mui-selected' : ''}
+              onClick={() => handleSort(id)}
+              sx={{ justifyContent: 'space-between', minHeight: ButtonSize.sm }}
+            >
+              <Typography component="span" variant="bodyMBold">
+                {label}
+              </Typography>
+              {selectedOption?.id === id && <CheckIcon sx={{ marginLeft: Spacing.sm }} />}
+            </MenuItem>
+          </InvertOnHover>
+        ))}
+      </DrawerItems>
     </SwipeableDrawer>
   )
 }

@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
 import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
+import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarket } from '../../entities/llama-markets'
 import {
@@ -16,7 +18,6 @@ import {
   UtilizationCell,
 } from './cells'
 import { LlamaMarketColumnId } from './columns.enum'
-import { boolFilterFn, filterByText, listFilterFn, multiFilterFn } from './filters'
 import {
   CollateralBorrowHeaderTooltipContent,
   BorrowRateHeaderTooltipContent,
@@ -49,7 +50,7 @@ const headers = {
 } as const
 
 type Tooltip = ColumnMeta<never, never>['tooltip']
-const createTooltip = (id: keyof typeof headers, body: React.ReactNode): Tooltip => ({
+const createTooltip = (id: keyof typeof headers, body: ReactNode): Tooltip => ({
   title: headers[id],
   body,
 })
@@ -69,7 +70,14 @@ export const LLAMA_MARKET_COLUMNS = [
   columnHelper.accessor(LlamaMarketColumnId.Assets, {
     header: headers[LlamaMarketColumnId.Assets],
     cell: MarketTitleCell,
-    filterFn: filterByText,
+    filterFn: filterByText(
+      'controllerAddress',
+      'address',
+      'assets.borrowed.address',
+      'assets.borrowed.symbol',
+      'assets.collateral.address',
+      'assets.collateral.symbol',
+    ),
     meta: { tooltip: createTooltip(LlamaMarketColumnId.Assets, <CollateralBorrowHeaderTooltipContent />) },
   }),
   columnHelper.display({

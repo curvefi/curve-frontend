@@ -1,14 +1,11 @@
+import { ComponentProps } from 'react'
 import Box from '@mui/material/Box'
-import type { SliderProps } from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'
 
-const SlierStory = (
-  props: SliderProps & {
-    containerWidth?: number | string
-  },
-) => {
-  const { containerWidth = 320, orientation = 'horizontal', ...sliderProps } = props
+const SliderStory = (props: ComponentProps<typeof Slider>) => {
+  const { orientation = 'horizontal', ...sliderProps } = props
+  const containerWidth = 320
   return (
     <Box
       sx={{
@@ -23,7 +20,7 @@ const SlierStory = (
 
 const meta: Meta<typeof Slider> = {
   title: 'UI Kit/Primitives/Slider',
-  component: SlierStory,
+  component: SliderStory,
   args: {
     'data-rail-background': 'default',
     size: 'medium',
