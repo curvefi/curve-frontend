@@ -66,9 +66,9 @@ export const MarketInformationComp = ({
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
         <Stack
-          display={isBeta ? 'grid' : undefined}
-          gridTemplateColumns={isBeta ? '1fr 0.5fr' : undefined}
-          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, padding: Spacing.md }}
+          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.5fr' : undefined }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
             rChainId={rChainId}

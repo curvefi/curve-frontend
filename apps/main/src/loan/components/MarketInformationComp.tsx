@@ -25,6 +25,8 @@ type MarketInformationCompProps = {
   page?: 'create' | 'manage'
 }
 
+const EMPTY_BANDS_BALANCES: never[] = []
+
 /**
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
@@ -65,8 +67,8 @@ export const MarketInformationComp = ({
     <>
       {!chartExpanded && (
         <Stack
-          display={isBeta ? 'grid' : undefined}
-          gridTemplateColumns={isBeta ? '1fr 0.5fr' : undefined}
+          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.5fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
@@ -81,7 +83,7 @@ export const MarketInformationComp = ({
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}
-              userBandsBalances={userBands ?? []}
+              userBandsBalances={userBands ?? EMPTY_BANDS_BALANCES}
               oraclePrice={oraclePrice}
             />
           )}
