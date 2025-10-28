@@ -8,29 +8,57 @@ type HealthBarProps = {
   small?: boolean
   softLiquidation: boolean | undefined | null
 }
+type LineProps = {
+  position: LinePosition
+  color: LineColor
+}
+type LabelProps = {
+  position: LinePosition
+  text: string
+  mobileText?: string
+}
+type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
+type HealthLevel = 'liquidation' | 'risky' | 'good' | 'pristine'
 
 const BAR_HEIGHT = '1.4375rem' // 23px
 const LINE_WIDTH = '0.25rem' // 4px
 const LABEL_GAP = '0.125rem' // 2px
 const TRACK_BOTTOM_PADDING = '0.3125rem' // 5px
 
-type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
-
 const LinePositions = {
   liquidation: '0%',
   risky: '15%',
   good: '50%',
   pristine: '100%',
-} as const
+} as const satisfies Record<HealthLevel, string>
 
-const labels = [
-  { position: LinePositions.liquidation, text: t`liquidation`, mobileText: t`liq` },
-  { position: LinePositions.risky, text: t`risky` },
-  { position: LinePositions.good, text: t`good` },
-  { position: LinePositions.pristine, text: t`pristine` },
-]
+type LinePosition = (typeof LinePositions)[HealthLevel]
 
-const lines: Array<{ position: string; color: LineColor }> = [
+const labelTexts = {
+  liquidation: t`liquidation`,
+  risky: t`risky`,
+  good: t`good`,
+  pristine: t`pristine`,
+} as const satisfies Record<HealthLevel, string>
+
+const mobileTexts = {
+  liquidation: t`liq`,
+  risky: undefined,
+  good: undefined,
+  pristine: undefined,
+} as const satisfies Partial<Record<HealthLevel, string>>
+
+const labels: Array<{
+  position: LinePosition
+  text: string
+  mobileText?: string
+}> = (Object.keys(LinePositions) as HealthLevel[]).map((level) => ({
+  position: LinePositions[level],
+  text: labelTexts[level],
+  mobileText: mobileTexts[level],
+}))
+
+const lines: Array<{ position: LinePosition; color: LineColor }> = [
   { position: LinePositions.liquidation, color: 'red' },
   { position: LinePositions.risky, color: 'orange' },
   { position: LinePositions.good, color: 'green' },
@@ -45,7 +73,7 @@ const getLineColor = (color: LineColor) => (t: Theme) =>
     green: t.design.Color.Secondary[500],
   })[color]
 
-const Line = ({ position, color }: { position: string; color: LineColor }) => (
+const Line = ({ position, color }: LineProps) => (
   <Stack
     sx={{
       position: 'absolute',
@@ -61,15 +89,7 @@ const Line = ({ position, color }: { position: string; color: LineColor }) => (
   />
 )
 
-const Label = ({
-  position,
-  text,
-  mobileText,
-}: {
-  position: string
-  text: string
-  mobileText?: string // if mobileText is provided, it will replace text on mobile
-}) => (
+const Label = ({ position, text, mobileText }: LabelProps) => (
   <Stack
     sx={{
       position: 'absolute',
@@ -97,7 +117,7 @@ const Label = ({
   </Stack>
 )
 
-const clampPercentage = (health: number | undefined | null) => Math.max(0, Math.min(health ?? 0, 100))
+const clampPercentage = (health: number | undefined | null): number => Math.max(0, Math.min(health ?? 0, 100))
 
 export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
   // Clamps health percentage between 0 and 100
@@ -113,7 +133,12 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
     <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
         {labels.map((label, index) => (
-          <Label key={index} position={label.position} text={label.text} mobileText={label.mobileText} />
+          <Label
+            key={`${label.position}-${index}`}
+            position={label.position}
+            text={label.text}
+            mobileText={label.mobileText}
+          />
         ))}
       </Stack>
       <Stack
@@ -134,7 +159,7 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
           }}
         />
         {lines.map((line, index) => (
-          <Line key={index} position={line.position} color={line.color} />
+          <Line key={`${line.position}-${index}`} position={line.position} color={line.color} />
         ))}
       </Stack>
     </Stack>
