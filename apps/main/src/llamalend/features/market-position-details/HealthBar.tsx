@@ -23,6 +23,20 @@ const LinePositions = {
   pristine: '100%',
 } as const
 
+const labels = [
+  { position: LinePositions.liquidation, text: t`liquidation`, mobileText: t`liq` },
+  { position: LinePositions.risky, text: t`risky` },
+  { position: LinePositions.good, text: t`good` },
+  { position: LinePositions.pristine, text: t`pristine` },
+]
+
+const lines: Array<{ position: string; color: LineColor }> = [
+  { position: LinePositions.liquidation, color: 'red' },
+  { position: LinePositions.risky, color: 'orange' },
+  { position: LinePositions.good, color: 'green' },
+  { position: LinePositions.pristine, color: 'dark-green' },
+]
+
 const getLineColor = (color: LineColor) => (t: Theme) =>
   ({
     red: t.design.Color.Tertiary[600],
@@ -31,28 +45,27 @@ const getLineColor = (color: LineColor) => (t: Theme) =>
     green: t.design.Color.Secondary[500],
   })[color]
 
-const Line = ({ first, position, color }: { first?: boolean; position: string; color: LineColor }) => (
+const Line = ({ position, color }: { position: string; color: LineColor }) => (
   <Stack
     sx={{
       position: 'absolute',
       top: 0,
-      left: first ? '0' : `calc(${position} - (${LINE_WIDTH} / 2))`,
+      left: `calc(${position} - (${LINE_WIDTH} / 2))`,
       width: LINE_WIDTH,
       height: '100%',
       backgroundColor: getLineColor(color),
+      '&:first-child': {
+        left: '0',
+      },
     }}
   />
 )
 
 const Label = ({
-  first,
-  last,
   position,
   text,
   mobileText,
 }: {
-  first?: boolean
-  last?: boolean
   position: string
   text: string
   mobileText?: string // if mobileText is provided, it will replace text on mobile
@@ -60,9 +73,15 @@ const Label = ({
   <Stack
     sx={{
       position: 'absolute',
-      left: first || last ? position : `calc(${position} - (${LINE_WIDTH} / 2))`,
+      left: `calc(${position} - (${LINE_WIDTH} / 2))`,
       top: 0,
-      transform: last ? 'translateX(-100%)' : 'none',
+      '&:first-child': {
+        left: position,
+      },
+      '&:last-child': {
+        left: position,
+        transform: 'translateX(-100%)',
+      },
     }}
   >
     <Typography variant="bodyXsRegular" color="textTertiary" sx={{ whiteSpace: 'nowrap' }}>
@@ -93,10 +112,9 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
   ) : (
     <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
-        <Label first position={LinePositions.liquidation} text={t`liquidation`} mobileText={t`liq`} />
-        <Label position={LinePositions.risky} text={t`risky`} />
-        <Label position={LinePositions.good} text={t`good`} />
-        <Label last position={LinePositions.pristine} text={t`pristine`} />
+        {labels.map((label, index) => (
+          <Label key={index} position={label.position} text={label.text} mobileText={label.mobileText} />
+        ))}
       </Stack>
       <Stack
         sx={{
@@ -115,10 +133,9 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
-        <Line first position="0%" color={'red'} />
-        <Line position="15%" color={'orange'} />
-        <Line position="50%" color={'green'} />
-        <Line position="100%" color={'dark-green'} />
+        {lines.map((line, index) => (
+          <Line key={index} position={line.position} color={line.color} />
+        ))}
       </Stack>
     </Stack>
   )
