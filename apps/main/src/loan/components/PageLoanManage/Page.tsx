@@ -134,7 +134,7 @@ const Page = () => {
   }, [loaded, rFormType, llamma])
 
   usePageVisibleInterval(() => {
-    if (curve && !!curve.signerAddress && llamma && loanExists) {
+    if (curve?.signerAddress && llamma && loanExists) {
       void fetchLoanDetails(curve, llamma)
       void fetchUserLoanDetails(curve, llamma)
     }
