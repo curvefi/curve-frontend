@@ -46,23 +46,27 @@ export const RangeSliderFilter = <T,>({
 }) => {
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
-  const defaultValue = useMemo((): NumberRange => {
+
+  const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
+  // Currently applied filter range
+  const appliedRange = useMemo((): NumberRange => {
     const [min, max] = (columnFilters[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
   const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce({
-    defaultValue,
+    // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and we would clear the filter.
+    defaultValue: appliedRange,
     callback: useCallback(
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultValue[i])
-            ? undefined // remove the filter if the range is the same as the default
+          newRange.every((value, i) => value === defaultRange[i])
+            ? undefined // remove the filter if the range is the same as the default range
             : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
         ),
-      [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
+      [defaultMinimum, defaultRange, id, maxValue, setColumnFilter],
     ),
   })
 
