@@ -35,6 +35,8 @@ export type SliderInputProps = {
   inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled'>
   /** End adornment for the inputs */
   inputEndAdornment?: ReactNode
+  /** Start adornment for the inputs */
+  inputStartAdornment?: ReactNode
   /** Text alignment for the input field */
   inputTextAlign?: Property.TextAlign
 }
@@ -73,6 +75,7 @@ export const SliderInput = ({
   inputProps,
   inputTextAlign = 'left',
   inputEndAdornment,
+  inputStartAdornment,
 }: SliderInputProps) => {
   const isRange = Array.isArray(value)
 
@@ -132,6 +135,7 @@ export const SliderInput = ({
         input: {
           sx: { '& input': { inputTextAlign } },
           endAdornment: inputEndAdornment,
+          startAdornment: inputStartAdornment,
         },
       }}
       {...inputProps}

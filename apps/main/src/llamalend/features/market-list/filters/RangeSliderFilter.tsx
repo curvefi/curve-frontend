@@ -32,7 +32,7 @@ export const RangeSliderFilter = <T,>({
   field,
   id,
   defaultMinimum = 0,
-  inputEndAdornment,
+  ...sliderInputProps
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -43,6 +43,7 @@ export const RangeSliderFilter = <T,>({
   format: (value: number) => string
   defaultMinimum?: number
   inputEndAdornment?: SliderInputProps['inputEndAdornment']
+  inputStartAdornment?: SliderInputProps['inputStartAdornment']
 }) => {
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
@@ -104,13 +105,13 @@ export const RangeSliderFilter = <T,>({
       <Stack paddingBlock={3} paddingInline={4}>
         <SliderInput
           layoutDirection="column"
-          size="small"
+          size="medium"
           value={range}
           onChange={onChange}
           min={0}
           max={maxValue}
           step={step}
-          inputEndAdornment={inputEndAdornment}
+          {...sliderInputProps}
         />
       </Stack>
     </Select>

@@ -102,6 +102,11 @@ export const LendingMarketsFilters = ({
         title={t`TVL`}
         format={formatUsd}
         data={data}
+        inputStartAdornment={
+          <Typography variant="bodySBold" color="textTertiary">
+            $
+          </Typography>
+        }
         {...filterProps}
       />
     </TableFilterColumn>
@@ -113,6 +118,11 @@ export const LendingMarketsFilters = ({
         title={t`Liquidity`}
         format={formatUsd}
         data={data}
+        inputStartAdornment={
+          <Typography variant="bodySBold" color="textTertiary">
+            $
+          </Typography>
+        }
         {...filterProps}
       />
     </TableFilterColumn>
