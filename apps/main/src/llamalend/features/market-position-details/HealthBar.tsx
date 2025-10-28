@@ -1,4 +1,4 @@
-import { Stack, type Theme, Typography } from '@mui/material'
+import { Box, Stack, type Theme, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { LinearProgress } from '@ui-kit/shared/ui/LinearProgress'
 import { getHealthTrackColor } from './utils'
@@ -15,6 +15,13 @@ const LABEL_GAP = '0.125rem' // 2px
 const TRACK_BOTTOM_PADDING = '0.3125rem' // 5px
 
 type LineColor = 'red' | 'orange' | 'green' | 'dark-green'
+
+const LinePositions = {
+  liquidation: '0%',
+  risky: '15%',
+  good: '50%',
+  pristine: '100%',
+} as const
 
 const getLineColor = (color: LineColor) => (t: Theme) =>
   ({
@@ -42,11 +49,13 @@ const Label = ({
   last,
   position,
   text,
+  mobileText,
 }: {
   first?: boolean
   last?: boolean
   position: string
   text: string
+  mobileText?: string // if mobileText is provided, it will replace text on mobile
 }) => (
   <Stack
     sx={{
@@ -57,7 +66,14 @@ const Label = ({
     }}
   >
     <Typography variant="bodyXsRegular" color="textTertiary" sx={{ whiteSpace: 'nowrap' }}>
-      {text}
+      <Box component="span" sx={mobileText ? { display: { mobile: 'none', tablet: 'inline' } } : undefined}>
+        {text}
+      </Box>
+      {mobileText && (
+        <Box component="span" sx={{ display: { mobile: 'inline', tablet: 'none' } }}>
+          {mobileText}
+        </Box>
+      )}
     </Typography>
   </Stack>
 )
@@ -77,10 +93,10 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
   ) : (
     <Stack sx={{ gap: LABEL_GAP }} paddingBottom={TRACK_BOTTOM_PADDING}>
       <Stack flexDirection="row" sx={{ position: 'relative', width: '100%', height: '1rem' }}>
-        <Label first position="0%" text={t`liquidation`} />
-        <Label position="15%" text={t`risky`} />
-        <Label position="50%" text={t`good`} />
-        <Label last position="100%" text={t`pristine`} />
+        <Label first position={LinePositions.liquidation} text={t`liquidation`} mobileText={t`liq`} />
+        <Label position={LinePositions.risky} text={t`risky`} />
+        <Label position={LinePositions.good} text={t`good`} />
+        <Label last position={LinePositions.pristine} text={t`pristine`} />
       </Stack>
       <Stack
         sx={{
