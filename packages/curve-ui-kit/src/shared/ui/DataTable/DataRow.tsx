@@ -1,4 +1,4 @@
-import { type MouseEvent, useCallback, useState } from 'react'
+import { memo, type MouseEvent, useCallback, useMemo, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
@@ -35,7 +35,7 @@ export type DataRowProps<T extends TableItem> = {
   minRowHeight?: Responsive
 }
 
-export const DataRow = <T extends TableItem>({
+const RawDataRow = <T extends TableItem>({
   table,
   isLast,
   row,
@@ -60,30 +60,33 @@ export const DataRow = <T extends TableItem>({
     <>
       <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
         <TableRow
-          sx={{
-            minHeight: minRowHeight,
-            marginBlock: 0,
-            cursor: hasUrl ? 'pointer' : 'default',
-            transition: `border-bottom ${TransitionFunction}`,
-            [`& .${DesktopOnlyHoverClass}`]: {
-              opacity: { mobile: 1, desktop: 0 },
-              transition: `opacity ${TransitionFunction}`,
-            },
-            '&:hover': {
-              [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
-              '& td, & th': {
-                backgroundColor: (t) => t.design.Table.Row.Hover,
+          sx={useMemo(
+            () => ({
+              minHeight: minRowHeight,
+              marginBlock: 0,
+              cursor: hasUrl ? 'pointer' : 'default',
+              transition: `border-bottom ${TransitionFunction}`,
+              [`& .${DesktopOnlyHoverClass}`]: {
+                opacity: { mobile: 1, desktop: 0 },
+                transition: `opacity ${TransitionFunction}`,
               },
-            },
-            [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
-            ...(isLast && {
-              // to avoid the sticky header showing without any rows, show the last row on top of it
-              position: 'sticky',
-              zIndex: (t) => t.zIndex.tableStickyLastRow,
-              top: 0,
-              backgroundColor: (t) => t.design.Table.Row.Default,
+              '&:hover': {
+                [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } },
+                '& td, & th': {
+                  backgroundColor: (t) => t.design.Table.Row.Hover,
+                },
+              },
+              [`&.${CypressHoverClass}`]: { [`& .${DesktopOnlyHoverClass}`]: { opacity: { desktop: 1 } } },
+              ...(isLast && {
+                // to avoid the sticky header showing without any rows, show the last row on top of it
+                position: 'sticky',
+                zIndex: (t) => t.zIndex.tableStickyLastRow,
+                top: 0,
+                backgroundColor: (t) => t.design.Table.Row.Default,
+              }),
             }),
-          }}
+            [isLast, hasUrl, minRowHeight],
+          )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
           onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
@@ -101,3 +104,5 @@ export const DataRow = <T extends TableItem>({
     </>
   )
 }
+
+export const DataRow = memo(RawDataRow) as typeof RawDataRow
