@@ -21,7 +21,12 @@ export const HealthDetails = ({
   return (
     <Stack sx={{ padding: Spacing.md }}>
       <Stack gap={2}>
-        <Stack display="grid" gridTemplateColumns="auto 1fr" alignItems="end" gap={5}>
+        <Stack
+          display="grid"
+          gridTemplateColumns={{ mobile: '1fr', tablet: 'auto 1fr' }}
+          alignItems="end"
+          gap={{ mobile: 0, tablet: 5 }}
+        >
           <Metric
             label={t`Health`}
             value={Number(value)}
@@ -31,7 +36,12 @@ export const HealthDetails = ({
           />
           <HealthBar health={Number(value)} softLiquidation={softLiquidation} />
         </Stack>
-        <Stack flexDirection="row" gap={1} alignItems="center" justifyContent="space-between">
+        <Stack
+          flexDirection={{ mobile: 'column', tablet: 'row' }}
+          gap={1}
+          alignItems={{ mobile: 'flex-start', tablet: 'center' }}
+          justifyContent="space-between"
+        >
           <Stack display="flex" flexDirection="column">
             <Typography variant="bodyXsRegular">
               {t`Health determines a position liquidation. It is not directly correlated to the price of the collateral. `}
