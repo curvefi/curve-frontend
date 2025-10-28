@@ -1,11 +1,11 @@
-import { useState } from 'react'
+import { ComponentProps, useState } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { TradingSlider } from '../TradingSlider'
 
-const TradingSliderComponent = (props: React.ComponentProps<typeof TradingSlider>) => {
+const TradingSliderComponent = (props: ComponentProps<typeof TradingSlider>) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(props.percentage || '50')
 
   return (
