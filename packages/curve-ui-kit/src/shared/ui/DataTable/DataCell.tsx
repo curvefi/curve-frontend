@@ -1,4 +1,3 @@
-import { memo, useMemo } from 'react'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
@@ -10,7 +9,7 @@ import { RotatableIcon } from './RotatableIcon'
 /**
  * DataCell component to render the data cell in the table.
  */
-const RawDataCell = <T extends TableItem>({
+export const DataCell = <T extends TableItem>({
   cell,
   isMobile,
   isSticky,
@@ -22,10 +21,7 @@ const RawDataCell = <T extends TableItem>({
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
   const showCollapseIcon = isMobile && column.getIsLastColumn()
-  const [sx, wrapperSx] = useMemo(
-    () => getCellSx({ column, showCollapseIcon, isSticky }),
-    [column, showCollapseIcon, isSticky],
-  )
+  const [sx, wrapperSx] = getCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography
       variant={getCellVariant(column)}
@@ -52,5 +48,3 @@ const RawDataCell = <T extends TableItem>({
     </Typography>
   )
 }
-
-export const DataCell = memo(RawDataCell) as typeof RawDataCell
