@@ -40,9 +40,10 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
   useEffect(() => {
     if (overlayTriggerState.isOpen) {
       setIsButtonDisabled(true)
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         setIsButtonDisabled(false)
       }, 10)
+      return () => clearTimeout(timer)
     }
   }, [overlayTriggerState.isOpen])
 

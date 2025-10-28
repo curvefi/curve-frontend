@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import CampaignRewardsBanner from '@/lend/components/CampaignRewardsBanner'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/lend/components/MarketInformationComp'
@@ -12,11 +12,11 @@ import useTitleMapper from '@/lend/hooks/useTitleMapper'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
-import { parseMarketParams, getLoanCreatePathname, getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
+import { getLoanCreatePathname, getLoanManagePathname, parseMarketParams } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
-import { SupplyPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
+import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
@@ -73,31 +73,29 @@ const Page = () => {
     llammaId: rOwmId,
   })
 
-  const fetchInitial = useCallback(
-    async (api: Api, market: OneWayMarketTemplate) => {
-      setLoaded(true)
-
-      // delay fetch rest after form details are fetch first
-      setTimeout(async () => {
-        const { signerAddress } = api
-
-        void fetchAllMarketDetails(api, market, true)
-
-        if (signerAddress) {
-          if (loanExists) {
-            void fetchAllUserMarketDetails(api, market, true)
-          } else {
-            void fetchUserMarketBalances(api, market, true)
-          }
-        }
-      }, REFRESH_INTERVAL['3s'])
-    },
-    [fetchAllMarketDetails, fetchAllUserMarketDetails, fetchUserMarketBalances, loanExists],
-  )
-
   useEffect(() => {
-    if (api && market && isPageVisible) void fetchInitial(api, market)
-  }, [api, fetchInitial, isPageVisible, market])
+    if (api && market && isPageVisible) {
+      setLoaded(true)
+      const timer = setTimeout(
+        () =>
+          Promise.all([
+            fetchAllMarketDetails(api, market, true),
+            api.signerAddress &&
+              (loanExists ? fetchAllUserMarketDetails(api, market, true) : fetchUserMarketBalances(api, market, true)),
+          ]),
+        REFRESH_INTERVAL['3s'],
+      )
+      return () => clearTimeout(timer)
+    }
+  }, [
+    api,
+    fetchAllMarketDetails,
+    fetchAllUserMarketDetails,
+    fetchUserMarketBalances,
+    isPageVisible,
+    loanExists,
+    market,
+  ])
 
   useLendPageTitle(market?.collateral_token?.symbol, 'Supply')
 
