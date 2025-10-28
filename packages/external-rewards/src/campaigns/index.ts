@@ -20,7 +20,6 @@ import LevelMoney from './LevelMoney.json'
 import Liquity from './Liquity.json'
 import Lombard from './Lombard.json'
 import Loop from './Loop.json'
-import Makina from './Makina.json'
 import Mellow from './Mellow.json'
 import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
@@ -69,5 +68,4 @@ export {
   Aegis,
   Ebisu,
   Liquity,
-  Makina,
 }
