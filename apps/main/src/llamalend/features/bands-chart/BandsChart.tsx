@@ -96,7 +96,7 @@ const BandsChartComponent = ({
     }
   }, [option, initialZoom])
 
-  if (!chartData || chartData.length === 0) {
+  if (!chartData?.length) {
     return (
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
         <Box

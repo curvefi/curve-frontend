@@ -12,16 +12,10 @@ const ColorSquare = ({ color }: { color: string }) => (
   <Box sx={{ width: '10px', height: '10px', backgroundColor: color, borderRadius: '2px' }} />
 )
 
-const AmountDisplay = ({ amount, valueUsd }: { amount: number; valueUsd: number }) => {
-  if (amount === 0) {
-    return <>0</>
-  }
-  return (
-    <>
-      {formatNumber(amount, { notation: 'compact' })} ≈ ${formatNumber(valueUsd, { notation: 'compact' })}
-    </>
-  )
-}
+const AmountDisplay = ({ amount, valueUsd }: { amount: number; valueUsd: number }) =>
+  amount === 0
+    ? 0
+    : `${formatNumber(amount, { notation: 'compact' })} ≈ $${formatNumber(valueUsd, { notation: 'compact' })}`
 
 const SubTitleComp = ({ title, color }: { title: string; color: string }) => (
   <Stack direction="row" alignItems="center" gap={Spacing.sm}>
@@ -82,8 +76,8 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
   const collateralColor = theme.design.Color.Neutral[300]
   const borrowedColor = theme.design.Color.Neutral[500]
 
-  const hasMarketData = (data.bandCollateralValueUsd ?? 0) > 0 || (data.bandBorrowedValueUsd ?? 0) > 0
-  const hasUserData = (data.userBandCollateralValueUsd ?? 0) > 0 || (data.userBandBorrowedValueUsd ?? 0) > 0
+  const hasMarketData = !!(data.bandCollateralValueUsd || data.bandBorrowedValueUsd)
+  const hasUserData = !!(data.userBandCollateralValueUsd || data.userBandBorrowedValueUsd)
 
   return (
     <Box sx={{ padding: Spacing.sm, backgroundColor: (t) => t.design.Layer[3].Fill }}>

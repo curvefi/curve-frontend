@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 
 type ProcessedBandsData = {
-  marketBandsBalances: ParsedBandsBalances[]
-  userBandsBalances: ParsedBandsBalances[]
+  marketBandsBalances: ParsedBandsBalances[] | undefined
+  userBandsBalances: ParsedBandsBalances[] | undefined
   oraclePriceBand: number | null | undefined
 }
 
@@ -13,6 +13,8 @@ export const useProcessedBandsData = ({
   oraclePriceBand,
 }: ProcessedBandsData) =>
   useMemo(() => {
+    if (!marketBandsBalances && !userBandsBalances) return []
+
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
 

@@ -44,19 +44,12 @@ export async function fetchChartBandBalancesData(
     } as ParsedBandsBalances
   })
 
-  const parsedBandBalances = []
-  for (const idx in results) {
-    const r = results[idx]
-    parsedBandBalances.unshift(r)
-  }
-  return parsedBandBalances
+  return results.reverse()
 }
 
-export function sortBands(bandsBalances: BandsBalances) {
-  const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
-  const bandsBalancesArr = []
-  for (const k of sortedKeys) {
-    bandsBalancesArr.push({ ...bandsBalances[Number(k)], band: Number(k) })
-  }
-  return { bandsBalancesArr, bandsBalances }
-}
+export const sortBands = (bandsBalances: BandsBalances) => ({
+  bandsBalancesArr: lodash
+    .sortBy(Object.keys(bandsBalances), (k) => +k)
+    .map((k) => ({ ...bandsBalances[Number(k)], band: Number(k) })),
+  bandsBalances,
+})

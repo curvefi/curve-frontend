@@ -36,8 +36,8 @@ const createSeriesConfig = (
 
   return {
     ...baseConfig,
-    ...(markArea ? { markArea } : {}),
-    ...(markLine ? { markLine } : {}),
+    ...(markArea && { markArea }),
+    ...(markLine && { markLine }),
   }
 }
 

@@ -117,7 +117,7 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
 
       const keys = [
         'statsParametersMapper',
-        ...(isBeta ? [] : ['statsBandsMapper']), // Skip statsBandsMapper in beta mode
+        ...(isBeta ? [] : ['statsBandsMapper']), // statsBandsMapper not used in new chart
         'statsTotalsMapper',
         'statsAmmBalancesMapper',
         'statsCapAndAvailableMapper',

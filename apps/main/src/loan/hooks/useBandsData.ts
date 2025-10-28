@@ -36,8 +36,8 @@ export const useBandsData = ({
   const { oraclePrice, oraclePriceBand } = marketOraclePrices ?? {}
 
   const chartData = useProcessedBandsData({
-    marketBandsBalances: marketBandsBalances ?? [],
-    userBandsBalances: userBands ?? [],
+    marketBandsBalances: marketBandsBalances,
+    userBandsBalances: userBands,
     oraclePriceBand,
   })
 

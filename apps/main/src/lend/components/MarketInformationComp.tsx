@@ -25,6 +25,8 @@ type MarketInformationCompProps = {
   page?: 'create' | 'manage'
 }
 
+const EMPTY_ARRAY: never[] = []
+
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters. For /create, /manage, /vault pages.
  */
@@ -82,7 +84,7 @@ export const MarketInformationComp = ({
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}
-              userBandsBalances={userBandsBalances ?? []}
+              userBandsBalances={userBandsBalances ?? EMPTY_ARRAY}
               oraclePrice={oraclePrice}
             />
           )}

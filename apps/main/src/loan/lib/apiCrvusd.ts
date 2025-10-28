@@ -13,7 +13,9 @@ import {
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { getReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 export const network = {
   1: {
@@ -158,8 +160,7 @@ const detailInfo = {
     log('loanInfo', llamma.collateralSymbol)
     const fetchedPartialLoanInfo = await detailInfo.loanPartialInfo(llamma)
 
-    // Check if we're in beta mode to skip old bands data fetching
-    const isBeta = typeof window !== 'undefined' && localStorage.getItem('release-channel') === 'Beta'
+    const isBeta = getReleaseChannel() === ReleaseChannel.Beta
 
     const [balancesResult, bandsBalancesResult, liquidationBandResult, basePriceResult] = await Promise.allSettled([
       llamma.stats.balances(),
@@ -188,18 +189,13 @@ const detailInfo = {
     const loanExists = await llamma.loanExists(address)
     const fetchedPartialUserLoanInfo = await detailInfo.userLoanPartialInfo(llamma, address)
 
-    // Check if we're in beta mode to skip old bands data fetching
-    const isBeta = typeof window !== 'undefined' && localStorage.getItem('release-channel') === 'Beta'
+    const isBeta = getReleaseChannel() === ReleaseChannel.Beta
 
     const [userBandsRangeResult, userPricesResult, userLossResult, userBandsBalancesResult] = await Promise.allSettled([
       loanExists ? llamma.userRange(address) : Promise.resolve(0),
       loanExists ? llamma.userPrices(address) : Promise.resolve([] as string[]),
       loanExists ? llamma.userLoss(address) : Promise.resolve(DEFAULT_USER_LOSS),
-      isBeta
-        ? Promise.resolve(DEFAULT_BAND_BALANCES)
-        : loanExists
-          ? llamma.userBandsBalances(address)
-          : Promise.resolve(DEFAULT_BAND_BALANCES),
+      isBeta || !loanExists ? DEFAULT_BAND_BALANCES : llamma.userBandsBalances(address),
     ])
 
     const userBandsRange = fulfilledValue(userBandsRangeResult) ?? null

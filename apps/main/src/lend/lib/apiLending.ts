@@ -382,10 +382,10 @@ const user = {
             market.userHealth(),
             market.userHealth(false),
             market.userRange(),
-            isBeta ? Promise.resolve([0, 0]) : market.userBands(),
+            !isBeta && market.userBands(),
             market.userPrices(),
-            isBeta ? Promise.resolve([]) : market.userBandsBalances(),
-            isBeta ? Promise.resolve(null) : market.oraclePriceBand(),
+            isBeta ? [] : market.userBandsBalances(),
+            isBeta ? null : market.oraclePriceBand(),
             market.currentLeverage(signerAddress),
             market.currentPnL(signerAddress),
           ])
@@ -404,7 +404,7 @@ const user = {
         let parsedBandsBalances: any[] = []
         let bandsPct = '0'
 
-        if (!isBeta) {
+        if (!isBeta && bands) {
           const resp = await market.stats.bandsInfo()
           liquidationBand = resp?.liquidationBand ?? null
 
