@@ -30,7 +30,6 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
@@ -56,7 +55,6 @@ const LoanBorrowMore = ({
   const formEstGas = useStore((state) => state.loanBorrowMore.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanBorrowMore.formStatus)
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const { state: userState } = useUserLoanDetails(userActiveKey)
@@ -269,23 +267,11 @@ const LoanBorrowMore = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      if (
-        isLoaded &&
-        isPageVisible &&
-        isLeverage &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {

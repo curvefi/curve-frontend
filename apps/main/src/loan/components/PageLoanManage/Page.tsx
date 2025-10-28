@@ -56,7 +56,6 @@ const Page = () => {
   const llammaId = llamma?.id || ''
 
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
@@ -134,16 +133,12 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, llamma])
 
-  usePageVisibleInterval(
-    () => {
-      if (isPageVisible && curve && !!curve.signerAddress && llamma && loanExists) {
-        void fetchLoanDetails(curve, llamma)
-        void fetchUserLoanDetails(curve, llamma)
-      }
-    },
-    REFRESH_INTERVAL['1m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (curve && !!curve.signerAddress && llamma && loanExists) {
+      void fetchLoanDetails(curve, llamma)
+      void fetchUserLoanDetails(curve, llamma)
+    }
+  }, REFRESH_INTERVAL['1m'])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {
