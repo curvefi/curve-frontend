@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import Grid from '@mui/material/Grid'
-import Slider from '@mui/material/Slider'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
+import { Slider } from '@ui-kit/shared/ui/Slider'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BORROW_PRESET_RANGES } from '../constants'
 
@@ -40,9 +40,9 @@ export const LiquidationRangeSlider = ({
             <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
           </Grid>
         </Grid>
-        {/* we need 10 px padding, and -4px marginBottom, because the slider is overflowing its container */}
-        <Grid size={12} paddingInline="10px" marginBottom="-4px">
+        <Grid size={12}>
           <Slider
+            data-rail-background="safe"
             aria-label={t`Bands`}
             getAriaValueText={format}
             value={sliderValue}
@@ -66,10 +66,15 @@ export const LiquidationRangeSlider = ({
           onChange={(val) => val && setSliderValue(Number(val))}
           onBlur={() => setRange(sliderValue)}
           slotProps={{
+            // the normal input font size is too small for this component
             input: {
-              sx: { '& input': { color: 'text.tertiary' } },
+              sx: { '& input': { color: 'text.primary', fontSize: 'bodyMBold' } },
               endAdornment: (
-                <Typography sx={{ marginInlineEnd: Spacing.sm }} variant="highlightM">{t`Bands`}</Typography>
+                <Typography
+                  sx={{ marginInlineEnd: Spacing.sm }}
+                  variant="highlightM"
+                  color="text.secondary"
+                >{t`Bands`}</Typography>
               ),
             },
           }}

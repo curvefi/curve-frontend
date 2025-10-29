@@ -16,7 +16,7 @@ describe('DEX Swap', () => {
     cy.get('@to').click()
 
     cy.get('@to', LOAD_TIMEOUT).should('not.contain', '0.0')
-    cy.get(`[data-testid="exchange-rate-value"]`).contains('/')
-    cy.get(`[data-testid="price-impact-value"]`).contains('%')
+    cy.get(`[data-testid="exchange-rate-value"]`).contains('/', LOAD_TIMEOUT)
+    cy.get(`[data-testid="price-impact-value"]`).contains('%', LOAD_TIMEOUT)
   })
 })
