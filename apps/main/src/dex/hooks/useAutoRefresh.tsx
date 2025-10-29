@@ -3,7 +3,6 @@ import curvejsApi from '@/dex/lib/curvejs'
 import useStore from '@/dex/store/useStore'
 import type { NetworkDef } from '@ui/utils'
 import { type CurveApi, useConnection } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
@@ -12,7 +11,6 @@ import { useNetworkByChain, useNetworks } from '../entities/networks'
 export const useAutoRefresh = (networkDef: NetworkDef) => {
   const { curveApi } = useConnection()
 
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchPools = useStore((state) => state.pools.fetchPools)
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[networkDef.chainId])
   const fetchPoolsVolume = useStore((state) => state.pools.fetchPoolsVolume)
@@ -35,25 +33,19 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
-  const refetchPools = useCallback(async () => {
+  usePageVisibleInterval(() => {
+    if (curveApi) {
+      void fetchPoolsVolumeTvl(curveApi)
+
+      if (curveApi.signerAddress) {
+        void fetchAllStoredBalances(curveApi)
+      }
+    }
+  }, REFRESH_INTERVAL['5m'])
+
+  usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
     void fetchPools(curveApi, poolIds, null)
-  }, [curveApi, fetchPools, network])
-
-  usePageVisibleInterval(
-    () => {
-      if (curveApi) {
-        void fetchPoolsVolumeTvl(curveApi)
-
-        if (curveApi.signerAddress) {
-          void fetchAllStoredBalances(curveApi)
-        }
-      }
-    },
-    REFRESH_INTERVAL['5m'],
-    isPageVisible,
-  )
-
-  usePageVisibleInterval(refetchPools, REFRESH_INTERVAL['11m'], isPageVisible && !!curveApi && !!network)
+  }, REFRESH_INTERVAL['11m'])
 }
