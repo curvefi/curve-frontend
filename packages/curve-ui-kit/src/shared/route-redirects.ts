@@ -1,6 +1,6 @@
 import { type AppName, AppNames, CRVUSD_ROUTES, DAO_ROUTES, DEX_ROUTES, LEND_ROUTES, LLAMALEND_ROUTES } from './routes'
 
-const defaultPages = { dex: 'pools', lend: 'markets', crvusd: 'markets', dao: 'proposals', llamalend: 'markets' }
+const defaultPages = { dex: 'swap', lend: 'markets', crvusd: 'markets', dao: 'proposals', llamalend: 'markets' }
 const oldOrigins = ['lend', 'crvusd', 'dao'] as const
 
 // old redirects that were hardcoded in the react-router routes. The network name gets added in the redirect.
