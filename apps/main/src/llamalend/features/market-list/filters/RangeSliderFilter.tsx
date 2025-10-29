@@ -1,5 +1,6 @@
 import lodash from 'lodash'
-import { useCallback, useMemo } from 'react'
+import type { Property } from 'csstype'
+import { ReactNode, useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -8,6 +9,14 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import type { LlamaMarketColumnId } from '../columns.enum'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
+
+type NumberRange = [number, number]
+type AdornmentVariants = 'dollar' | 'percentage'
+
+type OnSliderChange = NonNullable<SliderInputProps['onChange']>
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -16,10 +25,27 @@ import type { LlamaMarketColumnId } from '../columns.enum'
 const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)
 
-type NumberRange = [number, number]
+const AdornmentTypography = ({ children }: { children: ReactNode }) => (
+  <Typography variant="bodySBold" color="textTertiary">
+    {children}
+  </Typography>
+)
 
-type OnSliderChange = NonNullable<SliderInputProps['onChange']>
-
+const adornmentVariantMap: Record<
+  AdornmentVariants,
+  { textAlign: Property.TextAlign; inputStartAdornment: ReactNode; inputEndAdornment: ReactNode }
+> = {
+  dollar: {
+    textAlign: 'left',
+    inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
+    inputEndAdornment: undefined,
+  },
+  percentage: {
+    textAlign: 'right',
+    inputStartAdornment: undefined,
+    inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
+  },
+}
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
@@ -32,7 +58,7 @@ export const RangeSliderFilter = <T,>({
   field,
   id,
   defaultMinimum = 0,
-  ...sliderInputProps
+  adornmentVariant,
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -42,8 +68,7 @@ export const RangeSliderFilter = <T,>({
   id: LlamaMarketColumnId
   format: (value: number) => string
   defaultMinimum?: number
-  inputEndAdornment?: SliderInputProps['inputEndAdornment']
-  inputStartAdornment?: SliderInputProps['inputStartAdornment']
+  adornmentVariant?: AdornmentVariants
 }) => {
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
@@ -111,7 +136,24 @@ export const RangeSliderFilter = <T,>({
           min={0}
           max={maxValue}
           step={step}
-          {...sliderInputProps}
+          inputProps={
+            adornmentVariant
+              ? {
+                  slotProps: {
+                    input: {
+                      sx: {
+                        paddingInlineStart: Spacing.xs,
+                        '& input': {
+                          textAlign: adornmentVariantMap[adornmentVariant].textAlign,
+                        },
+                      },
+                      endAdornment: adornmentVariantMap[adornmentVariant].inputEndAdornment,
+                      startAdornment: adornmentVariantMap[adornmentVariant].inputStartAdornment,
+                    },
+                  },
+                }
+              : undefined
+          }
         />
       </Stack>
     </Select>
