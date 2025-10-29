@@ -6,12 +6,11 @@ import { AccessorFn } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import { boolFilterFn, filterByText, inListFilterFn, multiFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
-import { PoolTvlCell } from './cells/PoolTvlCell'
-import { PoolVolumeCell } from './cells/PoolVolumeCell'
 import { RewardsBaseCell } from './cells/RewardsBaseCell'
 import { RewardsBaseHeader } from './cells/RewardsBaseHeader'
 import { RewardsOtherCell } from './cells/RewardsOtherCell'
 import { RewardsOtherHeader } from './cells/RewardsOtherHeader'
+import { UsdCell } from './cells/UsdCell'
 import type { PoolListItem } from './types'
 
 export enum PoolColumnId {
@@ -88,14 +87,14 @@ export const POOL_LIST_COLUMNS = [
   columnHelper.accessor((row) => (row.volume ? +row.volume?.value : null), {
     id: PoolColumnId.Volume,
     header: headers[PoolColumnId.Volume],
-    cell: PoolVolumeCell,
+    cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),
   columnHelper.accessor((row) => (row.tvl ? +row.tvl.value : null), {
     id: PoolColumnId.Tvl,
     header: headers[PoolColumnId.Tvl],
-    cell: PoolTvlCell,
+    cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
   }),

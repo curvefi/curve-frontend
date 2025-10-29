@@ -98,7 +98,6 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
       expandedPanel={PoolMobileExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
       loading={isLoading}
-      minRowHeight={Sizing.xxl}
     >
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}

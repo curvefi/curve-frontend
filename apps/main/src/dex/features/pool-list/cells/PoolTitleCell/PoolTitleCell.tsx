@@ -14,7 +14,7 @@ import type { Address } from '@ui-kit/utils'
 import { MarketTitle } from '@ui-kit/widgets/MarketTitle'
 import type { PoolListItem } from '../../types'
 import { PoolAlertBadge } from './PoolAlertBadge'
-import { PoolAlertTooltips } from './PoolAlertTooltips'
+import { PoolAlertIcons } from './PoolAlertIcons'
 import { PoolTokens } from './PoolTokens'
 
 const { Spacing, Height } = SizesAndSpaces
@@ -41,8 +41,8 @@ export const PoolTitleCell = ({
       <Stack direction="row" alignItems="center" gap={Spacing.sm}>
         <TokenIcons blockchainId={network} tokens={tokenList} />
         <Stack direction="column">
-          <Stack direction="row" alignItems="center">
-            <PoolAlertTooltips poolAlert={poolAlert} tokenAlert={tokenAlert} />
+          <Stack direction="row" alignItems="center" gap={Spacing.xs}>
+            <PoolAlertIcons poolAlert={poolAlert} tokenAlert={tokenAlert} />
             <MarketTitle url={url} address={pool.address as Address} title={pool.name} />
           </Stack>
           <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />

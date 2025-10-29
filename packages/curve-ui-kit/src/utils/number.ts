@@ -273,4 +273,5 @@ export const formatPercent = (value?: Amount | null) =>
     maximumSignificantDigits: undefined,
   })
 
-export const formatUsd = (value: Amount) => formatNumber(value, { unit: 'dollar', abbreviate: true })
+export const formatUsd = (value: Amount, options?: NumberFormatOptions) =>
+  formatNumber(value, { unit: 'dollar', abbreviate: true, ...options })
