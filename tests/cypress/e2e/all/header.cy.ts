@@ -1,7 +1,6 @@
 import { AppRoute, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
-  AppPath,
   checkIsDarkMode,
   LOAD_TIMEOUT,
   oneDesktopViewport,
@@ -18,8 +17,6 @@ const expectedConnectHeight = 40
 const expectedFooterXMargin = { mobile: 32, tablet: 48, desktop: 48 }
 const expectedFooterMinWidth = 273
 const expectedFooterMaxWidth = 1536
-
-const llamalendApps: AppPath[] = ['llamalend', 'lend', 'crvusd']
 
 describe('Header', () => {
   let viewport: readonly [number, number]
@@ -130,12 +127,12 @@ describe('Header', () => {
       cy.get(`[data-testid='menu-toggle']`).click()
       cy.get(`[data-testid='mobile-drawer']`).should('be.visible')
 
-      cy.url().then((url) => {
-        const pathname = new URL(url).pathname
-        const index = llamalendApps.includes(getRouteApp(route)) ? 1 : 0 // LlamaLend's first option is the default page
+      cy.window().then(({ document, location: { href, pathname } }) => {
+        const isFirstPage = document.querySelector('[data-testid^="sidebar-item-"]')?.classList.contains('current')
+        const index = isFirstPage ? 1 : 0 // pick 2nd link if first is current
         cy.get('[data-testid^="sidebar-item-"]').eq(index).should('have.attr', 'href').and('not.equal', pathname)
         cy.get('[data-testid^="sidebar-item-"]').eq(index).click()
-        cy.url(LOAD_TIMEOUT).should('not.equal', url)
+        cy.url(LOAD_TIMEOUT).should('not.equal', href)
         cy.get(`[data-testid='mobile-drawer']`).should('not.exist')
       })
     })
