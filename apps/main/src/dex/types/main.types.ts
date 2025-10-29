@@ -149,6 +149,7 @@ export interface PoolData {
   idx?: number
   chainId: ChainId
   pool: Pool
+  totalAPR: number
   gauge: Gauge
   hasWrapped: boolean
   hasVyperVulnerability: boolean

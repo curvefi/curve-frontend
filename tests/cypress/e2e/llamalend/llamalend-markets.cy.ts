@@ -69,7 +69,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get('[data-testid="btn-drawer-sort-lamalend-markets"]').click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
-      closeDrawer()
+      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
