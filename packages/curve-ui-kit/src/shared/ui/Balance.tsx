@@ -103,7 +103,7 @@ export const Balance = <T extends Amount>({
 
     <WithWrapper
       Wrapper={BalanceButton}
-      wrap={!!clickable && balance != null}
+      wrap={clickable && balance != null}
       onClick={onClick}
       disabled={disabled}
       testId={clickTestId}
