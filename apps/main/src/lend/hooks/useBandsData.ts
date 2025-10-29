@@ -1,9 +1,10 @@
 import { PageContentProps } from '@/lend/types/lend.types'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-bands.query'
-import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 
 const EMPTY_ARRAY: never[] = []
@@ -11,7 +12,11 @@ const EMPTY_ARRAY: never[] = []
 export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, 'rChainId' | 'api' | 'rOwmId'>) => {
   const { wallet } = useConnection()
   const userAddress = wallet?.account.address
-  const { data: marketOraclePrices, isLoading: isMarketOraclePricesLoading } = useMarketOraclePrices({
+  const { data: oraclePriceBand, isLoading: isOraclePriceBandLoading } = useMarketOraclePriceBand({
+    chainId: rChainId,
+    marketId: rOwmId,
+  })
+  const { data: oraclePrice, isLoading: isOraclePriceLoading } = useMarketOraclePrice({
     chainId: rChainId,
     marketId: rOwmId,
   })
@@ -30,16 +35,21 @@ export const useBandsData = ({ rChainId, rOwmId, api }: Pick<PageContentProps, '
   const chartData = useProcessedBandsData({
     marketBandsBalances: marketBands?.bandsBalances ?? EMPTY_ARRAY,
     userBandsBalances: userBands ?? EMPTY_ARRAY,
-    oraclePriceBand: marketOraclePrices?.oraclePriceBand,
+    oraclePriceBand,
   })
 
   const isLoading =
-    !api || isMarketBandsLoading || isUserBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading
+    !api ||
+    isMarketBandsLoading ||
+    isUserBandsLoading ||
+    isOraclePriceBandLoading ||
+    isOraclePriceLoading ||
+    isLoanExistsLoading
 
   return {
     isLoading,
     chartData,
     userBandsBalances: userBands ?? EMPTY_ARRAY,
-    oraclePrice: marketOraclePrices?.oraclePrice,
+    oraclePrice,
   }
 }

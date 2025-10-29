@@ -1,8 +1,9 @@
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBands } from '@/llamalend/features/bands-chart/queries/market-bands.query'
-import { useMarketOraclePrices } from '@/llamalend/features/bands-chart/queries/market-oracle-prices.query'
 import { useUserBands } from '@/llamalend/features/bands-chart/queries/user-bands.query'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import { type LlamaApi } from '@ui-kit/features/connect-wallet'
 
 export const useBandsData = ({
@@ -15,7 +16,11 @@ export const useBandsData = ({
   api: LlamaApi | undefined
 }) => {
   const { data: marketBands, isLoading: isMarketBandsLoading } = useMarketBands({ chainId, marketId: llammaId })
-  const { data: marketOraclePrices, isLoading: isMarketOraclePricesLoading } = useMarketOraclePrices({
+  const { data: oraclePriceBand, isLoading: isMarketOraclePriceBandLoading } = useMarketOraclePriceBand({
+    chainId,
+    marketId: llammaId,
+  })
+  const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice({
     chainId,
     marketId: llammaId,
   })
@@ -33,8 +38,6 @@ export const useBandsData = ({
 
   const marketBandsBalances = marketBands?.bandsBalances
 
-  const { oraclePrice, oraclePriceBand } = marketOraclePrices ?? {}
-
   const chartData = useProcessedBandsData({
     marketBandsBalances: marketBandsBalances,
     userBandsBalances: userBands,
@@ -42,7 +45,12 @@ export const useBandsData = ({
   })
 
   const isLoading =
-    !api || isMarketBandsLoading || isMarketOraclePricesLoading || isLoanExistsLoading || isUserBandsLoading
+    !api ||
+    isMarketBandsLoading ||
+    isMarketOraclePriceBandLoading ||
+    isMarketOraclePriceLoading ||
+    isLoanExistsLoading ||
+    isUserBandsLoading
 
   return {
     isLoading,
