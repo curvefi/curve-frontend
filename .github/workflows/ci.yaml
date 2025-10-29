@@ -121,10 +121,11 @@ jobs:
         run: yarn dev 2>&1 | tee ../../e2e-api.log &
         working-directory: apps/router-api
 
-      - run: |
+      - name: e2e tests
+        working-directory: tests
+        run: |
           set -o pipefail # fail tee if the main command fails
           yarn run cy:run:e2e --browser ${{ matrix.browser }} | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
-        working-directory: tests
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
