@@ -78,8 +78,10 @@ const ROUTE_TEST_IDS = {
 export const getRouteTestId = (route: AppRoute) => {
   const app = getRouteApp(route)
   const appRoutes = ROUTE_TEST_IDS[app]
-  const afterNetwork = `/${route.split('/').slice(2).join('/')}` as keyof typeof appRoutes
-  const testId = appRoutes[afterNetwork]
+  // // extract part after /{app}/{network}, exclude optional address at the end
+  const afterNetwork = /^\w+\/ethereum(\/[^/]+)(\/0x[a-fA-F0-9]{40})?$/.exec(route)?.[1]
+  if (!afterNetwork) throw new Error(`Could not extract route after network from ${route}`)
+  const testId = appRoutes[afterNetwork as keyof typeof appRoutes]
   if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
   return testId
 }
