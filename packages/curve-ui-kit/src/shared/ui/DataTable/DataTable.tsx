@@ -51,26 +51,20 @@ export const DataTable = <T extends TableItem>({
   return (
     <WithWrapper Wrapper={Box} wrap={!!maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
       <Table
-        sx={useMemo(
-          () => ({
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
-          }),
-          [],
-        )}
+        sx={{
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+          borderCollapse: 'separate' /* Don't collapse to avoid funky stuff with the sticky header */,
+        }}
         data-testid={!loading && 'data-table'}
       >
         <TableHead
-          sx={useMemo(
-            () => (t) => ({
-              position: 'sticky',
-              top: maxHeight ? 0 : top,
-              zIndex: t.zIndex.tableHeader,
-              backgroundColor: t.design.Table.Header.Fill,
-              marginBlock: Sizing['sm'],
-            }),
-            [maxHeight, top],
-          )}
+          sx={(t) => ({
+            position: 'sticky',
+            top: maxHeight ? 0 : top,
+            zIndex: t.zIndex.tableHeader,
+            backgroundColor: t.design.Table.Header.Fill,
+            marginBlock: Sizing['sm'],
+          })}
           data-testid="data-table-head"
         >
           {children && <FilterRow table={table}>{children}</FilterRow>}
