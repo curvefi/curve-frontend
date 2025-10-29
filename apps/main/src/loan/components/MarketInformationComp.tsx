@@ -1,10 +1,10 @@
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
-import { useBandsData } from '@/loan/hooks/useBandsData'
 import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
@@ -44,7 +44,7 @@ export const MarketInformationComp = ({
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const {
     chartData,
-    userBands,
+    userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
   } = useBandsData({
@@ -83,7 +83,7 @@ export const MarketInformationComp = ({
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}
-              userBandsBalances={userBands ?? EMPTY_BANDS_BALANCES}
+              userBandsBalances={userBandsBalances ?? EMPTY_BANDS_BALANCES}
               oraclePrice={oraclePrice}
             />
           )}

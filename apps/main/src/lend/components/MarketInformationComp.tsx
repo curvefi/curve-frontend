@@ -3,10 +3,10 @@ import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
-import { useBandsData } from '@/lend/hooks/useBandsData'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
@@ -49,8 +49,8 @@ export const MarketInformationComp = ({
     oraclePrice,
     isLoading: isBandsLoading,
   } = useBandsData({
-    rChainId,
-    rOwmId,
+    chainId: rChainId,
+    llammaId: rOwmId,
     api,
   })
   const collateralToken = market && {

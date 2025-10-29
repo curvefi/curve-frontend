@@ -7,37 +7,42 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 import { createValidationSuite } from '@ui-kit/lib/validation'
 import type { BandsBalances } from '../types'
 import { sortBands, fetchChartBandBalancesData } from './utils'
+import { liquidationBandValidationGroup } from './validation'
 
 const isMarket = false
 
-type UserBandsQuery = UserMarketQuery & { loanExists: boolean | undefined | null }
-type UserBandsParams = UserMarketParams & { loanExists: boolean | undefined | null }
+type MarketUserBandsBalancesQuery = UserMarketQuery & {
+  loanExists: boolean
+  liquidationBand: number
+}
+type MarketUserBandsBalancesParams = UserMarketParams & {
+  loanExists: boolean | undefined | null
+  liquidationBand: number | null | undefined
+}
 
-const userBandsValidationSuite = createValidationSuite((params: UserBandsParams) => {
+const marketUserBandsBalancesValidationSuite = createValidationSuite((params: MarketUserBandsBalancesParams) => {
   userMarketValidationSuite(params)
-  loanExistsValidationGroup({ loanExists: params.loanExists })
+  loanExistsValidationGroup(params)
+  liquidationBandValidationGroup(params)
 })
 
-export const { useQuery: useUserBands } = queryFactory({
-  queryKey: ({ chainId, marketId, userAddress }: UserBandsParams) =>
-    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'user-bands'] as const,
-  queryFn: async ({ marketId, userAddress }: UserBandsQuery) => {
+export const { useQuery: useMarketUserBandsBalances } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress, loanExists, liquidationBand }: MarketUserBandsBalancesParams) =>
+    [
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
+      'market-user-bands-balances',
+      { loanExists },
+      { liquidationBand },
+    ] as const,
+  queryFn: async ({ marketId, userAddress, liquidationBand }: MarketUserBandsBalancesQuery) => {
     const market = getLlamaMarket(marketId)
 
     if (market instanceof LendMarketTemplate) {
-      const [userBandsBalances, bandInfo] = await Promise.all([
-        market.userBandsBalances(userAddress),
-        market.stats.bandsInfo(),
-      ])
-
-      const { liquidationBand } = bandInfo
+      const userBandsBalances = await market.userBandsBalances(userAddress)
 
       return fetchChartBandBalancesData(sortBands(userBandsBalances), liquidationBand, market, isMarket)
     } else {
-      const [userBandsBalances, liquidationBand] = await Promise.all([
-        market.userBandsBalances(userAddress),
-        market.stats.liquidatingBand(),
-      ])
+      const userBandsBalances = await market.userBandsBalances(userAddress)
 
       const formattedUserBandsBalances: BandsBalances = Object.fromEntries(
         Object.entries(userBandsBalances).map(([key, value]) => [
@@ -49,5 +54,5 @@ export const { useQuery: useUserBands } = queryFactory({
       return fetchChartBandBalancesData(sortBands(formattedUserBandsBalances), liquidationBand, market, isMarket)
     }
   },
-  validationSuite: userBandsValidationSuite,
+  validationSuite: marketUserBandsBalancesValidationSuite,
 })
