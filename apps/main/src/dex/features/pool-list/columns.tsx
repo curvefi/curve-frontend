@@ -62,7 +62,7 @@ export const POOL_LIST_COLUMNS = [
     cell: PoolTitleCell,
     filterFn: filterByText(...POOL_TEXT_FIELDS),
   }),
-  columnHelper.accessor((row) => row.rewards?.base, {
+  columnHelper.accessor((row) => (row.rewards?.base ? +row.rewards.base.day : null), {
     id: PoolColumnId.RewardsBase,
     header: headers[PoolColumnId.RewardsBase],
     cell: RewardsBaseCell,

@@ -21,6 +21,8 @@ export const HeaderCell = <T extends TableItem>({
   const { tooltip } = column.columnDef.meta ?? {}
 
   const headerEl = flexRender(column.columnDef.header, header.getContext())
+  const isSorted = column.getIsSorted()
+  console.log({ isSorted, id: column.id })
   return (
     <Typography
       component="th"
@@ -29,7 +31,7 @@ export const HeaderCell = <T extends TableItem>({
         verticalAlign: 'bottom',
         padding: Spacing.sm,
         paddingBlockStart: 0,
-        color: `text.${column.getIsSorted() ? 'primary' : 'secondary'}`,
+        color: `text.${isSorted ? 'primary' : 'secondary'}`,
         ...getExtraColumnPadding(column),
         ...(canSort && {
           cursor: 'pointer',

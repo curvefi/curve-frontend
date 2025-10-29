@@ -15,15 +15,12 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
 import { PoolMobileExpandedPanel } from './components/PoolMobileExpandedPanel'
 import { usePoolListData } from './hooks/usePoolListData'
 import { DEFAULT_SORT, usePoolListVisibilitySettings } from './hooks/usePoolListVisibilitySettings'
-
-const { Sizing } = SizesAndSpaces
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
@@ -62,13 +59,10 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
-  const { columnSettings, columnVisibility, toggleVisibility, sortField } = usePoolListVisibilitySettings(
-    LOCAL_STORAGE_KEY,
-    {
-      isLite,
-      sorting,
-    },
-  )
+  const { columnSettings, columnVisibility, sortField } = usePoolListVisibilitySettings(LOCAL_STORAGE_KEY, {
+    isLite,
+    sorting,
+  })
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
 
@@ -102,10 +96,8 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
       <TableFilters<PoolColumnId>
         filterExpandedKey={LOCAL_STORAGE_KEY}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        loading={isLoading}
-        // todo: onReload={onReload}
+        loading={!isReady}
         visibilityGroups={columnSettings}
-        // toggleVisibility={toggleVisibility} we don't have any optional columns yet
         searchText={searchText}
         onSearch={onSearch}
         hasSearchBar

@@ -26,4 +26,5 @@ export type PoolListItem = PoolData & {
   network: INetworkName
   url: string
   tags: PoolTag[]
+  totalAPR: number
 }
