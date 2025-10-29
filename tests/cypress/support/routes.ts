@@ -11,14 +11,28 @@ import {
   PAGE_LEGAL,
 } from '@ui-kit/shared/routes'
 
+const SDOLA_LEND_POOL = '0xaD444663c6C92B497225c6cE65feE2E7F78BFb86'
+
 /**
- * Returns a random app route for testing
+ * Returns a random app route for testing. Excludes redirect routes.
  */
 export const oneAppRoute = () =>
   ({
     dex: () => `dex/ethereum${oneOf(...recordValues(DEX_ROUTES))}`,
-    lend: () => `lend/ethereum${oneOf(...recordValues(LEND_ROUTES))}`,
-    crvusd: () => `crvusd/ethereum${oneOf(...recordValues(CRVUSD_ROUTES))}`,
+    lend: () =>
+      `lend/ethereum${oneOf(
+        ...recordValues(LEND_ROUTES).map((r) =>
+          // use market detail page, the list page redirects to the llamalend app
+          r == LEND_ROUTES.PAGE_MARKETS ? `${LEND_ROUTES.PAGE_MARKETS}/${SDOLA_LEND_POOL}/create` : r,
+        ),
+      )}`,
+    crvusd: () =>
+      `crvusd/ethereum${oneOf(
+        ...recordValues(CRVUSD_ROUTES).map((r) =>
+          // use market detail page, the list page redirects to the llamalend app
+          r == CRVUSD_ROUTES.PAGE_MARKETS ? `${CRVUSD_ROUTES.PAGE_MARKETS}/WBTC/create` : r,
+        ),
+      )}`,
     llamalend: () => `llamalend/ethereum${oneOf(...recordValues(LLAMALEND_ROUTES))}`,
     dao: () =>
       `dao/ethereum${oneOf(
@@ -59,17 +73,11 @@ const ROUTE_TEST_IDS = {
   crvusd: {
     [CRVUSD_ROUTES.PAGE_PSR]: 'pegkeepers',
     [CRVUSD_ROUTES.PAGE_CRVUSD_STAKING]: 'scrvusd-page',
-    [CRVUSD_ROUTES.PAGE_MARKETS]: 'data-table-head',
+    [CRVUSD_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt',
     ...COMMON_ROUTE_TEST_IDS,
   },
-  llamalend: {
-    [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head',
-    ...COMMON_ROUTE_TEST_IDS,
-  },
-  lend: {
-    [LEND_ROUTES.PAGE_MARKETS]: 'data-table-head',
-    ...COMMON_ROUTE_TEST_IDS,
-  },
+  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt', ...COMMON_ROUTE_TEST_IDS },
+  llamalend: { [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head', ...COMMON_ROUTE_TEST_IDS },
 }
 
 /**
@@ -78,8 +86,9 @@ const ROUTE_TEST_IDS = {
 export const getRouteTestId = (route: AppRoute) => {
   const app = getRouteApp(route)
   const appRoutes = ROUTE_TEST_IDS[app]
-  const afterNetwork = `/${route.split('/').slice(2).join('/')}` as keyof typeof appRoutes
-  const testId = appRoutes[afterNetwork]
+  const afterNetwork = route.replace(/^\w+\/ethereum/, '') // extract part after /{app}/{network}
+  if (!afterNetwork) throw new Error(`Could not extract route after network from ${route}`)
+  const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
   if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
   return testId
 }
