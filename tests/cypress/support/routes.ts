@@ -94,7 +94,7 @@ export const getRouteTestId = (route: AppRoute) => {
   const appRoutes = ROUTE_TEST_IDS[app]
   const afterNetwork = route.replace(/^\w+\/ethereum/, '') // extract part after /{app}/{network}
   if (!afterNetwork) throw new Error(`Could not extract route after network from ${route}`)
-  const testId = Object.keys(appRoutes).find((r) => afterNetwork.startsWith(r))
+  const [, testId] = Object.entries(appRoutes).find(([route]) => afterNetwork.startsWith(route)) ?? []
   if (!testId) throw new Error(`No test-id mapping for ${app} → ${afterNetwork}. Found: ${Object.keys(appRoutes)}`)
   return testId
 }
