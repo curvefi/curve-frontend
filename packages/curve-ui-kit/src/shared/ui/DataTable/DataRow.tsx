@@ -1,4 +1,4 @@
-import { memo, type MouseEvent, useCallback, useMemo, useState } from 'react'
+import { type MouseEvent, useCallback, useMemo, useState } from 'react'
 import TableRow from '@mui/material/TableRow'
 import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
@@ -35,7 +35,7 @@ export type DataRowProps<T extends TableItem> = {
   minRowHeight?: Responsive
 }
 
-const RawDataRow = <T extends TableItem>({
+export const DataRow = <T extends TableItem>({
   table,
   isLast,
   row,
@@ -104,5 +104,3 @@ const RawDataRow = <T extends TableItem>({
     </>
   )
 }
-
-export const DataRow = memo(RawDataRow) as typeof RawDataRow

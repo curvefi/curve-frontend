@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { useMemo } from 'react'
 import Typography from '@mui/material/Typography'
 import { flexRender, type Header } from '@tanstack/react-table'
 import { Sortable } from '@ui-kit/shared/ui/DataTable/Sortable'
@@ -8,7 +8,7 @@ import { getAlignment, getExtraColumnPadding, type TableItem } from './data-tabl
 
 const { Spacing, Sizing } = SizesAndSpaces
 
-const RawHeaderCell = function HeaderCell<T extends TableItem>({
+export const HeaderCell = function <T extends TableItem>({
   header,
   isSticky,
   width,
@@ -64,5 +64,3 @@ const RawHeaderCell = function HeaderCell<T extends TableItem>({
     </Typography>
   )
 }
-
-export const HeaderCell = memo(RawHeaderCell) as typeof RawHeaderCell
