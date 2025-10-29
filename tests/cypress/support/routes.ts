@@ -76,14 +76,8 @@ const ROUTE_TEST_IDS = {
     [CRVUSD_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt',
     ...COMMON_ROUTE_TEST_IDS,
   },
-  llamalend: {
-    [LLAMALEND_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt',
-    ...COMMON_ROUTE_TEST_IDS,
-  },
-  lend: {
-    [LEND_ROUTES.PAGE_MARKETS]: 'data-table-head',
-    ...COMMON_ROUTE_TEST_IDS,
-  },
+  lend: { [LEND_ROUTES.PAGE_MARKETS]: 'btn-connect-prompt', ...COMMON_ROUTE_TEST_IDS },
+  llamalend: { [LLAMALEND_ROUTES.PAGE_MARKETS]: 'data-table-head', ...COMMON_ROUTE_TEST_IDS },
 }
 
 /**
