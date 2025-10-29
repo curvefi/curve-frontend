@@ -61,7 +61,6 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   const userPoolBalances = useStore((state) => state.user.walletBalances[userPoolActiveKey])
   const userPoolBalancesLoading = useStore((state) => state.user.walletBalancesLoading)
   const currencyReserves = useStore((state) => state.pools.currencyReserves[chainIdPoolId])
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchUserPoolInfo = useStore((state) => state.user.fetchUserPoolInfo)
   const fetchPoolStats = useStore((state) => state.pools.fetchPoolStats)
@@ -120,13 +119,11 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
     return pool.isCrypto ? '0.1' : '0.03'
   }, [storeMaxSlippage, pool])
 
-  const fetchData = useCallback(() => {
-    if (isPageVisible && curve && poolData) {
+  usePageVisibleInterval(() => {
+    if (curve && poolData) {
       void fetchPoolStats(curve, poolData)
     }
-  }, [curve, fetchPoolStats, isPageVisible, poolData])
-
-  usePageVisibleInterval(() => fetchData, REFRESH_INTERVAL['5m'], isPageVisible)
+  }, REFRESH_INTERVAL['5m'])
 
   useEffect(() => {
     if (

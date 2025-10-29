@@ -4,6 +4,7 @@ import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
 import type { Column } from '@tanstack/react-table'
+import { setTimeoutInterval } from '@ui-kit/utils/timers'
 import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
 
 const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
@@ -34,10 +35,10 @@ export const SkeletonRows = <T extends TableItem>({
   maxLength?: number // maximum length of the skeleton rows
 }) => {
   const [length, setLength] = useState(initialLength)
-  useEffect(() => {
-    const interval = setInterval(() => setLength((prevLength) => Math.min(maxLength, prevLength + 1)), increaseEveryMs)
-    return () => clearInterval(interval)
-  }, [increaseEveryMs, maxLength])
+  useEffect(
+    () => setTimeoutInterval(() => setLength((prevLength) => Math.min(maxLength, prevLength + 1)), increaseEveryMs),
+    [increaseEveryMs, maxLength],
+  )
 
   return (
     <>

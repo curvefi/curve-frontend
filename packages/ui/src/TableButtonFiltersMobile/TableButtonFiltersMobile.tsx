@@ -1,10 +1,10 @@
 import { useIsMobile } from 'curve-ui-kit/src/hooks/useBreakpoints'
 import { useMemo } from 'react'
 import { useOverlayTriggerState } from '@react-stately/overlays'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
 import OpenDialogButton from 'ui/src/Dialog/OpenDialogButton'
 import { RadioGroup } from 'ui/src/Radio'
-import { delayAction } from 'ui/src/utils/helpers'
 import TableButtonFiltersMobileItem from './components/TableButtonFiltersMobileItem'
 import TableButtonFiltersMobileItemIcon from './components/TableButtonFiltersMobileItemIcon'
 
@@ -24,13 +24,8 @@ const TableButtonFiltersMobile = ({
   const overlayTriggerState = useOverlayTriggerState({})
   const isMobile = useIsMobile()
 
-  const handleClose = () => {
-    if (isMobile) {
-      delayAction(overlayTriggerState.close)
-    } else {
-      overlayTriggerState.close()
-    }
-  }
+  const handleClose = () =>
+    isMobile ? setTimeout(overlayTriggerState.close, Duration.Delay) : overlayTriggerState.close()
 
   const handleRadioGroupChange = (updatedFilterKey: string) => {
     updateRouteFilterKey(updatedFilterKey)

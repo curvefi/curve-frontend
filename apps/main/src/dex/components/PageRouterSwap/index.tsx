@@ -348,7 +348,7 @@ const QuickSwap = ({
   }, [isReady, tokensMapperStr, curve?.signerAddress])
 
   // re-fetch data
-  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'], isPageVisible)
+  usePageVisibleInterval(fetchData, REFRESH_INTERVAL['15s'])
 
   // steps
   useEffect(() => {

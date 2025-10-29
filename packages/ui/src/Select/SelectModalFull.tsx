@@ -1,9 +1,9 @@
 import type { SelectProps as ReactStatelySelectProps, SelectState } from 'react-stately'
 import { styled } from 'styled-components'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import DelayRender from 'ui/src/DelayRender'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
 import { Radio, RadioGroup } from 'ui/src/Radio'
-import { delayAction } from 'ui/src/utils'
 
 function SelectModalFull<T extends object>({
   title,
@@ -16,7 +16,7 @@ function SelectModalFull<T extends object>({
 }) {
   const handleRadioGroupChange = (updatedKey: string) => {
     if (typeof onSelectionChange === 'function') onSelectionChange(updatedKey)
-    delayAction(state.close)
+    setTimeout(state.close, Duration.Delay)
   }
 
   return (
