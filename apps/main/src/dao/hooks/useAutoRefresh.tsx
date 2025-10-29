@@ -5,5 +5,5 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 export const useAutoRefresh = (isHydrated: boolean) => {
   const getGauges = useStore((state) => state.gauges.getGauges)
   const getGaugesData = useStore((state) => state.gauges.getGaugesData)
-  usePageVisibleInterval(() => Promise.all([getGauges(), getGaugesData()]), REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(() => isHydrated && Promise.all([getGauges(), getGaugesData()]), REFRESH_INTERVAL['5m'])
 }
