@@ -110,7 +110,7 @@ const InpToken = ({
         loading: inpLabelLoading,
         balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
+        usdRate,
         clickTestId: maxTestId,
       }}
       label={inpTopLabel}

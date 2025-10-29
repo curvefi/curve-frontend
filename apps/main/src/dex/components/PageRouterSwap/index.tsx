@@ -452,9 +452,8 @@ const QuickSwap = ({
               walletBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
-                symbol: fromToken?.symbol || '',
-                ...(fromUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
+                symbol: fromToken?.symbol,
+                usdRate: fromUsdRate,
               }}
               maxBalance={{
                 balance: decimal(userFromBalance),
@@ -544,8 +543,8 @@ const QuickSwap = ({
             walletBalance={{
               loading: userBalancesLoading,
               balance: decimal(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
+              symbol: toToken?.symbol,
+              usdRate: toUsdRate,
             }}
             disabled={isDisable}
             testId="to-amount"

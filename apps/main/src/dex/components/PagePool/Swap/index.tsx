@@ -460,8 +460,7 @@ const Swap = ({
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
-                ...(toUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
+                usdRate: fromUsdRate,
               }}
               maxBalance={{
                 balance: decimal(userFromBalance),
@@ -587,8 +586,7 @@ const Swap = ({
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
-              ...(toUsdRate != null &&
-                userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
+              usdRate: toUsdRate,
             }}
           />
         )}

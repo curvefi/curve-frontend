@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId } from 'react'
+import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId, useMemo } from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
@@ -104,9 +104,27 @@ export interface LargeTokenInputRef {
 }
 
 /** Configuration for wallet balance display and input. */
-type WalletBalanceProps = Partial<
-  Pick<BalanceProps<Decimal>, 'balance' | 'notionalValueUsd' | 'symbol' | 'loading' | 'clickTestId' | 'onClick'>
->
+type WalletBalanceProps = {
+  symbol?: string
+  usdRate?: number
+} & Pick<BalanceProps<Decimal>, 'balance' | 'loading' | 'clickTestId' | 'onClick' | 'notionalValueUsd'>
+
+/**
+ * Massages the given wallet balance props for the actual wallet Balance component,
+ * based on token balance, its usd rate and more as expected by the Balance component in @ui-kit.
+ *
+ * Any given notionalValueUsd will be overridden if both balance and usdRate are provided.
+ *
+ * @param symbol - The symbol of the token (e.g., "ETH")
+ * @param usdRate - The USD exchange rate for the token (e.g., 1.05)
+ */
+const createWalletBalance = ({ balance, symbol, loading, usdRate, ...props }: WalletBalanceProps) => ({
+  ...props,
+  balance,
+  symbol: symbol ?? '-',
+  loading: loading ?? balance == null,
+  ...(balance != null && usdRate != null && { notionalValueUsd: usdRate * +balance }),
+})
 
 /** Configuration for max balance behavior, which for now are the slider and chips. */
 type MaxBalanceProps = {
@@ -230,7 +248,7 @@ const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqual
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
-  walletBalance,
+  walletBalance: walletBalanceRaw,
   maxBalance,
   message,
   label,
@@ -252,6 +270,8 @@ export const LargeTokenInput = ({
   })
 
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
+
+  const walletBalance = useMemo(() => walletBalanceRaw && createWalletBalance(walletBalanceRaw), [walletBalanceRaw])
   const showWalletBalance = !!walletBalance
 
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
@@ -401,6 +421,7 @@ export const LargeTokenInput = ({
                 symbol={walletBalance?.symbol ?? ''}
                 balance={walletBalance?.balance}
                 notionalValueUsd={walletBalance?.notionalValueUsd}
+                loading={walletBalance?.loading}
                 onClick={onWalletBalance}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />

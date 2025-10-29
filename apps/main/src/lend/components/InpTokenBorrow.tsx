@@ -92,7 +92,7 @@ const InpTokenBorrow = ({
         loading: tokenBalance == null,
         balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && tokenBalance != null ? usdRate * +tokenBalance : undefined,
+        usdRate: usdRate,
       }}
       maxBalance={{
         balance: decimal(maxRecv),
