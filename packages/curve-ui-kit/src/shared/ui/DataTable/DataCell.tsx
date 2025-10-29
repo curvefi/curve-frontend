@@ -1,10 +1,9 @@
-import { useMemo } from 'react'
 import { Stack } from '@mui/material'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import { type Cell, flexRender } from '@tanstack/react-table'
 import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
-import { getCellSx, getCellVariant, type TableItem } from './data-table.utils'
+import { useCellSx, getCellVariant, type TableItem } from './data-table.utils'
 import { RotatableIcon } from './RotatableIcon'
 
 export const DataCell = <T extends TableItem>({
@@ -19,10 +18,7 @@ export const DataCell = <T extends TableItem>({
   const { column, row } = cell
   const children = flexRender(column.columnDef.cell, cell.getContext())
   const showCollapseIcon = isMobile && column.getIsLastColumn()
-  const [sx, wrapperSx] = useMemo(
-    () => getCellSx({ column, showCollapseIcon, isSticky }),
-    [column, showCollapseIcon, isSticky],
-  )
+  const [sx, wrapperSx] = useCellSx({ column, showCollapseIcon, isSticky })
   return (
     <Typography
       variant={getCellVariant(column)}
