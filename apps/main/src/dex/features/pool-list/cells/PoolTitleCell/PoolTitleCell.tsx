@@ -19,7 +19,7 @@ import { PoolTokens } from './PoolTokens'
 
 const addressSize = '80px'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Height } = SizesAndSpaces
 
 export const PoolTitleCell = ({
   row: { original: poolData },
@@ -34,7 +34,7 @@ export const PoolTitleCell = ({
   const tokenAlert = useTokenAlert(tokenAddressesAll)
 
   return (
-    <Stack direction="row" marginInlineEnd={addressSize}>
+    <Stack direction="row" marginInlineEnd={addressSize} sx={{ height: Height.row }}>
       {poolData.hasPosition && (
         <Chip tooltip={t`You have a balance in this pool`} tooltipProps={{ placement: 'top-start' }}>
           <StyledIcon name="CurrencyDollar" size={16} />
