@@ -17,8 +17,6 @@ import { PoolAlertBadge } from './PoolAlertBadge'
 import { PoolAlertTooltips } from './PoolAlertTooltips'
 import { PoolTokens } from './PoolTokens'
 
-const addressSize = '80px'
-
 const { Spacing, Height } = SizesAndSpaces
 
 export const PoolTitleCell = ({
@@ -34,7 +32,7 @@ export const PoolTitleCell = ({
   const tokenAlert = useTokenAlert(tokenAddressesAll)
 
   return (
-    <Stack direction="row" marginInlineEnd={addressSize} sx={{ height: Height.row }}>
+    <Stack direction="row" sx={{ height: Height.row }}>
       {poolData.hasPosition && (
         <Chip tooltip={t`You have a balance in this pool`} tooltipProps={{ placement: 'top-start' }}>
           <StyledIcon name="CurrencyDollar" size={16} />
@@ -45,10 +43,9 @@ export const PoolTitleCell = ({
         <Stack direction="column">
           <Stack direction="row" alignItems="center">
             <PoolAlertTooltips poolAlert={poolAlert} tokenAlert={tokenAlert} />
-            {/* isHighlightPoolName = default to true now, even if searched text is not same result */}
-            {pool && <MarketTitle url={url} address={pool.address as Address} title={pool.name} />}
+            <MarketTitle url={url} address={pool.address as Address} title={pool.name} />
           </Stack>
-          {pool && <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />}
+          <PoolTokens tokenList={tokenList} filterValue={getFilterValue() as string} />
         </Stack>
       </Stack>
 
