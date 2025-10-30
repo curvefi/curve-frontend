@@ -158,8 +158,8 @@ export const HealthBar = ({ health, softLiquidation, small }: HealthBarProps) =>
             transition: 'width 0.3s ease-in-out, background-color 0.3s ease-in-out',
           }}
         />
-        {lines.map((line, index) => (
-          <Line key={`${line.position}-${index}`} position={line.position} color={line.color} />
+        {lines.map((line) => (
+          <Line key={line.position} position={line.position} color={line.color} />
         ))}
       </Stack>
     </Stack>
