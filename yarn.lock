@@ -610,7 +610,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/ethcall@npm:6.0.16":
+"@curvefi/api@npm:2.68.12":
+  version: 2.68.12
+  resolution: "@curvefi/api@npm:2.68.12"
+  dependencies:
+    "@curvefi/ethcall": "npm:^6.0.16"
+    bignumber.js: "npm:^9.3.1"
+    ethers: "npm:^6.15.0"
+    memoizee: "npm:^0.4.17"
+  checksum: 10c0/3fae043aad1cb54cf023c7464f2134cd95396c9fcb98b9d37f0d691f939929815df70cec3b3d699a72cbafd9a4f1bb58f0d541e4ce4da1c1498d1f5e72774724
+  languageName: node
+  linkType: hard
+
+"@curvefi/ethcall@npm:6.0.16, @curvefi/ethcall@npm:^6.0.16":
   version: 6.0.16
   resolution: "@curvefi/ethcall@npm:6.0.16"
   dependencies:
@@ -11873,6 +11885,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "main@workspace:apps/main"
   dependencies:
+    "@curvefi/api": "npm:*"
     "@curvefi/llamalend-api": "npm:1.0.35"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
@@ -13924,6 +13937,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "router-api@workspace:apps/router-api"
   dependencies:
+    "@curvefi/api": "npm:*"
     "@types/node": "npm:24.7.1"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"

@@ -50,6 +50,7 @@
     "zustand": "*"
   },
   "devDependencies": {
+    "@curvefi/api": "*",
     "@eslint/js": "*",
     "@types/lodash": "^4.17.20",
     "@types/memoizee": "^0.4.12",

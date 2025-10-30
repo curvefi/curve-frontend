@@ -20,6 +20,7 @@
     "@curvefi/api": "*"
   },
   "devDependencies": {
+    "@curvefi/api": "*",
     "@types/node": "24.7.1",
     "eslint": "*",
     "eslint-config-custom": "*",
