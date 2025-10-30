@@ -51,7 +51,7 @@ const BandsChartComponent = ({
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-  const finalOption = useBandsChartZoom({
+  const { option: finalOption, onDataZoom } = useBandsChartZoom({
     option,
     chartDataLength: chartData.length,
     initialZoomIndices,
@@ -95,6 +95,7 @@ const BandsChartComponent = ({
           option={finalOption}
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'canvas' }}
+          onEvents={{ datazoom: onDataZoom }}
           notMerge={false}
           lazyUpdate={true}
         />
