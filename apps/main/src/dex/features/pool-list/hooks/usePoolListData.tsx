@@ -46,15 +46,11 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
     [chainId, fetchMissingPoolsRewardsApy, fetchPoolsRewardsApy, poolsData],
   )
 
-  usePageVisibleInterval(
-    () => {
-      if (curveApi && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
-        void fetchPoolsRewardsApy(chainId, poolsData)
-      }
-    },
-    REFRESH_INTERVAL['11m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(async () => {
+    if (curveApi && !isEmpty(rewardsApyMapper)) {
+      await fetchPoolsRewardsApy(chainId, poolsData)
+    }
+  }, REFRESH_INTERVAL['11m'])
 
   return {
     isLoading: !poolsData,
