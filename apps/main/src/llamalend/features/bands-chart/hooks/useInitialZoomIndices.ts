@@ -9,8 +9,6 @@ import { ChartDataPoint, ParsedBandsBalances } from '../types'
  * 2. Oracle price location
  * 3. Adds padding around the region of interest
  *
- * This improves UX by focusing on the most relevant bands when the chart loads
- *
  * @param chartData - All available chart data points
  * @param userBandsBalances - User's positions in specific bands
  * @param oraclePrice - Current oracle price

@@ -1,5 +1,5 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, useRef, useState, useEffect, memo } from 'react'
+import { useMemo, useRef, memo } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
@@ -8,6 +8,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartTooltip } from './hooks/useBandsChartTooltip'
+import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
@@ -40,61 +41,22 @@ const BandsChartComponent = ({
   oraclePrice,
   height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
 }: BandsChartProps) => {
-  const [initialZoom, setInitialZoom] = useState<{ start?: number; end?: number }>({})
-  const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
-  const hasInitializedZoomRef = useRef<boolean>(false)
-  const prevUserBandsRef = useRef<Set<string>>(new Set())
-
+  const palette = useBandsChartPalette()
   const derived = useDerivedChartData(chartData)
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
-
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-
-  // Calculate initial zoom range based on user bands and oracle price
-  // Only set zoom on initial mount or when user's bands change
-  useEffect(() => {
-    const currentUserBands = new Set(userBandsBalances.map((band) => String(band.n)))
-    const prevUserBands = prevUserBandsRef.current
-
-    // Check if bands have changed
-    const bandsChanged =
-      currentUserBands.size !== prevUserBands.size ||
-      Array.from(currentUserBands).some((band) => !prevUserBands.has(band))
-
-    // Apply zoom on initial mount or when user's bands change
-    if (chartData.length > 0 && initialZoomIndices && (!hasInitializedZoomRef.current || bandsChanged)) {
-      const start = (initialZoomIndices.startIndex / chartData.length) * 100
-      const end = ((initialZoomIndices.endIndex + 1) / chartData.length) * 100
-      setInitialZoom({ start, end })
-      hasInitializedZoomRef.current = true
-      prevUserBandsRef.current = currentUserBands
-    }
-  }, [chartData.length, initialZoomIndices, userBandsBalances])
-
-  // Memoize the final chart option with dataZoom configuration
-  const finalOption = useMemo(() => {
-    if (!option.dataZoom) return option
-
-    return {
-      ...option,
-      dataZoom: option.dataZoom.map((zoom: Record<string, unknown>) => {
-        if (zoom && 'type' in zoom && zoom.type === 'slider') {
-          return {
-            ...zoom,
-            ...(initialZoom.start != null && { start: initialZoom.start }),
-            ...(initialZoom.end != null && { end: initialZoom.end }),
-          }
-        }
-        return zoom
-      }),
-    }
-  }, [option, initialZoom])
+  const finalOption = useBandsChartZoom({
+    option,
+    chartDataLength: chartData.length,
+    initialZoomIndices,
+    userBandsBalances,
+  })
 
   if (!chartData?.length) {
     return (

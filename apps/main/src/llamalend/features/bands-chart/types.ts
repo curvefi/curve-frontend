@@ -60,7 +60,6 @@ export type ParsedBandsBalances = {
   collateralBorrowedUsd: number
   isLiquidationBand: string
   isOraclePriceBand: boolean
-  isNGrouped: boolean
   n: number | string
   p_up: string | number
   p_down: string | number

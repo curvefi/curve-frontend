@@ -36,7 +36,6 @@ export async function fetchChartBandBalancesData(
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false, // update this with detail info oracle price
-      isNGrouped: false,
       n: n.toString(),
       p_up,
       p_down,
