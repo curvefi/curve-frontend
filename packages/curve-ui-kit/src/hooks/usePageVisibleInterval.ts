@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useEffectEvent } from 'react'
+import { useLayoutStore } from '@ui-kit/features/layout'
+import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
 type CallbackFunction = () => unknown
 
@@ -8,7 +10,6 @@ type CallbackFunction = () => unknown
  *
  * @param callback - Function to be called at each interval
  * @param delay - Interval duration in milliseconds
- * @param enabled - Boolean indicating if the query should be active (e.g., if the page is visible)
  *
  * @example
  * // With constants for interval timing
@@ -19,23 +20,11 @@ type CallbackFunction = () => unknown
  *       fetchGasInfo(curve);
  *     }
  *   },
- *   REFRESH_INTERVAL['5m'],
- *   isPageVisible
+ *   REFRESH_INTERVAL['5m']
  * );
  */
-export default function usePageVisibleInterval(callback: CallbackFunction, delay: number, enabled: boolean) {
-  const savedCallback = useRef<CallbackFunction>(callback)
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
-  useEffect(() => {
-    let id: ReturnType<typeof setTimeout>
-    const schedule = () => {
-      if (enabled && delay !== null)
-        id = setTimeout(() => Promise.resolve(savedCallback.current()).then(schedule), delay)
-    }
-    schedule()
-    return () => clearTimeout(id)
-  }, [delay, enabled])
+export default function usePageVisibleInterval(callback: CallbackFunction, delay: number) {
+  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const callbackEvent = useEffectEvent(callback)
+  useEffect(() => (isPageVisible ? setTimeoutInterval(callbackEvent, delay) : undefined), [delay, isPageVisible])
 }

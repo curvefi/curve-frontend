@@ -1,133 +1,190 @@
+/// <reference types="./mui-slider.d.ts" />
+import type { SliderProps } from '@mui/material/Slider'
 import type { Components } from '@mui/material/styles'
-import { handleBreakpoints, type Responsive } from '@ui-kit/themes/basic-theme'
-import { DesignSystem } from '@ui-kit/themes/design'
+import { handleBreakpoints } from '@ui-kit/themes/basic-theme'
+import { type DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Sizing } = SizesAndSpaces
-
-const THUMB_WIDTH = 20 // 20px is a default MUI value, not responsive to reduce headaches
-export const CLASS_BORDERLESS = 'borderless'
-
+import { SliderSize } from './types'
+import {
+  borderedRailBackground,
+  orientationToDirection,
+  getOrientationConfig,
+  singleThumbSelector,
+  SLIDER_BACKGROUND_VAR,
+  SLIDER_HEIGHT_VAR,
+  SLIDER_THUMB_WIDTH_VAR,
+  sliderSizes,
+  SLIDER_RAIL_GRADIENT_STOPS_VAR,
+  getGradientStopsForBackground,
+  DEFAULT_SLIDER_SIZE,
+  thumbColorsMap,
+} from './utils'
 /**
- * CSS custom property name for customizing the slider background color.
- * Used by components like TradingSlider to set a background color.
- * This approach is necessary because we can't add TSX props directly.
- */
-export const SLIDER_BACKGROUND_VAR = '--slider-background'
-
-type Size = 'small' | 'medium'
-const heights: Record<Size, Responsive> = {
-  small: Sizing.xs,
-  medium: Sizing.sm,
-}
-
-// Equalizes track and thumb height with support for responsiveness
-const trackAndThumbHeights = {
-  ...handleBreakpoints({ height: heights['small'] }),
-  borderRadius: 0,
-  border: 'none',
-
-  '&.MuiSlider-sizeMedium, .MuiSlider-sizeMedium &': handleBreakpoints({ height: heights['medium'] }),
-}
-
-/**
- * Creates a pseudo-element style object for slider right extension
- *
- * This function generates styles for a pseudo-element that creates a border around the slider
- * and extends beyond the slider's right edge by half the thumb width to prevent
+ * Generates styles for a pseudo-element that creates a border around the slider
+ * and extends beyond the slider's right and left edge by half the thumb width to prevent
  * the thumb from overlapping with the border when at 100% position.
- *
- * Also provides a background fill area that can be customized via CSS custom properties.
- *
- * @param design - The design system containing color definitions
- * @returns CSS style object for the right extension pseudo-element
  */
-const rightExtension = (design: DesignSystem) => ({
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-    right: -THUMB_WIDTH / 2,
-    left: -THUMB_WIDTH / 2,
-    border: `1px solid ${design.Color.Neutral[500]}`,
-    backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
-  },
-})
+const SliderExtension = (design: DesignSystem, orientation?: SliderProps['orientation'], borderColor?: string) => {
+  const {
+    extensionOffsets: { start, end },
+  } = getOrientationConfig(orientation)
 
-// Shared selector for single-thumb sliders
-const singleThumbSelector = ':not(:has([data-index="1"]))'
+  return {
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      inset: 0,
+      ...start,
+      ...end,
+      border: borderColor ? `1px solid ${borderColor}` : 'none',
+      backgroundColor: `var(${SLIDER_BACKGROUND_VAR})`,
+      zIndex: 0,
+      // Disable pointer events so it doesn't block "hover" detection on the thumb
+      pointerEvents: 'none',
+    },
+  }
+}
 
-/**
- * Creates a pseudo-element style object for slider left extension
- *
- * This function generates styles for a pseudo-element that extends the slider's
- * left side by half the thumb width and fills it with the primary button color
- * for single-thumb sliders. This creates visual continuity between the track
- * and the extended border area.
- *
- * When the slider is disabled, it uses the standard MUI disabled color to match
- * the disabled track appearance.
- *
- * @param design - The design system containing color definitions
- * @returns CSS style object for the left extension pseudo-element
- */
-const leftExtension = (design: DesignSystem) => ({
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    left: -THUMB_WIDTH / 2,
-    width: THUMB_WIDTH / 2,
-    height: '100%',
-  },
-  // Only fill the left border gap if there's a single thumb
-  [`&${singleThumbSelector}::before`]: {
-    backgroundColor: design.Button.Primary.Default.Fill,
-  },
-  [`&.Mui-disabled${singleThumbSelector}::before`]: {
-    backgroundColor: 'var(--mui-palette-grey-400)',
-  },
-})
+const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientation']): Record<string, any> => {
+  const {
+    root: { size, margins },
+  } = getOrientationConfig(orientation)
+
+  return {
+    ...handleBreakpoints({
+      [SLIDER_HEIGHT_VAR]: DEFAULT_SLIDER_SIZE.height,
+      [SLIDER_THUMB_WIDTH_VAR]: DEFAULT_SLIDER_SIZE.thumbWidth,
+    }),
+    // remove the slider thumb's width from the vertical orientation to prevent overflows
+    height: size.height,
+    width: size.width,
+    borderRadius: 0,
+    border: 'none',
+    // Nesting required as otherwise it'll break in mobile for some reason
+    '&': { paddingBlock: 0 },
+    position: 'relative',
+    paddingInline: 0,
+    // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
+    marginInline: margins.marginInline,
+    marginBlock: margins.marginBlock,
+  }
+}
 
 export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] => ({
   defaultProps: {
     size: 'small',
+    'data-rail-background': 'default',
   },
   styleOverrides: {
-    root: {
-      ...trackAndThumbHeights,
-      borderRadius: 0,
-      // Nesting required as otherwise it'll break in mobile for some reason
-      '&': { paddingBlock: 0 },
-      position: 'relative',
-      ...rightExtension(design),
-      ...leftExtension(design),
-      [`&.${CLASS_BORDERLESS}::after`]: {
-        border: 0,
-      },
+    root: ({ ownerState }) => {
+      const { orientation = 'horizontal', 'data-rail-background': railBackground = 'default' } = ownerState
+      const borderColor = railBackground === 'default' ? design.Color.Neutral[500] : undefined
+
+      return {
+        ...baseRootStyle(design, orientation),
+        ...SliderExtension(design, orientation, borderColor),
+      }
     },
 
-    thumb: {
-      ...trackAndThumbHeights,
-      width: THUMB_WIDTH,
-      background: `${design.Color.Neutral[950]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
-      transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
-      '&:hover': {
-        backdropFilter: 'invert(1)', // This won't work for background images
-        // Instead, explicitly set an inverted background
-        background: `${design.Color.Neutral[50]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
-        backgroundBlendMode: 'difference', // This inverts colors in the background
-        border: `1px solid ${design.Color.Primary[500]}`,
-      },
-      '&:hover, &.Mui-focusVisible': {
-        boxShadow: 'none', // Remove default MUI focus ring
-      },
-      '&.Mui-disabled': {
-        background: `${design.Color.Neutral[600]} url(${design.Inputs.SliderThumbImage}) center no-repeat`,
-      },
+    thumb: ({ ownerState }) => {
+      const { orientation = 'horizontal' } = ownerState
+      const {
+        thumb: { size, getImages },
+      } = getOrientationConfig(orientation)
+      const { default: sliderThumbImage, hover: sliderThumbImageHover } = getImages(design)
+
+      return {
+        // Add 2px to the thumb width and height to compensate the border
+        width: size.width,
+        height: size.height,
+        background: `${thumbColorsMap[design.theme]} url(${sliderThumbImage}) center no-repeat`,
+        transition: `background ${TransitionFunction}, border ${TransitionFunction}`,
+        border: `1px solid ${design.Color.Neutral[25]}`,
+        borderRadius: 0,
+        zIndex: 1,
+
+        '&:hover, &.Mui-active': {
+          backdropFilter: 'invert(1)', // This won't work for background images
+          // Instead, explicitly set an inverted background
+          background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
+          backgroundBlendMode: 'difference', // This inverts colors in the background
+          border: `1px solid ${design.Button.Primary.Default.Fill}`,
+        },
+        '&:hover, &.Mui-focusVisible, &.Mui-active': {
+          boxShadow: 'none', // Remove default MUI focus ring
+        },
+        '&.Mui-disabled': {
+          background: `${design.Color.Neutral[600]} url(${sliderThumbImage}) center no-repeat`,
+        },
+      }
     },
 
-    track: trackAndThumbHeights,
-    rail: { height: 0 },
+    track: ({ ownerState }) => {
+      const { orientation = 'horizontal' } = ownerState
+      const {
+        track: { size, beforePosition, beforeSize },
+      } = getOrientationConfig(orientation)
+      return {
+        ...size,
+        borderRadius: 0,
+        border: 'none',
+        /**
+         * Add pseudo-element to the track left side by half the thumb width and
+         * fills it with the primary button color for single-thumb
+         */
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          ...beforePosition,
+          ...beforeSize,
+        },
+        // Only fill the left border gap if there's a single thumb
+        [`.MuiSlider-root${singleThumbSelector} &::before`]: {
+          backgroundColor: design.Color.Primary[500],
+        },
+
+        '.Mui-disabled &&::before': {
+          backgroundColor: 'currentColor',
+        },
+      }
+    },
+
+    rail: ({ ownerState }) => {
+      const {
+        orientation = 'horizontal',
+        'data-rail-background': railBackground = 'default',
+        disabled = false,
+      } = ownerState
+      const direction = orientationToDirection(orientation)
+      const gradientStops = getGradientStopsForBackground(design, railBackground, disabled)
+      const {
+        rail: { startOffset, endOffset, size },
+      } = getOrientationConfig(orientation)
+
+      return {
+        backgroundColor: 'transparent',
+        ...startOffset,
+        ...endOffset,
+        ...size,
+        pointerEvents: 'none',
+        border: 'none',
+        backgroundImage: 'none',
+        opacity: 1,
+        ...(railBackground === 'bordered' && borderedRailBackground(design, direction)),
+        ...(gradientStops
+          ? {
+              backgroundImage: `linear-gradient(${direction}, var(${SLIDER_RAIL_GRADIENT_STOPS_VAR}, ${gradientStops}))`,
+              opacity: 1,
+            }
+          : null),
+      }
+    },
   },
+  variants: Object.entries(sliderSizes).map(([size, { height, thumbWidth }]) => ({
+    props: { size: size as SliderSize },
+    style: handleBreakpoints({
+      [SLIDER_HEIGHT_VAR]: height,
+      [SLIDER_THUMB_WIDTH_VAR]: thumbWidth,
+    }),
+  })),
 })

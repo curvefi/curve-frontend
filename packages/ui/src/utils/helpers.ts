@@ -1,9 +1,3 @@
-export function delayAction<T>(cb: T) {
-  if (typeof cb === 'function') {
-    setTimeout(() => cb(), 100)
-  }
-}
-
 export function getIsFullScreen() {
   const classList = document?.body?.classList
   return classList?.contains('page-small-x') || classList?.contains('page-small-xx')
