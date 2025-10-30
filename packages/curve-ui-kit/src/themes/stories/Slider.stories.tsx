@@ -36,7 +36,7 @@ const SliderStory = (
 
   function calculateValue(value: number) {
     if (scaleType === 'power') {
-      return powerMap(value, POW_MIN_VALUE, MAX_VALUE)
+      return powerMap(value, POW_MIN_VALUE, MAX_VALUE, Math.trunc(Math.log10(MAX_VALUE) - 2))
     } else if (scaleType === 'geometric') {
       return geometricMap(value, GEO_MIN_VALUE, MAX_VALUE)
     }
