@@ -114,11 +114,11 @@ jobs:
       - run: yarn build
 
       - name: Start dev server
-        run: yarn start 2>&1 | tee ../../e2e-dev.log &
+        run: yarn start 2>&1 | tee ../../e2e-dev-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/main
 
       - name: Start api server
-        run: yarn dev 2>&1 | tee ../../e2e-api.log &
+        run: yarn dev 2>&1 | tee ../../e2e-api-${{ matrix.browser }}-${{ matrix.count }}.log &
         working-directory: apps/router-api
 
       - name: e2e tests
