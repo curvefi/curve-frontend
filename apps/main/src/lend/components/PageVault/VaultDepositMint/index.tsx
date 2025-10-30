@@ -189,7 +189,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {releaseChannel === ReleaseChannel.Legacy ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>

@@ -173,7 +173,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {releaseChannel === ReleaseChannel.Legacy ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
