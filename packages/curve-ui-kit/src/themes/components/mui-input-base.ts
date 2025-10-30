@@ -6,7 +6,7 @@ import type { DesignSystem } from '@ui-kit/themes/design'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize, Sizing, Spacing } = SizesAndSpaces
+const { ButtonSize, Spacing } = SizesAndSpaces
 
 export const defineMuiInputBase = (
   { Inputs: { Base } }: DesignSystem,
@@ -31,18 +31,21 @@ export const defineMuiInputBase = (
       '&.Mui-error .MuiOutlinedInput-notchedOutline': {
         borderColor: Base.Default.Border.Error,
       },
-      '&.MuiInputBase-sizeSmall': {
+      '&.MuiInputBase-sizeSmall input': {
         height: ButtonSize.sm,
       },
-      '&.MuiInputBase-sizeTiny': {
-        ...handleBreakpoints({ height: Sizing.sm, ...typography.bodySBold }),
-        '& input': handleBreakpoints({ height: Sizing.sm, padding: 0, marginInline: Spacing.sm }),
+      '&.MuiInputBase-sizeTiny input': {
+        height: ButtonSize.xs,
+        ...typography.bodySBold,
       },
     },
     input: {
       height: ButtonSize.md,
       boxSizing: 'border-box',
       textOverflow: 'ellipsis',
+      padding: 0,
+      ...typography.bodyMBold,
+      ...handleBreakpoints({ marginInline: Spacing.xs }),
     },
   },
 })
