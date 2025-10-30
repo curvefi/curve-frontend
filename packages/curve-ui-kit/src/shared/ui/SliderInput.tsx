@@ -11,6 +11,8 @@ const { Spacing, MaxWidth } = SizesAndSpaces
 type RangeValue = [number, number]
 
 export type SliderInputProps = {
+  /** The aria-label */
+  ariaLabel?: string
   /** The direction of the layout. Row: inputs on the left and right of the slider. Column: inputs below the slider. */
   layoutDirection?: 'column' | 'row'
   /** The size of the slider and inputs. Sizes of the inputs are calculated based on the size of the slider. */
@@ -28,9 +30,9 @@ export type SliderInputProps = {
   /** Propagated to both inputs and slider */
   disabled?: boolean
   /** Additional props forwarded to the slider */
-  sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled'>
+  sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled' | 'aria-label'>
   /** Additional props forwarded to the inputs */
-  inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled'>
+  inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled' | 'aria-label'>
 }
 
 /**
@@ -55,6 +57,7 @@ const toDecimal = (value: number | undefined): Decimal | undefined =>
   value == null || Number.isNaN(value) ? undefined : (`${value}` as Decimal)
 
 export const SliderInput = ({
+  ariaLabel,
   layoutDirection = 'row',
   size = 'medium',
   value,
@@ -112,6 +115,7 @@ export const SliderInput = ({
 
   const renderInput = (inputValue: number | undefined, index: 0 | 1) => (
     <NumericTextField
+      aria-label={ariaLabel}
       size={sliderInputSizeMap[size]}
       variant="filled"
       value={toDecimal(inputValue)}
@@ -126,6 +130,7 @@ export const SliderInput = ({
 
   const renderSlider = (
     <Slider
+      aria-label={ariaLabel}
       size={size}
       value={sliderValue}
       onChange={handleSliderChange}
