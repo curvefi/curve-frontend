@@ -1,5 +1,3 @@
-import type { Property } from 'csstype'
-import { type ReactNode } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { SliderSize } from '@ui-kit/themes/components/slider/types'

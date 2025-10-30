@@ -1,10 +1,10 @@
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import type { SliderProps } from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'
-import { formatNumber } from '@ui-kit/utils/number'
 import { geometricMap, powerMap } from '@ui-kit/utils/interpolations'
-import { useState } from 'react'
+import { formatNumber } from '@ui-kit/utils/number'
 
 const POW_MIN_VALUE = 0
 // geometric function cannot divide by 0, so we use 1 as the minimum value

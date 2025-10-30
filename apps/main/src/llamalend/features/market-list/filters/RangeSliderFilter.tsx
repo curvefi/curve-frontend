@@ -1,5 +1,5 @@
-import lodash from 'lodash'
 import type { Property } from 'csstype'
+import lodash from 'lodash'
 import { ReactNode, useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
@@ -8,9 +8,9 @@ import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
-import type { LlamaMarketColumnId } from '../columns.enum'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+import type { LlamaMarketColumnId } from '../columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
