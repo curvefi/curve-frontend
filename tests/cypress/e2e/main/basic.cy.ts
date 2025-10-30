@@ -15,7 +15,7 @@ describe('Basic Access Test', () => {
 
   it(`should open the Main DApp successfully at ${path}`, () => {
     cy.visit(path)
-    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
+    cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')
   })
 

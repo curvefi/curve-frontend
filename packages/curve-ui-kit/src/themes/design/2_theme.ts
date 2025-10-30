@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material'
 import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
@@ -6,6 +7,30 @@ const { plain, inverted } = SurfacesAndText
 const Transition = `all ${TransitionFunction}`
 const InsetOverline = '0 0 auto' as const // Top border only
 const InsetUnderline = 'auto 0 0' as const // Bottom border only
+
+/** 
+ Same background colors accross all themes
+*/
+const SliderBackground = {
+  Safe: {
+    25: Reds[400],
+    50: Reds[300],
+    75: Reds[200],
+    100: Greens[500],
+  },
+  Danger: {
+    25: Reds[200],
+    50: Reds[300],
+    75: Reds[400],
+    100: Reds[500],
+  },
+  Disabled: {
+    25: alpha(Grays[300], 0.5),
+    50: alpha(Grays[300], 0.5),
+    75: alpha(Grays[300], 0.5),
+    100: alpha(Grays[300], 0.5),
+  },
+} as const
 
 export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Light) => {
   const Color = {
@@ -298,7 +323,18 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
         Fill: InputBaseDefaultFill,
       },
     },
-    SliderThumbImage: '/mui/slider-thumb-white.svg',
+  } as const
+
+  const Sliders = {
+    default: {
+      SliderThumbImage: '/mui/slider-thumb-white.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    hover: {
+      SliderThumbImage: '/mui/slider-thumb-white.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
 
   const Switch = {
@@ -327,6 +363,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }
 
@@ -678,7 +715,18 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
         Fill: InputBaseDefaultFill,
       },
     },
-    SliderThumbImage: '/mui/slider-thumb-black.svg',
+  } as const
+
+  const Sliders = {
+    default: {
+      SliderThumbImage: '/mui/slider-thumb-blue.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-blue-90.svg',
+    },
+    hover: {
+      SliderThumbImage: '/mui/slider-thumb-white.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
 
   const Switch = {
@@ -707,6 +755,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }
 
@@ -1001,7 +1050,18 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: InputBaseDefaultFill,
       },
     },
-    SliderThumbImage: '/mui/slider-thumb-white.svg',
+  } as const
+
+  const Sliders = {
+    default: {
+      SliderThumbImage: '/mui/slider-thumb-white.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    hover: {
+      SliderThumbImage: '/mui/slider-thumb-white.svg',
+      SliderThumbImageVertical: '/mui/slider-thumb-white-90.svg',
+    },
+    SliderBackground: { ...SliderBackground, Filled: { 100: Color.Primary[200] } },
   } as const
 
   const Switch = {
@@ -1030,5 +1090,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Table,
     Inputs,
     Switch,
+    Sliders,
   } as const
 }

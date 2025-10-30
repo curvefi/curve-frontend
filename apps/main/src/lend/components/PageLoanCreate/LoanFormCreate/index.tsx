@@ -31,7 +31,6 @@ import TextCaption from '@ui/TextCaption'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -54,7 +53,6 @@ const LoanCreate = ({
   const formEstGas = useStore((state) => state.loanCreate.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
@@ -255,23 +253,11 @@ const LoanCreate = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      if (
-        isLoaded &&
-        isPageVisible &&
-        isLeverage &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   // steps
   useEffect(() => {

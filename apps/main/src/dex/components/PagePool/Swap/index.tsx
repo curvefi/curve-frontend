@@ -329,7 +329,7 @@ const Swap = ({
   useEffect(() => fetchData(), [isPageVisible])
 
   // re-fetch data
-  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'], isPageVisible)
+  usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
