@@ -30,10 +30,7 @@ describe('Header', () => {
       cy.viewport(...viewport)
       route = oneAppRoute()
       cy.visit(`/${route}`, {
-        onBeforeLoad: (win) => {
-          win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`)
-          isDarkMode = checkIsDarkMode(win)
-        },
+        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
       })
       waitIsLoaded(route)
     })
@@ -98,9 +95,7 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`, {
-        onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-      })
+      cy.visit(`/${route}`)
       waitIsLoaded(route)
     })
 
