@@ -60,7 +60,6 @@ const Page = () => {
   const formValues = useStore((state) => state.loanCreate.formValues)
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: llammaId, userAddress: address })
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -158,15 +157,11 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
-  usePageVisibleInterval(
-    () => {
-      if (isPageVisible && curve && llamma) {
-        void fetchLoanDetails(curve, llamma)
-      }
-    },
-    REFRESH_INTERVAL['1m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (curve && llamma) {
+      void fetchLoanDetails(curve, llamma)
+    }
+  }, REFRESH_INTERVAL['1m'])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

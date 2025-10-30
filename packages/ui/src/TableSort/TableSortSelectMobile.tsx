@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { styled } from 'styled-components'
 import { useOverlayTriggerState } from '@react-stately/overlays'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import Box from 'ui/src/Box'
 import ModalDialog from 'ui/src/Dialog/ModalDialog'
 import OpenDialogButton from 'ui/src/Dialog/OpenDialogButton'
@@ -8,7 +9,6 @@ import TableSortSelectOptions from 'ui/src/TableSort/TableSortSelectOptions'
 import type { TableSortSelectProps } from 'ui/src/TableSort/types'
 import { getLabel } from 'ui/src/TableSort/utils'
 import Chip from 'ui/src/Typography/Chip'
-import { delayAction } from 'ui/src/utils/helpers'
 
 function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 'desc' }>({
   className,
@@ -22,7 +22,7 @@ function TableSortSelectMobile<T extends { sortBy: string; sortByOrder: 'asc' | 
     const [sortBy, sortByOrder] = updatedSortValue.split('-')
 
     updatePath({ ...searchParams, sortBy, sortByOrder })
-    delayAction(overlayTriggerState.close)
+    setTimeout(overlayTriggerState.close, Duration.Delay)
   }
 
   const sortLabel = useMemo(() => getLabel(labelsMapper, searchParams.sortBy), [searchParams.sortBy, labelsMapper])

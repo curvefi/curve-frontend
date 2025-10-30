@@ -4,7 +4,6 @@ import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
@@ -30,7 +29,6 @@ export type DataRowProps<T extends TableItem> = {
   isLast: boolean
   expandedPanel: ExpandedPanel<T>
   shouldStickFirstColumn: boolean
-  minRowHeight?: Responsive
 }
 
 export const DataRow = <T extends TableItem>({
@@ -39,7 +37,6 @@ export const DataRow = <T extends TableItem>({
   row,
   expandedPanel,
   shouldStickFirstColumn,
-  minRowHeight,
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -56,7 +53,6 @@ export const DataRow = <T extends TableItem>({
       <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
         <TableRow
           sx={{
-            height: minRowHeight,
             marginBlock: 0,
             cursor: hasUrl ? 'pointer' : 'default',
             transition: `border-bottom ${TransitionFunction}`,

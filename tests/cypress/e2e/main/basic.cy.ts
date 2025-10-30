@@ -15,7 +15,7 @@ describe('Basic Access Test', () => {
 
   it(`should open the Main DApp successfully at ${path}`, () => {
     cy.visit(path)
-    cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
+    cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')
   })
 
@@ -40,6 +40,6 @@ describe('Basic Access Test', () => {
     cy.visit('/dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
-    cy.contains('CORN/wBTCN', LOAD_TIMEOUT).should('be.visible')
+    cy.contains('LBTC/wBTCN', LOAD_TIMEOUT).should('be.visible')
   })
 })

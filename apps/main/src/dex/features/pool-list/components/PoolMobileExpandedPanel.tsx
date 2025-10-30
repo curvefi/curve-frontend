@@ -1,36 +1,46 @@
-import { styled } from 'styled-components'
+import { ReactNode } from 'react'
 import CampaignRewardsRow from '@/dex/components/CampaignRewardsRow'
 import TCellRewards from '@/dex/components/PagePoolList/components/TableCellRewards'
-import TableCellRewardsBase from '@/dex/components/PagePoolList/components/TableCellRewardsBase'
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
-import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
-import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
 import { ROUTE } from '@/dex/constants'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { getPath } from '@/dex/utils/utilsRouter'
 import type { Chain } from '@curvefi/prices-api'
 import Button from '@mui/material/Button'
-import ListInfoItem, { ListInfoItems } from '@ui/ListInfo'
+import Grid from '@mui/material/Grid'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
+import { isSortedBy } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import type { ExpandedPanel } from '@ui-kit/shared/ui/DataTable/ExpansionRow'
+import { Metric, MetricProps } from '@ui-kit/shared/ui/Metric'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { Address } from '@ui-kit/utils'
 import { PoolColumnId } from '../columns'
 import type { PoolListItem } from '../types'
 
-const tableLabel = {
-  volume: { name: t`24h Volume` },
-  tvl: { name: t`TVL` },
-  rewardsCrv: { name: `CRV ${t`tAPR`}` },
-  rewardsOther: { name: `${t`Other`} ${t`tAPR`}` },
-  rewardsBase: { name: `${t`Base`} ${t`vAPY`}` },
-}
+const { Spacing } = SizesAndSpaces
+
+const ListInfoItem = ({
+  value,
+  children,
+  ...props
+}: Omit<MetricProps, 'value'> & { value: number | string | undefined | null; children?: ReactNode }) => (
+  <Grid size={6}>
+    <Metric value={value && +value} {...props} />
+    {children}
+  </Grid>
+)
+
+const highlight = { color: 'success' as const }
 
 export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, table }) => {
   const { original: poolData } = row
   const {
     pool: { id: poolId, address },
+    totalAPR,
     network,
   } = poolData
   const { data: campaigns } = useCampaignsByAddress({
@@ -38,74 +48,104 @@ export const PoolMobileExpandedPanel: ExpandedPanel<PoolListItem> = ({ row, tabl
     address: address as Address,
   })
   const path = getPath({ network }, `${ROUTE.PAGE_POOLS}/${poolId}`)
-  const sortBy = table.getState().sorting[0]?.id
   const { volume, tvl, rewards: rewards } = poolData
 
-  const hasRewardsCrv = useNetworkFromUrl()
+  const { isCrvRewardsEnabled } = useNetworkFromUrl() ?? {}
   const hasVolume = table.getColumn(PoolColumnId.Volume)?.getIsVisible()
   return (
     <>
-      <ListInfoItems>
+      <Grid container spacing={Spacing.md}>
         {hasVolume && (
-          <ListInfoItem title={tableLabel.volume.name}>
-            <TableCellVolume isHighLight={sortBy === 'volume'} volume={volume} />
-          </ListInfoItem>
+          <ListInfoItem
+            label={t`24h Volume`}
+            value={volume?.value}
+            valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Volume) && highlight) }}
+          />
         )}
-        <ListInfoItem title={tableLabel.tvl.name}>
-          <TableCellTvl isHighLight={sortBy === 'tvl'} tvl={tvl} />
-        </ListInfoItem>
+        <ListInfoItem
+          label={t`TVL`}
+          value={tvl?.value}
+          valueOptions={{ unit: 'dollar', ...(isSortedBy(table, PoolColumnId.Tvl) && highlight) }}
+        />
 
-        <ListInfoItem title={t`BASE vAPY`} titleNoCap>
-          <TableCellRewardsBase base={rewards?.base} isHighlight={sortBy === 'rewardsBase'} poolData={poolData} />
-        </ListInfoItem>
+        <ListInfoItem
+          label={t`BASE vAPY`}
+          value={rewards?.base?.day}
+          valueOptions={{ unit: 'percentage', ...(isSortedBy(table, PoolColumnId.RewardsBase) && highlight) }}
+        />
 
         {!poolData?.gauge.isKilled && (
           <>
-            {hasRewardsCrv ? (
+            {isCrvRewardsEnabled ? (
               <ListInfoItem
-                title={t`REWARDS tAPR`}
-                titleNoCap
-                titleDescription={`(${tableLabel.rewardsCrv.name} + ${tableLabel.rewardsOther.name})`}
-                tooltip={t`Token APR based on current prices of tokens and reward rates`}
-              >
-                <TCellRewards
-                  poolData={poolData}
-                  isHighlightBase={sortBy === 'rewardsBase'}
-                  isHighlightCrv={sortBy === 'rewardsCrv'}
-                  isHighlightOther={sortBy === 'rewardsOther'}
-                  rewardsApy={rewards}
-                />
-              </ListInfoItem>
+                value={totalAPR}
+                valueOptions={{
+                  unit: 'percentage',
+                  ...(isSortedBy(table, PoolColumnId.RewardsCrv) || isSortedBy(table, PoolColumnId.RewardsOther)
+                    ? highlight
+                    : {}),
+                }}
+                label={t`REWARDS tAPR`}
+                labelTooltip={{ title: t`(CRV tAPR + Other tAPR)` }}
+                valueTooltip={{
+                  title: t`Token APR based on current prices of tokens and reward rates`,
+                  body: (
+                    <TCellRewards
+                      poolData={poolData}
+                      isHighlightBase={isSortedBy(table, PoolColumnId.RewardsBase)}
+                      isHighlightCrv={isSortedBy(table, PoolColumnId.RewardsCrv)}
+                      isHighlightOther={isSortedBy(table, PoolColumnId.RewardsOther)}
+                      rewardsApy={rewards}
+                    />
+                  ),
+                }}
+              ></ListInfoItem>
             ) : (
               <ListInfoItem
-                title={t`REWARDS tAPR`}
-                titleNoCap
-                tooltip={t`Token APR based on current prices of tokens and reward rates`}
-              >
-                <TableCellRewardsOthers isHighlight={sortBy === 'rewardsOther'} rewardsApy={rewards} />
-              </ListInfoItem>
+                value={totalAPR}
+                valueOptions={{ unit: 'percentage', ...(isSortedBy(table, PoolColumnId.RewardsOther) && highlight) }}
+                valueTooltip={{
+                  title: (
+                    <TableCellRewardsOthers
+                      isHighlight={isSortedBy(table, PoolColumnId.RewardsOther)}
+                      rewardsApy={rewards}
+                    />
+                  ),
+                }}
+                label={t`REWARDS tAPR`}
+                labelTooltip={{ title: t`Token APR based on current prices of tokens and reward rates` }}
+              ></ListInfoItem>
             )}
             {campaigns.length > 0 && (
-              <ListInfoItem title={t`Additional external rewards`}>
+              <Stack direction="column" alignItems="center">
+                <Typography variant="bodyXsRegular" color="textTertiary" alignSelf="start">
+                  {t`Additional external rewards`}
+                </Typography>
+
                 <CampaignRewardsRow rewardItems={campaigns} mobile />
-              </ListInfoItem>
+              </Stack>
             )}
           </>
         )}
-      </ListInfoItems>
+      </Grid>
 
-      <MobileTableActions>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_SWAP}>{t`Deposit`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_WITHDRAW}>{t`Withdraw`}</Button>
-        <Button component={RouterLink} href={path + ROUTE.PAGE_POOL_DEPOSIT}>{t`Swap`}</Button>
-      </MobileTableActions>
+      <Stack display="grid" gridTemplateColumns="1fr 1fr 1fr" gap={3} marginBlock={3}>
+        <Button
+          data-testid="pool-link-deposit"
+          component={RouterLink}
+          href={path + ROUTE.PAGE_SWAP}
+        >{t`Deposit`}</Button>
+        <Button
+          data-testid="pool-link-withdraw"
+          component={RouterLink}
+          href={path + ROUTE.PAGE_POOL_WITHDRAW}
+        >{t`Withdraw`}</Button>
+        <Button
+          data-testid="pool-link-swap"
+          component={RouterLink}
+          href={path + ROUTE.PAGE_POOL_DEPOSIT}
+        >{t`Swap`}</Button>
+      </Stack>
     </>
   )
 }
-
-const MobileTableActions = styled.div`
-  margin: 0.3rem 0;
-  > button:not(:last-of-type) {
-    border-right: 1px solid rgba(255, 255, 255, 0.25);
-  }
-`

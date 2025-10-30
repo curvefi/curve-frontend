@@ -1,7 +1,7 @@
 import { type PoolData, type RewardsApy, type Tvl, type Volume } from '@/dex/types/main.types'
 import type { INetworkName } from '@curvefi/api/lib/interfaces'
 
-export const PoolTags = [
+const PoolTags = [
   'btc',
   'crypto',
   'kava',
@@ -26,4 +26,5 @@ export type PoolListItem = PoolData & {
   network: INetworkName
   url: string
   tags: PoolTag[]
+  totalAPR: number
 }
