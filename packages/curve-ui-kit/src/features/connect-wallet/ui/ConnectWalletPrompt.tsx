@@ -2,8 +2,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { LogoImg } from '@ui/images'
-import { getBackgroundUrl } from '@ui/utils'
+import { CURVE_LOGO_URL, getBackgroundUrl } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
@@ -44,7 +43,7 @@ export const ConnectWalletPrompt = ({
         backgroundRepeat: 'no-repeat',
       }}
     >
-      <CurveLogo src={LogoImg} alt="Curve Logo" />
+      <CurveLogo src={CURVE_LOGO_URL} alt="Curve Logo" />
       <Typography variant="headingXxl">{t`Enter Curve`}</Typography>
     </Stack>
     <Stack spacing={3} alignItems="center">
