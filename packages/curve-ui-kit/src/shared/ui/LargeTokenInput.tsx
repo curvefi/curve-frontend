@@ -292,11 +292,18 @@ export const LargeTokenInput = ({
 
   const handleBalanceChange = useCallback(
     (newBalance: string | undefined) => {
-      // In case the input is somehow invalid, although we do our best to sanitize it in NumericTextField,
-      // we cancel the debounce such that the input won't reset while still typing.
+      // We sanitize values in NumericTextField, but temporary invalid states can still occur (e.g., "-" while typing)
       const decimalBalance = decimal(newBalance)
       if (decimalBalance == null) {
+        // Cancel the debounce to prevent the input from resetting while the user is still typing
+        // if the previous value was valid but the current one is temporarily invalid
         cancelSetBalance()
+
+        // When the balance is invalid, we don't set the internal balance state to 0, but we do emit the onBalance event
+        // with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
+        // rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
+        // remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
+        onBalance(undefined)
         return
       }
 
@@ -305,7 +312,7 @@ export const LargeTokenInput = ({
         maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, setBalance, cancelSetBalance],
+    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
   )
 
   const handleChip = useCallback(
