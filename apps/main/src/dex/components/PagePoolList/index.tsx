@@ -12,7 +12,6 @@ import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import Table, { Tbody } from '@ui/Table'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -31,7 +30,6 @@ const PoolList = ({
   const prevActiveKey = useStore((state) => state.poolList.activeKey)
   const formStatus = useStore((state) => state.poolList.formStatus[activeKey] ?? DEFAULT_FORM_STATUS)
   const isMobile = useIsMobile()
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const poolDataMapperCached = useStore((state) => state.storeCache.poolsMapper[rChainId])
   const poolDataMapper = useStore((state) => state.pools.poolsMapper[rChainId])
   const results = useStore((state) => state.poolList.result)
@@ -134,15 +132,11 @@ const PoolList = ({
     ],
   )
 
-  usePageVisibleInterval(
-    useCallback(() => {
-      if (curve && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
-        void fetchPoolsRewardsApy(rChainId, poolDatas)
-      }
-    }, [curve, fetchPoolsRewardsApy, poolDatas, rChainId, rewardsApyMapper]),
-    REFRESH_INTERVAL['11m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (curve && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
+      void fetchPoolsRewardsApy(rChainId, poolDatas)
+    }
+  }, REFRESH_INTERVAL['11m'])
 
   // init
   useEffect(() => {
