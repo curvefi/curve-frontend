@@ -1,4 +1,6 @@
+import { useMemo } from 'react'
 import type { Theme } from '@mui/material/styles'
+import type { SxProps } from '@mui/system'
 import {
   type Column,
   getCoreRowModel,
@@ -58,6 +60,8 @@ export const getTableOptions = <T>(result: T | undefined) => ({
 /** Get the typography variant for the cell based on the column definition. */
 export const getCellVariant = <T>({ columnDef }: Column<T>) => columnDef.meta?.variant ?? 'tableCellMBold'
 
+const emptyObject = {} satisfies SxProps<Theme>
+
 /**
  * Creates the styles for the table cell, including handling sticky columns and collapse icon.
  * @param column the tanstack column
@@ -65,7 +69,7 @@ export const getCellVariant = <T>({ columnDef }: Column<T>) => columnDef.meta?.v
  * @param isSticky whether the column is sticky (first column on tablet)
  * @returns an array with the cell sx and the wrapper sx (empty object if no wrapper needed)
  */
-export function getCellSx<T extends TableItem>({
+export function useCellSx<T extends TableItem>({
   column,
   showCollapseIcon,
   isSticky,
@@ -75,23 +79,27 @@ export function getCellSx<T extends TableItem>({
   isSticky: boolean
 }) {
   // with the collapse icon there is an extra wrapper, so keep the sx separate
-  const wrapperSx = {
-    textAlign: getAlignment(column),
-    paddingInline: Spacing.sm,
-  }
-  const sx = {
-    ...(!showCollapseIcon && wrapperSx),
-    ...getExtraColumnPadding(column),
-    ...(isSticky && {
-      borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
-      position: 'sticky',
-      left: 0,
-      zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
-      backgroundColor: (t: Theme) => t.design.Table.Row.Default,
+  const textAlign = getAlignment(column)
+  const wrapperSx = useMemo(() => ({ textAlign, paddingInline: Spacing.sm }), [textAlign])
+
+  const { paddingInlineStart, paddingInlineEnd } = getExtraColumnPadding(column)
+  const sx = useMemo(
+    () => ({
+      ...(!showCollapseIcon && wrapperSx),
+      paddingInlineStart,
+      paddingInlineEnd,
+      ...(isSticky && {
+        borderInlineEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
+        position: 'sticky',
+        left: 0,
+        zIndex: (t: Theme) => t.zIndex.tableStickyColumn,
+        backgroundColor: (t: Theme) => t.design.Table.Row.Default,
+      }),
+      borderBlockEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
     }),
-    borderBlockEnd: (t: Theme) => `1px solid ${t.design.Layer[1].Outline}`,
-  }
-  return [sx, showCollapseIcon ? wrapperSx : {}]
+    [isSticky, paddingInlineEnd, paddingInlineStart, showCollapseIcon, wrapperSx],
+  )
+  return [sx, showCollapseIcon ? wrapperSx : emptyObject]
 }
 
 export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)

@@ -142,13 +142,14 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
   // Allow 'too-high' error as it's discouraged but sometimes necessary for low-liquidity pools
   const canSave = selected && (selected !== 'custom' || (customValue && (!error || error === 'too-high')))
   const footer = (
-    <Button fullWidth disabled={!canSave} onClick={onButtonClick}>
+    <Button fullWidth disabled={!canSave} onClick={onButtonClick} data-testid="slippage-save-button">
       {t`Save`}
     </Button>
   )
 
   const customTextField = (
     <TextField
+      data-testid={'slippage-input' + (selected === 'custom' ? '-selected' : '-disabled')}
       variant="standard"
       type="number"
       value={customValue}
@@ -215,6 +216,7 @@ export const SlippageSettingsModal = ({ isOpen, maxSlippage, onSave, onClose }: 
                 justifyContent: { mobile: 'space-between', tablet: 'start' },
                 gap: Spacing.xs,
               }}
+              data-testid="slippage-radio-group"
             >
               <FormControlLabel value={SLIPPAGE_PRESETS.STABLE} label={FORMATTED_STABLE} control={<Radio />} />
               <FormControlLabel value={SLIPPAGE_PRESETS.CRYPTO} label={FORMATTED_CRYPTO} control={<Radio />} />
