@@ -4,8 +4,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
-import { Slider } from '@ui-kit/shared/ui/Slider'
+import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BORROW_PRESET_RANGES } from '../constants'
 
@@ -40,42 +39,38 @@ export const LiquidationRangeSlider = ({
             <Typography variant="bodyXsRegular" color="textTertiary">{t`Safe`}</Typography>
           </Grid>
         </Grid>
-        <Grid size={12}>
-          <Slider
-            data-rail-background="safe"
-            aria-label={t`Bands`}
-            getAriaValueText={format}
-            value={sliderValue}
-            onChange={(_, n) => setSliderValue(n as number)}
-            onChangeCommitted={(_, n) => setRange(n as number)}
-            min={minValue}
-            max={maxValue}
-            size="medium"
-          />
-        </Grid>
       </Grid>
-      <Grid size={4} display="flex" alignItems="flex-end" direction="row">
-        <NumericTextField
-          aria-label={t`Bands`}
-          value={`${sliderValue}`}
-          name="range"
-          variant="standard"
-          size="tiny"
-          min={`${minValue}`}
-          max={`${maxValue}`}
+      <Grid size={12}>
+        <SliderInput
           onChange={(val) => val && setSliderValue(Number(val))}
-          onBlur={() => setRange(sliderValue)}
-          slotProps={{
-            // the normal input font size is too small for this component
-            input: {
-              sx: { '& input': { color: 'text.primary', fontSize: 'bodyMBold' } },
-              endAdornment: (
-                <Typography
-                  sx={{ marginInlineEnd: Spacing.sm }}
-                  variant="highlightM"
-                  color="text.secondary"
-                >{t`Bands`}</Typography>
-              ),
+          aria-label={t`Bands`}
+          value={sliderValue}
+          min={minValue}
+          max={maxValue}
+          sliderProps={{
+            onChangeCommitted: (_, n) => setRange(n as number),
+            getAriaValueText: format,
+            'data-rail-background': 'safe',
+          }}
+          inputProps={{
+            variant: 'standard',
+            name: 'range',
+            onBlur: (clamped) => clamped && setRange(Number(clamped)),
+            // the input is not wide enough for the "Bands" adornments
+            // value chosen for the slier to match the width of the labels
+            sx: { flexShrink: 0, width: '6.8rem' },
+            slotProps: {
+              // the normal input font size is too small for this component
+              input: {
+                sx: { '& input': { color: 'text.primary', fontSize: 'bodyMBold' } },
+                endAdornment: (
+                  <Typography
+                    sx={{ marginInlineEnd: Spacing.sm }}
+                    variant="highlightM"
+                    color="text.secondary"
+                  >{t`Bands`}</Typography>
+                ),
+              },
             },
           }}
         />
