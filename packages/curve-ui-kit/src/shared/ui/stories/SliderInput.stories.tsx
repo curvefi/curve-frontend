@@ -3,7 +3,11 @@ import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils/number'
 import { SliderInput } from '../SliderInput'
+
+const { Spacing } = SizesAndSpaces
 
 type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & {
   value?: number | [number, number]
@@ -71,6 +75,10 @@ const meta: Meta<typeof SliderInput> = {
       control: 'number',
       description: 'Step increment for the slider.',
     },
+    inputProps: {
+      control: 'object',
+      description: 'Additional props forwarded to the inputs.',
+    },
     onChange: {
       control: false,
       description: 'Callback triggered when the value changes.',
@@ -124,11 +132,24 @@ export const TradingSlider: Story = {
     sliderProps: {
       'data-rail-background': 'danger',
     },
-    inputEndAdornment: (
-      <Typography variant="bodySBold" color="textTertiary">
-        %
-      </Typography>
-    ),
+    inputProps: {
+      formatOnBlur: (value) => formatNumber(Number(value), { abbreviate: true }),
+      slotProps: {
+        input: {
+          sx: {
+            paddingInlineStart: Spacing.xs,
+            '& input': {
+              textAlign: 'left',
+            },
+          },
+          endAdornment: (
+            <Typography variant="bodySBold" color="textTertiary">
+              %
+            </Typography>
+          ),
+        },
+      },
+    },
   },
 }
 
