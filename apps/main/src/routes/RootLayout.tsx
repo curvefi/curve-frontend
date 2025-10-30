@@ -9,6 +9,7 @@ import useLoanStore from '@/loan/store/useStore'
 import { GlobalLayout } from '@/routes/GlobalLayout'
 import isPropValid from '@emotion/is-prop-valid'
 import { OverlayProvider } from '@react-aria/overlays'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { HeadContent, Outlet } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { ConnectionProvider } from '@ui-kit/features/connect-wallet'
@@ -23,6 +24,7 @@ import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { getCurrentApp } from '@ui-kit/shared/routes'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
+import { isCypress } from '@ui-kit/utils'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 
 /**
@@ -65,7 +67,6 @@ const NetworkAwareLayout = () => {
             <GlobalLayout currentApp={currentApp} network={network} networks={networks}>
               <HeadContent />
               <Outlet />
-              <TanStackRouterDevtools />
             </GlobalLayout>
           </ConnectionProvider>
         )}
@@ -76,7 +77,7 @@ const NetworkAwareLayout = () => {
 
 export const RootLayout = () => {
   const theme = useUserProfileStore((state) => state.theme)
-
+  const devTools = !isCypress
   return (
     <StyleSheetManager shouldForwardProp={shouldForwardProp}>
       <ThemeProvider theme={theme}>
@@ -84,8 +85,10 @@ export const RootLayout = () => {
           <OverlayProvider>
             <QueryProvider persister={persister} queryClient={queryClient}>
               <NetworkAwareLayout />
+              {devTools && <ReactQueryDevtools />}
             </QueryProvider>
           </OverlayProvider>
+          {devTools && <TanStackRouterDevtools />}
         </ErrorBoundary>
       </ThemeProvider>
     </StyleSheetManager>

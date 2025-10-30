@@ -1,11 +1,12 @@
-import { useCallback, useEffect, useMemo } from 'react'
+import { isEmpty, sum } from 'lodash'
+import { useEffect, useMemo } from 'react'
 import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { POOL_TEXT_FIELDS } from '@/dex/features/pool-list/columns'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
 import type { NetworkConfig, PoolData } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
-import { notFalsy, objectKeys, recordValues } from '@curvefi/prices-api/objects.util'
+import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -45,38 +46,44 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
     [chainId, fetchMissingPoolsRewardsApy, fetchPoolsRewardsApy, poolsData],
   )
 
-  usePageVisibleInterval(
-    useCallback(() => {
-      if (curveApi && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
-        void fetchPoolsRewardsApy(chainId, poolsData)
-      }
-    }, [curveApi, fetchPoolsRewardsApy, poolsData, chainId, rewardsApyMapper]),
-    REFRESH_INTERVAL['11m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(async () => {
+    if (curveApi && !isEmpty(rewardsApyMapper)) {
+      await fetchPoolsRewardsApy(chainId, poolsData)
+    }
+  }, REFRESH_INTERVAL['11m'])
 
   return {
     isLoading: !poolsData,
-    isReady: !!useMemo(
-      () => objectKeys(tvlMapper ?? {}).length && (!isLite || objectKeys(volumeMapper || {}).length),
+    isReady: useMemo(
+      () => !isEmpty(tvlMapper) && (isLite || !isEmpty(volumeMapper)),
       [isLite, tvlMapper, volumeMapper],
     ),
     userHasPositions: useMemo(() => userPoolList && recordValues(userPoolList).some(Boolean), [userPoolList]),
     data: useMemo(
       () =>
         poolsData &&
-        poolsData.map(
-          (item): PoolListItem => ({
+        poolsData.map((item): PoolListItem => {
+          const rewards = rewardsApyMapper?.[item.pool.id]
+          return {
             ...item,
-            rewards: rewardsApyMapper?.[item.pool.id],
+            totalAPR: sum(
+              notFalsy<string | number>(
+                rewards?.base?.day,
+                ...(rewards?.crv ?? []),
+                ...(rewards?.other?.map((r) => r.apy) ?? []),
+              )
+                .map(Number)
+                .filter((v) => !isNaN(v)),
+            ),
+            rewards,
             volume: volumeMapper?.[item.pool.id],
             tvl: tvlMapper?.[item.pool.id],
             hasPosition: userPoolList?.[item.pool.id],
             network,
             url: getPath({ network }, `${DEX_ROUTES.PAGE_POOLS}/${item.pool.id}/deposit`),
             tags: getPoolTags(userPoolList?.[item.pool.id], item),
-          }),
-        ),
+          }
+        }),
       [poolsData, rewardsApyMapper, tvlMapper, userPoolList, volumeMapper, network],
     ),
   }

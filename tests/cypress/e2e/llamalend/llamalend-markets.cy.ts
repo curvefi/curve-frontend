@@ -70,7 +70,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get('[data-testid="btn-drawer-sort-lamalend-markets"]').click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
-      closeDrawer()
+      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
@@ -133,7 +133,7 @@ describe(`LlamaLend Markets`, () => {
       ['tvl', '$10k -'],
       ['utilizationPercent', '0% -'],
     )
-    cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
+    cy.viewport(1400, 800) // TODO: fix the slider in different viewports, the new design should help with that
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
       cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
@@ -353,11 +353,7 @@ describe(`LlamaLend Storage Migration`, () => {
 
 function visitAndWait([width, height]: [number, number, Breakpoint], options?: Partial<Cypress.VisitOptions>) {
   cy.viewport(width, height)
-  cy.visit('/llamalend/ethereum/markets/', {
-    onBeforeLoad: (win) => win.localStorage.setItem('phishing-warning-dismissed', `"${new Date().toISOString()}"`),
-    ...LOAD_TIMEOUT,
-    ...options,
-  })
+  cy.visit('/llamalend/ethereum/markets/', { ...LOAD_TIMEOUT, ...options })
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 

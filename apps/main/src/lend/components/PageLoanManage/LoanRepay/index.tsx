@@ -37,7 +37,6 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
@@ -64,7 +63,6 @@ const LoanRepay = ({
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanRepay.formStatus)
   const formValues = useStore((state) => state.loanRepay.formValues)
-  const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
@@ -286,24 +284,12 @@ const LoanRepay = ({
     }
   }, [])
 
-  usePageVisibleInterval(
-    () => {
-      const { swapRequired } = _parseValues(formValues)
-      if (
-        isLoaded &&
-        isPageVisible &&
-        swapRequired &&
-        !formStatus.isComplete &&
-        !formStatus.step &&
-        !formStatus.error &&
-        !isConfirming
-      ) {
-        updateFormValues({})
-      }
-    },
-    REFRESH_INTERVAL['10s'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    const { swapRequired } = _parseValues(formValues)
+    if (isLoaded && swapRequired && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+      updateFormValues({})
+    }
+  }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {

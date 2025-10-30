@@ -246,15 +246,11 @@ const LoanDeleverage = ({
   }, [isPageVisible])
 
   // interval
-  usePageVisibleInterval(
-    () => {
-      if (!formStatus.isInProgress) {
-        updateFormValues({}, '', false)
-      }
-    },
-    REFRESH_INTERVAL['1m'],
-    isPageVisible,
-  )
+  usePageVisibleInterval(() => {
+    if (!formStatus.isInProgress) {
+      updateFormValues({}, '', false)
+    }
+  }, REFRESH_INTERVAL['1m'])
 
   // steps
   useEffect(() => {

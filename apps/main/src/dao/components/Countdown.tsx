@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { styled } from 'styled-components'
+import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
 interface CountdownProps {
   /** startDate adds 7 days to the current date to mimic a DAO proposal voting period */
@@ -43,11 +44,7 @@ const Countdown = ({ startDate, endDate, className }: CountdownProps) => {
     }
 
     updateTimeRemaining()
-    const timer = setInterval(updateTimeRemaining, 1000)
-
-    return () => {
-      clearInterval(timer)
-    }
+    return setTimeoutInterval(updateTimeRemaining, 1000)
   }, [startDate, endDate])
 
   return (

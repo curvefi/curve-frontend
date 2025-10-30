@@ -37,7 +37,7 @@ export const dexRoutes = dexLayoutRoute.addChildren([
   }),
   createRoute({
     path: '$network',
-    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/pools/`),
+    loader: ({ params: { network } }) => redirectTo(`/dex/${network}/swap/`),
     ...layoutProps,
   }),
   createRoute({
