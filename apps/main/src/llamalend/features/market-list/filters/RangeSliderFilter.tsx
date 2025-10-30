@@ -10,6 +10,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import type { LlamaMarketColumnId } from '../columns.enum'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -136,8 +137,9 @@ export const RangeSliderFilter = <T,>({
           min={0}
           max={maxValue}
           step={step}
-          inputProps={
-            adornmentVariant
+          inputProps={{
+            formatOnBlur: (value) => formatNumber(Number(value), { abbreviate: true }),
+            ...(adornmentVariant
               ? {
                   slotProps: {
                     input: {
@@ -152,8 +154,8 @@ export const RangeSliderFilter = <T,>({
                     },
                   },
                 }
-              : undefined
-          }
+              : undefined),
+          }}
         />
       </Stack>
     </Select>

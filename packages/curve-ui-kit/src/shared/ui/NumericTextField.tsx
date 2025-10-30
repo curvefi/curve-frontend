@@ -55,6 +55,17 @@ const clamp = (value?: string, min?: Decimal, max?: Decimal): BigNumber => {
 const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
 
 /**
+ * Computes a formatted value for display purposes.
+ * Applies an optional formatter when provided and the value is defined.
+ */
+const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) => {
+  if (val == null) {
+    return ''
+  }
+  return format?.(val) ?? getDisplayValue(val)
+}
+
+/**
  * Props for the NumericTextField component.
  * Extends Material-UI's TextFieldProps while replacing value and onChange
  * to handle numeric input specifically.
@@ -70,19 +81,31 @@ export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onC
   onChange?: (value: string | undefined) => void
   /** Callback fired when the numeric is being submitted */
   onBlur?: (value: Decimal | undefined) => void
+  /** Optional formatter applied when the input loses focus */
+  formatOnBlur?: (value: Decimal | undefined) => string
 }
 
-export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, ...props }: NumericTextFieldProps) => {
+export const NumericTextField = ({
+  value,
+  min,
+  max,
+  onChange,
+  onBlur,
+  onFocus,
+  formatOnBlur,
+  ...props
+}: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
-  const [inputValue, setInputValue] = useState(getDisplayValue(value))
+  const [inputValue, setInputValue] = useState(getFormattedDisplayValue(value, formatOnBlur))
 
   const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
+  const [isFocused, setIsFocused] = useState(false)
 
   // Update input value when value changes externally
   useEffect(() => {
-    setInputValue(getDisplayValue(value))
-  }, [value])
+    setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, formatOnBlur))
+  }, [value, isFocused, formatOnBlur])
 
   return (
     <TextField
@@ -91,6 +114,7 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
       value={inputValue}
       inputMode="decimal"
       onFocus={(e) => {
+        setIsFocused(true)
         /**
          * Select all content when clicked.
          * This prevents unintended behavior when users click on the input field.
@@ -107,12 +131,13 @@ export const NumericTextField = ({ value, min, max, onChange, onBlur, onFocus, .
         setLastChangeValue(sanitizedValue)
       }}
       onBlur={() => {
+        setIsFocused(false)
         // Replace a sole invalid values with just empty input as they're not really valid.
         const invalidValues = ['-', '.', ',', '']
         const finalValue = invalidValues.includes(inputValue)
           ? undefined
           : (clamp(inputValue, min, max).toString() as Decimal)
-        setInputValue(getDisplayValue(finalValue))
+        setInputValue(getFormattedDisplayValue(finalValue, formatOnBlur))
 
         // Also emit the changed event, because due to clamping and such the final value
         // might differ from what the user entered last.
