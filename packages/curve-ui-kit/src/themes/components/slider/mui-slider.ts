@@ -64,7 +64,6 @@ const baseRootStyle = (design: DesignSystem, orientation?: SliderProps['orientat
     '&': { paddingBlock: 0 },
     position: 'relative',
     paddingInline: 0,
-    paddingBlock: 0,
     // This is to compensate the ::before and ::after pseudo-elements needed for the thumb width. It dynamically adapts to the slider size.
     marginInline: margins.marginInline,
     marginBlock: margins.marginBlock,
@@ -90,9 +89,9 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
     thumb: ({ ownerState }) => {
       const { orientation = 'horizontal' } = ownerState
       const {
-        thumb: { size, getImage },
+        thumb: { size, getImages },
       } = getOrientationConfig(orientation)
-      const sliderThumbImage = getImage(design)
+      const { default: sliderThumbImage, hover: sliderThumbImageHover } = getImages(design)
 
       return {
         // Add 2px to the thumb width and height to compensate the border
@@ -104,14 +103,14 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         borderRadius: 0,
         zIndex: 1,
 
-        '&:hover': {
+        '&:hover, &.Mui-active': {
           backdropFilter: 'invert(1)', // This won't work for background images
           // Instead, explicitly set an inverted background
-          background: `${design.Color.Neutral[50]} url(${sliderThumbImage}) center no-repeat`,
+          background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
           backgroundBlendMode: 'difference', // This inverts colors in the background
           border: `1px solid ${design.Button.Primary.Default.Fill}`,
         },
-        '&:hover, &.Mui-focusVisible': {
+        '&:hover, &.Mui-focusVisible, &.Mui-active': {
           boxShadow: 'none', // Remove default MUI focus ring
         },
         '&.Mui-disabled': {

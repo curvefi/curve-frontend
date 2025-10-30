@@ -1,6 +1,6 @@
+import { ComponentProps } from 'react'
 import { useState } from 'react'
 import Box from '@mui/material/Box'
-import type { SliderProps } from '@mui/material/Slider'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'
 import { geometricMap, powerMap } from '@ui-kit/utils/interpolations'
@@ -12,7 +12,7 @@ const GEO_MIN_VALUE = 1
 const MAX_VALUE = 160000000
 
 const SliderStory = (
-  props: SliderProps & {
+  props: ComponentProps<typeof Slider> & {
     containerWidth?: number | string
     scaleType?: 'linear' | 'power' | 'geometric'
   },

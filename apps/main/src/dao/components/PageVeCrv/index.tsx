@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import FormLockCreate from '@/dao/components/PageVeCrv/components/FormLockCreate'
 import FormLockCrv from '@/dao/components/PageVeCrv/components/FormLockCrv'
 import FormLockDate from '@/dao/components/PageVeCrv/components/FormLockDate'
@@ -33,9 +33,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
   ]
   const [tab, setTab] = useState<FormType>(rFormType ?? 'adjust_crv')
 
-  const setData = useCallback(async () => {
-    setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true)
-  }, [curve, isLoadingCurve, vecrvInfo, tab, setFormValues])
+  const setData = useEffectEvent(() => setFormValues(curve, isLoadingCurve, tab, {}, vecrvInfo, true))
 
   useEffect(() => {
     if (canUnlock) {
@@ -53,8 +51,7 @@ const FormCrvLocker = (pageProps: PageVecrv) => {
 
   // fetch locked crv data
   useEffect(() => {
-    void setData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setData()
   }, [chainId, signerAddress, isPageVisible])
 
   return tab === 'adjust_crv' || tab === 'adjust_date' || tab === 'withdraw' ? (

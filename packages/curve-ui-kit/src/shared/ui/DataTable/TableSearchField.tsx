@@ -15,7 +15,7 @@ type Props = {
   onChange: (value: string) => void
   testId?: string
   toggleExpanded?: () => void
-  isExpanded: boolean
+  isExpanded?: boolean
 }
 
 export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isExpanded = true }: Props) => {

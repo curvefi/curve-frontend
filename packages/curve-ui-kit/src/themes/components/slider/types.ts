@@ -33,7 +33,7 @@ export type OrientationConfig = {
       width: string
       height: string
     }
-    getImage: (design: DesignSystem) => string
+    getImages: (design: DesignSystem) => { default: string; hover: string }
   }
   track: {
     size: Record<string, string>

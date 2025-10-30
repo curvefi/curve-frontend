@@ -106,6 +106,7 @@ export const Duration = {
   FormDebounce: 500,
   Transition: 256,
   Focus: 50,
+  Delay: 100,
 }
 
 export const TransitionFunction = `ease-out ${Duration.Transition}ms`

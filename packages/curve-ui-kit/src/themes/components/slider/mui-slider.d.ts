@@ -17,7 +17,7 @@ type SliderRailBackground = 'default' | 'filled' | 'bordered' | 'safe' | 'danger
 declare module '@mui/material/Slider' {
   interface SliderPropsSizeOverrides extends SliderSizeOverrides {}
   interface SliderOwnProps<Value extends number | number[]> {
-    // kebab-case instead of camelCase to prevent validation errors from react in the DOM
+    // data-prefix to prevent DOM validation errors
     'data-rail-background'?: SliderRailBackground
   }
 }
