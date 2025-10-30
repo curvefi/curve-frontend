@@ -12,8 +12,8 @@ describe('Pool page', () => {
     cy.visit(path)
     cy.get('[data-testid="tab-deposit"]').should('have.class', 'Mui-selected')
     cy.get('[data-testid="borrow-slippage-value"]').contains(path.includes('crypto') ? '0.1%' : '0.03%')
-    const [usePreset, value] = oneOf([true, oneOf('0.1', '0.5'), [false, oneFloat().toFixed(1)]])
-    if (usePreset) {
+    const [isPreset, value] = oneOf([true, oneOf('0.1', '0.5'), [false, oneFloat(5).toFixed(2)]])
+    if (isPreset) {
       cy.get(`[data-testid="slippage-radio-group"] [value="${value}"]`).click()
       cy.get('[data-testid="slippage-input-disabled"]').should('have.value', value)
     } else {
