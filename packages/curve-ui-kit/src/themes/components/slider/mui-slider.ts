@@ -92,6 +92,14 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         thumb: { size, getImages },
       } = getOrientationConfig(orientation)
       const { default: sliderThumbImage, hover: sliderThumbImageHover } = getImages(design)
+      const activeThumbStyles = {
+        backdropFilter: 'invert(1)', // This won't work for background images
+        // Instead, explicitly set an inverted background
+        background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
+        backgroundBlendMode: 'difference', // This inverts colors in the background
+        border: `1px solid ${design.Button.Primary.Default.Fill}`,
+        boxShadow: 'none' as const,
+      }
 
       return {
         // Add 2px to the thumb width and height to compensate the border
@@ -102,19 +110,20 @@ export const defineMuiSlider = (design: DesignSystem): Components['MuiSlider'] =
         border: `1px solid ${design.Color.Neutral[25]}`,
         borderRadius: 0,
         zIndex: 1,
-
-        '&:hover, &.Mui-active': {
-          backdropFilter: 'invert(1)', // This won't work for background images
-          // Instead, explicitly set an inverted background
-          background: `${design.Color.Neutral[50]} url(${sliderThumbImageHover}) center no-repeat`,
-          backgroundBlendMode: 'difference', // This inverts colors in the background
-          border: `1px solid ${design.Button.Primary.Default.Fill}`,
+        '&.Mui-active': activeThumbStyles,
+        '&.Mui-focusVisible': {
+          boxShadow: 'none',
         },
-        '&:hover, &.Mui-focusVisible, &.Mui-active': {
-          boxShadow: 'none', // Remove default MUI focus ring
+        // only target precise hover (not fingerprinting touch events) to prevent parasitic active thumb after touch events
+        '@media (hover: hover) and (pointer: fine)': {
+          '&:hover': activeThumbStyles,
         },
         '&.Mui-disabled': {
           background: `${design.Color.Neutral[600]} url(${sliderThumbImage}) center no-repeat`,
+        },
+        '&::after': {
+          width: size.width,
+          height: size.height,
         },
       }
     },
