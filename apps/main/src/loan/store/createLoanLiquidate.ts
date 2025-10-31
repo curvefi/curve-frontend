@@ -8,6 +8,7 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -99,7 +100,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
 
       get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
       if (canSelfLiquidate) {
-        void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, clonedFormStatus)
+        get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, clonedFormStatus).catch(errorFallback)
       }
     },
 
@@ -123,7 +124,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         error: resp.error,
       }
       get()[sliceKey].setStateByKey('formStatus', updatedFormStatus)
-      void get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus)
+      get()[sliceKey].fetchEstGasApproval(chainId, llamma, maxSlippage, updatedFormStatus).catch(errorFallback)
       return resp
     },
     fetchStepLiquidate: async (curve: LlamaApi, llamma: Llamma, liquidationAmt: string, maxSlippage: string) => {
@@ -139,7 +140,9 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash).catch(
+        errorFallback,
+      )
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)

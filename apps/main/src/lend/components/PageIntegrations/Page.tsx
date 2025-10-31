@@ -9,6 +9,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { useSearchParams, useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const Page = () => {
   const params = useParams<NetworkUrlParams>()
@@ -19,7 +20,7 @@ const Page = () => {
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
-    void init(rChainId)
+    init(rChainId).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

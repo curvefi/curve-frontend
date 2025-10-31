@@ -153,7 +153,7 @@ const CandleChart = ({
 
     const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
     if (barsInfo && barsInfo.barsBefore < 50) {
-      void debouncedFetchMoreChartData.current()
+      debouncedFetchMoreChartData.current()
       setLastTimescale(timeScale.getVisibleRange())
     }
   }, [refetchingCapped])

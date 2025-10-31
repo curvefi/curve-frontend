@@ -15,6 +15,7 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type PoolStatsProps = {
   poolAlert: PoolAlert | null
@@ -32,7 +33,7 @@ const PoolStats = ({ curve, routerParams, poolAlert, poolData, poolDataCacheOrAp
 
   useEffect(() => {
     if (curve && poolData && !poolData?.parameters.virtualPrice) {
-      void fetchPoolStats(curve, poolData)
+      fetchPoolStats(curve, poolData).catch(errorFallback)
     }
   }, [curve, fetchPoolStats, poolData])
 

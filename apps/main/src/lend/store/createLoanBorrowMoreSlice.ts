@@ -23,6 +23,7 @@ import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { getLib, useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -240,7 +241,7 @@ const createLoanBorrowMore = (
       // api calls
       await sliceState.fetchMaxRecv(activeKey.activeKeyMax, api, market, isLeverage)
       await sliceState.fetchDetailInfo(activeKey.activeKey, api, market, maxSlippage, isLeverage)
-      void sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage)
+      sliceState.fetchEstGasApproval(activeKey.activeKey, api, market, maxSlippage, isLeverage).catch(errorFallback)
     },
 
     // steps
@@ -306,12 +307,12 @@ const createLoanBorrowMore = (
       )
 
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {
@@ -330,18 +331,18 @@ const createLoanBorrowMore = (
             userAddress: wallet?.account?.address,
           })
           if (loanExists) {
-            void user.fetchAll(api, market, true)
+            user.fetchAll(api, market, true).catch(errorFallback)
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           }
           invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true).catch(errorFallback)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
           })
-          void sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage)
+          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES, maxSlippage, isLeverage).catch(errorFallback)
           return { ...resp, error }
         }
       }

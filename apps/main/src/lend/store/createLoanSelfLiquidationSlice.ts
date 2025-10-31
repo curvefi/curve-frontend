@@ -14,6 +14,7 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { isGreaterThanOrEqualTo } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -111,7 +112,7 @@ const createLoanSelfLiquidationSlice = (
       sliceState.setStateByKey('formStatus', { ...get()[sliceKey].formStatus, loading: false })
 
       // api call
-      void sliceState.fetchEstGasApproval(api, market, maxSlippage)
+      sliceState.fetchEstGasApproval(api, market, maxSlippage).catch(errorFallback)
     },
     fetchEstGasApproval: async (api, market, maxSlippage) => {
       const { formStatus, ...sliceState } = get()[sliceKey]
@@ -175,12 +176,12 @@ const createLoanSelfLiquidationSlice = (
       // api calls
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp) {
         const loanExists = await refetchLoanExists({
@@ -199,11 +200,11 @@ const createLoanSelfLiquidationSlice = (
         } else {
           // api calls
           if (loanExists) {
-            void user.fetchAll(api, market, true)
+            user.fetchAll(api, market, true).catch(errorFallback)
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           }
           invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true).catch(errorFallback)
 
           // update state
           sliceState.setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true })

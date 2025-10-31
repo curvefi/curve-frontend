@@ -74,9 +74,9 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        await setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],

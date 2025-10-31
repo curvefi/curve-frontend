@@ -14,6 +14,7 @@ import TextCaption from '@ui/TextCaption'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
 
 const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
@@ -232,23 +233,25 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
    * the oracle pools based ohlc chart.
    */
   const refetchPricesData = useCallback(() => {
-    void fetchOracleOhlcData(
-      rChainId,
-      controller,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.start,
-      chartTimeSettings.end,
-    )
-    void fetchLlammaOhlcData(
-      rChainId,
-      llammaId,
-      address,
-      chartInterval,
-      timeUnit,
-      chartTimeSettings.start,
-      chartTimeSettings.end,
-    )
+    Promise.all([
+      fetchOracleOhlcData(
+        rChainId,
+        controller,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end,
+      ),
+      fetchLlammaOhlcData(
+        rChainId,
+        llammaId,
+        address,
+        chartInterval,
+        timeUnit,
+        chartTimeSettings.start,
+        chartTimeSettings.end,
+      ),
+    ]).catch(errorFallback)
   }, [
     fetchOracleOhlcData,
     rChainId,
@@ -274,7 +277,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
       const endTime = subtractTimeUnit(timeOption, lastFetchEndTime)
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
-      void fetchMoreData(rChainId, controller, address, chartInterval, timeUnit, +startTime, endTime)
+      fetchMoreData(rChainId, controller, address, chartInterval, timeUnit, +startTime, endTime).catch(errorFallback)
     },
     [timeOption, fetchMoreData, rChainId, controller, address, chartInterval, timeUnit],
   )

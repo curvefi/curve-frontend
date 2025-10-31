@@ -40,7 +40,7 @@ export type DetailInfoCompProps = {
   market: OneWayMarketTemplate | null
   steps: Step[]
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
-  updateFormValues: (updatedFormValues: FormValues) => void
+  updateFormValues: (updatedFormValues: FormValues) => Promise<void>
 }
 
 export type DetailInfoCompAdditionalProps = {

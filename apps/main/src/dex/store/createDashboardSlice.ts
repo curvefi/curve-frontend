@@ -95,13 +95,11 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
 
       if (Object.keys(claimableFees).length || Object.keys(vecrvInfo).length) return
 
-      void sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress)
-
       const { signerAddress } = curve
-
-      if (signerAddress && signerAddress.toLowerCase() !== walletAddress) {
-        void lockedCrv.fetchVecrvInfo(curve)
-      }
+      await Promise.all([
+        sliceState.fetchVeCrvAndClaimables(activeKey, curve, walletAddress),
+        signerAddress && signerAddress.toLowerCase() !== walletAddress && lockedCrv.fetchVecrvInfo(curve),
+      ])
     },
     fetchVeCrvAndClaimables: async (activeKey, curve, walletAddress) => {
       const {
@@ -366,7 +364,7 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
 
       if (key === claimButtonsKey['3CRV']) {
         const storedPoolDataMapper = pools.poolsMapper[chainId]
-        void sliceState.fetchDashboardData(curve, walletAddress, storedPoolDataMapper)
+        await sliceState.fetchDashboardData(curve, walletAddress, storedPoolDataMapper)
       }
 
       return resp

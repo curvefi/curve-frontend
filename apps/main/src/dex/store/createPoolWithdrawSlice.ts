@@ -20,6 +20,7 @@ import {
 import { isBonus, isHighSlippage } from '@/dex/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { shortenAddress } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -144,7 +145,7 @@ const createPoolWithdrawSlice = (
 
       // get gas
       if (signerAddress) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues).catch(errorFallback)
       }
     },
     fetchWithdrawLpToken: async (props) => {
@@ -192,7 +193,7 @@ const createPoolWithdrawSlice = (
 
         // get gas
         if (signerAddress) {
-          void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+          get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues).catch(errorFallback)
         }
       }
     },
@@ -283,7 +284,7 @@ const createPoolWithdrawSlice = (
 
       // get gas
       if (signerAddress) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues).catch(errorFallback)
       }
     },
     fetchClaimable: async (activeKey, chainId, pool) => {
@@ -350,16 +351,16 @@ const createPoolWithdrawSlice = (
           maxSlippage,
         }
         if (cFormValues.selected === 'token') {
-          void get()[sliceKey].fetchWithdrawToken(props)
+          await get()[sliceKey].fetchWithdrawToken(props)
         } else if (cFormValues.selected === 'lpToken') {
-          void get()[sliceKey].fetchWithdrawLpToken(props)
+          await get()[sliceKey].fetchWithdrawLpToken(props)
         } else if (cFormValues.selected === 'imbalance') {
-          void get()[sliceKey].fetchWithdrawCustom(props)
+          await get()[sliceKey].fetchWithdrawCustom(props)
         }
       } else if (formType === 'UNSTAKE' && !!signerAddress && +cFormValues.stakedLpToken > 0) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
+        await get()[sliceKey].fetchEstGasApproval(activeKey, curve, formType, pool, cFormValues)
       } else if (formType === 'CLAIM') {
-        void get()[sliceKey].fetchClaimable(activeKey, chainId, pool)
+        await get()[sliceKey].fetchClaimable(activeKey, chainId, pool)
       }
     },
 

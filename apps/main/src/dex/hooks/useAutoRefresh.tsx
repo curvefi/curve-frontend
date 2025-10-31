@@ -6,6 +6,7 @@ import { type CurveApi, useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useNetworkByChain, useNetworks } from '../entities/networks'
 
 export const useAutoRefresh = (networkDef: NetworkDef) => {
@@ -28,7 +29,7 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
       const { chainId } = curve
       const poolsData = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
-      void setTokensMapper(curve, poolsData)
+      setTokensMapper(curve, poolsData).catch(errorFallback)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )

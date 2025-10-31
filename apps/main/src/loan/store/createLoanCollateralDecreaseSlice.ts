@@ -14,6 +14,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -78,7 +79,7 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
     ...DEFAULT_STATE,
 
     init: (chainId: ChainId, llamma: Llamma) => {
-      void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
+      get()[sliceKey].fetchMaxRemovable(chainId, llamma).catch(errorFallback)
     },
     fetchEstGas: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       const { collateral } = formValues
@@ -142,8 +143,10 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
 
       // fetch detail, approval, est gas, set loading
       if (haveCollateral) {
-        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
-        void get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues)
+        Promise.all([
+          get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues),
+          get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues),
+        ]).catch(errorFallback)
       } else {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -165,8 +168,10 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
       const removeCollateralFn = networks[chainId].api.collateralDecrease.removeCollateral
       const resp = await removeCollateralFn(activeKey, provider, llamma, formValues.collateral)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
-      void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
+      Promise.all([
+        getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash),
+        get()[sliceKey].fetchMaxRemovable(chainId, llamma),
+      ]).catch(errorFallback)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)

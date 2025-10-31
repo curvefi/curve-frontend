@@ -35,6 +35,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const LoanCreate = ({
   collateralAlert,
@@ -86,9 +87,9 @@ const LoanCreate = ({
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (curve && llamma) {
-        void setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
+        await setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
       }
     },
     [curve, isLeverage, llamma, maxSlippage, setFormValues],
@@ -283,7 +284,7 @@ const LoanCreate = ({
   const disabled = !isReady || (formStatus.isInProgress && !formStatus.error)
 
   useEffect(() => {
-    updateFormValues(formValues)
+    updateFormValues(formValues).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [haveSigner])
 

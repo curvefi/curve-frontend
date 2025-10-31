@@ -41,6 +41,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD } from '@ui-kit/utils/address'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -106,13 +107,11 @@ const Page = () => {
         maxRecv: {},
         maxRecvLeverage: {},
       })
-
       const updatedFormValues = { ...formValues, n: formValues.n || llamma.defaultBands }
-      void setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage)
-
-      if (curve.signerAddress) {
-        void fetchUserLoanWalletBalances(curve, llamma)
-      }
+      return Promise.all([
+        setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage).catch(errorFallback),
+        curve.signerAddress && fetchUserLoanWalletBalances(curve, llamma).catch(errorFallback),
+      ])
     },
     [fetchUserLoanWalletBalances, formValues, maxSlippage, setFormValues, setStateByKeys],
   )
@@ -121,8 +120,7 @@ const Page = () => {
     if (isHydrated && curve) {
       if (llamma) {
         resetUserDetailsState(llamma)
-        fetchInitial(curve, isLeverage, llamma)
-        void fetchLoanDetails(curve, llamma)
+        Promise.all([fetchInitial(curve, isLeverage, llamma), fetchLoanDetails(curve, llamma)]).catch(errorFallback)
         setLoaded(true)
       } else if (collateralDatasMapper) {
         console.warn(
@@ -152,7 +150,7 @@ const Page = () => {
   // max slippage updated
   useEffect(() => {
     if (loaded && !!curve) {
-      void setFormValues(curve, isLeverage, llamma, formValues, maxSlippage)
+      setFormValues(curve, isLeverage, llamma, formValues, maxSlippage).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])

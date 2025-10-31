@@ -19,6 +19,7 @@ import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { copyToClipboard } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import BackButton from '../BackButton'
 import ProposalVoteStatusBox from '../ProposalVoteStatusBox'
 import UserBox from '../UserBox'
@@ -72,7 +73,7 @@ export const Proposal = ({ proposalId: rProposalId, network }: ProposalUrlParams
         setSnapshotVeCrv(signer, userAddress, proposal.block, rProposalId)
       }
 
-      void getVeCrv()
+      getVeCrv().catch(errorFallback)
     }
   }, [provider, rChainId, rProposalId, setSnapshotVeCrv, proposal?.block, snapshotVeCrv, userAddress])
 

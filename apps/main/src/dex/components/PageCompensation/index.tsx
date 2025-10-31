@@ -7,6 +7,7 @@ import type { Balances, EtherContract, VestedTotals } from '@/dex/components/Pag
 import { CurveApi, ChainId, Provider } from '@/dex/types/main.types'
 import { getErrorMessage } from '@/dex/utils'
 import Box from '@ui/Box'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormCompensation = ({
   rChainId,
@@ -98,8 +99,8 @@ const FormCompensation = ({
     setVestedTotals({})
 
     if (signerAddress) {
-      void getBalances(signerAddress, contracts)
-      void getVestContract(signerAddress, contracts)
+      getBalances(signerAddress, contracts).catch(errorFallback)
+      getVestContract(signerAddress, contracts).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signerAddress])

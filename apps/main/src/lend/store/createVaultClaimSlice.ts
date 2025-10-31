@@ -7,6 +7,7 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import { Api, MarketClaimable, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -63,10 +64,9 @@ const createVaultClaim = (set: StoreApi<State>['setState'], get: StoreApi<State>
       if (!userActiveKey || !api || !market) return
 
       const { signerAddress } = api
-
       // api calls
       if (signerAddress) {
-        void get()[sliceKey].fetchClaimable(userActiveKey, api, market)
+        get()[sliceKey].fetchClaimable(userActiveKey, api, market).catch(errorFallback)
       }
     },
 
@@ -86,9 +86,11 @@ const createVaultClaim = (set: StoreApi<State>['setState'], get: StoreApi<State>
 
       if (resp.userActiveKey === userActiveKey) {
         // re-fetch api
-        void get()[sliceKey].fetchClaimable(resp.userActiveKey, api, market)
-        void get().user.fetchUserMarketBalances(api, market, true)
-        void get().markets.fetchAll(api, market, true)
+        Promise.all([
+          get()[sliceKey].fetchClaimable(resp.userActiveKey, api, market),
+          get().user.fetchUserMarketBalances(api, market, true),
+          get().markets.fetchAll(api, market, true),
+        ]).catch(errorFallback)
 
         // update state
         const partialFormStatus: Partial<FormStatus> = {

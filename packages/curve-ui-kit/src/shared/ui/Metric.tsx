@@ -17,6 +17,7 @@ import {
   type NumberFormatOptions,
   type SxProps,
 } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -203,7 +204,7 @@ export const Metric = ({
 
   const [openCopyAlert, setOpenCopyAlert] = useState(false)
   const copyValue = useCallback(() => {
-    void copyToClipboard(value!.toString())
+    copyToClipboard(value!.toString()).catch(errorFallback)
     setOpenCopyAlert(true)
   }, [value])
 

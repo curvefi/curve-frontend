@@ -19,6 +19,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -38,13 +39,14 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   const haveClaimableCrv = +crv > 0
   const haveClaimableRewards = rewards.some((r) => +r.amount > 0)
 
-  const updateFormValues = useCallback(() => {
-    void setFormValues(userActiveKey, isLoaded ? api : null, market)
-  }, [api, isLoaded, market, setFormValues, userActiveKey])
+  const updateFormValues = useCallback(
+    () => setFormValues(userActiveKey, isLoaded ? api : null, market),
+    [api, isLoaded, market, setFormValues, userActiveKey],
+  )
 
   const reset = useCallback(() => {
     setTxInfoBar(null)
-    updateFormValues()
+    return updateFormValues()
   }, [updateFormValues])
 
   const handleBtnClickClaim = useCallback(
@@ -71,7 +73,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(networks[chainId], resp.hash)}
-            onClose={() => reset()}
+            onClose={() => reset().catch(errorFallback)}
           />,
         )
       }
@@ -182,7 +184,9 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-        {formStatus.error ? <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset()} /> : null}
+        {formStatus.error ? (
+          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset().catch(errorFallback)} />
+        ) : null}
         {txInfoBar}
 
         {api && market && (

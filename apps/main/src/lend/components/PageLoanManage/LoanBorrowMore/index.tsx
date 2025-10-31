@@ -35,6 +35,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const { Spacing } = SizesAndSpaces
@@ -82,7 +83,7 @@ const LoanBorrowMore = ({
   })
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
@@ -90,7 +91,7 @@ const LoanBorrowMore = ({
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
-      return setFormValues(
+      await setFormValues(
         isLoaded ? api : null,
         market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
@@ -282,7 +283,7 @@ const LoanBorrowMore = ({
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      void updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
@@ -329,7 +330,7 @@ const LoanBorrowMore = ({
   ])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({}, maxSlippage)
+    if (isLoaded) updateFormValues({}, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 

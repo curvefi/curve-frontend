@@ -19,6 +19,7 @@ import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -193,7 +194,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
       // api calls
       await sliceState.fetchDetailInfo(activeKey, api, market, maxSlippage, userState)
-      void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
+      sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage).catch(errorFallback)
     },
 
     // steps
@@ -262,12 +263,12 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         swapRequired,
       )
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         const loanExists = await refetchLoanExists({
@@ -286,13 +287,13 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           return { ...resp, error, loanExists }
         } else {
           if (loanExists) {
-            void user.fetchAll(api, market, true)
+            user.fetchAll(api, market, true).catch(errorFallback)
           } else {
-            void user.fetchUserMarketBalances(api, market, true)
+            user.fetchUserMarketBalances(api, market, true).catch(errorFallback)
             const userActiveKey = getUserActiveKey(api, market)
             user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
           }
-          void markets.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true).catch(errorFallback)
           invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
 

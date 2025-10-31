@@ -32,6 +32,7 @@ import { mediaQueries } from '@ui/utils/responsive'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormWithdraw = ({
   chainIdPoolId,
@@ -73,7 +74,7 @@ const FormWithdraw = ({
     (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
-      void setFormValues(
+      setFormValues(
         'WITHDRAW',
         curve,
         poolDataCacheOrApi.pool.id,
@@ -82,7 +83,7 @@ const FormWithdraw = ({
         null,
         seed.isSeed,
         updatedMaxSlippage || maxSlippage,
-      )
+      ).catch(errorFallback)
     },
     [setFormValues, curve, poolDataCacheOrApi.pool.id, poolData, seed.isSeed, maxSlippage],
   )

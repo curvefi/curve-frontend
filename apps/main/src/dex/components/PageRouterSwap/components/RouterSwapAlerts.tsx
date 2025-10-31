@@ -34,7 +34,7 @@ const RouterSwapAlerts = ({
     isGetMaxFrom?: boolean,
     maxSlippage?: string,
     isFullReset?: boolean,
-  ) => void
+  ) => Promise<void>
 }) => {
   const { error, swapError } = formStatus
   const { toAddress } = searchedParams

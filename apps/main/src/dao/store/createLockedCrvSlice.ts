@@ -19,6 +19,7 @@ import { getErrorMessage } from '@/dao/utils'
 import { shortenAccount } from '@ui/utils'
 import { notify, requireLib, useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -113,7 +114,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       const isValidLockDateForm = rFormType === 'adjust_date' ? isValidDays : true
 
       if (isValidCreateForm && isValidLockCrvForm && isValidLockDateForm) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues).catch(errorFallback)
       } else {
         get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
       }

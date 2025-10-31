@@ -19,6 +19,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { type Address, filterTokens, shortenAddress } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type Props = {
   curve: CurveApi
@@ -119,7 +120,7 @@ const SelectTokenButton = ({
         }
       }
     }
-    void updateUserAddedToken()
+    updateUserAddedToken().catch(errorFallback)
   }, [basePools, chainId, curve, filterValue, options, updateUserAddedTokens, userAddedTokens])
 
   const selectedToken = useMemo(

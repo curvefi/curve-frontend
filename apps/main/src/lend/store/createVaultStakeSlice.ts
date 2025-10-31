@@ -13,6 +13,7 @@ import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -98,7 +99,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
 
       // api calls
       if (signerAddress) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market).catch(errorFallback)
       }
     },
 
@@ -139,17 +140,20 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const { amount } = formValues
       const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
-        void get().user.fetchUserMarketBalances(api, market, true)
-        void get().markets.fetchAll(api, market, true)
+        Promise.all([
+          get().user.fetchUserMarketBalances(api, market, true),
+          get().markets.fetchAll(api, market, true),
+        ]).catch(errorFallback)
+
         invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
         invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
 

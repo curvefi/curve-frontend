@@ -42,6 +42,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
@@ -121,11 +122,11 @@ const Swap = ({
   const toToken = selectList.find((x) => x.address.toLocaleLowerCase() == formValues.toAddress)
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
+    async (updatedFormValues: Partial<FormValues>, isGetMaxFrom: boolean | null, updatedMaxSlippage: string | null) => {
       setConfirmedLoss(false)
       setTxInfoBar(null)
 
-      return setFormValues(
+      await setFormValues(
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -251,13 +252,13 @@ const Swap = ({
   )
 
   const fetchData = useCallback(
-    () =>
+    async () =>
       curve &&
       poolData &&
       isPageVisible &&
       !formStatus.formProcessing &&
       !formStatus.formTypeCompleted &&
-      updateFormValues({}, null, ''),
+      (await updateFormValues({}, null, '')),
     [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, poolData, updateFormValues],
   )
 
@@ -280,21 +281,21 @@ const Swap = ({
   // get user balances
   useEffect(() => {
     if (curve && poolId && haveSigner && (isUndefined(userFromBalance) || isUndefined(userToBalance))) {
-      void fetchUserPoolInfo(curve, poolId, true)
+      fetchUserPoolInfo(curve, poolId, true).catch(errorFallback)
     }
   }, [chainId, poolId, haveSigner, userFromBalance, userToBalance, curve, fetchUserPoolInfo])
 
   // curve state change
   useEffect(() => {
     if (chainId && poolId) {
-      updateFormValues({}, null, null)
+      updateFormValues({}, null, null).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
 
   // maxSlippage
   useEffect(() => {
-    updateFormValues({}, null, maxSlippage)
+    updateFormValues({}, null, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
@@ -331,8 +332,10 @@ const Swap = ({
   ])
 
   // pageVisible
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [isPageVisible])
+
+  useEffect(() => {
+    fetchData().catch(errorFallback)
+  }, [isPageVisible])
 
   // re-fetch data
   usePageVisibleInterval(() => fetchData(), REFRESH_INTERVAL['1m'])

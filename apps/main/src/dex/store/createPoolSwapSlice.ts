@@ -28,6 +28,7 @@ import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 
@@ -175,7 +176,9 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_EST_GAS),
               loading: true,
             })
-            void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
+            get()
+              [sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, cFormValues, maxSlippage)
+              .catch(errorFallback)
           }
         }
 
@@ -319,7 +322,9 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         activeKey,
         cloneDeep({ ...DEFAULT_EXCHANGE_OUTPUT, loading: true }),
       )
-      void get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
+      get()
+        [sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, cFormValues, maxSlippage)
+        .catch(errorFallback)
     },
 
     // steps
@@ -377,7 +382,9 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
           get()[sliceKey].setStateByKey('formStatus', cFormStatus)
 
           // fetch est gas, approval and exchange
-          void get()[sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+          get()
+            [sliceKey].fetchEstGasApproval(activeKey, curve.chainId, pool, formValues, maxSlippage)
+            .catch(errorFallback)
           await get()[sliceKey].fetchExchangeOutput(activeKey, storedActiveKey, curve, pool, formValues, maxSlippage)
         }
 
@@ -429,12 +436,14 @@ const createPoolSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
           })
 
           // cache swapped tokens
-          void get().storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
-            fromAddress,
-            fromToken,
-            toAddress,
-            toToken,
-          })
+          get()
+            .storeCache.setStateByActiveKey('routerFormValues', curve.chainId.toString(), {
+              fromAddress,
+              fromToken,
+              toAddress,
+              toToken,
+            })
+            .catch(errorFallback)
 
           // re-fetch data
           await Promise.all([

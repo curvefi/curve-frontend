@@ -13,6 +13,7 @@ import { getLib, notify, useWallet } from '@ui-kit/features/connect-wallet'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import type { TimeOption } from '@ui-kit/lib/types/scrvusd'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -227,7 +228,7 @@ const createScrvUsdSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
             errorMessage: '',
           })
           dismissNotificationHandler()
-          void get()[sliceKey].checkApproval.depositApprove(amount)
+          get()[sliceKey].checkApproval.depositApprove(amount).catch(errorFallback)
 
           const successNotificationMessage = t`Succesfully approved ${amount} crvUSD!`
           notify(successNotificationMessage, 'success', 15000)

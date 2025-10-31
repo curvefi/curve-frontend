@@ -46,6 +46,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const QuickSwap = ({
   pageLoaded,
@@ -132,7 +133,7 @@ const QuickSwap = ({
   const toToken = tokens.find((x) => x.address.toLocaleLowerCase() == toAddress)
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       isGetMaxFrom?: boolean,
       maxSlippage?: string,
@@ -142,7 +143,7 @@ const QuickSwap = ({
       setTxInfoBar(null)
       setConfirmedLoss(false)
 
-      void setFormValues(
+      await setFormValues(
         pageLoaded ? curve : null,
         updatedFormValues,
         searchedParams,
@@ -250,42 +251,38 @@ const QuickSwap = ({
                     onClick: () => setConfirmedLoss(false),
                   },
                   primaryBtnProps: {
-                    onClick: () => {
-                      if (typeof routesAndOutput !== 'undefined') {
-                        void handleBtnClickSwap(
-                          activeKey,
-                          curve,
-                          formValues,
-                          storeMaxSlippage,
-                          !!slippageImpact?.isExpectedToAmount,
-                          routesAndOutput.toAmountOutput,
-                          searchedParams,
-                          toSymbol,
-                          fromSymbol,
-                        )
-                      }
-                    },
+                    onClick: () =>
+                      routesAndOutput &&
+                      handleBtnClickSwap(
+                        activeKey,
+                        curve,
+                        formValues,
+                        storeMaxSlippage,
+                        !!slippageImpact?.isExpectedToAmount,
+                        routesAndOutput.toAmountOutput,
+                        searchedParams,
+                        toSymbol,
+                        fromSymbol,
+                      ).catch(errorFallback),
                     disabled: !confirmedLoss,
                   },
                   primaryBtnLabel: 'Swap anyway',
                 },
               }
             : {
-                onClick: () => {
-                  if (typeof routesAndOutput !== 'undefined') {
-                    void handleBtnClickSwap(
-                      activeKey,
-                      curve,
-                      formValues,
-                      storeMaxSlippage,
-                      !!slippageImpact?.isExpectedToAmount,
-                      routesAndOutput.toAmountOutput,
-                      searchedParams,
-                      toSymbol,
-                      fromSymbol,
-                    )
-                  }
-                },
+                onClick: () =>
+                  routesAndOutput &&
+                  handleBtnClickSwap(
+                    activeKey,
+                    curve,
+                    formValues,
+                    storeMaxSlippage,
+                    !!slippageImpact?.isExpectedToAmount,
+                    routesAndOutput.toAmountOutput,
+                    searchedParams,
+                    toSymbol,
+                    fromSymbol,
+                  ).catch(errorFallback),
               }),
         },
       }
@@ -303,11 +300,14 @@ const QuickSwap = ({
     [confirmedLoss, fetchStepApprove, storeMaxSlippage, handleBtnClickSwap, slippageImpact?.isExpectedToAmount, steps],
   )
 
-  const fetchData = useCallback(() => {
-    if (isReady && !formStatus.formProcessing && formStatus.formTypeCompleted !== 'SWAP') {
-      updateFormValues({}, false, '', false, true)
-    }
-  }, [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues])
+  const fetchData = useCallback(
+    async () =>
+      isReady &&
+      !formStatus.formProcessing &&
+      formStatus.formTypeCompleted !== 'SWAP' &&
+      (await updateFormValues({}, false, '', false, true)),
+    [formStatus.formProcessing, formStatus.formTypeCompleted, isReady, updateFormValues],
+  )
 
   // onMount
   useEffect(() => {
@@ -334,16 +334,18 @@ const QuickSwap = ({
 
   // network switched
   useEffect(() => {
-    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' })
+    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.chainId])
 
   // updateForm
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => fetchData(), [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
   useEffect(() => {
-    void updateTokenList(isReady ? curve : null, tokensMapper)
+    fetchData().catch(errorFallback)
+  }, [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
+
+  useEffect(() => {
+    updateTokenList(isReady ? curve : null, tokensMapper).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, tokensMapperStr, curve?.signerAddress])
 

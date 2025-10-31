@@ -2,6 +2,7 @@ import { StoreApi } from 'zustand'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, PoolDataCacheMapper, type ValueMapperCached } from '@/dex/types/main.types'
 import { sleep } from '@/dex/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 export type SwapFormValuesCache = {
   fromAddress: string
@@ -56,7 +57,7 @@ const createCacheSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
         parsedMapper[k] = { value }
       })
 
-      void sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper)
+      sliceState.setStateByActiveKey(key, chainId.toString(), parsedMapper).catch(errorFallback)
     },
 
     // slice helpers

@@ -47,9 +47,9 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   const maxUtcDate = dayjs.utc().add(4, 'year')
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setTxInfoBar(null)
-      return setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      await setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
     [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )

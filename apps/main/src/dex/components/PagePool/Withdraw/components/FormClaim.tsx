@@ -20,6 +20,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -49,7 +50,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const updateFormValues = useCallback(() => {
     setTxInfoBar(null)
     setSlippageConfirmed(false)
-    void setFormValues('CLAIM', curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '')
+    setFormValues('CLAIM', curve, poolDataCacheOrApi.pool.id, poolData, {}, null, seed.isSeed, '').catch(errorFallback)
   }, [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues])
 
   const handleClaimClick = useCallback(
@@ -108,9 +109,10 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
             : isClaimCrv
               ? getClaimText(formValues, formStatus, 'claimCrvButton', rewardsNeedNudging)
               : t`Claim Rewards`,
-          onClick: () => {
-            void handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging)
-          },
+          onClick: () =>
+            handleClaimClick(activeKey, curve, poolData, formValues, formStatus, rewardsNeedNudging).catch(
+              errorFallback,
+            ),
         },
       }
 
@@ -146,7 +148,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   // fetch claimable
   useEffect(() => {
     if (chainId && poolData && haveSigner) {
-      void fetchClaimable(activeKey, chainId, poolData.pool)
+      fetchClaimable(activeKey, chainId, poolData.pool).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress])
@@ -171,7 +173,7 @@ const FormClaim = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       cFormStatus.isClaimRewards = isClaimRewards
 
       setStateByKey('formStatus', cFormStatus)
-      void handleClaimClick(activeKey, curve, poolData, formValues, cFormStatus, rewardsNeedNudging)
+      handleClaimClick(activeKey, curve, poolData, formValues, cFormStatus, rewardsNeedNudging).catch(errorFallback)
     }
   }
 

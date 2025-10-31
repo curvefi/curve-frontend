@@ -40,6 +40,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD } from '@ui-kit/utils/address'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -99,14 +100,14 @@ const Page = () => {
   useEffect(() => {
     if (isHydrated && curve) {
       if (rCollateralId && llamma) {
-        void (async () => {
+        ;(async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
           if (!fetchedLoanDetails.loanExists) {
             resetUserDetailsState(llamma)
             push(getLoanCreatePathname(params, rCollateralId))
           }
           setLoaded(true)
-        })()
+        })().catch(errorFallback)
       } else {
         console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, params)
         push(getCollateralListPathname(params))

@@ -13,6 +13,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -85,7 +86,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     ...DEFAULT_STATE,
 
     init: async (chainId: ChainId, llamma: Llamma) => {
-      void get()[sliceKey].fetchMaxRecv(chainId, llamma, DEFAULT_FORM_VALUES)
+      get()[sliceKey].fetchMaxRecv(chainId, llamma, DEFAULT_FORM_VALUES).catch(errorFallback)
     },
     fetchEstGasApproval: async (activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues) => {
       const { collateral, debt } = formValues
@@ -162,10 +163,10 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
 
       // fetch detail, approval, est gas, set loading
       if (haveDebt || haveCollateral) {
-        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
+        get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues).catch(errorFallback)
 
         if (!cFormValues.debtError && !cFormValues.collateralError && !cFormValues.debtError) {
-          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues).catch(errorFallback)
         }
       } else if (!haveDebt || !haveCollateral) {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
@@ -199,7 +200,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           formProcessing: !resp.error,
           error: resp.error,
         })
-        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues).catch(errorFallback)
 
         return resp
       }
@@ -220,8 +221,10 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
-      void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
+      Promise.all([
+        getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash),
+        get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues),
+      ]).catch(errorFallback)
 
       // re-fetch loan info
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)

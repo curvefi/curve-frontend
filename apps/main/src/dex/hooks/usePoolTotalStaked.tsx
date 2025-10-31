@@ -5,6 +5,7 @@ import { PoolDataCacheOrApi, Provider } from '@/dex/types/main.types'
 import { isValidAddress } from '@/dex/utils'
 import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useNetworks } from '../entities/networks'
 
 const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
@@ -60,7 +61,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
     const shouldCallApi = staked?.timestamp ? dayjs().diff(staked.timestamp, 'seconds') > 30 : true
 
     if (address && rpcUrl && shouldCallApi) {
-      void (async () => {
+      ;(async () => {
         const provider = walletProvider || new JsonRpcProvider(rpcUrl)
         const gaugeContract = isValidAddress(gauge.address)
           ? await getContract('gaugeTotalSupply', gauge.address, provider)
@@ -76,7 +77,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
         } else {
           updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         }
-      })()
+      })().catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curveApi?.signerAddress, curveApi?.chainId, address, rpcUrl, walletProvider])

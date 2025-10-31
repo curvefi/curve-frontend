@@ -28,6 +28,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -53,16 +54,15 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
-    },
+    (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues),
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
+      return updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )
@@ -72,7 +72,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
   const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
+    reset({ amount }).catch(errorFallback)
   }
 
   const handleBtnClickDeposit = useCallback(
@@ -98,7 +98,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(networks[chainId], resp.hash)}
-            onClose={() => reset({})}
+            onClose={() => reset({}).catch(errorFallback)}
           />,
         )
       }
@@ -171,7 +171,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 

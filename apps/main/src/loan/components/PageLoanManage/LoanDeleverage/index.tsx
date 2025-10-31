@@ -50,6 +50,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 // Loan Deleverage
@@ -92,7 +93,7 @@ const LoanDeleverage = ({
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
       setTxInfoBar(null)
       setConfirmHighPriceImpact(false)
 
@@ -100,7 +101,7 @@ const LoanDeleverage = ({
         setHealthMode(DEFAULT_HEALTH_MODE)
       }
 
-      return setFormValues(
+      await setFormValues(
         llammaId,
         curve,
         llamma,
@@ -137,7 +138,7 @@ const LoanDeleverage = ({
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
-                void updateFormValues({}, '', true)
+                updateFormValues({}, '', true).catch(() => errorFallback)
               } else {
                 push(getCollateralListPathname(params))
               }
@@ -207,7 +208,7 @@ const LoanDeleverage = ({
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    void updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false
@@ -217,14 +218,14 @@ const LoanDeleverage = ({
 
   // signer changed
   useEffect(() => {
-    void updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress])
 
   // update formValues
   useEffect(() => {
     if (chainId && llamma) {
-      void updateFormValues({}, '', false)
+      updateFormValues({}, '', false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, llamma, userState?.collateral, userLoanDetails?.userIsCloseToLiquidation])
@@ -232,7 +233,7 @@ const LoanDeleverage = ({
   // maxSlippage
   useEffect(() => {
     if (maxSlippage) {
-      void updateFormValues({}, maxSlippage, false)
+      updateFormValues({}, maxSlippage, false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
@@ -240,7 +241,7 @@ const LoanDeleverage = ({
   //  pageVisible
   useEffect(() => {
     if (!formStatus.isInProgress) {
-      void updateFormValues({}, '', false)
+      updateFormValues({}, '', false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])

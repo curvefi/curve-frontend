@@ -14,6 +14,7 @@ import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -126,8 +127,10 @@ const createLoanCollateralAdd = (
       }
 
       // api calls
-      void sliceState.fetchDetailInfo(activeKey, api, market)
-      void sliceState.fetchEstGasApproval(activeKey, api, market)
+      await Promise.all([
+        sliceState.fetchDetailInfo(activeKey, api, market),
+        sliceState.fetchEstGasApproval(activeKey, api, market),
+      ])
     },
 
     // step
@@ -179,12 +182,12 @@ const createLoanCollateralAdd = (
       )
 
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {
@@ -198,11 +201,11 @@ const createLoanCollateralAdd = (
             userAddress: wallet?.account?.address,
           })
           if (loanExists) {
-            void user.fetchAll(api, market, true)
+            user.fetchAll(api, market, true).catch(errorFallback)
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           }
           invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true).catch(errorFallback)
 
           // update formStatus
           sliceState.setStateByKeys({

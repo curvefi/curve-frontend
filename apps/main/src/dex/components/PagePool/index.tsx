@@ -45,6 +45,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
 
@@ -129,7 +130,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
       pricesApiPoolsMapper[poolAddress] !== undefined &&
       !snapshotsMapper[poolAddress]
     ) {
-      void fetchPricesPoolSnapshots(rChainId, poolAddress)
+      fetchPricesPoolSnapshots(rChainId, poolAddress).catch(errorFallback)
     }
   }, [curve, fetchPricesPoolSnapshots, poolAddress, pricesApi, pricesApiPoolsMapper, rChainId, snapshotsMapper])
 
@@ -147,7 +148,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
   // fetch user pool info
   useEffect(() => {
     if (curve && poolId && signerAddress) {
-      void fetchUserPoolInfo(curve, poolId)
+      fetchUserPoolInfo(curve, poolId).catch(errorFallback)
     }
   }, [rChainId, poolId, signerAddress, curve, fetchUserPoolInfo])
 

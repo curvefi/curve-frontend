@@ -9,6 +9,7 @@ import { formatLocaleDate } from '@ui/utils/'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { shortenAddress } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { GAUGE_VOTES_TABLE_LABELS } from './constants'
 
 interface GaugeVotesTableProps {
@@ -40,7 +41,7 @@ const GaugeVotesTable = ({ gaugeAddress, tableMinWidth }: GaugeVotesTableProps) 
   // Get user proposal votes
   useEffect(() => {
     if (!gaugeVotesMapper[gaugeAddress] && gaugeVotesLoading && !gaugeVotesError) {
-      void getGaugeVotes(gaugeAddress)
+      getGaugeVotes(gaugeAddress).catch(errorFallback)
     }
   }, [getGaugeVotes, gaugeAddress, gaugeVotesLoading, gaugeVotesError, gaugeVotesMapper])
 

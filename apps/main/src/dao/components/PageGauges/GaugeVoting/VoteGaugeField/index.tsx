@@ -9,6 +9,7 @@ import Button from '@ui/Button'
 import TooltipIcon from '@ui/Tooltip/TooltipIcon'
 import { convertToLocaleTimestamp, formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Chain } from '@ui-kit/utils/network'
 import NumberField from './NumberField'
 
@@ -49,7 +50,7 @@ const VoteGaugeField = ({ powerUsed, userGaugeVoteData, userVeCrv, newVote = fal
 
   const handleCastVote = () => {
     if (!address) return
-    void castVote(address, gaugeAddress, power)
+    castVote(address, gaugeAddress, power).catch(errorFallback)
   }
 
   return (

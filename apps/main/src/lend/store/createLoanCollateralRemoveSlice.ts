@@ -14,6 +14,7 @@ import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 const { cloneDeep } = lodash
@@ -140,8 +141,10 @@ const createLoanCollateralRemove = (
 
       // api calls
       await sliceState.fetchMaxRemovable(api, market)
-      void sliceState.fetchDetailInfo(activeKey, api, market)
-      void sliceState.fetchEstGas(activeKey, api, market)
+      Promise.all([
+        sliceState.fetchDetailInfo(activeKey, api, market),
+        sliceState.fetchEstGas(activeKey, api, market),
+      ]).catch(errorFallback)
     },
 
     // steps
@@ -168,12 +171,12 @@ const createLoanCollateralRemove = (
         formValues.collateral,
       )
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {
@@ -187,18 +190,18 @@ const createLoanCollateralRemove = (
             userAddress: wallet?.account?.address,
           })
           if (loanExists) {
-            void user.fetchAll(api, market, true)
+            user.fetchAll(api, market, true).catch(errorFallback)
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
           }
           invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
-          void markets.fetchAll(api, market, true)
+          markets.fetchAll(api, market, true).catch(errorFallback)
 
           // update formStatus
           sliceState.setStateByKeys({
             ...DEFAULT_STATE,
             formStatus: { ...DEFAULT_FORM_STATUS, isComplete: true },
           })
-          void sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES)
+          sliceState.setFormValues(api, market, DEFAULT_FORM_VALUES).catch(errorFallback)
           return { ...resp, error }
         }
       }

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import networks from '@/lend/networks'
 import { ChainId, Provider } from '@/lend/types/lend.types'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const useAbiGaugeTotalSupply = (
   rChainId: ChainId,
@@ -41,7 +42,7 @@ const useAbiGaugeTotalSupply = (
         : walletProvider || new JsonRpcProvider(networks[rChainId].rpcUrl)
 
       if (jsonModuleName && contractAddress && provider) {
-        void (async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))()
+        ;(async () => setContract(await getContract(jsonModuleName, contractAddress, provider)))().catch(errorFallback)
       }
     }
   }, [contractAddress, getContract, walletProvider, jsonModuleName, rChainId, signerRequired])

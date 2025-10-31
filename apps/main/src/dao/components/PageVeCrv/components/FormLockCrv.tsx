@@ -39,9 +39,9 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const haveSigner = !!signerAddress
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setTxInfoBar(null)
-      return setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      await setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
     [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )

@@ -14,7 +14,7 @@ type DashboardContextType = {
   isValidAddress: boolean
   dashboardDataPoolIds: string[] | undefined
   dashboardDataMapper: DashboardDataMapper | undefined
-  updateFormValues: (updatedFormValues: Partial<FormValues>) => void
+  updateFormValues: (updatedFormValues: Partial<FormValues>) => Promise<void>
 }
 
 export const DashboardContext = createContext<DashboardContextType | null>(null)

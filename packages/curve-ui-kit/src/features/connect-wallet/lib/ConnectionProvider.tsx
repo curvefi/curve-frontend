@@ -12,6 +12,7 @@ import {
 } from '@ui-kit/features/connect-wallet/lib/types'
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { globalLibs, isWalletMatching } from './utils'
 import type { WagmiChainId } from './wagmi/wagmi-config'
 
@@ -119,7 +120,7 @@ export const ConnectionProvider = <App extends AppName>({
         setConnectState(FAILURE)
       }
     }
-    void initLib()
+    initLib().catch(errorFallback)
     return () => abort.abort()
   }, [app, hydrate, isReconnecting, libKey, network, wallet, walletChainId])
 

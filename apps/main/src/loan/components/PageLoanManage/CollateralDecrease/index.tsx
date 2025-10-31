@@ -34,6 +34,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -72,9 +73,9 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
+        await setFormValues(chainId, llamma, updatedFormValues, maxRemovable)
       }
     },
     [chainId, llamma, maxRemovable, setFormValues],
@@ -101,7 +102,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     const updatedFormValues = { ...formValues }
     updatedFormValues.collateral = collateral
     updatedFormValues.collateralError = ''
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const onCollateralChanged = useCallback(
@@ -109,7 +110,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
       const { formValues, formStatus } = useStore.getState().loanCollateralDecrease
       if ((val ?? '') === formValues.collateral) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' }).catch(errorFallback)
     },
     [reset, updateFormValues],
   )

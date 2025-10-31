@@ -5,6 +5,7 @@ import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
 import { formatDate, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import Spinner from '../../Spinner'
 import VeCrvFeesChart from '../VeCrvFeesChart'
 
@@ -18,7 +19,7 @@ const VeCrcFees = () => {
 
   useEffect(() => {
     if (veCrvFees.fees.length === 0 && !feesError) {
-      void getVeCrvFees()
+      getVeCrvFees().catch(errorFallback)
     }
   }, [getVeCrvFees, veCrvFees, feesError])
 

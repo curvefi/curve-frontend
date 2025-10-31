@@ -22,6 +22,7 @@ import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -42,16 +43,15 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
-    },
+    (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues),
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
+      return updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )
@@ -153,7 +153,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }).catch(errorFallback), [reset])
 
   return (
     <>

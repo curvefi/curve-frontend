@@ -26,6 +26,7 @@ import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -62,24 +63,21 @@ const VaultWithdrawRedeem = ({
   const disableWithdrawInFull = isNotReady || max !== userBalances?.vaultSharesConverted
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
-    },
+    (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues),
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
+      return updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )
 
   const handleFormChange = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      reset({ ...updatedFormValues, amountError: '' })
-    },
+    (updatedFormValues: Partial<FormValues>) => reset({ ...updatedFormValues, amountError: '' }),
     [reset],
   )
 
@@ -215,7 +213,7 @@ const VaultWithdrawRedeem = ({
                 }}
                 value={formValues.amount}
                 onChange={(amount) => {
-                  handleFormChange({ amount, isFullWithdraw: false })
+                  handleFormChange({ amount, isFullWithdraw: false }).catch(errorFallback)
                 }}
               />
               <InputMaxBtn
@@ -231,7 +229,7 @@ const VaultWithdrawRedeem = ({
                     }
                   }
 
-                  handleFormChange({ amount, isFullWithdraw })
+                  handleFormChange({ amount, isFullWithdraw }).catch(errorFallback)
                 }}
               />
             </InputProvider>
@@ -274,7 +272,7 @@ const VaultWithdrawRedeem = ({
       <Checkbox
         isDisabled={disableWithdrawInFull}
         isSelected={formValues.isFullWithdraw}
-        onChange={(isFullWithdraw) => handleFormChange({ isFullWithdraw, amount: '' })}
+        onChange={(isFullWithdraw) => handleFormChange({ isFullWithdraw, amount: '' }).catch(errorFallback)}
       >
         {t`Withdraw in full`}
       </Checkbox>

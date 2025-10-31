@@ -7,6 +7,7 @@ import Button from '@ui/Button/Button'
 import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { PoolActivityProps } from './types'
 
 const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
@@ -23,7 +24,7 @@ const PoolActivity = ({ chainId, poolAddress, coins }: PoolActivityProps) => {
   const minHeight = chartExpanded ? 548 : 330
 
   useEffect(() => {
-    void fetchPoolActivity(chainId, poolAddress)
+    fetchPoolActivity(chainId, poolAddress).catch(errorFallback)
   }, [chainId, fetchPoolActivity, poolAddress])
 
   return (

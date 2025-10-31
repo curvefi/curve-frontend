@@ -9,6 +9,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { breakpoints } from '@ui/utils/responsive'
 import { useParams } from '@ui-kit/hooks/router'
 import { Trans } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const Page = () => {
   const params = useParams<NetworkUrlParams>()
@@ -17,7 +18,7 @@ const Page = () => {
   const integrationsTags = useStore((state) => state.integrations.integrationsTags)
 
   useEffect(() => {
-    void init(rChainId)
+    init(rChainId).catch(errorFallback)
   }, [init, rChainId])
 
   return (

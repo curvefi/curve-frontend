@@ -42,6 +42,7 @@ import dayjs from '@ui-kit/lib/dayjs'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { t } from '@ui-kit/lib/i18n'
 import { log } from '@ui-kit/lib/logging'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { fetchNetworks } from '../entities/networks'
 
 const { chunk, flatten, isUndefined } = lodash
@@ -358,7 +359,7 @@ const router = {
           ? await curve.router.estimateGas.swap(fromAddress, toAddress, fromAmount)
           : await curve.router.estimateGas.approve(fromAddress, fromAmount)
       }
-      void warnIncorrectEstGas(curve.chainId, resp.estimatedGas)
+      warnIncorrectEstGas(curve.chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -472,7 +473,7 @@ const poolDeposit = {
           ? await p.estimateGas.depositWrappedApprove(amounts)
           : await p.estimateGas.depositApprove(amounts)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -565,7 +566,7 @@ const poolDeposit = {
           ? await p.estimateGas.depositAndStakeWrappedApprove(amounts)
           : await p.estimateGas.depositAndStakeApprove(amounts)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -624,7 +625,7 @@ const poolDeposit = {
       resp.estimatedGas = resp.isApproved
         ? await p.estimateGas.stake(lpTokenAmount)
         : await p.estimateGas.stakeApprove(lpTokenAmount)
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       resp.error = getErrorMessage(error, 'error-est-gas-approval')
@@ -772,7 +773,7 @@ const poolSwap = {
           ? await p.estimateGas.swapWrappedApprove(fromAddress, fromAmount)
           : await p.estimateGas.swapApprove(fromAddress, fromAmount)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -863,7 +864,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawApprove(lpTokenAmount)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -944,7 +945,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawImbalanceApprove(amounts)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -1035,7 +1036,7 @@ const poolWithdraw = {
       } else {
         resp.estimatedGas = await p.estimateGas.withdrawOneCoinApprove(lpTokenAmount)
       }
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)
@@ -1086,7 +1087,7 @@ const poolWithdraw = {
     const resp = { activeKey, estimatedGas: null as EstimatedGas, isApproved: true, error: '' }
     try {
       resp.estimatedGas = await p.estimateGas.unstake(lpTokenAmount)
-      void warnIncorrectEstGas(chainId, resp.estimatedGas)
+      warnIncorrectEstGas(chainId, resp.estimatedGas).catch(errorFallback)
       return resp
     } catch (error) {
       console.error(error)

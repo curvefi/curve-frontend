@@ -83,17 +83,19 @@ const LoanCreate = ({
   })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
-      return setFormValues(
-        isLoaded ? api : null,
-        market,
-        isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
-        maxSlippage,
-        isLeverage,
-        shouldRefetch,
-      )
+      await Promise.all([
+        setFormValues(
+          isLoaded ? api : null,
+          market,
+          isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
+          maxSlippage,
+          isLeverage,
+          shouldRefetch,
+        ),
+        isFullReset && setHealthMode(DEFAULT_HEALTH_MODE),
+      ])
     },
     [setFormValues, isLoaded, api, market, maxSlippage, isLeverage],
   )

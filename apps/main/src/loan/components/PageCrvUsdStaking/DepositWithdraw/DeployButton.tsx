@@ -6,6 +6,7 @@ import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type DeployButtonProps = { className?: string }
 
@@ -49,24 +50,19 @@ const DeployButton = ({ className }: DeployButtonProps) => {
   const handleClick = useCallback(async () => {
     if (stakingModule === 'deposit') {
       if (isInputAmountApproved) {
-        void deposit(inputAmount)
+        deposit(inputAmount).catch(errorFallback)
       }
       if (!isInputAmountApproved) {
-        const approved = await depositApprove(inputAmount)
-        if (approved) {
-          void deposit(inputAmount)
+        if (await depositApprove(inputAmount)) {
+          deposit(inputAmount).catch(errorFallback)
         }
       }
     }
 
     if (stakingModule === 'withdraw') {
-      if (inputAmount === userBalance.scrvUSD) {
-        void redeem(inputAmount)
-      } else {
-        void redeem(inputAmount)
-      }
+      redeem(inputAmount).catch(errorFallback)
     }
-  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, redeem, userBalance])
+  }, [stakingModule, isInputAmountApproved, deposit, inputAmount, depositApprove, redeem])
 
   return (
     <StyledButton

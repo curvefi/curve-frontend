@@ -36,6 +36,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const LoanSelfLiquidation = ({
   rChainId,
@@ -75,7 +76,7 @@ const LoanSelfLiquidation = ({
     setTxInfoBar(null)
 
     if (isLoaded && api && market) {
-      void fetchDetails(api, market, maxSlippage)
+      fetchDetails(api, market, maxSlippage).catch(errorFallback)
     }
   }, [isLoaded, api, market, fetchDetails, maxSlippage])
 
@@ -192,7 +193,7 @@ const LoanSelfLiquidation = ({
   useEffect(() => {
     if (isLoaded && api && market && maxSlippage) {
       resetState()
-      void fetchDetails(api, market, maxSlippage)
+      fetchDetails(api, market, maxSlippage).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])

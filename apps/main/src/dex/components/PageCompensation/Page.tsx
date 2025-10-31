@@ -14,6 +14,7 @@ import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 export const PageCompensation = () => {
   const { network } = useParams<NetworkUrlParams>()
@@ -38,7 +39,7 @@ export const PageCompensation = () => {
   // get initial data
   useEffect(() => {
     if (!isConnecting && provider) {
-      void fetchData(provider)
+      fetchData(provider).catch(errorFallback)
     }
   }, [fetchData, isConnecting, provider])
 

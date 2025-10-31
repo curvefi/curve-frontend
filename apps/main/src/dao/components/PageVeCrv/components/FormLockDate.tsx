@@ -22,6 +22,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
@@ -59,7 +60,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const updateFormValues = useCallback(
     async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setTxInfoBar(null)
-      return setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      await setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
     [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
@@ -78,7 +79,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const fn = networks[rChainId].api.lockCrv.calcUnlockTime
       const calcdUtcDate = fn(curve, rFormType, currUnlockTime, days)
 
-      void updateFormValues(
+      updateFormValues(
         {
           utcDate: toCalendarDate(utcDate),
           utcDateError,
@@ -87,7 +88,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           days,
         },
         false,
-      )
+      ).catch(errorFallback)
     },
     [currUnlockTime, currUnlockUtcTime, haveSigner, maxUtcDate, minUtcDate, rChainId, rFormType, updateFormValues],
   )
@@ -99,10 +100,10 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUnlockUtcTime, 'd')
         const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
-        void updateFormValues(
+        updateFormValues(
           { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
           false,
-        )
+        ).catch(errorFallback)
         return maxUtcDate
       }
 
@@ -110,7 +111,10 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
       const days = utcDate.diff(currUnlockUtcTime, 'd')
       const calcdUtcDate = calcUnlockTime(curve, rFormType, currUnlockTime, days)
 
-      void updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days }, false)
+      updateFormValues(
+        { utcDate: toCalendarDate(calcdUtcDate), calcdUtcDate: '', utcDateError: '', days },
+        false,
+      ).catch(errorFallback)
       return calcdUtcDate
     },
     [currUnlockTime, currUnlockUtcTime, maxUtcDate, rChainId, rFormType, updateFormValues],
@@ -161,7 +165,7 @@ const FormLockDate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    void updateFormValues({}, true)
+    updateFormValues({}, true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false

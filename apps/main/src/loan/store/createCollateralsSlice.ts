@@ -11,6 +11,7 @@ import {
   CollateralDataCache,
   CollateralDataCacheMapper,
 } from '@/loan/types/loan.types'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -59,7 +60,9 @@ const createCollateralsSlice = (set: StoreApi<State>['setState'], get: StoreApi<
       get()[sliceKey].setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasMapper)
 
       // add to cache
-      void get().storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)
+      get()
+        .storeCache.setStateByActiveKey('collateralDatasMapper', chainId.toString(), collateralDatasCacheMapper)
+        .catch(errorFallback)
 
       return { collateralDatas, collateralDatasMapper }
     },

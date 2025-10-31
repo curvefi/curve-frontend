@@ -10,6 +10,7 @@ import { AppFormContentWrapper } from '@ui/AppForm'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setValueOptions } from '../react-form.utils'
 import { type BorrowFormExternalFields, BorrowPreset, type OnBorrowFormUpdate } from '../types'
 import { useBorrowForm } from '../useBorrowForm'
@@ -31,7 +32,7 @@ function useFormSync(
   onUpdate: OnBorrowFormUpdate,
 ) {
   useEffect(() => {
-    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
+    onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled }).catch(errorFallback)
   }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled])
 }
 

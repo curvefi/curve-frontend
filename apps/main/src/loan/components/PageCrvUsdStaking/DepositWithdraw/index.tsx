@@ -6,6 +6,7 @@ import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { TransactionDetails } from '../components/TransactionDetails'
 import TransactionTracking from '../TransactionTracking'
 import DeployButton from './DeployButton'
@@ -62,13 +63,13 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
       if (curve && inputAmount !== '0') {
         if (stakingModule === 'deposit') {
           if (isDepositApprovalReady) {
-            void estimateGasDeposit(inputAmount)
+            estimateGasDeposit(inputAmount).catch(errorFallback)
           } else {
-            void estimateGasDepositApprove(inputAmount)
+            estimateGasDepositApprove(inputAmount).catch(errorFallback)
           }
           previewAction('deposit', inputAmount)
         } else {
-          void estimateGasWithdraw(inputAmount)
+          estimateGasWithdraw(inputAmount).catch(errorFallback)
           previewAction('withdraw', inputAmount)
         }
       }

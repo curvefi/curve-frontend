@@ -38,6 +38,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -84,7 +85,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const updateFormValues = useCallback(
     (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        setFormValues(chainId, llamma, updatedFormValues).catch(errorFallback)
       }
     },
     [chainId, llamma, setFormValues],
@@ -245,7 +246,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   // init
   useEffect(() => {
     if (isReady && chainId && llamma) {
-      void init(chainId, llamma)
+      init(chainId, llamma).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, chainId, llamma])

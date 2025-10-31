@@ -23,6 +23,7 @@ import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -44,22 +45,21 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
-    },
+    (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues),
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
+      return updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
+    reset({ amount }).catch(errorFallback)
   }
 
   const handleBtnClickStake = useCallback(
@@ -153,7 +153,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
@@ -168,7 +168,7 @@ const VaultStake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userAc
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }).catch(errorFallback), [reset])
   const detailInfoCrvIncentivesComp = DetailInfoCrvIncentives({ rChainId, rOwmId, lpTokenAmount: formValues.amount })
 
   return (
