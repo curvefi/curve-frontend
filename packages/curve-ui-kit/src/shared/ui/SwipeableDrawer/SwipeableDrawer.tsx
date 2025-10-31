@@ -36,7 +36,6 @@ export const SwipeableDrawer = ({ button, children, open, setOpen, paperSx }: Pr
       <Box sx={{ paddingBlockStart: 2 }}>
         <Puller />
       </Box>
-
       {children}
     </MuiSwipeableDrawer>
   </Box>
