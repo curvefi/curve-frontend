@@ -1,3 +1,4 @@
+import { useCallback } from 'react'
 import { styled } from 'styled-components'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -20,8 +21,10 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Pro
   const [releaseChannel] = useReleaseChannel()
   const value = decimal(maxSlippage)!
 
+  const onSave = useCallback((slippage: string) => setMaxSlippage(slippage, stateKey), [setMaxSlippage, stateKey])
+
   if (releaseChannel === ReleaseChannel.Beta) {
-    return <SlippageToleranceActionInfo maxSlippage={value} onSave={setMaxSlippage} />
+    return <SlippageToleranceActionInfo maxSlippage={value} onSave={onSave} />
   }
 
   return (
@@ -33,7 +36,7 @@ const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Pro
             {formatNumber(maxSlippage, { style: 'percent', defaultValue: '-' })} <Icon name="Settings" size={16} />
           </IconButton>
         )}
-        onSave={(slippage) => setMaxSlippage(slippage, stateKey)}
+        onSave={onSave}
       />
     </StyledDetailInfo>
   )

@@ -248,8 +248,6 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
   }, [poolAddress, params, hasVyperVulnerability])
 }
 
-export type PoolAlertResult = ReturnType<typeof usePoolAlert>
-
 const MessageWrapper = styled.div`
   align-items: flex-start;
   display: flex;

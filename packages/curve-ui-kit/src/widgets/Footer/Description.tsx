@@ -1,13 +1,15 @@
 import Box from '@mui/material/Box'
-import SvgIcon from '@mui/material/SvgIcon'
+import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { RCLogoSM } from '@ui/images'
+import { CURVE_LOGO_URL } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { IconSize, Spacing, FontWeight } = SizesAndSpaces
+
+const Image = styled('img')({})
 
 export const Description = () => (
   <Box
@@ -25,15 +27,15 @@ export const Description = () => (
         gap: Spacing.xs,
       }}
     >
-      <SvgIcon
+      <Image
+        alt={t`Curve Logo`}
+        src={CURVE_LOGO_URL}
         sx={{
           width: IconSize.xxl,
           height: IconSize.xxl,
           margin: Spacing.sm,
         }}
-      >
-        <RCLogoSM />
-      </SvgIcon>
+      />
 
       <Typography
         color="textPrimary"

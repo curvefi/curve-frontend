@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import { LogoImg } from '@ui/images'
+import { CURVE_LOGO_URL } from '@ui/utils'
 import type { AppMenuOption } from '@ui-kit/shared/routes'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import type { SxProps } from '@ui-kit/utils'
@@ -25,7 +25,7 @@ const APP_NAMES = {
 
 export const HeaderLogo = ({ currentMenu, isLite, sx }: HeaderLogoProps) => (
   <RouterLink href="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', ...sx }}>
-    <Image src={LogoImg} alt="Curve" width={30} />
+    <Image src={CURVE_LOGO_URL} alt="Curve" width={30} />
     <Box display="inline-flex" flexDirection="column">
       {/* Note: Anti-pattern to change the line height, however we want the subtitle to fit nicely */}
       <Typography
