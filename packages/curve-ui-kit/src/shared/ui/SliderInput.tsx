@@ -109,6 +109,10 @@ export const SliderInput = ({
   }
 
   const handleInputChange = (index: 0 | 1) => (newValue: string | undefined) => {
+    // Allow decimal points and commas
+    if (typeof newValue === 'string' && /[.,]$/.test(newValue)) {
+      return
+    }
     const numericValue = Number(newValue)
     if (Number.isNaN(numericValue)) {
       return
