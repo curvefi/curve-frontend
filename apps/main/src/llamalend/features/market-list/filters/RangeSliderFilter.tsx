@@ -194,6 +194,9 @@ export const RangeSliderFilter = <T,>({
                 }
               : undefined),
           }}
+          sliderProps={{
+            'data-testid': `slider-${id}`,
+          }}
         />
       </Stack>
     </Select>

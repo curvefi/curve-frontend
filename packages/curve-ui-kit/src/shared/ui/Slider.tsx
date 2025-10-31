@@ -1,6 +1,9 @@
 import { Stack } from '@mui/material'
 import MuiSlider, { type SliderProps as MuiSliderProps } from '@mui/material/Slider'
-export type SliderProps = MuiSliderProps
+// extended to support data-testid attribute
+export type SliderProps = MuiSliderProps & {
+  [key: `data-${string}`]: string | undefined
+}
 
 /**
  * Slider component built on top of MUI Slider component

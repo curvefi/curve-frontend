@@ -147,7 +147,15 @@ describe(`LlamaLend Markets`, () => {
        */
 
       cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
-      cy.get(`[data-testid="slider-${columnId}"]`).click(40, 10, { force: true, waitForAnimations: true })
+      cy.get(`[data-testid="slider-${columnId}"]`).then(($el) => {
+        const width = $el.width() ?? 80
+        const height = $el.height() ?? 24
+        // With log slider a click from the left is not enough to filter
+        // Click 20px from the right edge and vertically centered
+        cy.wrap($el).click(width - 20, height / 2, { waitForAnimations: true })
+      })
+      // close the select menu
+      cy.get('body').click(0, 0, { waitForAnimations: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
     })
