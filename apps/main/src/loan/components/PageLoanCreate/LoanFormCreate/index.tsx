@@ -291,7 +291,7 @@ const LoanCreate = ({
     <>
       {/* field collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {releaseChannel === ReleaseChannel.Legacy ? (
           <>
             <StyledInputProvider
               grid
@@ -356,7 +356,7 @@ const LoanCreate = ({
 
       {/* field debt */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {releaseChannel === ReleaseChannel.Legacy ? (
           <>
             <InputProvider
               grid
