@@ -35,6 +35,7 @@ export const defineMuiInputBase = (
         height: ButtonSize.sm,
       },
       '&.MuiInputBase-sizeTiny input': {
+        // not responsive with Sizing, but using ButtonSize as in Figma
         height: ButtonSize.xs,
         ...typography.bodySBold,
       },
