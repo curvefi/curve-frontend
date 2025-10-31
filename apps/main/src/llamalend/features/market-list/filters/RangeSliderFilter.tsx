@@ -35,16 +35,14 @@ const AdornmentTypography = ({ children }: { children: ReactNode }) => (
 
 const adornmentVariantMap: Record<
   AdornmentVariants,
-  { textAlign: Property.TextAlign; inputStartAdornment: ReactNode; inputEndAdornment: ReactNode }
+  { textAlign: Property.TextAlign; inputStartAdornment?: ReactNode; inputEndAdornment?: ReactNode }
 > = {
   dollar: {
     textAlign: 'left',
     inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
-    inputEndAdornment: undefined,
   },
   percentage: {
     textAlign: 'right',
-    inputStartAdornment: undefined,
     inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
   },
 }
@@ -74,6 +72,7 @@ export const RangeSliderFilter = <T,>({
   adornmentVariant?: AdornmentVariants
   scale?: 'power'
 }) => {
+  const isMobile = useIsMobile()
   const minValue = 0
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
@@ -90,10 +89,9 @@ export const RangeSliderFilter = <T,>({
 
   /** Helpers that convert real values to and from the slider's value space. */
   const sliderValueTransform = useMemo(() => {
-    if (!canUsePowerScale || powerExponent == null) {
+    if (!canUsePowerScale) {
       return undefined
     }
-
     const [sliderMin, sliderMax] = [0, 1]
 
     /** Convert the current value into the 0-1 slider space. */
@@ -118,10 +116,9 @@ export const RangeSliderFilter = <T,>({
     const [min, max] = (columnFilters[id] as NumberRange) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFilters, id, maxValue, defaultMinimum])
-  const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce({
-    // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and we would clear the filter.
+    // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and would clear the filter.
     defaultValue: appliedRange,
     callback: useCallback(
       (newRange: NumberRange) =>
@@ -162,6 +159,7 @@ export const RangeSliderFilter = <T,>({
         elevation: 3,
         MenuListProps: {
           disableListWrap: true,
+          // needed to prevent the menu from collapsing after a value is selected
           variant: 'menu',
         },
       }}

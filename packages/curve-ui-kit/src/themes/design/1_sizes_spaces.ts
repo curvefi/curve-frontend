@@ -315,6 +315,7 @@ export const SizesAndSpaces = {
     sliderInput: {
       sm: '5rem', // 80px,
       md: '6.25rem', // 100px,
+      bands: '6.8rem',
     },
   },
   Height: {

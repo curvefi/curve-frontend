@@ -8,7 +8,7 @@ import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BORROW_PRESET_RANGES } from '../constants'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, MaxWidth } = SizesAndSpaces
 const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 
 export const LiquidationRangeSlider = ({
@@ -58,7 +58,7 @@ export const LiquidationRangeSlider = ({
             onBlur: (clamped) => clamped && setRange(Number(clamped)),
             // the input is not wide enough for the "Bands" adornments
             // value chosen for the slier to match the width of the labels
-            sx: { flexShrink: 0, width: '6.8rem' },
+            sx: { flexShrink: 0, width: MaxWidth.sliderInput.bands },
             slotProps: {
               // the normal input font size is too small for this component
               input: {
