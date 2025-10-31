@@ -69,9 +69,9 @@ const VaultWithdrawRedeem = ({
   )
 
   const reset = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
+    async (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      return updateFormValues(updatedFormValues)
+      await updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )

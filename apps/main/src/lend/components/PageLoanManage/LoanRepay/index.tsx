@@ -132,7 +132,7 @@ const LoanRepay = ({
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
-                return updateFormValues(DEFAULT_FORM_VALUES, '', true)
+                updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
               }
               push(getCollateralListPathname(params))
             }}

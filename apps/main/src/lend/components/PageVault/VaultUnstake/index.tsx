@@ -49,9 +49,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   )
 
   const reset = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
+    async (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      return updateFormValues(updatedFormValues)
+      await updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )

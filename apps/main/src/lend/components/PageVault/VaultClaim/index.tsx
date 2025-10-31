@@ -44,9 +44,9 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
     [api, isLoaded, market, setFormValues, userActiveKey],
   )
 
-  const reset = useCallback(() => {
+  const reset = useCallback(async () => {
     setTxInfoBar(null)
-    return updateFormValues()
+    await updateFormValues()
   }, [updateFormValues])
 
   const handleBtnClickClaim = useCallback(
