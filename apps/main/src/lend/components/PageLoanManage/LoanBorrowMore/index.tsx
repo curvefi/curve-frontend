@@ -35,6 +35,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { Spacing } = SizesAndSpaces
 
@@ -61,7 +62,7 @@ const LoanBorrowMore = ({
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanBorrowMore.setFormValues))
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
@@ -88,7 +89,8 @@ const LoanBorrowMore = ({
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(
+      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
+      return setFormValues(
         isLoaded ? api : null,
         market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
@@ -96,8 +98,6 @@ const LoanBorrowMore = ({
         isLeverage,
         shouldRefetch,
       )
-
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLeverage, isLoaded, maxSlippage, market, setFormValues],
   )
@@ -267,23 +267,29 @@ const LoanBorrowMore = ({
     }
   }, [])
 
-  usePageVisibleInterval(() => {
-    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
-      updateFormValues({})
-    }
-  }, REFRESH_INTERVAL['10s'])
+  usePageVisibleInterval(
+    () =>
+      isLoaded &&
+      isLeverage &&
+      !formStatus.isComplete &&
+      !formStatus.step &&
+      !formStatus.error &&
+      !isConfirming &&
+      updateFormValues({}),
+    REFRESH_INTERVAL['10s'],
+  )
 
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      updateFormValues({})
+      void updateFormValues({})
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   // form changed to leverage, reset form
   useEffect(() => {
-    if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    if (isLoaded) void updateFormValues(DEFAULT_FORM_VALUES, '', true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeverage])
 

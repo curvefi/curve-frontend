@@ -1,3 +1,7 @@
+import { throttle } from 'lodash'
+import { useMemo } from 'react'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
+
 /**
  * Replaces setInterval using recursive setTimeout.
  * Returns a cancel function to stop future executions.
@@ -27,3 +31,6 @@ export function setTimeoutInterval(callback: () => unknown, delay: number): () =
     clearTimeout(timeoutId)
   }
 }
+
+export const useThrottle = <T extends (...args: any[]) => any>(f: T, duration = Duration.FormThrottle) =>
+  useMemo(() => throttle(f, duration), [f, duration])

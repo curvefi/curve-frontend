@@ -133,12 +133,14 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, llamma])
 
-  usePageVisibleInterval(() => {
-    if (curve?.signerAddress && llamma && loanExists) {
-      void fetchLoanDetails(curve, llamma)
-      void fetchUserLoanDetails(curve, llamma)
-    }
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(
+    () =>
+      curve?.signerAddress &&
+      llamma &&
+      loanExists &&
+      Promise.all([fetchLoanDetails(curve, llamma), fetchUserLoanDetails(curve, llamma)]),
+    REFRESH_INTERVAL['1m'],
+  )
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

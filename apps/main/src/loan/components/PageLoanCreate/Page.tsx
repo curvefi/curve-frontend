@@ -157,11 +157,7 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
-  usePageVisibleInterval(() => {
-    if (curve && llamma) {
-      void fetchLoanDetails(curve, llamma)
-    }
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(() => curve && llamma && fetchLoanDetails(curve, llamma), REFRESH_INTERVAL['1m'])
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

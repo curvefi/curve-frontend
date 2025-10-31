@@ -33,19 +33,16 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
-  usePageVisibleInterval(() => {
-    if (curveApi) {
-      void fetchPoolsVolumeTvl(curveApi)
-
-      if (curveApi.signerAddress) {
-        void fetchAllStoredBalances(curveApi)
-      }
-    }
-  }, REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(
+    () =>
+      curveApi &&
+      Promise.all([fetchPoolsVolumeTvl(curveApi), curveApi.signerAddress && fetchAllStoredBalances(curveApi)]),
+    REFRESH_INTERVAL['5m'],
+  )
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    void fetchPools(curveApi, poolIds, null)
+    await fetchPools(curveApi, poolIds, null)
   }, REFRESH_INTERVAL['11m'])
 }

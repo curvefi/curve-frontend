@@ -26,9 +26,7 @@ const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefine
     if (contract && isValidAddress) void getTotalSupply(contract)
   }, [contract, isValidAddress, getTotalSupply])
 
-  usePageVisibleInterval(() => {
-    if (contract && isValidAddress) void getTotalSupply(contract)
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(() => contract && isValidAddress && getTotalSupply(contract), REFRESH_INTERVAL['1m'])
 
   return totalSupply
 }

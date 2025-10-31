@@ -42,6 +42,7 @@ import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { cloneDeep, isNaN, isUndefined } = lodash
 
@@ -82,7 +83,7 @@ const Swap = ({
   const fetchStepApprove = useStore((state) => state.poolSwap.fetchStepApprove)
   const fetchStepSwap = useStore((state) => state.poolSwap.fetchStepSwap)
   const resetState = useStore((state) => state.poolSwap.resetState)
-  const setFormValues = useStore((state) => state.poolSwap.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.poolSwap.setFormValues))
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
@@ -124,7 +125,7 @@ const Swap = ({
       setConfirmedLoss(false)
       setTxInfoBar(null)
 
-      void setFormValues(
+      return setFormValues(
         curve,
         poolDataCacheOrApi.pool.id,
         poolData,
@@ -249,11 +250,16 @@ const Swap = ({
     [fetchStepApprove, handleSwapClick],
   )
 
-  const fetchData = useCallback(() => {
-    if (curve && poolData && isPageVisible && !formStatus.formProcessing && !formStatus.formTypeCompleted) {
-      updateFormValues({}, null, '')
-    }
-  }, [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, poolData, updateFormValues])
+  const fetchData = useCallback(
+    () =>
+      curve &&
+      poolData &&
+      isPageVisible &&
+      !formStatus.formProcessing &&
+      !formStatus.formTypeCompleted &&
+      updateFormValues({}, null, ''),
+    [curve, formStatus.formProcessing, formStatus.formTypeCompleted, isPageVisible, poolData, updateFormValues],
+  )
 
   // onMount
   useEffect(() => {
