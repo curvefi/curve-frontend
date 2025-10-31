@@ -75,6 +75,7 @@ const meta: Meta<typeof SliderStory> = {
     defaultValue: 50,
     orientation: 'horizontal',
     scaleType: 'linear',
+    valueLabelDisplay: 'off',
   },
   argTypes: {
     'data-rail-background': {
@@ -109,6 +110,11 @@ const meta: Meta<typeof SliderStory> = {
       control: 'select',
       options: ['horizontal', 'vertical'],
       description: 'The orientation of the slider.',
+    },
+    valueLabelDisplay: {
+      control: 'select',
+      options: ['auto', 'on', 'off'],
+      description: 'The display of the value label.',
     },
   },
   parameters: {
