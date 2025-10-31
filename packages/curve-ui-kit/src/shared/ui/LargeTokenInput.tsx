@@ -299,11 +299,25 @@ export const LargeTokenInput = ({
         // if the previous value was valid but the current one is temporarily invalid
         cancelSetBalance()
 
-        // When the balance is invalid, we don't set the internal balance state to 0, but we do emit the onBalance event
-        // with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
-        // rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
-        // remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
-        onBalance(undefined)
+        /**
+         * When the balance is invalid, we don't set the internal balance state to 0, but we do emit the onBalance event
+         * with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
+         * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
+         * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
+         *
+         * The null check prevents:
+         * 1. Duplicate event callbacks when going from one invalid value to another invalid value
+         * 2. An unnecessary `undefined` callback on initial load when the balance starts as undefined,
+         *    which would trigger form validation errors before the user has interacted with the input
+         *
+         * Note: Adding `balance` to the dependency array is safe here because:
+         * - We only READ the current balance value for the conditional check (balance != null)
+         * - We never pass `balance` as input to `setBalance` (which would create a loop)
+         * - The `setBalance` function from `useUniqueDebounce` has a stable reference
+         * - This prevents infinite re-renders while ensuring the callback accurately reflects its dependencies
+         */
+        if (balance != null) onBalance(undefined)
+
         return
       }
 
@@ -312,7 +326,7 @@ export const LargeTokenInput = ({
         maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
+    [maxBalance?.balance, balance, setBalance, cancelSetBalance, onBalance],
   )
 
   const handleChip = useCallback(
