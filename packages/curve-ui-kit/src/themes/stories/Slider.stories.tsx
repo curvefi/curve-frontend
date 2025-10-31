@@ -15,6 +15,7 @@ const SliderStory = (
   props: ComponentProps<typeof Slider> & {
     containerWidth?: number | string
     scaleType?: 'linear' | 'power' | 'geometric'
+    powerExponent?: number
   },
 ) => {
   const {
@@ -22,6 +23,7 @@ const SliderStory = (
     orientation = 'horizontal',
     scaleType = 'linear',
     defaultValue = 40,
+    powerExponent = Math.trunc(Math.log10(MAX_VALUE) - 2),
     ...sliderProps
   } = props
   const [value, setValue] = useState<number | number[]>(defaultValue)
@@ -36,7 +38,7 @@ const SliderStory = (
 
   function calculateValue(value: number) {
     if (scaleType === 'power') {
-      return powerMap(value, POW_MIN_VALUE, MAX_VALUE, Math.trunc(Math.log10(MAX_VALUE) - 2))
+      return powerMap(value, POW_MIN_VALUE, MAX_VALUE, powerExponent)
     } else if (scaleType === 'geometric') {
       return geometricMap(value, GEO_MIN_VALUE, MAX_VALUE)
     }
@@ -115,6 +117,10 @@ const meta: Meta<typeof SliderStory> = {
       control: 'select',
       options: ['auto', 'on', 'off'],
       description: 'The display of the value label.',
+    },
+    powerExponent: {
+      control: 'number',
+      description: 'The power exponent of the slider.',
     },
   },
   parameters: {
