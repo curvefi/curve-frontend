@@ -112,7 +112,6 @@ describe('BorrowTabContents Component Tests', () => {
     // open borrow advanced settings and check all fields
     cy.contains('button', 'Health').click()
 
-    if (leverageEnabled) getActionValue('borrow-price-impact').contains('%')
     getActionValue('borrow-band-range')
       .invoke(LOAD_TIMEOUT, 'text')
       .should('match', /(\d(\.\d+)?) to (\d(\.\d+)?)/)
@@ -122,8 +121,15 @@ describe('BorrowTabContents Component Tests', () => {
     getActionValue('borrow-apr').contains('%')
     getActionValue('borrow-apr-previous').contains('%')
     getActionValue('borrow-ltv').contains('%')
-    getActionValue('borrow-slippage').contains('%')
     getActionValue('borrow-n').contains('50')
+
+    if (leverageEnabled) {
+      getActionValue('borrow-price-impact').contains('%')
+      getActionValue('borrow-slippage').contains('%')
+    } else {
+      getActionValue('borrow-price-impact').should('not.exist')
+      getActionValue('borrow-slippage').should('not.exist')
+    }
 
     cy.get('[data-testid="borrow-form-errors"]').should('not.exist')
     // todo: actually sign a transaction with the wagmi test connector and start a loan
