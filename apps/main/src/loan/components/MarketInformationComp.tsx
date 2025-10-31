@@ -1,13 +1,19 @@
+import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
+import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -19,6 +25,8 @@ type MarketInformationCompProps = {
   page?: 'create' | 'manage'
 }
 
+const EMPTY_BANDS_BALANCES: never[] = []
+
 /**
  * Reusable component for OHLC charts, Bands, and market parameters. For /create and /manage pages.
  */
@@ -29,22 +37,59 @@ export const MarketInformationComp = ({
   chartExpanded,
   page = 'manage',
 }: MarketInformationCompProps) => {
+  const api = getLib('llamaApi')
   const theme = useTheme()
+  const [releaseChannel] = useReleaseChannel()
+  const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const {
+    chartData,
+    userBandsBalances,
+    oraclePrice,
+    isLoading: isBandsLoading,
+  } = useBandsData({
+    chainId,
+    llammaId,
+    api,
+  })
+  const collateralToken = llamma && {
+    symbol: llamma?.collateralSymbol,
+    address: llamma?.coinAddresses[1],
+    chain: networks[chainId].id,
+  }
+  const borrowToken = llamma && {
+    symbol: llamma?.coins[0],
+    address: llamma?.coinAddresses[0],
+    chain: networks[chainId].id,
+  }
 
   return (
     <>
       {!chartExpanded && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack
+          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.5fr' : undefined }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+        >
           <ChartOhlcWrapper
             rChainId={chainId}
             llammaId={llammaId}
             llamma={llamma}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
+          {isBeta && (
+            <BandsChart
+              isLoading={isBandsLoading}
+              collateralToken={collateralToken}
+              borrowToken={borrowToken}
+              chartData={chartData}
+              userBandsBalances={userBandsBalances ?? EMPTY_BANDS_BALANCES}
+              oraclePrice={oraclePrice}
+            />
+          )}
         </Stack>
       )}
-      {isAdvancedMode && (
+      {isAdvancedMode && !isBeta && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp llamma={llamma} llammaId={llammaId} page={page} />
         </Stack>

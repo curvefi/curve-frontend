@@ -5,10 +5,14 @@ import MarketParameters from '@/lend/components/DetailsMarket/components/MarketP
 import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
+import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
+import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { Stack, useTheme } from '@mui/material'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
+import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -21,6 +25,8 @@ type MarketInformationCompProps = {
   page?: 'create' | 'manage'
 }
 
+const EMPTY_ARRAY: never[] = []
+
 /**
  * Reusable component for OHLC charts, Bands (if applicable), and market parameters. For /create, /manage, /vault pages.
  */
@@ -32,23 +38,59 @@ export const MarketInformationComp = ({
   type,
   page = 'manage',
 }: MarketInformationCompProps) => {
-  const { rChainId, rOwmId, market } = pageProps
+  const { api, rChainId, rOwmId, market } = pageProps
   const theme = useTheme()
+  const [releaseChannel] = useReleaseChannel()
+  const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const {
+    chartData,
+    userBandsBalances,
+    oraclePrice,
+    isLoading: isBandsLoading,
+  } = useBandsData({
+    chainId: rChainId,
+    llammaId: rOwmId,
+    api,
+  })
+  const collateralToken = market && {
+    symbol: market?.collateral_token.symbol,
+    address: market?.collateral_token.address,
+    chain: networks[rChainId].id,
+  }
+  const borrowToken = market && {
+    symbol: market?.borrowed_token.symbol,
+    address: market?.borrowed_token.address,
+    chain: networks[rChainId].id,
+  }
 
   return (
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
-        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
+        <Stack
+          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.5fr' : undefined }}
+          sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
+        >
           <ChartOhlcWrapper
             rChainId={rChainId}
             rOwmId={rOwmId}
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
+          {isBeta && (
+            <BandsChart
+              isLoading={isBandsLoading}
+              collateralToken={collateralToken}
+              borrowToken={borrowToken}
+              chartData={chartData}
+              userBandsBalances={userBandsBalances ?? EMPTY_ARRAY}
+              oraclePrice={oraclePrice}
+            />
+          )}
         </Stack>
       )}
-      {type === 'borrow' && isAdvancedMode && (
+      {type === 'borrow' && !isBeta && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>
