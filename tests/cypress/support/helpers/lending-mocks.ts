@@ -1,6 +1,6 @@
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { fromEntries } from '@curvefi/prices-api/objects.util'
-import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice, range } from '@cy/support/generators'
+import { fromEntries, range } from '@curvefi/prices-api/objects.util'
+import { MAX_USD_VALUE, oneAddress, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
 import { oneToken } from '@cy/support/helpers/tokens'
 
 const LendingChains = ['ethereum', 'fraxtal', 'arbitrum'] as const

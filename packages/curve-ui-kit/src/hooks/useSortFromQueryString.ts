@@ -16,15 +16,15 @@ export function useSortFromQueryString(defaultSort: SortingState, fieldName = 's
   return [sort, onChange] as const
 }
 
-function parseSort(search: URLSearchParams | null, defaultSort: SortingState, fieldName: string) {
+function parseSort(search: URLSearchParams, defaultSort: SortingState, fieldName: string) {
   const sort = search
-    ?.getAll(fieldName)
+    .getAll(fieldName)
     .map((id) => (id.startsWith('-') ? { id: id.slice(1), desc: true } : { id, desc: false }))
   return sort?.length ? sort : defaultSort.map(({ id, desc }) => ({ id: id.replace(/\./g, '_'), desc }))
 }
 
-function updateSort(search: URLSearchParams | null, state: SortingState, fieldName: string): string {
-  const params = new URLSearchParams(search ?? [])
+function updateSort(search: URLSearchParams, state: SortingState, fieldName: string): string {
+  const params = new URLSearchParams(search)
   params.delete(fieldName)
   state.forEach(({ id, desc }) => params.append('sort', `${desc ? '-' : ''}${id}`))
   return `?${params.toString()}`

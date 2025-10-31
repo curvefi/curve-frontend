@@ -28,3 +28,13 @@ export const recordEntries = <K extends string, T>(obj: Record<K, T> | PartialRe
   Object.entries(obj) as [K, T][]
 
 export const notFalsy = <T>(...items: (T | Falsy)[]): T[] => items.filter(Boolean) as T[]
+
+/**
+ * Generate an array of numbers from 0 to lengthOrStart - 1 or from lengthOrStart to lengthOrStart + length - 1
+ * Example: range(3) => [0, 1, 2]
+ * Example: range(2, 3) => [2, 3, 4]
+ */
+export const range = (lengthOrStart: number, length?: number) =>
+  length === undefined
+    ? Array.from({ length: lengthOrStart }, (_, i) => i)
+    : Array.from({ length }, (_, i) => i + lengthOrStart)

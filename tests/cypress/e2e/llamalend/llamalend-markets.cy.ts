@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, range, shuffle, type TokenType } from '@cy/support/generators'
+import { range } from '@curvefi/prices-api/objects.util'
+import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
   createLendingVaultChainsResponse,

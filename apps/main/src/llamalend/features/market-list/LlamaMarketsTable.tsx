@@ -41,6 +41,8 @@ const migration: MigrationOptions<ColumnFiltersState> = {
   migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
 }
 
+const pagination = { pageIndex: 0, pageSize: 200 }
+
 export const LlamaMarketsTable = ({
   onReload,
   result,
@@ -75,6 +77,7 @@ export const LlamaMarketsTable = ({
     columns: LLAMA_MARKET_COLUMNS,
     data,
     state: { expanded, sorting, columnVisibility, columnFilters },
+    initialState: { pagination },
     onSortingChange,
     onExpandedChange,
     ...getTableOptions(result),

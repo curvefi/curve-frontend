@@ -4,7 +4,6 @@ import { type Row } from '@tanstack/react-table'
 import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
-import { useIsVisible } from '@ui-kit/hooks/useIntersectionObserver'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
@@ -30,7 +29,6 @@ export type DataRowProps<T extends TableItem> = {
   isLast: boolean
   expandedPanel: ExpandedPanel<T>
   shouldStickFirstColumn: boolean
-  lazy?: boolean // whether to wait until the row is visible to render its cells
 }
 
 export const DataRow = <T extends TableItem>({
@@ -39,7 +37,6 @@ export const DataRow = <T extends TableItem>({
   row,
   expandedPanel,
   shouldStickFirstColumn,
-  lazy,
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -51,8 +48,6 @@ export const DataRow = <T extends TableItem>({
     [url, push, hasUrl],
   )
   const visibleCells = row.getVisibleCells()
-  const isVisible = useIsVisible<HTMLTableRowElement>(element, lazy) || !lazy
-
   return (
     <>
       <InvertOnHover hoverColor={(t) => t.design.Table.Row.Hover} hoverEl={element} disabled={isMobile}>
@@ -87,10 +82,9 @@ export const DataRow = <T extends TableItem>({
           data-testid={element && `data-table-row-${row.id}`}
           onClick={isMobile ? () => row.toggleExpanded() : hasUrl ? onClickDesktop : undefined}
         >
-          {isVisible &&
-            visibleCells.map((cell, index) => (
-              <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />
-            ))}
+          {visibleCells.map((cell, index) => (
+            <DataCell key={cell.id} cell={cell} isMobile={isMobile} isSticky={shouldStickFirstColumn && !index} />
+          ))}
         </TableRow>
       </InvertOnHover>
 
