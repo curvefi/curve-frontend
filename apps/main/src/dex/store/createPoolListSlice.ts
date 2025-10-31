@@ -151,12 +151,8 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       return uniqBy([...tokensResult, ...addressesResult], (r) => r.item.pool.id).map((r) => r.item)
     },
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
-      const networks = getNetworks()
-      const { hideSmallPoolsTvl } = networks[chainId]
-
-      const result = takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
-
-      return result
+      const { hideSmallPoolsTvl } = getNetworks()[chainId]
+      return takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
     },
     sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled, chainId) => {
       const networks = getNetworks()
@@ -281,7 +277,7 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       })
 
       // get rest of pool list data
-      void Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
+      await Promise.all([pools.fetchMissingPoolsRewardsApy(rChainId, tablePoolDatas)])
     },
 
     // use local storage data till actual data returns
@@ -371,7 +367,7 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
           return
         }
 
-        void sliceState.setSortAndFilterData(
+        await sliceState.setSortAndFilterData(
           rChainId,
           searchParams,
           hideSmallPools,

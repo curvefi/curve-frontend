@@ -50,7 +50,7 @@ export type FormDetailInfo = {
   llammaId: string
   steps: Step[]
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
-  updateFormValues: (updatedFormValues: FormValues) => void
+  updateFormValues: (updatedFormValues: FormValues) => Promise<void>
 }
 
 export type FormDetailInfoLeverage = {

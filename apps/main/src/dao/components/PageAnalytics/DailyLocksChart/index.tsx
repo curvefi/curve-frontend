@@ -4,6 +4,7 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import Spinner from '../../Spinner'
 import PositiveAndNegativeBarChart from './PositiveAndNegativeBarChart'
 
@@ -17,7 +18,7 @@ const DailyLocks = () => {
 
   useEffect(() => {
     if (veCrvLocks.locks.length === 0 && veCrvLocks.fetchStatus !== 'ERROR') {
-      void getVeCrvLocks()
+      getVeCrvLocks().catch(errorFallback)
     }
   }, [getVeCrvLocks, veCrvLocks.locks.length, veCrvLocks.fetchStatus])
 

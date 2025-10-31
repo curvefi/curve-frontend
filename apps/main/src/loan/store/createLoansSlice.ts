@@ -15,6 +15,7 @@ import {
 } from '@/loan/types/loan.types'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -96,10 +97,9 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
       get()[sliceKey].setStateByActiveKey('detailsMapper', collateralId, fetchedLoanDetails)
 
       if (curve.signerAddress) {
-        void get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
-
+        get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma).catch(errorFallback)
         if (loanExists) {
-          void get()[sliceKey].fetchUserLoanDetails(curve, llamma)
+          get()[sliceKey].fetchUserLoanDetails(curve, llamma).catch(errorFallback)
         }
       }
 

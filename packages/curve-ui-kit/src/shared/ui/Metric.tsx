@@ -18,6 +18,7 @@ import {
   type NumberFormatOptions,
   type SxProps,
 } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Duration } from '../../themes/design/0_primitives'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -203,7 +204,7 @@ export const Metric = ({
   const notionals = useMemo(() => notionalsToString(notional), [notional])
   const [isCopyAlertOpen, openCopyAlert, closeCopyAlert] = useSwitch(false)
   const copyValue = useCallback(() => {
-    void copyToClipboard(value!.toString())
+    copyToClipboard(value!.toString()).catch(errorFallback)
     openCopyAlert()
   }, [value, openCopyAlert])
 

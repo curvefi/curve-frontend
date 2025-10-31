@@ -38,6 +38,7 @@ import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -108,13 +109,18 @@ const Page = () => {
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
-    const timer = setTimeout(async () => {
-      if (!api || !market || !isPageVisible || !isLoaded) return
-      void fetchAllMarketDetails(api, market, true)
-      if (api.signerAddress && loanExists) {
-        void fetchAllUserMarketDetails(api, market, true)
-      }
-    }, REFRESH_INTERVAL['3s'])
+    const timer = setTimeout(
+      () =>
+        api &&
+        market &&
+        isPageVisible &&
+        isLoaded &&
+        Promise.all([
+          fetchAllMarketDetails(api, market, true),
+          api.signerAddress && loanExists && fetchAllUserMarketDetails(api, market, true),
+        ]).catch(errorFallback),
+      REFRESH_INTERVAL['3s'],
+    )
     return () => clearTimeout(timer)
   }, [api, fetchAllMarketDetails, fetchAllUserMarketDetails, isLoaded, isPageVisible, loanExists, market])
 

@@ -30,6 +30,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -66,7 +67,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(isLoaded ? api : null, market, updatedFormValues)
+      setFormValues(isLoaded ? api : null, market, updatedFormValues).catch(errorFallback)
 
       if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },

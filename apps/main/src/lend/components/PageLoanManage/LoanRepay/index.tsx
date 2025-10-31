@@ -44,6 +44,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { Spacing } = SizesAndSpaces
 
@@ -68,7 +70,7 @@ const LoanRepay = ({
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
   const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const setFormValues = useStore((state) => state.loanRepay.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanRepay.setFormValues))
   const resetState = useStore((state) => state.loanRepay.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
@@ -91,22 +93,21 @@ const LoanRepay = ({
   })
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(
+      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
+      await setFormValues(
         isLoaded ? api : null,
         market,
         updatedFormValues,
         updatedMaxSlippage || maxSlippage,
         shouldRefetch,
       )
-
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, maxSlippage, market, setFormValues],
   )
@@ -131,10 +132,9 @@ const LoanRepay = ({
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
-                updateFormValues(DEFAULT_FORM_VALUES, '', true)
-              } else {
-                push(getCollateralListPathname(params))
+                updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
               }
+              push(getCollateralListPathname(params))
             }}
           />,
         )
@@ -286,21 +286,27 @@ const LoanRepay = ({
 
   usePageVisibleInterval(() => {
     const { swapRequired } = _parseValues(formValues)
-    if (isLoaded && swapRequired && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
+    return (
+      isLoaded &&
+      swapRequired &&
+      !formStatus.isComplete &&
+      !formStatus.step &&
+      !formStatus.error &&
+      !isConfirming &&
       updateFormValues({})
-    }
+    )
   }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({}, maxSlippage)
+    if (isLoaded) updateFormValues({}, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 

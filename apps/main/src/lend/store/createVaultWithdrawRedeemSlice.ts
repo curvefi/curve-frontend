@@ -13,6 +13,7 @@ import { Api, ChainId, FutureRates, OneWayMarketTemplate } from '@/lend/types/le
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -129,8 +130,10 @@ const createVaultWithdrawRedeem = (
 
       // api calls
       await get()[sliceKey].fetchMax(api, formType, market)
-      void get()[sliceKey].fetchDetails(activeKey, formType, api, market)
-      void get()[sliceKey].fetchEstGas(activeKey, formType, api, market)
+      Promise.all([
+        get()[sliceKey].fetchDetails(activeKey, formType, api, market),
+        get()[sliceKey].fetchEstGas(activeKey, formType, api, market),
+      ]).catch(errorFallback)
     },
 
     // steps
@@ -154,17 +157,19 @@ const createVaultWithdrawRedeem = (
         vaultShares,
       )
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // api calls
-        void get().user.fetchUserMarketBalances(api, market, true)
-        void get()[sliceKey].fetchMax(api, formType, market)
+        Promise.all([
+          get().user.fetchUserMarketBalances(api, market, true),
+          get()[sliceKey].fetchMax(api, formType, market),
+        ]).catch(errorFallback)
         invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
 
         // update state

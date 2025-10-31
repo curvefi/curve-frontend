@@ -28,6 +28,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormDeposit = ({
   chainIdPoolId,
@@ -68,14 +69,14 @@ const FormDeposit = ({
   const haveSigner = !!signerAddress
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       loadMaxAmount: LoadMaxAmount | null,
       updatedMaxSlippage: string | null,
     ) => {
       setTxInfoBar(null)
       setSlippageConfirmed(false)
-      void setFormValues(
+      await setFormValues(
         'DEPOSIT',
         curve,
         poolDataCacheOrApi.pool.id,
@@ -206,7 +207,7 @@ const FormDeposit = ({
   // curve state change
   useEffect(() => {
     if (chainId && poolId) {
-      updateFormValues({}, null, null)
+      updateFormValues({}, null, null).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
@@ -214,7 +215,7 @@ const FormDeposit = ({
   // max Slippage
   useEffect(() => {
     if (maxSlippage) {
-      updateFormValues({}, null, maxSlippage)
+      updateFormValues({}, null, maxSlippage).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])

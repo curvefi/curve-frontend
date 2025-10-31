@@ -6,6 +6,7 @@ import { ChainId } from '@/lend/types/lend.types'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { weiToEther } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefined) => {
   const contract = useContract(rChainId, false, 'totalSupply', contractAddress)
@@ -23,12 +24,10 @@ const useAbiTotalSupply = (rChainId: ChainId, contractAddress: string | undefine
   }, [])
 
   useEffect(() => {
-    if (contract && isValidAddress) void getTotalSupply(contract)
+    if (contract && isValidAddress) getTotalSupply(contract).catch(errorFallback)
   }, [contract, isValidAddress, getTotalSupply])
 
-  usePageVisibleInterval(() => {
-    if (contract && isValidAddress) void getTotalSupply(contract)
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(() => contract && isValidAddress && getTotalSupply(contract), REFRESH_INTERVAL['1m'])
 
   return totalSupply
 }

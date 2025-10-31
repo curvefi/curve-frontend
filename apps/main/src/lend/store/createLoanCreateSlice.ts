@@ -21,6 +21,7 @@ import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -252,11 +253,16 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       }
 
       // api calls
-      if (isLeverage) void sliceState.fetchMaxLeverage(market)
-      await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage)
-      await sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
-      void sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
-      void sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage)
+      if (isLeverage) sliceState.fetchMaxLeverage(market).catch(errorFallback)
+
+      await Promise.all([
+        sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage),
+        sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage),
+      ])
+      Promise.all([
+        sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage),
+        sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage),
+      ]).catch(errorFallback)
     },
 
     // steps
@@ -288,7 +294,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage).catch(errorFallback)
         return { ...resp, error }
       }
     },
@@ -323,12 +329,12 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         isLeverage,
       )
       // update user events api
-      void getUserMarketCollateralEvents(
+      getUserMarketCollateralEvents(
         wallet?.account?.address,
         networks[chainId].name as Chain,
         market.addresses.controller,
         resp.hash,
-      )
+      ).catch(errorFallback)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {
@@ -343,7 +349,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           if (loanExists) {
             // api calls
             await user.fetchAll(api, market, true)
-            void markets.fetchAll(api, market, true)
+            markets.fetchAll(api, market, true).catch(errorFallback)
             markets.setStateByKey('marketDetailsView', 'user')
             invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
             // update formStatus

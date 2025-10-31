@@ -18,6 +18,7 @@ import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { getSlippageImpact, getSwapActionModalType } from '@/dex/utils/utilsSwap'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 
@@ -326,16 +327,16 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         sliceState.setStateByKey('routesAndOutput', { [activeKey]: { ...storedRoutesAndOutput, loading: true } })
       }
 
-      // get wallet balances
-      if (curve.signerAddress)
-        await sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress)
-
-      // get max if MAX button is clicked
-      if (isGetMaxFrom) await sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage)
-
       // api calls
-      await sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage)
-      void sliceState.fetchEstGasApproval(curve, searchedParams)
+      await Promise.all([
+        // get wallet balances
+        curve.signerAddress &&
+          sliceState.fetchUserBalances(curve, searchedParams.fromAddress, searchedParams.toAddress),
+        // get max if MAX button is clicked
+        isGetMaxFrom && sliceState.fetchMaxAmount(curve, searchedParams, maxSlippage),
+        sliceState.fetchRoutesAndOutput(curve, searchedParams, maxSlippage),
+        sliceState.fetchEstGasApproval(curve, searchedParams),
+      ])
     },
 
     // select token list
@@ -398,7 +399,7 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
           // re-fetch est gas, approval, routes and output
           await sliceState.fetchRoutesAndOutput(curve, searchedParams, globalMaxSlippage)
-          void sliceState.fetchEstGasApproval(curve, searchedParams)
+          sliceState.fetchEstGasApproval(curve, searchedParams).catch(errorFallback)
         }
 
         return resp
@@ -456,11 +457,12 @@ const createQuickSwapSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
             routesAndOutput: {},
           })
 
-          // cache swapped tokens
-          void state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress })
-
-          // fetch data
-          void state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress])
+          await Promise.all([
+            // cache swapped tokens
+            state.storeCache.setStateByActiveKey('routerFormValues', chainId.toString(), { fromAddress, toAddress }),
+            // fetch data
+            state.userBalances.fetchUserBalancesByTokens(curve, [fromAddress, toAddress]),
+          ])
         }
 
         return resp

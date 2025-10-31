@@ -6,6 +6,7 @@ import { type CurveApi, useConnection } from '@ui-kit/features/connect-wallet'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useNetworkByChain, useNetworks } from '../entities/networks'
 
 export const useAutoRefresh = (networkDef: NetworkDef) => {
@@ -28,24 +29,21 @@ export const useAutoRefresh = (networkDef: NetworkDef) => {
       const { chainId } = curve
       const poolsData = Object.values(poolDataMapper)
       await Promise.all([fetchPoolsVolume(chainId, poolsData), fetchPoolsTvl(curve, poolsData)])
-      void setTokensMapper(curve, poolsData)
+      setTokensMapper(curve, poolsData).catch(errorFallback)
     },
     [fetchPoolsTvl, fetchPoolsVolume, poolDataMapper, setTokensMapper],
   )
 
-  usePageVisibleInterval(() => {
-    if (curveApi) {
-      void fetchPoolsVolumeTvl(curveApi)
-
-      if (curveApi.signerAddress) {
-        void fetchAllStoredBalances(curveApi)
-      }
-    }
-  }, REFRESH_INTERVAL['5m'])
+  usePageVisibleInterval(
+    () =>
+      curveApi &&
+      Promise.all([fetchPoolsVolumeTvl(curveApi), curveApi.signerAddress && fetchAllStoredBalances(curveApi)]),
+    REFRESH_INTERVAL['5m'],
+  )
 
   usePageVisibleInterval(async () => {
     if (!curveApi || !network) return console.warn('Curve API or network is not defined, cannot refetch pools')
     const poolIds = await curvejsApi.network.fetchAllPoolsList(curveApi, network)
-    void fetchPools(curveApi, poolIds, null)
+    await fetchPools(curveApi, poolIds, null)
   }, REFRESH_INTERVAL['11m'])
 }

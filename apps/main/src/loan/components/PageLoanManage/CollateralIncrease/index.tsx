@@ -74,9 +74,9 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        await setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],
@@ -346,9 +346,10 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
         {formStatus.error ? (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-        ) : detailInfo.healthNotFull !== healthMode.percent && healthMode.message ? (
-          <AlertBox alertType="warning">{healthMode.message}</AlertBox>
-        ) : null}
+        ) : (
+          detailInfo.healthNotFull !== healthMode.percent &&
+          healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>
+        )}
         {txInfoBar}
         {steps && <Stepper steps={steps} />}
       </LoanFormConnect>

@@ -36,6 +36,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const LoanCreate = ({
   isLeverage = false,
@@ -60,7 +61,7 @@ const LoanCreate = ({
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
   const fetchStepCreate = useStore((state) => state.loanCreate.fetchStepCreate)
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
-  const setFormValues = useStore((state) => state.loanCreate.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanCreate.setFormValues))
   const resetState = useStore((state) => state.loanCreate.resetState)
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
@@ -82,18 +83,19 @@ const LoanCreate = ({
   })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean, shouldRefetch?: boolean) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(
-        isLoaded ? api : null,
-        market,
-        isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
-        maxSlippage,
-        isLeverage,
-        shouldRefetch,
-      )
-
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
+      await Promise.all([
+        setFormValues(
+          isLoaded ? api : null,
+          market,
+          isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
+          maxSlippage,
+          isLeverage,
+          shouldRefetch,
+        ),
+        isFullReset && setHealthMode(DEFAULT_HEALTH_MODE),
+      ])
     },
     [setFormValues, isLoaded, api, market, maxSlippage, isLeverage],
   )
@@ -253,11 +255,17 @@ const LoanCreate = ({
     }
   }, [])
 
-  usePageVisibleInterval(() => {
-    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
-      updateFormValues({})
-    }
-  }, REFRESH_INTERVAL['10s'])
+  usePageVisibleInterval(
+    () =>
+      isLoaded &&
+      isLeverage &&
+      !formStatus.isComplete &&
+      !formStatus.step &&
+      !formStatus.error &&
+      !isConfirming &&
+      updateFormValues({}),
+    REFRESH_INTERVAL['10s'],
+  )
 
   // steps
   useEffect(() => {

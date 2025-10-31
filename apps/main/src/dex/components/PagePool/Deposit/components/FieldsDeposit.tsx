@@ -11,6 +11,7 @@ import type { CurrencyReserves } from '@/dex/types/main.types'
 import { getChainPoolIdActiveKey } from '@/dex/utils'
 import Checkbox from '@ui/Checkbox'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Amount } from '../../utils'
 
 /**
@@ -74,7 +75,7 @@ const FieldsDeposit = ({
     updatedFormValues: Partial<FormValues>,
     loadMaxAmount: LoadMaxAmount | null,
     updatedMaxSlippage: string | null,
-  ) => void
+  ) => Promise<void>
 } & Pick<TransferProps, 'poolData' | 'poolDataCacheOrApi' | 'routerParams' | 'tokensMapper' | 'userPoolBalances'>) => {
   const { data: network } = useNetworkByChain({ chainId: rChainId })
   const balancesLoading = useStore((state) => state.user.walletBalancesLoading)
@@ -102,7 +103,7 @@ const FieldsDeposit = ({
             },
         null,
         null,
-      )
+      ).catch(errorFallback)
     },
     [updateFormValues, isBalancedAmounts, reserves, poolDataCacheOrApi.tokenAddresses],
   )
@@ -123,7 +124,7 @@ const FieldsDeposit = ({
   const afterMaxClick = useCallback(
     (idx: number) => {
       const tokenAddress = poolDataCacheOrApi.tokenAddresses[idx]
-      updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null)
+      updateFormValues({ isBalancedAmounts: false }, { tokenAddress, idx }, null).catch(errorFallback)
     },
     [poolDataCacheOrApi.tokenAddresses, updateFormValues],
   )

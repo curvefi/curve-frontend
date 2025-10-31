@@ -16,6 +16,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -41,7 +42,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
   const updateFormValues = useCallback(
     (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      void setFormValues(
+      setFormValues(
         'UNSTAKE',
         curve,
         poolDataCacheOrApi.pool.id,
@@ -50,7 +51,7 @@ const FormUnstake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, 
         null,
         seed.isSeed,
         '',
-      )
+      ).catch(errorFallback)
     },
     [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )

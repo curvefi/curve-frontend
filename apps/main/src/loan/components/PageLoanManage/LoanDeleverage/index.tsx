@@ -50,6 +50,8 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -72,7 +74,7 @@ const LoanDeleverage = ({
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
-  const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanDeleverage.setFormValues))
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
@@ -91,7 +93,7 @@ const LoanDeleverage = ({
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, updatedMaxSlippage: string | null, isFullReset: boolean) => {
       setTxInfoBar(null)
       setConfirmHighPriceImpact(false)
 
@@ -99,7 +101,7 @@ const LoanDeleverage = ({
         setHealthMode(DEFAULT_HEALTH_MODE)
       }
 
-      void setFormValues(
+      await setFormValues(
         llammaId,
         curve,
         llamma,
@@ -136,7 +138,7 @@ const LoanDeleverage = ({
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
               if (resp.loanExists) {
-                updateFormValues({}, '', true)
+                updateFormValues({}, '', true).catch(() => errorFallback)
               } else {
                 push(getCollateralListPathname(params))
               }
@@ -206,7 +208,7 @@ const LoanDeleverage = ({
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false
@@ -216,15 +218,14 @@ const LoanDeleverage = ({
 
   // signer changed
   useEffect(() => {
-    updateFormValues(DEFAULT_FORM_VALUES, '', true)
-
+    updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress])
 
   // update formValues
   useEffect(() => {
     if (chainId && llamma) {
-      updateFormValues({}, '', false)
+      updateFormValues({}, '', false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, llamma, userState?.collateral, userLoanDetails?.userIsCloseToLiquidation])
@@ -232,7 +233,7 @@ const LoanDeleverage = ({
   // maxSlippage
   useEffect(() => {
     if (maxSlippage) {
-      updateFormValues({}, maxSlippage, false)
+      updateFormValues({}, maxSlippage, false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
@@ -240,17 +241,13 @@ const LoanDeleverage = ({
   //  pageVisible
   useEffect(() => {
     if (!formStatus.isInProgress) {
-      updateFormValues({}, '', false)
+      updateFormValues({}, '', false).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
   // interval
-  usePageVisibleInterval(() => {
-    if (!formStatus.isInProgress) {
-      updateFormValues({}, '', false)
-    }
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(() => !formStatus.isInProgress && updateFormValues({}, '', false), REFRESH_INTERVAL['1m'])
 
   // steps
   useEffect(() => {
@@ -424,30 +421,34 @@ const LoanDeleverage = ({
                 <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, '', true)} />
               ) : formStatus.warning ? (
                 <AlertFormWarning errorKey={formStatus.warning} />
-              ) : !!llamma &&
+              ) : (
+                !!llamma &&
                 userState &&
                 !detailInfo.loading &&
                 !formValues.collateralError &&
                 +formValues.collateral > 0 &&
-                +detailInfo.receiveStablecoin > 0 ? (
-                <AlertBox alertType="info">
-                  {formValues.isFullRepay ? (
-                    <LoanDeleverageAlertFull
-                      receivedStablecoin={detailInfo.receiveStablecoin}
-                      formValues={formValues}
-                      llamma={llamma}
-                      userState={userState}
-                    />
-                  ) : formStatus.warning !== 'warning-full-repayment-only' ? (
-                    <LoanDeleverageAlertPartial
-                      receivedStablecoin={detailInfo.receiveStablecoin}
-                      formValues={formValues}
-                      llamma={llamma}
-                      userState={userState}
-                    />
-                  ) : null}
-                </AlertBox>
-              ) : null}
+                +detailInfo.receiveStablecoin > 0 && (
+                  <AlertBox alertType="info">
+                    {formValues.isFullRepay ? (
+                      <LoanDeleverageAlertFull
+                        receivedStablecoin={detailInfo.receiveStablecoin}
+                        formValues={formValues}
+                        llamma={llamma}
+                        userState={userState}
+                      />
+                    ) : (
+                      formStatus.warning !== 'warning-full-repayment-only' && (
+                        <LoanDeleverageAlertPartial
+                          receivedStablecoin={detailInfo.receiveStablecoin}
+                          formValues={formValues}
+                          llamma={llamma}
+                          userState={userState}
+                        />
+                      )
+                    )}
+                  </AlertBox>
+                )
+              )}
             </>
           )}
           {txInfoBar}

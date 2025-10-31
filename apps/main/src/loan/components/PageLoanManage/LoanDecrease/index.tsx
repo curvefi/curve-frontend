@@ -76,9 +76,9 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const { userState } = userLoanDetails ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        await setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],
@@ -369,9 +369,9 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           <>
             {formStatus.error ? (
               <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-            ) : formStatus.warning ? (
-              <AlertFormWarning errorKey={formStatus.warning} />
-            ) : null}
+            ) : (
+              formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />
+            )}
           </>
         )}
         {txInfoBar}
