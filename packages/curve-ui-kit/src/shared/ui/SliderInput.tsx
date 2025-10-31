@@ -8,7 +8,7 @@ import { Slider, type SliderProps } from './Slider'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
 
-type RangeValue = [number, number]
+export type RangeValue = [number, number]
 
 export type SliderInputProps = {
   /** The aria-label */

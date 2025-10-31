@@ -4,7 +4,7 @@ import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
+import { RangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { BORROW_PRESET_RANGES } from '../constants'
 
@@ -24,6 +24,10 @@ export const LiquidationRangeSlider = ({
     market && Array.from({ length: +market.maxBands - +market.minBands + 1 }, (_, i) => ({ n: i + market.minBands }))
   const [sliderValue, setSliderValue] = useState<number>(range ?? market?.minBands ?? 5)
 
+  // Truncate the value to an integer
+  const setSanitizedSliderValue = (val: number | string | RangeValue | undefined) =>
+    val != null && setSliderValue(Math.trunc(Number(val)))
+
   useEffect(() => setSliderValue(range), [range])
 
   const minValue = liqRanges?.[0]?.n ?? market?.minBands ?? BORROW_PRESET_RANGES.MaxLtv
@@ -42,20 +46,20 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={12}>
         <SliderInput
-          onChange={(val) => val && setSliderValue(Number(val))}
+          onChange={setSanitizedSliderValue}
           aria-label={t`Bands`}
           value={sliderValue}
           min={minValue}
           max={maxValue}
           sliderProps={{
-            onChangeCommitted: (_, n) => setRange(n as number),
+            onChangeCommitted: (_, n) => setSanitizedSliderValue(n as number),
             getAriaValueText: format,
             'data-rail-background': 'safe',
           }}
           inputProps={{
             variant: 'standard',
             name: 'range',
-            onBlur: (clamped) => clamped && setRange(Number(clamped)),
+            onBlur: setSanitizedSliderValue,
             // the input is not wide enough for the "Bands" adornments
             // value chosen for the slier to match the width of the labels
             sx: { flexShrink: 0, width: MaxWidth.sliderInput.bands },
