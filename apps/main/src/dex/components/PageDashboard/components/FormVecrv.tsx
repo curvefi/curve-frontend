@@ -25,6 +25,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
 import { getInternalUrl } from '@ui-kit/shared/routes'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Chain } from '@ui-kit/utils/network'
 
 // TODO uncomment locker link code once it is ready
@@ -95,7 +96,7 @@ const FormVecrv = () => {
           type: 'action',
           content: formStatus.formTypeCompleted ? t`Withdraw CRV Complete` : t`Withdraw CRV`,
           onClick: () => {
-            if (curve) void handleBtnClickWithdraw(activeKey, curve, lockedAmount)
+            if (curve) handleBtnClickWithdraw(activeKey, curve, lockedAmount).catch(errorFallback)
           },
         },
       }
@@ -148,7 +149,7 @@ const FormVecrv = () => {
               disabled={!curve}
               variant="filled"
               onClick={() => {
-                if (curve) void handleBtnClickWithdraw(activeKey, curve, lockedAmount)
+                if (curve) handleBtnClickWithdraw(activeKey, curve, lockedAmount).catch(errorFallback)
               }}
               size="medium"
             >

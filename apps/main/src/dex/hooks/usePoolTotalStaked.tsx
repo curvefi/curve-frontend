@@ -73,7 +73,7 @@ const usePoolTotalStaked = (poolDataCacheOrApi: PoolDataCacheOrApi) => {
               ? await getContract('poolTotalSupply', address, provider)
               : await getContract('lpTokenTotalSupply', lpToken, provider)
 
-          if (poolContract) void getTotalSupply(poolContract, gaugeContract)
+          if (poolContract) getTotalSupply(poolContract, gaugeContract).catch(errorFallback)
         } else {
           updateTotalStakeValue({ totalStakedPercent: 'N/A', gaugeTotalSupply: 'N/A' })
         }

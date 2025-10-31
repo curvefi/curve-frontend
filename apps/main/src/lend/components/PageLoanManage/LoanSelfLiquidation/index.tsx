@@ -185,7 +185,7 @@ const LoanSelfLiquidation = ({
 
   // max slippage
   useEffect(() => {
-    if (isLoaded && api && market && maxSlippage) void fetchDetails(api, market, maxSlippage)
+    if (isLoaded && api && market && maxSlippage) fetchDetails(api, market, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 

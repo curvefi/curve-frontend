@@ -306,7 +306,7 @@ const LoanRepay = ({
   }, [isLoaded])
 
   useEffect(() => {
-    if (isLoaded) void updateFormValues({}, maxSlippage)
+    if (isLoaded) updateFormValues({}, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 

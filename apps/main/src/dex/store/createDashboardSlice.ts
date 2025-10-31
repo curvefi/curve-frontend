@@ -21,6 +21,7 @@ import type { IProfit } from '@curvefi/api/lib/interfaces'
 import { PromisePool } from '@supercharge/promise-pool'
 import { shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -285,7 +286,7 @@ const createDashboardSlice = (_: StoreApi<State>['setState'], get: StoreApi<Stat
       }
 
       // get claimableFees, locked crv info
-      if (chainId === 1) void sliceState.fetchClaimablesAndLockedDetails(curve)
+      if (chainId === 1) sliceState.fetchClaimablesAndLockedDetails(curve).catch(errorFallback)
 
       // get dashboard data
       const dashboardDataActiveKey = getDashboardDataActiveKey(chainId, walletAddress)

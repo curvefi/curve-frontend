@@ -290,7 +290,7 @@ const LoanBorrowMore = ({
 
   // form changed to leverage, reset form
   useEffect(() => {
-    if (isLoaded) void updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeverage])
 

@@ -4,6 +4,7 @@ import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 function formatNumberWithPrecision(value: number, precisionDigits: number) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
@@ -39,7 +40,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
   }, [pricePerShareResp, usdRate, symbol, vaultShares])
 
   useEffect(() => {
-    if (market && +vaultShares > 0) void fetchVaultPricePerShare(rChainId, market)
+    if (market && +vaultShares > 0) fetchVaultPricePerShare(rChainId, market).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market?.id, vaultShares])
 

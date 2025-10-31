@@ -154,7 +154,7 @@ const createLoanSelfLiquidationSlice = (
           isInProgress: !error,
           stepError: error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(api, market, maxSlippage)
+        if (!error) sliceState.fetchEstGasApproval(api, market, maxSlippage).catch(errorFallback)
         return { ...resp, error }
       }
     },

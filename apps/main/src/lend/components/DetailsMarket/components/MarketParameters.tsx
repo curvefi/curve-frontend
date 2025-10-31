@@ -10,6 +10,7 @@ import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const MarketParameters = ({
   rChainId,
@@ -54,7 +55,7 @@ const MarketParameters = ({
     ]
 
   useEffect(() => {
-    if (type === 'supply' && owm) void fetchVaultPricePerShare(rChainId, owm)
+    if (type === 'supply' && owm) fetchVaultPricePerShare(rChainId, owm).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type, owm])
 

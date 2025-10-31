@@ -228,7 +228,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage).catch(errorFallback)
         return { ...resp, error }
       }
     },

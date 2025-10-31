@@ -154,7 +154,7 @@ const createLoanCollateralAdd = (
           isApproved: !error,
           isInProgress: !error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market).catch(errorFallback)
         return { ...resp, error }
       }
     },

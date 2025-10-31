@@ -253,9 +253,12 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       }
 
       // api calls
-      if (isLeverage) void sliceState.fetchMaxLeverage(market)
-      await sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage)
-      await sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage)
+      if (isLeverage) sliceState.fetchMaxLeverage(market).catch(errorFallback)
+
+      await Promise.all([
+        sliceState.fetchMaxRecv(activeKeys.activeKeyMax, api, market, isLeverage),
+        sliceState.fetchDetailInfo(activeKeys.activeKey, api, market, maxSlippage, isLeverage),
+      ])
       Promise.all([
         sliceState.fetchEstGasApproval(activeKeys.activeKey, api, market, maxSlippage, isLeverage),
         sliceState.fetchLiqRanges(activeKeys.activeKeyLiqRange, api, market, isLeverage),
@@ -291,7 +294,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage).catch(errorFallback)
         return { ...resp, error }
       }
     },

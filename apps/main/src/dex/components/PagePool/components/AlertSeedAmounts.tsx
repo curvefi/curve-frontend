@@ -5,6 +5,7 @@ import { PoolData } from '@/dex/types/main.types'
 import AlertBox from '@ui/AlertBox'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type Props = {
   seed: Seed
@@ -32,7 +33,7 @@ const AlertSeedAmounts = ({ seed, poolData }: Props) => {
   }, [])
 
   useEffect(() => {
-    if (!!poolData && loaded && isSeed) void getSeedRatio(poolData)
+    if (!!poolData && loaded && isSeed) getSeedRatio(poolData).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poolData?.pool?.id, loaded, isSeed])
 

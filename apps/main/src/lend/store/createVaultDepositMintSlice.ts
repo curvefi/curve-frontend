@@ -162,7 +162,7 @@ const createVaultMint = (
           isInProgress: true,
         }
         get()[sliceKey].setStateByKey('formStatus', merge(cloneDeep(FORM_STATUS), partialFormStatus))
-        if (!resp.error) void get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market)
+        if (!resp.error) get()[sliceKey].fetchEstGasApproval(activeKey, formType, api, market).catch(errorFallback)
         return resp
       }
     },

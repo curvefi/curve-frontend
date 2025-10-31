@@ -272,7 +272,7 @@ const createLoanBorrowMore = (
           isApprovedCompleted: !error,
           stepError: error,
         })
-        if (!error) void sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage)
+        if (!error) sliceState.fetchEstGasApproval(activeKey, api, market, maxSlippage, isLeverage).catch(errorFallback)
         return { ...resp, error }
       }
     },
