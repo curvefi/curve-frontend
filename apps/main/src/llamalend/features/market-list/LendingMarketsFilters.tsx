@@ -102,6 +102,7 @@ export const LendingMarketsFilters = ({
         format={formatUsd}
         data={data}
         adornmentVariant="dollar"
+        scale="power"
         {...filterProps}
       />
     </TableFilterColumn>
@@ -114,6 +115,7 @@ export const LendingMarketsFilters = ({
         format={formatUsd}
         data={data}
         adornmentVariant="dollar"
+        scale="power"
         {...filterProps}
       />
     </TableFilterColumn>

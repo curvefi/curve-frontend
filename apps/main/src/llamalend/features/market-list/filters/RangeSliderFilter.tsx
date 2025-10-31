@@ -1,5 +1,5 @@
 import type { Property } from 'csstype'
-import lodash from 'lodash'
+import lodash, { clamp } from 'lodash'
 import { ReactNode, useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
@@ -10,6 +10,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber } from '@ui-kit/utils'
+import { powerMap, invertPowerMap } from '@ui-kit/utils/interpolations'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
 const { Spacing } = SizesAndSpaces
@@ -60,6 +61,7 @@ export const RangeSliderFilter = <T,>({
   id,
   defaultMinimum = 0,
   adornmentVariant,
+  scale,
 }: {
   columnFilters: Record<string, unknown>
   setColumnFilter: (id: string, value: unknown) => void
@@ -70,9 +72,45 @@ export const RangeSliderFilter = <T,>({
   format: (value: number) => string
   defaultMinimum?: number
   adornmentVariant?: AdornmentVariants
+  scale?: 'power'
 }) => {
+  const minValue = 0
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
+  const isPowerScale = scale === 'power'
+  /** Find a power exponent that feels "good" based on the max value  */
+  const powerExponent = useMemo(() => {
+    if (!isPowerScale || maxValue <= minValue) return undefined
+    const safeMax = Math.max(maxValue, 1)
+    const exponent = Math.trunc(Math.log10(safeMax) - 2)
+    return exponent > 1 ? exponent : 1
+  }, [isPowerScale, maxValue, minValue])
+
+  const canUsePowerScale = isPowerScale && powerExponent != null
+
+  /** Helpers that convert real values to and from the slider's value space. */
+  const sliderValueTransform = useMemo(() => {
+    if (!canUsePowerScale || powerExponent == null) {
+      return undefined
+    }
+
+    const [sliderMin, sliderMax] = [0, 1]
+
+    /** Convert the current value into the 0-1 slider space. */
+    const toSlider = (value: number) =>
+      invertPowerMap(clamp(value, minValue, maxValue), minValue, maxValue, powerExponent)
+    /** Bring the normalized slider value back into the actual units. */
+    const fromSlider = (value: number) =>
+      powerMap(clamp(value, sliderMin, sliderMax), minValue, maxValue, powerExponent)
+
+    return {
+      toSlider,
+      fromSlider,
+      sliderMin,
+      sliderMax,
+      sliderStep: 0.001,
+    }
+  }, [canUsePowerScale, powerExponent, minValue, maxValue])
 
   const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
   // Currently applied filter range
@@ -137,7 +175,8 @@ export const RangeSliderFilter = <T,>({
           onChange={onChange}
           min={0}
           max={maxValue}
-          step={step}
+          step={sliderValueTransform?.sliderStep ?? step}
+          sliderValueTransform={sliderValueTransform}
           inputProps={{
             formatOnBlur: (value) => formatNumber(Number(value), { abbreviate: true }),
             ...(adornmentVariant

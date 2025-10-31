@@ -29,8 +29,16 @@ export type SliderInputProps = {
   step?: number
   /** Propagated to both inputs and slider */
   disabled?: boolean
+  /** Optional transform that maps values between the inputs and the slider */
+  sliderValueTransform?: {
+    toSlider: (value: number) => number
+    fromSlider: (value: number) => number
+    sliderMin?: number
+    sliderMax?: number
+    sliderStep?: number | null
+  }
   /** Additional props forwarded to the slider */
-  sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled' | 'aria-label'>
+  sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled' | 'aria-label' | 'scale'>
   /** Additional props forwarded to the inputs */
   inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled' | 'aria-label'>
 }
@@ -68,6 +76,7 @@ export const SliderInput = ({
   disabled,
   sliderProps,
   inputProps,
+  sliderValueTransform,
 }: SliderInputProps) => {
   const isRange = Array.isArray(value)
 
@@ -76,16 +85,27 @@ export const SliderInput = ({
   // the value of the second input / right side of the slider range. Or the value of the input/slider if there is no range
   const currentSecond = isRange ? value[1] : value
 
-  const sliderValue: number | RangeValue = isRange ? ([currentFirst, currentSecond] as RangeValue) : currentSecond
+  /** Translate the stored value into whatever space the slider expects. */
+  const mapToSliderValue = sliderValueTransform?.toSlider ?? ((sliderValue: number) => sliderValue)
+  /** Transform slider values back into the original value space used by the inputs. */
+  const mapFromSliderValue = sliderValueTransform?.fromSlider ?? ((sliderValue: number) => sliderValue)
+
+  const sliderValue: number | RangeValue = isRange
+    ? ([mapToSliderValue(currentFirst), mapToSliderValue(currentSecond)] as RangeValue)
+    : mapToSliderValue(currentSecond)
+
+  const sliderMinValue = sliderValueTransform?.sliderMin ?? min
+  const sliderMaxValue = sliderValueTransform?.sliderMax ?? max
+  const sliderStepValue = sliderValueTransform?.sliderStep ?? step
 
   const handleSliderChange: SliderProps['onChange'] = (_event, newValue) => {
     if (Array.isArray(newValue)) {
       const [first, second] = newValue
-      onChange([first, second])
+      onChange([mapFromSliderValue(first), mapFromSliderValue(second)])
       return
     }
 
-    onChange(newValue)
+    onChange(mapFromSliderValue(newValue))
   }
 
   const handleInputChange = (index: 0 | 1) => (newValue: string | undefined) => {
@@ -134,10 +154,11 @@ export const SliderInput = ({
       size={size}
       value={sliderValue}
       onChange={handleSliderChange}
-      min={min}
-      max={max}
-      step={step}
+      min={sliderMinValue}
+      max={sliderMaxValue}
+      step={sliderStepValue}
       disabled={disabled}
+      scale={mapFromSliderValue}
       {...sliderProps}
     />
   )
