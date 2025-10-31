@@ -143,6 +143,7 @@ export const SliderInput = ({
       max={toDecimal(max)}
       onChange={handleInputChange(index)}
       disabled={disabled}
+      data-testid={inputProps?.['data-testid'] ? `${inputProps['data-testid']}-${index}` : undefined}
       sx={{ maxWidth: sliderInputMaxWidthMap[layoutDirection] }}
       {...inputProps}
     />
