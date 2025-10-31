@@ -81,7 +81,7 @@ export const DataRow = <T extends TableItem>({
                 backgroundColor: (t) => t.design.Table.Row.Default,
               }),
             }),
-            [isLast, hasUrl, minRowHeight],
+            [isLast, hasUrl],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}
