@@ -449,15 +449,14 @@ const QuickSwap = ({
               inputBalanceUsd={
                 fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
               }
-              maxBalance={{
+              walletBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
-                symbol: fromToken?.symbol || '',
-                ...(fromUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
-                ...(searchedParams.fromAddress === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
+                symbol: fromToken?.symbol,
+                usdRate: fromUsdRate,
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
                 chips: 'range',
               }}
               isError={!!formValues.fromError}
@@ -541,14 +540,11 @@ const QuickSwap = ({
             }
             onBalance={setToAmount}
             name="toAmount"
-            maxBalance={{
+            walletBalance={{
               loading: userBalancesLoading,
               balance: decimal(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              ...(searchedParams.fromAddress === ethAddress && {
-                tooltip: t`'Balance'`,
-              }),
+              symbol: toToken?.symbol,
+              usdRate: toUsdRate,
             }}
             disabled={isDisable}
             testId="to-amount"

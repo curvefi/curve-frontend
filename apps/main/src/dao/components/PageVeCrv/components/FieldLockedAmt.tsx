@@ -105,7 +105,7 @@ const FieldLockedAmt = ({
         ) : undefined
       }
       onBalance={onBalance}
-      maxBalance={{
+      walletBalance={{
         balance: decimal(crv),
         loading: haveSigner && crv === '',
         symbol: 'CRV',
