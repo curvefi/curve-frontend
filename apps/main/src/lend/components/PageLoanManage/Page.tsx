@@ -80,6 +80,7 @@ const Page = () => {
     llamma: market,
     llammaId: rOwmId,
   })
+
   const network = networks[rChainId]
   const {
     data: userCollateralEvents,

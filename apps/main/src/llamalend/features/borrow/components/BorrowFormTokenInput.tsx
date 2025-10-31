@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useAccount } from 'wagmi'
-import type { INetworkName, IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -18,6 +18,7 @@ const maxField = {
 export const BorrowFormTokenInput = ({
   label,
   token,
+  blockchainId,
   name,
   max,
   isLoading: isMaxLoading,
@@ -28,6 +29,7 @@ export const BorrowFormTokenInput = ({
 }: {
   label: string
   token: Token | undefined
+  blockchainId: INetworkName | undefined
   isError: boolean
   isLoading: boolean
   max: Decimal | undefined
@@ -49,7 +51,7 @@ export const BorrowFormTokenInput = ({
       testId={testId}
       tokenSelector={
         <TokenLabel
-          blockchainId={token?.chain}
+          blockchainId={blockchainId}
           tooltip={token?.symbol}
           address={token?.address}
           label={token?.symbol ?? '?'}

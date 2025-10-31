@@ -87,6 +87,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   <BorrowFormTokenInput
                     label={t`Collateral`}
                     token={collateralToken}
+                    blockchainId={network.id}
                     name="userCollateral"
                     form={form}
                     isLoading={maxTokenValues.isCollateralLoading}
@@ -98,6 +99,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   <BorrowFormTokenInput
                     label={t`Borrow`}
                     token={borrowToken}
+                    blockchainId={network.id}
                     name="debt"
                     form={form}
                     isLoading={maxTokenValues.isDebtLoading}
