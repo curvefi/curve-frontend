@@ -3,8 +3,23 @@ import Skeleton from '@mui/material/Skeleton'
 import TableCell from '@mui/material/TableCell'
 import TableRow from '@mui/material/TableRow'
 import Typography from '@mui/material/Typography'
+import type { Column } from '@tanstack/react-table'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
-import { getCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
+import { useCellSx, getCellVariant, type TableItem, type TanstackTable } from './data-table.utils'
+
+const SkeletonCell = <T extends TableItem>({ column, isSticky }: { isSticky: boolean; column: Column<T> }) => (
+  <TableCell sx={useCellSx({ isSticky, column })}>
+    <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
+      <Typography
+        variant={getCellVariant(column)}
+        data-testid={`data-table-cell-${column.id}`}
+        sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
+      >
+        0
+      </Typography>
+    </Skeleton>
+  </TableCell>
+)
 
 export const SkeletonRows = <T extends TableItem>({
   table,
@@ -34,20 +49,7 @@ export const SkeletonRows = <T extends TableItem>({
             .getHeaderGroups()
             .flatMap((headerGroup) => headerGroup.headers)
             .map(({ column }, columnIndex) => (
-              <TableCell
-                key={`loading-row-${columnIndex}`}
-                sx={getCellSx({ isSticky: shouldStickFirstColumn && !columnIndex, column })}
-              >
-                <Skeleton variant="rectangular" sx={{ maxWidth: 'none' }}>
-                  <Typography
-                    variant={getCellVariant(column)}
-                    data-testid={`data-table-cell-${column.id}`}
-                    sx={{ paddingBlock: '9px' }} // hardcoded to match the correct height of the cells
-                  >
-                    0
-                  </Typography>
-                </Skeleton>
-              </TableCell>
+              <SkeletonCell key={column.id} isSticky={shouldStickFirstColumn && !columnIndex} column={column} />
             ))}
         </TableRow>
       ))}
