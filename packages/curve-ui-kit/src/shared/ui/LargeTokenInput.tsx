@@ -1,5 +1,14 @@
 import { BigNumber } from 'bignumber.js'
-import { type ReactNode, type Ref, useCallback, useEffect, useImperativeHandle, useState, useId } from 'react'
+import {
+  type ReactNode,
+  type Ref,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  useId,
+  useEffectEvent,
+} from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
@@ -304,19 +313,8 @@ export const LargeTokenInput = ({
          * with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
-         *
-         * The null check prevents:
-         * 1. Duplicate event callbacks when going from one invalid value to another invalid value
-         * 2. An unnecessary `undefined` callback on initial load when the balance starts as undefined,
-         *    which would trigger form validation errors before the user has interacted with the input
-         *
-         * Note: Adding `balance` to the dependency array is safe here because:
-         * - We only READ the current balance value for the conditional check (balance != null)
-         * - We never pass `balance` as input to `setBalance` (which would create a loop)
-         * - The `setBalance` function from `useUniqueDebounce` has a stable reference
-         * - This prevents infinite re-renders while ensuring the callback accurately reflects its dependencies
          */
-        if (balance != null) onBalance(undefined)
+        onBalance(undefined)
 
         return
       }
@@ -326,7 +324,7 @@ export const LargeTokenInput = ({
         maxBalance?.balance && newBalance ? calculateNewPercentage(decimalBalance, maxBalance.balance) : undefined,
       )
     },
-    [maxBalance?.balance, balance, setBalance, cancelSetBalance, onBalance],
+    [maxBalance?.balance, setBalance, cancelSetBalance, onBalance],
   )
 
   const handleChip = useCallback(
@@ -336,18 +334,12 @@ export const LargeTokenInput = ({
     [handleBalanceChange, maxBalance?.balance],
   )
 
-  /**
-   * When maxBalance changes, adjust the slider and balance values accordingly
-   * This ensures the slider percentage accurately reflects the balance/maxBalance ratio
-   *
-   * Changing the percentage changes the balance, which in turn triggers this useEffect,
-   * which in turn changes the percentage again. While I am using the current balance,
-   * I really only care about triggering it when maxBalance changes
-   */
-  useEffect(() => {
-    handleBalanceChange(balance)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [maxBalance?.balance])
+  const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
+    if (balance) setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
+  })
+
+  /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
+  useEffect(() => updatePercentageOnNewMaxBalance(maxBalance?.balance), [maxBalance?.balance])
 
   const resetBalance = useCallback(() => {
     setPercentage(undefined)
