@@ -34,13 +34,13 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
     createMarkLine(
       userBandsPriceRange.maxUserIdx,
       `$${formatNumber(userBandsPriceRange.lowerBandPriceDown, { notation: 'compact' })}`,
-      'insideEndTop',
+      'end',
       palette.userRangeLabelBackgroundColor,
     ),
     createMarkLine(
       userBandsPriceRange.minUserIdx,
       `$${formatNumber(userBandsPriceRange.upperBandPriceUp, { notation: 'compact' })}`,
-      'insideEndBottom',
+      'end',
       palette.userRangeLabelBackgroundColor,
     ),
   ]
@@ -67,7 +67,7 @@ const createOraclePriceMarkLine = (
     createMarkLine(
       oracleIdx,
       `$${formatNumber(oraclePrice, { notation: 'compact' })}`,
-      'insideEndTop',
+      'end',
       palette.oraclePriceLineColor,
     ),
   ]

@@ -32,6 +32,7 @@ const createSeriesConfig = (
     animation: false,
     data,
     animationDuration: 300,
+    clip: false,
   }
 
   return {
@@ -57,6 +58,7 @@ export const getChartOptions = (
   const dataZoomWidth = 20
   const gridPadding = { left: 0, top: 16, bottom: 16 }
   const gridRight = 16 + dataZoomWidth
+  const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
   // Generate mark areas for user band range highlighting
   const markAreas = userBandsPriceRange
@@ -118,6 +120,7 @@ export const getChartOptions = (
           fontSize: 12,
           formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
         },
+        interval: 'auto',
         splitLine: {
           show: true,
           lineStyle: {
@@ -143,7 +146,15 @@ export const getChartOptions = (
               lineStyle: { width: 2 },
               data: markLines.map((line) => ({
                 ...line,
-                label: { ...line.label, ...createLabelStyle(line.lineStyle, palette) },
+                label: {
+                  ...line.label,
+                  // Anchor at the right edge of the grid then shift into the price scale area
+                  position: 'start',
+                  align: 'left',
+                  verticalAlign: 'middle',
+                  offset: [-labelXOffset, 0],
+                  ...createLabelStyle(line.lineStyle, palette),
+                },
               })),
             }
           : undefined,
