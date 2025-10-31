@@ -56,6 +56,7 @@ const BandsChartComponent = ({
     chartDataLength: chartData.length,
     initialZoomIndices,
     userBandsBalances,
+    chartData,
   })
 
   if (!chartData?.length) {
@@ -96,7 +97,7 @@ const BandsChartComponent = ({
           style={{ width: '100%', height: '100%' }}
           opts={{ renderer: 'canvas' }}
           onEvents={{ datazoom: onDataZoom }}
-          notMerge={false}
+          notMerge={true}
           lazyUpdate={true}
         />
       </Box>

@@ -1,10 +1,12 @@
 import type { EChartsOption } from 'echarts-for-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import type { ParsedBandsBalances } from '../types'
+import type { ChartDataPoint, ParsedBandsBalances } from '../types'
 
 type ZoomRange = {
   start?: number
   end?: number
+  startValue?: number
+  endValue?: number
 }
 
 type Params = {
@@ -12,6 +14,7 @@ type Params = {
   chartDataLength: number
   initialZoomIndices: { startIndex: number; endIndex: number } | null
   userBandsBalances: ParsedBandsBalances[]
+  chartData: ChartDataPoint[]
 }
 
 type ZoomReturn = {
@@ -19,12 +22,7 @@ type ZoomReturn = {
   onDataZoom: (event: Record<string, unknown>) => void
 }
 
-export const useBandsChartZoom = ({
-  option,
-  chartDataLength,
-  initialZoomIndices,
-  userBandsBalances,
-}: Params): ZoomReturn => {
+export const useBandsChartZoom = ({ option, chartDataLength, initialZoomIndices, userBandsBalances, chartData }: Params): ZoomReturn => {
   const [defaultZoom, setDefaultZoom] = useState<ZoomRange>({})
   const [userZoom, setUserZoom] = useState<ZoomRange | null>(null)
   const prevUserBandsRef = useRef(new Set<string>())
@@ -47,14 +45,22 @@ export const useBandsChartZoom = ({
         lastAppliedZoom.endIndex !== initialZoomIndices.endIndex)
 
     if (chartDataLength > 0 && initialZoomIndices && (bandsChanged || zoomParamsChanged)) {
-      const start = (initialZoomIndices.startIndex / chartDataLength) * 100
-      const end = ((initialZoomIndices.endIndex + 1) / chartDataLength) * 100
+      const startIdx = initialZoomIndices.startIndex
+      const endIdx = initialZoomIndices.endIndex
+      const startValue = chartData[startIdx]?.pUpDownMedian
+      const endValue = chartData[endIdx]?.pUpDownMedian
 
-      setDefaultZoom({ start, end })
+      if (typeof startValue === 'number' && typeof endValue === 'number') {
+        setDefaultZoom({ startValue, endValue })
+      } else {
+        const start = (startIdx / chartDataLength) * 100
+        const end = ((endIdx + 1) / chartDataLength) * 100
+        setDefaultZoom({ start, end })
+      }
       setUserZoom(null)
       lastAppliedZoomRef.current = {
-        startIndex: initialZoomIndices.startIndex,
-        endIndex: initialZoomIndices.endIndex,
+        startIndex: startIdx,
+        endIndex: endIdx,
         length: chartDataLength,
       }
     } else if ((!initialZoomIndices || chartDataLength === 0) && lastAppliedZoom) {
@@ -64,7 +70,7 @@ export const useBandsChartZoom = ({
     }
 
     prevUserBandsRef.current = currentUserBands
-  }, [chartDataLength, initialZoomIndices, userBandsBalances])
+  }, [chartDataLength, initialZoomIndices, userBandsBalances, chartData])
 
   const handleDataZoom = useCallback((event: Record<string, unknown>) => {
     const batch = Array.isArray(event.batch) && event.batch.length > 0 ? event.batch[0] : null
@@ -90,6 +96,8 @@ export const useBandsChartZoom = ({
       if (zoom && 'type' in zoom && zoom.type === 'slider') {
         return {
           ...zoom,
+          ...(zoomToApply.startValue != null && { startValue: zoomToApply.startValue }),
+          ...(zoomToApply.endValue != null && { endValue: zoomToApply.endValue }),
           ...(zoomToApply.start != null && { start: zoomToApply.start }),
           ...(zoomToApply.end != null && { end: zoomToApply.end }),
         }

@@ -1,6 +1,5 @@
 import { formatNumber } from '@ui/utils'
 import { ChartDataPoint, BandsChartPalette, UserBandsPriceRange } from './types'
-import { findBandIndexByPrice, findClosestBandIndex } from './utils'
 
 type MarkLine = {
   yAxis: number
@@ -32,13 +31,13 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
 
   return [
     createMarkLine(
-      userBandsPriceRange.maxUserIdx,
+      userBandsPriceRange.lowerBandPriceDown,
       `$${formatNumber(userBandsPriceRange.lowerBandPriceDown, { notation: 'compact' })}`,
       'end',
       palette.userRangeLabelBackgroundColor,
     ),
     createMarkLine(
-      userBandsPriceRange.minUserIdx,
+      userBandsPriceRange.upperBandPriceUp,
       `$${formatNumber(userBandsPriceRange.upperBandPriceUp, { notation: 'compact' })}`,
       'end',
       palette.userRangeLabelBackgroundColor,
@@ -50,22 +49,17 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
  * Generates mark line for oracle price
  */
 const createOraclePriceMarkLine = (
-  chartData: ChartDataPoint[],
+  _chartData: ChartDataPoint[],
   oraclePrice: string | undefined,
   palette: BandsChartPalette,
 ): MarkLine[] => {
   if (!oraclePrice) return []
-
-  let oracleIdx = findBandIndexByPrice(chartData, Number(oraclePrice))
-  if (oracleIdx === -1) {
-    oracleIdx = findClosestBandIndex(chartData, Number(oraclePrice))
-  }
-
-  if (oracleIdx === -1) return []
+  const price = Number(oraclePrice)
+  if (!Number.isFinite(price)) return []
 
   return [
     createMarkLine(
-      oracleIdx,
+      price,
       `$${formatNumber(oraclePrice, { notation: 'compact' })}`,
       'end',
       palette.oraclePriceLineColor,

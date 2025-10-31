@@ -3,44 +3,74 @@ import { formatNumber } from '@ui/utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
 
-/**
- * Creates series data with conditional styling for liquidation bands
- */
-const createSeriesData = (data: number[], derived: DerivedChartData, color: string, liquidationOutlineColor: string) =>
-  data.map((value: number, index: number) => ({
-    value,
-    itemStyle: {
-      color,
-      borderColor: derived.isLiquidation[index] ? liquidationOutlineColor : 'transparent',
-      borderWidth: derived.isLiquidation[index] ? 2 : 0,
-    },
-  }))
-
-/**
- * Creates base series configuration with common properties
- */
-const createSeriesConfig = (
+//
+// Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
+// Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric]
+//
+const createCustomRectSeries = (
   name: string,
-  data: unknown[],
+  color: string,
+  outlineColor: string,
+  data: Array<[number, number, number, number, number, number]>,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
-) => {
-  const baseConfig = {
-    name,
-    type: 'bar' as const,
-    stack: 'total',
-    animation: false,
-    data,
-    animationDuration: 300,
-    clip: false,
-  }
+) => ({
+  name,
+  type: 'custom' as const,
+  animation: false,
+  clip: false,
+  encode: { y: 0 },
+  data,
+  emphasis: {
+    focus: 'self',
+    itemStyle: {
+      opacity: 1,
+    },
+  },
+  renderItem: (_params: unknown, api: any) => {
+    const startX = api.value(1)
+    const widthX = api.value(2)
+    const pDown = api.value(3)
+    const pUp = api.value(4)
+    const isLiq = api.value(5) === 1
 
-  return {
-    ...baseConfig,
-    ...(markArea && { markArea }),
-    ...(markLine && { markLine }),
-  }
-}
+    // Do not render when the logical width is zero or negative
+    if (!widthX || widthX <= 0) return null
+
+    const tl = api.coord([startX, pUp])
+    const tr = api.coord([startX + widthX, pUp])
+    const bl = api.coord([startX, pDown])
+
+    const left = Math.min(tl[0], tr[0])
+    const top = Math.min(tl[1], bl[1])
+    let width = Math.abs(tr[0] - tl[0])
+    const height = Math.abs(bl[1] - tl[1])
+
+    // Ensure minimal pixel width/height for visibility when zoomed out
+    const minWidthPx = 3
+    const minHeightPx = 3
+    if (width < minWidthPx) width = minWidthPx
+
+    // Adaptive vertical gap: keep spacing but never collapse band below min height
+    const desiredGap = 1
+    const maxGap = Math.max(0, (height - minHeightPx) / 2)
+    const effectiveGap = Math.min(desiredGap, maxGap)
+    const paddedTop = top + effectiveGap
+    const paddedHeight = Math.max(minHeightPx, height - effectiveGap * 2)
+
+    return {
+      type: 'rect',
+      shape: { x: left, y: paddedTop, width, height: paddedHeight },
+      style: api.style({
+        fill: color,
+        stroke: isLiq ? outlineColor : 'transparent',
+        lineWidth: isLiq ? 2 : 0,
+      }),
+    }
+  },
+  ...(markArea && { markArea }),
+  ...(markLine && { markLine }),
+})
 
 /**
  * Generates complete ECharts configuration for bands visualization
@@ -60,9 +90,14 @@ export const getChartOptions = (
   const gridRight = 16 + dataZoomWidth
   const labelXOffset = 16 - (gridRight - dataZoomWidth)
 
-  // Generate mark areas for user band range highlighting
+  // Secondary value y-axis will mirror category spacing using index space
+  // Price domain for value y-axis
+  const priceMin = Math.min(...chartData.map((d) => d.p_down))
+  const priceMax = Math.max(...chartData.map((d) => d.p_up))
+
+  // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
-    ? [[{ yAxis: userBandsPriceRange.minUserIdx }, { yAxis: userBandsPriceRange.maxUserIdx }]]
+    ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
     : []
 
   // Generate all mark lines (user range + oracle price)
@@ -80,7 +115,7 @@ export const getChartOptions = (
     },
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'shadow' },
+      axisPointer: { type: 'shadow', axis: 'y', snap: true },
       formatter: tooltipFormatter,
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -91,6 +126,7 @@ export const getChartOptions = (
       inverse: true,
       axisLine: { show: false },
       axisTick: { show: false },
+      axisPointer: { show: false },
       axisLabel: {
         color: palette.scaleLabelsColor,
         fontSize: 12,
@@ -108,34 +144,60 @@ export const getChartOptions = (
         },
       },
     },
-    yAxis: [
-      {
-        type: 'category',
-        position: 'right',
-        inverse: true,
-        axisLine: { show: false },
-        axisTick: { show: false },
-        axisLabel: {
-          color: palette.scaleLabelsColor,
-          fontSize: 12,
-          formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
-        },
-        interval: 'auto',
-        splitLine: {
+    yAxis: {
+      type: 'value',
+      position: 'right',
+      inverse: false,
+      axisLine: { show: false },
+      axisTick: { show: false },
+      axisPointer: {
+        show: true,
+        type: 'shadow',
+        snap: true,
+        label: {
           show: true,
-          lineStyle: {
-            color: palette.gridColor,
-            opacity: 0.5,
-            type: 'dashed',
-          },
+          margin: 6,
+          formatter: (params: any) => `$${formatNumber(Number(params.value), { unit: 'dollar' })}`,
         },
-        data: derived.yAxisData,
       },
-    ],
-    series: [
-      createSeriesConfig(
+      axisLabel: {
+        color: palette.scaleLabelsColor,
+        fontSize: 12,
+        formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: palette.gridColor,
+          opacity: 0.5,
+          type: 'dashed',
+        },
+      },
+      min: priceMin,
+      max: priceMax,
+    },
+    series: (() => {
+      const marketSeriesData: Array<[number, number, number, number, number, number]> = []
+      const userSeriesData: Array<[number, number, number, number, number, number]> = []
+      for (let i = 0; i < chartData.length; i++) {
+        const d = chartData[i]
+        const median = d.pUpDownMedian
+        const pDown = d.p_down
+        const pUp = d.p_up
+        const isLiq = derived.isLiquidation[i] ? 1 : 0
+        const marketWidth = derived.marketData[i] ?? 0
+        const userWidth = derived.userData[i] ?? 0
+        const marketStart = 0
+        const userStart = marketWidth
+        marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq])
+        userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq])
+      }
+
+      const marketSeries = createCustomRectSeries(
         'Market Collateral',
-        createSeriesData(derived.marketData, derived, palette.marketBandColor, palette.liquidationBandOutlineColor),
+        palette.marketBandColor,
+        palette.liquidationBandOutlineColor,
+        marketSeriesData,
         markAreas.length > 0
           ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
           : undefined,
@@ -148,7 +210,6 @@ export const getChartOptions = (
                 ...line,
                 label: {
                   ...line.label,
-                  // Anchor at the right edge of the grid then shift into the price scale area
                   position: 'start',
                   align: 'left',
                   verticalAlign: 'middle',
@@ -158,12 +219,17 @@ export const getChartOptions = (
               })),
             }
           : undefined,
-      ),
-      createSeriesConfig(
+      )
+
+      const userSeries = createCustomRectSeries(
         'User Collateral',
-        createSeriesData(derived.userData, derived, palette.userBandColor, palette.liquidationBandOutlineColor),
-      ),
-    ],
+        palette.userBandColor,
+        palette.liquidationBandOutlineColor,
+        userSeriesData,
+      )
+
+      return [marketSeries, userSeries]
+    })(),
     dataZoom: [
       {
         type: 'slider',
