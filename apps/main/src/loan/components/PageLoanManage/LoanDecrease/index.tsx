@@ -369,9 +369,9 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           <>
             {formStatus.error ? (
               <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-            ) : formStatus.warning ? (
-              <AlertFormWarning errorKey={formStatus.warning} />
-            ) : null}
+            ) : (
+              formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />
+            )}
           </>
         )}
         {txInfoBar}

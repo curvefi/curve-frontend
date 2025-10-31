@@ -210,9 +210,9 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       >
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
-        ) : formStatus.error ? (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />
-        ) : null}
+        ) : (
+          formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />
+        )}
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>

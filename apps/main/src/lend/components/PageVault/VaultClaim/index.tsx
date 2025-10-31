@@ -184,9 +184,9 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
 
       {/* actions */}
       <LoanFormConnect haveSigner={!!signerAddress} loading={!api}>
-        {formStatus.error ? (
+        {formStatus.error && (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset().catch(errorFallback)} />
-        ) : null}
+        )}
         {txInfoBar}
 
         {api && market && (

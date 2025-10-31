@@ -456,9 +456,9 @@ const LoanCreate = ({
           <AlertBox alertType="info">{t`Transaction complete`}</AlertBox>
         ) : healthMode.message ? (
           <AlertBox alertType="warning">{healthMode.message}</AlertBox>
-        ) : formStatus.error ? (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-        ) : null}
+        ) : (
+          formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
+        )}
 
         {txInfoBar}
         {steps && <Stepper steps={steps} />}

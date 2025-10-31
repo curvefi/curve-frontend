@@ -421,30 +421,34 @@ const LoanDeleverage = ({
                 <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, '', true)} />
               ) : formStatus.warning ? (
                 <AlertFormWarning errorKey={formStatus.warning} />
-              ) : !!llamma &&
+              ) : (
+                !!llamma &&
                 userState &&
                 !detailInfo.loading &&
                 !formValues.collateralError &&
                 +formValues.collateral > 0 &&
-                +detailInfo.receiveStablecoin > 0 ? (
-                <AlertBox alertType="info">
-                  {formValues.isFullRepay ? (
-                    <LoanDeleverageAlertFull
-                      receivedStablecoin={detailInfo.receiveStablecoin}
-                      formValues={formValues}
-                      llamma={llamma}
-                      userState={userState}
-                    />
-                  ) : formStatus.warning !== 'warning-full-repayment-only' ? (
-                    <LoanDeleverageAlertPartial
-                      receivedStablecoin={detailInfo.receiveStablecoin}
-                      formValues={formValues}
-                      llamma={llamma}
-                      userState={userState}
-                    />
-                  ) : null}
-                </AlertBox>
-              ) : null}
+                +detailInfo.receiveStablecoin > 0 && (
+                  <AlertBox alertType="info">
+                    {formValues.isFullRepay ? (
+                      <LoanDeleverageAlertFull
+                        receivedStablecoin={detailInfo.receiveStablecoin}
+                        formValues={formValues}
+                        llamma={llamma}
+                        userState={userState}
+                      />
+                    ) : (
+                      formStatus.warning !== 'warning-full-repayment-only' && (
+                        <LoanDeleverageAlertPartial
+                          receivedStablecoin={detailInfo.receiveStablecoin}
+                          formValues={formValues}
+                          llamma={llamma}
+                          userState={userState}
+                        />
+                      )
+                    )}
+                  </AlertBox>
+                )
+              )}
             </>
           )}
           {txInfoBar}

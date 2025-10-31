@@ -326,9 +326,9 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
       <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
         {formStatus.error ? (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-        ) : healthMode.message ? (
-          <AlertBox alertType="warning">{healthMode.message}</AlertBox>
-        ) : null}
+        ) : (
+          healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>
+        )}
         {txInfoBar}
         {steps && <Stepper steps={steps} />}
       </LoanFormConnect>
