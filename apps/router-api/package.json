@@ -21,7 +21,7 @@
   },
   "devDependencies": {
     "@curvefi/api": "*",
-    "@types/node": "24.7.1",
+    "@types/node": "24.9.2",
     "eslint": "*",
     "eslint-config-custom": "*",
     "tsx": "4.20.6",

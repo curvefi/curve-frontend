@@ -30,13 +30,13 @@
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.0.9",
     "memoizee": "^0.4.17",
-    "react-hook-form": "7.64.0",
+    "react-hook-form": "7.66.0",
     "recharts": "2.15.4",
     "solid-js": "^1.9.9",
     "ui": "*",
     "vest": "^5.4.6",
     "vite-plugin-svgr": "^4.5.0",
-    "vite-plugin-vercel": "9.0.7"
+    "vite-plugin-vercel": "9.0.8"
   },
   "peerDependencies": {
     "@curvefi/api": "*",
@@ -54,7 +54,7 @@
     "@eslint/js": "*",
     "@types/lodash": "^4.17.20",
     "@types/memoizee": "^0.4.12",
-    "@types/node": "24.7.1",
+    "@types/node": "24.9.2",
     "@types/react": "*",
     "@types/react-dom": "*",
     "@vitejs/plugin-react": "^5.0.4",
