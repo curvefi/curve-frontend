@@ -40,7 +40,7 @@
     "@chromatic-com/storybook": "^4.1.1",
     "@storybook/addon-a11y": "9.1.10",
     "@storybook/addon-docs": "9.1.10",
-    "@storybook/addon-themes": "9.1.10",
+    "@storybook/addon-themes": "10.0.2",
     "@storybook/react-vite": "9.1.10",
     "@types/react": "*",
     "@types/react-dom": "*",

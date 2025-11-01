@@ -4710,14 +4710,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@storybook/addon-themes@npm:9.1.10":
-  version: 9.1.10
-  resolution: "@storybook/addon-themes@npm:9.1.10"
+"@storybook/addon-themes@npm:10.0.2":
+  version: 10.0.2
+  resolution: "@storybook/addon-themes@npm:10.0.2"
   dependencies:
     ts-dedent: "npm:^2.0.0"
   peerDependencies:
-    storybook: ^9.1.10
-  checksum: 10c0/ebb2db8e2bf9645a036e3f85f031788ad7359385b5f3a46669d223c73a8f54c92cd49589fb07a92ff18000e53260918fa4ac0f3bfe199759864c2f30a3bb8def
+    storybook: ^10.0.2
+  checksum: 10c0/1f8493f426e1bdf74718c25082c1287031dc6a8abbf9753fb683c29a9278f95d6009eee5af5133dc7e36cef32ee8c48e48c4b89fa377d661900e3745b9e26068
   languageName: node
   linkType: hard
 
@@ -8013,7 +8013,7 @@ __metadata:
     "@mui/utils": "npm:^7.3.3"
     "@storybook/addon-a11y": "npm:9.1.10"
     "@storybook/addon-docs": "npm:9.1.10"
-    "@storybook/addon-themes": "npm:9.1.10"
+    "@storybook/addon-themes": "npm:10.0.2"
     "@storybook/react-vite": "npm:9.1.10"
     "@tanstack/query-sync-storage-persister": "npm:5.90.2"
     "@tanstack/react-query": "npm:5.90.2"
