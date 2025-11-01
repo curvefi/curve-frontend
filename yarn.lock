@@ -9198,7 +9198,7 @@ __metadata:
     eslint-plugin-react: "npm:7.37.5"
     eslint-plugin-react-hooks: "npm:^7.0.0"
     eslint-plugin-react-refresh: "npm:^0.4.23"
-    eslint-plugin-storybook: "npm:9.1.10"
+    eslint-plugin-storybook: "npm:10.0.2"
     eslint-plugin-unused-imports: "npm:^4.2.0"
     prettier-eslint: "npm:^16.4.2"
     typescript: "npm:*"
@@ -9366,15 +9366,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-storybook@npm:9.1.10":
-  version: 9.1.10
-  resolution: "eslint-plugin-storybook@npm:9.1.10"
+"eslint-plugin-storybook@npm:10.0.2":
+  version: 10.0.2
+  resolution: "eslint-plugin-storybook@npm:10.0.2"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.8.1"
   peerDependencies:
     eslint: ">=8"
-    storybook: ^9.1.10
-  checksum: 10c0/4a1a9db221a417c26cdbc5e8a97e22fb5f443e0d1b96c19becbcef1536d05e05cf3f3ed5d400ca2398c7dd5bf27a81326c8825711f97e843eab6830b905d28d4
+    storybook: ^10.0.2
+  checksum: 10c0/1a0adbc60c7f589914f08ad57d79804c56f6e156a7561c73c6bfa0549f3bccb1fdaa08bbad19c871f79418fe9bd5b5c7dbb712f858e93584a18de041357ed787
   languageName: node
   linkType: hard
 
