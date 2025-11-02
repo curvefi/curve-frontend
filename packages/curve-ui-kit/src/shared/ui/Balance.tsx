@@ -81,7 +81,7 @@ export type Props<T> = {
   disabled?: boolean
   sx?: SxProps
   /** Optional test ID for the clickable balance button */
-  clickTestId?: string
+  buttonTestId?: string
   /** Callback function when balance is clicked (if enabled). */
   onClick?: () => void
 }
@@ -96,7 +96,7 @@ export const Balance = <T extends Amount>({
   sx,
   onClick,
   disabled,
-  clickTestId,
+  buttonTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
     {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
@@ -106,7 +106,7 @@ export const Balance = <T extends Amount>({
       shouldWrap={clickable && balance != null}
       onClick={onClick}
       disabled={disabled}
-      testId={clickTestId}
+      testId={buttonTestId}
     >
       <BalanceText symbol={symbol} balance={balance} loading={loading} />
     </WithWrapper>

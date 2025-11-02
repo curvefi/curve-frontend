@@ -395,7 +395,7 @@ const LoanCreate = ({
               balance: decimal(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,
               usdRate: stablecoinUsdRate,
-              clickTestId: 'debtMax',
+              buttonTestId: 'debtMax',
             }}
             label={t`Borrow amount:`}
             balance={decimal(formValues.debt)}

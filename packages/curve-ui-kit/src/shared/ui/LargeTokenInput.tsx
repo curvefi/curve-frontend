@@ -117,7 +117,7 @@ export interface LargeTokenInputRef {
 type WalletBalanceProps = {
   symbol?: string
   usdRate?: number
-} & Pick<BalanceProps<Decimal>, 'balance' | 'loading' | 'clickTestId' | 'onClick' | 'notionalValueUsd'>
+} & Pick<BalanceProps<Decimal>, 'balance' | 'loading' | 'buttonTestId' | 'onClick' | 'notionalValueUsd'>
 
 /**
  * Massages the given wallet balance props for the actual wallet Balance component,
