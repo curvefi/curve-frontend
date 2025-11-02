@@ -72,7 +72,7 @@ export const ImproveHealth = ({
 
   const maxBalance = useMemo(
     () => ({
-      balance: debtToken && userBalance ? decimal(Math.min(+debtToken.amount, +userBalance).toString()) : undefined,
+      balance: decimal(debtToken && userBalance && Math.min(+debtToken.amount, +userBalance)),
       chips: 'max' as const,
     }),
     [debtToken, userBalance],

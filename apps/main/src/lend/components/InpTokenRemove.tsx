@@ -101,7 +101,7 @@ const InpTokenRemove = ({
             : undefined
       }
       disabled={inpDisabled}
-      inputBalanceUsd={usdRate ? decimal((usdRate * +inpValue).toString()) : undefined}
+      inputBalanceUsd={decimal(usdRate && usdRate * +inpValue)}
       walletBalance={{
         symbol: tokenSymbol,
         balance: decimal(tokenBalance),

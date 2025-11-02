@@ -336,9 +336,7 @@ const LoanDeleverage = ({
               : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
           }
           disabled={disable}
-          inputBalanceUsd={
-            collateralUsdRate ? decimal((collateralUsdRate * +formValues.collateral).toString()) : undefined
-          }
+          inputBalanceUsd={decimal(collateralUsdRate && collateralUsdRate * +formValues.collateral)}
           walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances?.collateral),

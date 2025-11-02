@@ -87,7 +87,7 @@ const InpTokenBorrow = ({
       isError={!!inpError}
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
-      inputBalanceUsd={usdRate ? decimal((usdRate * +inpValue).toString()) : undefined}
+      inputBalanceUsd={decimal(usdRate && usdRate * +inpValue)}
       walletBalance={{
         loading: tokenBalance == null,
         balance: decimal(tokenBalance),
