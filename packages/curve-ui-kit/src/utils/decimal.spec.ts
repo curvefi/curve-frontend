@@ -42,4 +42,9 @@ describe('decimal', () => {
     expect(decimal('12.34.56')).toBe(undefined)
     expect(decimal('12a34')).toBe(undefined)
   })
+
+  it('accepts numbers as parameter', () => {
+    expect(decimal(0)).toBe('0')
+    expect(decimal(3.14)).toBe('3.14')
+  })
 })
