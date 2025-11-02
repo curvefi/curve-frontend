@@ -14,5 +14,5 @@ type WithSkeletonProps = {
  * Useful for when you want to use the same child for dimension inference.
  */
 export const WithSkeleton = ({ loading, ...skeletonProps }: WithSkeletonProps) => (
-  <WithWrapper Wrapper={Skeleton} wrap={loading} {...skeletonProps} />
+  <WithWrapper Wrapper={Skeleton} shouldWrap={loading} {...skeletonProps} />
 )
