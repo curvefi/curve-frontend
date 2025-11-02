@@ -332,7 +332,7 @@ export const LargeTokenInput = ({
   )
 
   const updatePercentageOnNewMaxBalance = useEffectEvent((newMaxBalance?: Decimal) => {
-    if (balance) setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
+    setPercentage(newMaxBalance && balance ? calculateNewPercentage(balance, newMaxBalance) : undefined)
   })
 
   /** When maxBalance changes, adjust the percentage accordingly. This ensures the slider percentage accurately reflects the balance/maxBalance ratio */
