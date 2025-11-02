@@ -315,6 +315,7 @@ export const SizesAndSpaces = {
   },
   Height: {
     modal: MappedModalHeight,
+    row: Sizing[700],
   },
   MinHeight: {
     tableNoResults: { sm: '15vh', lg: '35vh' },

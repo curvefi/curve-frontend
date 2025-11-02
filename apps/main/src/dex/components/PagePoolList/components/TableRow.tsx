@@ -6,7 +6,7 @@ import TableCellRewardsCrv from '@/dex/components/PagePoolList/components/TableC
 import TableCellRewardsOthers from '@/dex/components/PagePoolList/components/TableCellRewardsOthers'
 import TableCellTvl from '@/dex/components/PagePoolList/components/TableCellTvl'
 import TableCellVolume from '@/dex/components/PagePoolList/components/TableCellVolume'
-import type { ColumnKeys, FormValues, SearchParams } from '@/dex/components/PagePoolList/types'
+import type { ColumnKeys, SearchParams } from '@/dex/components/PagePoolList/types'
 import { COLUMN_KEYS } from '@/dex/components/PagePoolList/utils'
 import PoolLabel from '@/dex/components/PoolLabel'
 import { PoolData, PoolDataCache, RewardsApy, Tvl, Volume } from '@/dex/types/main.types'
@@ -22,7 +22,6 @@ export type TableRowProps = {
   index: number
   isCrvRewardsEnabled: boolean
   poolId: string
-  formValues: FormValues
   isInPool: boolean
   blockchainId: string
   columnKeys: ColumnKeys[]
@@ -42,7 +41,6 @@ const TableRow = ({
   index,
   poolId,
   isCrvRewardsEnabled,
-  formValues,
   isInPool,
   blockchainId,
   columnKeys,
@@ -57,8 +55,7 @@ const TableRow = ({
   volume,
   handleCellClick,
 }: TableRowProps) => {
-  const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
-  const { searchText, sortBy } = searchParams
+  const { sortBy } = searchParams
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId: blockchainId as Chain,
     address: poolData?.pool?.address as Address,
@@ -77,12 +74,7 @@ const TableRow = ({
                 isVisible
                 blockchainId={blockchainId}
                 poolData={poolDataCachedOrApi}
-                poolListProps={{
-                  searchText: searchText,
-                  searchTextByTokensAndAddresses,
-                  searchTextByOther,
-                  onClick: handleCellClick,
-                }}
+                onClick={handleCellClick}
               />
             </Td>
           )}

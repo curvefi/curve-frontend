@@ -11,13 +11,16 @@ export const listFilterFn: FilterFn<any> = (row, columnId, filterValue?: boolean
 export const inListFilterFn: FilterFn<any> = (row, columnId, filterValue?: unknown) =>
   filterValue == null || row.getValue<unknown[]>(columnId)?.includes(filterValue)
 
+export const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) =>
+  filter
+    .toLowerCase()
+    .split(/\s+/)
+    .every((filterWord) => fields.some((field) => get(data, field)?.toLowerCase?.().includes(filterWord)))
+
 /**
  * Creates a filter function for the given search fields
  */
 export const filterByText =
   <T,>(...fields: DeepKeys<T>[]): FilterFn<T> =>
   (row, _columnId, filter: string) =>
-    filter
-      .toLowerCase()
-      .split(/\s+/)
-      .every((filterWord) => fields.some((field) => get(row.original, field)?.toLowerCase?.().includes(filterWord)))
+    matchText(row.original, fields, filter)
