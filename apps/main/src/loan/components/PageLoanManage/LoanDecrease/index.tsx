@@ -298,14 +298,16 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
                 : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })}`
           }
           disabled={disable || formValues.isFullRepay}
-          maxBalance={{
+          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+          walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
-            ...(stablecoinUsdRate != null &&
-              userWalletBalances.stablecoin != null && {
-                notionalValueUsd: stablecoinUsdRate * +userWalletBalances.stablecoin,
-              }),
+            usdRate: stablecoinUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userState?.debt),
+            chips: 'max',
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={

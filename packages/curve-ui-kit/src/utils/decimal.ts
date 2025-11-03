@@ -21,7 +21,11 @@ export type Decimal = `${number}`
 export type Amount = number | Decimal
 
 /** Converts a string to a Decimal typed string, returning undefined for null, undefined, empty strings, or non-finite values. */
-export const decimal = (value: string | undefined | null): Decimal | undefined => {
+export const decimal = (value: number | string | undefined | null): Decimal | undefined => {
+  if (typeof value === 'number') {
+    value = value.toString()
+  }
+
   if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
     return value as Decimal
   }

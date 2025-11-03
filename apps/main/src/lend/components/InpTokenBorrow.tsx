@@ -25,6 +25,7 @@ const InpTokenBorrow = ({
   inpValue,
   tokenAddress,
   tokenSymbol,
+  tokenBalance,
   maxRecv,
   handleInpChange,
   handleMaxClick,
@@ -40,6 +41,7 @@ const InpTokenBorrow = ({
   inpValue: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
+  tokenBalance: string | undefined
   maxRecv: string | undefined
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
@@ -85,11 +87,16 @@ const InpTokenBorrow = ({
       isError={!!inpError}
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
-      maxBalance={{
-        loading: maxRecv == null,
-        balance: decimal(maxRecv),
+      inputBalanceUsd={decimal(inpValue && usdRate && usdRate * +inpValue)}
+      walletBalance={{
+        loading: tokenBalance == null,
+        balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && maxRecv != null ? usdRate * +maxRecv : undefined,
+        usdRate: usdRate,
+      }}
+      maxBalance={{
+        balance: decimal(maxRecv),
+        chips: 'max',
       }}
       label={t`Borrow amount:`}
       balance={decimal(inpValue)}

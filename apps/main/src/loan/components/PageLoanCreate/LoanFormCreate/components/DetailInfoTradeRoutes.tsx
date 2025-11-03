@@ -44,9 +44,9 @@ const DetailInfoTradeRoutes = ({
         label={t`Trade routed through:`}
         value={
           parsedRoutes?.length ? (
-            <WithWrapper wrap={isMultiRoutes} Wrapper={Stack} direction="row" gap={Spacing.sm}>
+            <WithWrapper shouldWrap={isMultiRoutes} Wrapper={Stack} direction="row" gap={Spacing.sm}>
               {isMultiRoutes && <RouteTrack />}
-              <WithWrapper wrap={isMultiRoutes} Wrapper={Stack} width="100%">
+              <WithWrapper shouldWrap={isMultiRoutes} Wrapper={Stack} width="100%">
                 {parsedRoutes.map((route, i) => {
                   const from = !i && input && `${formatNumber(input)} ${inputSymbol}`
                   const to =
