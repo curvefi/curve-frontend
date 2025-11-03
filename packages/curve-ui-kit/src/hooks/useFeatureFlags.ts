@@ -1,20 +1,20 @@
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
-import { useReleaseChannel } from './useLocalStorage'
-
 /**
  * Feature flag hooks centralizing release-channel based switches.
  * These return booleans indicating whether a new experience is enabled.
  */
 
+import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { useReleaseChannel } from './useLocalStorage'
+
 /**
  * LargeTokenInput replaces legacy amount inputs when not on Legacy channel.
  */
-export const useLargeTokenInput = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
+export const useLargeTokenInput = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 
 /**
- * New ActionInfo-based UI patterns enabled on Beta channel.
+ * New ActionInfo with mui should be released together with LargeTokenInput.
  */
-export const useActionInfo = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+export const useActionInfo = useLargeTokenInput
 
 /**
  * New DEX market list (PoolListPage) is enabled on Beta channel.
