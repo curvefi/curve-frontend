@@ -24,6 +24,7 @@ type Props = {
   hiddenMarketCount?: number
   resetFilters: () => void
   hasFilters: boolean
+  isUserPositions?: boolean
 } & FilterProps<string>
 
 export const MarketListFilterDrawer = ({
@@ -34,6 +35,7 @@ export const MarketListFilterDrawer = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
+  isUserPositions,
   ...filterProps
 }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
@@ -65,7 +67,9 @@ export const MarketListFilterDrawer = ({
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
           <LlamaListMarketChips {...filterProps} />
-          <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+          {!isUserPositions && (
+            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+          )}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
         <LendingMarketsFilters

@@ -19,12 +19,13 @@ type LlamaListChipsProps = {
   resetFilters: () => void
   hasFilters: boolean
   children?: ReactNode
-  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
-  hasFavorites: boolean | undefined
+  userHasPositions?: LlamaMarketsResult['userHasPositions']
+  hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
   data: LlamaMarket[]
-  minLiquidity: number
+  minLiquidity?: number
+  isUserPositions?: boolean
 } & FilterProps<string>
 
 export const LlamaListChips = ({
@@ -36,7 +37,8 @@ export const LlamaListChips = ({
   onSortingChange,
   sortField,
   data,
-  minLiquidity,
+  minLiquidity = 0,
+  isUserPositions,
   ...filterProps
 }: LlamaListChipsProps) => {
   const isMobile = useIsMobile()
@@ -58,6 +60,7 @@ export const LlamaListChips = ({
               hiddenMarketCount={hiddenMarketCount}
               resetFilters={resetFilters}
               hasFilters={hasFilters}
+              isUserPositions
               {...filterProps}
             />
           </Grid>
@@ -67,9 +70,11 @@ export const LlamaListChips = ({
           <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
             <LlamaListMarketChips {...filterProps} />
           </Grid>
-          <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          </Grid>
+          {!isUserPositions && (
+            <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+              <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+            </Grid>
+          )}
         </>
       )}
       {hiddenMarketCount != null && !isMobile && (
