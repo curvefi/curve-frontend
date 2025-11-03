@@ -36,6 +36,7 @@ const useDefaultUserFilter = (type: MarketRateType) =>
   useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
 
 export type UserPositionsTableProps = {
+  onReload: () => void
   result: LlamaMarketsResult | undefined
   loading: boolean
   tab: MarketRateType
@@ -43,7 +44,7 @@ export type UserPositionsTableProps = {
 
 const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 
-export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
+export const UserPositionsTable = ({ onReload, result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
@@ -78,7 +79,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         filterExpandedKey={title}
         leftChildren={<TableFiltersTitles title={t`${title}`} />}
         loading={loading}
-        hasSearchBar
+        onReload={onReload}
         visibilityGroups={columnSettings}
         searchText={searchText}
         onSearch={onSearch}
