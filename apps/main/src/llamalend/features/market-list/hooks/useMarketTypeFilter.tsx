@@ -15,10 +15,9 @@ export function useMarketTypeFilter({ columnFiltersById, setColumnFilter }: Filt
   /** Helper function to toggle the market type filter by updating the column filter state */
   const toggleMarketType = useCallback(
     (type: LlamaMarketType) => {
-      setColumnFilter(
-        LlamaMarketColumnId.Type,
-        filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type],
-      )
+      const newFilter = filter?.includes(type) ? filter.filter((f) => f !== type) : [...(filter || []), type]
+      // Remove the filter entirely if the array is empty, otherwise comparaison with default filters is incorrect
+      setColumnFilter(LlamaMarketColumnId.Type, newFilter.length === 0 ? null : newFilter)
     },
     [filter, setColumnFilter],
   )
