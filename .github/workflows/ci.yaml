@@ -108,7 +108,7 @@ jobs:
         include:
           - browser: chrome
             count: 2
-    name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
+    name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
