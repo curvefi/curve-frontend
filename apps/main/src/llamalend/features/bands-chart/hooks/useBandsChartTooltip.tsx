@@ -5,9 +5,8 @@ import { Token } from '@/llamalend/features/borrow/types'
 import { ThemeProvider, useTheme } from '@mui/material'
 import { TooltipContent } from '../TooltipContent'
 
-type TooltipParams = {
-  dataIndex: number
-}[]
+type TooltipArrayParams = { dataIndex: number }[]
+type TooltipItemParams = { dataIndex: number }
 
 /**
  * Custom hook for managing ECharts tooltip rendering with React components
@@ -31,9 +30,15 @@ export const useBandsChartTooltip = (chartData: ChartDataPoint[], collateralToke
         tooltipRootRef.current = createRoot(tooltipRef.current)
       }
 
-      const typedParams = params as TooltipParams
-      const dataPoint =
-        Array.isArray(typedParams) && typedParams.length > 0 ? chartData[typedParams[0].dataIndex] : null
+      let dataIndex: number | undefined
+      if (Array.isArray(params)) {
+        const arr = params as TooltipArrayParams
+        dataIndex = arr.length > 0 ? arr[0].dataIndex : undefined
+      } else if (params && typeof params === 'object' && 'dataIndex' in (params as any)) {
+        dataIndex = (params as TooltipItemParams).dataIndex
+      }
+
+      const dataPoint = dataIndex != null ? chartData[dataIndex] : null
 
       // Render tooltip content or clear it
       if (dataPoint && tooltipRootRef.current) {

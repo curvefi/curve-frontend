@@ -5,6 +5,7 @@ import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-
 import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
+import { Slider } from '@ui-kit/shared/ui/Slider'
 import { getChartOptions } from './chartOptions'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartTooltip } from './hooks/useBandsChartTooltip'
@@ -47,11 +48,18 @@ const BandsChartComponent = ({
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
+  const priceMin = useMemo(() => (chartData.length ? Math.min(...chartData.map((d) => d.p_down)) : 0), [chartData])
+  const priceMax = useMemo(() => (chartData.length ? Math.max(...chartData.map((d) => d.p_up)) : 0), [chartData])
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-  const { option: finalOption, onDataZoom } = useBandsChartZoom({
+  const {
+    option: finalOption,
+    onDataZoom,
+    zoomRange,
+    setZoomRange,
+  } = useBandsChartZoom({
     option,
     chartDataLength: chartData.length,
     initialZoomIndices,
@@ -88,9 +96,24 @@ const BandsChartComponent = ({
     )
   }
 
+  const rawValues: [number, number] = [
+    typeof zoomRange.startValue === 'number' ? zoomRange.startValue : priceMin,
+    typeof zoomRange.endValue === 'number' ? zoomRange.endValue : priceMax,
+  ]
+  const normalizedValues: [number, number] =
+    rawValues[0] <= rawValues[1] ? [rawValues[0], rawValues[1]] : [rawValues[1], rawValues[0]]
+
   return (
-    <Stack sx={{ position: 'relative', width: '100%', minHeight: `${height}px` }}>
-      <Box sx={{ width: '99%', fontVariantNumeric: 'tabular-nums', height }}>
+    <Stack direction="row" sx={{ position: 'relative', width: '100%', minHeight: `${height}px` }}>
+      <Box
+        sx={{
+          flexGrow: 1,
+          fontVariantNumeric: 'tabular-nums',
+          width: '99%',
+          height,
+          '& *': { cursor: 'default !important' },
+        }}
+      >
         <ReactECharts
           ref={chartRef}
           option={finalOption}
@@ -99,6 +122,28 @@ const BandsChartComponent = ({
           onEvents={{ datazoom: onDataZoom }}
           notMerge={true}
           lazyUpdate={true}
+        />
+      </Box>
+      <Box sx={{ display: 'flex', alignItems: 'stretch', paddingInlineStart: 1 }}>
+        <Slider
+          orientation="vertical"
+          size="small"
+          value={normalizedValues}
+          min={priceMin}
+          max={priceMax}
+          onChange={(_e, val) => {
+            if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+              const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+              setZoomRange({ startValue: minV, endValue: maxV })
+            }
+          }}
+          onChangeCommitted={(_e, val) => {
+            if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+              const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+              setZoomRange({ startValue: minV, endValue: maxV })
+            }
+          }}
+          data-rail-background="bordered"
         />
       </Box>
     </Stack>

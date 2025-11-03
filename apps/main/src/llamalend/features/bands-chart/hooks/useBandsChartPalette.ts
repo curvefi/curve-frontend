@@ -26,9 +26,6 @@ export const useBandsChartPalette = (): BandsChartPalette => {
       userRangeLabelBackgroundColor: theme.design.Color.Tertiary[300],
       oraclePriceLineColor: theme.design.Color.Primary[500],
       liquidationBandOutlineColor: theme.design.Color.Tertiary[600],
-      zoomTrackBackgroundColor: theme.design.Color.Primary[200],
-      zoomThumbColor: theme.design.Color.Primary[500],
-      zoomThumbHandleBorderColor: theme.design.Text.TextColors.FilledFeedback.Highlight.Primary,
     }),
     [theme.design, invertedDesign],
   )

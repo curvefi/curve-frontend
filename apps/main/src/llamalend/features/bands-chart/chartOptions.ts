@@ -85,11 +85,6 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (chartData.length === 0) return {}
 
-  const dataZoomWidth = 20
-  const gridPadding = { left: 0, top: 16, bottom: 16 }
-  const gridRight = 16 + dataZoomWidth
-  const labelXOffset = 16 - (gridRight - dataZoomWidth)
-
   // Secondary value y-axis will mirror category spacing using index space
   // Price domain for value y-axis
   const priceMin = Math.min(...chartData.map((d) => d.p_down))
@@ -107,10 +102,10 @@ export const getChartOptions = (
     backgroundColor: 'transparent',
     animation: false,
     grid: {
-      left: gridPadding.left,
-      right: gridRight,
-      top: gridPadding.top,
-      bottom: gridPadding.bottom,
+      left: 0,
+      right: 16,
+      top: 0,
+      bottom: 0,
       containLabel: true,
     },
     tooltip: {
@@ -213,7 +208,6 @@ export const getChartOptions = (
                   position: 'start',
                   align: 'left',
                   verticalAlign: 'middle',
-                  offset: [-labelXOffset, 0],
                   ...createLabelStyle(line.lineStyle, palette),
                 },
               })),
@@ -232,37 +226,14 @@ export const getChartOptions = (
     })(),
     dataZoom: [
       {
-        type: 'slider',
-        yAxisIndex: 0,
-        orient: 'vertical',
-        right: 10,
-        width: dataZoomWidth,
-        brushSelect: false,
-        showDataShadow: false,
-        borderColor: 'none',
-        backgroundColor: palette.zoomTrackBackgroundColor,
-        fillerColor: palette.zoomThumbColor,
-        handleSize: '100%',
-        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.textColorInverted },
-        textStyle: { color: palette.textColorInverted, fontSize: 10 },
-        labelFormatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
-        dataBackground: {
-          lineStyle: {
-            color: palette.gridColor,
-            opacity: 0.5,
-          },
-          areaStyle: {
-            color: palette.gridColor,
-            opacity: 0.2,
-          },
-        },
-      },
-      {
         type: 'inside',
         yAxisIndex: 0,
         orient: 'vertical',
-        zoomOnMouseWheel: 'shift',
-        moveOnMouseWheel: true,
+        // Disable user interactions; allow only programmatic updates from the external slider
+        zoomOnMouseWheel: false,
+        moveOnMouseWheel: false,
+        moveOnMouseMove: false,
+        brushSelect: false,
       },
     ],
   }
