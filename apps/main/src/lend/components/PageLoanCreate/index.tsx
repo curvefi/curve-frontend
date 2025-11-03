@@ -11,10 +11,9 @@ import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -38,7 +37,7 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params } = pageProps
   const push = useNavigate()
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseBorrowUnifiedForm = useBorrowUnifiedForm()
   const onUpdate = useOnFormUpdate(pageProps)
 
   const resetState = useStore((state) => state.loanCreate.resetState)
@@ -46,14 +45,14 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   type Tab = 'create' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
     () =>
-      releaseChannel === ReleaseChannel.Beta
+      shouldUseBorrowUnifiedForm
         ? // the new borrow form contains both create and leverage functionality
           [{ value: 'create' as const, label: t`Borrow` }]
         : [
             { value: 'create' as const, label: t`Create Loan` },
             ...(market?.leverage.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
           ],
-    [market?.leverage, releaseChannel],
+    [market?.leverage, shouldUseBorrowUnifiedForm],
   )
 
   return (
@@ -67,9 +66,9 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
-        fullWidth={releaseChannel !== ReleaseChannel.Beta}
+        fullWidth={!shouldUseBorrowUnifiedForm}
       />
-      {releaseChannel === ReleaseChannel.Beta ? (
+      {shouldUseBorrowUnifiedForm ? (
         <BorrowTabContents networks={networks} chainId={rChainId} market={market ?? undefined} onUpdate={onUpdate} />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

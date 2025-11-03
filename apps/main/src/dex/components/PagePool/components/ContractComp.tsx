@@ -6,9 +6,9 @@ import { ChainId } from '@/dex/types/main.types'
 import Icon from '@ui/Icon'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { scanAddressPath } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import { AddressActionInfo } from '@ui-kit/shared/ui/AddressActionInfo'
-import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 const ContractComp = ({
   address,
@@ -69,9 +69,8 @@ export default function DetailInfoAddressLookup({
   label,
   address,
 }: ComponentProps<typeof ContractComp>) {
-  const [releaseChannel] = useReleaseChannel()
   const { data: network } = useNetworkByChain({ chainId: rChainId })
-  return releaseChannel === ReleaseChannel.Beta ? (
+  return useActionInfo() ? (
     <AddressActionInfo network={network} title={label} isBorderBottom={showBottomBorder} address={address} />
   ) : (
     <ContractComp rChainId={rChainId} showBottomBorder={showBottomBorder} label={label} address={address} />

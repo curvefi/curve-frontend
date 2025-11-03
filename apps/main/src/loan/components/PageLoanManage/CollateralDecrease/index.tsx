@@ -28,12 +28,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -67,7 +67,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const network = networks[rChainId]
   const { chainId, haveSigner } = curveProps(curve)
-  const [releaseChannel] = useReleaseChannel()
+
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
@@ -232,7 +232,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     <>
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel === ReleaseChannel.Legacy ? (
+        {!useLargeTokenInput() ? (
           <>
             <InputProvider
               grid
