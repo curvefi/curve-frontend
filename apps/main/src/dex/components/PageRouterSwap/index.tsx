@@ -368,7 +368,7 @@ const QuickSwap = ({
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisable = formStatus.formProcessing || apiRoutesLoading
+  const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
     !pageLoaded ||
     (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
