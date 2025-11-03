@@ -4,11 +4,10 @@ import {
   type Ref,
   useCallback,
   useEffect,
+  useEffectEvent,
+  useId,
   useImperativeHandle,
   useState,
-  useId,
-  useEffectEvent,
-  useMemo,
 } from 'react'
 import Box from '@mui/material/Box'
 import Chip from '@mui/material/Chip'
@@ -18,7 +17,7 @@ import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, formatNumber, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
 import { TradingSlider } from './TradingSlider'
@@ -113,29 +112,6 @@ export interface LargeTokenInputRef {
   resetBalance: () => void
 }
 
-/** Configuration for wallet balance display and input. */
-type WalletBalanceProps = {
-  symbol?: string
-  usdRate?: number
-} & Pick<BalanceProps<Decimal>, 'balance' | 'loading' | 'buttonTestId' | 'onClick' | 'notionalValueUsd'>
-
-/**
- * Massages the given wallet balance props for the actual wallet Balance component,
- * based on token balance, its usd rate and more as expected by the Balance component in @ui-kit.
- *
- * Any given notionalValueUsd will be overridden if both balance and usdRate are provided.
- *
- * @param symbol - The symbol of the token (e.g., "ETH")
- * @param usdRate - The USD exchange rate for the token (e.g., 1.05)
- */
-const createWalletBalance = ({ balance, symbol, loading, usdRate, ...props }: WalletBalanceProps) => ({
-  ...props,
-  balance,
-  symbol: symbol ?? '-',
-  loading: loading ?? balance == null,
-  ...(balance != null && usdRate != null && { notionalValueUsd: usdRate * +balance }),
-})
-
 /** Configuration for max balance behavior, which for now are the slider and chips. */
 type MaxBalanceProps = {
   balance?: Decimal
@@ -173,7 +149,7 @@ export type LargeTokenInputProps = {
   tokenSelector?: ReactNode
 
   /** Optional wallet balance configuration. */
-  walletBalance?: WalletBalanceProps
+  walletBalance?: BalanceProps<Decimal>
 
   /** Optional max balance configuration */
   maxBalance?: MaxBalanceProps
@@ -258,7 +234,7 @@ const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqual
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
-  walletBalance: walletBalanceRaw,
+  walletBalance,
   maxBalance,
   message,
   label,
@@ -280,10 +256,6 @@ export const LargeTokenInput = ({
   })
 
   const showSlider = !!maxBalance?.showSlider && !!maxBalance?.balance
-
-  const walletBalance = useMemo(() => walletBalanceRaw && createWalletBalance(walletBalanceRaw), [walletBalanceRaw])
-  const showWalletBalance = !!walletBalance
-
   const chips = typeof maxBalance?.chips === 'string' ? CHIPS_PRESETS[maxBalance.chips] : maxBalance?.chips
   const showChips = !!chips?.length
 
@@ -420,7 +392,7 @@ export const LargeTokenInput = ({
         </Stack>
 
         {/** Third row containing input and max balances */}
-        {(showWalletBalance || inputBalanceUsd) && (
+        {(walletBalance || inputBalanceUsd) && (
           <Stack direction="row">
             {inputBalanceUsd != null && (
               <Typography variant="bodyXsRegular" color="textTertiary">
@@ -428,14 +400,11 @@ export const LargeTokenInput = ({
               </Typography>
             )}
 
-            {showWalletBalance && (
+            {walletBalance && (
               <Balance
                 disabled={disabled}
                 clickable
-                symbol={walletBalance?.symbol ?? ''}
-                balance={walletBalance?.balance}
-                notionalValueUsd={walletBalance?.notionalValueUsd}
-                loading={walletBalance?.loading}
+                {...walletBalance}
                 onClick={onWalletBalance}
                 sx={{ flexGrow: 1, justifyContent: 'end' }}
               />
