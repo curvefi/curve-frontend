@@ -1,26 +1,65 @@
-import { useState } from 'react'
-import type { LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
+import { useMemo, useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { MarketRateType } from '@ui-kit/types/market'
+import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
-const tabs: TabOption<MarketRateType>[] = [
-  { value: MarketRateType.Borrow, label: t`Borrow` },
-  { value: MarketRateType.Supply, label: t`Supply` },
-]
+const getMarketCountLabel = (openPositions: number) => (openPositions > 0 ? '◼︎' + openPositions : '')
 
-/** Show the first tab that has user positions by default, or the first tab if none are found. */
-const getDefault = (userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined) =>
-  tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0]
+export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
+  // Calculate total positions across all markets (independent of filters)
+  const openPositionsCount = useMemo((): Record<MarketRateType, number> => {
+    const markets = props.result?.markets ?? []
+    return {
+      [MarketRateType.Borrow]: markets.filter((market) => market.userHasPositions?.[MarketRateType.Borrow]).length,
+      [MarketRateType.Supply]: markets.filter((market) => market.userHasPositions?.[MarketRateType.Supply]).length,
+    }
+  }, [props.result?.markets])
 
-export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab'>) => {
-  const defaultTab = getDefault(props.result?.userHasPositions).value
-  const [tab, setTab] = useState<MarketRateType>(defaultTab)
+  // Define tabs with position counts
+  const tabs: TabOption<MarketRateType>[] = useMemo(
+    () => [
+      {
+        value: MarketRateType.Borrow,
+        label: `${t`Borrowing`} ${getMarketCountLabel(openPositionsCount[MarketRateType.Borrow])}`,
+      },
+      {
+        value: MarketRateType.Supply,
+        label: `${t`Lending`} ${getMarketCountLabel(openPositionsCount[MarketRateType.Supply])}`,
+      },
+    ],
+    [openPositionsCount],
+  )
+
+  // Show the first tab that has user positions by default, or the first tab if none are found
+  const defaultTab = useMemo(() => {
+    const userHasPositions = props.result?.userHasPositions
+    return tabs.find(({ value }) => userHasPositions?.Lend[value] || userHasPositions?.Mint[value]) ?? tabs[0]
+  }, [props.result?.userHasPositions, tabs])
+
+  const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
+
   return (
     <Stack>
-      <TabsSwitcher value={tab} onChange={setTab} variant="contained" size="medium" options={tabs} />
+      <Stack
+        direction="row"
+        justifyContent="space-between"
+        // needed for the bottom border to be the same height as the tabs
+        alignItems="stretch"
+        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
+      >
+        <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
+        <Stack
+          alignItems="center"
+          direction="row"
+          justifyContent="end"
+          sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}` }}
+        >
+          <LlamaMonitorBotButton />
+        </Stack>
+      </Stack>
       <UserPositionsTable {...props} tab={tab} />
     </Stack>
   )
