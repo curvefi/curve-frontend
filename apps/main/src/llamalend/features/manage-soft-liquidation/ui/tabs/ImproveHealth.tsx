@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -61,22 +61,10 @@ export const ImproveHealth = ({
     'approve-infinite': onApproveInfinite,
   }
 
-  const walletBalance = useMemo(
-    () => ({
-      balance: userBalance,
-      symbol: debtToken?.symbol,
-      loading: !userBalance,
-    }),
-    [debtToken?.symbol, userBalance],
-  )
-
-  const maxBalance = useMemo(
-    () => ({
-      balance: decimal(debtToken && userBalance && Math.min(+debtToken.amount, +userBalance)),
-      chips: 'max' as const,
-    }),
-    [debtToken, userBalance],
-  )
+  const maxBalance = {
+    balance: decimal(debtToken && userBalance && Math.min(+debtToken.amount, +userBalance)),
+    chips: 'max' as const,
+  }
 
   const repayBalanceTooHigh = debtToken && debtBalance > (maxBalance.balance ?? 0)
   const cantRepay = !debtToken || debtBalance === '0' || +debtBalance > +(userBalance ?? 0) || repayBalanceTooHigh
@@ -94,7 +82,7 @@ export const ImproveHealth = ({
             label={debtToken?.symbol ?? '?'}
           />
         }
-        walletBalance={walletBalance}
+        walletBalance={{ balance: userBalance, symbol: debtToken?.symbol, loading: !userBalance }}
         maxBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
         onBalance={(balance) => {
