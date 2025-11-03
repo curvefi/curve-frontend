@@ -131,10 +131,10 @@ const LoanRepay = ({
             description={txMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (resp.loanExists) {
-                updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
+              updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
+              if (!resp.loanExists) {
+                push(getCollateralListPathname(params))
               }
-              push(getCollateralListPathname(params))
             }}
           />,
         )

@@ -48,9 +48,9 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const haveSigner = !!signerAddress
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
+    async (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      setFormValues(
+      await setFormValues(
         'STAKE',
         curve,
         poolDataCacheOrApi.pool.id,
@@ -59,7 +59,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
         null,
         seed.isSeed,
         '',
-      ).catch(errorFallback)
+      )
     },
     [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
@@ -151,7 +151,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   // curve state change
   useEffect(() => {
     if (chainId && poolId) {
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
@@ -179,7 +179,10 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           balanceLoading={balancesLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
           haveSigner={haveSigner}
-          handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
+          handleAmountChange={useCallback(
+            (lpToken) => updateFormValues({ lpToken }).catch(errorFallback),
+            [updateFormValues],
+          )}
           disabled={disableForm}
         />
       </FieldsWrapper>
@@ -211,7 +214,12 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
         ) : (
-          formStatus.error && <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />
+          formStatus.error && (
+            <AlertFormError
+              errorKey={formStatus.error}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
+            />
+          )
         )}
         {txInfoBar}
         <Stepper steps={steps} />
