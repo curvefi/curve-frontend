@@ -35,7 +35,7 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   return (
     <>
       <ThemeProvider theme="light">
-        <WithWrapper Wrapper={WagmiProvider} wrap={!!config} config={config!} reconnectOnMount={autoConnect}>
+        <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
           <QueryProvider persister={persister} queryClient={queryClient}>
             <RouterProvider router={router} />
           </QueryProvider>

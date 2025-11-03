@@ -4,34 +4,62 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import type { Decimal } from '@ui-kit/utils'
 
 function TestComponent() {
-  // This value is different from the input value, it is debounced in the component
+  const [balance, setBalance] = useState<Decimal | undefined>(undefined)
+  // This value is different from balance, as it's not being overwritten by user input and is debounced uniquely.
   const [balanceDebounced, setBalanceDebounced] = useState<Decimal | undefined>(undefined)
+  const [onBalanceCalled, setOnBalanceCalled] = useState(false)
+
   return (
     <ComponentTestWrapper>
-      <LargeTokenInput name="amount" onBalance={(newBalance) => setBalanceDebounced(newBalance)} />
+      <>
+        <LargeTokenInput
+          name="amount"
+          balance={balance}
+          onBalance={(newBalance) => {
+            setBalance(newBalance)
+            setBalanceDebounced(newBalance)
+            setOnBalanceCalled(true)
+          }}
+        />
 
-      <div>
-        Debounced balance value: <span data-testid="debounced-balance">{balanceDebounced}</span>
-      </div>
+        <div>
+          Debounced balance value: <span data-testid="debounced-balance">{balanceDebounced}</span>
+        </div>
+
+        <div>
+          On balance called? <span data-testid="on-balance-called">{onBalanceCalled.toString()}</span>
+        </div>
+      </>
     </ComponentTestWrapper>
   )
 }
 
 describe('LargeTokenInput', () => {
-  it(`updates state value on blur`, () => {
+  it('should init with empty values and onBalance event should not be true', () => {
     cy.mount(<TestComponent />)
+
     cy.get('input').should('have.value', '')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click()
+    cy.get('[data-testid="on-balance-called"]').should('have.text', 'false')
+  })
+
+  it('updates state value on blur', () => {
+    cy.mount(<TestComponent />)
+
+    // Break up the chain - type first
     cy.get('input').type('5')
+    // Then blur separately after DOM settles. Otherwise React re-renders in the middle of a Cypress command and the test fails.
     cy.get('input').blur()
     cy.get('input').should('have.value', '5')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click()
+
+    // Clear first
+    cy.get('input').clear()
     cy.get('input').type('.')
     cy.get('input').should('have.value', '.')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click()
+
+    // Type the final digit
     cy.get('input').type('5')
     cy.get('input').should('have.value', '.5')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '.5')

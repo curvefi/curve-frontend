@@ -258,11 +258,14 @@ const VaultWithdrawRedeem = ({
                 ? t`Amount exceeds max ${_isWithdraw(rFormType) ? t`withdraw` : t`redeem`} amount ${formatNumber(max ?? '')}`
                 : undefined
           }
+          walletBalance={{
+            balance: decimal(userBalances?.vaultSharesConverted),
+            loading: !!signerAddress && userBalances == null,
+            symbol: t`Vault shares`,
+          }}
           maxBalance={{
             balance: decimal(max),
-            loading: !!signerAddress && userBalances == null,
-            notionalValueUsd: decimal(userBalances?.vaultSharesConverted),
-            symbol: t`Vault shares`,
+            chips: 'max',
           }}
           onBalance={onBalance}
           testId="inpCollateral"

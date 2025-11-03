@@ -249,12 +249,16 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
                 : undefined
           }
           disabled={disabled}
-          maxBalance={{
+          inputBalanceUsd={decimal(formValues.amount && usdRate && usdRate * +formValues.amount)}
+          walletBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
             balance: decimal(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
-            notionalValueUsd:
-              usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
+            usdRate,
+          }}
+          maxBalance={{
+            balance: decimal(maxResp?.max),
+            chips: 'max',
           }}
           balance={decimal(formValues.amount)}
           tokenSelector={
