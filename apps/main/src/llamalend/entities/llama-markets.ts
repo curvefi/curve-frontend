@@ -86,6 +86,10 @@ const DEPRECATED_LLAMAS: PartialRecord<Chain, Record<Address, string>> = {
     //wstUSR-crvUSD lend market
     '0x89707721927d7aaeeee513797A8d6cBbD0e08f41': t`This market is deprecated.`,
   },
+  arbitrum: {
+    // iBTC-crvUSD lend market
+    '0x3e293dB65c81742e32b74E21A0787d2936beeDf7': t`iBTC is undergoing systematic unwinding`,
+  },
 }
 
 const convertLendingVault = (
