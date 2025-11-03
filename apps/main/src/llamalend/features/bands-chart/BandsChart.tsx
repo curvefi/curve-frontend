@@ -43,6 +43,7 @@ const BandsChartComponent = ({
   height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
 }: BandsChartProps) => {
   const chartRef = useRef<ReactECharts | null>(null)
+  const containerRef = useRef<HTMLDivElement | null>(null)
   const palette = useBandsChartPalette()
   const derived = useDerivedChartData(chartData)
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
@@ -104,12 +105,14 @@ const BandsChartComponent = ({
     rawValues[0] <= rawValues[1] ? [rawValues[0], rawValues[1]] : [rawValues[1], rawValues[0]]
 
   return (
-    <Stack direction="row" sx={{ position: 'relative', width: '100%', minHeight: `${height}px` }}>
+    <Stack direction="row" sx={{ width: '100%', minHeight: `${height}px`, gap: 1, minWidth: 0 }}>
       <Box
+        ref={containerRef}
+        display="flex"
         sx={{
-          flexGrow: 1,
           fontVariantNumeric: 'tabular-nums',
-          width: '99%',
+          flex: '1 1 auto',
+          minWidth: 0,
           height,
           '& *': { cursor: 'default !important' },
         }}
@@ -122,30 +125,29 @@ const BandsChartComponent = ({
           onEvents={{ datazoom: onDataZoom }}
           notMerge={true}
           lazyUpdate={true}
+          autoResize={true}
         />
       </Box>
-      <Box sx={{ display: 'flex', alignItems: 'stretch', paddingInlineStart: 1 }}>
-        <Slider
-          orientation="vertical"
-          size="small"
-          value={normalizedValues}
-          min={priceMin}
-          max={priceMax}
-          onChange={(_e, val) => {
-            if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
-              const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
-              setZoomRange({ startValue: minV, endValue: maxV })
-            }
-          }}
-          onChangeCommitted={(_e, val) => {
-            if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
-              const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
-              setZoomRange({ startValue: minV, endValue: maxV })
-            }
-          }}
-          data-rail-background="filled"
-        />
-      </Box>
+      <Slider
+        orientation="vertical"
+        size="small"
+        value={normalizedValues}
+        min={priceMin}
+        max={priceMax}
+        onChange={(_e, val) => {
+          if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+            const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+            setZoomRange({ startValue: minV, endValue: maxV })
+          }
+        }}
+        onChangeCommitted={(_e, val) => {
+          if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
+            const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+            setZoomRange({ startValue: minV, endValue: maxV })
+          }
+        }}
+        data-rail-background="filled"
+      />
     </Stack>
   )
 }

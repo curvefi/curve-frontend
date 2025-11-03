@@ -103,7 +103,7 @@ export const getChartOptions = (
     animation: false,
     grid: {
       left: 0,
-      right: 16,
+      right: 4,
       top: 0,
       bottom: 0,
       containLabel: true,
