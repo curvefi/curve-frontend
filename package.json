@@ -38,7 +38,7 @@
     "ethers": "*",
     "husky": "^9.1.7",
     "immer": "*",
-    "lint-staged": "16.2.3",
+    "lint-staged": "16.2.6",
     "lodash": "*",
     "prettier": "^3.6.2",
     "react": "*",
