@@ -124,7 +124,6 @@ export const getChartOptions = (
       axisPointer: { show: false },
       axisLabel: {
         color: palette.scaleLabelsColor,
-        fontSize: 12,
         hideOverlap: true,
         interval: 'auto',
         margin: 8,
@@ -151,22 +150,15 @@ export const getChartOptions = (
         snap: true,
         label: {
           show: true,
-          margin: 6,
-          formatter: (params: any) => `$${formatNumber(Number(params.value), { unit: 'dollar' })}`,
+          formatter: (params: any) => `$${formatNumber(Number(params.value), { notation: 'compact' })}`,
+          padding: [2, 4],
+          borderRadius: 0,
+          backgroundColor: palette.oraclePriceLineColor,
         },
       },
       axisLabel: {
         color: palette.scaleLabelsColor,
-        fontSize: 12,
         formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
-      },
-      splitLine: {
-        show: true,
-        lineStyle: {
-          color: palette.gridColor,
-          opacity: 0.5,
-          type: 'dashed',
-        },
       },
       min: priceMin,
       max: priceMax,

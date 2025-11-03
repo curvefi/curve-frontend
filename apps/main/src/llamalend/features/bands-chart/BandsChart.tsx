@@ -143,7 +143,7 @@ const BandsChartComponent = ({
               setZoomRange({ startValue: minV, endValue: maxV })
             }
           }}
-          data-rail-background="bordered"
+          data-rail-background="filled"
         />
       </Box>
     </Stack>
