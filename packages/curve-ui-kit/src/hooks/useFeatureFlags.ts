@@ -7,7 +7,7 @@ import { isCypress, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 /**
- * LargeTokenInput replaces legacy amount inputs when not on Legacy channel.
+ * LargeTokenInput replaces legacy amount inputs when on Beta channel.
  */
 export const useLargeTokenInput = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 
