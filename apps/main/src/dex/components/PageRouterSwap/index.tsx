@@ -444,20 +444,18 @@ const QuickSwap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
+              balance={decimal(formValues.fromAmount)}
               onBalance={setFromAmount}
               name="fromAmount"
-              inputBalanceUsd={
-                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
-              }
-              maxBalance={{
+              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+              walletBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
-                symbol: fromToken?.symbol || '',
-                ...(fromUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
-                ...(searchedParams.fromAddress === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
+                symbol: fromToken?.symbol,
+                usdRate: fromUsdRate,
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
                 chips: 'range',
               }}
               isError={!!formValues.fromError}
@@ -536,19 +534,14 @@ const QuickSwap = ({
           <LargeTokenInput
             label={t`Buy`}
             balance={decimal(formValues.toAmount)}
-            inputBalanceUsd={
-              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
-            }
+            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
-            maxBalance={{
+            walletBalance={{
               loading: userBalancesLoading,
               balance: decimal(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              ...(searchedParams.fromAddress === ethAddress && {
-                tooltip: t`'Balance'`,
-              }),
+              symbol: toToken?.symbol,
+              usdRate: toUsdRate,
             }}
             disabled={isDisable}
             testId="to-amount"

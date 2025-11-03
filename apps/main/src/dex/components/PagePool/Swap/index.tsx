@@ -423,9 +423,7 @@ const Swap = ({
               name="fromAmount"
               onBalance={setFromAmount}
               balance={decimal(formValues.fromAmount)}
-              inputBalanceUsd={
-                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
-              }
+              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
               tokenSelector={
                 <TokenSelector
                   selectedToken={fromToken}
@@ -456,16 +454,15 @@ const Swap = ({
                 message: t`Amount > wallet balance ${formatNumber(userFromBalance)}`,
               })}
               disabled={isDisabled}
-              maxBalance={{
+              walletBalance={{
                 balance: decimal(userFromBalance),
                 loading: userPoolBalancesLoading || isMaxLoading,
                 symbol: fromToken?.symbol,
+                usdRate: fromUsdRate,
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
                 chips: 'range',
-                ...(toUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: Number(userFromBalance) * Number(fromUsdRate) }),
-                ...(formValues.fromAddress.toLowerCase() === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
               }}
             />
           )}
@@ -551,9 +548,7 @@ const Swap = ({
             label={t`Buy`}
             name="toAmount"
             onBalance={setToAmount}
-            inputBalanceUsd={
-              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
-            }
+            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
             balance={decimal(formValues.toAmount)}
             disabled={isUndefined(hasRouter) || (!isUndefined(hasRouter) && !hasRouter) || isDisabled}
             tokenSelector={
@@ -583,12 +578,11 @@ const Swap = ({
                 sx={LargeSxProps}
               />
             }
-            maxBalance={{
+            walletBalance={{
               balance: decimal(userToBalance),
               loading: userPoolBalancesLoading,
               symbol: toToken?.symbol,
-              ...(toUsdRate != null &&
-                userToBalance != null && { notionalValueUsd: Number(userToBalance) * Number(toUsdRate) }),
+              usdRate: toUsdRate,
             }}
           />
         )}

@@ -53,7 +53,7 @@ const COMMON_ROUTE_TEST_IDS = { [PAGE_LEGAL]: 'legal-page', [PAGE_INTEGRATIONS]:
 
 const ROUTE_TEST_IDS = {
   dex: {
-    [DEX_ROUTES.PAGE_POOLS]: 'inp-search-pools',
+    [DEX_ROUTES.PAGE_POOLS]: 'data-table-head',
     [DEX_ROUTES.PAGE_SWAP]: 'swap-page',
     [DEX_ROUTES.PAGE_DASHBOARD]: 'dashboard-page',
     [DEX_ROUTES.PAGE_CREATE_POOL]: 'create-pool-page',

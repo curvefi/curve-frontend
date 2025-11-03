@@ -34,7 +34,6 @@ type TableRowMobileProps = Omit<TableRowProps, 'isMdUp'> & {
 const TableRowMobile = ({
   index,
   columnKeys,
-  formValues,
   isInPool,
   blockchainId,
   poolData,
@@ -56,8 +55,7 @@ const TableRowMobile = ({
     blockchainId: blockchainId as Chain,
     address: poolData?.pool?.address as Address,
   })
-  const { searchTextByTokensAndAddresses, searchTextByOther } = formValues
-  const { searchText, sortBy } = searchParams
+  const { sortBy } = searchParams
   const isShowDetail = showDetail === poolId
 
   const quickViewValue = useMemo(() => {
@@ -94,13 +92,8 @@ const TableRowMobile = ({
               isVisible
               blockchainId={blockchainId}
               poolData={poolDataCachedOrApi}
-              poolListProps={{
-                quickViewValue,
-                searchText,
-                searchTextByTokensAndAddresses,
-                searchTextByOther,
-                onClick: handleCellClick,
-              }}
+              quickViewValue={quickViewValue}
+              onClick={handleCellClick}
             />
             <IconButton onClick={() => setShowDetail((prevState) => (prevState === poolId ? '' : poolId))}>
               {isShowDetail ? <Icon name="ChevronUp" size={16} /> : <Icon name="ChevronDown" size={16} />}

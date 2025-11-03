@@ -56,7 +56,7 @@ const FieldLpToken = ({
       name="lpTokens"
       disabled={disabled}
       isError={hasError}
-      maxBalance={{
+      walletBalance={{
         balance: decimal(balance),
         symbol: t`LP Tokens`,
         loading: balanceLoading,

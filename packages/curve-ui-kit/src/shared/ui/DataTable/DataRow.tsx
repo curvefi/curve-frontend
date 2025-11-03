@@ -5,7 +5,6 @@ import type { Table } from '@tanstack/table-core'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useIsVisible } from '@ui-kit/hooks/useIntersectionObserver'
-import type { Responsive } from '@ui-kit/themes/basic-theme'
 import { TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { CypressHoverClass, hasParentWithClass } from '@ui-kit/utils/dom'
 import { InvertOnHover } from '../InvertOnHover'
@@ -32,7 +31,6 @@ export type DataRowProps<T extends TableItem> = {
   expandedPanel: ExpandedPanel<T>
   shouldStickFirstColumn: boolean
   lazy?: boolean // whether to wait until the row is visible to render its cells
-  minRowHeight?: Responsive
 }
 
 export const DataRow = <T extends TableItem>({
@@ -42,7 +40,6 @@ export const DataRow = <T extends TableItem>({
   expandedPanel,
   shouldStickFirstColumn,
   lazy,
-  minRowHeight,
 }: DataRowProps<T>) => {
   const isMobile = useIsMobile()
   const [element, setElement] = useState<HTMLTableRowElement | null>(null) // note: useRef doesn't get updated in cypress
@@ -62,7 +59,6 @@ export const DataRow = <T extends TableItem>({
         <TableRow
           sx={useMemo(
             () => ({
-              minHeight: minRowHeight,
               marginBlock: 0,
               cursor: hasUrl ? 'pointer' : 'default',
               transition: `border-bottom ${TransitionFunction}`,
@@ -85,7 +81,7 @@ export const DataRow = <T extends TableItem>({
                 backgroundColor: (t) => t.design.Table.Row.Default,
               }),
             }),
-            [isLast, hasUrl, minRowHeight],
+            [isLast, hasUrl],
           )}
           ref={setElement}
           data-testid={element && `data-table-row-${row.id}`}

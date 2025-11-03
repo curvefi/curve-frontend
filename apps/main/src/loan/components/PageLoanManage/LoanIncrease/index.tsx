@@ -316,11 +316,16 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
           }
           disabled={disabled}
-          maxBalance={{
-            loading: maxRecv == null || maxRecv == '',
-            balance: decimal(maxRecv),
+          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+          walletBalance={{
+            loading: userWalletBalancesLoading,
+            balance: decimal(userWalletBalances.stablecoin),
             symbol: getTokenName(llamma).stablecoin,
-            notionalValueUsd: stablecoinUsdRate != null && maxRecv != null ? stablecoinUsdRate * +maxRecv : undefined,
+            usdRate: stablecoinUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(maxRecv),
+            chips: 'max',
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={
@@ -374,14 +379,14 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}
-            maxBalance={{
+            inputBalanceUsd={decimal(
+              formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+            )}
+            walletBalance={{
               loading: userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: getTokenName(llamma).collateral,
-              ...(collateralUsdRate != null &&
-                userWalletBalances.collateral != null && {
-                  notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
-                }),
+              usdRate: collateralUsdRate,
             }}
             label={t`Collateral amount:`}
             balance={decimal(formValues.collateral)}
