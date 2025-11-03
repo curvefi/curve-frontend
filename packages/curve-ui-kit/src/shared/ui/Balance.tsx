@@ -66,13 +66,13 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
 /** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
-  symbol: string
+  symbol: string | undefined
   /** Whether the balance is clickable or not */
   clickable?: boolean
   /** The token balance amount (optional, in case of loading) */
   balance?: T
-  /** The USD value of the balance (optional) */
-  notionalValueUsd?: T | number
+  /** The USD price of the token (optional) */
+  usdRate?: number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
   /** Whether the balance is loading */
@@ -87,11 +87,11 @@ export type Props<T> = {
 }
 
 export const Balance = <T extends Amount>({
-  symbol,
+  symbol = '-',
   clickable,
-  loading = false,
   balance,
-  notionalValueUsd,
+  loading = balance == null,
+  usdRate,
   hideIcon,
   sx,
   onClick,
@@ -111,9 +111,9 @@ export const Balance = <T extends Amount>({
       <BalanceText symbol={symbol} balance={balance} loading={loading} />
     </WithWrapper>
 
-    {notionalValueUsd != null && !loading && (
+    {usdRate != null && balance != null && !loading && (
       <Typography variant="bodyXsRegular" color="textTertiary">
-        {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
+        {formatNumber(usdRate * +balance, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}
   </Stack>
