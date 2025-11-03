@@ -96,7 +96,7 @@ const Page = () => {
   })
 
   const fetchInitial = useCallback(
-    (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
+    async (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => {
       // reset createLoan estGas, detailInfo state
       setStateByKeys({
         formEstGas: {},
@@ -108,7 +108,7 @@ const Page = () => {
         maxRecvLeverage: {},
       })
       const updatedFormValues = { ...formValues, n: formValues.n || llamma.defaultBands }
-      return Promise.all([
+      await Promise.all([
         setFormValues(curve, isLeverage, llamma, updatedFormValues, maxSlippage).catch(errorFallback),
         curve.signerAddress && fetchUserLoanWalletBalances(curve, llamma).catch(errorFallback),
       ])
