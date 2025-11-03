@@ -60,7 +60,8 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           <LlamaMonitorBotButton />
         </Stack>
       </Stack>
-      <UserPositionsTable {...props} tab={tab} />
+      {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
+      <UserPositionsTable key={tab} {...props} tab={tab} />
     </Stack>
   )
 }
