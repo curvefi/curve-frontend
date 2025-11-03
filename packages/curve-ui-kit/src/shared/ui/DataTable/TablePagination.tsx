@@ -32,7 +32,7 @@ const Spacer = () => (
     disabled
     value={useId()} // not used, disabled
     sx={{ '&': { backgroundColor: 'transparent', minWidth: 0, padding: 0, width: '11px' } }}
-    data-testid="page-ellipsis"
+    data-testid="btn-page-ellipsis"
   >
     …
   </ToggleButton>
@@ -61,9 +61,9 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
     <Stack justifyContent="center" direction="row" data-testid="table-pagination">
       <IconButton
         size="extraSmall"
-        onClick={() => table.previousPage()}
-        disabled={!table.getCanPreviousPage()}
-        data-testid="btn-page-prev"
+        {...(table.getCanPreviousPage()
+          ? { 'data-testid': 'btn-page-prev', onClick: table.previousPage }
+          : { disabled: true })}
       >
         <ChevronDownIcon sx={{ transform: `rotate(90deg)` }} />
       </IconButton>
@@ -81,9 +81,9 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
         ))}
         <IconButton
           size="extraSmall"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          data-testid="btn-page-next"
+          {...(table.getCanNextPage()
+            ? { 'data-testid': 'btn-page-next', onClick: table.nextPage }
+            : { disabled: true })}
         >
           <ChevronDownIcon sx={{ transform: `rotate(-90deg)` }} />
         </IconButton>
