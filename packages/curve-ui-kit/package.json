@@ -48,7 +48,7 @@
     "eslint": "*",
     "eslint-config-custom": "*",
     "storybook": "10.0.2",
-    "type-fest": "5.1.0",
+    "type-fest": "5.2.0",
     "typescript": "*",
     "vite": "*",
     "vitest": "*"

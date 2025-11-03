@@ -3,6 +3,7 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal } from '@ui-kit/utils'
+import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
@@ -16,11 +17,13 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
   collateralToken,
   isOpen,
   slippage,
+  onSlippageChange,
 }: {
   params: BorrowFormQueryParams<ChainId>
   isOpen: boolean
   collateralToken: Token | undefined
   slippage: Decimal
+  onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const {
     data: expectedCollateral,
@@ -76,6 +79,7 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
         loading={priceImpactPercentLoading}
         testId="borrow-price-impact"
       />
+      <SlippageToleranceActionInfo maxSlippage={slippage} onSave={onSlippageChange} />
     </>
   )
 }
