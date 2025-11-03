@@ -271,7 +271,9 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
                 message: t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`,
               })}
               disabled={disabled}
-              inputBalanceUsd={decimal(collateralUsdRate && collateralUsdRate * +formValues.collateral)}
+              inputBalanceUsd={decimal(
+                formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+              )}
               walletBalance={{
                 balance: decimal(userWalletBalances.collateral),
                 symbol: getTokenName(llamma).collateral,

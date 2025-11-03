@@ -446,9 +446,7 @@ const QuickSwap = ({
               label={t`Sell`}
               onBalance={setFromAmount}
               name="fromAmount"
-              inputBalanceUsd={
-                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
-              }
+              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
               walletBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
@@ -535,9 +533,7 @@ const QuickSwap = ({
           <LargeTokenInput
             label={t`Buy`}
             balance={decimal(formValues.toAmount)}
-            inputBalanceUsd={
-              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
-            }
+            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
             walletBalance={{

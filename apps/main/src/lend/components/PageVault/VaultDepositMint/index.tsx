@@ -249,7 +249,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
                 : undefined
           }
           disabled={disabled}
-          inputBalanceUsd={decimal(usdRate && usdRate * +formValues.amount)}
+          inputBalanceUsd={decimal(formValues.amount && usdRate && usdRate * +formValues.amount)}
           walletBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
             balance: decimal(userBalances?.borrowed),

@@ -316,7 +316,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
               : isReady && t`Max borrow amount ${formatNumber(maxRecv, { defaultValue: '-' })}`
           }
           disabled={disabled}
-          inputBalanceUsd={decimal(stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
+          inputBalanceUsd={decimal(formValues.debt && stablecoinUsdRate && stablecoinUsdRate * +formValues.debt)}
           walletBalance={{
             loading: userWalletBalancesLoading,
             balance: decimal(userWalletBalances.stablecoin),
@@ -379,7 +379,9 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
             name="collateral"
             isError={!!formValues.collateralError}
             disabled={disabled}
-            inputBalanceUsd={decimal(collateralUsdRate && collateralUsdRate * +formValues.collateral)}
+            inputBalanceUsd={decimal(
+              formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+            )}
             walletBalance={{
               loading: userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
