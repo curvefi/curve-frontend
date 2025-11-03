@@ -10,7 +10,7 @@ const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /** LargeTokenInput replaces legacy amount inputs */
-const useLargeTokenInput = useBetaChannel
+const useLargeTokenInput = useStableChannel
 
 /** Negation of useLargeTokenInput for readability. */
 export const useLegacyTokenInput = () => !useLargeTokenInput()
