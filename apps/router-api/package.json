@@ -21,11 +21,11 @@
   },
   "devDependencies": {
     "@curvefi/api": "*",
-    "@types/node": "24.7.1",
+    "@types/node": "*",
     "eslint": "*",
     "eslint-config-custom": "*",
     "tsx": "4.20.6",
     "typescript": "*",
-    "vitest": "^3.2.4"
+    "vitest": "*"
   }
 }
