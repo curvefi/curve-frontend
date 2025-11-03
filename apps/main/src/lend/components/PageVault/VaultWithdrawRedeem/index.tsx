@@ -110,7 +110,7 @@ const VaultWithdrawRedeem = ({
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(networks[chainId], resp.hash)}
-            onClose={() => reset({})}
+            onClose={() => reset({}).catch(errorFallback)}
           />,
         )
       }
@@ -172,7 +172,7 @@ const VaultWithdrawRedeem = ({
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 

@@ -118,7 +118,7 @@ const LoanCreate = ({
         [name]: value,
         collateralError: '',
         debtError: '',
-      })
+      }).catch(errorFallback)
     },
     [formStatus, reset, updateFormValues],
   )

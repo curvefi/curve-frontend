@@ -62,8 +62,10 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-rpc
+          name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
 
   cypress-component-rpc:
     name: Cypress component tests with RPC
@@ -94,6 +96,8 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
 
   cypress-e2e:
     strategy:
@@ -140,7 +144,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
           retention-days: 1
           if-no-files-found: error

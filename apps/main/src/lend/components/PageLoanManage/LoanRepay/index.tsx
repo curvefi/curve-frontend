@@ -293,7 +293,7 @@ const LoanRepay = ({
       !formStatus.step &&
       !formStatus.error &&
       !isConfirming &&
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     )
   }, REFRESH_INTERVAL['10s'])
 
@@ -367,11 +367,11 @@ const LoanRepay = ({
 
   const network = networks[rChainId]
   const setUserCollateral = useCallback(
-    (userCollateral: string) => updateFormValues({ userCollateral, isFullRepay: false }),
+    (userCollateral: string) => updateFormValues({ userCollateral, isFullRepay: false }).catch(errorFallback),
     [updateFormValues],
   )
   const setStateCollateral = useCallback(
-    (stateCollateral: string) => updateFormValues({ stateCollateral, isFullRepay: false }),
+    (stateCollateral: string) => updateFormValues({ stateCollateral, isFullRepay: false }).catch(errorFallback),
     [updateFormValues],
   )
 
@@ -394,7 +394,9 @@ const LoanRepay = ({
             tokenBalance={userState?.collateral}
             handleInpChange={setStateCollateral}
             handleMaxClick={() =>
-              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
+              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false }).catch(
+                errorFallback,
+              )
             }
           />
         </Stack>
@@ -418,7 +420,9 @@ const LoanRepay = ({
               tokenBalance={userBalances?.collateral}
               handleInpChange={setUserCollateral}
               handleMaxClick={() =>
-                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
+                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false }).catch(
+                  errorFallback,
+                )
               }
             />
           )}
@@ -438,29 +442,29 @@ const LoanRepay = ({
             handleInpChange={useCallback(
               (userBorrowed) => {
                 if (hasExpectedBorrowed) {
-                  updateFormValues({ userBorrowed, isFullRepay: false })
+                  updateFormValues({ userBorrowed, isFullRepay: false }).catch(errorFallback)
                   return
                 }
 
                 if (!hasExpectedBorrowed && userState?.borrowed != null && borrowedTokenDecimals) {
                   const totalRepay = sum([userState.borrowed, userBorrowed], borrowedTokenDecimals)
                   const isFullRepay = isGreaterThanOrEqualTo(totalRepay, userState.debt, borrowedTokenDecimals)
-                  updateFormValues({ userBorrowed, isFullRepay })
+                  updateFormValues({ userBorrowed, isFullRepay }).catch(errorFallback)
                   return
                 }
 
-                updateFormValues({ userBorrowed, isFullRepay: false })
+                updateFormValues({ userBorrowed, isFullRepay: false }).catch(errorFallback)
               },
               [borrowedTokenDecimals, hasExpectedBorrowed, updateFormValues, userState?.borrowed, userState?.debt],
             )}
             handleMaxClick={async () => {
               if (+userBalances.borrowed === 0) {
-                updateFormValues({ userBorrowed: '', isFullRepay: false })
+                updateFormValues({ userBorrowed: '', isFullRepay: false }).catch(errorFallback)
                 return
               }
 
               if (expectedBorrowed) {
-                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false }).catch(errorFallback)
                 return
               }
 
@@ -473,14 +477,11 @@ const LoanRepay = ({
                 const amountNeededWithInterestRate = amountNeeded + getPercentage(amountNeeded, 1n)
 
                 if (isGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
-                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false }).catch(errorFallback)
                   return
                 }
-
-                updateFormValues({ userBorrowed: '', isFullRepay: true })
-                return
               }
-              updateFormValues({ userBorrowed: '', isFullRepay: false })
+              updateFormValues({ userBorrowed: '', isFullRepay: false }).catch(errorFallback)
             }}
           />
         </Stack>
@@ -495,9 +496,9 @@ const LoanRepay = ({
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
         onChange={(isFullRepay) => {
           if (isFullRepay) {
-            updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay })
+            updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay }).catch(errorFallback)
           } else {
-            updateFormValues({ ...DEFAULT_FORM_VALUES })
+            updateFormValues({ ...DEFAULT_FORM_VALUES }).catch(errorFallback)
           }
         }}
       >
@@ -537,7 +538,7 @@ const LoanRepay = ({
             <AlertFormError
               limitHeight
               errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
             />
           ) : null}
           {steps && <Stepper steps={steps} />}

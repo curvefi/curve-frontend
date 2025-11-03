@@ -22,6 +22,7 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
@@ -76,7 +77,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
           days,
         },
         false,
-      )
+      ).catch(errorFallback)
     },
     [currUtcDate, haveSigner, maxUtcDate, minUtcDate, rChainId, updateFormValues],
   )
@@ -88,7 +89,10 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       if (!value || !unit) {
         const days = maxUtcDate.diff(currUtcDate, 'd')
         const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
-        updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' }, false)
+        updateFormValues(
+          { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
+          false,
+        ).catch(errorFallback)
         return maxUtcDate
       }
 
@@ -96,7 +100,10 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
       const days = utcDate.diff(currUtcDate, 'd')
       const calcdUtcDate = calcUnlockTime(curve, 'create', null, days)
 
-      updateFormValues({ utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' }, false)
+      updateFormValues(
+        { utcDate: toCalendarDate(calcdUtcDate), utcDateError: '', days, calcdUtcDate: '' },
+        false,
+      ).catch(errorFallback)
       return utcDate
     },
     [currUtcDate, maxUtcDate, rChainId, updateFormValues],
@@ -186,7 +193,7 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues({}, true)
+    updateFormValues({}, true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false
@@ -224,7 +231,10 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={useCallback((lockedAmt) => updateFormValues({ lockedAmt }, false), [updateFormValues])}
+          handleInpLockedAmt={useCallback(
+            (lockedAmt) => updateFormValues({ lockedAmt }, false).catch(errorFallback),
+            [updateFormValues],
+          )}
           {...formValues}
         />
 
@@ -255,7 +265,10 @@ const FormLockCreate = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) =>
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
+          <AlertFormError
+            errorKey={formStatus.error}
+            handleBtnClose={() => updateFormValues({}, false).catch(errorFallback)}
+          />
         )}
         {txInfoBar}
         <Stepper steps={steps} />

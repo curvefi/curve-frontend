@@ -158,7 +158,7 @@ const Swap = ({
             description={`Swapped ${fromAmount} ${fromToken}.`}
             txHash={scanTxPath(network, resp.hash)}
             onClose={() => {
-              updateFormValues({}, null, null)
+              updateFormValues({}, null, null).catch(errorFallback)
             }}
           />,
         )
@@ -332,9 +332,9 @@ const Swap = ({
   ])
 
   // pageVisible
-
   useEffect(() => {
     fetchData().catch(errorFallback)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
   // re-fetch data
@@ -344,11 +344,13 @@ const Swap = ({
   const isDisabled = seed.isSeed === null || seed.isSeed || formStatus.formProcessing
 
   const setFromAmount = useCallback(
-    (value?: Decimal) => updateFormValues({ isFrom: true, fromAmount: value ?? '', toAmount: '' }, null, null),
+    (value?: Decimal) =>
+      updateFormValues({ isFrom: true, fromAmount: value ?? '', toAmount: '' }, null, null).catch(errorFallback),
     [updateFormValues],
   )
   const setToAmount = useCallback(
-    (value?: Decimal) => updateFormValues({ isFrom: false, toAmount: value ?? '', fromAmount: '' }, null, null),
+    (value?: Decimal) =>
+      updateFormValues({ isFrom: false, toAmount: value ?? '', fromAmount: '' }, null, null).catch(errorFallback),
     [updateFormValues],
   )
 
@@ -378,7 +380,7 @@ const Swap = ({
                   }
                   value={formValues.fromAmount}
                   onChange={(fromAmount) => {
-                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null)
+                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }, null, null).catch(errorFallback)
                   }}
                 />
                 <InputMaxBtn
@@ -386,7 +388,7 @@ const Swap = ({
                   loading={isMaxLoading}
                   isNetworkToken={formValues.fromAddress.toLowerCase() === ethAddress}
                   onClick={() => {
-                    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null)
+                    updateFormValues({ isFrom: true, fromAmount: '', toAmount: '' }, true, null).catch(errorFallback)
                   }}
                 />
                 {
@@ -414,7 +416,7 @@ const Swap = ({
                         cFormValues.fromAmount = ''
                       }
 
-                      updateFormValues(cFormValues, null, '')
+                      updateFormValues(cFormValues, null, '').catch(errorFallback)
                     }}
                   />
                 }
@@ -493,7 +495,7 @@ const Swap = ({
               cFormValues.toAddress = formValues.fromAddress
               cFormValues.toAmount = ''
 
-              updateFormValues(cFormValues, null, '')
+              updateFormValues(cFormValues, null, '').catch(errorFallback)
             }}
             size="medium"
           >
@@ -523,7 +525,7 @@ const Swap = ({
                 }
                 value={formValues.toAmount}
                 onChange={(toAmount) => {
-                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '')
+                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }, null, '').catch(errorFallback)
                 }}
               />
               <TokenSelector
@@ -549,7 +551,7 @@ const Swap = ({
                   } else {
                     cFormValues.fromAmount = ''
                   }
-                  updateFormValues(cFormValues, null, '')
+                  updateFormValues(cFormValues, null, '').catch(errorFallback)
                 }}
               />
             </StyledInputProvider>
@@ -625,7 +627,7 @@ const Swap = ({
                     cFormValues.fromAmount = ''
                   }
 
-                  updateFormValues(cFormValues, null, '')
+                  updateFormValues(cFormValues, null, '').catch(errorFallback)
                 }
               }}
             >
@@ -671,7 +673,7 @@ const Swap = ({
       <AlertFormError
         errorKey={formStatus.error}
         handleBtnClose={() => {
-          updateFormValues({}, null, null)
+          updateFormValues({}, null, null).catch(errorFallback)
         }}
       />
 

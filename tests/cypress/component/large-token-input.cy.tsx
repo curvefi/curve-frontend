@@ -4,27 +4,15 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import type { Decimal } from '@ui-kit/utils'
 
 function TestComponent() {
-  const [balance, setBalance] = useState<Decimal | undefined>(undefined)
-
-  // This value is different from balance, as it's not being overwritten by user input and is debounced uniquely.
+  // This value is different from the input value, it is debounced in the component
   const [balanceDebounced, setBalanceDebounced] = useState<Decimal | undefined>(undefined)
-
   return (
     <ComponentTestWrapper>
-      <>
-        <LargeTokenInput
-          name="amount"
-          balance={balance}
-          onBalance={(newBalance) => {
-            setBalance(newBalance)
-            setBalanceDebounced(newBalance)
-          }}
-        />
+      <LargeTokenInput name="amount" onBalance={(newBalance) => setBalanceDebounced(newBalance)} />
 
-        <div>
-          Debounced balance value: <span data-testid="debounced-balance">{balanceDebounced}</span>
-        </div>
-      </>
+      <div>
+        Debounced balance value: <span data-testid="debounced-balance">{balanceDebounced}</span>
+      </div>
     </ComponentTestWrapper>
   )
 }
@@ -34,13 +22,17 @@ describe('LargeTokenInput', () => {
     cy.mount(<TestComponent />)
     cy.get('input').should('have.value', '')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click().type('5').blur()
+    cy.get('input').click()
+    cy.get('input').type('5')
+    cy.get('input').blur()
     cy.get('input').should('have.value', '5')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click().type('.')
+    cy.get('input').click()
+    cy.get('input').type('.')
     cy.get('input').should('have.value', '.')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '')
-    cy.get('input').click().type('5')
+    cy.get('input').click()
+    cy.get('input').type('5')
     cy.get('input').should('have.value', '.5')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '.5')
   })

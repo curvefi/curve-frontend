@@ -123,7 +123,7 @@ const LoanBorrowMore = ({
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(networks[chainId], resp.hash)}
-            onClose={() => updateFormValues({}, '', true, true)}
+            onClose={() => updateFormValues({}, '', true, true).catch(errorFallback)}
           />,
         )
       }
@@ -276,7 +276,7 @@ const LoanBorrowMore = ({
       !formStatus.step &&
       !formStatus.error &&
       !isConfirming &&
-      updateFormValues({}),
+      updateFormValues({}).catch(errorFallback),
     REFRESH_INTERVAL['10s'],
   )
 
@@ -351,7 +351,10 @@ const LoanBorrowMore = ({
     setHealthMode,
   }
 
-  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
+  const setUserBorrowed = useCallback(
+    (userBorrowed: string) => updateFormValues({ userBorrowed }).catch(errorFallback),
+    [updateFormValues],
+  )
   const network = networks[rChainId]
 
   return (
@@ -371,8 +374,13 @@ const LoanBorrowMore = ({
             tokenAddress={market?.collateral_token?.address}
             tokenSymbol={market?.collateral_token?.symbol}
             tokenBalance={userBalances?.collateral}
-            handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+            handleInpChange={useCallback(
+              (userCollateral) => updateFormValues({ userCollateral }).catch(errorFallback),
+              [updateFormValues],
+            )}
+            handleMaxClick={() =>
+              updateFormValues({ userCollateral: userBalances?.collateral ?? '' }).catch(errorFallback)
+            }
           />
 
           {isLeverage && (
@@ -388,7 +396,9 @@ const LoanBorrowMore = ({
               tokenSymbol={market?.borrowed_token?.symbol}
               tokenBalance={userBalances?.borrowed}
               handleInpChange={setUserBorrowed}
-              handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
+              handleMaxClick={() =>
+                updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' }).catch(errorFallback)
+              }
             />
           )}
         </Stack>
@@ -405,10 +415,10 @@ const LoanBorrowMore = ({
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
           maxRecv={maxRecv}
-          handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
+          handleInpChange={useCallback((debt) => updateFormValues({ debt }).catch(errorFallback), [updateFormValues])}
           handleMaxClick={async () => {
             const debt = await refetchMaxRecv(market, isLeverage)
-            updateFormValues({ debt })
+            updateFormValues({ debt }).catch(errorFallback)
           }}
         />
       </Stack>
@@ -429,7 +439,7 @@ const LoanBorrowMore = ({
             <AlertFormError
               limitHeight
               errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
             />
           )}
           {steps && <Stepper steps={steps} />}

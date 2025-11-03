@@ -6,6 +6,7 @@ import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { getActiveStep } from '@ui/Stepper/helpers'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoCompProps & { isLeverage: boolean }) => {
   const { api, market, steps, updateFormValues } = props
@@ -32,11 +33,11 @@ const DetailInfoComp = ({ isLeverage, ...props }: PageContentProps & DetailInfoC
   const handleLiqRangesEdit = () => {
     const showEditLiqRange = !isEditLiqRange
     setStateByKey('isEditLiqRange', showEditLiqRange)
-    updateFormValues(formValues)
+    updateFormValues(formValues).catch(errorFallback)
   }
 
   const handleSelLiqRange = (n: number) => {
-    updateFormValues({ ...formValues, n })
+    updateFormValues({ ...formValues, n }).catch(errorFallback)
   }
 
   const additionalProps: DetailInfoCompAdditionalProps = {

@@ -184,7 +184,7 @@ const QuickSwap = ({
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(network, resp.hash)}
-            onClose={() => updateFormValues({}, false, '', true)}
+            onClose={() => updateFormValues({}, false, '', true).catch(errorFallback)}
           />,
         )
       }
@@ -315,20 +315,20 @@ const QuickSwap = ({
 
     return () => {
       isSubscribed.current = false
-      updateFormValues({}, false, '', true)
+      updateFormValues({}, false, '', true).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // maxSlippage
   useEffect(() => {
-    if (isReady) updateFormValues({}, false, cryptoMaxSlippage)
+    if (isReady) updateFormValues({}, false, cryptoMaxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cryptoMaxSlippage])
 
   // pageVisible re-fetch data
   useEffect(() => {
-    if (isReady) fetchData()
+    if (isReady) fetchData().catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPageVisible])
 
@@ -339,9 +339,9 @@ const QuickSwap = ({
   }, [curve?.chainId])
 
   // updateForm
-
   useEffect(() => {
     fetchData().catch(errorFallback)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokensMapperStr, searchedParams.fromAddress, searchedParams.toAddress])
 
   useEffect(() => {
@@ -377,11 +377,13 @@ const QuickSwap = ({
   const [releaseChannel] = useReleaseChannel()
 
   const setFromAmount = useCallback(
-    (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
+    (fromAmount?: Decimal) =>
+      updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }).catch(errorFallback),
     [updateFormValues],
   )
   const setToAmount = useCallback(
-    (toAmount?: Decimal) => updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }),
+    (toAmount?: Decimal) =>
+      updateFormValues({ isFrom: false, toAmount: toAmount ?? '', fromAmount: '' }).catch(errorFallback),
     [updateFormValues],
   )
 
@@ -411,14 +413,16 @@ const QuickSwap = ({
                   }
                   testId="from-amount"
                   value={isMaxLoading ? '' : formValues.fromAmount}
-                  onChange={(fromAmount) => updateFormValues({ isFrom: true, fromAmount, toAmount: '' })}
+                  onChange={(fromAmount) =>
+                    updateFormValues({ isFrom: true, fromAmount, toAmount: '' }).catch(errorFallback)
+                  }
                 />
                 <InputMaxBtn
                   loading={isMaxLoading}
                   disabled={isDisable}
                   isNetworkToken={searchedParams.fromAddress === ethAddress}
                   testId="max"
-                  onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true)}
+                  onClick={() => updateFormValues({ isFrom: true, toAmount: '' }, true).catch(errorFallback)}
                 />
 
                 <TokenSelector
@@ -515,7 +519,9 @@ const QuickSwap = ({
                 }
                 testId="to-amount"
                 value={formValues.toAmount}
-                onChange={(toAmount) => updateFormValues({ isFrom: false, toAmount, fromAmount: '' })}
+                onChange={(toAmount) =>
+                  updateFormValues({ isFrom: false, toAmount, fromAmount: '' }).catch(errorFallback)
+                }
               />
               <TokenSelector
                 selectedToken={toToken}

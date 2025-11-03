@@ -8,6 +8,7 @@ import OpenDialogButton from '@ui/Dialog/OpenDialogButton'
 import Icon from '@ui/Icon'
 import { Radio, RadioGroup } from '@ui/Radio'
 import { Chip } from '@ui/Typography'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const sortOrder = {
   asc: { label: 'Ascending', icon: <Icon name="ArrowUp" size={24} /> },
@@ -29,7 +30,7 @@ const TableSortDialog = ({ className = '', tableLabel }: Props) => {
 
   const handleRadioGroupChange = (val: string) => {
     const [sortBy, sortByOrder] = val.split('-')
-    updateFormValues({ sortBy: sortBy as SortId, sortByOrder: sortByOrder as Order })
+    updateFormValues({ sortBy: sortBy as SortId, sortByOrder: sortByOrder as Order }).catch(errorFallback)
     overlayTriggerState.close()
   }
 

@@ -57,7 +57,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   )
 
   const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
+    reset({ amount }).catch(errorFallback)
   }
 
   const handleBtnClickUnstake = useCallback(
@@ -80,7 +80,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
+        setTxInfoBar(
+          <TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({}).catch(errorFallback)} />,
+        )
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
@@ -138,7 +140,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 

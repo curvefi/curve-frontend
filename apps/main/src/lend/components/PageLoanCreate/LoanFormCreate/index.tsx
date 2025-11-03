@@ -36,6 +36,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const LoanCreate = ({
@@ -263,7 +264,7 @@ const LoanCreate = ({
       !formStatus.step &&
       !formStatus.error &&
       !isConfirming &&
-      updateFormValues({}),
+      updateFormValues({}).catch(errorFallback),
     REFRESH_INTERVAL['10s'],
   )
 
@@ -307,21 +308,24 @@ const LoanCreate = ({
 
   // signerAddress, maxSlippage state change
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage, isAdvancedMode])
 
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   const disabled = !!formStatus.step
 
-  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
+  const setUserBorrowed = useCallback(
+    (userBorrowed: string) => updateFormValues({ userBorrowed }).catch(errorFallback),
+    [updateFormValues],
+  )
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
@@ -338,10 +342,12 @@ const LoanCreate = ({
           tokenSymbol={collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
           handleInpChange={useCallback(
-            (userCollateral: string) => updateFormValues({ userCollateral }),
+            (userCollateral: string) => updateFormValues({ userCollateral }).catch(errorFallback),
             [updateFormValues],
           )}
-          handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+          handleMaxClick={() =>
+            updateFormValues({ userCollateral: userBalances?.collateral ?? '' }).catch(errorFallback)
+          }
         />
 
         {isLeverage && (
@@ -357,7 +363,7 @@ const LoanCreate = ({
             tokenSymbol={borrowed_token?.symbol}
             tokenBalance={userBalances?.borrowed}
             handleInpChange={setUserBorrowed}
-            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
+            handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' }).catch(errorFallback)}
           />
         )}
       </FieldsWrapper>
@@ -372,10 +378,10 @@ const LoanCreate = ({
         tokenAddress={borrowed_token?.address}
         tokenSymbol={borrowed_token?.symbol}
         maxRecv={maxRecv}
-        handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
+        handleInpChange={useCallback((debt) => updateFormValues({ debt }).catch(errorFallback), [updateFormValues])}
         handleMaxClick={async () => {
           const debt = await refetchMaxRecv(market, isLeverage)
-          updateFormValues({ debt })
+          updateFormValues({ debt }).catch(errorFallback)
         }}
       />
 

@@ -167,7 +167,9 @@ const FieldsDeposit = ({
             isDisabled={isDisabled}
             isSelected={!!formValues.isBalancedAmounts}
             onChange={(isBalancedAmounts) =>
-              updateFormValues({ isBalancedAmounts: isBalancedAmounts ? 'by-wallet' : false }, null, null)
+              updateFormValues({ isBalancedAmounts: isBalancedAmounts ? 'by-wallet' : false }, null, null).catch(
+                errorFallback,
+              )
             }
           >
             {t`Add all coins in a balanced proportion`}
@@ -191,7 +193,7 @@ const FieldsDeposit = ({
                   tokenAddress: wrapped.tokenAddresses[idx],
                   value: '',
                 }))
-                updateFormValues(cFormValues, null, null)
+                updateFormValues(cFormValues, null, null).catch(errorFallback)
               }
             }}
           >

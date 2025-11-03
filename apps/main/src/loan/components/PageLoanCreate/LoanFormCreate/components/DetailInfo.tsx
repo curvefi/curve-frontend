@@ -9,6 +9,7 @@ import { getActiveStep } from '@ui/Stepper/helpers'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const DetailInfoComp = (props: FormDetailInfo) => {
   const { activeKeyLiqRange, formValues, isLeverage, isReady, llamma, haveSigner, steps, updateFormValues } = props
@@ -31,11 +32,11 @@ const DetailInfoComp = (props: FormDetailInfo) => {
   const handleLiqRangesEdit = () => {
     const showEditLiqRange = !isEditLiqRange
     setStateByKey('isEditLiqRange', showEditLiqRange)
-    updateFormValues(formValues)
+    updateFormValues(formValues).catch(errorFallback)
   }
 
   const handleSelLiqRange = (n: number) => {
-    updateFormValues({ ...formValues, n })
+    updateFormValues({ ...formValues, n }).catch(errorFallback)
   }
 
   const loanToValueRatio = useMemo(() => {

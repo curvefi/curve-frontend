@@ -35,6 +35,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -103,7 +104,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     const updatedFormValues = { ...formValues }
     updatedFormValues.collateral = collateral
     updatedFormValues.collateralError = ''
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const onCollateralChanged = useCallback(
@@ -111,7 +112,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       const { formStatus, formValues } = useStore.getState().loanCollateralIncrease
       if (formValues.collateral === (val ?? '')) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' }).catch(errorFallback)
     },
     [reset, updateFormValues],
   )

@@ -17,6 +17,7 @@ import { type CurveApi, isLoading, notify, useConnection } from '@ui-kit/feature
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { useThrottle } from '@ui-kit/utils/timers'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
@@ -120,7 +121,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues({}, true)
+    updateFormValues({}, true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false
@@ -156,7 +157,10 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={useCallback((lockedAmt) => updateFormValues({ lockedAmt }), [updateFormValues])}
+          handleInpLockedAmt={useCallback(
+            (lockedAmt) => updateFormValues({ lockedAmt }).catch(errorFallback),
+            [updateFormValues],
+          )}
           {...formValues}
         />
       </StyledForm>
@@ -173,7 +177,10 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
+          <AlertFormError
+            errorKey={formStatus.error}
+            handleBtnClose={() => updateFormValues({}, false).catch(errorFallback)}
+          />
         )}
         {txInfoBar}
         <Stepper steps={steps} />

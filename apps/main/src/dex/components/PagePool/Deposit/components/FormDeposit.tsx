@@ -313,7 +313,10 @@ const FormDeposit = ({
       >
         <AlertSlippage maxSlippage={maxSlippage} usdAmount={estLpTokenReceivedUsdAmount} />
         {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, null, null)} />
+          <AlertFormError
+            errorKey={formStatus.error}
+            handleBtnClose={() => updateFormValues({}, null, null).catch(errorFallback)}
+          />
         )}
         {txInfoBar}
         <Stepper steps={steps} />

@@ -7,6 +7,7 @@ import type { FormStatus, FormValues, SearchedParams } from '@/dex/components/Pa
 import AlertBox from '@ui/AlertBox'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { isUndefined, isNaN } = lodash
 
@@ -58,7 +59,7 @@ const RouterSwapAlerts = ({
 
       <AlertSlippage maxSlippage={maxSlippage} usdAmount={usdToAmount} />
 
-      <AlertFormError errorKey={swapError || error} handleBtnClose={() => updateFormValues({})} />
+      <AlertFormError errorKey={swapError || error} handleBtnClose={() => updateFormValues({}).catch(errorFallback)} />
     </>
   )
 }

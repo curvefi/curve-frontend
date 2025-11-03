@@ -36,6 +36,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -104,7 +105,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
     const updatedFormValues = { ...formValues }
     updatedFormValues.debt = debt
     updatedFormValues.debtError = ''
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const onDebtChanged = useCallback(
@@ -116,7 +117,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         debt,
         debtError: '',
         isFullRepay: decimal(userWalletBalances.stablecoin) == value,
-      })
+      }).catch(errorFallback)
     },
     [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
   )
@@ -127,7 +128,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
     updatedFormValues.debt = ''
     updatedFormValues.debtError = ''
     updatedFormValues.isFullRepay = isFullRepay
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const handleBtnClickPay = useCallback(

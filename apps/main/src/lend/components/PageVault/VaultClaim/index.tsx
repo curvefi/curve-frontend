@@ -136,7 +136,7 @@ const VaultClaim = ({ isLoaded, api, market, userActiveKey }: PageContentProps) 
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues()
+    if (isLoaded) updateFormValues().catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
