@@ -58,11 +58,11 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    LOCAL_STORAGE_KEY,
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+    title: LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
-  )
+  })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,

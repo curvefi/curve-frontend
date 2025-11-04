@@ -7,16 +7,27 @@ const DEFAULT: ColumnFiltersState = []
 
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
+ * @param defaultFilters - The default filters to apply to the table.
+ * @param staticFilters - Filters that cannot be changed by the user and are not stored in local storage.
+ * @param title - The title of the table, used as a key for local storage.
+ * @param migration - Migration options for the stored state.
+ * @return An object containing the current filters, a mapping of filters by column ID, a function to set a filter, and a function to reset filters.
  */
-export function useColumnFilters(
-  tableTitle: string,
-  migration: MigrationOptions<ColumnFiltersState>,
-  defaultFilters: ColumnFiltersState = DEFAULT,
-) {
-  const [columnFilters, setColumnFilters] = useTableFilters(tableTitle, defaultFilters, migration)
+export function useColumnFilters({
+  title,
+  migration,
+  defaultFilters = DEFAULT,
+  staticFilters = DEFAULT,
+}: {
+  title: string
+  migration: MigrationOptions<ColumnFiltersState>
+  defaultFilters?: ColumnFiltersState
+  staticFilters?: ColumnFiltersState
+}) {
+  const [storedFilters, setStoredFilters] = useTableFilters(title, defaultFilters, migration)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
-      setColumnFilters((filters) => [
+      setStoredFilters((filters) => [
         ...filters.filter((f) => f.id !== id),
         ...(value == null
           ? []
@@ -27,8 +38,10 @@ export function useColumnFilters(
               },
             ]),
       ]),
-    [setColumnFilters],
+    [setStoredFilters],
   )
+  const columnFilters = useMemo(() => [...storedFilters, ...staticFilters], [storedFilters, staticFilters])
+
   const columnFiltersById: Record<string, unknown> = useMemo(
     () =>
       columnFilters.reduce(
@@ -41,7 +54,6 @@ export function useColumnFilters(
     [columnFilters],
   )
 
-  const resetFilters = useCallback(() => setColumnFilters(defaultFilters), [defaultFilters, setColumnFilters])
-
-  return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
+  const resetFilters = useCallback(() => setStoredFilters(defaultFilters), [defaultFilters, setStoredFilters])
+  return { columnFilters, columnFiltersById, setColumnFilter, resetFilters }
 }
