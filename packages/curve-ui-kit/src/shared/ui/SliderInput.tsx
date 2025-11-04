@@ -37,6 +37,8 @@ export type SliderInputProps = {
     sliderMax?: number
     sliderStep?: number | null
   }
+  /** Test ID for the slider and inputs */
+  testId?: string
   /** Additional props forwarded to the slider */
   sliderProps?: Omit<SliderProps, 'size' | 'value' | 'onChange' | 'step' | 'disabled' | 'aria-label' | 'scale'>
   /** Additional props forwarded to the inputs */
@@ -77,6 +79,7 @@ export const SliderInput = ({
   sliderProps,
   inputProps,
   sliderValueTransform,
+  testId,
 }: SliderInputProps) => {
   const isRange = Array.isArray(value)
 
@@ -147,8 +150,8 @@ export const SliderInput = ({
       max={toDecimal(max)}
       onChange={handleInputChange(index)}
       disabled={disabled}
-      data-testid={inputProps?.['data-testid'] ? `${inputProps['data-testid']}-${index}` : undefined}
       sx={{ maxWidth: sliderInputMaxWidthMap[layoutDirection] }}
+      data-testid={`slider-input-${testId}-${index}`}
       {...inputProps}
     />
   )
@@ -164,6 +167,7 @@ export const SliderInput = ({
       step={sliderStepValue}
       disabled={disabled}
       scale={mapFromSliderValue}
+      data-testid={`slider-${testId}`}
       {...sliderProps}
     />
   )

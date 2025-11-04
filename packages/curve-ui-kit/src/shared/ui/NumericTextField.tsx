@@ -83,8 +83,6 @@ export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onC
   onBlur?: (value: Decimal | undefined) => void
   /** Optional formatter applied when the input loses focus */
   formatOnBlur?: (value: Decimal | undefined) => string
-  // extended to support data-testid attribute
-  [key: `data-${string}`]: string | undefined
 }
 
 export const NumericTextField = ({
