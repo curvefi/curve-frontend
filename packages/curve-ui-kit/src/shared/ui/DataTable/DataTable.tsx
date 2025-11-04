@@ -70,7 +70,7 @@ export const DataTable = <T extends TableItem>({
   useResetPageOnResultChange(table)
 
   return (
-    <WithWrapper Wrapper={Box} wrap={!!maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
+    <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
       <Table
         sx={useMemo(
           () => ({

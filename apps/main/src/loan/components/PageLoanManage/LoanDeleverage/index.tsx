@@ -70,6 +70,7 @@ const LoanDeleverage = ({
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
+  const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
   const setFormValues = useStore((state) => state.loanDeleverage.setFormValues)
@@ -335,12 +336,18 @@ const LoanDeleverage = ({
               : t`Debt ${formatNumber(userState?.debt, { defaultValue: '-' })} ${stablecoinName}`
           }
           disabled={disable}
-          maxBalance={{
+          inputBalanceUsd={decimal(
+            formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+          )}
+          walletBalance={{
             loading: userWalletBalancesLoading,
-            balance: decimal(userState?.collateral),
+            balance: decimal(userWalletBalances?.collateral),
             symbol: collateralName,
-            ...(collateralUsdRate != null &&
-              userState?.collateral != null && { notionalValueUsd: collateralUsdRate * +userState.collateral }),
+            usdRate: collateralUsdRate,
+          }}
+          maxBalance={{
+            balance: decimal(userState?.collateral),
+            chips: 'max',
           }}
           balance={decimal(formValues.collateral)}
           tokenSelector={

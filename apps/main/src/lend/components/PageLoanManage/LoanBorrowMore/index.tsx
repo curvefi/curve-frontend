@@ -397,6 +397,7 @@ const LoanBorrowMore = ({
           inpValue={formValues.debt}
           tokenAddress={market?.borrowed_token?.address}
           tokenSymbol={market?.borrowed_token?.symbol}
+          tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
           handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
           handleMaxClick={async () => {
