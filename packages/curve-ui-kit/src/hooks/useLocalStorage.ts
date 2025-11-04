@@ -45,7 +45,8 @@ export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', fa
 
 const getReleaseChannel = (): ReleaseChannel =>
   getFromLocalStorage<ReleaseChannel>('release-channel') ?? defaultReleaseChannel
-export const shouldShowErrors = () => getReleaseChannel() === ReleaseChannel.Beta
+export const shouldShowErrors = () =>
+  getReleaseChannel() === ReleaseChannel.Beta && defaultReleaseChannel === ReleaseChannel.Beta
 export const useReleaseChannel = () =>
   useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
     version: 1,

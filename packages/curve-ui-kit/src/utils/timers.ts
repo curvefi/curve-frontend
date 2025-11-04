@@ -32,5 +32,9 @@ export function setTimeoutInterval(callback: () => unknown, delay: number): () =
   }
 }
 
+/**
+ * Throttles a function using lodash throttle and memoizes it with useMemo.
+ * Important: the passed function should be stable between renders (e.g., static or wrapped in useCallback).
+ */
 export const useThrottle = <T extends (...args: any[]) => any>(f: T, duration = Duration.FormThrottle) =>
   useMemo(() => throttle(f, duration), [f, duration])

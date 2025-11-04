@@ -102,11 +102,12 @@ const Page = () => {
       if (rCollateralId && llamma) {
         ;(async () => {
           const fetchedLoanDetails = await fetchLoanDetails(curve, llamma)
-          if (!fetchedLoanDetails.loanExists) {
+          if (fetchedLoanDetails.loanExists) {
+            setLoaded(true)
+          } else {
             resetUserDetailsState(llamma)
             push(getLoanCreatePathname(params, rCollateralId))
           }
-          setLoaded(true)
         })().catch(errorFallback)
       } else {
         console.warn(`Cannot find market ${rCollateralId}, redirecting to list`, params)

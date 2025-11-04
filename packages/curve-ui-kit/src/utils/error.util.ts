@@ -10,6 +10,7 @@ const IGNORED_ERROR_MESSAGES = [
 ]
 
 export const errorFallback = (error: unknown) => {
+  console.error(error)
   if (!shouldShowErrors()) return
   const { message = 'An unknown error occurred' } = error as Error
   const { name } = error as DOMException

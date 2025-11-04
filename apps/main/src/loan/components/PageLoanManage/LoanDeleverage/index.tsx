@@ -137,13 +137,11 @@ const LoanDeleverage = ({
           <TxInfoBar
             description={txInfoBarMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
-            onClose={() => {
-              if (resp.loanExists) {
-                updateFormValues({}, '', true).catch(() => errorFallback)
-              } else {
-                push(getCollateralListPathname(params))
-              }
-            }}
+            onClose={() =>
+              resp.loanExists
+                ? updateFormValues({}, '', true).catch(errorFallback)
+                : push(getCollateralListPathname(params))
+            }
           />,
         )
       }
