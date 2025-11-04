@@ -60,7 +60,7 @@ const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>;
       ? { 'data-testid': `btn-page-${type.substring(0, 4)}`, onClick: table[`${type}Page`] }
       : { disabled: true })}
   >
-    <ChevronDownIcon sx={{ transform: `rotate(${{ previous: '-90', next: '90' }[type]}deg)` }} />
+    <ChevronDownIcon sx={{ transform: `rotate(${{ previous: '90', next: '-90' }[type]}deg)` }} />
   </IconButton>
 )
 
