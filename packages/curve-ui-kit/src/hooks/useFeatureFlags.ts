@@ -3,32 +3,35 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
+
+const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /**
  * LargeTokenInput replaces legacy amount inputs when on Beta channel.
  */
-export const useLargeTokenInput = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+export const useLargeTokenInput = useBetaChannel
+export const useLegacyTokenInput = () => !useLargeTokenInput()
 
 /**
  * New ActionInfo with mui should be released together with LargeTokenInput.
  */
-export const useActionInfo = useLargeTokenInput
+export const useActionInfo = useBetaChannel
 
 /**
  * New DEX market list (PoolListPage) is enabled on Beta channel.
  */
-export const useDexMarketList = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+export const useDexMarketList = useBetaChannel
 
 /**
  * New unified borrow form (BorrowTabContents) is enabled on Beta channel.
  * Exposed for convenience when migrating create/leverage pages.
  */
-export const useBorrowUnifiedForm = () => useReleaseChannel()[0] === ReleaseChannel.Beta
+export const useBorrowUnifiedForm = useBetaChannel
 
 /**
- * New user profile button is enabled on Beta channel and disabled during Cypress tests.
- * TODO: update cypress tests to support UserProfileButton
+ * The user profile button is enabled on the stable channel.
  */
-export const useUserProfileButton = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy && !isCypress
+export const useUserProfileButton = useStableChannel
