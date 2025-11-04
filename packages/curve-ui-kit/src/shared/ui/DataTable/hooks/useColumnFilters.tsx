@@ -17,14 +17,12 @@ export function useColumnFilters({
   title,
   migration,
   defaultFilters = DEFAULT,
-  staticFilters = DEFAULT,
 }: {
   title: string
   migration: MigrationOptions<ColumnFiltersState>
   defaultFilters?: ColumnFiltersState
-  staticFilters?: ColumnFiltersState
 }) {
-  const [storedFilters, setStoredFilters] = useTableFilters(title, defaultFilters, migration)
+  const [storedFilters, setStoredFilters] = useTableFilters(title, DEFAULT, migration)
   const setColumnFilter = useCallback(
     (id: string, value: unknown) =>
       setStoredFilters((filters) => [
@@ -40,7 +38,10 @@ export function useColumnFilters({
       ]),
     [setStoredFilters],
   )
-  const columnFilters = useMemo(() => [...storedFilters, ...staticFilters], [storedFilters, staticFilters])
+  const columnFilters = useMemo(() => {
+    const storedIds = new Set(storedFilters.map((f) => f.id))
+    return [...storedFilters, ...defaultFilters.filter((f) => !storedIds.has(f.id))]
+  }, [storedFilters, defaultFilters])
 
   const columnFiltersById: Record<string, unknown> = useMemo(
     () =>
@@ -54,6 +55,6 @@ export function useColumnFilters({
     [columnFilters],
   )
 
-  const resetFilters = useCallback(() => setStoredFilters(defaultFilters), [defaultFilters, setStoredFilters])
+  const resetFilters = useCallback(() => setStoredFilters(DEFAULT), [setStoredFilters])
   return { columnFilters, columnFiltersById, setColumnFilter, resetFilters }
 }

@@ -31,7 +31,7 @@ const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
 const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 
-const useStaticPoolsFilter = (data: PoolListItem[]) => {
+const useDefaultPoolsFilter = (data: PoolListItem[]) => {
   const hideSmallPools = useUserProfileStore((s) => s.hideSmallPools)
   const { hideSmallPoolsTvl: tvl = SMALL_POOL_TVL } = useNetworkFromUrl() ?? {}
   return useMemo(
@@ -65,11 +65,11 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   // todo: use isReady to show a loading spinner close to the data
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
-  const staticFilters = useStaticPoolsFilter(data)
+  const defaultFilters = useDefaultPoolsFilter(data)
   const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     migration,
-    staticFilters,
+    defaultFilters,
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const [pagination, onPaginationChange] = usePageFromQueryString(PER_PAGE)
@@ -119,7 +119,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
           <PoolListChips
             poolFilters={poolFilters}
             hiddenMarketCount={data ? data.length - resultCount : 0}
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, staticFilters)}
+            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
