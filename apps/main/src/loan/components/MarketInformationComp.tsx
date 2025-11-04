@@ -12,7 +12,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
-  llamma: Llamma
+  llamma: Llamma | null
   llammaId: string
   chainId: ChainId
   chartExpanded: boolean
