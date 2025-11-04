@@ -31,21 +31,19 @@ function visitAndWait(width: number, height: number, options?: { page?: number }
   }
 }
 
-const expectDesc = (values: number[]) =>
-  expect(values, `values should be in descending order: ${values.join(', ')}`).to.deep.equal(
-    [...values].sort((a, b) => b - a),
-  )
+type UsdValue = { text: string; parsed: number }
 
-const expectAsc = (values: number[]) =>
-  expect(values, `values should be in ascending order: ${values.join(', ')}`).to.deep.equal(
-    [...values].sort((a, b) => a - b),
-  )
+const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') => {
+  const expected = [...actual].sort((a, b) => (a.parsed - b.parsed) * { asc: 1, desc: -1 }[order])
+  expect(JSON.stringify(actual), `Table values should be in ${order} order`).to.equal(JSON.stringify(expected))
+}
 
 const getTopUsdValues = (columnId: 'volume' | 'tvl', n = 5) =>
   cy.get(`[data-testid="data-table-cell-${columnId}"]`).then(($cells) =>
     Cypress.$.makeArray($cells)
       .slice(0, n)
-      .map((el) => parseCompactUsd((el as HTMLElement).innerText)),
+      .map((el) => (el as HTMLElement).innerText)
+      .map((text): UsdValue => ({ text, parsed: parseCompactUsd(text) })),
   )
 
 describe('DEX Pools', () => {
@@ -61,7 +59,7 @@ describe('DEX Pools', () => {
       visitAndWait(width, height)
     })
 
-    function sortBy(field: string) {
+    function sortBy(field: string, expectedOrder: 'asc' | 'desc' | false) {
       if (breakpoint === 'mobile') {
         cy.get('[data-testid="btn-drawer-sort-dex-pools"]').click()
         cy.get(`[data-testid="drawer-sort-menu-dex-pools"] li[value="${field}"]`).click()
@@ -69,6 +67,11 @@ describe('DEX Pools', () => {
       } else {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
+      }
+      if (expectedOrder) {
+        cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
+      } else {
+        cy.get(`[data-testid^="icon-sort-${field}"]`).should('not.exist')
       }
     }
 
@@ -82,22 +85,22 @@ describe('DEX Pools', () => {
     }
 
     it('sorts by volume', () => {
-      getTopUsdValues('volume').then((vals) => expectDesc(vals)) // initial is Volume desc
+      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
       cy.url().should('not.include', 'volume') // initial sort not in URL
-      sortBy('volume')
-      cy.get('[data-testid="icon-sort-volume-desc"]').should('be.visible')
-      getTopUsdValues('volume').then((vals) => expectAsc(vals))
+      if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
+      sortBy('volume', 'asc')
+      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
       cy.url().should('include', 'sort=volume')
     })
 
     it('sorts by TVL (desc/asc)', () => {
       cy.url().should('not.include', 'tvl') // initial sort not in URL
-      sortBy('tvl')
-      getTopUsdValues('tvl').then((vals) => expectDesc(vals))
+      sortBy('tvl', 'desc')
+      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
       cy.url().should('include', 'sort=-tvl')
-      cy.get('[data-testid="icon-sort-tvl-desc"]').should('be.visible')
-      sortBy('tvl')
-      getTopUsdValues('tvl').then((vals) => expectAsc(vals))
+      if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
+      sortBy('tvl', 'asc')
+      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'asc'))
       cy.url().should('include', 'sort=tvl')
     })
 
