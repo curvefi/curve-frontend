@@ -68,29 +68,35 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.be.visible')
       } else {
         cy.get(`[data-testid="data-table-header-${field}"]`).click()
+        cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
       }
     }
 
-    function clickFilterChip(chip: string) {
-      if (breakpoint === 'mobile') {
+    function clickFilterChip(chip: string, isMobile = breakpoint === 'mobile') {
+      if (isMobile) {
         cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
         cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
       }
       cy.get(`[data-testid="filter-chip-${chip}"]`).click()
-      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('not.exist')
+      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
     }
 
     it('sorts by volume', () => {
       getTopUsdValues('volume').then((vals) => expectDesc(vals)) // initial is Volume desc
+      cy.url().should('not.include', 'volume') // initial sort not in URL
       sortBy('volume')
       getTopUsdValues('volume').then((vals) => expectAsc(vals))
+      cy.url().should('include', 'sort=volume')
     })
 
     it('sorts by TVL (desc/asc)', () => {
+      cy.url().should('not.include', 'tvl') // initial sort not in URL
       sortBy('tvl')
       getTopUsdValues('tvl').then((vals) => expectDesc(vals))
+      cy.url().should('include', 'sort=-tvl')
       sortBy('tvl')
       getTopUsdValues('tvl').then((vals) => expectAsc(vals))
+      cy.url().should('include', 'sort=tvl')
     })
 
     it('filters by currency chip', () => {
