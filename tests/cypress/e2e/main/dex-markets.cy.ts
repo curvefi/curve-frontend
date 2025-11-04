@@ -1,3 +1,4 @@
+import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
@@ -33,18 +34,19 @@ function visitAndWait(width: number, height: number, options?: { page?: number }
 
 type UsdValue = { text: string; parsed: number }
 
-const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') => {
-  const expected = [...actual].sort((a, b) => (a.parsed - b.parsed) * { asc: 1, desc: -1 }[order])
-  expect(JSON.stringify(actual), `Table values should be in ${order} order`).to.equal(JSON.stringify(expected))
-}
-
-const getTopUsdValues = (columnId: 'volume' | 'tvl', n = 5) =>
-  cy.get(`[data-testid="data-table-cell-${columnId}"]`).then(($cells) =>
-    Cypress.$.makeArray($cells)
-      .slice(0, n)
-      .map((el) => (el as HTMLElement).innerText)
-      .map((text): UsdValue => ({ text, parsed: parseCompactUsd(text) })),
+const expectOrder = (actual: UsdValue[], order: 'asc' | 'desc') =>
+  expect(JSON.stringify(actual), `Table values should be in ${order} order`).to.equal(
+    JSON.stringify(orderBy(actual, 'parsed', order)),
   )
+
+const getTopUsdValues = (columnId: 'volume' | 'tvl') =>
+  cy
+    .get(`[data-testid="data-table-cell-${columnId}"]`)
+    .then(($cells) =>
+      Cypress.$.makeArray($cells).map(
+        ({ innerText }): UsdValue => ({ text: innerText, parsed: parseCompactUsd(innerText) }),
+      ),
+    )
 
 describe('DEX Pools', () => {
   let breakpoint: Breakpoint
@@ -55,9 +57,7 @@ describe('DEX Pools', () => {
   })
 
   describe('First page', () => {
-    beforeEach(() => {
-      visitAndWait(width, height)
-    })
+    beforeEach(() => visitAndWait(width, height))
 
     function sortBy(field: string, expectedOrder: 'asc' | 'desc' | false) {
       if (breakpoint === 'mobile') {
