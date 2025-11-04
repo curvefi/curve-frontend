@@ -5,12 +5,12 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, shortenAddress, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal, shortenAddress } from '@ui-kit/utils'
 
 type Props = {
   idx: number
@@ -50,7 +50,6 @@ const FieldToken = ({
   afterMaxClick,
 }: Props) => {
   const showAvailableBalance = haveSigner && !isWithdraw
-  const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback((val?: Decimal) => handleAmountChange(val ?? '', idx), [handleAmountChange, idx])
 
   const isNetworkToken = !isWithdraw && tokenAddress.toLowerCase() === ethAddress
@@ -59,7 +58,7 @@ const FieldToken = ({
     afterMaxClick?.(idx)
   }, [idx, afterMaxClick, handleAmountChange, balance])
 
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return !useLargeTokenInput() ? (
     <InputProvider
       grid
       gridTemplateColumns={hideMaxButton ? '1fr auto' : '1fr auto auto'}

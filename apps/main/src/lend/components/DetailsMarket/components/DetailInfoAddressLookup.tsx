@@ -6,11 +6,11 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { scanAddressPath } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { AddressActionInfo, AddressActionInfoProps } from '@ui-kit/shared/ui/AddressActionInfo'
-import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 type Props = Omit<AddressActionInfoProps, 'network'> & { chainId: ChainId }
 
@@ -99,13 +99,13 @@ const NoGaugeActionInfo = ({ isBorderBottom, title }: Pick<Props, 'isBorderBotto
   />
 )
 
-export default function DetailInfoAddressLookup({ chainId, ...props }: Props) {
-  const [releaseChannel] = useReleaseChannel()
-  return releaseChannel !== ReleaseChannel.Beta ? (
+const DetailInfoAddressLookup = ({ chainId, ...props }: Props) =>
+  !useActionInfo() ? (
     <OldDetailInfoAddressLookup chainId={chainId} {...props} />
   ) : props.address === 'NaN' ? (
     <NoGaugeActionInfo {...props} />
   ) : (
     <AddressActionInfo network={networks[chainId]} {...props} />
   )
-}
+
+export default DetailInfoAddressLookup

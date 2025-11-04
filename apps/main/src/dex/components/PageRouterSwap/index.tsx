@@ -39,13 +39,13 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { errorFallback } from '@ui-kit/utils/error.util'
 
 const QuickSwap = ({
@@ -374,7 +374,7 @@ const QuickSwap = ({
   const routesAndOutputLoading =
     !pageLoaded ||
     (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseLargeTokenInput = useLargeTokenInput()
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) =>
@@ -392,7 +392,7 @@ const QuickSwap = ({
       {/* inputs */}
       <Box grid gridRowGap="1" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {!shouldUseLargeTokenInput ? (
             <Box grid gridGap={1}>
               <InputProvider
                 id="fromAmount"
@@ -501,7 +501,7 @@ const QuickSwap = ({
         </Box>
 
         {/* SWAP TO */}
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {!shouldUseLargeTokenInput ? (
           <div>
             <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
               <InputDebounced

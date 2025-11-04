@@ -5,9 +5,9 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton/IconButton'
 import { formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { decimal, ReleaseChannel } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { SlippageSettings, SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 
 type Props = {
@@ -18,16 +18,13 @@ type Props = {
 
 const DetailInfoSlippageTolerance = ({ maxSlippage, stateKey, customLabel }: Props) => {
   const setMaxSlippage = useUserProfileStore((state) => state.setMaxSlippage)
-  const [releaseChannel] = useReleaseChannel()
   const value = decimal(maxSlippage)!
 
   const onSave = useCallback((slippage: string) => setMaxSlippage(slippage, stateKey), [setMaxSlippage, stateKey])
 
-  if (releaseChannel === ReleaseChannel.Beta) {
-    return <SlippageToleranceActionInfo maxSlippage={value} onSave={onSave} />
-  }
-
-  return (
+  return useActionInfo() ? (
+    <SlippageToleranceActionInfo maxSlippage={value} onSave={onSave} />
+  ) : (
     <StyledDetailInfo label={customLabel || t`Slippage tolerance:`}>
       <SlippageSettings
         maxSlippage={value}

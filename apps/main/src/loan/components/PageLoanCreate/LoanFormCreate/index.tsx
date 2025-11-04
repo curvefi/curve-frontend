@@ -29,12 +29,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { errorFallback } from '@ui-kit/utils/error.util'
 
 const LoanCreate = ({
@@ -81,7 +81,7 @@ const LoanCreate = ({
   const { haveSigner } = curveProps(curve)
   const network = networks[rChainId]
 
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseLargeTokenInput = useLargeTokenInput()
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -292,7 +292,7 @@ const LoanCreate = ({
     <>
       {/* field collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {!shouldUseLargeTokenInput ? (
           <>
             <StyledInputProvider
               grid
@@ -354,7 +354,7 @@ const LoanCreate = ({
 
       {/* field debt */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {!shouldUseLargeTokenInput ? (
           <>
             <InputProvider
               grid
