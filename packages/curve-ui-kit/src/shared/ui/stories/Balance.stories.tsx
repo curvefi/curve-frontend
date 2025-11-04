@@ -14,9 +14,9 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The token balance',
     },
-    notionalValueUsd: {
+    usdRate: {
       control: 'number',
-      description: 'The USD value of the balance',
+      description: 'The USD price of the token',
     },
     clickable: {
       control: 'boolean',
@@ -59,7 +59,7 @@ export const Default: Story = {
 
 export const WithNotionalValue: Story = {
   args: {
-    notionalValueUsd: 2345.67,
+    usdRate: 2345.67,
   },
 }
 

@@ -66,12 +66,14 @@ const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: Bal
 /** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
-  symbol: string
+  symbol: string | undefined
   /** Whether the balance is clickable or not */
   clickable?: boolean
   /** The token balance amount (optional, in case of loading) */
   balance?: T
-  /** The USD value of the balance (optional) */
+  /** The USD price of the token (optional, only used when notionalValueUsd is omitted) */
+  usdRate?: number
+  /** The USD value of the balance (optional, replaces the calculated value with usdRate) */
   notionalValueUsd?: T | number
   /** Whether to hide the wallet icon */
   hideIcon?: boolean
@@ -87,11 +89,12 @@ export type Props<T> = {
 }
 
 export const Balance = <T extends Amount>({
-  symbol,
+  symbol = '-',
   clickable,
-  loading = false,
   balance,
-  notionalValueUsd,
+  loading = balance == null,
+  usdRate,
+  notionalValueUsd = balance && usdRate && usdRate * +balance,
   hideIcon,
   sx,
   onClick,
