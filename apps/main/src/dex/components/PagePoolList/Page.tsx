@@ -11,9 +11,8 @@ import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useSearchParams } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useDexMarketList } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 enum SEARCH {
   filter = 'filter',
@@ -138,7 +137,4 @@ const Container = styled.div<{ $isLite: boolean }>`
   }
 `
 
-export function PagePoolList() {
-  const [releaseChannel] = useReleaseChannel()
-  return releaseChannel === ReleaseChannel.Beta ? <PoolListPage /> : <OldPoolListPage />
-}
+export const PagePoolList = () => (useDexMarketList() ? <PoolListPage /> : <OldPoolListPage />)

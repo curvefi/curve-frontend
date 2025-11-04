@@ -17,12 +17,12 @@ import { Item, Items } from '@ui/Items'
 import Stats from '@ui/Stats'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import dayjs from '@ui-kit/lib/dayjs'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel, weiToEther } from '@ui-kit/utils'
+import { weiToEther } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -40,7 +40,6 @@ const PoolParameters = ({
   } = useNetworkByChain({ chainId: rChainId })
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[rPoolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[rPoolId])
-  const [releaseChannel] = useReleaseChannel()
 
   const haveWrappedCoins = useMemo(() => {
     if (poolData?.pool?.wrappedCoins) {
@@ -63,7 +62,7 @@ const PoolParameters = ({
   const { A, initial_A, initial_A_time, future_A, future_A_time, virtualPrice } = parameters ?? {}
 
   const { gamma, adminFee, fee } = parameters ?? {}
-  if (releaseChannel === ReleaseChannel.Beta) {
+  if (useActionInfo()) {
     const isEymaPools = rChainId === 250 && poolDataCacheOrApi.pool.id.startsWith('factory-eywa')
     return (
       <Stack gap={Spacing.lg}>

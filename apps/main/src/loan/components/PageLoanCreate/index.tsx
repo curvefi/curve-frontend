@@ -12,10 +12,9 @@ import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utils
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -47,20 +46,20 @@ const LoanCreate = ({
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
-  const [releaseChannel] = useReleaseChannel()
+  const isBorrowUnifiedForm = useBorrowUnifiedForm()
   const onUpdate = useOnFormUpdate(props)
 
   type Tab = 'create' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
     () =>
-      releaseChannel === ReleaseChannel.Beta
+      isBorrowUnifiedForm
         ? // the new borrow form contains both create and leverage functionality
           [{ value: 'create' as const, label: t`Borrow` }]
         : [
             { value: 'create' as const, label: t`Create Loan` },
             ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
           ],
-    [llamma, releaseChannel],
+    [llamma, isBorrowUnifiedForm],
   )
 
   const handleTabClick = useCallback(
@@ -85,9 +84,9 @@ const LoanCreate = ({
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth={releaseChannel !== ReleaseChannel.Beta}
+        fullWidth={!isBorrowUnifiedForm}
       />
-      {releaseChannel === ReleaseChannel.Beta ? (
+      {isBorrowUnifiedForm ? (
         <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

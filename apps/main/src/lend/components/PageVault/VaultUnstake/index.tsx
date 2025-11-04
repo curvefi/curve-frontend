@@ -18,10 +18,10 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -34,7 +34,6 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   const fetchStepUnstake = useStore((state) => state.vaultUnstake.fetchStepUnstake)
   const setFormValues = useStore((state) => state.vaultUnstake.setFormValues)
   const resetState = useStore((state) => state.vaultUnstake.resetState)
-  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -157,7 +156,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {!useLargeTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
