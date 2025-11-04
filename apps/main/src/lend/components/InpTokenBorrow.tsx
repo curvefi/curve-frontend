@@ -7,7 +7,7 @@ import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -49,7 +49,7 @@ const InpTokenBorrow = ({
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
   const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
-  return !useLargeTokenInput() ? (
+  return useLegacyTokenInput() ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
