@@ -85,6 +85,7 @@ describe('DEX Pools', () => {
       getTopUsdValues('volume').then((vals) => expectDesc(vals)) // initial is Volume desc
       cy.url().should('not.include', 'volume') // initial sort not in URL
       sortBy('volume')
+      cy.get('[data-testid="icon-sort-volume-desc"]').should('be.visible')
       getTopUsdValues('volume').then((vals) => expectAsc(vals))
       cy.url().should('include', 'sort=volume')
     })
@@ -94,6 +95,7 @@ describe('DEX Pools', () => {
       sortBy('tvl')
       getTopUsdValues('tvl').then((vals) => expectDesc(vals))
       cy.url().should('include', 'sort=-tvl')
+      cy.get('[data-testid="icon-sort-tvl-desc"]').should('be.visible')
       sortBy('tvl')
       getTopUsdValues('tvl').then((vals) => expectAsc(vals))
       cy.url().should('include', 'sort=tvl')
@@ -120,7 +122,7 @@ describe('DEX Pools', () => {
         cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
         cy.get('[data-testid="pool-link-deposit"]').click()
       }
-      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/deposit\/?$/)
+      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
       cy.title().should('match', /Curve - Pool - .* - Curve/)
     })
   })

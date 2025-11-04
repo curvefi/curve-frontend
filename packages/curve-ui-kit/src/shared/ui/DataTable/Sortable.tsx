@@ -29,7 +29,7 @@ export const Sortable = <T extends TableItem>({
       rotated={column?.getIsSorted() === 'asc'}
       fontSize={column?.getIsSorted() ? 20 : 0}
       isEnabled={isEnabled}
-      {...(isEnabled && { 'data-testid': `icon-sort-${column?.id}-${column?.getIsSorted()}` })}
+      {...(isEnabled && { testId: `icon-sort-${column?.id}-${column?.getIsSorted()}` })}
     />
   </Stack>
 )
