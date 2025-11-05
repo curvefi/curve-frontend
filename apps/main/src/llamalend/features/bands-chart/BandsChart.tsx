@@ -1,10 +1,12 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useMemo, useRef, memo } from 'react'
+import { useEffect, useMemo, useRef, memo } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack } from '@mui/material'
+import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { Slider } from '@ui-kit/shared/ui/Slider'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -13,6 +15,8 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
+
+const { Spacing } = SizesAndSpaces
 
 type BandsChartProps = {
   collateralToken?: Token
@@ -70,6 +74,24 @@ const BandsChartComponent = ({
     chartData,
   })
 
+  const containerDimensions = useResizeObserver(containerRef, { threshold: 0 })
+
+  useEffect(() => {
+    const instance = chartRef.current?.getEchartsInstance?.()
+    if (!instance || !containerDimensions) return
+
+    const [width, h] = containerDimensions
+    if (width > 0 && h > 0) {
+      instance.resize({ width, height: h })
+    }
+  }, [containerDimensions])
+
+  useEffect(() => {
+    const instance = chartRef.current?.getEchartsInstance?.()
+    if (!instance) return
+    instance.resize()
+  }, [height, finalOption])
+
   if (!chartData?.length) {
     return (
       <Box sx={{ width: '100%', fontVariantNumeric: 'tabular-nums', height }}>
@@ -104,15 +126,18 @@ const BandsChartComponent = ({
     rawValues[0] <= rawValues[1] ? [rawValues[0], rawValues[1]] : [rawValues[1], rawValues[0]]
 
   return (
-    <Stack direction="row" sx={{ width: '100%', minHeight: `${height}px`, gap: 1, minWidth: 0 }}>
+    <Stack
+      direction="row"
+      sx={{ width: '100%', minHeight: `${height}px`, height, gap: 2, minWidth: 0, alignItems: 'stretch' }}
+    >
       <Box
         ref={containerRef}
-        display="flex"
         sx={{
+          display: 'flex',
           fontVariantNumeric: 'tabular-nums',
-          flex: '1 1 auto',
+          flex: 1,
           minWidth: 0,
-          height,
+          height: '100%',
           '& *': { cursor: 'default !important' },
         }}
       >
@@ -124,7 +149,7 @@ const BandsChartComponent = ({
           onEvents={{ datazoom: onDataZoom }}
           notMerge={true}
           lazyUpdate={true}
-          autoResize={true}
+          autoResize={false}
         />
       </Box>
       <Slider
@@ -146,6 +171,12 @@ const BandsChartComponent = ({
           }
         }}
         data-rail-background="filled"
+        sx={{
+          // disable MUI's default padding for coarse touch devices to match design
+          '@media (pointer: coarse)': {
+            padding: `0 !important`,
+          },
+        }}
       />
     </Stack>
   )
