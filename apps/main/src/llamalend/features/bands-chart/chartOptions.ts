@@ -115,6 +115,9 @@ export const getChartOptions = (
       backgroundColor: 'transparent',
       borderWidth: 0,
       padding: 0,
+      // ECharts sets white-space: nowrap on the tooltip container by default; override to allow wrapping
+      extraCssText: 'white-space: normal; overflow-wrap: anywhere; word-break: break-word;',
+      confine: true,
     },
     xAxis: {
       type: 'value',
@@ -126,6 +129,9 @@ export const getChartOptions = (
         color: palette.scaleLabelsColor,
         hideOverlap: true,
         interval: 'auto',
+        overflow: 'break',
+        showMinLabel: true,
+        showMaxLabel: false,
         margin: 8,
         formatter: (value: number) => `$${formatNumber(value, { notation: 'compact' })}`,
       },
@@ -158,6 +164,10 @@ export const getChartOptions = (
       },
       axisLabel: {
         color: palette.scaleLabelsColor,
+        hideOverlap: true,
+        overflow: 'break',
+        showMinLabel: true,
+        showMaxLabel: false,
         formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
       },
       min: priceMin,
