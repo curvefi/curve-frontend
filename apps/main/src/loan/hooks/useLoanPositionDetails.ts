@@ -20,7 +20,6 @@ import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
-  llammaId: string
 }
 
 const averageMultiplier = 30
@@ -29,19 +28,19 @@ const averageMultiplierString = `${averageMultiplier}D`
 export const useLoanPositionDetails = ({
   chainId,
   llamma,
-  llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
+  const llammaId = llamma?.id ?? ''
   const { collateral, stablecoin, debt } = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState) ?? {}
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
   const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
   const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
+  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const { oraclePriceBand } = loanDetails ?? {}
 

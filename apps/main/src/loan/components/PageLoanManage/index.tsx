@@ -32,7 +32,7 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
   { value: 'collateral-decrease', label: t`Remove` },
 ]
 
-const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
+const LoanManage = ({ curve, isReady, llamma, params, rChainId, rCollateralId, rFormType }: Props) => {
   const push = useNavigate()
 
   type Tab = 'loan' | 'collateral' | 'deleverage'
@@ -51,7 +51,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   )
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
-  const formProps = { curve, isReady, llamma, llammaId, rChainId }
+  const formProps = { curve, isReady, llamma, rChainId }
 
   return (
     <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>

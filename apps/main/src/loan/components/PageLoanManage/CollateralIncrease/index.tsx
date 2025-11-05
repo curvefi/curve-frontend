@@ -36,9 +36,9 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
+interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma'> {}
 
-const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
+const CollateralIncrease = ({ curve, isReady, llamma }: Props) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralIncrease.activeKey)
@@ -46,6 +46,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const formEstGas = useStore((state) => state.loanCollateralIncrease.formEstGas[activeKey] ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanCollateralIncrease.formStatus)
   const formValues = useStore((state) => state.loanCollateralIncrease.formValues)
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)

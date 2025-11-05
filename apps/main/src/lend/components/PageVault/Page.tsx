@@ -67,11 +67,7 @@ const Page = () => {
     market,
     marketId: rOwmId,
   })
-  const marketDetails = useMarketDetails({
-    chainId: rChainId,
-    llamma: market,
-    llammaId: rOwmId,
-  })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market })
 
   useEffect(() => {
     if (api && market && isPageVisible) {

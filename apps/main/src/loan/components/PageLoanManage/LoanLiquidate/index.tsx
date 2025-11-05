@@ -28,15 +28,16 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
+interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'params' | 'rChainId'> {}
 
-const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
+const LoanLiquidate = ({ curve, llamma, params, rChainId }: Props) => {
   const { chainId, haveSigner } = curveProps(curve)
   const isSubscribed = useRef(false)
 
   const formEstGas = useStore((state) => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanLiquidate.formStatus)
   const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
+  const llammaId = llamma?.id ?? ''
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
 
@@ -59,7 +60,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       if (chainId && llamma && (isErrorReset || isFullReset)) {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
-        void fetchTokensToLiquidate(rChainId, llamma, llammaId, maxSlippage, userWalletBalances)
+        void fetchTokensToLiquidate(rChainId, llamma, maxSlippage, userWalletBalances)
       }
     },
     [
@@ -67,7 +68,6 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
       fetchTokensToLiquidate,
       formStatus.isApproved,
       llamma,
-      llammaId,
       maxSlippage,
       rChainId,
       setStateByKey,
@@ -169,11 +169,11 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
   // init
   useEffect(() => {
-    if (chainId && llamma && llammaId && typeof userWalletBalances?.stablecoin !== 'undefined') {
-      void fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances)
+    if (chainId && llamma && typeof userWalletBalances?.stablecoin !== 'undefined') {
+      void fetchTokensToLiquidate(chainId, llamma, maxSlippage, userWalletBalances)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [curve?.signerAddress, chainId, llamma, llammaId, maxSlippage, userWalletBalances?.stablecoin])
+  }, [curve?.signerAddress, chainId, llamma, maxSlippage, userWalletBalances?.stablecoin])
 
   // steps
   useEffect(() => {

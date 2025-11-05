@@ -15,7 +15,6 @@ export type LlammaLiquidityCoins = {
 export interface ChartOhlcWrapperProps {
   rChainId: ChainId
   llamma: Llamma | null
-  llammaId: string
   betaBackgroundColor?: string
 }
 

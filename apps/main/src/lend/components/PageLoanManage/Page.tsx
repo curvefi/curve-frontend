@@ -73,11 +73,7 @@ const Page = () => {
     market: market ?? undefined,
     marketId: rOwmId,
   })
-  const marketDetails = useMarketDetails({
-    chainId: rChainId,
-    llamma: market,
-    llammaId: rOwmId,
-  })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market })
   const network = networks[rChainId]
   const {
     data: userCollateralEvents,

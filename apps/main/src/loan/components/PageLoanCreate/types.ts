@@ -27,7 +27,6 @@ export type PageLoanCreateProps = {
   isReady: boolean
   isLeverage: boolean
   llamma: Llamma | null
-  llammaId: string
   params: CollateralUrlParams
   rChainId: ChainId
   rCollateralId: string
@@ -47,7 +46,6 @@ export type FormDetailInfo = {
   isLeverage: boolean
   isReady: boolean
   llamma: Llamma | null
-  llammaId: string
   steps: Step[]
   setHealthMode: Dispatch<SetStateAction<HealthMode>>
   updateFormValues: (updatedFormValues: FormValues) => void

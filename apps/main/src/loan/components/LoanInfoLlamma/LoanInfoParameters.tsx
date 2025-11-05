@@ -6,9 +6,10 @@ import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId'> {}
+type Props = Pick<PageLoanManageProps, 'llamma'>
 
-const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
+const LoanInfoParameters = ({ llamma }: Props) => {
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
 
   const { parameters, priceInfo } = loanDetails ?? {}

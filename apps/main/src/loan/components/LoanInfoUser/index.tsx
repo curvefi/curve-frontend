@@ -17,11 +17,12 @@ import { breakpoints } from '@ui/utils/responsive'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId' | 'titleMapper'> {
+type Props = Pick<PageLoanManageProps, 'llamma' | 'titleMapper'> & {
   rChainId: ChainId
 }
 
-const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
+const LoanInfoUser = ({ llamma, rChainId, titleMapper }: Props) => {
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const { userBands, healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
@@ -56,7 +57,6 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
     <Wrapper>
       <StatsWrapper className={`wrapper ${isSoftLiquidation ? 'alert' : 'first'}`}>
         <UserInfos
-          llammaId={llammaId}
           llamma={llamma}
           isSoftLiquidation={isSoftLiquidation}
           healthMode={healthMode}
@@ -68,7 +68,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
         <div className="wrapper">
           <PoolInfoWrapper>
             <PoolInfoContainer>
-              <PoolInfoData rChainId={rChainId} llamma={llamma} llammaId={llammaId} />
+              <PoolInfoData rChainId={rChainId} llamma={llamma} />
             </PoolInfoContainer>
           </PoolInfoWrapper>
         </div>
@@ -76,7 +76,7 @@ const LoanInfoUser = ({ llamma, llammaId, rChainId, titleMapper }: Props) => {
 
       <div className="wrapper">
         {isAdvancedMode ? (
-          <ChartUserBands llammaId={llammaId} llamma={llamma} />
+          <ChartUserBands llamma={llamma} />
         ) : (
           <div>
             <SubTitle>{t`Liquidation Range`}</SubTitle>

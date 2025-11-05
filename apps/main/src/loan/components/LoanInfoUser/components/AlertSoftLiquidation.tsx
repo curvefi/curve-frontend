@@ -8,7 +8,8 @@ import ExternalLink from '@ui/Link/ExternalLink'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const AlertSoftLiquidation = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
+const AlertSoftLiquidation = ({ llamma }: { llamma: Llamma | null }) => {
+  const llammaId = llamma?.id ?? ''
   const { collateral = '0', stablecoin = '0' } = useUserLoanDetails(llammaId)?.userState ?? {}
 
   const softLiquidationAmountText = useMemo(() => {

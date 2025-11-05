@@ -56,10 +56,8 @@ const Page = () => {
   const [loaded, setLoaded] = useState(false)
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
-  const marketId = market?.id ?? ''
-
   const formValues = useStore((state) => state.loanCreate.formValues)
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: market?.id, userAddress: address })
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
@@ -74,7 +72,7 @@ const Page = () => {
   const isReady = !!market
   const isLeverage = rFormType === 'leverage'
 
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market })
   const network = networks[rChainId]
   const {
     data: userCollateralEvents,
@@ -191,7 +189,7 @@ const Page = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} llammaId={marketId} />
+            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -204,7 +202,6 @@ const Page = () => {
               isLeverage={isLeverage}
               loanExists={loanExists}
               llamma={market ?? null}
-              llammaId={marketId}
               params={params}
               rChainId={rChainId}
               rCollateralId={rCollateralId}
@@ -231,7 +228,6 @@ const Page = () => {
             {
               <MarketInformationComp
                 llamma={market ?? null}
-                llammaId={marketId}
                 chainId={rChainId}
                 chartExpanded={chartExpanded}
                 page="create"

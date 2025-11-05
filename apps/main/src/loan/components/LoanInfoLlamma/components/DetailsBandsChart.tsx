@@ -19,15 +19,8 @@ const DEFAULT_BAND_CHART_DATA = {
   collateralStablecoinUsd: 0,
 }
 
-const DetailsBandsChart = ({
-  llammaId,
-  llamma,
-  selectorMenu,
-}: {
-  llammaId: string
-  llamma: Llamma | null
-  selectorMenu?: ReactNode
-}) => {
+const DetailsBandsChart = ({ llamma, selectorMenu }: { llamma: Llamma | null; selectorMenu?: ReactNode }) => {
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({

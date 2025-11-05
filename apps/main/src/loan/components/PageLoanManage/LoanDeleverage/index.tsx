@@ -55,10 +55,9 @@ import { decimal, type Decimal } from '@ui-kit/utils'
 const LoanDeleverage = ({
   curve,
   llamma,
-  llammaId,
   params,
   rChainId,
-}: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'>) => {
+}: Pick<PageLoanManageProps, 'curve' | 'llamma' | 'params' | 'rChainId'>) => {
   const isSubscribed = useRef(false)
   const push = useNavigate()
 
@@ -68,6 +67,7 @@ const LoanDeleverage = ({
   const formStatus = useStore((state) => state.loanDeleverage.formStatus)
   const formValues = useStore((state) => state.loanDeleverage.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
@@ -101,7 +101,6 @@ const LoanDeleverage = ({
       }
 
       void setFormValues(
-        llammaId,
         curve,
         llamma,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
@@ -109,7 +108,7 @@ const LoanDeleverage = ({
         isFullReset,
       )
     },
-    [curve, llamma, llammaId, maxSlippage, setFormValues],
+    [curve, llamma, maxSlippage, setFormValues],
   )
 
   const onCollateralChanged = useCallback(

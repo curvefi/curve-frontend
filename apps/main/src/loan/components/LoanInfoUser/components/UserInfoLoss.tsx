@@ -12,14 +12,13 @@ import { t } from '@ui-kit/lib/i18n'
 const SMALL_AMOUNT = 0.0001
 
 const UserInfoLoss = ({
-  llammaId,
   llamma,
   type,
 }: {
-  llammaId: string
   llamma: Llamma | null
   type: 'lossCollateral' | 'lossAmount' | 'lossPercent'
 }) => {
+  const llammaId = llamma?.id ?? ''
   const userLoanDetails = useUserLoanDetails(llammaId)
   const { current_collateral_estimation, deposited_collateral, loss, loss_pct } = userLoanDetails?.userLoss ?? {}
 

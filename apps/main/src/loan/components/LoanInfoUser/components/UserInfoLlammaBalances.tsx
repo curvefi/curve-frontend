@@ -5,7 +5,8 @@ import Box from '@ui/Box'
 import ListInfoItem from '@ui/ListInfo'
 import { formatNumber } from '@ui/utils'
 
-const UserInfoLlammaBalances = ({ llammaId, llamma }: { llammaId: string; llamma: Llamma | null }) => {
+const UserInfoLlammaBalances = ({ llamma }: { llamma: Llamma | null }) => {
+  const llammaId = llamma?.id ?? ''
   const { userState } = useUserLoanDetails(llammaId) ?? {}
 
   const {

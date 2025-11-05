@@ -22,7 +22,6 @@ const DetailInfoNonLeverage = ({
   isReady,
   isValidFormValues = true,
   llamma,
-  llammaId,
   steps,
   handleSelLiqRange,
   selectedLiqRange,
@@ -33,6 +32,7 @@ const DetailInfoNonLeverage = ({
   const formValues = useStore((state) => state.loanCreate.formValues)
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
+  const llammaId = llamma?.id ?? ''
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const userLoanDetails = useUserLoanDetails(llammaId)
 

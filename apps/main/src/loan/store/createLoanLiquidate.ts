@@ -27,7 +27,6 @@ export type LoanLiquidateSlice = {
     fetchTokensToLiquidate(
       chainId: ChainId,
       llamma: Llamma,
-      llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
     ): Promise<void>
@@ -84,7 +83,6 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     fetchTokensToLiquidate: async (
       chainId: ChainId,
       llamma: Llamma,
-      llammaId: string,
       maxSlippage: string,
       userWalletBalances: UserWalletBalances,
     ) => {

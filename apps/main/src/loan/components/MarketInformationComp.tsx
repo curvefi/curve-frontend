@@ -13,7 +13,6 @@ const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   llamma: Llamma | null
-  llammaId: string
   chainId: ChainId
   chartExpanded: boolean
   page?: 'create' | 'manage'
@@ -24,7 +23,6 @@ type MarketInformationCompProps = {
  */
 export const MarketInformationComp = ({
   llamma,
-  llammaId,
   chainId,
   chartExpanded,
   page = 'manage',
@@ -36,17 +34,12 @@ export const MarketInformationComp = ({
     <>
       {!chartExpanded && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <ChartOhlcWrapper
-            rChainId={chainId}
-            llammaId={llammaId}
-            llamma={llamma}
-            betaBackgroundColor={theme.design.Layer[1].Fill}
-          />
+          <ChartOhlcWrapper rChainId={chainId} llamma={llamma} betaBackgroundColor={theme.design.Layer[1].Fill} />
         </Stack>
       )}
       {isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp llamma={llamma} llammaId={llammaId} page={page} />
+          <BandsComp llamma={llamma} page={page} />
         </Stack>
       )}
       {llamma && isAdvancedMode && (
@@ -77,7 +70,7 @@ export const MarketInformationComp = ({
           </Stack>
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
             <SubTitle>{t`Loan Parameters`}</SubTitle>
-            <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
+            <LoanInfoParameters llamma={llamma} />
           </Stack>
         </Stack>
       )}

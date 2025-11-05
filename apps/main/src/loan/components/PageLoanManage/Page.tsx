@@ -49,10 +49,8 @@ const Page = () => {
   const { address } = useAccount()
 
   const market = useMintMarket({ chainId: rChainId, marketId: rCollateralId })
-  const marketId = market?.id ?? ''
-
   const isMdUp = useLayoutStore((state) => state.isMdUp)
-  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
+  const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId: market?.id, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
   const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
@@ -65,12 +63,8 @@ const Page = () => {
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
   const isReady = !!curve?.signerAddress && !!market
 
-  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
-  const positionDetails = useLoanPositionDetails({
-    chainId: rChainId,
-    llamma: market,
-    llammaId: marketId,
-  })
+  const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market })
+  const positionDetails = useLoanPositionDetails({ chainId: rChainId, llamma: market })
 
   const network = networks[rChainId]
   const {
@@ -141,7 +135,6 @@ const Page = () => {
     curve,
     isReady: !!curve?.signerAddress && !!market,
     llamma: market ?? null,
-    llammaId: marketId,
     rChainId,
   }
 
@@ -161,7 +154,7 @@ const Page = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} llammaId={marketId} />
+            <ChartOhlcWrapper rChainId={rChainId} llamma={market ?? null} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -207,7 +200,6 @@ const Page = () => {
             {
               <MarketInformationComp
                 llamma={market ?? null}
-                llammaId={marketId}
                 chainId={rChainId}
                 chartExpanded={chartExpanded}
                 page="manage"

@@ -16,7 +16,8 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LlammaLiquidityCoins } from './types'
 
-const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
+const ChartOhlcWrapper = ({ rChainId, llamma, betaBackgroundColor }: ChartOhlcWrapperProps) => {
+  const llammaId = llamma?.id ?? ''
   const address = llamma?.address ?? ''
   const controller = llamma?.controller ?? ''
   const increaseActiveKey = useStore((state) => state.loanIncrease.activeKey)

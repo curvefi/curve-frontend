@@ -17,7 +17,6 @@ const { sum } = lodash
 type UseMarketDetailsProps = {
   chainId: ChainId
   llamma: OneWayMarketTemplate | null | undefined
-  llammaId: string
 }
 
 const averageMultiplier = 30
@@ -26,11 +25,11 @@ const averageMultiplierString = `${averageMultiplier}D`
 export const useMarketDetails = ({
   chainId,
   llamma,
-  llammaId,
 }: UseMarketDetailsProps): Omit<MarketDetailsProps, 'marketPage'> => {
   const blockchainId = networks[chainId]?.id as Chain
   const { collateral_token, borrowed_token } = llamma ?? {}
   const { controller, vault } = llamma?.addresses ?? {}
+  const llammaId = llamma?.id ?? ''
   const marketRate = useStore((state) => state.markets.ratesMapper[chainId]?.[llammaId])
 
   const {

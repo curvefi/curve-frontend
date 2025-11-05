@@ -28,7 +28,6 @@ export type PageLoanManageProps = {
   curve: LlamaApi | null
   isReady: boolean
   llamma: Llamma | null
-  llammaId: string
   params: CollateralUrlParams
   rChainId: ChainId
   rCollateralId: string

@@ -32,7 +32,7 @@ const sliceKey = 'loanDeleverage'
 export type LoanDeleverageSlice = {
   [sliceKey]: SliceState & {
     fetchDetailInfo(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
-    setFormValues(llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
+    setFormValues(curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
     fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
     fetchStepRepay(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -64,8 +64,11 @@ const createLoanDeleverageSlice = (
       get()[sliceKey].setStateByKey('detailInfo', { [fDetailInfo.activeKey]: { ...fDetailInfo.resp } })
       return fDetailInfo.resp
     },
-    setFormValues: async (llammaId, curve, llamma, updatedFormValues, maxSlippage, isFullReset) => {
+    setFormValues: async (curve, llamma, updatedFormValues, maxSlippage, isFullReset) => {
+      if (!llamma) return
+
       // stored values
+      const llammaId = llamma?.id ?? ''
       const storedActiveKey = get()[sliceKey].activeKey
       const storedFormEstGas = get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_FORM_EST_GAS
       const storedDetailInfo = get()[sliceKey].detailInfo[storedActiveKey] ?? DEFAULT_DETAIL_INFO
@@ -89,7 +92,7 @@ const createLoanDeleverageSlice = (
           : {}),
       })
 
-      if (!curve || !llamma || !storedUserDetails || (curve && !curve.signerAddress)) return
+      if (!curve || !storedUserDetails || (curve && !curve.signerAddress)) return
 
       const chainId = curve.chainId as ChainId
       const { userState, userStatus } = storedUserDetails

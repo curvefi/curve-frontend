@@ -15,19 +15,19 @@ import { calculateAverageRates } from '@ui-kit/utils/averageRates'
 type UseMarketDetailsProps = {
   chainId: ChainId
   llamma: Llamma | null | undefined
-  llammaId: string
 }
 
 const averageMultiplier = 30
 const averageMultiplierString = `${averageMultiplier}D`
 
-export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetailsProps): MarketDetailsProps => {
+export const useMarketDetails = ({ chainId, llamma }: UseMarketDetailsProps): MarketDetailsProps => {
   const blockchainId = networks[chainId]?.id
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
+  const llammaId = llamma?.id ?? ''
+  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
   const { data: collateralUsdRate, isLoading: collateralUsdRateLoading } = useTokenUsdRate({
     chainId,
     tokenAddress: llamma?.collateral,

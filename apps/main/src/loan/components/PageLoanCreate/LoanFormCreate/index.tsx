@@ -41,7 +41,6 @@ const LoanCreate = ({
   curve,
   isReady,
   llamma,
-  llammaId,
   params,
   rChainId,
   rFormType,
@@ -59,6 +58,7 @@ const LoanCreate = ({
       ? (state.loanCreate.maxRecvLeverage[activeKey]?.maxBorrowable ?? '')
       : (state.loanCreate.maxRecv[activeKey] ?? ''),
   )
+  const llammaId = llamma?.id ?? ''
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
@@ -426,7 +426,6 @@ const LoanCreate = ({
         isLeverage={isLeverage}
         isReady={isReady}
         llamma={llamma}
-        llammaId={llammaId}
         steps={steps}
         setHealthMode={setHealthMode}
         updateFormValues={updateFormValues}
@@ -467,7 +466,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={t`Loan Parameters`}>
-          <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
+          <LoanInfoParameters llamma={llamma} />
         </Accordion>
       )}
     </>

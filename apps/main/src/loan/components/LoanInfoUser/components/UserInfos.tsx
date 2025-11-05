@@ -14,18 +14,17 @@ import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 
 const UserInfos = ({
-  llammaId,
   llamma,
   isSoftLiquidation,
   healthMode,
   titleMapper,
 }: {
-  llammaId: string
   llamma: Llamma | null
   isSoftLiquidation: boolean
   healthMode: HealthMode
   titleMapper: TitleMapper
 }) => {
+  const llammaId = llamma?.id ?? ''
   const { userBandsPct, userStatus } = useUserLoanDetails(llammaId) ?? {}
   const colorKey = useUserLoanStatus(llammaId)
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
