@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import type { PoolColumnId } from '@/dex/features/pool-list/columns'
 import { Button, Grid, Stack } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
@@ -25,9 +26,17 @@ export const PoolListFilterDrawer = ({
   hasFilters,
   searchText,
   onSearch,
+  setColumnFilter,
   ...filterProps
 }: Props) => {
-  const [open, openDrawer, closeDrawer] = useSwitch(false)
+  const [open, openDrawer, closeDrawer, , setOpen] = useSwitch(false)
+  const setFilterAndClose = useCallback(
+    (id: PoolColumnId, value: unknown) => {
+      setColumnFilter(id, value)
+      closeDrawer()
+    },
+    [setColumnFilter, closeDrawer],
+  )
   return (
     <SwipeableDrawer
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
@@ -43,7 +52,7 @@ export const PoolListFilterDrawer = ({
         </Button>
       }
       open={open}
-      setOpen={closeDrawer}
+      setOpen={setOpen}
     >
       <DrawerHeader title={t`Filters`}>
         <HiddenMarketsResetFilters
@@ -60,7 +69,7 @@ export const PoolListFilterDrawer = ({
       >
         <DrawerHeader title={t`Popular Filters`} />
         <Grid container spacing={Spacing.sm}>
-          <PoolListFilterChips {...filterProps} />
+          <PoolListFilterChips {...filterProps} setColumnFilter={setFilterAndClose} />
         </Grid>
       </Stack>
     </SwipeableDrawer>

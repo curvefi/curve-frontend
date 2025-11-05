@@ -42,14 +42,14 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 // Loan Deleverage
 const LoanDeleverage = ({
@@ -86,7 +86,7 @@ const LoanDeleverage = ({
   const { chainId, haveSigner } = curveProps(curve)
   const { userState } = userLoanDetails ?? {}
   const { collateral: collateralName, stablecoin: stablecoinName } = getTokenName(llamma)
-  const [releaseChannel] = useReleaseChannel()
+
   const network = networks[rChainId]
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
@@ -292,7 +292,7 @@ const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid

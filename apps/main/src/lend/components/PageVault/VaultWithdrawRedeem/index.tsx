@@ -22,10 +22,10 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultWithdrawRedeem = ({
   rChainId,
@@ -50,7 +50,6 @@ const VaultWithdrawRedeem = ({
   const fetchUserMarketBalances = useStore((state) => state.user.fetchUserMarketBalances)
   const setFormValues = useStore((state) => state.vaultWithdrawRedeem.setFormValues)
   const resetState = useStore((state) => state.vaultWithdrawRedeem.resetState)
-  const [releaseChannel] = useReleaseChannel()
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -193,7 +192,7 @@ const VaultWithdrawRedeem = ({
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>

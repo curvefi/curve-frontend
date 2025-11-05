@@ -7,12 +7,12 @@ import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const InpTokenBorrow = ({
   id,
@@ -48,9 +48,8 @@ const InpTokenBorrow = ({
   network: NetworkConfig
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
-  const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return useLegacyTokenInput() ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider

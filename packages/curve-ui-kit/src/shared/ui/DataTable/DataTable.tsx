@@ -1,11 +1,14 @@
 /// <reference types="./DataTable.d.ts" />
-import { ReactNode, useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useEffectEvent, useMemo, useRef } from 'react'
 import Box from '@mui/material/Box'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type TableItem, type TanstackTable } from './data-table.utils'
@@ -14,6 +17,9 @@ import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 import { SkeletonRows } from './SkeletonRows'
 
+/**
+ * Scrolls to the top of the window whenever the column filters change.
+ */
 function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<T>) {
   const { columnFilters } = table.getState()
   useEffect(() => {
@@ -21,6 +27,20 @@ function useScrollToTopOnFilterChange<T extends TableItem>(table: TanstackTable<
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [columnFilters])
+}
+
+/**
+ * Resets the table pagination to the first page whenever the number of filtered results changes.
+ */
+function useResetPageOnResultChange<T extends TableItem>(table: TanstackTable<T>) {
+  const resultCount = table.getFilteredRowModel().rows.length
+  const onPaginationChangeEvent = useEffectEvent(table.setPagination)
+  const lastResultCount = useRef<number>(resultCount)
+  useEffect(() => {
+    // Reset to first page, only if we had results before (links must keep working)
+    if (lastResultCount.current) onPaginationChangeEvent((prev) => ({ ...prev, pageIndex: 0 }))
+    lastResultCount.current = resultCount
+  }, [resultCount])
 }
 
 const { Sizing } = SizesAndSpaces
@@ -47,6 +67,7 @@ export const DataTable = <T extends TableItem>({
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
   useScrollToTopOnFilterChange(table)
+  useResetPageOnResultChange(table)
 
   return (
     <WithWrapper Wrapper={Box} shouldWrap={maxHeight} sx={{ maxHeight, overflowY: 'auto' }}>
@@ -99,6 +120,15 @@ export const DataTable = <T extends TableItem>({
             ))
           )}
         </TableBody>
+        {table.getPageCount() > 1 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={columnCount}>
+                <TablePagination table={table} />
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
     </WithWrapper>
   )
