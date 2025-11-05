@@ -8,8 +8,7 @@ const DEFAULT: ColumnFiltersState = []
 /**
  * A hook to manage filters for a table. Currently saved in the state, but the URL could be a better place.
  * @param defaultFilters - The default filters to apply to the table.
- * @param staticFilters - Filters that cannot be changed by the user and are not stored in local storage.
- * @param title - The title of the table, used as a key for local storage.
+ * @param title - The title of the table, used as a key fdor local storage.
  * @param migration - Migration options for the stored state.
  * @return An object containing the current filters, a mapping of filters by column ID, a function to set a filter, and a function to reset filters.
  */

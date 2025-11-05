@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'
-import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 
 const PATH = '/dex/arbitrum/pools/'
 
@@ -48,150 +48,148 @@ const getTopUsdValues = (columnId: 'volume' | 'tvl') =>
       ),
     )
 
-;[[...oneMobileViewport(), 'mobile'] as const].forEach((viewport) => {
-  describe('DEX Pools ' + viewport[2], () => {
-    let breakpoint: Breakpoint
-    let width: number, height: number
+describe('DEX Pools', () => {
+  let breakpoint: Breakpoint
+  let width: number, height: number
 
-    beforeEach(() => {
-      ;[width, height, breakpoint] = viewport // oneViewport()
-    })
-
-    describe('First page', () => {
-      beforeEach(() => visitAndWait(width, height))
-
-      function sortBy(field: string, expectedOrder: 'asc' | 'desc' | false) {
-        if (breakpoint === 'mobile') {
-          cy.get('[data-testid="btn-drawer-sort-dex-pools"]').click()
-          cy.get(`[data-testid="drawer-sort-menu-dex-pools"] li[value="${field}"]`).click()
-          cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.be.visible')
-        } else {
-          cy.get(`[data-testid="data-table-header-${field}"]`).click()
-          cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
-        }
-        if (expectedOrder) {
-          cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
-        } else {
-          cy.get(`[data-testid^="icon-sort-${field}"]`).should('not.exist')
-        }
-      }
-
-      it('sorts by volume', () => {
-        getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
-        cy.url().should('not.include', 'volume') // initial sort not in URL
-        if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
-        sortBy('volume', 'asc')
-        getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
-        cy.url().should('include', 'sort=volume')
-      })
-
-      it('sorts by TVL (desc/asc)', () => {
-        cy.url().should('not.include', 'tvl') // initial sort not in URL
-        sortBy('tvl', 'desc')
-        getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
-        cy.url().should('include', 'sort=-tvl')
-        if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
-        sortBy('tvl', 'asc')
-        getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'asc'))
-        cy.url().should('include', 'sort=tvl')
-      })
-
-      it('filters by currency chip', () => {
-        const currency = oneOf('usd', 'btc')
-        const getHiddenCount = () =>
-          withFilterChips(() => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
-
-        getHiddenCount().then((beforeCount) => {
-          expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
-          clickFilterChip(currency)
-          getHiddenCount().then((afterCount) => {
-            expect(+afterCount).to.be.greaterThan(+beforeCount)
-            // chip is in the drawer for mobile, check on desktop that we show count
-            if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
-          })
-          cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
-        })
-      })
-
-      it('navigates to pool deposit page by clicking a row', () => {
-        cy.get('[data-testid^="data-table-row-"]').first().click()
-        if (breakpoint === 'mobile') {
-          cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
-          cy.get('[data-testid="pool-link-deposit"]').click()
-        }
-        cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
-        cy.title().should('match', /Curve - Pool - .* - Curve/)
-      })
-    })
-
-    it('paginates', () => {
-      const getPages = ($buttons: JQuery) =>
-        Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
-
-      // open page 5 (1-based)
-      visitAndWait(width, height, {
-        page: 5,
-        // show small pools so we have more pages to test with, and the tests are more stable
-        onBeforeLoad: (win) => setShowSmallPools(win.localStorage),
-      })
-
-      // Current page selected
-      cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
-      cy.get('[data-testid^="btn-page-"]').then(($buttons) => {
-        const [prevLastPage, lastPage] = [$buttons.length - 1, $buttons.length]
-        expect(getPages($buttons)).to.deep.equal([
-          'prev',
-          '1',
-          '2',
-          'ellipsis',
-          '4',
-          '5',
-          '6',
-          'ellipsis',
-          `${prevLastPage}`,
-          `${lastPage}`,
-          'next',
-        ])
-
-        // click on the first page and check again
-        cy.get('[data-testid="btn-page-1"]').click()
-        cy.url().should('not.include', `page`)
-        cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
-          expect(getPages($buttons)).to.deep.equal(['1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`, 'next']),
-        )
-
-        // click on the last page and check again
-        cy.get(`[data-testid="btn-page-${lastPage}"]`).click()
-        cy.url().should('include', `?page=${lastPage}`)
-        cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
-          expect(getPages($buttons)).to.deep.equal(['prev', '1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`]),
-        )
-      })
-    })
-
-    /**
-     * Clicks on the given filter chip, opening the drawer on mobile if needed.
-     */
-    function clickFilterChip(chip: string, isMobile = breakpoint === 'mobile') {
-      if (isMobile) {
-        cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
-        cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
-      }
-      cy.get(`[data-testid="filter-chip-${chip}"]`).click()
-      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
-    }
-
-    /**
-     * Makes sure that the filter chips are visible during the given callback.
-     * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
-     */
-    function withFilterChips(callback: () => Cypress.Chainable, isMobile = breakpoint === 'mobile') {
-      if (!isMobile) return callback()
-      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
-      return callback().then((result) => {
-        cy.get('body').click(0, 0)
-        return cy.wrap(result)
-      })
-    }
+  beforeEach(() => {
+    ;[width, height, breakpoint] = oneViewport()
   })
+
+  describe('First page', () => {
+    beforeEach(() => visitAndWait(width, height))
+
+    function sortBy(field: string, expectedOrder: 'asc' | 'desc' | false) {
+      if (breakpoint === 'mobile') {
+        cy.get('[data-testid="btn-drawer-sort-dex-pools"]').click()
+        cy.get(`[data-testid="drawer-sort-menu-dex-pools"] li[value="${field}"]`).click()
+        cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.be.visible')
+      } else {
+        cy.get(`[data-testid="data-table-header-${field}"]`).click()
+        cy.get('[data-testid="drawer-sort-menu-dex-pools"]').should('not.exist')
+      }
+      if (expectedOrder) {
+        cy.get(`[data-testid="icon-sort-${field}-${expectedOrder}"]`).should('be.visible')
+      } else {
+        cy.get(`[data-testid^="icon-sort-${field}"]`).should('not.exist')
+      }
+    }
+
+    it('sorts by volume', () => {
+      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
+      cy.url().should('not.include', 'volume') // initial sort not in URL
+      if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
+      sortBy('volume', 'asc')
+      getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
+      cy.url().should('include', 'sort=volume')
+    })
+
+    it('sorts by TVL (desc/asc)', () => {
+      cy.url().should('not.include', 'tvl') // initial sort not in URL
+      sortBy('tvl', 'desc')
+      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
+      cy.url().should('include', 'sort=-tvl')
+      if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
+      sortBy('tvl', 'asc')
+      getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'asc'))
+      cy.url().should('include', 'sort=tvl')
+    })
+
+    it('filters by currency chip', () => {
+      const currency = oneOf('usd', 'btc')
+      const getHiddenCount = () =>
+        withFilterChips(() => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
+
+      getHiddenCount().then((beforeCount) => {
+        expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
+        clickFilterChip(currency)
+        getHiddenCount().then((afterCount) => {
+          expect(+afterCount).to.be.greaterThan(+beforeCount)
+          // chip is in the drawer for mobile, check on desktop that we show count
+          if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
+        })
+        cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
+      })
+    })
+
+    it('navigates to pool deposit page by clicking a row', () => {
+      cy.get('[data-testid^="data-table-row-"]').first().click()
+      if (breakpoint === 'mobile') {
+        cy.get('[data-testid="collapse-icon"]').first().should('be.visible')
+        cy.get('[data-testid="pool-link-deposit"]').click()
+      }
+      cy.url(LOAD_TIMEOUT).should('match', /\/dex\/arbitrum\/pools\/[^/]+\/(deposit|swap)\/?$/)
+      cy.title().should('match', /Curve - Pool - .* - Curve/)
+    })
+  })
+
+  it('paginates', () => {
+    const getPages = ($buttons: JQuery) =>
+      Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
+
+    // open page 5 (1-based)
+    visitAndWait(width, height, {
+      page: 5,
+      // show small pools so we have more pages to test with, and the tests are more stable
+      onBeforeLoad: (win) => setShowSmallPools(win.localStorage),
+    })
+
+    // Current page selected
+    cy.get('[data-testid="btn-page-5"]').should('have.class', 'Mui-selected')
+    cy.get('[data-testid^="btn-page-"]').then(($buttons) => {
+      const [prevLastPage, lastPage] = [$buttons.length - 1, $buttons.length]
+      expect(getPages($buttons)).to.deep.equal([
+        'prev',
+        '1',
+        '2',
+        'ellipsis',
+        '4',
+        '5',
+        '6',
+        'ellipsis',
+        `${prevLastPage}`,
+        `${lastPage}`,
+        'next',
+      ])
+
+      // click on the first page and check again
+      cy.get('[data-testid="btn-page-1"]').click()
+      cy.url().should('not.include', `page`)
+      cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
+        expect(getPages($buttons)).to.deep.equal(['1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`, 'next']),
+      )
+
+      // click on the last page and check again
+      cy.get(`[data-testid="btn-page-${lastPage}"]`).click()
+      cy.url().should('include', `?page=${lastPage}`)
+      cy.get('[data-testid^="btn-page-"]').then(($buttons) =>
+        expect(getPages($buttons)).to.deep.equal(['prev', '1', '2', 'ellipsis', `${prevLastPage}`, `${lastPage}`]),
+      )
+    })
+  })
+
+  /**
+   * Clicks on the given filter chip, opening the drawer on mobile if needed.
+   */
+  function clickFilterChip(chip: string, isMobile = breakpoint === 'mobile') {
+    if (isMobile) {
+      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+      cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+    }
+    cy.get(`[data-testid="filter-chip-${chip}"]`).click()
+    cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
+  }
+
+  /**
+   * Makes sure that the filter chips are visible during the given callback.
+   * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
+   */
+  function withFilterChips(callback: () => Cypress.Chainable, isMobile = breakpoint === 'mobile') {
+    if (!isMobile) return callback()
+    cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+    return callback().then((result) => {
+      cy.get('body').click(0, 0)
+      return cy.wrap(result)
+    })
+  }
 })
