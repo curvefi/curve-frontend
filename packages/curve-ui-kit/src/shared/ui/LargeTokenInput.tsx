@@ -452,12 +452,7 @@ export const LargeTokenInput = ({
               zIndex: 1, // required, otherwise the slider background and border don't show up
             }}
           >
-            <TradingSlider
-              disabled={disabled}
-              percentage={percentage}
-              onChange={handlePercentageChange}
-              onCommit={handlePercentageChange}
-            />
+            <TradingSlider disabled={disabled} percentage={percentage} onChange={handlePercentageChange} />
           </Stack>
         )}
       </Stack>

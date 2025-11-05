@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
+import { SliderInput, SliderInputProps, type DecimalRangeValue } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { formatNumber } from '@ui-kit/utils'
+import { decimal, formatNumber } from '@ui-kit/utils'
 import { powerMap, invertPowerMap } from '@ui-kit/utils/interpolations'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
@@ -132,9 +132,16 @@ export const RangeSliderFilter = <T,>({
     ),
   })
 
+  const sliderRangeValue = useMemo<DecimalRangeValue>(
+    () => [decimal(`${range[0]}`) ?? '0', decimal(`${range[1]}`) ?? '0'],
+    [range],
+  )
+
   const onChange = useCallback<OnSliderChange>(
     (newRange) => {
-      setRange(newRange as NumberRange)
+      if (Array.isArray(newRange)) {
+        setRange([Number(newRange[0]), Number(newRange[1])] as NumberRange)
+      }
     },
     [setRange],
   )
@@ -169,7 +176,7 @@ export const RangeSliderFilter = <T,>({
           ariaLabel={title}
           layoutDirection="column"
           size="medium"
-          value={range}
+          value={sliderRangeValue}
           onChange={onChange}
           min={0}
           max={maxValue}

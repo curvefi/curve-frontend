@@ -1,15 +1,13 @@
-import { useEffect, useState } from 'react'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { RangeValue, SliderInput } from '@ui-kit/shared/ui/SliderInput'
+import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { decimal, type Decimal } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 
 const { Spacing, MaxWidth } = SizesAndSpaces
-const format = (value: number) => formatNumber(value, { style: 'currency', currency: 'USD' })
 
 export const LiquidationRangeSlider = ({
   setRange,
@@ -22,13 +20,11 @@ export const LiquidationRangeSlider = ({
 }) => {
   const liqRanges =
     market && Array.from({ length: +market.maxBands - +market.minBands + 1 }, (_, i) => ({ n: i + market.minBands }))
-  const [sliderValue, setSliderValue] = useState<number>(range ?? market?.minBands ?? 5)
 
   // Truncate the value to an integer
-  const setSanitizedSliderValue = (val: number | string | RangeValue | undefined) =>
-    val != null && setSliderValue(Math.trunc(Number(val)))
-
-  useEffect(() => setSliderValue(range), [range])
+  const setSanitizedSliderValue = (val: Decimal) => {
+    setRange(parseInt(val))
+  }
 
   const minValue = liqRanges?.[0]?.n ?? market?.minBands ?? BORROW_PRESET_RANGES.MaxLtv
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
@@ -46,20 +42,17 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={12}>
         <SliderInput
-          onChange={setSanitizedSliderValue}
+          onChange={(val) => setSanitizedSliderValue(val as Decimal)}
           aria-label={t`Bands`}
-          value={sliderValue}
+          value={decimal(range) ?? `${minValue}`}
           min={minValue}
           max={maxValue}
           sliderProps={{
-            onChangeCommitted: (_, n) => setSanitizedSliderValue(n as number),
-            getAriaValueText: format,
             'data-rail-background': 'safe',
           }}
           inputProps={{
             variant: 'standard',
             name: 'range',
-            onBlur: setSanitizedSliderValue,
             // the input is not wide enough for the "Bands" adornments
             // value chosen for the slier to match the width of the labels
             sx: { flexShrink: 0, width: MaxWidth.sliderInput.bands },

@@ -4,17 +4,18 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { Decimal } from '@ui-kit/utils'
 import { formatNumber } from '@ui-kit/utils/number'
-import { SliderInput } from '../SliderInput'
+import { DecimalRangeValue, SliderInput } from '../SliderInput'
 
 const { Spacing } = SizesAndSpaces
 
 type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & {
-  value?: number | [number, number]
+  value?: Decimal | DecimalRangeValue
 }
 
-const SliderInputComponent = ({ value: initialValue = 40, onChange, ...rest }: SliderInputStoryProps) => {
-  const [value, setValue] = useState<number | [number, number]>(initialValue)
+const SliderInputComponent = ({ value: initialValue = '40', onChange, ...rest }: SliderInputStoryProps) => {
+  const [value, setValue] = useState<Decimal | DecimalRangeValue>(initialValue)
 
   useEffect(() => {
     setValue(initialValue)
@@ -34,14 +35,14 @@ const SliderInputComponent = ({ value: initialValue = 40, onChange, ...rest }: S
   )
 }
 
-const meta: Meta<typeof SliderInput> = {
+const meta: Meta<typeof SliderInputComponent> = {
   title: 'UI Kit/Widgets/SliderInput',
-  component: SliderInput,
+  component: SliderInputComponent,
   render: (args) => <SliderInputComponent {...(args as SliderInputStoryProps)} />,
   args: {
     layoutDirection: 'row',
     size: 'medium',
-    value: 40,
+    value: '40',
     min: 0,
     max: 100,
     step: 1,
@@ -102,33 +103,33 @@ export const SmallSize: Story = {
 }
 export const Range: Story = {
   args: {
-    value: [30, 70],
+    value: ['30', '70'],
   },
 }
 export const RangeColumnLayout: Story = {
   args: {
     layoutDirection: 'column',
-    value: [30, 70],
+    value: ['30', '70'],
   },
 }
 export const RangeColumnLayoutSmall: Story = {
   args: {
     layoutDirection: 'column',
-    value: [30, 70],
+    value: ['30', '70'],
     size: 'small',
   },
 }
 export const Disabled: Story = {
   args: {
     layoutDirection: 'column',
-    value: [30, 70],
+    value: ['30', '70'],
     disabled: true,
   },
 }
 export const TradingSlider: Story = {
   args: {
     layoutDirection: 'row',
-    value: 50,
+    value: '50',
     sliderProps: {
       'data-rail-background': 'danger',
     },
