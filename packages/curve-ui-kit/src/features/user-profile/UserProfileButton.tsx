@@ -12,7 +12,7 @@ export const UserProfileButton = () => {
   return (
     <>
       {useUserProfileButton() ? (
-        <IconButton size="small" onClick={open}>
+        <IconButton size="small" onClick={open} data-testid="user-profile-button">
           <PersonIcon />
         </IconButton>
       ) : (

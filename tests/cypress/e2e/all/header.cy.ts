@@ -56,6 +56,7 @@ describe('Header', () => {
     it('should switch themes', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
         const font1 = $nav.css('font-family')
+        cy.get(`[data-testid='user-profile-button']`).click()
         if (!isDarkMode) {
           cy.get(`[data-testid='theme-switcher-light']`).click() // switch to dark mode
         }
