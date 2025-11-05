@@ -8,7 +8,7 @@ import Button from '@ui/Button'
 import { t } from '@ui-kit/lib/i18n'
 
 type BandsCompProps = {
-  llamma: Llamma
+  llamma: Llamma | null
   llammaId: string
   page: 'create' | 'manage'
 }

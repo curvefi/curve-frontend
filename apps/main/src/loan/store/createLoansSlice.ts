@@ -5,7 +5,6 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import {
   type ChainId,
-  CollateralData,
   LlamaApi,
   Llamma,
   LoanDetails,
@@ -13,6 +12,7 @@ import {
   UserLoanDetails,
   UserWalletBalances,
 } from '@/loan/types/loan.types'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
 import { errorFallback } from '@ui-kit/utils/error.util'
@@ -31,7 +31,7 @@ const sliceKey = 'loans'
 
 export type LoansSlice = {
   [sliceKey]: SliceState & {
-    fetchLoansDetails(curve: LlamaApi, collateralDatas: CollateralData[]): Promise<void>
+    fetchLoansDetails(curve: LlamaApi, markets: MintMarketTemplate[]): Promise<void>
     fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
     fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
@@ -57,16 +57,16 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
   [sliceKey]: {
     ...DEFAULT_STATE,
 
-    fetchLoansDetails: async (curve: LlamaApi, collateralDatas: CollateralData[]) => {
+    fetchLoansDetails: async (curve: LlamaApi, markets: MintMarketTemplate[]) => {
       const chainId = curve.chainId as ChainId
-      log('fetchLoansDetails', chainId, collateralDatas.map(({ llamma }) => llamma.id).join(','))
+      log('fetchLoansDetails', chainId, markets.map((market) => market.id).join(','))
 
       // TODO: handle errors
-      const { results } = await PromisePool.for(collateralDatas)
-        .handleError((error, { llamma }) => {
-          log(`Unable to get details ${llamma.id}, ${error}`)
+      const { results } = await PromisePool.for(markets)
+        .handleError((error, market) => {
+          log(`Unable to get details ${market.id}, ${error}`)
         })
-        .process(async ({ llamma }) => Promise.all([networks[chainId].api.detailInfo.loanPartialInfo(llamma)]))
+        .process(async (market) => Promise.all([networks[chainId].api.detailInfo.loanPartialInfo(market)]))
 
       // mapper
       const loansDetailsMapper = lodash.cloneDeep(get()[sliceKey].detailsMapper ?? {})

@@ -5,7 +5,7 @@ import { CurveApi } from '@/dao/types/dao.types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -49,7 +49,7 @@ const FieldLockedAmt = ({
     (balance: Decimal | undefined) => handleInpLockedAmt(balance ?? ''),
     [handleInpLockedAmt],
   )
-  return !useLargeTokenInput() ? (
+  return useLegacyTokenInput() ? (
     <div>
       <StyledInputProvider id="lockedAmt" disabled={disabled} inputVariant={lockedAmtError && 'error'}>
         <InputDebounced

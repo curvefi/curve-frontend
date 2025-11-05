@@ -22,7 +22,7 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -67,7 +67,6 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
     [updateFormValues],
   )
 
-  const shouldUseLargeTokenInput = useLargeTokenInput()
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
   const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
@@ -189,7 +188,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   return (
     <>
-      {!shouldUseLargeTokenInput ? (
+      {useLegacyTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>

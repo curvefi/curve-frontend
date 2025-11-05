@@ -28,7 +28,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -233,7 +233,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     <>
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {!useLargeTokenInput() ? (
+        {useLegacyTokenInput() ? (
           <>
             <InputProvider
               grid

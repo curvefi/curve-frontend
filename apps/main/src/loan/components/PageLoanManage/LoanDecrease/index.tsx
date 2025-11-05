@@ -30,7 +30,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -240,7 +240,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   return (
     <>
       {/* input debt */}
-      {!useLargeTokenInput() ? (
+      {useLegacyTokenInput() ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
