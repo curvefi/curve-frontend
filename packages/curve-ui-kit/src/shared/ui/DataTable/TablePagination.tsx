@@ -74,6 +74,7 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
   return (
     <Stack justifyContent="center" direction="row" data-testid="table-pagination">
       <NeighborButton table={table} type="previous" />
+
       <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
         {firstPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
@@ -86,8 +87,9 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
         {lastPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
         ))}
-        <NeighborButton table={table} type="next" />
       </ToggleButtonGroup>
+
+      <NeighborButton table={table} type="next" />
     </Stack>
   )
 }
