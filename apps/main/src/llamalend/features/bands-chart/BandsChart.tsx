@@ -3,10 +3,10 @@ import { useMemo, useRef, memo } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
-import { Box, Stack, Typography } from '@mui/material'
-import { t } from '@ui-kit/lib/i18n'
+import { Box, Stack } from '@mui/material'
 import { Slider } from '@ui-kit/shared/ui/Slider'
 import { getChartOptions } from './chartOptions'
+import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
 import { useBandsChartTooltip } from './hooks/useBandsChartTooltip'
 import { useBandsChartZoom } from './hooks/useBandsChartZoom'
@@ -18,6 +18,7 @@ type BandsChartProps = {
   collateralToken?: Token
   borrowToken?: Token
   chartData: ChartDataPoint[]
+  isError: boolean
   isLoading: boolean
   userBandsBalances: ParsedBandsBalances[]
   oraclePrice?: string
@@ -37,6 +38,7 @@ const BandsChartComponent = ({
   collateralToken,
   borrowToken,
   chartData,
+  isError,
   isLoading,
   userBandsBalances,
   oraclePrice,
@@ -82,15 +84,12 @@ const BandsChartComponent = ({
           }}
         >
           {isLoading ? (
-            // TODO: update loading feedback when a design is available
+            // TODO: update when re-theming the candle chart to match spinners
             <SpinnerWrapper>
               <Spinner size={18} />
             </SpinnerWrapper>
           ) : (
-            // TODO: replace error message when a design is available
-            <Typography variant="bodyMRegular" color="textPrimary" component="div">
-              {t`No bands data found...`}
-            </Typography>
+            <EmptyState isError={isError} />
           )}
         </Box>
       </Box>

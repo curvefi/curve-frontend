@@ -49,6 +49,7 @@ export const MarketInformationComp = ({
     userBandsBalances,
     oraclePrice,
     isLoading: isBandsLoading,
+    isError: isBandsError,
   } = useBandsData({
     chainId,
     llammaId,
@@ -90,6 +91,7 @@ export const MarketInformationComp = ({
           {isBeta && (
             <BandsChart
               isLoading={isBandsLoading}
+              isError={isBandsError}
               collateralToken={collateralToken}
               borrowToken={borrowToken}
               chartData={chartData}
