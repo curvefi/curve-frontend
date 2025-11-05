@@ -24,7 +24,7 @@ export type SliderInputProps = {
   size?: SliderSize
   /** Value controlled by the slider and inputs. Pass an array to enable a range slider. */
   value: ControlledValue
-  /** Change handler shared between the slider and inputs. Receives either a Decimal or a Decimal range. */
+  /** Change handler shared between the slider and inputs. */
   onChange: (value: ControlledValue) => void
   /** Minimum allowed value for both inputs and slider */
   min?: number
@@ -128,7 +128,7 @@ export const SliderInput = ({
           onChange(clampDecimal([nextValue[0], nextValue[1]] as DecimalRangeValue, min, max))
           return
         }
-        onChange(nextValue as Decimal)
+        onChange(clampDecimal(nextValue as Decimal, min, max))
       },
       [isRange, onChange, min, max],
     ),
