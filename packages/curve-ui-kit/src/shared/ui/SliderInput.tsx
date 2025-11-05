@@ -292,9 +292,7 @@ export const SliderInput = ({
       aria-label={ariaLabel}
       size={size}
       value={sliderValue}
-      onChange={(event, newValue, activeThumb) => {
-        handleSliderChange(event, newValue, activeThumb)
-      }}
+      onChange={handleSliderChange}
       onChangeCommitted={(event, newValue) => {
         handleSliderCommit(event, newValue)
         sliderOnChangeCommitted?.(event, newValue)
