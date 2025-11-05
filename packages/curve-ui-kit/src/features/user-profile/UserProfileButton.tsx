@@ -11,7 +11,7 @@ export const UserProfileButton = ({ visible }: { visible: boolean }) => {
   return (
     <>
       {visible ? (
-        <IconButton size="small" onClick={open}>
+        <IconButton size="small" onClick={open} data-testid="user-profile-button">
           <PersonIcon />
         </IconButton>
       ) : (
