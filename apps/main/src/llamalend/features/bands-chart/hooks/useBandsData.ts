@@ -7,19 +7,32 @@ import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-pric
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useConnection, type LlamaApi } from '@ui-kit/features/connect-wallet'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const useBandsData = ({
   chainId,
   llammaId,
   api,
+  collateralTokenAddress,
+  borrowedTokenAddress,
 }: {
   chainId: IChainId
   llammaId: string
   api: LlamaApi | undefined | null
+  collateralTokenAddress: string | undefined
+  borrowedTokenAddress: string | undefined
 }) => {
   const { wallet } = useConnection()
   const userAddress = wallet?.account.address
 
+  const { data: collateralUsdRate } = useTokenUsdRate(
+    { chainId, tokenAddress: collateralTokenAddress },
+    !!collateralTokenAddress,
+  )
+  const { data: borrowedUsdRate } = useTokenUsdRate(
+    { chainId, tokenAddress: borrowedTokenAddress },
+    !!borrowedTokenAddress,
+  )
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
     marketId: llammaId,
@@ -54,6 +67,8 @@ export const useBandsData = ({
     marketBandsBalances: marketBandsBalances,
     userBandsBalances: userBandsBalances,
     oraclePriceBand,
+    collateralUsdRate: collateralUsdRate ?? null,
+    borrowedUsdRate: borrowedUsdRate ?? null,
   })
 
   const isLoading =

@@ -8,6 +8,7 @@ import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { Stack, useTheme } from '@mui/material'
+import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
@@ -38,7 +39,10 @@ export const MarketInformationComp = ({
   type,
   page = 'manage',
 }: MarketInformationCompProps) => {
-  const { api, rChainId, rOwmId, market } = pageProps
+  const { rChainId, rOwmId, market } = pageProps
+  const collateralTokenAddress = market?.collateral_token.address
+  const borrowedTokenAddress = market?.borrowed_token.address
+  const api = getLib('llamaApi')
   const theme = useTheme()
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
@@ -52,17 +56,25 @@ export const MarketInformationComp = ({
     chainId: rChainId,
     llammaId: rOwmId,
     api,
+    collateralTokenAddress,
+    borrowedTokenAddress,
   })
-  const collateralToken = market && {
-    symbol: market?.collateral_token.symbol,
-    address: market?.collateral_token.address,
-    chain: networks[rChainId].id,
-  }
-  const borrowToken = market && {
-    symbol: market?.borrowed_token.symbol,
-    address: market?.borrowed_token.address,
-    chain: networks[rChainId].id,
-  }
+  const collateralToken =
+    market && collateralTokenAddress
+      ? {
+          symbol: market.collateral_token.symbol,
+          address: collateralTokenAddress,
+          chain: networks[rChainId].id,
+        }
+      : undefined
+  const borrowToken =
+    market && borrowedTokenAddress
+      ? {
+          symbol: market.borrowed_token.symbol,
+          address: borrowedTokenAddress,
+          chain: networks[rChainId].id,
+        }
+      : undefined
 
   return (
     <>

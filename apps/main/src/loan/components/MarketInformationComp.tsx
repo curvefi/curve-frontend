@@ -42,6 +42,8 @@ export const MarketInformationComp = ({
   const [releaseChannel] = useReleaseChannel()
   const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const collateralTokenAddress = llamma?.coinAddresses[1]
+  const borrowedTokenAddress = llamma?.coinAddresses[0]
   const {
     chartData,
     userBandsBalances,
@@ -51,17 +53,25 @@ export const MarketInformationComp = ({
     chainId,
     llammaId,
     api,
+    collateralTokenAddress,
+    borrowedTokenAddress,
   })
-  const collateralToken = llamma && {
-    symbol: llamma?.collateralSymbol,
-    address: llamma?.coinAddresses[1],
-    chain: networks[chainId].id,
-  }
-  const borrowToken = llamma && {
-    symbol: llamma?.coins[0],
-    address: llamma?.coinAddresses[0],
-    chain: networks[chainId].id,
-  }
+  const collateralToken =
+    llamma && collateralTokenAddress
+      ? {
+          symbol: llamma.collateralSymbol,
+          address: collateralTokenAddress,
+          chain: networks[chainId].id,
+        }
+      : undefined
+  const borrowToken =
+    llamma && borrowedTokenAddress
+      ? {
+          symbol: llamma.coins[0],
+          address: borrowedTokenAddress,
+          chain: networks[chainId].id,
+        }
+      : undefined
 
   return (
     <>
