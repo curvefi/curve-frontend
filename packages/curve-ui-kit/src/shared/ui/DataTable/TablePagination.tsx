@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { type Table } from '@tanstack/table-core'
-import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { ChevronLeftIcon } from '@ui-kit/shared/icons/ChevronLeftIcon'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 /**
@@ -60,7 +60,7 @@ const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>;
       ? { 'data-testid': `btn-page-${type.substring(0, 4)}`, onClick: table[`${type}Page`] }
       : { disabled: true })}
   >
-    <ChevronDownIcon sx={{ transform: `rotate(${{ previous: '90', next: '-90' }[type]}deg)` }} />
+    <ChevronLeftIcon {...(type === 'next' && { sx: { transform: 'rotate(180deg)' } })} />
   </IconButton>
 )
 
