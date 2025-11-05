@@ -23,6 +23,11 @@ export const defineMuiIconButton = ({ Button, Layer, Text }: DesignSystem): Comp
       '&:hover': { color: Button.Ghost.Hover.Label, backgroundColor: 'transparent', filter: 'saturate(2)' },
       fontFamily: Fonts[Text.FontFamily.Button],
     },
+    sizeExtraExtraSmall: {
+      height: ButtonSize.xs,
+      minWidth: ButtonSize.xs,
+      '& svg': handleBreakpoints({ width: IconSize.xs, height: IconSize.xs }),
+    },
     sizeExtraSmall: {
       height: ButtonSize.xs,
       minWidth: ButtonSize.xs,

@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack'
 import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { type Table } from '@tanstack/table-core'
-import { ChevronDownIcon } from '@ui-kit/shared/icons/ChevronDownIcon'
+import { ChevronLeftIcon } from '@ui-kit/shared/icons/ChevronLeftIcon'
 import type { TableItem } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 /**
@@ -55,12 +55,12 @@ const getPageOptions = (pageIndex: number, pageCount: number): [number[], number
  */
 const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>; type: 'previous' | 'next' }) => (
   <IconButton
-    size="extraSmall"
+    size="extraExtraSmall"
     {...(table[`getCan${capitalize(type)}Page`]()
       ? { 'data-testid': `btn-page-${type.substring(0, 4)}`, onClick: table[`${type}Page`] }
       : { disabled: true })}
   >
-    <ChevronDownIcon sx={{ transform: `rotate(${{ previous: '90', next: '-90' }[type]}deg)` }} />
+    <ChevronLeftIcon {...(type === 'next' && { sx: { transform: 'rotate(180deg)' } })} />
   </IconButton>
 )
 
@@ -72,8 +72,9 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
   const { pageIndex } = table.getState().pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (
-    <Stack justifyContent="center" direction="row" data-testid="table-pagination">
+    <Stack justifyContent="center" alignItems="center" direction="row" data-testid="table-pagination">
       <NeighborButton table={table} type="previous" />
+
       <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
         {firstPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
@@ -86,8 +87,9 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
         {lastPages.map((o) => (
           <PageButton key={o} page={o} table={table} />
         ))}
-        <NeighborButton table={table} type="next" />
       </ToggleButtonGroup>
+
+      <NeighborButton table={table} type="next" />
     </Stack>
   )
 }
