@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
@@ -27,7 +27,7 @@ const FieldLpToken = ({
 
   const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
 
-  return !useLargeTokenInput() ? (
+  return useLegacyTokenInput() ? (
     <InputProvider
       id="lpTokens"
       grid

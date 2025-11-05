@@ -42,7 +42,7 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -292,7 +292,7 @@ const LoanDeleverage = ({
   return (
     <Box grid gridRowGap={3}>
       {/* collateral field */}
-      {!useLargeTokenInput() ? (
+      {useLegacyTokenInput() ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid

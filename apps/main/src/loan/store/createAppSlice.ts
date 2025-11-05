@@ -44,7 +44,7 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
   hydrate: async (curveApi, prevCurveApi) => {
     if (!curveApi) return
 
-    const { loans, collaterals } = get()
+    const { loans } = get()
 
     const isNetworkSwitched = !!prevCurveApi?.chainId && prevCurveApi.chainId !== curveApi.chainId
     const isUserSwitched = !!prevCurveApi?.signerAddress && prevCurveApi.signerAddress !== curveApi.signerAddress
@@ -59,9 +59,8 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
       loans.setStateByKey('userDetailsMapper', {})
     }
 
-    // Check if curveApi is actually a Curve instance and not a LendingApi
-    const { collateralDatas } = await collaterals.fetchCollaterals(curveApi)
-    await loans.fetchLoansDetails(curveApi, collateralDatas)
+    const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))
+    await loans.fetchLoansDetails(curveApi, markets)
 
     log('Hydrate crvUSD - Complete')
   },

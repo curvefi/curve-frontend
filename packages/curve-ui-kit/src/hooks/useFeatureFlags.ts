@@ -9,29 +9,20 @@ import { useReleaseChannel } from './useLocalStorage'
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
-/**
- * LargeTokenInput replaces legacy amount inputs when on Beta channel.
- */
-export const useLargeTokenInput = useBetaChannel
+/** LargeTokenInput replaces legacy amount inputs */
+const useLargeTokenInput = useBetaChannel
+
+/** Negation of useLargeTokenInput for readability. */
 export const useLegacyTokenInput = () => !useLargeTokenInput()
 
-/**
- * New ActionInfo with mui should be released together with LargeTokenInput.
- */
+/** New ActionInfo with mui should be released together with LargeTokenInput. */
 export const useActionInfo = useBetaChannel
 
-/**
- * New DEX market list (PoolListPage) is enabled on Beta channel.
- */
+/** New DEX market list (PoolListPage) */
 export const useDexMarketList = useBetaChannel
 
-/**
- * New unified borrow form (BorrowTabContents) is enabled on Beta channel.
- * Exposed for convenience when migrating create/leverage pages.
- */
+/** New unified borrow form (BorrowTabContents) */
 export const useBorrowUnifiedForm = useBetaChannel
 
-/**
- * The user profile button is enabled on the stable channel.
- */
+/** New user profile button on the header */
 export const useUserProfileButton = useStableChannel

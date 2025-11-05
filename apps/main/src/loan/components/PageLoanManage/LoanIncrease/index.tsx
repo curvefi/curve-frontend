@@ -32,7 +32,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
@@ -76,7 +76,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const { chainId, haveSigner } = curveProps(curve)
   const resolvedChainId = (chainId ?? 1) as ChainId
   const network = networks[resolvedChainId]
-  const shouldUseLargeTokenInput = useLargeTokenInput()
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -274,7 +274,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   return (
     <>
       {/* field debt */}
-      {!shouldUseLargeTokenInput ? (
+      {shouldUseLegacyTokenInput ? (
         <Box grid gridRowGap={1}>
           <InputProvider
             grid
@@ -342,7 +342,7 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {!shouldUseLargeTokenInput ? (
+        {shouldUseLegacyTokenInput ? (
           <>
             <InputProvider
               grid

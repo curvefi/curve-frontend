@@ -8,9 +8,6 @@ import type { ChainId } from '@/loan/types/loan.types'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-const hasKeys = <K extends keyof any, V>(obj: Record<K, V> | undefined | null): obj is Record<K, V> =>
-  !!obj && Object.keys(obj).length > 0
-
 export function useLoanAppStats(chainId: ChainId | undefined) {
   const blockchainId = chainId && networks[chainId].id
   const { data: tvl } = useCrvUsdTvl({ blockchainId })
