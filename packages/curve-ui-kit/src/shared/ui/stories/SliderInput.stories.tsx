@@ -133,7 +133,7 @@ export const TradingSlider: Story = {
       'data-rail-background': 'danger',
     },
     inputProps: {
-      formatOnBlur: (value) => formatNumber(Number(value), { abbreviate: true }),
+      format: (value) => formatNumber(Number(value), { abbreviate: true }),
       slotProps: {
         input: {
           sx: {

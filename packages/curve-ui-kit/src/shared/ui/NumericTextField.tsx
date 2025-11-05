@@ -82,7 +82,7 @@ export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onC
   /** Callback fired when the numeric is being submitted */
   onBlur?: (value: Decimal | undefined) => void
   /** Optional formatter applied when the input loses focus */
-  formatOnBlur?: (value: Decimal | undefined) => string
+  format?: (value: Decimal | undefined) => string
 }
 
 export const NumericTextField = ({
@@ -92,11 +92,11 @@ export const NumericTextField = ({
   onChange,
   onBlur,
   onFocus,
-  formatOnBlur,
+  format,
   ...props
 }: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
-  const [inputValue, setInputValue] = useState(getFormattedDisplayValue(value, formatOnBlur))
+  const [inputValue, setInputValue] = useState(getFormattedDisplayValue(value, format))
 
   const [lastChangeValue, setLastChangeValue] = useState<string | undefined>(value)
   const [lastBlurValue, setLastBlurValue] = useState(value)
@@ -104,8 +104,8 @@ export const NumericTextField = ({
 
   // Update input value when value changes externally
   useEffect(() => {
-    setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, formatOnBlur))
-  }, [value, isFocused, formatOnBlur])
+    setInputValue(isFocused ? getDisplayValue(value) : getFormattedDisplayValue(value, format))
+  }, [value, isFocused, format])
 
   return (
     <TextField
@@ -137,7 +137,7 @@ export const NumericTextField = ({
         const finalValue = invalidValues.includes(inputValue)
           ? undefined
           : (clamp(inputValue, min, max).toString() as Decimal)
-        setInputValue(getFormattedDisplayValue(finalValue, formatOnBlur))
+        setInputValue(getFormattedDisplayValue(finalValue, format))
 
         // Also emit the changed event, because due to clamping and such the final value
         // might differ from what the user entered last.

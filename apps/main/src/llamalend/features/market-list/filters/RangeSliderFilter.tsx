@@ -176,7 +176,7 @@ export const RangeSliderFilter = <T,>({
           step={sliderValueTransform?.sliderStep ?? step}
           sliderValueTransform={sliderValueTransform}
           inputProps={{
-            formatOnBlur: (value) => formatNumber(Number(value), { abbreviate: true }),
+            format: (value) => formatNumber(Number(value), { abbreviate: true }),
             ...(adornmentVariant
               ? {
                   slotProps: {
