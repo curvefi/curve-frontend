@@ -58,10 +58,10 @@ describe('Header', () => {
         const font1 = $nav.css('font-family')
         cy.get(`[data-testid='user-profile-button']`).click()
         if (!isDarkMode) {
-          cy.get(`[data-testid='theme-switcher-light']`).click() // switch to dark mode
+          cy.get(`[data-testid='theme-switch-button-light']`).click() // switch to dark mode
         }
-        cy.get(`[data-testid='theme-switcher-dark']`).click()
-        cy.get(`[data-testid='theme-switcher-chad']`).should('be.visible')
+        cy.get(`[data-testid='theme-switch-button-dark']`).click()
+        cy.get(`[data-testid='theme-switch-button-chad']`).should('be.visible')
 
         // check font change
         cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
@@ -69,8 +69,8 @@ describe('Header', () => {
           expect(font1).not.to.equal(font2)
 
           // reset theme
-          cy.get(`[data-testid='theme-switcher-chad']`).click()
-          cy.get(`[data-testid='theme-switcher-light']`).should('be.visible')
+          cy.get(`[data-testid='theme-switch-button-chad']`).click()
+          cy.get(`[data-testid='theme-switch-button-light']`).should('be.visible')
         })
       })
     })
