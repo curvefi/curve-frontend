@@ -10,7 +10,7 @@ import {
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@cy/support/helpers/lending-mocks'
-import { LLAMA_FILTERS_V1, LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
+import { LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
@@ -320,20 +320,6 @@ describe(`LlamaLend Markets`, () => {
 describe(`LlamaLend Storage Migration`, () => {
   beforeEach(() => {
     setupMocks()
-  })
-
-  it('migrates old filter to remove deprecated markets', () => {
-    visitAndWait(oneViewport(), {
-      onBeforeLoad({ localStorage }) {
-        localStorage.clear()
-        localStorage.setItem('table-filters-llamalend-markets-v1', JSON.stringify(LLAMA_FILTERS_V1))
-      },
-    })
-    cy.window().then(({ localStorage }) => {
-      expect(localStorage.getItem('table-filters-llamalend-markets-v1')).to.be.null
-      const newValue = JSON.parse(localStorage.getItem('table-filters-llamalend-markets-v2')!)
-      expect(newValue).to.deep.equal([{ id: 'deprecatedMessage', value: false }, ...LLAMA_FILTERS_V1])
-    })
   })
 
   it('migrates old visibility settings', () => {

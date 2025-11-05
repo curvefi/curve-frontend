@@ -35,11 +35,7 @@ const useDefaultLlamaFilter = (minLiquidity: number) =>
     [minLiquidity],
   )
 
-const migration: MigrationOptions<ColumnFiltersState> = {
-  version: 2,
-  // migration from v1 to v2: add deprecated filter
-  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
-}
+const migration: MigrationOptions<ColumnFiltersState> = { version: 2 }
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
