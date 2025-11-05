@@ -1,10 +1,10 @@
 import { useCallback } from 'react'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const FieldLpToken = ({
   amount,
@@ -23,12 +23,11 @@ const FieldLpToken = ({
   haveSigner: boolean
   handleAmountChange: (val: string) => void
 }) => {
-  const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback((val?: Decimal) => handleAmountChange(val ?? ''), [handleAmountChange])
 
   const onMax = useCallback(() => handleAmountChange(balance), [handleAmountChange, balance])
 
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return useLegacyTokenInput() ? (
     <InputProvider
       id="lpTokens"
       grid

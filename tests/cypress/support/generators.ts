@@ -1,5 +1,5 @@
 import type { Address } from '@curvefi/prices-api'
-import { recordValues } from '@curvefi/prices-api/objects.util'
+import { range, recordValues } from '@curvefi/prices-api/objects.util'
 
 export const MAX_USD_VALUE = 40_000_000 // $ 40m 🤑 not higher so we can test the highest TVL
 
@@ -7,16 +7,6 @@ export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
 
 export const oneInt = (minOrMax = 100, maxExclusive?: number): number => Math.floor(oneFloat(minOrMax, maxExclusive))
-
-/**
- * Generate an array of numbers from 0 to lengthOrStart - 1 or from lengthOrStart to lengthOrStart + length - 1
- * Example: range(3) => [0, 1, 2]
- * Example: range(2, 3) => [2, 3, 4]
- */
-export const range = (lengthOrStart: number, length?: number) =>
-  length === undefined
-    ? Array.from({ length: lengthOrStart }, (_, i) => i)
-    : Array.from({ length }, (_, i) => i + lengthOrStart)
 
 export const oneOf = <T>(...options: T[]) => options[oneInt(0, options.length)]
 export const oneBool = () => oneOf(true, false)

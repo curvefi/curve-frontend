@@ -18,7 +18,7 @@ import { ReleaseChannel } from '@ui-kit/utils'
 const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
-  llamma: Llamma
+  llamma: Llamma | null
   llammaId: string
   chainId: ChainId
   chartExpanded: boolean

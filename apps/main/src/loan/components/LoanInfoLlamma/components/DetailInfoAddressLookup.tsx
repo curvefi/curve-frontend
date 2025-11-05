@@ -6,9 +6,9 @@ import Icon from '@ui/Icon'
 import IconButton from '@ui/IconButton'
 import ExternalLink from '@ui/Link/ExternalLink'
 import { scanAddressPath } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import { AddressActionInfo, AddressActionInfoProps } from '@ui-kit/shared/ui/AddressActionInfo'
-import { copyToClipboard, ReleaseChannel, shortenAddress } from '@ui-kit/utils'
+import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
 
 type Props = Omit<AddressActionInfoProps, 'network' | 'address'> & { chainId: ChainId; address: string }
 
@@ -52,11 +52,10 @@ const StyledExternalLink = styled(ExternalLink)`
   }
 `
 
-export default function DetailInfoAddressLookup({ chainId, ...props }: Props) {
-  const [releaseChannel] = useReleaseChannel()
-  return releaseChannel === ReleaseChannel.Beta ? (
+const DetailInfoAddressLookup = ({ chainId, ...props }: Props) =>
+  useActionInfo() ? (
     <AddressActionInfo network={networks[chainId]} {...props} />
   ) : (
     <OldDetailInfoAddressLookup chainId={chainId} {...props} />
   )
-}
+export default DetailInfoAddressLookup

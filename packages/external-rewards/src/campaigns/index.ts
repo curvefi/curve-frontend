@@ -25,7 +25,6 @@ import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
-import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import Tharwa from './Tharwa.json'
@@ -56,7 +55,6 @@ export {
   Pumpbtc,
   Bills,
   StableLabs,
-  Sonic,
   Infinifi,
   Asymmetry,
   GoNuts,
