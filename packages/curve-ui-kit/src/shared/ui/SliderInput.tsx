@@ -269,7 +269,7 @@ export const SliderInput = ({
     <NumericTextField
       aria-label={ariaLabel}
       size={sliderInputSizeMap[size]}
-      variant="filled"
+      variant="standard"
       value={inputValue}
       min={decimal(min)}
       max={decimal(max)}
