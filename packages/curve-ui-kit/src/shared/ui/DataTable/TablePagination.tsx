@@ -55,7 +55,7 @@ const getPageOptions = (pageIndex: number, pageCount: number): [number[], number
  */
 const NeighborButton = <T extends TableItem>({ table, type }: { table: Table<T>; type: 'previous' | 'next' }) => (
   <IconButton
-    size="extraSmall"
+    size="extraExtraSmall"
     {...(table[`getCan${capitalize(type)}Page`]()
       ? { 'data-testid': `btn-page-${type.substring(0, 4)}`, onClick: table[`${type}Page`] }
       : { disabled: true })}
