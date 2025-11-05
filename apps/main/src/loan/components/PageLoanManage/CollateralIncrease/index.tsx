@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -12,7 +13,7 @@ import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLo
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -36,9 +37,9 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
+interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
-const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
+const CollateralIncrease = ({ curve, isReady, llamma, llammaId, rChainId }: Props) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanCollateralIncrease.activeKey)
@@ -47,11 +48,17 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const formStatus = useStore((state) => state.loanCollateralIncrease.formStatus)
   const formValues = useStore((state) => state.loanCollateralIncrease.formValues)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
 
   const fetchStepApprove = useStore((state) => state.loanCollateralIncrease.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanCollateralIncrease.fetchStepIncrease)

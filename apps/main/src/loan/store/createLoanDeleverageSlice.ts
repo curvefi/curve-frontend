@@ -14,6 +14,7 @@ import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.ty
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { getUserLoanDetails, invalidateUserLoanDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -70,7 +71,6 @@ const createLoanDeleverageSlice = (
       const storedFormEstGas = get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_FORM_EST_GAS
       const storedDetailInfo = get()[sliceKey].detailInfo[storedActiveKey] ?? DEFAULT_DETAIL_INFO
       const storedFormValues = get()[sliceKey].formValues
-      const storedUserDetails = get().loans.userDetailsMapper[llammaId]
 
       // set formValues, reset status
       const cFormValues: FormValues = cloneDeep({
@@ -89,9 +89,16 @@ const createLoanDeleverageSlice = (
           : {}),
       })
 
-      if (!curve || !llamma || !storedUserDetails || (curve && !curve.signerAddress)) return
-
+      if (!curve || !llamma || (curve && !curve.signerAddress)) return
       const chainId = curve.chainId as ChainId
+      const storedUserDetails = getUserLoanDetails({
+        chainId,
+        marketId: llamma.id,
+        userAddress: curve?.signerAddress,
+      })
+
+      if (!storedUserDetails) return
+
       const { userState, userStatus } = storedUserDetails
       const isSoftLiquidation = userStatus?.colorKey === 'soft_liquidation'
 
@@ -174,7 +181,7 @@ const createLoanDeleverageSlice = (
           loanExists = respLoanDetails.loanExists
 
           if (!loanExists) {
-            get().loans.resetUserDetailsState(llamma)
+            invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
           }
 
           get()[sliceKey].setStateByKeys({

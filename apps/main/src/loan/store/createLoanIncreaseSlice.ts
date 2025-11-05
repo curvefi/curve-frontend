@@ -14,6 +14,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { invalidateUserLoanDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -226,7 +227,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       // re-fetch loan info
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
-        get().loans.resetUserDetailsState(llamma)
+        invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
       }
 
       if (activeKey === get()[sliceKey].activeKey) {

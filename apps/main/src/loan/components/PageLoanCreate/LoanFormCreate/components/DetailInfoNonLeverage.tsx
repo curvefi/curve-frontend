@@ -1,3 +1,4 @@
+import { useAccount } from 'wagmi'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
@@ -5,7 +6,7 @@ import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DetailInfoN from '@/loan/components/DetailInfoN'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_DETAIL_INFO } from '@/loan/components/PageLoanManage/utils'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import useStore from '@/loan/store/useStore'
 import { LiquidationRangeSlider } from '@ui-kit/shared/ui/LiquidationRangeSlider'
 
@@ -34,7 +35,13 @@ const DetailInfoNonLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useUserLoanDetails(llammaId)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId,
+    marketId: llammaId,
+    userAddress,
+  })
 
   return (
     <div>

@@ -3,25 +3,17 @@ import { StoreApi } from 'zustand'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
-import {
-  type ChainId,
-  LlamaApi,
-  Llamma,
-  LoanDetails,
-  LoanPriceInfo,
-  UserLoanDetails,
-  UserWalletBalances,
-} from '@/loan/types/loan.types'
+import { type ChainId, LlamaApi, Llamma, LoanDetails, LoanPriceInfo, UserWalletBalances } from '@/loan/types/loan.types'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
+import { fetchUserLoanDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
   detailsMapper: { [collateralId: string]: Partial<LoanDetails> }
   priceInfoMapper: { [collateralId: string]: LoanPriceInfo }
-  userDetailsMapper: { [collateralId: string]: UserLoanDetails }
   userWalletBalancesMapper: { [collateralId: string]: UserWalletBalances }
   userWalletBalancesLoading: boolean
 }
@@ -33,8 +25,6 @@ export type LoansSlice = {
     fetchLoansDetails(curve: LlamaApi, markets: MintMarketTemplate[]): Promise<void>
     fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
-    fetchUserLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<UserLoanDetails>
-    resetUserDetailsState(llamma: Llamma): void
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -47,7 +37,6 @@ export type LoansSlice = {
 const DEFAULT_STATE: SliceState = {
   detailsMapper: {},
   priceInfoMapper: {},
-  userDetailsMapper: {},
   userWalletBalancesMapper: {},
   userWalletBalancesLoading: false,
 }
@@ -99,7 +88,8 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
         void get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
 
         if (loanExists) {
-          void get()[sliceKey].fetchUserLoanDetails(curve, llamma)
+          // todo: catch error? alternate todo: this shouldn't happen here, user loan existance and data fetching should happen outside this function
+          void fetchUserLoanDetails({ chainId, marketId: llamma.id, userAddress: curve.signerAddress })
         }
       }
 
@@ -113,28 +103,6 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
       get()[sliceKey].setStateByActiveKey('userWalletBalancesMapper', llamma.id, resp)
       get()[sliceKey].setStateByKey('userWalletBalancesLoading', false)
       return resp
-    },
-    fetchUserLoanDetails: async (curve: LlamaApi, llamma: Llamma) => {
-      const chainId = curve.chainId as ChainId
-      const userLoanDetailsFn = networks[chainId].api.detailInfo.userLoanInfo
-
-      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, {
-        ...get()[sliceKey].userDetailsMapper[llamma.id],
-        loading: true,
-      })
-
-      const resp = await userLoanDetailsFn(llamma, curve.signerAddress)
-
-      get()[sliceKey].setStateByActiveKey('userDetailsMapper', llamma.id, {
-        ...resp,
-        loading: false,
-      })
-      return { ...resp, loading: false }
-    },
-    resetUserDetailsState: (llamma: Llamma) => {
-      const clonedUserDetailsMapper = lodash.cloneDeep(get()[sliceKey].userDetailsMapper)
-      delete clonedUserDetailsMapper[llamma.id]
-      get()[sliceKey].setStateByKey('userDetailsMapper', clonedUserDetailsMapper)
     },
 
     // slice helpers

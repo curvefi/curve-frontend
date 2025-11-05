@@ -52,8 +52,6 @@ const Page = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
-  const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect: connectWallet } = useWallet()
@@ -95,24 +93,12 @@ const Page = () => {
       void (async () => {
         const fetchedLoanDetails = await fetchLoanDetails(curve, market)
         if (!fetchedLoanDetails.loanExists) {
-          resetUserDetailsState(market)
           push(getLoanCreatePathname(params, rCollateralId))
         }
         setLoaded(true)
       })()
     }
-  }, [
-    isReady,
-    isHydrated,
-    rFormType,
-    curve,
-    rCollateralId,
-    market,
-    fetchLoanDetails,
-    resetUserDetailsState,
-    push,
-    params,
-  ])
+  }, [isReady, isHydrated, rFormType, curve, rCollateralId, market, fetchLoanDetails, push, params])
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
@@ -125,7 +111,6 @@ const Page = () => {
   usePageVisibleInterval(() => {
     if (curve?.signerAddress && market && loanExists) {
       void fetchLoanDetails(curve, market)
-      void fetchUserLoanDetails(curve, market)
     }
   }, REFRESH_INTERVAL['1m'])
 

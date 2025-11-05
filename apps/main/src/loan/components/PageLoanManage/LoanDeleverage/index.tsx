@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -22,7 +23,7 @@ import {
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -69,7 +70,14 @@ const LoanDeleverage = ({
   const formValues = useStore((state) => state.loanDeleverage.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useUserLoanDetails(llammaId)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
+
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
