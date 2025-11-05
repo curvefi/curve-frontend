@@ -72,7 +72,7 @@ export const TablePagination = <T extends TableItem>({ table }: { table: Table<T
   const { pageIndex } = table.getState().pagination
   const [firstPages, aroundPages, lastPages] = getPageOptions(pageIndex, table.getPageCount())
   return (
-    <Stack justifyContent="center" direction="row" data-testid="table-pagination">
+    <Stack justifyContent="center" alignItems="center" direction="row" data-testid="table-pagination">
       <NeighborButton table={table} type="previous" />
 
       <ToggleButtonGroup value={pageIndex} size="extraSmall" exclusive data-testid="page-buttons">
