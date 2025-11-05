@@ -40,11 +40,6 @@ export function fulfilledValue<T>(result: PromiseSettledResult<T>) {
 
 export const httpFetcher = (uri: string) => fetch(uri).then((res) => res.json())
 
-export function sleep(ms?: number) {
-  const parsedMs = ms || Math.floor(Math.random() * (10000 - 1000 + 1) + 1000)
-  return new Promise((resolve) => setTimeout(resolve, parsedMs))
-}
-
 export function curveProps(curve: LlamaApi | null) {
   if (curve) {
     const chainId = curve.chainId as ChainId

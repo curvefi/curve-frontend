@@ -1,7 +1,7 @@
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import Select from '@mui/material/Select'
 import type { SxProps } from '@mui/system'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { Spinner } from '@ui-kit/shared/ui/Spinner'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -52,7 +52,7 @@ export const TokenSelectButton = ({ token, disabled, onClick, sx }: Props) => {
       IconComponent={KeyboardArrowDownIcon}
       sx={{
         backgroundColor: (t) => t.design.Layer[1].Fill,
-        ...(!useLargeTokenInput() && {
+        ...(useLegacyTokenInput() && {
           marginBlock: 'auto',
           border: 'none',
           borderBottom: (t: any) => `2px solid ${t.design.Layer[1].Outline}`,

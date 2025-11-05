@@ -35,7 +35,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -86,7 +86,7 @@ const Swap = ({
   const setPoolIsWrapped = useStore((state) => state.pools.setPoolIsWrapped)
   const { data: networks } = useNetworks()
   const network = (chainId && networks[chainId]) || null
-  const shouldUseLargeTokenInput = useLargeTokenInput()
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const slippageImpact = exchangeOutput ? getSlippageImpact({ maxSlippage, ...exchangeOutput }) : null
 
@@ -348,7 +348,7 @@ const Swap = ({
       {/* input fields */}
       <Box grid gridRowGap="1">
         <div>
-          {!shouldUseLargeTokenInput ? (
+          {shouldUseLegacyTokenInput ? (
             <Box grid gridGap={1}>
               <StyledInputProvider
                 id="fromAmount"
@@ -490,7 +490,7 @@ const Swap = ({
         </Box>
 
         {/* if hasRouter value is false, it means entering toAmount is not ready */}
-        {!shouldUseLargeTokenInput ? (
+        {shouldUseLegacyTokenInput ? (
           <div>
             <StyledInputProvider
               id="toAmount"

@@ -5,7 +5,7 @@ import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useLargeTokenInput } from '@ui-kit/hooks/useFeatureFlags'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
@@ -58,7 +58,7 @@ const FieldToken = ({
     afterMaxClick?.(idx)
   }, [idx, afterMaxClick, handleAmountChange, balance])
 
-  return !useLargeTokenInput() ? (
+  return useLegacyTokenInput() ? (
     <InputProvider
       grid
       gridTemplateColumns={hideMaxButton ? '1fr auto' : '1fr auto auto'}
