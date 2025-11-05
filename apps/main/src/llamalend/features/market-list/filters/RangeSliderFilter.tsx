@@ -7,8 +7,8 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
+import { type FilterProps, parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { Slider } from '@ui-kit/shared/ui/Slider'
-import type { LlamaMarketColumnId } from '../columns.enum'
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -24,8 +24,8 @@ type OnSliderChange = NonNullable<SliderProps['onChange']>
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <T,>({
-  columnFilters,
+export const RangeSliderFilter = <TKey, TColumnId extends string>({
+  columnFiltersById,
   setColumnFilter,
   data,
   title,
@@ -33,22 +33,20 @@ export const RangeSliderFilter = <T,>({
   field,
   id,
   defaultMinimum = 0,
-}: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
-  data: T[]
+}: FilterProps<TColumnId> & {
+  data: TKey[]
   title: string
-  field: DeepKeys<T>
-  id: LlamaMarketColumnId
+  field: DeepKeys<TKey>
+  id: TColumnId
   format: (value: number) => string
   defaultMinimum?: number
 }) => {
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const defaultValue = useMemo((): NumberRange => {
-    const [min, max] = (columnFilters[id] as NumberRange) ?? []
+    const [min, max] = parseRangeFilter(columnFiltersById[id]) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
-  }, [columnFilters, id, maxValue, defaultMinimum])
+  }, [columnFiltersById, id, maxValue, defaultMinimum])
   const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce({
@@ -57,9 +55,11 @@ export const RangeSliderFilter = <T,>({
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultValue[i])
-            ? undefined // remove the filter if the range is the same as the default
-            : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          serializeRangeFilter(
+            newRange.every((value, i) => value === defaultValue[i])
+              ? null // remove the filter if the range is the same as the default
+              : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          ),
         ),
       [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
     ),

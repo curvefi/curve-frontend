@@ -2,14 +2,13 @@ import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
-import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { getTableOptions, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
@@ -29,17 +28,11 @@ const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 const useDefaultLlamaFilter = (minLiquidity: number) =>
   useMemo(
     () => [
-      { id: LlamaMarketColumnId.DeprecatedMessage, value: false },
-      { id: LlamaMarketColumnId.Tvl, value: [minLiquidity, null] },
+      { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
+      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minLiquidity, null])! },
     ],
     [minLiquidity],
   )
-
-const migration: MigrationOptions<ColumnFiltersState> = {
-  version: 2,
-  // migration from v1 to v2: add deprecated filter
-  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
-}
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
@@ -60,7 +53,7 @@ export const LlamaMarketsTable = ({
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
     LOCAL_STORAGE_KEY,
-    migration,
+    LlamaMarketColumnId,
     defaultFilters,
   )
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
@@ -103,14 +96,7 @@ export const LlamaMarketsTable = ({
         hasSearchBar
         onSearch={onSearch}
         leftChildren={<TableFiltersTitles title={t`Markets`} subtitle={t`Find your next opportunity`} />}
-        collapsible={
-          <LendingMarketsFilters
-            data={data}
-            minLiquidity={minLiquidity}
-            columnFilters={columnFiltersById}
-            setColumnFilter={setColumnFilter}
-          />
-        }
+        collapsible={<LendingMarketsFilters data={data} minLiquidity={minLiquidity} {...filterProps} />}
         chips={
           <>
             <ChainFilterChip data={data} {...filterProps} />

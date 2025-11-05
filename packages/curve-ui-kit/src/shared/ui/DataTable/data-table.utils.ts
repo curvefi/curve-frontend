@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
 import {
@@ -43,8 +44,8 @@ export const getExtraColumnPadding = <T>(column: Column<T, any>) => ({
 })
 
 export type FilterProps<T extends string> = {
-  columnFiltersById: Record<T, unknown>
-  setColumnFilter: (id: T, value: unknown) => void
+  columnFiltersById: PartialRecord<T, string>
+  setColumnFilter: (id: T, value: string | null) => void
 }
 
 export const getTableOptions = <T>(result: T | undefined) => ({
@@ -103,3 +104,13 @@ export function useCellSx<T extends TableItem>({
 }
 
 export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)
+
+export const serializeRangeFilter = <T extends string | number>(range: [T | null, T | null] | null) =>
+  range?.join('~') ?? null
+
+export const parseRangeFilter = (serialized: string | undefined) =>
+  serialized?.split('~').map((v) => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null]
+
+export const serializeListFilter = (list: string[] | null | undefined) => list?.join(',') || null
+
+export const parseListFilter = (serialized: string | undefined) => serialized?.split(',').filter((v) => v)
