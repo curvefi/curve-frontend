@@ -20,7 +20,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, formatNumber, type Decimal } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
-import { TradingSlider } from './TradingSlider'
+import { SliderInput } from './SliderInput'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
@@ -258,6 +258,8 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
 /** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
 const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
 
+const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
+
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -452,7 +454,31 @@ export const LargeTokenInput = ({
               zIndex: 1, // required, otherwise the slider background and border don't show up
             }}
           >
-            <TradingSlider disabled={disabled} percentage={percentage} onChange={handlePercentageChange} />
+            <SliderInput
+              disabled={disabled}
+              value={percentage ?? `${MIN_PERCENTAGE}`}
+              onChange={(value) => handlePercentageChange(value as Decimal)}
+              sliderProps={{
+                'data-rail-background': 'danger',
+              }}
+              min={MIN_PERCENTAGE}
+              max={MAX_PERCENTAGE}
+              inputProps={{
+                variant: 'standard',
+                slotProps: {
+                  input: {
+                    sx: {
+                      paddingInlineEnd: 0,
+                    },
+                    endAdornment: (
+                      <Typography variant="bodySBold" color="textTertiary">
+                        %
+                      </Typography>
+                    ),
+                  },
+                },
+              }}
+            />
           </Stack>
         )}
       </Stack>
