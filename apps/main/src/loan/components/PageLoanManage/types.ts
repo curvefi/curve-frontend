@@ -1,4 +1,4 @@
-import { ChainId, type CollateralUrlParams, LlamaApi, Llamma, TitleMapper } from '@/loan/types/loan.types'
+import { ChainId, type CollateralUrlParams, LlamaApi, Llamma } from '@/loan/types/loan.types'
 
 export type FormType = 'loan' | 'collateral' | 'swap' | 'deleverage'
 export type LoanFormType = 'loan-increase' | 'loan-decrease' | 'loan-liquidate'
@@ -33,5 +33,4 @@ export type PageLoanManageProps = {
   rChainId: ChainId
   rCollateralId: string
   rFormType: FormType
-  titleMapper: TitleMapper
 }
