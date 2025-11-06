@@ -21,11 +21,6 @@ export const LiquidationRangeSlider = ({
   const liqRanges =
     market && Array.from({ length: +market.maxBands - +market.minBands + 1 }, (_, i) => ({ n: i + market.minBands }))
 
-  // Truncate the value to an integer
-  const setSanitizedSliderValue = (val: Decimal) => {
-    setRange(parseInt(val))
-  }
-
   const minValue = liqRanges?.[0]?.n ?? market?.minBands ?? BORROW_PRESET_RANGES.MaxLtv
   const maxValue = liqRanges?.[liqRanges.length - 1]?.n ?? market?.maxBands ?? BORROW_PRESET_RANGES.Safe
   return (
@@ -42,7 +37,7 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={12}>
         <SliderInput
-          onChange={(val) => setSanitizedSliderValue(val as Decimal)}
+          onChange={(val) => setRange(parseInt(val as Decimal))}
           aria-label={t`Bands`}
           value={decimal(range) ?? `${minValue}`}
           min={minValue}
