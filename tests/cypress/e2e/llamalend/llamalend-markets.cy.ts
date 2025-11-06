@@ -119,6 +119,7 @@ describe(`LlamaLend Markets`, () => {
 
   it('should find markets by text', () => {
     cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
+    cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
     cy.get("[data-testid='table-text-search-Llamalend Markets']").type('wstETH crvUSD')
     cy.scrollTo(0, 0)
     // sfrxETH market is filtered out

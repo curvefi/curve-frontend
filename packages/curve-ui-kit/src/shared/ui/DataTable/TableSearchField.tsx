@@ -1,4 +1,5 @@
 import { useCallback, useRef } from 'react'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import Box from '@mui/material/Box'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
@@ -48,7 +49,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       onBlur={handleBlur}
       inputRef={searchInputRef}
       onSearch={onChange}
-      data-testid={testId ? `table-text-search-${testId}` : 'table-text-search'}
+      data-testid={notFalsy('table-text-search', testId).join('-')}
       size="small"
       sx={[
         (t) => ({
@@ -69,7 +70,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
       sx={{
         display: 'flex',
         // on mobile when search is de-expanded, animation doesn't look good
-        transition: isMobile && !isExpanded ? 'none' : `${TransitionFunction}`,
+        transition: isMobile && !isExpanded ? 'none' : TransitionFunction,
         flex: isExpanded ? '1 1 auto' : `0 0 ${ButtonSize.sm}`,
         width: isExpanded ? 0 : `${ButtonSize.sm}`,
         overflow: 'hidden',
@@ -82,7 +83,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
           onClick={handleExpand}
           icon={SearchIcon}
           active={isExpanded}
-          testId={testId ? `btn-expand-search-${testId}` : 'btn-expand-search'}
+          testId={notFalsy(`btn-expand-search`, testId).join('-')}
         />
       )}
     </Box>
