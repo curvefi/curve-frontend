@@ -19,7 +19,7 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
-import { takeTopWithMin } from '@ui-kit/utils'
+import { minCutoffForTopK } from '@ui-kit/utils'
 import { PoolListChips } from './chips/PoolListChips'
 import { POOL_LIST_COLUMNS, PoolColumnId } from './columns'
 import { PoolListEmptyState } from './components/PoolListEmptyState'
@@ -40,7 +40,7 @@ const useDefaultPoolsFilter = (data: PoolListItem[]) => {
         hideSmallPools && {
           id: PoolColumnId.Tvl,
           value: [
-            takeTopWithMin(data, (pool) => +(pool.tvl?.value ?? 0), tvl, MIN_POOLS_DISPLAYED),
+            minCutoffForTopK(data, (pool) => +(pool.tvl?.value ?? 0), tvl, MIN_POOLS_DISPLAYED),
             null, // no upper limit
           ],
         },
