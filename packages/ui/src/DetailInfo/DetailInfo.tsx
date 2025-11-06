@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 import { styled } from 'styled-components'
 import Divider from '@mui/material/Divider'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useActionInfo } from '@ui-kit/hooks/useFeatureFlags'
 import ActionInfo, { ActionInfoProps } from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 import Box from 'ui/src/Box/Box'
 import Loader from 'ui/src/Loader/Loader'
 
@@ -158,8 +157,6 @@ const Wrapper = styled(Box)<WrapperProps>`
   }
 `
 
-export default function DetailInfo(props: Props) {
-  const [releaseChannel] = useReleaseChannel()
-  const DetailInfo = releaseChannel === ReleaseChannel.Beta ? NewDetailInfo : OldDetailInfo
-  return <DetailInfo {...props} />
-}
+const DetailInfo = (props: Props) => (useActionInfo() ? <NewDetailInfo {...props} /> : <OldDetailInfo {...props} />)
+
+export default DetailInfo

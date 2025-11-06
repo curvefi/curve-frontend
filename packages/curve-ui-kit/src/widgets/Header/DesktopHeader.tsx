@@ -6,11 +6,10 @@ import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
 import { UserProfileButton } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useUserProfileButton } from '@ui-kit/hooks/useFeatureFlags'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
 import { AppButtonLinks } from './AppButtonLinks'
 import { HeaderLogo } from './HeaderLogo'
 import { HeaderStats } from './HeaderStats'
@@ -28,7 +27,6 @@ export const DesktopHeader = ({
   isLite = false,
 }: HeaderImplementationProps) => {
   const [menu, setMenu] = useState<AppMenuOption>(currentMenu)
-  const [releaseChannel] = useReleaseChannel()
   return (
     <AppBar
       color="transparent"
@@ -49,8 +47,7 @@ export const DesktopHeader = ({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            {/* TODO: update cypress tests to support UserProfileButton */}
-            <UserProfileButton visible={releaseChannel !== ReleaseChannel.Legacy && !isCypress} />
+            <UserProfileButton visible={useUserProfileButton()} />
             <ChainSwitcher networks={supportedNetworks} />
             <ConnectWalletIndicator />
           </Box>

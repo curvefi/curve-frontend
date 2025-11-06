@@ -29,12 +29,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -68,7 +68,6 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
 
   const { chainId, haveSigner } = curveProps(curve)
   const network = chainId && networks[chainId]
-  const [releaseChannel] = useReleaseChannel()
 
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: collateralAddress })
@@ -248,7 +247,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <div>
         {/* input collateral */}
         <Box grid gridRowGap={1}>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {useLegacyTokenInput() ? (
             <>
               <InputProvider
                 grid
@@ -286,14 +285,14 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
                 message: t`Collateral is greater than ${formatNumber(userWalletBalances.collateral)}`,
               })}
               disabled={disabled}
-              maxBalance={{
+              inputBalanceUsd={decimal(
+                formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+              )}
+              walletBalance={{
                 loading: userWalletBalancesLoading,
                 balance: decimal(userWalletBalances.collateral),
                 symbol: getTokenName(llamma).collateral,
-                ...(collateralUsdRate != null &&
-                  userWalletBalances.collateral != null && {
-                    notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
-                  }),
+                usdRate: collateralUsdRate,
               }}
               balance={decimal(formValues.collateral)}
               tokenSelector={

@@ -7,12 +7,12 @@ import Box from '@ui/Box'
 import type { BoxProps } from '@ui/Box/types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const InpTokenBorrow = ({
   id,
@@ -25,6 +25,7 @@ const InpTokenBorrow = ({
   inpValue,
   tokenAddress,
   tokenSymbol,
+  tokenBalance,
   maxRecv,
   handleInpChange,
   handleMaxClick,
@@ -40,15 +41,15 @@ const InpTokenBorrow = ({
   inpValue: string
   tokenAddress: string | undefined
   tokenSymbol: string | undefined
+  tokenBalance: string | undefined
   maxRecv: string | undefined
   handleInpChange(inpValue: string): void
   handleMaxClick(): void
   network: NetworkConfig
 }) => {
   const { data: usdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress })
-  const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return useLegacyTokenInput() ? (
     <Box grid gridRowGap={1} {...inpStyles}>
       {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
@@ -85,11 +86,16 @@ const InpTokenBorrow = ({
       isError={!!inpError}
       message={inpError === 'too-much' ? t`Amount > max borrow ${formatNumber(maxRecv || '0')}` : undefined}
       disabled={inpDisabled}
-      maxBalance={{
-        loading: maxRecv == null,
-        balance: decimal(maxRecv),
+      inputBalanceUsd={decimal(inpValue && usdRate && usdRate * +inpValue)}
+      walletBalance={{
+        loading: tokenBalance == null,
+        balance: decimal(tokenBalance),
         symbol: tokenSymbol,
-        notionalValueUsd: usdRate != null && maxRecv != null ? usdRate * +maxRecv : undefined,
+        usdRate: usdRate,
+      }}
+      maxBalance={{
+        balance: decimal(maxRecv),
+        chips: 'max',
       }}
       label={t`Borrow amount:`}
       balance={decimal(inpValue)}

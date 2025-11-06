@@ -39,13 +39,13 @@ import { notify } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { LargeSxProps, TokenSelector } from '@ui-kit/features/select-token'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { useTokenUsdRate, useTokenUsdRates } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const QuickSwap = ({
   pageLoaded,
@@ -368,11 +368,11 @@ const QuickSwap = ({
   }, [isReady, confirmedLoss, routesAndOutput, formEstGas, formStatus, formValues, searchedParams, userBalancesLoading])
 
   const activeStep = haveSigner ? getActiveStep(steps) : null
-  const isDisable = formStatus.formProcessing || apiRoutesLoading
+  const isDisable = formStatus.formProcessing
   const routesAndOutputLoading =
     !pageLoaded ||
     (haveSigner ? _isRoutesAndOutputLoading(rpcRoutesAndOutput, formValues, formStatus) : apiRoutesLoading)
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
 
   const setFromAmount = useCallback(
     (fromAmount?: Decimal) => updateFormValues({ isFrom: true, fromAmount: fromAmount ?? '', toAmount: '' }),
@@ -388,7 +388,7 @@ const QuickSwap = ({
       {/* inputs */}
       <Box grid gridRowGap="1" margin="var(--spacing-3) 0 var(--spacing-3) 0">
         <div>
-          {releaseChannel !== ReleaseChannel.Beta ? (
+          {shouldUseLegacyTokenInput ? (
             <Box grid gridGap={1}>
               <InputProvider
                 id="fromAmount"
@@ -444,20 +444,18 @@ const QuickSwap = ({
           ) : (
             <LargeTokenInput
               label={t`Sell`}
+              balance={decimal(formValues.fromAmount)}
               onBalance={setFromAmount}
               name="fromAmount"
-              inputBalanceUsd={
-                fromUsdRate != null && decimal(formValues.fromAmount) ? `${fromUsdRate * +formValues.fromAmount}` : '0'
-              }
-              maxBalance={{
+              inputBalanceUsd={decimal(formValues.fromAmount && fromUsdRate && fromUsdRate * +formValues.fromAmount)}
+              walletBalance={{
                 loading: userBalancesLoading || isMaxLoading,
                 balance: decimal(userFromBalance),
-                symbol: fromToken?.symbol || '',
-                ...(fromUsdRate != null &&
-                  userFromBalance != null && { notionalValueUsd: fromUsdRate * +userFromBalance }),
-                ...(searchedParams.fromAddress === ethAddress && {
-                  tooltip: t`'Balance minus estimated gas'`,
-                }),
+                symbol: fromToken?.symbol,
+                usdRate: fromUsdRate,
+              }}
+              maxBalance={{
+                balance: decimal(userFromBalance),
                 chips: 'range',
               }}
               isError={!!formValues.fromError}
@@ -497,7 +495,7 @@ const QuickSwap = ({
         </Box>
 
         {/* SWAP TO */}
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {shouldUseLegacyTokenInput ? (
           <div>
             <InputProvider disabled={isDisable} grid gridTemplateColumns="1fr 38%" id="to">
               <InputDebounced
@@ -536,19 +534,14 @@ const QuickSwap = ({
           <LargeTokenInput
             label={t`Buy`}
             balance={decimal(formValues.toAmount)}
-            inputBalanceUsd={
-              toUsdRate != null && decimal(formValues.toAmount) ? `${toUsdRate * +formValues.toAmount}` : '0'
-            }
+            inputBalanceUsd={decimal(formValues.toAmount && toUsdRate && toUsdRate * +formValues.toAmount)}
             onBalance={setToAmount}
             name="toAmount"
-            maxBalance={{
+            walletBalance={{
               loading: userBalancesLoading,
               balance: decimal(userToBalance),
-              symbol: toToken?.symbol || '',
-              ...(toUsdRate != null && userToBalance != null && { notionalValueUsd: toUsdRate * +userToBalance }),
-              ...(searchedParams.fromAddress === ethAddress && {
-                tooltip: t`'Balance'`,
-              }),
+              symbol: toToken?.symbol,
+              usdRate: toUsdRate,
             }}
             disabled={isDisable}
             testId="to-amount"

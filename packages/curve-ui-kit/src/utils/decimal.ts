@@ -25,6 +25,7 @@ export const decimal = (value: number | string | undefined | null): Decimal | un
   if (typeof value === 'number') {
     value = value.toString()
   }
+
   if (value != null && !['', '-', '?', 'Infinity', '-Infinity'].includes(value) && !new BigNumber(value).isNaN()) {
     return value as Decimal
   }

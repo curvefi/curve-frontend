@@ -22,12 +22,12 @@ import type { Step } from '@ui/Stepper/types'
 import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -67,7 +67,6 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
     [updateFormValues],
   )
 
-  const [releaseChannel] = useReleaseChannel()
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: borrowed_token?.address })
   const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
 
@@ -189,7 +188,7 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
 
   return (
     <>
-      {releaseChannel !== ReleaseChannel.Beta ? (
+      {useLegacyTokenInput() ? (
         <div>
           {/* input amount */}
           <Box grid gridRowGap={1}>
@@ -249,12 +248,16 @@ const VaultDepositMint = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, 
                 : undefined
           }
           disabled={disabled}
-          maxBalance={{
+          inputBalanceUsd={decimal(formValues.amount && usdRate && usdRate * +formValues.amount)}
+          walletBalance={{
             loading: !!signerAddress && typeof userBalances === 'undefined',
             balance: decimal(userBalances?.borrowed),
             symbol: borrowed_token?.symbol,
-            notionalValueUsd:
-              usdRate != null && userBalances?.borrowed != null ? usdRate * +userBalances.borrowed : undefined,
+            usdRate,
+          }}
+          maxBalance={{
+            balance: decimal(maxResp?.max),
+            chips: 'max',
           }}
           balance={decimal(formValues.amount)}
           tokenSelector={

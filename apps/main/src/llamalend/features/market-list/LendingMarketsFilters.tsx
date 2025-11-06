@@ -1,5 +1,6 @@
+import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { type AssetDetails, LlamaMarket } from '@/llamalend/entities/llama-markets'
 import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
@@ -19,12 +20,8 @@ const TABLE_FILTER_COLUMN_SIZE = { mobile: 12, tablet: 12 / 4, desktop: 12 / 5 }
  * Displays a token with its icon and symbol.
  * This is used in the lending markets filters to display collateral and debt tokens.
  */
-const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; field: 'collateral' | 'borrowed' }) => {
-  const { chain, address } = useMemo(
-    () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
-    [data, field, symbol],
-  )
-
+const Token = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
+  const { chain, address = null } = tokens[symbol] ?? {}
   return <TokenLabel blockchainId={chain} tooltip={symbol} address={address} label={symbol} size="xl" />
 }
 
@@ -32,20 +29,8 @@ const Token = ({ symbol, data, field }: { symbol: string; data: LlamaMarket[]; f
  * Displays a selected token with its icon and symbol.
  * This is used in the lending markets filters to display selected collateral and debt tokens.
  */
-const SelectedToken = ({
-  symbol,
-  data,
-  field,
-}: {
-  symbol: string
-  data: LlamaMarket[]
-  field: 'collateral' | 'borrowed'
-}) => {
-  const { chain, address } = useMemo(
-    () => data.find((d) => d.assets[field].symbol === symbol)!.assets[field],
-    [data, field, symbol],
-  )
-
+const SelectedToken = ({ symbol, tokens }: { symbol: string; tokens: Dictionary<AssetDetails> }) => {
+  const { chain, address = null } = tokens[symbol] ?? {}
   return <Chip label={symbol} size="small" icon={<TokenIcon blockchainId={chain} address={address} />} />
 }
 
@@ -61,38 +46,47 @@ export const LendingMarketsFilters = ({
   setColumnFilter: (id: string, value: unknown) => void
   data: LlamaMarket[]
   minLiquidity?: number
-}) => (
-  <Grid
-    container
-    spacing={Spacing.sm}
-    paddingBlockStart={Spacing.sm}
-    paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
-  >
-    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
-      <MultiSelectFilter
-        id={LlamaMarketColumnId.CollateralSymbol}
-        field="assets.collateral.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={data} field="collateral" />}
-        selectedItemRender={(symbol) => <SelectedToken symbol={symbol} data={data} field="collateral" />}
-        defaultText={t`All`}
-        defaultTextMobile={t`All Collateral Tokens`}
-        data={data}
-        {...filterProps}
-      />
-    </TableFilterColumn>
+}) => {
+  const tokens = useMemo(
+    () =>
+      keyBy(
+        data.flatMap((i) => [i.assets.collateral, i.assets.borrowed]),
+        (i) => i.symbol,
+      ),
+    [data],
+  )
+  return (
+    <Grid
+      container
+      spacing={Spacing.sm}
+      paddingBlockStart={Spacing.sm}
+      paddingInline={{ mobile: 0, tablet: Spacing.md.tablet, desktop: Spacing.md.desktop }}
+    >
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Collateral Tokens`}>
+        <MultiSelectFilter
+          id={LlamaMarketColumnId.CollateralSymbol}
+          field="assets.collateral.symbol"
+          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          defaultText={t`All`}
+          defaultTextMobile={t`All Collateral Tokens`}
+          data={data}
+          {...filterProps}
+        />
+      </TableFilterColumn>
 
-    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
-      <MultiSelectFilter
-        id={LlamaMarketColumnId.BorrowedSymbol}
-        field="assets.borrowed.symbol"
-        renderItem={(symbol) => <Token symbol={symbol} data={data} field="borrowed" />}
-        selectedItemRender={(symbol) => <SelectedToken symbol={symbol} data={data} field="collateral" />}
-        defaultText={t`All`}
-        defaultTextMobile={t`All Debt Tokens`}
-        data={data}
-        {...filterProps}
-      />
-    </TableFilterColumn>
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Debt Tokens`}>
+        <MultiSelectFilter
+          id={LlamaMarketColumnId.BorrowedSymbol}
+          field="assets.borrowed.symbol"
+          renderItem={(symbol) => <Token symbol={symbol} tokens={tokens} />}
+          selectedItemRender={(symbol) => <SelectedToken symbol={symbol} tokens={tokens} />}
+          defaultText={t`All`}
+          defaultTextMobile={t`All Debt Tokens`}
+          data={data}
+          {...filterProps}
+        />
+      </TableFilterColumn>
 
     <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
       <RangeSliderFilter

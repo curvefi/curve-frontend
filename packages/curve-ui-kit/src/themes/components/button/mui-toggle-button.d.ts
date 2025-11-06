@@ -2,10 +2,6 @@ import '@mui/material/ToggleButton'
 import '@mui/material/ToggleButtonGroup'
 
 declare module '@mui/material/ToggleButton' {
-  export interface ToggleButtonPropsSizeOverrides {
-    extraSmall: true
-  }
-
   export interface ToggleButtonClasses {
     sizeExtraSmall: string
     sizeExtraSmallSquare: string
@@ -14,6 +10,7 @@ declare module '@mui/material/ToggleButton' {
   }
 
   export interface ToggleButtonPropsSizeOverrides {
+    extraSmall: true
     extraSmallSquare: true
     smallSquare: true
     mediumSquare: true
@@ -26,6 +23,7 @@ declare module '@mui/material/ToggleButtonGroup' {
   }
 
   export interface ToggleButtonGroupPropsSizeOverrides {
+    extraSmall: true
     extraSmallSquare: true
     smallSquare: true
     mediumSquare: true
