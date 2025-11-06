@@ -465,18 +465,7 @@ export const LargeTokenInput = ({
               max={MAX_PERCENTAGE}
               inputProps={{
                 variant: 'standard',
-                slotProps: {
-                  input: {
-                    sx: {
-                      paddingInlineEnd: 0,
-                    },
-                    endAdornment: (
-                      <Typography variant="bodySBold" color="textTertiary">
-                        %
-                      </Typography>
-                    ),
-                  },
-                },
+                adornment: 'percentage',
               }}
             />
           </Stack>

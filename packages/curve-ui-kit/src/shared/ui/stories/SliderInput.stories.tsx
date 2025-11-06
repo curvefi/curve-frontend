@@ -1,7 +1,6 @@
 import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
-import Typography from '@mui/material/Typography'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal } from '@ui-kit/utils'
@@ -135,21 +134,7 @@ export const TradingSlider: Story = {
     },
     inputProps: {
       format: (value) => formatNumber(Number(value), { abbreviate: true }),
-      slotProps: {
-        input: {
-          sx: {
-            paddingInlineStart: Spacing.xs,
-            '& input': {
-              textAlign: 'left',
-            },
-          },
-          endAdornment: (
-            <Typography variant="bodySBold" color="textTertiary">
-              %
-            </Typography>
-          ),
-        },
-      },
+      adornment: 'percentage',
     },
   },
 }

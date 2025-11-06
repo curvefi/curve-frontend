@@ -7,7 +7,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 
-const { Spacing, MaxWidth } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const LiquidationRangeSlider = ({
   setRange,
@@ -53,22 +53,7 @@ export const LiquidationRangeSlider = ({
           inputProps={{
             variant: 'standard',
             name: 'range',
-            // the input is not wide enough for the "Bands" adornments
-            // value chosen for the slier to match the width of the labels
-            sx: { flexShrink: 0, width: MaxWidth.sliderInput.bands },
-            slotProps: {
-              // the normal input font size is too small for this component
-              input: {
-                sx: { '& input': { color: 'text.primary', fontSize: 'bodyMBold' } },
-                endAdornment: (
-                  <Typography
-                    sx={{ marginInlineEnd: Spacing.sm }}
-                    variant="highlightM"
-                    color="text.secondary"
-                  >{t`Bands`}</Typography>
-                ),
-              },
-            },
+            adornment: 'bands',
           }}
         />
       </Grid>

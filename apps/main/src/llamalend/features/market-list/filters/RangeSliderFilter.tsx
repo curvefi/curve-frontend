@@ -1,22 +1,18 @@
-import type { Property } from 'csstype'
 import lodash, { clamp } from 'lodash'
-import { ReactNode, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
+import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { SliderInput, SliderInputProps, type DecimalRangeValue } from '@ui-kit/shared/ui/SliderInput'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, formatNumber } from '@ui-kit/utils'
 import { powerMap, invertPowerMap } from '@ui-kit/utils/interpolations'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
-const { Spacing } = SizesAndSpaces
-
 type NumberRange = [number, number]
-type AdornmentVariants = 'dollar' | 'percentage'
 
 type OnSliderChange = NonNullable<SliderInputProps['onChange']>
 
@@ -27,25 +23,6 @@ type OnSliderChange = NonNullable<SliderInputProps['onChange']>
 const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)
 
-const AdornmentTypography = ({ children }: { children: ReactNode }) => (
-  <Typography variant="bodySBold" color="textTertiary">
-    {children}
-  </Typography>
-)
-
-const adornmentVariantMap: Record<
-  AdornmentVariants,
-  { textAlign: Property.TextAlign; inputStartAdornment?: ReactNode; inputEndAdornment?: ReactNode }
-> = {
-  dollar: {
-    textAlign: 'left',
-    inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
-  },
-  percentage: {
-    textAlign: 'right',
-    inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
-  },
-}
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
@@ -58,7 +35,7 @@ export const RangeSliderFilter = <T,>({
   field,
   id,
   defaultMinimum = 0,
-  adornmentVariant,
+  adornment,
   scale,
 }: {
   columnFilters: Record<string, unknown>
@@ -69,7 +46,7 @@ export const RangeSliderFilter = <T,>({
   id: LlamaMarketColumnId
   format: (value: number) => string
   defaultMinimum?: number
-  adornmentVariant?: AdornmentVariants
+  adornment?: NumericTextFieldProps['adornment']
   scale?: 'power'
 }) => {
   const isMobile = useIsMobile()
@@ -183,22 +160,7 @@ export const RangeSliderFilter = <T,>({
           sliderValueTransform={sliderValueTransform}
           inputProps={{
             format: (value) => formatNumber(Number(value), { abbreviate: true }),
-            ...(adornmentVariant
-              ? {
-                  slotProps: {
-                    input: {
-                      sx: {
-                        paddingInlineStart: Spacing.xs,
-                        '& input': {
-                          textAlign: adornmentVariantMap[adornmentVariant].textAlign,
-                        },
-                      },
-                      endAdornment: adornmentVariantMap[adornmentVariant].inputEndAdornment,
-                      startAdornment: adornmentVariantMap[adornmentVariant].inputStartAdornment,
-                    },
-                  },
-                }
-              : undefined),
+            adornment,
           }}
           testId={id}
         />

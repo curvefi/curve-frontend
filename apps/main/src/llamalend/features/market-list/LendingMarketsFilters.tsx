@@ -101,7 +101,7 @@ export const LendingMarketsFilters = ({
         title={t`TVL`}
         format={formatUsd}
         data={data}
-        adornmentVariant="dollar"
+        adornment="dollar"
         scale="power"
         {...filterProps}
       />
@@ -114,7 +114,7 @@ export const LendingMarketsFilters = ({
         title={t`Liquidity`}
         format={formatUsd}
         data={data}
-        adornmentVariant="dollar"
+        adornment="dollar"
         scale="power"
         {...filterProps}
       />
@@ -127,7 +127,7 @@ export const LendingMarketsFilters = ({
         title={t`Utilization`}
         format={formatPercent}
         data={data}
-        adornmentVariant="percentage"
+        adornment="percentage"
         {...filterProps}
       />
     </TableFilterColumn>

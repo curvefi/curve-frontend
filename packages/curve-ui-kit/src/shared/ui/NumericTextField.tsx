@@ -1,8 +1,38 @@
 import BigNumber from 'bignumber.js'
-import { useEffect, useState } from 'react'
+import type { Property } from 'csstype'
+import { ReactNode, useEffect, useState } from 'react'
+import { Typography } from '@mui/material'
 import TextField from '@mui/material/TextField'
 import type { TextFieldProps } from '@mui/material/TextField'
+import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Decimal } from '@ui-kit/utils'
+
+const { Spacing, MaxWidth } = SizesAndSpaces
+
+type NumericTextFieldAdornments = 'dollar' | 'percentage' | 'bands'
+
+/**
+ * Props for the NumericTextField component.
+ * Extends Material-UI's TextFieldProps while replacing value and onChange
+ * to handle numeric input specifically.
+ */
+export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
+  /** The numeric value of the input field */
+  value: Decimal | undefined
+  /** Minimum allowed value (default: 0) */
+  min?: Decimal
+  /** Maximum allowed value (default: Infinity) */
+  max?: Decimal
+  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
+  onChange?: (value: string | undefined) => void
+  /** Callback fired when the numeric is being submitted */
+  onBlur?: (value: Decimal | undefined) => void
+  /** Optional formatter applied when the input loses focus */
+  format?: (value: Decimal | undefined) => string
+  /** Optional adornment variant for dollar or percentage display */
+  adornment?: NumericTextFieldAdornments
+}
 
 /**
  * Validates and normalizes numeric input by replacing commas with dots
@@ -65,24 +95,34 @@ const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Dec
   return format?.(val) ?? getDisplayValue(val)
 }
 
-/**
- * Props for the NumericTextField component.
- * Extends Material-UI's TextFieldProps while replacing value and onChange
- * to handle numeric input specifically.
- */
-export type NumericTextFieldProps = Omit<TextFieldProps, 'type' | 'value' | 'onChange' | 'onBlur'> & {
-  /** The numeric value of the input field */
-  value: Decimal | undefined
-  /** Minimum allowed value (default: 0) */
-  min?: Decimal
-  /** Maximum allowed value (default: Infinity) */
-  max?: Decimal
-  /** Callback fired when the numeric value changes, can be a temporary non decimal value like "5." or "-" */
-  onChange?: (value: string | undefined) => void
-  /** Callback fired when the numeric is being submitted */
-  onBlur?: (value: Decimal | undefined) => void
-  /** Optional formatter applied when the input loses focus */
-  format?: (value: Decimal | undefined) => string
+const AdornmentTypography = ({ children }: { children: ReactNode }) => (
+  <Typography variant="bodySBold" color="textTertiary">
+    {children}
+  </Typography>
+)
+
+const adornments: Record<
+  NumericTextFieldAdornments,
+  { textAlign: Property.TextAlign; inputStartAdornment?: ReactNode; inputEndAdornment?: ReactNode }
+> = {
+  dollar: {
+    textAlign: 'left',
+    inputStartAdornment: <AdornmentTypography>$</AdornmentTypography>,
+  },
+  percentage: {
+    textAlign: 'right',
+    inputEndAdornment: <AdornmentTypography>%</AdornmentTypography>,
+  },
+  bands: {
+    textAlign: 'left',
+    inputEndAdornment: (
+      <Typography
+        sx={{ marginInlineEnd: Spacing.sm }}
+        variant="highlightM"
+        color="text.secondary"
+      >{t`Bands`}</Typography>
+    ),
+  },
 }
 
 export const NumericTextField = ({
@@ -93,6 +133,9 @@ export const NumericTextField = ({
   onBlur,
   onFocus,
   format,
+  adornment,
+  sx,
+  slotProps,
   ...props
 }: NumericTextFieldProps) => {
   // Internal value that might be incomplete, like "4.".
@@ -150,6 +193,32 @@ export const NumericTextField = ({
           onBlur?.(finalValue)
           setLastBlurValue(finalValue)
         }
+      }}
+      // the input is not wide enough for the "Bands" adornment
+      // the width value chosen for the slider to match the width of the labels
+      sx={{
+        ...sx,
+        ...(adornment === 'bands' && {
+          flexShrink: 0,
+          maxWidth: MaxWidth.sliderInput.bands,
+        }),
+      }}
+      slotProps={{
+        ...(adornment && {
+          input: {
+            sx: {
+              paddingInlineStart: Spacing.xs,
+              '& input': {
+                // the normal input font size is too small for the "Bands" adornment
+                ...(adornment === 'bands' && { color: 'text.primary', fontSize: 'bodyMBold' }),
+                textAlign: adornments[adornment].textAlign,
+              },
+            },
+            endAdornment: adornments[adornment].inputEndAdornment,
+            startAdornment: adornments[adornment].inputStartAdornment,
+          },
+        }),
+        ...slotProps,
       }}
     />
   )
