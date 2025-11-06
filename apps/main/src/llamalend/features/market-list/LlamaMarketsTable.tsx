@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
+import Button from '@mui/material/Button'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -11,13 +12,13 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
+import { EmptyStateMarkets } from './EmptyStateMarkets'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
@@ -87,7 +88,15 @@ export const LlamaMarketsTable = ({
     <DataTable
       table={table}
       emptyState={
-        <EmptyStateRow table={table}>{isError ? t`Could not load markets` : t`No markets found`}</EmptyStateRow>
+        <EmptyStateMarkets
+          table={table}
+          title={isError ? t`Could not load markets` : t`No markets found`}
+          action={
+            <Button size="small" onClick={isError ? onReload : resetFilters}>
+              {isError ? t`Reload` : t`Show All Markets`}
+            </Button>
+          }
+        />
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
