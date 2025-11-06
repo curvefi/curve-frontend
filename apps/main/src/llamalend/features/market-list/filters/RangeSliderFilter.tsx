@@ -24,6 +24,39 @@ const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)
 
 /**
+ * Calculate a power exponent that feels "good" based on the max value.
+ */
+const calculatePowerExponent = (isPowerScale: boolean, minValue: number, maxValue: number): number | undefined => {
+  if (!isPowerScale || maxValue <= minValue) return undefined
+  const safeMax = Math.max(maxValue, 1)
+  const exponent = Math.trunc(Math.log10(safeMax) - 2)
+  return exponent > 1 ? exponent : 1
+}
+
+/**
+ * Helpers that convert real values to and from the slider's value space.
+ */
+const calculateSliderValueTransform = (minValue: number, maxValue: number, isPowerScale: boolean) => {
+  const powerExponent = calculatePowerExponent(isPowerScale, minValue, maxValue)
+
+  if (powerExponent == null) {
+    return undefined
+  }
+
+  const [sliderMin, sliderMax] = [0, 1]
+
+  return {
+    /** Convert the current value into the 0-1 slider space. */
+    toSlider: (value: number) => invertPowerMap(clamp(value, minValue, maxValue), minValue, maxValue, powerExponent),
+    /** Bring the normalized slider value back into the actual units. */
+    fromSlider: (value: number) => powerMap(clamp(value, sliderMin, sliderMax), minValue, maxValue, powerExponent),
+    sliderMin,
+    sliderMax,
+    sliderStep: 0.001,
+  }
+}
+
+/**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
 export const RangeSliderFilter = <T,>({
@@ -54,38 +87,11 @@ export const RangeSliderFilter = <T,>({
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const isPowerScale = scale === 'power'
-  /** Find a power exponent that feels "good" based on the max value  */
-  const powerExponent = useMemo(() => {
-    if (!isPowerScale || maxValue <= minValue) return undefined
-    const safeMax = Math.max(maxValue, 1)
-    const exponent = Math.trunc(Math.log10(safeMax) - 2)
-    return exponent > 1 ? exponent : 1
-  }, [isPowerScale, maxValue, minValue])
 
-  const canUsePowerScale = isPowerScale && powerExponent != null
-
-  /** Helpers that convert real values to and from the slider's value space. */
-  const sliderValueTransform = useMemo(() => {
-    if (!canUsePowerScale) {
-      return undefined
-    }
-    const [sliderMin, sliderMax] = [0, 1]
-
-    /** Convert the current value into the 0-1 slider space. */
-    const toSlider = (value: number) =>
-      invertPowerMap(clamp(value, minValue, maxValue), minValue, maxValue, powerExponent)
-    /** Bring the normalized slider value back into the actual units. */
-    const fromSlider = (value: number) =>
-      powerMap(clamp(value, sliderMin, sliderMax), minValue, maxValue, powerExponent)
-
-    return {
-      toSlider,
-      fromSlider,
-      sliderMin,
-      sliderMax,
-      sliderStep: 0.001,
-    }
-  }, [canUsePowerScale, powerExponent, minValue, maxValue])
+  const sliderValueTransform = useMemo(
+    () => calculateSliderValueTransform(minValue, maxValue, isPowerScale),
+    [minValue, maxValue, isPowerScale],
+  )
 
   const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
   // Currently applied filter range
