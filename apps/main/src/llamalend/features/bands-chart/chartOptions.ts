@@ -116,8 +116,9 @@ export const getChartOptions = (
       borderWidth: 0,
       padding: 0,
       // ECharts sets white-space: nowrap on the tooltip container by default; override to allow wrapping
-      extraCssText: 'white-space: normal; overflow-wrap: anywhere; word-break: break-word;',
-      confine: true,
+      extraCssText:
+        'white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: none !important; width: max-content !important;',
+      confine: false,
     },
     xAxis: {
       type: 'value',
