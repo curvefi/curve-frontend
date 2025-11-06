@@ -351,7 +351,7 @@ export async function getNetworks() {
   const liteNetworks = Object.values(resp).reduce((prev, { chainId, ...config }) => {
     const baseConfig = NETWORK_BASE_CONFIG[chainId as keyof typeof NETWORK_BASE_CONFIG]
     const isUpgraded = !!baseConfig // networks upgraded from lite to full
-    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === Chain.Etherlink // networks that has only been upgraded to show pool rewards APY
+    const isOnlyPoolRewardsUpgraded = chainId === Chain.Taiko || chainId === 42793 // networks that has only been upgraded to show pool rewards APY, 42793 = Etherlink
     prev[chainId] = {
       ...DEFAULT_NETWORK_CONFIG,
       ...getBaseNetworksConfig<NetworkEnum, ChainId>(Number(chainId), { ...config, ...baseConfig }),

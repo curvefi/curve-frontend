@@ -31,5 +31,4 @@ export enum Chain {
   MegaEth = 6342,
   Strata = 8091,
   ExpChain = 18880,
-  Etherlink = 42793, // lite chain that has only been upgraded to show pool rewards APY
 }
