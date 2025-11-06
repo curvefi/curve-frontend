@@ -88,42 +88,43 @@ export const LendingMarketsFilters = ({
         />
       </TableFilterColumn>
 
-    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.Tvl}
-        field={LlamaMarketColumnId.Tvl}
-        title={t`TVL`}
-        format={formatUsd}
-        data={data}
-        adornment="dollar"
-        scale="power"
-        {...filterProps}
-      />
-    </TableFilterColumn>
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`TVL`}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.Tvl}
+          field={LlamaMarketColumnId.Tvl}
+          title={t`TVL`}
+          format={formatUsd}
+          data={data}
+          adornment="dollar"
+          scale="power"
+          {...filterProps}
+        />
+      </TableFilterColumn>
 
-    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.LiquidityUsd}
-        field={LlamaMarketColumnId.LiquidityUsd}
-        title={t`Liquidity`}
-        format={formatUsd}
-        data={data}
-        adornment="dollar"
-        scale="power"
-        {...filterProps}
-      />
-    </TableFilterColumn>
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Available liquidity`}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.LiquidityUsd}
+          field={LlamaMarketColumnId.LiquidityUsd}
+          title={t`Liquidity`}
+          format={formatUsd}
+          data={data}
+          adornment="dollar"
+          scale="power"
+          {...filterProps}
+        />
+      </TableFilterColumn>
 
-    <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
-      <RangeSliderFilter
-        id={LlamaMarketColumnId.UtilizationPercent}
-        field={LlamaMarketColumnId.UtilizationPercent}
-        title={t`Utilization`}
-        format={formatPercent}
-        data={data}
-        adornment="percentage"
-        {...filterProps}
-      />
-    </TableFilterColumn>
-  </Grid>
-)
+      <TableFilterColumn size={TABLE_FILTER_COLUMN_SIZE} title={t`Utilization`}>
+        <RangeSliderFilter
+          id={LlamaMarketColumnId.UtilizationPercent}
+          field={LlamaMarketColumnId.UtilizationPercent}
+          title={t`Utilization`}
+          format={formatPercent}
+          data={data}
+          adornment="percentage"
+          {...filterProps}
+        />
+      </TableFilterColumn>
+    </Grid>
+  )
+}

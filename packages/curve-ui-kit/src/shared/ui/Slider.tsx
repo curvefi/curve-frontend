@@ -1,6 +1,5 @@
 import { Stack } from '@mui/material'
 import MuiSlider, { type SliderProps as MuiSliderProps } from '@mui/material/Slider'
-// extended to support data-testid attribute
 export type SliderProps = MuiSliderProps
 
 /**
