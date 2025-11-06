@@ -173,7 +173,6 @@ export const RangeSliderFilter = <T,>({
     >
       <Stack paddingBlock={3} paddingInline={4}>
         <SliderInput
-          ariaLabel={title}
           layoutDirection="column"
           size="medium"
           value={sliderRangeValue}

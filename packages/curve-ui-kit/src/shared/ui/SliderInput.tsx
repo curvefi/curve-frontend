@@ -16,8 +16,6 @@ export type DecimalRangeValue = [Decimal, Decimal]
 type ControlledValue = Decimal | DecimalRangeValue
 
 export type SliderInputProps = {
-  /** The aria-label */
-  ariaLabel?: string
   /** The direction of the layout. Row: inputs on the left and right of the slider. Column: inputs below the slider. */
   layoutDirection?: 'column' | 'row'
   /** The size of the slider and inputs. Sizes of the inputs are calculated based on the size of the slider. */
@@ -88,7 +86,6 @@ const isRangeValue = (value: ControlledValue) => Array.isArray(value)
  * during drag and typing, then immediately committed on blur or release.
  */
 export const SliderInput = ({
-  ariaLabel,
   layoutDirection = 'row',
   size = 'medium',
   value,
@@ -267,7 +264,6 @@ export const SliderInput = ({
 
   const renderInput = (inputValue: Decimal | undefined, index: 0 | 1) => (
     <NumericTextField
-      aria-label={ariaLabel}
       size={sliderInputSizeMap[size]}
       variant="standard"
       value={inputValue}
@@ -289,7 +285,6 @@ export const SliderInput = ({
 
   const renderSlider = (
     <Slider
-      aria-label={ariaLabel}
       size={size}
       value={sliderValue}
       onChange={handleSliderChange}
