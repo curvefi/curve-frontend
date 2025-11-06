@@ -10,7 +10,7 @@ import {
   mockLendingSnapshots,
   mockLendingVaults,
 } from '@cy/support/helpers/lending-mocks'
-import { LLAMA_FILTERS_V1, LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
+import { LLAMA_VISIBILITY_SETTINGS_V0 } from '@cy/support/helpers/llamalend-storage'
 import { mockMintMarkets, mockMintSnapshots } from '@cy/support/helpers/minting-mocks'
 import { mockTokenPrices } from '@cy/support/helpers/tokens'
 import {
@@ -120,11 +120,25 @@ describe(`LlamaLend Markets`, () => {
   it('should find markets by text', () => {
     cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
     cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
-    cy.get("[data-testid='table-text-search-Llamalend Markets']").type('wstETH crvUSD')
+    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
+    cy.url().should('include', 'assets=wstETH+crvUSD') // todo: this should be called `search`!
     cy.scrollTo(0, 0)
     // sfrxETH market is filtered out
     cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
     // wstETH market is shown
+    cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
+  })
+
+  it('persists search filter across reload', () => {
+    const q = 'wstETH crvUSD'
+    const qEncoded = 'wstETH+crvUSD'
+    cy.viewport(width, height)
+    cy.visit(`/llamalend/ethereum/markets/?assets=${qEncoded}`)
+    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+    cy.url().should('include', `assets=${qEncoded}`)
+    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', q)
+    // Verify the filter effect on results (same as the non-persistence test)
+    cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
     cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
   })
 
@@ -152,6 +166,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="slider-${columnId}"]`).click(40, 10, { force: true, waitForAnimations: true })
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+      cy.url().should('include', `${columnId}=`)
     })
   })
 
@@ -159,12 +174,15 @@ describe(`LlamaLend Markets`, () => {
     const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
     cy.get(`[data-testid="chip-chain-${chain}"]`).click()
+    cy.url().should('include', `chain=${chain}`)
 
     cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
     const otherChain = oneOf(...chains.filter((c) => c !== chain))
     cy.get(`[data-testid="chip-chain-${otherChain}"]`).click()
     ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
+    cy.url().should('include', chain)
+    cy.url().should('include', otherChain)
   })
 
   it(`should allow filtering by token`, () => {
@@ -183,7 +201,9 @@ describe(`LlamaLend Markets`, () => {
     const borrowed = oneOf('CRV', 'crvUSD')
 
     selectCoin(collateral, 'collateral')
+    cy.url().should('include', `assets_collateral_symbol=${encodeURIComponent(collateral)}`)
     selectCoin(borrowed, 'borrowed')
+    cy.url().should('include', `assets_borrowed_symbol=${encodeURIComponent(borrowed)}`)
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
@@ -195,22 +215,28 @@ describe(`LlamaLend Markets`, () => {
 
     closeDrawer()
     withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
+    cy.url().should('include', 'isFavorite=yes')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
     cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
     cy.get(`[data-testid="table-empty-row"]`).should('exist')
     withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
+    cy.url().should('not.include', 'isFavorite=')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
   it(`should allow filtering by market type`, () =>
     withFilterChips(() =>
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        const [type, otherType] = shuffle('mint', 'lend')
-        cy.get(`[data-testid="chip-${type}"]`).click()
-        cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
+        const [type, otherType] = shuffle('Mint', 'Lend')
+        cy.get(`[data-testid="chip-${type.toLowerCase()}"]`).click()
+        cy.url().should('include', `type=${type}`)
+        cy.get(`[data-testid^="pool-type-"]`).each(($el) =>
+          expect($el.attr('data-testid')).equals(`pool-type-${type.toLowerCase()}`),
+        )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
-        cy.get(`[data-testid="chip-${otherType}"]`).click()
+        cy.get(`[data-testid="chip-${otherType.toLowerCase()}"]`).click()
+        cy.url().should('include', 'type=' + otherType)
         cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
       }),
     ))
@@ -321,20 +347,6 @@ describe(`LlamaLend Markets`, () => {
 describe(`LlamaLend Storage Migration`, () => {
   beforeEach(() => {
     setupMocks()
-  })
-
-  it('migrates old filter to remove deprecated markets', () => {
-    visitAndWait(oneViewport(), {
-      onBeforeLoad({ localStorage }) {
-        localStorage.clear()
-        localStorage.setItem('table-filters-llamalend-markets-v1', JSON.stringify(LLAMA_FILTERS_V1))
-      },
-    })
-    cy.window().then(({ localStorage }) => {
-      expect(localStorage.getItem('table-filters-llamalend-markets-v1')).to.be.null
-      const newValue = JSON.parse(localStorage.getItem('table-filters-llamalend-markets-v2')!)
-      expect(newValue).to.deep.equal([{ id: 'deprecatedMessage', value: false }, ...LLAMA_FILTERS_V1])
-    })
   })
 
   it('migrates old visibility settings', () => {

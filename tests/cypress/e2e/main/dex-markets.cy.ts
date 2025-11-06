@@ -86,7 +86,7 @@ describe('DEX Pools', () => {
 
     it('sorts by volume', () => {
       getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
-      cy.url().should('not.include', 'volume') // initial sort not in URL
+      // initial sort may be present; after sorting ascending, URL should include sort=volume
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('volume', 'asc')
       getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
@@ -94,7 +94,7 @@ describe('DEX Pools', () => {
     })
 
     it('sorts by TVL (desc/asc)', () => {
-      cy.url().should('not.include', 'tvl') // initial sort not in URL
+      // check URL reflects sorting changes
       sortBy('tvl', 'desc')
       getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
       cy.url().should('include', 'sort=-tvl')
@@ -109,6 +109,7 @@ describe('DEX Pools', () => {
       cy.get('[data-testid^="data-table-row-"]').then(($before) => {
         const beforeCount = $before.length
         clickFilterChip(currency)
+        cy.url().should('include', `filter=${currency}`)
         cy.get('[data-testid^="data-table-row-"]').then(($after) => {
           const afterCount = $after.length
           expect(afterCount).to.be.lessThan(beforeCount)
@@ -117,6 +118,17 @@ describe('DEX Pools', () => {
         })
         cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
       })
+    })
+
+    it('persists currency filter across reload', () => {
+      const currency = oneOf('usd', 'btc')
+      const currencyUpper = currency.toUpperCase()
+      cy.viewport(width, height)
+      cy.visit(`${PATH}?filter=${currency}`)
+      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+      cy.url().should('include', `filter=${currency}`)
+      // Verify content reflects the filter
+      cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(currencyUpper)
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
