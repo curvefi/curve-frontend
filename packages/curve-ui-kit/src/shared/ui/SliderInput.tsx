@@ -32,6 +32,8 @@ export type SliderInputProps = {
   step?: number
   /** Propagated to both inputs and slider */
   disabled?: boolean
+  /** The debounce time in milliseconds for the slider and inputs */
+  debounceMs?: number
   /** Optional transform that maps values between the inputs and the slider */
   sliderValueTransform?: {
     toSlider: (value: number) => number
@@ -98,6 +100,7 @@ export const SliderInput = ({
   inputProps,
   sliderValueTransform,
   testId,
+  debounceMs = DEBOUNCE_VALUE,
 }: SliderInputProps) => {
   const isRange = isRangeValue(value)
   const sliderMinValue = sliderValueTransform?.sliderMin ?? min
@@ -118,7 +121,7 @@ export const SliderInput = ({
   /** Internal debounced value state for slider and inputs during drag and typing */
   const [internalValue, setInternalValue, cancelDebounce] = useDebounce<ControlledValue>(
     value,
-    DEBOUNCE_VALUE,
+    debounceMs,
     useCallback(
       (nextValue) => {
         if (isRange) {
