@@ -1,7 +1,6 @@
 import { AppRoute, getRouteApp, getRouteTestId, oneAppRoute } from '@cy/support/routes'
 import {
   API_LOAD_TIMEOUT,
-  checkIsDarkMode,
   LOAD_TIMEOUT,
   oneDesktopViewport,
   oneMobileOrTabletViewport,
@@ -22,16 +21,13 @@ describe('Header', () => {
   let viewport: readonly [number, number]
 
   describe('Desktop', () => {
-    let isDarkMode: boolean // when running locally, the dark mode might be the default
     let route: AppRoute
 
     beforeEach(() => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`, {
-        onBeforeLoad: (win) => (isDarkMode = checkIsDarkMode(win)),
-      })
+      cy.visit(`/${route}`)
       waitIsLoaded(route)
     })
 
@@ -57,20 +53,15 @@ describe('Header', () => {
       cy.get(`[data-testid='navigation-connect-wallet']`).then(($nav) => {
         const font1 = $nav.css('font-family')
         cy.get(`[data-testid='user-profile-button']`).click()
-        if (!isDarkMode) {
-          cy.get(`[data-testid='theme-switch-button-light']`).click() // switch to dark mode
-        }
-        cy.get(`[data-testid='theme-switch-button-dark']`).click()
-        cy.get(`[data-testid='theme-switch-button-chad']`).should('be.visible')
+        cy.get(`[data-testid='theme-switch-button-chad']`).click()
 
         // check font change
         cy.get(`[data-testid='navigation-connect-wallet']`).then(($el) => {
           const font2 = $el.css('font-family')
           expect(font1).not.to.equal(font2)
-
-          // reset theme
-          cy.get(`[data-testid='theme-switch-button-chad']`).click()
-          cy.get(`[data-testid='theme-switch-button-light']`).should('be.visible')
+          cy.get(`[data-testid='theme-switch-button-dark']`).click()
+          cy.get(`[data-testid='theme-switch-button-dark']`).should('have.class', 'Mui-selected')
+          cy.document().its('body').should('have.class', 'theme-dark')
         })
       })
     })
