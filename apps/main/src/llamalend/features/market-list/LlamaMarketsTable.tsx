@@ -23,6 +23,7 @@ import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
+import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 
 const { isEqual } = lodash
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
@@ -88,15 +89,16 @@ export const LlamaMarketsTable = ({
     <DataTable
       table={table}
       emptyState={
-        <EmptyStateMarkets
-          table={table}
-          title={isError ? t`Could not load markets` : t`No markets found`}
-          action={
-            <Button size="small" onClick={isError ? onReload : resetFilters}>
-              {isError ? t`Reload` : t`Show All Markets`}
-            </Button>
-          }
-        />
+        <EmptyStateRow table={table}>
+          <EmptyStateMarkets
+            title={isError ? t`Could not load markets` : t`No markets found`}
+            action={
+              <Button size="small" onClick={isError ? onReload : resetFilters}>
+                {isError ? t`Reload` : t`Show All Markets`}
+              </Button>
+            }
+          />
+        </EmptyStateRow>
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
