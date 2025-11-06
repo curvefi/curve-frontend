@@ -18,7 +18,7 @@ import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitl
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
-import { EmptyStateMarkets } from './EmptyStateMarkets'
+import { EmptyStateMarkets } from '@ui-kit/shared/ui/DataTable/EmptyStateMarkets'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
