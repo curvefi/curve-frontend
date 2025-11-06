@@ -13,9 +13,7 @@ import {
   sortBands,
 } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
-import { getReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 export const network = {
   1: {
@@ -141,13 +139,10 @@ const detailInfo = {
   loanInfo: async (llamma: Llamma) => {
     log('loanInfo', llamma.collateralSymbol)
     const fetchedPartialLoanInfo = await detailInfo.loanPartialInfo(llamma)
-
-    const isBeta = getReleaseChannel() === ReleaseChannel.Beta
-
     const [balancesResult, bandsBalancesResult, liquidationBandResult, basePriceResult] = await Promise.allSettled([
       llamma.stats.balances(),
-      isBeta ? Promise.resolve(DEFAULT_BAND_BALANCES) : llamma.stats.bandsBalances(),
-      isBeta ? Promise.resolve(null) : llamma.stats.liquidatingBand(),
+      llamma.stats.bandsBalances(),
+      llamma.stats.liquidatingBand(),
       llamma.basePrice(),
     ])
     const balances = fulfilledValue(balancesResult) ?? ['0', '0']
@@ -155,9 +150,7 @@ const detailInfo = {
     const liquidationBand = fulfilledValue(liquidationBandResult) ?? null
     const basePrice = fulfilledValue(basePriceResult) ?? undefined
 
-    const parsedBandsBalances = isBeta
-      ? []
-      : await getChartBandBalancesData(sortBands(bandsBalances), liquidationBand, llamma)
+    const parsedBandsBalances = await getChartBandBalancesData(sortBands(bandsBalances), liquidationBand, llamma)
 
     return {
       ...fetchedPartialLoanInfo,
@@ -171,13 +164,11 @@ const detailInfo = {
     const loanExists = await llamma.loanExists(address)
     const fetchedPartialUserLoanInfo = await detailInfo.userLoanPartialInfo(llamma, address)
 
-    const isBeta = getReleaseChannel() === ReleaseChannel.Beta
-
     const [userBandsRangeResult, userPricesResult, userLossResult, userBandsBalancesResult] = await Promise.allSettled([
       loanExists ? llamma.userRange(address) : Promise.resolve(0),
       loanExists ? llamma.userPrices(address) : Promise.resolve([] as string[]),
       loanExists ? llamma.userLoss(address) : Promise.resolve(DEFAULT_USER_LOSS),
-      isBeta || !loanExists ? DEFAULT_BAND_BALANCES : llamma.userBandsBalances(address),
+      loanExists ? llamma.userBandsBalances(address) : Promise.resolve(DEFAULT_BAND_BALANCES),
     ])
 
     const userBandsRange = fulfilledValue(userBandsRangeResult) ?? null
@@ -187,9 +178,11 @@ const detailInfo = {
 
     const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
 
-    const parsedBandsBalances = isBeta
-      ? []
-      : await getChartBandBalancesData(sortBands(userBandsBalances), userLiquidationBand, llamma)
+    const parsedBandsBalances = await getChartBandBalancesData(
+      sortBands(userBandsBalances),
+      userLiquidationBand,
+      llamma,
+    )
 
     const fetchedUserDetails: UserLoanDetails = {
       loading: false,
