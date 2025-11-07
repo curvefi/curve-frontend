@@ -6,15 +6,13 @@ import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
-const getMarketCountLabel = (openPositions: number) => (openPositions > 0 ? '◼︎' + openPositions : '')
-
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   // Calculate total positions across all markets (independent of filters)
-  const openPositionsCount = useMemo((): Record<MarketRateType, number> => {
-    const markets = props.result?.markets ?? []
+  const openPositionsCount = useMemo((): Record<MarketRateType, number | undefined> => {
+    const markets = props.result?.markets
     return {
-      [MarketRateType.Borrow]: markets.filter((market) => market.userHasPositions?.[MarketRateType.Borrow]).length,
-      [MarketRateType.Supply]: markets.filter((market) => market.userHasPositions?.[MarketRateType.Supply]).length,
+      [MarketRateType.Borrow]: markets?.filter((market) => market.userHasPositions?.[MarketRateType.Borrow]).length,
+      [MarketRateType.Supply]: markets?.filter((market) => market.userHasPositions?.[MarketRateType.Supply]).length,
     }
   }, [props.result?.markets])
 
@@ -23,11 +21,17 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
     () => [
       {
         value: MarketRateType.Borrow,
-        label: `${t`Borrowing`} ${getMarketCountLabel(openPositionsCount[MarketRateType.Borrow])}`,
+        label: t`Borrowing`,
+        endAdornment: openPositionsCount[MarketRateType.Borrow]
+          ? String(openPositionsCount[MarketRateType.Borrow])
+          : undefined,
       },
       {
         value: MarketRateType.Supply,
-        label: `${t`Lending`} ${getMarketCountLabel(openPositionsCount[MarketRateType.Supply])}`,
+        label: t`Lending`,
+        endAdornment: openPositionsCount[MarketRateType.Supply]
+          ? String(openPositionsCount[MarketRateType.Supply])
+          : undefined,
       },
     ],
     [openPositionsCount],
