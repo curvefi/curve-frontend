@@ -55,7 +55,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           alignItems="center"
           direction="row"
           justifyContent="end"
-          sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Layer[2].Outline}` }}
+          sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}` }}
         >
           <LlamaMonitorBotButton />
         </Stack>
