@@ -1,6 +1,7 @@
 import lodash from 'lodash'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
-import { oneOf, range, shuffle, type TokenType } from '@cy/support/generators'
+import { range } from '@curvefi/prices-api/objects.util'
+import { oneOf, shuffle, type TokenType } from '@cy/support/generators'
 import {
   Chain,
   createLendingVaultChainsResponse,
@@ -69,7 +70,7 @@ describe(`LlamaLend Markets`, () => {
       cy.get('[data-testid="btn-drawer-sort-lamalend-markets"]').click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
-      closeDrawer()
+      cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
       cy.get(`[data-testid^="data-table-row"]`)
         .first()
         .find(`[data-testid="market-link-${HighUtilizationAddress}"]`)
@@ -118,6 +119,7 @@ describe(`LlamaLend Markets`, () => {
 
   it('should find markets by text', () => {
     cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
+    cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
     cy.get("[data-testid='table-text-search-Llamalend Markets']").type('wstETH crvUSD')
     cy.scrollTo(0, 0)
     // sfrxETH market is filtered out
@@ -132,7 +134,7 @@ describe(`LlamaLend Markets`, () => {
       ['tvl', '$10k -'],
       ['utilizationPercent', '0% -'],
     )
-    cy.viewport(1200, 800) // use fixed viewport to have consistent slider width
+    cy.viewport(1400, 800) // TODO: fix the slider in different viewports, the new design should help with that
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
       cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })

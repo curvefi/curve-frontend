@@ -4,13 +4,13 @@ import AlertFormError from '@/loan/components/AlertFormError'
 import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
-import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
 import DetailInfo from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
 import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import type { FormStatus, FormValues, PageLoanCreateProps, StepKey } from '@/loan/components/PageLoanCreate/types'
 import { StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE, hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralIncreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -29,12 +29,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t, Trans } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 const LoanCreate = ({
   collateralAlert,
@@ -80,7 +80,7 @@ const LoanCreate = ({
   const { haveSigner } = curveProps(curve)
   const network = networks[rChainId]
 
-  const [releaseChannel] = useReleaseChannel()
+  const shouldUseLegacyTokenInput = useLegacyTokenInput()
   const [stablecoinAddress, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
   const { data: stablecoinUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: stablecoinAddress })
@@ -291,7 +291,7 @@ const LoanCreate = ({
     <>
       {/* field collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {shouldUseLegacyTokenInput ? (
           <>
             <StyledInputProvider
               grid
@@ -331,14 +331,11 @@ const LoanCreate = ({
               message: t`Amount is greater than ${formatNumber(userWalletBalances.collateral)}`,
             })}
             disabled={disabled}
-            maxBalance={{
+            walletBalance={{
               loading: haveSigner && userWalletBalancesLoading,
               balance: decimal(userWalletBalances.collateral),
               symbol: llamma?.collateralSymbol,
-              ...(collateralUsdRate != null &&
-                userWalletBalances.collateral != null && {
-                  notionalValueUsd: collateralUsdRate * +userWalletBalances.collateral,
-                }),
+              usdRate: collateralUsdRate,
             }}
             balance={decimal(formValues.collateral)}
             tokenSelector={
@@ -356,7 +353,7 @@ const LoanCreate = ({
 
       {/* field debt */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {shouldUseLegacyTokenInput ? (
           <>
             <InputProvider
               grid
@@ -393,12 +390,12 @@ const LoanCreate = ({
               formValues.debtError === 'too-much' ? t`Amount is greater than ${formatNumber(maxRecv)}` : undefined
             }
             disabled={disabled}
-            maxBalance={{
+            walletBalance={{
               loading: !maxRecv,
               balance: decimal(maxRecv),
               symbol: llamma ? getTokenName(llamma).stablecoin : undefined,
-              ...(stablecoinUsdRate != null && maxRecv && { notionalValueUsd: stablecoinUsdRate * +maxRecv }),
-              maxTestId: 'debtMax',
+              usdRate: stablecoinUsdRate,
+              buttonTestId: 'debtMax',
             }}
             label={t`Borrow amount:`}
             balance={decimal(formValues.debt)}

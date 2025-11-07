@@ -9,7 +9,6 @@ import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatPercent } from '@ui-kit/utils'
-import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
 import { useMarketRates } from '../queries/borrow-apy.query'
@@ -95,6 +94,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
               collateralToken={collateralToken}
               params={params}
               slippage={slippage}
+              onSlippageChange={onSlippageChange}
             />
           )}
           <ActionInfo
@@ -133,7 +133,6 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
             valueTooltip={gas?.createLoanApprove?.tooltip}
             loading={gasLoading}
           />
-          <SlippageToleranceActionInfo maxSlippage={slippage} onSave={onSlippageChange} />
         </Stack>
       </Accordion>
     </Box>

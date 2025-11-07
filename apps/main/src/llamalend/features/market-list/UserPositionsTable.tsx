@@ -46,6 +46,7 @@ export type UserPositionsTableProps = {
 }
 
 const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
+const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsTable = ({ onReload, result, loading, tab }: UserPositionsTableProps) => {
   const { markets: data = [], userHasPositions } = result ?? {}
@@ -67,6 +68,7 @@ export const UserPositionsTable = ({ onReload, result, loading, tab }: UserPosit
     columns: LLAMA_MARKET_COLUMNS,
     data: userData,
     state: { expanded, sorting, columnVisibility, columnFilters },
+    initialState: { pagination },
     onSortingChange,
     onExpandedChange,
     ...getTableOptions(result),

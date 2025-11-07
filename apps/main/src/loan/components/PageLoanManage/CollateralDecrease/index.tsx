@@ -6,11 +6,11 @@ import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
 import DetailInfoLiqRange from '@/loan/components/DetailInfoLiqRange'
 import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import { DEFAULT_WALLET_BALANCES } from '@/loan/components/LoanInfoUser/utils'
 import type { FormStatus, FormValues, StepKey } from '@/loan/components/PageLoanManage/CollateralDecrease/types'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralDecreaseSlice'
@@ -28,12 +28,12 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { decimal, type Decimal, ReleaseChannel } from '@ui-kit/utils'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
@@ -67,7 +67,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
 
   const network = networks[rChainId]
   const { chainId, haveSigner } = curveProps(curve)
-  const [releaseChannel] = useReleaseChannel()
+
   const [, collateralAddress] = llamma?.coinAddresses ?? []
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network.chainId, tokenAddress: collateralAddress })
 
@@ -232,7 +232,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
     <>
       {/* input collateral */}
       <Box grid gridRowGap={1}>
-        {releaseChannel !== ReleaseChannel.Beta ? (
+        {useLegacyTokenInput() ? (
           <>
             <InputProvider
               grid
@@ -271,11 +271,17 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
                 message: t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`,
               })}
               disabled={disabled}
+              inputBalanceUsd={decimal(
+                formValues.collateral && collateralUsdRate && collateralUsdRate * +formValues.collateral,
+              )}
+              walletBalance={{
+                balance: decimal(userWalletBalances.collateral),
+                symbol: getTokenName(llamma).collateral,
+                usdRate: collateralUsdRate,
+              }}
               maxBalance={{
                 balance: decimal(maxRemovable),
-                symbol: getTokenName(llamma).collateral,
-                ...(collateralUsdRate != null &&
-                  maxRemovable != null && { notionalValueUsd: collateralUsdRate * +maxRemovable }),
+                chips: 'max',
               }}
               balance={decimal(formValues.collateral)}
               tokenSelector={

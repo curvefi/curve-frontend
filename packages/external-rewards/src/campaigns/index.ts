@@ -4,7 +4,6 @@ import Babylon from './Babylon.json'
 import Bills from './Bills.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
-import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
 import Falcon from './Falcon.json'
@@ -25,7 +24,6 @@ import Noon from './Noon.json'
 import Pumpbtc from './Pumpbtc.json'
 import Resolv from './Resolv.json'
 import SolvProtocol from './SolvProtocol.json'
-import Sonic from './Sonic.json'
 import StableLabs from './StableLabs.json'
 import Symbiotic from './Symbiotic.json'
 import Tharwa from './Tharwa.json'
@@ -34,7 +32,6 @@ import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 
 export {
-  Elixir,
   Ethena,
   Etherfi,
   Kelpdao,
@@ -56,7 +53,6 @@ export {
   Pumpbtc,
   Bills,
   StableLabs,
-  Sonic,
   Infinifi,
   Asymmetry,
   GoNuts,

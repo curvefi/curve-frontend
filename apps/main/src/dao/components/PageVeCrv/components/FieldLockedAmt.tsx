@@ -5,13 +5,13 @@ import { CurveApi } from '@/dao/types/dao.types'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { CRV_ADDRESS, ReleaseChannel, decimal, type Decimal } from '@ui-kit/utils'
+import { CRV_ADDRESS, decimal, type Decimal } from '@ui-kit/utils'
 
 const FieldLockedAmt = ({
   curve,
@@ -45,12 +45,11 @@ const FieldLockedAmt = ({
     [curve, lockedAmt, vecrvInfo.lockedAmountAndUnlockTime],
   )
 
-  const [releaseChannel] = useReleaseChannel()
   const onBalance = useCallback(
     (balance: Decimal | undefined) => handleInpLockedAmt(balance ?? ''),
     [handleInpLockedAmt],
   )
-  return releaseChannel !== ReleaseChannel.Beta ? (
+  return useLegacyTokenInput() ? (
     <div>
       <StyledInputProvider id="lockedAmt" disabled={disabled} inputVariant={lockedAmtError && 'error'}>
         <InputDebounced
@@ -105,7 +104,7 @@ const FieldLockedAmt = ({
         ) : undefined
       }
       onBalance={onBalance}
-      maxBalance={{
+      walletBalance={{
         balance: decimal(crv),
         loading: haveSigner && crv === '',
         symbol: 'CRV',

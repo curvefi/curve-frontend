@@ -14,22 +14,21 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The token balance',
     },
-    notionalValueUsd: {
+    usdRate: {
       control: 'number',
-      description: 'The USD value of the balance',
+      description: 'The USD price of the token',
     },
-    max: {
-      control: 'select',
-      options: ['balance', 'button', 'off'],
+    clickable: {
+      control: 'boolean',
       description: 'The max button mode',
     },
     hideIcon: {
       control: 'boolean',
       description: 'Whether to hide the wallet icon',
     },
-    onMax: {
-      action: 'onMax',
-      description: 'Callback when max button is clicked',
+    onClick: {
+      action: 'onClick',
+      description: 'Callback when balance is clicked',
     },
     loading: {
       control: 'boolean',
@@ -39,9 +38,9 @@ const meta: Meta<typeof Balance> = {
   args: {
     symbol: 'ETH',
     balance: 1.234,
-    max: 'off',
+    clickable: false,
     hideIcon: false,
-    onMax: fn(),
+    onClick: fn(),
   },
 }
 
@@ -60,41 +59,19 @@ export const Default: Story = {
 
 export const WithNotionalValue: Story = {
   args: {
-    notionalValueUsd: 2345.67,
+    usdRate: 2345.67,
   },
 }
 
-export const WithMaxButton: Story = {
+export const Clickable: Story = {
   args: {
-    max: 'button',
-  },
-}
-
-export const WithMaxBalance: Story = {
-  args: {
-    max: 'balance',
+    clickable: true,
   },
 }
 
 export const NoIcon: Story = {
   args: {
     hideIcon: true,
-  },
-}
-
-export const FullFeatured: Story = {
-  args: {
-    balance: 42.69,
-    notionalValueUsd: 69420.42,
-    max: 'button',
-  },
-}
-
-export const FullFeaturedWithMaxBalance: Story = {
-  args: {
-    balance: 42.69,
-    notionalValueUsd: 69420.42,
-    max: 'balance',
   },
 }
 
@@ -118,21 +95,6 @@ export const Loading: Story = {
     docs: {
       description: {
         story: 'Shows the component in a loading state with skeleton placeholders',
-      },
-    },
-  },
-}
-
-export const LoadingWithNotionalValueAndMax: Story = {
-  args: {
-    loading: true,
-    notionalValueUsd: 1234.56,
-    max: 'button',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Shows the component in a loading state with notional value skeleton and max button',
       },
     },
   },

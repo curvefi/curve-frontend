@@ -31,25 +31,6 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum, ChainId> {
 
 export type Llamma = MintMarketTemplate
 
-export interface CollateralData {
-  llamma: Llamma
-  displayName: string
-}
-
-export type CollateralDatasMapper = { [collateralId: string]: CollateralData }
-export type CollateralDataCache = {
-  llamma: {
-    id: string
-    address: string
-    controller: string
-    collateral: string
-    collateralSymbol: string
-    coins: string[]
-    coinAddresses: string[]
-  }
-  displayName: string
-}
-export type CollateralDataCacheMapper = { [collateralId: string]: CollateralDataCache }
 export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
 export type HealthMode = {
   percent: string
@@ -136,6 +117,5 @@ export interface CollateralAlert extends TooltipProps {
 }
 
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

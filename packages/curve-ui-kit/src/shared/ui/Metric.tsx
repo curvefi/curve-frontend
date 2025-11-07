@@ -1,10 +1,11 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import Snackbar from '@mui/material/Snackbar'
 import Stack from '@mui/material/Stack'
 import Typography, { TypographyProps } from '@mui/material/Typography'
+import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip, type TooltipProps } from '@ui-kit/shared/ui/Tooltip'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -71,7 +72,7 @@ type Notional = Omit<NumberFormatOptions, 'abbreviate'> & {
  * notionalsToString({ value: 1000, unit: 'dollar' }) // "$1k"
  * notionalsToString([{ value: 1000, unit: 'dollar' }, { value: 50, unit: 'percentage' }]) // "$1k + 50%"
  */
-function notionalsToString(notionals: Props['notional']) {
+function notionalsToString(notionals: MetricProps['notional']) {
   if (typeof notionals === 'string') return notionals
 
   const ns =
@@ -89,9 +90,9 @@ function notionalsToString(notionals: Props['notional']) {
 /** At the moment of writing the default formatter already formats to 2 decimals, but I really want to make this explicit for potential future changes. */
 const formatChange = (value: number): string => defaultNumberFormatter(value, { decimals: 2 })
 
-type MetricValueProps = Pick<Props, 'value' | 'valueOptions' | 'change' | 'testId'> & {
-  size: NonNullable<Props['size']>
-  tooltip?: Props['valueTooltip']
+type MetricValueProps = Pick<MetricProps, 'value' | 'valueOptions' | 'change' | 'testId'> & {
+  size: NonNullable<MetricProps['size']>
+  tooltip?: MetricProps['valueTooltip']
   copyValue?: () => void
 }
 
@@ -152,7 +153,7 @@ const MetricValue = ({ value, valueOptions, change, size, copyValue, tooltip, te
   )
 }
 
-type Props = {
+export type MetricProps = {
   /** The actual metric value to display */
   value: number | '' | false | undefined | null
   valueOptions: Omit<NumberFormatOptions, 'abbreviate'> & {
@@ -198,27 +199,13 @@ export const Metric = ({
   loading = false,
   testId = 'metric',
   sx,
-}: Props) => {
+}: MetricProps) => {
   const notionals = useMemo(() => notionalsToString(notional), [notional])
-
-  const [openCopyAlert, setOpenCopyAlert] = useState(false)
+  const [isCopyAlertOpen, openCopyAlert, closeCopyAlert] = useSwitch(false)
   const copyValue = useCallback(() => {
     void copyToClipboard(value!.toString())
-    setOpenCopyAlert(true)
-  }, [value])
-
-  const metricValueProps: MetricValueProps = useMemo(
-    () => ({
-      value,
-      valueOptions,
-      change,
-      size,
-      copyValue: value != null ? copyValue : undefined,
-      tooltip: valueTooltip,
-      testId,
-    }),
-    [change, copyValue, size, testId, value, valueOptions, valueTooltip],
-  )
+    openCopyAlert()
+  }, [value, openCopyAlert])
 
   return (
     <Stack alignItems={alignment} data-testid={testId} sx={sx}>
@@ -235,7 +222,15 @@ export const Metric = ({
       </Typography>
 
       <WithSkeleton loading={loading}>
-        <MetricValue {...metricValueProps} />
+        <MetricValue
+          value={value}
+          valueOptions={valueOptions}
+          change={change}
+          size={size}
+          copyValue={value == null ? undefined : copyValue}
+          tooltip={valueTooltip}
+          testId={testId}
+        />
       </WithSkeleton>
 
       {notionals && (
@@ -244,7 +239,7 @@ export const Metric = ({
         </Typography>
       )}
 
-      <Snackbar open={openCopyAlert} onClose={() => setOpenCopyAlert(false)} autoHideDuration={Duration.Snackbar}>
+      <Snackbar open={isCopyAlertOpen} onClose={closeCopyAlert} autoHideDuration={Duration.Snackbar}>
         <Alert variant="filled" severity="success">
           <AlertTitle>{copyText}</AlertTitle>
           {value}
