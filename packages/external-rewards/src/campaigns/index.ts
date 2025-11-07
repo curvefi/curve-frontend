@@ -4,7 +4,6 @@ import Babylon from './Babylon.json'
 import Bills from './Bills.json'
 import DTrinity from './DTrinity.json'
 import Ebisu from './Ebisu.json'
-import Elixir from './Elixir.json'
 import Ethena from './Ethena.json'
 import Etherfi from './Etherfi.json'
 import Falcon from './Falcon.json'
@@ -33,7 +32,6 @@ import Vnx from './Vnx.json'
 import YieldFi from './YieldFi.json'
 
 export {
-  Elixir,
   Ethena,
   Etherfi,
   Kelpdao,
