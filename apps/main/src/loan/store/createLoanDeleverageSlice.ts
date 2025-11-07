@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -15,7 +14,7 @@ import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.ty
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { getUserLoanDetails, invalidateUserLoanDetails } from '../entities/user-loan-details.query'
+import { getUserLoanDetails, invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -177,10 +176,7 @@ const createLoanDeleverageSlice = (
           get()[sliceKey].setStateByKey('formStatus', cloneDeep({ ...cFormStatus, error: resp.error }))
         } else {
           await get().loans.fetchLoanDetails(curve, llamma)
-
-          const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
-          invalidateLoanExists(queryParams)
-          invalidateUserLoanDetails(queryParams)
+          invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
 
           get()[sliceKey].setStateByKeys({
             formValues: DEFAULT_FORM_VALUES,

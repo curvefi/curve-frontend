@@ -1,5 +1,6 @@
 import { cloneDeep } from 'lodash'
 import { zeroAddress } from 'viem'
+import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import { BN } from '@ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -164,3 +165,8 @@ export const {
   staleTime: '1m',
   validationSuite: userMarketValidationSuite,
 })
+
+export const invalidateAllUserBorrowDetails = (params: UserMarketParams) => {
+  invalidateLoanExists(params)
+  invalidateUserLoanDetails(params)
+}

@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { invalidateLoanExists, refetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -22,7 +22,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateUserLoanDetails } from '../entities/user-loan-details.query'
+import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -432,10 +432,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           })
 
           await get().loans.fetchLoanDetails(curve, llamma)
-
-          const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
-          invalidateLoanExists(queryParams)
-          invalidateUserLoanDetails(queryParams)
+          invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
 
           // reset form values
           const updatedFormValues = DEFAULT_FORM_VALUES

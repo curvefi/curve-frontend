@@ -1,6 +1,5 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -15,7 +14,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateUserLoanDetails } from '../entities/user-loan-details.query'
+import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -188,10 +187,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (activeKey === get()[sliceKey].activeKey) {
         await get().loans.fetchLoanDetails(curve, llamma)
-
-        const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
-        invalidateLoanExists(queryParams)
-        invalidateUserLoanDetails(queryParams)
+        invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
 
         get()[sliceKey].setStateByKeys({
           detailInfo: {},
