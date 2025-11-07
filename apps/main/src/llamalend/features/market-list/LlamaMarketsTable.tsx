@@ -12,7 +12,7 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
-import { EmptyStateMarkets } from '@ui-kit/shared/ui/DataTable/EmptyStateMarkets'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
@@ -90,7 +90,7 @@ export const LlamaMarketsTable = ({
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
-          <EmptyStateMarkets
+          <EmptyStateCard
             title={isError ? t`Could not load markets` : t`No markets found`}
             subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
             action={
