@@ -1,6 +1,5 @@
 import { cloneDeep } from 'lodash'
 import { zeroAddress } from 'viem'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { BN } from '@ui/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory, rootKeys, type UserMarketParams, type UserMarketQuery } from '@ui-kit/lib/model'
@@ -27,7 +26,6 @@ const DEFAULT_USER_STATE = {
 }
 
 export type UserLoanDetails = {
-  loading: boolean
   healthFull: string
   healthNotFull: string
   userBands: number[]
@@ -81,95 +79,6 @@ function getLiquidationStatus(healthNotFull: string, userIsCloseToLiquidation: b
   return userStatus
 }
 
-async function userLoanPartialInfo(params: { market: MintMarketTemplate; userAddress: string; loanExists: boolean }) {
-  const { market, userAddress, loanExists } = params
-
-  const [
-    healthFullResult,
-    healthNotFullResult,
-    userBandsResult,
-    userStateResult,
-    liquidatingBandResult,
-    oraclePriceBandResult,
-  ] = await Promise.allSettled([
-    loanExists ? market.userHealth(true, userAddress) : Promise.resolve(''),
-    loanExists ? market.userHealth(false, userAddress) : Promise.resolve(''),
-    loanExists ? market.userBands(userAddress) : Promise.resolve([0, 0]),
-    loanExists ? market.userState(userAddress) : Promise.resolve(DEFAULT_USER_STATE),
-    loanExists ? market.stats.liquidatingBand() : Promise.resolve(null),
-    loanExists ? market.oraclePriceBand() : Promise.resolve(null),
-  ])
-
-  const healthFull = fulfilledValue(healthFullResult) ?? ''
-  const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
-  const userBands = fulfilledValue(userBandsResult) ?? ([0, 0] as [number, number])
-  const userState = fulfilledValue(userStateResult) ?? DEFAULT_USER_STATE
-  const userLiquidationBand = fulfilledValue(liquidatingBandResult) ?? null
-  const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
-
-  const reversedUserBands = reverseBands(userBands)
-  const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
-    reversedUserBands[0],
-    userLiquidationBand,
-    oraclePriceBand,
-  )
-
-  const fetchedUserDetails: {
-    healthFull: UserLoanDetails['healthFull']
-    healthNotFull: UserLoanDetails['healthNotFull']
-    userBands: UserLoanDetails['userBands']
-    userHealth: UserLoanDetails['userHealth']
-    userIsCloseToLiquidation: UserLoanDetails['userIsCloseToLiquidation']
-    userState: UserLoanDetails['userState']
-    userLiquidationBand: UserLoanDetails['userLiquidationBand']
-  } = {
-    healthFull,
-    healthNotFull,
-    userBands: reversedUserBands,
-    userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
-    userIsCloseToLiquidation,
-    userState,
-    userLiquidationBand,
-  }
-
-  return fetchedUserDetails
-}
-
-async function userLoanInfo(params: { market: MintMarketTemplate; userAddress: string }) {
-  const { market, userAddress } = params
-  const loanExists = await market.loanExists()
-  const fetchedPartialUserLoanInfo = await userLoanPartialInfo({ ...params, loanExists })
-
-  const [userBandsRangeResult, userPricesResult, userLossResult, userBandsBalancesResult] = await Promise.allSettled([
-    loanExists ? market.userRange(userAddress) : Promise.resolve(0),
-    loanExists ? market.userPrices(userAddress) : Promise.resolve([] as string[]),
-    loanExists ? market.userLoss(userAddress) : Promise.resolve(DEFAULT_USER_LOSS),
-    loanExists ? market.userBandsBalances(userAddress) : Promise.resolve(DEFAULT_BAND_BALANCES),
-  ])
-
-  const userBandsRange = fulfilledValue(userBandsRangeResult) ?? null
-  const userPrices = fulfilledValue(userPricesResult) ?? ([] as string[])
-  const userLoss = fulfilledValue(userLossResult) ?? DEFAULT_USER_LOSS
-  const userBandsBalances = fulfilledValue(userBandsBalancesResult) ?? DEFAULT_BAND_BALANCES
-
-  const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
-
-  const parsedBandsBalances = await getChartBandBalancesData(sortBands(userBandsBalances), userLiquidationBand, market)
-
-  const fetchedUserDetails: UserLoanDetails = {
-    loading: false,
-    ...fetchedPartialUserLoanInfo,
-    userBandsBalances: parsedBandsBalances,
-    userBandsRange,
-    userBandsPct: userBandsRange ? market.calcRangePct(userBandsRange) : '0',
-    userPrices,
-    userLoss: parseUserLoss(userLoss),
-    userStatus: getLiquidationStatus(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
-  }
-
-  return fetchedUserDetails
-}
-
 export const {
   useQuery: useUserLoanDetails,
   fetchQuery: fetchUserLoanDetails,
@@ -177,16 +86,80 @@ export const {
   invalidate: invalidateUserLoanDetails,
 } = queryFactory({
   queryKey: (params: UserMarketParams) => [...rootKeys.userMarket(params), 'user-loan-details'] as const,
-  queryFn: async ({ marketId, userAddress }: UserMarketQuery) => {
+  queryFn: async ({ marketId, userAddress: rawUserAddress }: UserMarketQuery) => {
     const api = requireLib('llamaApi')
     const market = api.getMintMarket(marketId)
 
-    return userLoanInfo({
+    // Because of the validation suite we can't pass an empty address ('' or undefined),
+    // so the caller has to explicitly set it to the zero address instead.
+    const userAddress = rawUserAddress === zeroAddress ? '' : rawUserAddress
+
+    const loanExists = await market.loanExists(userAddress)
+
+    const [
+      healthFullResult,
+      healthNotFullResult,
+      userBandsResult,
+      userStateResult,
+      liquidatingBandResult,
+      oraclePriceBandResult,
+      userBandsRangeResult,
+      userPricesResult,
+      userLossResult,
+      userBandsBalancesResult,
+    ] = await Promise.allSettled([
+      loanExists ? market.userHealth(true, userAddress) : Promise.resolve(''),
+      loanExists ? market.userHealth(false, userAddress) : Promise.resolve(''),
+      loanExists ? market.userBands(userAddress) : Promise.resolve([0, 0]),
+      loanExists ? market.userState(userAddress) : Promise.resolve(DEFAULT_USER_STATE),
+      loanExists ? market.stats.liquidatingBand() : Promise.resolve(null),
+      loanExists ? market.oraclePriceBand() : Promise.resolve(null),
+      loanExists ? market.userRange(userAddress) : Promise.resolve(0),
+      loanExists ? market.userPrices(userAddress) : Promise.resolve([] as string[]),
+      loanExists ? market.userLoss(userAddress) : Promise.resolve(DEFAULT_USER_LOSS),
+      loanExists ? market.userBandsBalances(userAddress) : Promise.resolve(DEFAULT_BAND_BALANCES),
+    ])
+
+    const healthFull = fulfilledValue(healthFullResult) ?? ''
+    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
+    const userBands = fulfilledValue(userBandsResult) ?? ([0, 0] as [number, number])
+    const userState = fulfilledValue(userStateResult) ?? DEFAULT_USER_STATE
+    const userLiquidationBand = fulfilledValue(liquidatingBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
+    const userBandsRange = fulfilledValue(userBandsRangeResult) ?? null
+    const userPrices = fulfilledValue(userPricesResult) ?? ([] as string[])
+    const userLoss = fulfilledValue(userLossResult) ?? DEFAULT_USER_LOSS
+    const userBandsBalances = fulfilledValue(userBandsBalancesResult) ?? DEFAULT_BAND_BALANCES
+
+    const parsedBandsBalances = await getChartBandBalancesData(
+      sortBands(userBandsBalances),
+      userLiquidationBand,
       market,
-      // Because of the validation suite we can't pass an empty address ('' or undefined),
-      // so the caller has to explicitly set it to the zero address instead.
-      userAddress: userAddress === zeroAddress ? '' : userAddress,
-    })
+    )
+    const reversedUserBands = reverseBands(userBands)
+    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
+      reversedUserBands[0],
+      userLiquidationBand,
+      oraclePriceBand,
+    )
+
+    const fetchedUserDetails: UserLoanDetails = {
+      healthFull,
+      healthNotFull,
+      userBands: reversedUserBands,
+      userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
+      userIsCloseToLiquidation,
+      userState,
+      userLiquidationBand,
+      userBandsBalances: parsedBandsBalances,
+      userBandsRange,
+      userBandsPct: userBandsRange ? market.calcRangePct(userBandsRange) : '0',
+      userPrices,
+      userLoss: parseUserLoss(userLoss),
+      userStatus: getLiquidationStatus(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
+    }
+
+    return fetchedUserDetails
   },
   staleTime: '1m',
   validationSuite: userMarketValidationSuite,
