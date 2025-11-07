@@ -52,7 +52,9 @@ export const LlamaMarketsList = () => {
   const loading = isReloading || (!data && (!isError || isLoading)) // on initial render isLoading is still false
   return (
     <ListPageWrapper footer={<LendTableFooter />}>
-      {data?.userHasPositions && <UserPositionsTabs onReload={onReload} result={data} loading={loading} />}
+      {data?.userHasPositions && (
+        <UserPositionsTabs onReload={onReload} result={data} isError={isError} loading={loading} />
+      )}
       <LlamaMarketsTable onReload={onReload} result={data} isError={isError} loading={loading} />
     </ListPageWrapper>
   )

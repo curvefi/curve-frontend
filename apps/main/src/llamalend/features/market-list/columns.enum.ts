@@ -25,3 +25,10 @@ export enum LlamaMarketColumnId {
   DeprecatedMessage = 'deprecatedMessage',
   Type = 'type',
 }
+
+// Enum for the empty state of the user positions table
+export enum PositionsEmptyState {
+  Error = 'error',
+  Positions = 'positions',
+  Filtered = 'filtered',
+}
