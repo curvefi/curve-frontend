@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -47,7 +48,7 @@ export type LoanCollateralIncreaseSlice = {
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -186,12 +187,11 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
       // update user events api
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (activeKey === get()[sliceKey].activeKey) {
-        // re-fetch loan info
-        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+        await get().loans.fetchLoanDetails(curve, llamma)
 
-        if (!loanExists) {
-          invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-        }
+        const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
+        invalidateLoanExists(queryParams)
+        invalidateUserLoanDetails(queryParams)
 
         get()[sliceKey].setStateByKeys({
           detailInfo: {},
@@ -206,7 +206,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
           },
         })
 
-        return { ...resp, loanExists }
+        return resp
       }
     },
 

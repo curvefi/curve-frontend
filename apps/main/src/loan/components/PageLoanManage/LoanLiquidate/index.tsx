@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -126,8 +127,13 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
             const notification = notify(notifyMessage, 'pending')
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
+            const loanExists = await refetchLoanExists({
+              chainId,
+              marketId: llammaId,
+              userAddress,
+            })
 
-            if (isSubscribed.current && resp && resp.hash && !resp.loanExists) {
+            if (isSubscribed.current && resp && resp.hash && !loanExists) {
               const TxDescription = (
                 <>
                   <Trans>
@@ -161,7 +167,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, params, reset],
+    [fetchStepApprove, fetchStepLiquidate, llammaId, params, reset, userAddress],
   )
 
   // onMount

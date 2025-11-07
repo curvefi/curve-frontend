@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { useAccount } from 'wagmi'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -135,7 +136,13 @@ const LoanDeleverage = ({
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const txInfoBarMessage = resp.loanExists
+        const loanExists = await refetchLoanExists({
+          chainId,
+          marketId: llammaId,
+          userAddress,
+        })
+
+        const txInfoBarMessage = loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`
 
@@ -144,7 +151,7 @@ const LoanDeleverage = ({
             description={txInfoBarMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (resp.loanExists) {
+              if (loanExists) {
                 updateFormValues({}, '', true)
               } else {
                 push(getCollateralListPathname(params))
@@ -155,7 +162,18 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [activeKey, collateralName, fetchStepRepay, push, params, rChainId, updateFormValues],
+    [
+      collateralName,
+      fetchStepRepay,
+      activeKey,
+      chainId,
+      llammaId,
+      userAddress,
+      rChainId,
+      updateFormValues,
+      push,
+      params,
+    ],
   )
 
   const getSteps = useCallback(

@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -224,11 +225,11 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
-      // re-fetch loan info
-      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-      if (!loanExists) {
-        invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-      }
+      await get().loans.fetchLoanDetails(curve, llamma)
+
+      const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
+      invalidateLoanExists(queryParams)
+      invalidateUserLoanDetails(queryParams)
 
       if (activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKeys({

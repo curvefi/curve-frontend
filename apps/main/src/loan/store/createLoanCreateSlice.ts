@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
+import { invalidateLoanExists, refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
   FormStatus,
@@ -431,11 +431,11 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
             liqRangesMapper: {},
           })
 
-          // re-fetch loan info
-          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-          if (!loanExists) {
-            invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-          }
+          await get().loans.fetchLoanDetails(curve, llamma)
+
+          const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
+          invalidateLoanExists(queryParams)
+          invalidateUserLoanDetails(queryParams)
 
           // reset form values
           const updatedFormValues = DEFAULT_FORM_VALUES
@@ -453,7 +453,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
             maxRecv: {},
           })
 
-          return { ...resp, loanExists }
+          return resp
         }
       }
     },

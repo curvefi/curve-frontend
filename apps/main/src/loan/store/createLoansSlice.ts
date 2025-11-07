@@ -1,13 +1,11 @@
 import lodash from 'lodash'
 import { StoreApi } from 'zustand'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { type ChainId, LlamaApi, Llamma, LoanDetails, LoanPriceInfo, UserWalletBalances } from '@/loan/types/loan.types'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { PromisePool } from '@supercharge/promise-pool'
 import { log } from '@ui-kit/lib/logging'
-import { fetchUserLoanDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -23,7 +21,7 @@ const sliceKey = 'loans'
 export type LoansSlice = {
   [sliceKey]: SliceState & {
     fetchLoansDetails(curve: LlamaApi, markets: MintMarketTemplate[]): Promise<void>
-    fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<{ loanDetails: LoanDetails; loanExists: boolean }>
+    fetchLoanDetails(curve: LlamaApi, llamma: Llamma): Promise<LoanDetails>
     fetchUserLoanWalletBalances(curve: LlamaApi, llamma: Llamma): Promise<UserWalletBalances>
 
     // steps helper
@@ -74,10 +72,9 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
         loading: true,
       })
 
-      const [{ collateralId, ...loanDetails }, priceInfo, loanExists] = await Promise.all([
+      const [{ collateralId, ...loanDetails }, priceInfo] = await Promise.all([
         networks[chainId].api.detailInfo.loanInfo(llamma),
         networks[chainId].api.detailInfo.priceInfo(llamma),
-        refetchLoanExists({ chainId, marketId: llamma.id, userAddress: curve.signerAddress }),
       ])
 
       const fetchedLoanDetails: LoanDetails = { ...loanDetails, priceInfo, loading: false }
@@ -86,14 +83,9 @@ const createLoansSlice = (_: StoreApi<State>['setState'], get: StoreApi<State>['
 
       if (curve.signerAddress) {
         void get()[sliceKey].fetchUserLoanWalletBalances(curve, llamma)
-
-        if (loanExists) {
-          // todo: catch error? alternate todo: this shouldn't happen here, user loan existance and data fetching should happen outside this function
-          void fetchUserLoanDetails({ chainId, marketId: llamma.id, userAddress: curve.signerAddress })
-        }
       }
 
-      return { loanDetails: fetchedLoanDetails, loanExists }
+      return fetchedLoanDetails
     },
     fetchUserLoanWalletBalances: async (curve: LlamaApi, llamma: Llamma) => {
       const chainId = curve.chainId as ChainId

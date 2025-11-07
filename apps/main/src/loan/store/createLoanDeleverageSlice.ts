@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -35,7 +36,7 @@ export type LoanDeleverageSlice = {
     fetchDetailInfo(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string, userState: UserLoanDetails['userState']): Promise<FormDetailInfo>
     setFormValues(llammaId: string, curve: LlamaApi | null, llamma: Llamma | null, formValues: Partial<FormValues>, maxSlippage: string, isFullReset?: boolean): Promise<void>
     fetchEstGas(activeKey: string, chainId: ChainId, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<void>
-    fetchStepRepay(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    fetchStepRepay(activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues, maxSlippage: string): Promise<{ activeKey: string; error: string; hash: string; } | undefined>
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
     setStateByKeys(SliceState: Partial<SliceState>): void
@@ -169,20 +170,17 @@ const createLoanDeleverageSlice = (
       // update user events api
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (resp.activeKey === get()[sliceKey].activeKey) {
-        let loanExists = true
         const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)
         cFormStatus.isApproved = get()[sliceKey].formStatus.isApproved
 
         if (resp.error) {
           get()[sliceKey].setStateByKey('formStatus', cloneDeep({ ...cFormStatus, error: resp.error }))
         } else {
-          // re-fetch loan info
-          const respLoanDetails = await get().loans.fetchLoanDetails(curve, llamma)
-          loanExists = respLoanDetails.loanExists
+          await get().loans.fetchLoanDetails(curve, llamma)
 
-          if (!loanExists) {
-            invalidateUserLoanDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-          }
+          const queryParams = { chainId, marketId: llamma.id, userAddress: wallet?.account?.address }
+          invalidateLoanExists(queryParams)
+          invalidateUserLoanDetails(queryParams)
 
           get()[sliceKey].setStateByKeys({
             formValues: DEFAULT_FORM_VALUES,
@@ -192,7 +190,7 @@ const createLoanDeleverageSlice = (
           })
         }
 
-        return { ...resp, loanExists }
+        return resp
       }
     },
 

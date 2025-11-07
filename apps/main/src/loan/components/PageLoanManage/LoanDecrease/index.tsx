@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { useAccount } from 'wagmi'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -148,7 +149,13 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const txInfoBarMessage = resp.loanExists
+        const loanExists = await refetchLoanExists({
+          chainId,
+          marketId: llammaId,
+          userAddress,
+        })
+
+        const txInfoBarMessage = loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is payoff and will no longer be manageable.`
 
@@ -157,7 +164,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
             description={txInfoBarMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (resp.loanExists) {
+              if (loanExists) {
                 reset(false, true)
               } else {
                 push(getCollateralListPathname(params))
@@ -168,7 +175,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       }
       notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, push, params, rChainId, reset],
+    [fetchStepDecrease, activeKey, chainId, llammaId, userAddress, rChainId, reset, push, params],
   )
 
   const getSteps = useCallback(
