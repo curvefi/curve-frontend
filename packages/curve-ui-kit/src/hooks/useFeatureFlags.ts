@@ -26,3 +26,6 @@ export const useBorrowUnifiedForm = useBetaChannel
 
 /** New user profile button on the header */
 export const useUserProfileButton = () => useStableChannel() && !isCypress
+
+/** New bands chart (BandsChart) */
+export const useNewBandsChart = useBetaChannel

@@ -10,7 +10,7 @@ import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRang
 const createCustomRectSeries = (
   name: string,
   color: string,
-  outlineColor: string,
+  softLiquidationBandOutlineColor: string,
   data: Array<[number, number, number, number, number, number]>,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
@@ -30,21 +30,23 @@ const createCustomRectSeries = (
   renderItem: (_params: unknown, api: any) => {
     const startX = api.value(1)
     const widthX = api.value(2)
+    // lower edge of band price range
     const pDown = api.value(3)
+    // upper edge of band price range
     const pUp = api.value(4)
-    const isLiq = api.value(5) === 1
+    const isSoftLiquidationBand = api.value(5) === 1
 
     // Do not render when the logical width is zero or negative
     if (!widthX || widthX <= 0) return null
 
-    const tl = api.coord([startX, pUp])
-    const tr = api.coord([startX + widthX, pUp])
-    const bl = api.coord([startX, pDown])
+    const topLeft = api.coord([startX, pUp])
+    const topRight = api.coord([startX + widthX, pUp])
+    const bottomLeft = api.coord([startX, pDown])
 
-    const left = Math.min(tl[0], tr[0])
-    const top = Math.min(tl[1], bl[1])
-    let width = Math.abs(tr[0] - tl[0])
-    const height = Math.abs(bl[1] - tl[1])
+    const left = Math.min(topLeft[0], topRight[0])
+    const top = Math.min(topLeft[1], bottomLeft[1])
+    let width = Math.abs(topRight[0] - topLeft[0])
+    const height = Math.abs(bottomLeft[1] - topLeft[1])
 
     // Ensure minimal pixel width/height for visibility when zoomed out
     const minWidthPx = 3
@@ -63,8 +65,8 @@ const createCustomRectSeries = (
       shape: { x: left, y: paddedTop, width, height: paddedHeight },
       style: api.style({
         fill: color,
-        stroke: isLiq ? outlineColor : 'transparent',
-        lineWidth: isLiq ? 2 : 0,
+        stroke: isSoftLiquidationBand ? softLiquidationBandOutlineColor : 'transparent',
+        lineWidth: isSoftLiquidationBand ? 2 : 0,
       }),
     }
   },

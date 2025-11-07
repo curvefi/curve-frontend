@@ -1,5 +1,5 @@
 export type ChartDataPoint = {
-  n: number | string
+  n: number
   pUpDownMedian: number
   p_up: number
   p_down: number

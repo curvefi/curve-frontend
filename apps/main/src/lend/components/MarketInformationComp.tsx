@@ -10,10 +10,9 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { Stack, useTheme } from '@mui/material'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
@@ -44,9 +43,8 @@ export const MarketInformationComp = ({
   const borrowedTokenAddress = market?.borrowed_token.address
   const api = getLib('llamaApi')
   const theme = useTheme()
-  const [releaseChannel] = useReleaseChannel()
-  const isBeta = releaseChannel === ReleaseChannel.Beta
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
+  const useNewBandsChartEnabled = useNewBandsChart()
   const {
     chartData,
     userBandsBalances,
@@ -81,8 +79,8 @@ export const MarketInformationComp = ({
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
         <Stack
-          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
-          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.3fr' : undefined }}
+          display={{ mobile: 'block', tablet: useNewBandsChartEnabled ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: useNewBandsChartEnabled ? '1fr 0.3fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
@@ -91,7 +89,7 @@ export const MarketInformationComp = ({
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          {isBeta && (
+          {useNewBandsChartEnabled && (
             <BandsChart
               isLoading={isBandsLoading}
               isError={isBandsError}
@@ -104,7 +102,7 @@ export const MarketInformationComp = ({
           )}
         </Stack>
       )}
-      {type === 'borrow' && !isBeta && isAdvancedMode && (
+      {type === 'borrow' && !useNewBandsChartEnabled && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>

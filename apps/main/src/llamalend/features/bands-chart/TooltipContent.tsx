@@ -1,9 +1,9 @@
 import { Token } from '@/llamalend/features/borrow/types'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Box, Typography } from '@mui/material'
-import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { ChartDataPoint } from './types'
 
 const { Spacing } = SizesAndSpaces
@@ -14,29 +14,22 @@ type TooltipContentProps = {
   borrowToken: Token | undefined
 }
 
+const calculateBandShare = (numerator: number | undefined, denominator: number | undefined): string =>
+  typeof denominator === 'number' && denominator > 0 && typeof numerator === 'number'
+    ? `${formatPercent((numerator / denominator) * 100)}`
+    : '?'
+
+const formatAbbreviatedNumber = (value: number | undefined): string =>
+  typeof value === 'number' ? `${formatNumber(value, { abbreviate: true })}` : '?'
+
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const hasMarketData =
     (typeof data.bandCollateralAmount === 'number' && data.bandCollateralAmount > 0) ||
     (typeof data.bandBorrowedAmount === 'number' && data.bandBorrowedAmount > 0)
   const hasUserData = !!(data.userBandCollateralValueUsd || data.userBandBorrowedValueUsd)
-  const collateralBandShare =
-    typeof data.bandTotalCollateralValueUsd === 'number' &&
-    data.bandTotalCollateralValueUsd > 0 &&
-    typeof data.bandCollateralValueUsd === 'number'
-      ? `${formatNumber((data.bandCollateralValueUsd / data.bandTotalCollateralValueUsd) * 100, { unit: 'percent' })}%`
-      : '?'
-  const borrowedBandShare =
-    typeof data.bandTotalCollateralValueUsd === 'number' &&
-    data.bandTotalCollateralValueUsd > 0 &&
-    typeof data.bandBorrowedValueUsd === 'number'
-      ? `${formatNumber((data.bandBorrowedValueUsd / data.bandTotalCollateralValueUsd) * 100, { unit: 'percent' })}%`
-      : '?'
-  const userBandShare =
-    typeof data.bandTotalCollateralValueUsd === 'number' &&
-    data.bandTotalCollateralValueUsd > 0 &&
-    typeof data.userBandTotalCollateralValueUsd === 'number'
-      ? `${formatNumber((data.userBandTotalCollateralValueUsd / data.bandTotalCollateralValueUsd) * 100, { unit: 'percent' })}%`
-      : '?'
+  const collateralBandShare = calculateBandShare(data.bandCollateralValueUsd, data.bandTotalCollateralValueUsd)
+  const borrowedBandShare = calculateBandShare(data.bandBorrowedValueUsd, data.bandTotalCollateralValueUsd)
+  const userBandShare = calculateBandShare(data.userBandTotalCollateralValueUsd, data.bandTotalCollateralValueUsd)
 
   return (
     <Box sx={{ padding: Spacing.md, backgroundColor: (t) => t.design.Layer[3].Fill }}>
@@ -49,14 +42,12 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
           <TooltipItems secondary>
             <TooltipItem title={t`Your share of band`}>{userBandShare}</TooltipItem>
             <TooltipItem variant="subItem" title={collateralToken?.symbol}>
-              {typeof data.userBandCollateralAmount === 'number'
-                ? `${formatNumber(data.userBandCollateralAmount)}`
-                : '?'}
-              {`$${formatNumber(data.userBandCollateralValueUsd, { notation: 'compact' })}`}
+              {formatAbbreviatedNumber(data.userBandCollateralAmount)}
+              {`${formatUsd(data.userBandCollateralValueUsd ?? 0)}`}
             </TooltipItem>
             <TooltipItem variant="subItem" title={borrowToken?.symbol}>
-              {typeof data.userBandBorrowedAmount === 'number' ? `${formatNumber(data.userBandBorrowedAmount)}` : '?'}
-              {`$${formatNumber(data.userBandBorrowedValueUsd, { notation: 'compact' })}`}
+              {formatAbbreviatedNumber(data.userBandBorrowedAmount)}
+              {`${formatUsd(data.userBandBorrowedValueUsd ?? 0)}`}
             </TooltipItem>
           </TooltipItems>
         )}
@@ -65,22 +56,22 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             <TooltipItems secondary>
               <TooltipItem title={t`Band range`}>
                 {typeof data.p_down === 'number' && typeof data.p_up === 'number'
-                  ? `$${formatNumber(data.p_down, { unit: 'dollar' })} - $${formatNumber(data.p_up, { unit: 'dollar' })}`
+                  ? `${formatNumber(data.p_down, { unit: 'dollar', abbreviate: false })} - ${formatNumber(data.p_up, { unit: 'dollar', abbreviate: false })}`
                   : '?'}
               </TooltipItem>
               <TooltipItem title={t`Band balances`}>{`${collateralBandShare} / ${borrowedBandShare}`}</TooltipItem>
               <TooltipItem variant="subItem" title={collateralToken?.symbol}>
-                {typeof data.bandCollateralAmount === 'number' ? `${formatNumber(data.bandCollateralAmount)}` : '?'}
-                {`$${formatNumber(data.bandCollateralValueUsd, { notation: 'compact' })}`}
+                {formatAbbreviatedNumber(data.bandCollateralAmount)}
+                {`${formatUsd(data.bandCollateralValueUsd ?? 0)}`}
               </TooltipItem>
               <TooltipItem variant="subItem" title={borrowToken?.symbol}>
-                {typeof data.bandBorrowedAmount === 'number' ? `${formatNumber(data.bandBorrowedAmount)}` : '?'}
-                {`$${formatNumber(data.bandBorrowedValueUsd, { notation: 'compact' })}`}
+                {formatAbbreviatedNumber(data.bandBorrowedAmount)}
+                {`$${formatUsd(data.bandBorrowedValueUsd ?? 0)}`}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>
               {typeof data.bandTotalCollateralValueUsd === 'number'
-                ? `$${formatNumber(data.bandTotalCollateralValueUsd, { notation: 'compact' })}`
+                ? `${formatUsd(data.bandTotalCollateralValueUsd ?? 0)}`
                 : '?'}
             </TooltipItem>
           </>

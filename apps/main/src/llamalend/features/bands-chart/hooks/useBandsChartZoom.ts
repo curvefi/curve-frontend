@@ -33,11 +33,11 @@ export const useBandsChartZoom = ({
 }: Params): ZoomReturn => {
   const [defaultZoom, setDefaultZoom] = useState<ZoomRange>({})
   const [userZoom, setUserZoom] = useState<ZoomRange | null>(null)
-  const prevUserBandsRef = useRef(new Set<string>())
+  const prevUserBandsRef = useRef(new Set<number>())
   const lastAppliedZoomRef = useRef<{ startIndex: number; endIndex: number; length: number } | null>(null)
 
   useEffect(() => {
-    const currentUserBands = new Set(userBandsBalances.map((band) => String(band.n)))
+    const currentUserBands = new Set(userBandsBalances.map((band) => Number(band.n)))
     const prevUserBands = prevUserBandsRef.current
 
     const bandsChanged =
@@ -87,17 +87,12 @@ export const useBandsChartZoom = ({
     const startValue = (event as any).startValue ?? (batch as any)?.startValue
     const endValue = (event as any).endValue ?? (batch as any)?.endValue
 
-    if (
-      typeof start === 'number' ||
-      typeof end === 'number' ||
-      typeof startValue === 'number' ||
-      typeof endValue === 'number'
-    ) {
+    if (start != null || end != null || startValue != null || endValue != null) {
       const newRange: ZoomRange = {
-        ...(typeof start === 'number' ? { start } : {}),
-        ...(typeof end === 'number' ? { end } : {}),
-        ...(typeof startValue === 'number' ? { startValue } : {}),
-        ...(typeof endValue === 'number' ? { endValue } : {}),
+        ...{ start },
+        ...{ end },
+        ...{ startValue },
+        ...{ endValue },
       }
       setUserZoom(newRange)
     }

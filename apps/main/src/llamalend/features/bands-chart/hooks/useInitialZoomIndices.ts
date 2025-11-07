@@ -28,15 +28,14 @@ export const useInitialZoomIndices = (
     }
 
     // Find indices of user's bands
-    const userBandNumbers = new Set(userBandsBalances.map((b) => String(b.n)))
-    const userIndices = chartData.map((d, i) => (userBandNumbers.has(String(d.n)) ? i : -1)).filter((i) => i !== -1)
+    const userBandNumbers = new Set(userBandsBalances.map((b) => Number(b.n)))
+    const userIndices = chartData.map((d, i) => (userBandNumbers.has(d.n) ? i : -1)).filter((i) => i !== -1)
 
     if (userIndices.length === 0) {
       return { startIndex: 0, endIndex: chartData.length - 1 }
     }
 
-    let startIndex = Math.min(...userIndices)
-    let endIndex = Math.max(...userIndices)
+    let [startIndex, endIndex] = [Math.min(...userIndices), Math.max(...userIndices)]
 
     // Expand range to include oracle price if available
     const oracleIdx =
@@ -49,9 +48,9 @@ export const useInitialZoomIndices = (
     }
 
     // Add padding to keep the areas of interest off the edges
-    const pad = 2
+    const padding = 2
     return {
-      startIndex: Math.max(0, startIndex - pad),
-      endIndex: Math.min(chartData.length - 1, endIndex + pad),
+      startIndex: Math.max(0, startIndex - padding),
+      endIndex: Math.min(chartData.length - 1, endIndex + padding),
     }
   }, [chartData, userBandsBalances, oraclePrice])

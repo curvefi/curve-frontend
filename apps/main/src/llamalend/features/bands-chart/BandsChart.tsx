@@ -55,8 +55,8 @@ const BandsChartComponent = ({
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
-  const priceMin = useMemo(() => (chartData.length ? Math.min(...chartData.map((d) => d.p_down)) : 0), [chartData])
-  const priceMax = useMemo(() => (chartData.length ? Math.max(...chartData.map((d) => d.p_up)) : 0), [chartData])
+  const priceMin = useMemo(() => chartData.length && Math.min(...chartData.map((d) => d.p_down)), [chartData])
+  const priceMax = useMemo(() => chartData.length && Math.max(...chartData.map((d) => d.p_up)), [chartData])
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
@@ -80,9 +80,9 @@ const BandsChartComponent = ({
     const instance = chartRef.current?.getEchartsInstance?.()
     if (!instance || !containerDimensions) return
 
-    const [width, h] = containerDimensions
-    if (width > 0 && h > 0) {
-      instance.resize({ width, height: h })
+    const [width, height] = containerDimensions
+    if (width > 0 && height > 0) {
+      instance.resize({ width, height })
     }
   }, [containerDimensions])
 
@@ -122,8 +122,7 @@ const BandsChartComponent = ({
     typeof zoomRange.startValue === 'number' ? zoomRange.startValue : priceMin,
     typeof zoomRange.endValue === 'number' ? zoomRange.endValue : priceMax,
   ]
-  const normalizedValues: [number, number] =
-    rawValues[0] <= rawValues[1] ? [rawValues[0], rawValues[1]] : [rawValues[1], rawValues[0]]
+  const normalizedValues = rawValues.sort((a, b) => a - b) as [number, number]
 
   return (
     <Stack
@@ -138,7 +137,7 @@ const BandsChartComponent = ({
           flex: 1,
           minWidth: 0,
           height: '100%',
-          '& *': { cursor: 'default !important' },
+          '& *': { cursor: 'default' },
         }}
       >
         <ReactECharts
@@ -159,14 +158,14 @@ const BandsChartComponent = ({
         min={priceMin}
         max={priceMax}
         onChange={(_e, val) => {
-          if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
-            const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+          if (Array.isArray(val)) {
+            const [minV, maxV] = val.sort((a, b) => a - b)
             setZoomRange({ startValue: minV, endValue: maxV })
           }
         }}
         onChangeCommitted={(_e, val) => {
-          if (Array.isArray(val) && val.length === 2 && typeof val[0] === 'number' && typeof val[1] === 'number') {
-            const [minV, maxV] = val[0] <= val[1] ? [val[0], val[1]] : [val[1], val[0]]
+          if (Array.isArray(val)) {
+            const [minV, maxV] = val.sort((a, b) => a - b)
             setZoomRange({ startValue: minV, endValue: maxV })
           }
         }}
@@ -174,7 +173,7 @@ const BandsChartComponent = ({
         sx={{
           // disable MUI's default padding for coarse touch devices to match design
           '@media (pointer: coarse)': {
-            padding: `0 !important`,
+            padding: `0`,
           },
         }}
       />
