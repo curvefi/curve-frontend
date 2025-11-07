@@ -200,18 +200,29 @@ describe('DEX Pools', () => {
   })
 
   it('filters small pools', () => {
-    // by default, small pools are hidden
-    visitAndWait(width, height, { query: { sort: '-tvl' } })
+    // by default, small pools are hidden, if we sort by TVL (asc), we should see only pools above the threshold
+    visitAndWait(width, height, { query: { sort: 'tvl' } })
     getTopUsdValues('tvl').then((vals) =>
       expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.equal('[]'),
     )
-
-    cy.get(`[data-testid='user-profile-button']`).click()
-    cy.get(`[data-testid='small-pools-switch']`).click()
-
+    toggleSmallPools()
+    // now for sure there is at least one empty TVL pool
     cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$0')
     getTopUsdValues('tvl').then((vals) =>
       expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.not.equal('[]'),
     )
   })
+
+  function toggleSmallPools(isDesktop = breakpoint == 'desktop') {
+    if (isDesktop) {
+      cy.get(`[data-testid='user-profile-button']`).click()
+      cy.get(`[data-testid='small-pools-switch']`).click()
+      cy.get('body').click(0, 0) // close the user profile menu
+    } else {
+      cy.get(`[data-testid='menu-toggle']`).click()
+      cy.get(`[data-testid='sidebar-settings']`).click()
+      cy.get(`[data-testid='small-pools-switch']`).click()
+      cy.get(`[data-testid='menu-toggle']`).click()
+    }
+  }
 })

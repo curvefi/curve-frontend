@@ -33,7 +33,7 @@ const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 
 const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
   const hideSmallPools = useUserProfileStore((s) => s.hideSmallPools)
-  const { hideSmallPoolsTvl: tvl = SMALL_POOL_TVL } = useNetworkFromUrl() ?? {}
+  const { hideSmallPoolsTvl: minTvl = SMALL_POOL_TVL } = useNetworkFromUrl() ?? {}
   return useMemo(
     () =>
       notFalsy(
@@ -41,12 +41,12 @@ const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
           hideSmallPools && {
             id: PoolColumnId.Tvl,
             value: [
-              minCutoffForTopK(data, (pool) => +(pool.tvl?.value ?? 0), tvl, MIN_POOLS_DISPLAYED),
+              minCutoffForTopK(data, (pool) => +(pool.tvl?.value ?? 0), minTvl, MIN_POOLS_DISPLAYED),
               null, // no upper limit
             ],
           },
       ),
-    [data, tvl, hideSmallPools],
+    [data, minTvl, hideSmallPools],
   )
 }
 

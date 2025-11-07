@@ -14,14 +14,10 @@ type MenuToggleButtonProps = {
   toggle: () => void
 }
 
+/** Menu toggle button for mobile/tablet view, it animates from a hamburger menu to a cross */
 export const MenuToggleButton = ({ toggle, isOpen }: MenuToggleButtonProps) => (
   <IconButton onClick={toggle} sx={{ display: 'inline-flex' }} data-testid="menu-toggle" size="small">
-    <Svg
-      // className="MuiSvgIcon-root MuiSvgIcon-fontSizeSmall css-36mik4-MuiSvgIcon-root"
-      focusable="false"
-      aria-hidden="true"
-      viewBox="0 0 24 24"
-    >
+    <Svg focusable="false" aria-hidden="true" viewBox="0 0 24 24">
       <Path
         d="M0 7h24v-2H0z"
         sx={{ transition: 'transform 1.5s', ...(isOpen && { transform: 'skewY(-45deg) translate(0, 17px)' }) }}
