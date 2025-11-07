@@ -104,13 +104,3 @@ export function useCellSx<T extends TableItem>({
 }
 
 export const isSortedBy = <T>(table: Table<T>, columnId: string) => table.getState().columnOrder.includes(columnId)
-
-export const serializeRangeFilter = <T extends string | number>(range: [T | null, T | null] | null) =>
-  range?.join('~') ?? null
-
-export const parseRangeFilter = (serialized: string | undefined) =>
-  serialized?.split('~').map((v) => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null]
-
-export const serializeListFilter = (list: string[] | null | undefined) => list?.join(',') || null
-
-export const parseListFilter = (serialized: string | undefined) => serialized?.split(',').filter((v) => v)

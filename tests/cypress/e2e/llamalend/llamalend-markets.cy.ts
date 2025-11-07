@@ -142,7 +142,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
   })
 
-  it(`should allow filtering by using a slider`, () => {
+  it('should allow filtering by using a slider', () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', '$0 -'],
       ['tvl', '$10k -'],
@@ -200,10 +200,8 @@ describe(`LlamaLend Markets`, () => {
     const collateral = oneOf(...collateralCoins)
     const borrowed = oneOf('CRV', 'crvUSD')
 
-    selectCoin(collateral, 'collateral')
-    cy.url().should('include', `assets_collateral_symbol=${encodeURIComponent(collateral)}`)
-    selectCoin(borrowed, 'borrowed')
-    cy.url().should('include', `assets_borrowed_symbol=${encodeURIComponent(borrowed)}`)
+    checkCoinSelection(collateral, 'collateral')
+    checkCoinSelection(borrowed, 'borrowed')
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
@@ -236,7 +234,7 @@ describe(`LlamaLend Markets`, () => {
         )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
         cy.get(`[data-testid="chip-${otherType.toLowerCase()}"]`).click()
-        cy.url().should('include', 'type=' + otherType)
+        cy.url().should('include', `type=${type},${otherType}`)
         cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
       }),
     ))
@@ -370,7 +368,7 @@ function visitAndWait([width, height]: [number, number, Breakpoint], options?: P
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
 }
 
-const selectCoin = (symbol: string, type: TokenType) => {
+const checkCoinSelection = (symbol: string, type: TokenType) => {
   const columnId = `assets_${type}_symbol`
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
   cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
@@ -379,9 +377,10 @@ const selectCoin = (symbol: string, type: TokenType) => {
   cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
   cy.get('body').click(0, 0) // close popover
   cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
-
+  cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
   cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
   cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+  cy.url().should('not.include', `assets_${type}_symbol`)
 }
 
 function enableGraphColumn() {

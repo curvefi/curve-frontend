@@ -6,17 +6,23 @@ import { useSearchParams } from '@ui-kit/hooks/router'
 // Similar to `ColumnFiltersState` from react-table, but more specific to have only string values (they are saved in url)
 export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: string }[]
 
+type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
+
 /**
  * Parse URLSearchParams into ColumnFilters, keeping only allowed keys.
  */
 function parseFilters<TColumnId extends string>(
   search: URLSearchParams,
-  keys: Record<string, TColumnId>,
+  columns: ColumnEnum<TColumnId>,
+  defaultFilters: ColumnFilters<TColumnId> | undefined,
 ): ColumnFilters<TColumnId> {
-  const allowed = new Set(recordValues(keys))
-  return Array.from(search.entries())
-    .filter(([key, value]) => allowed.has(key as TColumnId) && Boolean(value))
-    .map(([key, value]) => ({ id: key as TColumnId, value }))
+  const allowed = new Set(recordValues(columns))
+  return [
+    ...(defaultFilters?.filter(({ id }) => !search.has(id)) ?? []),
+    ...Array.from(search.entries())
+      .filter(([key, value]) => allowed.has(key as TColumnId) && Boolean(value))
+      .map(([key, value]) => ({ id: key as TColumnId, value })),
+  ]
 }
 
 const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string | null) => {
@@ -25,7 +31,8 @@ const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string 
     ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== id),
     ...((value ?? '') !== '' ? [[id, value!] as [string, string]] : []),
   ])
-  history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
+  const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
+  history.pushState(null, '', params.size ? `?${search}` : location.pathname)
 }
 
 /**
@@ -33,7 +40,7 @@ const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string 
  */
 export function useColumnFilters<TColumnId extends string>(
   tableTitle: string,
-  keys: Record<string, TColumnId>,
+  columns: ColumnEnum<TColumnId>,
   defaultFilters?: ColumnFilters<TColumnId>,
 ) {
   useEffect(() => {
@@ -42,7 +49,10 @@ export function useColumnFilters<TColumnId extends string>(
   }, [tableTitle])
 
   const searchParams = useSearchParams()
-  const columnFilters = useMemo(() => parseFilters(searchParams, keys), [searchParams, keys])
+  const columnFilters = useMemo(
+    () => parseFilters(searchParams, columns, defaultFilters),
+    [searchParams, columns, defaultFilters],
+  )
 
   const columnFiltersById: PartialRecord<TColumnId, string> = useMemo(
     () =>
@@ -57,7 +67,7 @@ export function useColumnFilters<TColumnId extends string>(
   )
 
   const resetFilters = useCallback(() => {
-    const allowed = new Set(Object.values(keys) as TColumnId[])
+    const allowed = new Set(recordValues(columns))
     const params = new URLSearchParams(searchParams)
     // remove all allowed filter keys
     for (const key of allowed) params.delete(key)
@@ -65,7 +75,7 @@ export function useColumnFilters<TColumnId extends string>(
     defaultFilters?.forEach(({ id, value }) => params.set(id, value))
     const pathname = params.size ? `?${params.toString()}` : location.pathname
     history.pushState(null, '', pathname)
-  }, [defaultFilters, keys, searchParams])
+  }, [defaultFilters, columns, searchParams])
 
   return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }

@@ -7,7 +7,8 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
-import { type FilterProps, parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { Slider } from '@ui-kit/shared/ui/Slider'
 
 /**

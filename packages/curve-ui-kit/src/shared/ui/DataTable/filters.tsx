@@ -2,14 +2,29 @@ import { get } from 'lodash'
 import type { FilterFn } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 
-export const multiFilterFn: FilterFn<any> = (row, columnId, filterValue?: string[]) =>
-  !filterValue?.length || filterValue.includes(row.getValue(columnId))
-export const boolFilterFn: FilterFn<any> = (row, columnId, filterValue?: boolean) =>
-  filterValue === undefined || Boolean(row.getValue<boolean>(columnId)) === Boolean(filterValue)
-export const listFilterFn: FilterFn<any> = (row, columnId, filterValue?: boolean) =>
-  filterValue === undefined || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
-export const inListFilterFn: FilterFn<any> = (row, columnId, filterValue?: unknown) =>
-  filterValue == null || row.getValue<unknown[]>(columnId)?.includes(filterValue)
+export const serializeRangeFilter = <T extends string | number>(range: [T | null, T | null] | null) =>
+  range?.join('~') ?? null
+
+export const parseRangeFilter = (serialized: string | undefined) =>
+  serialized?.split('~').map((v) => (v && !isNaN(+v) ? +v : null)) as [number | null, number | null] | undefined
+
+export const serializeListFilter = (list: string[] | null | undefined) => list?.join(',') || null
+
+export const parseListFilter = (serialized: string | undefined) => serialized?.split(',').filter((v) => v)
+
+export const multiFilterFn: FilterFn<any> = (row, columnId, filterValue?: string) =>
+  !filterValue?.length || !!parseListFilter(filterValue)?.includes(row.getValue(columnId))
+export const boolFilterFn: FilterFn<any> = (row, columnId, filterValue?: string) =>
+  !filterValue || Boolean(row.getValue<boolean>(columnId)) === Boolean(filterValue !== 'no')
+export const listNotEmptyFilterFn: FilterFn<any> = (row, columnId, filterValue?: string) =>
+  !filterValue || row.getValue<unknown[]>(columnId).length > 0 === Boolean(filterValue)
+export const inListFilterFn: FilterFn<any> = (row, columnId, filterValue?: string) =>
+  !filterValue || row.getValue<unknown[]>(columnId)?.includes(filterValue)
+export const rangeFilterFn: FilterFn<any> = (row, columnId, filterValue?: string) => {
+  const [min, max] = parseRangeFilter(filterValue) ?? []
+  const value = row.getValue<number>(columnId)
+  return (min == null || value >= min) && (max == null || value <= max)
+}
 
 export const matchText = <T,>(data: T, fields: readonly DeepKeys<T>[], filter: string) =>
   filter
