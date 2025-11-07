@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
+import Button from '@mui/material/Button'
 import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -10,6 +11,7 @@ import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
@@ -81,7 +83,17 @@ export const LlamaMarketsTable = ({
     <DataTable
       table={table}
       emptyState={
-        <EmptyStateRow table={table}>{isError ? t`Could not load markets` : t`No markets found`}</EmptyStateRow>
+        <EmptyStateRow table={table}>
+          <EmptyStateCard
+            title={isError ? t`Could not load markets` : t`No markets found`}
+            subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
+            action={
+              <Button size="small" onClick={isError ? onReload : resetFilters}>
+                {isError ? t`Reload` : t`Show All Markets`}
+              </Button>
+            }
+          />
+        </EmptyStateRow>
       }
       expandedPanel={LlamaMarketExpandedPanel}
       shouldStickFirstColumn={Boolean(useIsTablet() && userHasPositions)}
