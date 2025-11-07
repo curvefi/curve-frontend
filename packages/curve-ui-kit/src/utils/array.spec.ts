@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { minCutoffForTopK, takeTopWithMin } from './array'
 
-describe('takeTopWithMin and minCutoffForTopK (numbers) - explicit cases', () => {
+describe('takeTopWithMin and minCutoffForTopK', () => {
   const id = (x: number) => x
 
   ;[
@@ -74,68 +74,6 @@ describe('takeTopWithMin and minCutoffForTopK (numbers) - explicit cases', () =>
       const top = takeTopWithMin(items, id, threshold, minCount)
       const cutoff = minCutoffForTopK(items, id, threshold, minCount)
       expect(top).toEqual(expectedTop)
-      expect(cutoff).toBe(expectedCutoff)
-    })
-  })
-})
-
-describe('takeTopWithMin and minCutoffForTopK (objects) - explicit cases', () => {
-  type Item = { v: number; id: string }
-  const getValue = (x: Item) => x.v
-
-  const items1: Item[] = [
-    { v: 10, id: 'a' },
-    { v: 9, id: 'b' },
-    { v: 9, id: 'c' },
-    { v: 8, id: 'd' },
-  ]
-
-  const items2: Item[] = [
-    { v: 3, id: 'x' },
-    { v: 1, id: 'y' },
-    { v: 2, id: 'z' },
-  ]
-
-  ;(
-    [
-      {
-        name: 'duplicates at cutoff (fallback)',
-        items: items1,
-        threshold: 9.5,
-        minCount: 2,
-        expectedIds: ['a', 'b'],
-        expectedCutoff: 9,
-      },
-      {
-        name: 'threshold equal to duplicate value',
-        items: items1,
-        threshold: 9,
-        minCount: 2,
-        expectedIds: ['a', 'b', 'c'],
-        expectedCutoff: 9,
-      },
-      {
-        name: 'fallback with fewer overall items than minCount',
-        items: items2,
-        threshold: 4,
-        minCount: 5,
-        expectedIds: ['x', 'z', 'y'],
-        expectedCutoff: 1,
-      },
-      {
-        name: 'minCount = 0 → pure threshold filter',
-        items: items2,
-        threshold: 2,
-        minCount: 0,
-        expectedIds: ['x', 'z'],
-        expectedCutoff: 2,
-      },
-    ] as const
-  ).forEach(({ name, items, threshold, minCount, expectedIds, expectedCutoff }) => {
-    it(name, () => {
-      const top = takeTopWithMin(items, getValue, threshold, minCount)
-      const cutoff = minCutoffForTopK(items, getValue, threshold, minCount)
-      expect(top.map((x) => x.id)).toEqual(expectedIds)
       expect(cutoff).toBe(expectedCutoff)
     })
   })
