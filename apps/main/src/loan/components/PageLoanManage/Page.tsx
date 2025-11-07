@@ -16,7 +16,6 @@ import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
-import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
@@ -44,7 +43,6 @@ const Page = () => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
   const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
-  const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
@@ -174,7 +172,6 @@ const Page = () => {
               rChainId={rChainId}
               rCollateralId={rCollateralId}
               rFormType={rFormType as FormType}
-              titleMapper={titleMapper}
             />
           )}
         </AppPageFormsWrapper>

@@ -3,7 +3,7 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
@@ -25,4 +25,4 @@ export const useDexMarketList = useBetaChannel
 export const useBorrowUnifiedForm = useBetaChannel
 
 /** New user profile button on the header */
-export const useUserProfileButton = () => useStableChannel() && !isCypress
+export const useUserProfileButton = useStableChannel
