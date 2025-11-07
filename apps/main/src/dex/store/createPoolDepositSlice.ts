@@ -39,6 +39,7 @@ import { getMaxAmountMinusGas } from '@/dex/utils/utilsGasPrices'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { fetchGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 import { fetchNetworks } from '../entities/networks'
 
@@ -285,7 +286,7 @@ const createPoolDepositSlice = (
             ...(get()[sliceKey].formLpTokenExpected[storedActiveKey] ?? DEFAULT_FORM_LP_TOKEN_EXPECTED),
             loading: true,
           })
-          void get()[sliceKey].fetchExpected(activeKey, chainId, formType, pool, cFormValues)
+          get()[sliceKey].fetchExpected(activeKey, chainId, formType, pool, cFormValues).catch(errorFallback)
 
           if (!isSeed) {
             // fetch slippage
@@ -293,7 +294,9 @@ const createPoolDepositSlice = (
               ...(get()[sliceKey].slippage[storedActiveKey] ?? DEFAULT_SLIPPAGE),
               loading: true,
             })
-            void get()[sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
+            get()
+              [sliceKey].fetchSlippage(activeKey, chainId, formType, pool, cFormValues, maxSlippage)
+              .catch(errorFallback)
           }
 
           if (signerAddress) {
@@ -312,7 +315,7 @@ const createPoolDepositSlice = (
                 ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
                 loading: true,
               })
-              void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+              get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool).catch(errorFallback)
             }
           }
         }
@@ -333,7 +336,7 @@ const createPoolDepositSlice = (
               ...(get()[sliceKey].formEstGas[storedActiveKey] ?? DEFAULT_ESTIMATED_GAS),
               loading: true,
             })
-            void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool)
+            get()[sliceKey].fetchEstGasApproval(activeKey, chainId, formType, pool).catch(errorFallback)
           }
         }
       }

@@ -27,6 +27,7 @@ import { formatNumber, scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t, Trans } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -59,7 +60,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       if (chainId && llamma && (isErrorReset || isFullReset)) {
         setStateByKey('formStatus', { ...DEFAULT_FORM_STATUS, isApproved: formStatus.isApproved })
-        void fetchTokensToLiquidate(rChainId, llamma, llammaId, maxSlippage, userWalletBalances)
+        fetchTokensToLiquidate(rChainId, llamma, llammaId, maxSlippage, userWalletBalances).catch(errorFallback)
       }
     },
     [
@@ -170,7 +171,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   // init
   useEffect(() => {
     if (chainId && llamma && llammaId && typeof userWalletBalances?.stablecoin !== 'undefined') {
-      void fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances)
+      fetchTokensToLiquidate(chainId, llamma, llammaId, maxSlippage, userWalletBalances).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [curve?.signerAddress, chainId, llamma, llammaId, maxSlippage, userWalletBalances?.stablecoin])

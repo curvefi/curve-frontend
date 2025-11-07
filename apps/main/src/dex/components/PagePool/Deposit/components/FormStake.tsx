@@ -21,6 +21,7 @@ import TxInfoBar from '@ui/TxInfoBar'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, userPoolBalances }: TransferProps) => {
   const isSubscribed = useRef(false)
@@ -47,9 +48,18 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   const haveSigner = !!signerAddress
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
+    async (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      void setFormValues('STAKE', curve, poolDataCacheOrApi.pool.id, poolData, updatedFormValues, null, seed.isSeed, '')
+      await setFormValues(
+        'STAKE',
+        curve,
+        poolDataCacheOrApi.pool.id,
+        poolData,
+        updatedFormValues,
+        null,
+        seed.isSeed,
+        '',
+      )
     },
     [curve, poolData, poolDataCacheOrApi.pool.id, seed.isSeed, setFormValues],
   )
@@ -141,7 +151,7 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
   // curve state change
   useEffect(() => {
     if (chainId && poolId) {
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, poolId, signerAddress, seed.isSeed])
@@ -169,7 +179,10 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
           balanceLoading={balancesLoading}
           hasError={haveSigner ? new BigNumber(formValues.lpToken).isGreaterThan(balLpToken as string) : false}
           haveSigner={haveSigner}
-          handleAmountChange={useCallback((lpToken) => updateFormValues({ lpToken }), [updateFormValues])}
+          handleAmountChange={useCallback(
+            (lpToken) => updateFormValues({ lpToken }).catch(errorFallback),
+            [updateFormValues],
+          )}
           disabled={disableForm}
         />
       </FieldsWrapper>
@@ -200,9 +213,14 @@ const FormStake = ({ curve, poolData, poolDataCacheOrApi, routerParams, seed, us
       >
         {formStatus.error === 'lpToken-too-much' ? (
           <AlertBox alertType="error">{t`Not enough LP Tokens balances.`}</AlertBox>
-        ) : formStatus.error ? (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({})} />
-        ) : null}
+        ) : (
+          formStatus.error && (
+            <AlertFormError
+              errorKey={formStatus.error}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
+            />
+          )
+        )}
         {txInfoBar}
         <Stepper steps={steps} />
       </TransferActions>

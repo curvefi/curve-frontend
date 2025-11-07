@@ -35,6 +35,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD } from '@ui-kit/utils/address'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { Spacing } = SizesAndSpaces
 
@@ -92,14 +93,15 @@ const Page = () => {
 
   useEffect(() => {
     if (isHydrated && curve && rCollateralId && market) {
-      void (async () => {
-        const fetchedLoanDetails = await fetchLoanDetails(curve, market)
-        if (!fetchedLoanDetails.loanExists) {
-          resetUserDetailsState(market)
-          push(getLoanCreatePathname(params, rCollateralId))
-        }
-        setLoaded(true)
-      })()
+      ;(async () => {
+          const fetchedLoanDetails = await fetchLoanDetails(curve, market)
+        if (fetchedLoanDetails.loanExists) {
+          setLoaded(true)
+          } else {
+            resetUserDetailsState(market)
+            push(getLoanCreatePathname(params, rCollateralId))
+          }
+        })().catch(errorFallback)
     }
   }, [
     isReady,
@@ -122,12 +124,14 @@ const Page = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loaded, rFormType, market])
 
-  usePageVisibleInterval(() => {
-    if (curve?.signerAddress && market && loanExists) {
-      void fetchLoanDetails(curve, market)
-      void fetchUserLoanDetails(curve, market)
-    }
-  }, REFRESH_INTERVAL['1m'])
+  usePageVisibleInterval(
+    () =>
+      curve?.signerAddress &&
+      market &&
+      loanExists &&
+      Promise.all([fetchLoanDetails(curve, market), fetchUserLoanDetails(curve, market)]),
+    REFRESH_INTERVAL['1m'],
+  )
 
   useEffect(() => {
     if (!isMdUp && chartExpanded) {

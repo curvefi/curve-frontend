@@ -2,7 +2,7 @@ import { useEffect, useEffectEvent } from 'react'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { setTimeoutInterval } from '@ui-kit/utils/timers'
 
-type CallbackFunction = () => unknown
+type CallbackFunction = () => unknown | Promise<unknown>
 
 /**
  * A hook that runs a callback function at specified intervals, but only when the page is visible.

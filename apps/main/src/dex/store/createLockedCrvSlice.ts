@@ -19,6 +19,7 @@ import {
 import { formatNumber, shortenAccount } from '@ui/utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import dayjs from '@ui-kit/lib/dayjs'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -131,7 +132,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       const isValidLockDateForm = rFormType === 'adjust_date' ? isValidDays : true
 
       if (isValidCreateForm && isValidLockCrvForm && isValidLockDateForm) {
-        void get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
+        await get()[sliceKey].fetchEstGasApproval(activeKey, curve, rFormType, cFormValues)
       } else {
         get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: DEFAULT_FORM_EST_GAS })
       }
@@ -267,7 +268,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           })
 
           // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          get()[sliceKey].fetchVecrvInfo(curve).catch(errorFallback)
         }
 
         return resp
@@ -301,7 +302,7 @@ const createLockedCrvSlice = (set: StoreApi<State>['setState'], get: StoreApi<St
           })
 
           // re-fetch data
-          void get()[sliceKey].fetchVecrvInfo(curve)
+          get()[sliceKey].fetchVecrvInfo(curve).catch(errorFallback)
         }
 
         return resp

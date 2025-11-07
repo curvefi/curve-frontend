@@ -13,6 +13,7 @@ import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -130,7 +131,7 @@ const createLoanDeleverageSlice = (
           const clonedStoredFormEstGas = cloneDeep(storedFormEstGas)
           clonedStoredFormEstGas.loading = true
           get()[sliceKey].setStateByKey('formEstGas', { [activeKey]: clonedStoredFormEstGas })
-          void get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage)
+          get()[sliceKey].fetchEstGas(activeKey, chainId, llamma, cFormValues, maxSlippage).catch(errorFallback)
         }
       }
     },
@@ -160,7 +161,9 @@ const createLoanDeleverageSlice = (
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash).catch(
+        errorFallback,
+      )
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
         const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)

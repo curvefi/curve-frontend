@@ -35,6 +35,8 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { errorFallback } from '@ui-kit/utils/error.util'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { Spacing } = SizesAndSpaces
 
@@ -61,7 +63,7 @@ const LoanBorrowMore = ({
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
-  const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanBorrowMore.setFormValues))
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
@@ -81,14 +83,15 @@ const LoanBorrowMore = ({
   })
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(
+      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
+      await setFormValues(
         isLoaded ? api : null,
         market,
         isFullReset ? DEFAULT_FORM_VALUES : updatedFormValues,
@@ -96,8 +99,6 @@ const LoanBorrowMore = ({
         isLeverage,
         shouldRefetch,
       )
-
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLeverage, isLoaded, maxSlippage, market, setFormValues],
   )
@@ -122,7 +123,7 @@ const LoanBorrowMore = ({
           <TxInfoBar
             description={txMessage}
             txHash={scanTxPath(networks[chainId], resp.hash)}
-            onClose={() => updateFormValues({}, '', true, true)}
+            onClose={() => updateFormValues({}, '', true, true).catch(errorFallback)}
           />,
         )
       }
@@ -267,23 +268,29 @@ const LoanBorrowMore = ({
     }
   }, [])
 
-  usePageVisibleInterval(() => {
-    if (isLoaded && isLeverage && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
-      updateFormValues({})
-    }
-  }, REFRESH_INTERVAL['10s'])
+  usePageVisibleInterval(
+    () =>
+      isLoaded &&
+      isLeverage &&
+      !formStatus.isComplete &&
+      !formStatus.step &&
+      !formStatus.error &&
+      !isConfirming &&
+      updateFormValues({}).catch(errorFallback),
+    REFRESH_INTERVAL['10s'],
+  )
 
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   // form changed to leverage, reset form
   useEffect(() => {
-    if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true)
+    if (isLoaded) updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLeverage])
 
@@ -323,7 +330,7 @@ const LoanBorrowMore = ({
   ])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({}, maxSlippage)
+    if (isLoaded) updateFormValues({}, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
@@ -344,7 +351,10 @@ const LoanBorrowMore = ({
     setHealthMode,
   }
 
-  const setUserBorrowed = useCallback((userBorrowed: string) => updateFormValues({ userBorrowed }), [updateFormValues])
+  const setUserBorrowed = useCallback(
+    (userBorrowed: string) => updateFormValues({ userBorrowed }).catch(errorFallback),
+    [updateFormValues],
+  )
   const network = networks[rChainId]
 
   return (
@@ -364,8 +374,13 @@ const LoanBorrowMore = ({
             tokenAddress={market?.collateral_token?.address}
             tokenSymbol={market?.collateral_token?.symbol}
             tokenBalance={userBalances?.collateral}
-            handleInpChange={useCallback((userCollateral) => updateFormValues({ userCollateral }), [updateFormValues])}
-            handleMaxClick={() => updateFormValues({ userCollateral: userBalances?.collateral ?? '' })}
+            handleInpChange={useCallback(
+              (userCollateral) => updateFormValues({ userCollateral }).catch(errorFallback),
+              [updateFormValues],
+            )}
+            handleMaxClick={() =>
+              updateFormValues({ userCollateral: userBalances?.collateral ?? '' }).catch(errorFallback)
+            }
           />
 
           {isLeverage && (
@@ -381,7 +396,9 @@ const LoanBorrowMore = ({
               tokenSymbol={market?.borrowed_token?.symbol}
               tokenBalance={userBalances?.borrowed}
               handleInpChange={setUserBorrowed}
-              handleMaxClick={() => updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' })}
+              handleMaxClick={() =>
+                updateFormValues({ userBorrowed: userBalances?.borrowed ?? '' }).catch(errorFallback)
+              }
             />
           )}
         </Stack>
@@ -399,10 +416,10 @@ const LoanBorrowMore = ({
           tokenSymbol={market?.borrowed_token?.symbol}
           tokenBalance={userBalances?.borrowed}
           maxRecv={maxRecv}
-          handleInpChange={useCallback((debt) => updateFormValues({ debt }), [updateFormValues])}
+          handleInpChange={useCallback((debt) => updateFormValues({ debt }).catch(errorFallback), [updateFormValues])}
           handleMaxClick={async () => {
             const debt = await refetchMaxRecv(market, isLeverage)
-            updateFormValues({ debt })
+            updateFormValues({ debt }).catch(errorFallback)
           }}
         />
       </Stack>
@@ -423,7 +440,7 @@ const LoanBorrowMore = ({
             <AlertFormError
               limitHeight
               errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
             />
           )}
           {steps && <Stepper steps={steps} />}

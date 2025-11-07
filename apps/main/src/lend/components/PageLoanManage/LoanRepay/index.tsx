@@ -44,6 +44,8 @@ import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getPercentage, isGreaterThan, isGreaterThanOrEqualTo, sum } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const { Spacing } = SizesAndSpaces
 
@@ -68,7 +70,7 @@ const LoanRepay = ({
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
   const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
-  const setFormValues = useStore((state) => state.loanRepay.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.loanRepay.setFormValues))
   const resetState = useStore((state) => state.loanRepay.resetState)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
@@ -91,22 +93,21 @@ const LoanRepay = ({
   })
 
   const updateFormValues = useCallback(
-    (
+    async (
       updatedFormValues: Partial<FormValues>,
       updatedMaxSlippage?: string,
       isFullReset?: boolean,
       shouldRefetch?: boolean,
     ) => {
       setConfirmWarning(DEFAULT_CONFIRM_WARNING)
-      void setFormValues(
+      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
+      await setFormValues(
         isLoaded ? api : null,
         market,
         updatedFormValues,
         updatedMaxSlippage || maxSlippage,
         shouldRefetch,
       )
-
-      if (isFullReset) setHealthMode(DEFAULT_HEALTH_MODE)
     },
     [api, isLoaded, maxSlippage, market, setFormValues],
   )
@@ -130,9 +131,8 @@ const LoanRepay = ({
             description={txMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (resp.loanExists) {
-                updateFormValues(DEFAULT_FORM_VALUES, '', true)
-              } else {
+              updateFormValues(DEFAULT_FORM_VALUES, '', true).catch(errorFallback)
+              if (!resp.loanExists) {
                 push(getCollateralListPathname(params))
               }
             }}
@@ -286,21 +286,27 @@ const LoanRepay = ({
 
   usePageVisibleInterval(() => {
     const { swapRequired } = _parseValues(formValues)
-    if (isLoaded && swapRequired && !formStatus.isComplete && !formStatus.step && !formStatus.error && !isConfirming) {
-      updateFormValues({})
-    }
+    return (
+      isLoaded &&
+      swapRequired &&
+      !formStatus.isComplete &&
+      !formStatus.step &&
+      !formStatus.error &&
+      !isConfirming &&
+      updateFormValues({}).catch(errorFallback)
+    )
   }, REFRESH_INTERVAL['10s'])
 
   useEffect(() => {
     if (isLoaded) {
       resetState()
-      updateFormValues({})
+      updateFormValues({}).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({}, maxSlippage)
+    if (isLoaded) updateFormValues({}, maxSlippage).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxSlippage])
 
@@ -361,11 +367,11 @@ const LoanRepay = ({
 
   const network = networks[rChainId]
   const setUserCollateral = useCallback(
-    (userCollateral: string) => updateFormValues({ userCollateral, isFullRepay: false }),
+    (userCollateral: string) => updateFormValues({ userCollateral, isFullRepay: false }).catch(errorFallback),
     [updateFormValues],
   )
   const setStateCollateral = useCallback(
-    (stateCollateral: string) => updateFormValues({ stateCollateral, isFullRepay: false }),
+    (stateCollateral: string) => updateFormValues({ stateCollateral, isFullRepay: false }).catch(errorFallback),
     [updateFormValues],
   )
 
@@ -388,7 +394,9 @@ const LoanRepay = ({
             tokenBalance={userState?.collateral}
             handleInpChange={setStateCollateral}
             handleMaxClick={() =>
-              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false })
+              updateFormValues({ stateCollateral: userState?.collateral ?? '', isFullRepay: false }).catch(
+                errorFallback,
+              )
             }
           />
         </Stack>
@@ -412,7 +420,9 @@ const LoanRepay = ({
               tokenBalance={userBalances?.collateral}
               handleInpChange={setUserCollateral}
               handleMaxClick={() =>
-                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false })
+                updateFormValues({ userCollateral: userBalances?.collateral ?? '', isFullRepay: false }).catch(
+                  errorFallback,
+                )
               }
             />
           )}
@@ -432,29 +442,29 @@ const LoanRepay = ({
             handleInpChange={useCallback(
               (userBorrowed) => {
                 if (hasExpectedBorrowed) {
-                  updateFormValues({ userBorrowed, isFullRepay: false })
+                  updateFormValues({ userBorrowed, isFullRepay: false }).catch(errorFallback)
                   return
                 }
 
                 if (!hasExpectedBorrowed && userState?.borrowed != null && borrowedTokenDecimals) {
                   const totalRepay = sum([userState.borrowed, userBorrowed], borrowedTokenDecimals)
                   const isFullRepay = isGreaterThanOrEqualTo(totalRepay, userState.debt, borrowedTokenDecimals)
-                  updateFormValues({ userBorrowed, isFullRepay })
+                  updateFormValues({ userBorrowed, isFullRepay }).catch(errorFallback)
                   return
                 }
 
-                updateFormValues({ userBorrowed, isFullRepay: false })
+                updateFormValues({ userBorrowed, isFullRepay: false }).catch(errorFallback)
               },
               [borrowedTokenDecimals, hasExpectedBorrowed, updateFormValues, userState?.borrowed, userState?.debt],
             )}
             handleMaxClick={async () => {
               if (+userBalances.borrowed === 0) {
-                updateFormValues({ userBorrowed: '', isFullRepay: false })
+                updateFormValues({ userBorrowed: '', isFullRepay: false }).catch(errorFallback)
                 return
               }
 
               if (expectedBorrowed) {
-                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false }).catch(errorFallback)
                 return
               }
 
@@ -467,14 +477,11 @@ const LoanRepay = ({
                 const amountNeededWithInterestRate = amountNeeded + getPercentage(amountNeeded, 1n)
 
                 if (isGreaterThan(amountNeededWithInterestRate, userBalances.borrowed, borrowedTokenDecimals)) {
-                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false })
+                  updateFormValues({ userBorrowed: userBalances.borrowed, isFullRepay: false }).catch(errorFallback)
                   return
                 }
-
-                updateFormValues({ userBorrowed: '', isFullRepay: true })
-                return
               }
-              updateFormValues({ userBorrowed: '', isFullRepay: false })
+              updateFormValues({ userBorrowed: '', isFullRepay: false }).catch(errorFallback)
             }}
           />
         </Stack>
@@ -489,9 +496,9 @@ const LoanRepay = ({
         isSelected={detailInfoLeverage?.repayIsFull || formValues.isFullRepay}
         onChange={(isFullRepay) => {
           if (isFullRepay) {
-            updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay })
+            updateFormValues({ ...DEFAULT_FORM_VALUES, isFullRepay }).catch(errorFallback)
           } else {
-            updateFormValues({ ...DEFAULT_FORM_VALUES })
+            updateFormValues({ ...DEFAULT_FORM_VALUES }).catch(errorFallback)
           }
         }}
       >
@@ -531,7 +538,7 @@ const LoanRepay = ({
             <AlertFormError
               limitHeight
               errorKey={formStatus.error || formStatus.stepError}
-              handleBtnClose={() => updateFormValues({})}
+              handleBtnClose={() => updateFormValues({}).catch(errorFallback)}
             />
           ) : null}
           {steps && <Stepper steps={steps} />}

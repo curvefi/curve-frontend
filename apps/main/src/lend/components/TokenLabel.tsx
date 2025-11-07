@@ -10,6 +10,7 @@ import TextEllipsis from '@ui/TextEllipsis'
 import { scanTokenPath } from '@ui/utils'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { copyToClipboard } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const TokenLabel = ({
   rChainId,
@@ -50,7 +51,7 @@ const TokenLabel = ({
             size="medium"
             onClick={(evt) => {
               evt.stopPropagation()
-              void copyToClipboard(address)
+              copyToClipboard(address).catch(errorFallback)
             }}
           >
             <Icon name="Copy" size={16} />

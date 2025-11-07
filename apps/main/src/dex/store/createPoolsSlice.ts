@@ -43,6 +43,7 @@ import { convertToLocaleTimestamp } from '@ui/Chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { fetchNetworks } from '../entities/networks'
 import { getPools } from '../lib/pools'
 
@@ -269,7 +270,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         )
 
         // update cache
-        void storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache)
+        storeCache.setStateByActiveKey('poolsMapper', chainId.toString(), poolsMapperCache).catch(errorFallback)
 
         const partialPoolDatas = poolIds.map((poolId) => poolsMapper[poolId])
 
@@ -286,7 +287,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
         const partialTokens = await tokens.setTokensMapper(curve, partialPoolDatas)
 
         if (curve.signerAddress) {
-          void userBalances.fetchUserBalancesByTokens(curve, partialTokens)
+          await userBalances.fetchUserBalancesByTokens(curve, partialTokens)
         }
 
         return { poolsMapper, poolDatas: partialPoolDatas }
@@ -427,7 +428,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
 
       if (missingRewardsPoolIds.length > 0) {
         log('fetchMissingPoolsRewardsApy', chainId, missingRewardsPoolIds.length)
-        void fetchPoolsRewardsApy(chainId, missingRewardsPoolIds)
+        await fetchPoolsRewardsApy(chainId, missingRewardsPoolIds)
       }
 
       // const missingRewardsPoolIds = []
@@ -495,7 +496,7 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
           state.pools.poolsMapper[chainId][poolData.pool.id] = cPoolData
         }),
       )
-      void get().pools.fetchPoolCurrenciesReserves(curve, cPoolData)
+      get().pools.fetchPoolCurrenciesReserves(curve, cPoolData).catch(errorFallback)
       return { tokens, tokenAddresses }
     },
     updatePool: (chainId, poolId, updatedPoolData) => {

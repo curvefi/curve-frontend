@@ -17,6 +17,7 @@ import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { TypographyVariantKey } from '@ui-kit/themes/typography'
 import { copyToClipboard } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Tooltip } from './Tooltip'
 import { WithSkeleton } from './WithSkeleton'
 
@@ -109,7 +110,7 @@ const ActionInfo = ({
   const [isSnackbarOpen, openSnackbar, closeSnackbar] = useSwitch(false)
 
   const copyAndShowSnackbar = useCallback(() => {
-    void copyToClipboard(copyValue!.trim())
+    copyToClipboard(copyValue!.trim()).catch(errorFallback)
     openSnackbar()
   }, [copyValue, openSnackbar])
 

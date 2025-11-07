@@ -103,10 +103,10 @@ export const Duration = {
   Snackbar: 6000,
   Tooltip: { Enter: 500, Exit: 500 },
   Flicker: 1000,
-  FormDebounce: 500,
   Transition: 256,
   Focus: 50,
   Delay: 100,
+  FormThrottle: 166, // ~10fps at 60Hz
 }
 
 export const TransitionFunction = `ease-out ${Duration.Transition}ms`

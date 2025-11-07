@@ -22,6 +22,7 @@ import { useLegacyTokenInput } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, userActiveKey }: PageContentProps) => {
   const isSubscribed = useRef(false)
@@ -41,22 +42,21 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   const { signerAddress } = api ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      void setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues)
-    },
+    (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, rFormType, isLoaded ? api : null, market, updatedFormValues),
     [api, isLoaded, market, rChainId, rFormType, setFormValues],
   )
 
   const reset = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
+    async (updatedFormValues: Partial<FormValues>) => {
       setTxInfoBar(null)
-      updateFormValues(updatedFormValues)
+      await updateFormValues(updatedFormValues)
     },
     [updateFormValues],
   )
 
   const handleInpAmountChange = (amount: string) => {
-    reset({ amount })
+    reset({ amount }).catch(errorFallback)
   }
 
   const handleBtnClickUnstake = useCallback(
@@ -79,7 +79,9 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey && !resp.error) {
         const txMessage = t`Transaction completed.`
         const txHash = scanTxPath(networks[chainId], resp.hash)
-        setTxInfoBar(<TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({})} />)
+        setTxInfoBar(
+          <TxInfoBar description={txMessage} txHash={txHash} onClose={() => reset({}).catch(errorFallback)} />,
+        )
       }
       if (resp?.error) setTxInfoBar(null)
       notification?.dismiss()
@@ -137,7 +139,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
   }, [resetState])
 
   useEffect(() => {
-    if (isLoaded) updateFormValues({})
+    if (isLoaded) updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoaded])
 
@@ -152,7 +154,7 @@ const VaultUnstake = ({ rChainId, rOwmId, rFormType, isLoaded, api, market, user
 
   const activeStep = signerAddress ? getActiveStep(steps) : null
   const disabled = !!formStatus.step
-  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }), [reset])
+  const onBalance = useCallback((amount?: Decimal) => reset({ amount: amount ?? '' }).catch(errorFallback), [reset])
 
   return (
     <>

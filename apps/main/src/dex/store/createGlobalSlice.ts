@@ -119,14 +119,12 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
 
     await state.pools.fetchPools(curveApi, poolIds, failedFetching24hOldVprice)
 
-    if (isUserSwitched || isNetworkSwitched) {
-      void state.pools.fetchPricesApiPools(chainId)
-      void state.pools.fetchBasePools(curveApi)
-    }
-
-    if (curveApi.signerAddress) {
-      void state.user.fetchUserPoolList(curveApi)
-    }
+    const isSwitched = isUserSwitched || isNetworkSwitched
+    await Promise.all([
+      isSwitched && state.pools.fetchPricesApiPools(chainId),
+      isSwitched && state.pools.fetchBasePools(curveApi),
+      curveApi.signerAddress && state.user.fetchUserPoolList(curveApi),
+    ])
 
     log('Hydrating DEX - Complete')
   },

@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { PoolRow } from '@/dex/components/PagePoolList/components/PoolRow'
 import TableHead from '@/dex/components/PagePoolList/components/TableHead'
@@ -132,11 +133,10 @@ const PoolList = ({
     ],
   )
 
-  usePageVisibleInterval(() => {
-    if (curve && rewardsApyMapper && Object.keys(rewardsApyMapper).length > 0) {
-      void fetchPoolsRewardsApy(rChainId, poolDatas)
-    }
-  }, REFRESH_INTERVAL['11m'])
+  usePageVisibleInterval(
+    () => curve && !isEmpty(rewardsApyMapper) && fetchPoolsRewardsApy(rChainId, poolDatas),
+    REFRESH_INTERVAL['11m'],
+  )
 
   // init
   useEffect(() => {

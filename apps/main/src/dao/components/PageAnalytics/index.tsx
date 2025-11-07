@@ -4,6 +4,7 @@ import useStore from '@/dao/store/useStore'
 import Box from '@ui/Box'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import CrvStats from './CrvStats'
 import DailyLocks from './DailyLocksChart'
 import HoldersTable from './HoldersTable'
@@ -24,7 +25,7 @@ const Analytics = () => {
 
   useEffect(() => {
     if (veCrvHolders.topHolders.length === 0 && veCrvHolders.fetchStatus !== 'ERROR') {
-      void getVeCrvHolders()
+      getVeCrvHolders().catch(errorFallback)
     }
   }, [getVeCrvHolders, veCrvHolders.topHolders.length, veCrvHolders.fetchStatus])
 

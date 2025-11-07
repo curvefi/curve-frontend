@@ -13,6 +13,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -119,7 +120,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, loadingFormEstGas)
         get()[sliceKey].setStateByKeys({ activeKey, formValues: cloneDeep(cFormValues) })
 
-        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues).catch(errorFallback)
       } else {
         // validate debt
         const haveDebt = +debt > 0
@@ -155,12 +156,11 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
           clonedFormStatus.warning = isMaxPayable ? 'warning-is-payoff-amount' : ''
           get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
-
-          void (isMaxPayable
+          isMaxPayable
             ? get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
-            : get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues))
+            : get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues).catch(errorFallback)
 
-          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues).catch(errorFallback)
         } else if (!haveDebt || cFormValues.debtError) {
           get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
           get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -192,7 +192,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           formProcessing: !resp.error,
           error: resp.error,
         })
-        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+        get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues).catch(errorFallback)
 
         return resp
       }
@@ -210,7 +210,9 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const repayFn = networks[chainId].api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash).catch(
+        errorFallback,
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)

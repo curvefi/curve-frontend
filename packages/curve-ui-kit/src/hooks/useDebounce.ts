@@ -79,7 +79,7 @@ export function useDebounce<T>(initialValue: T, debounceMs: number, callback: (v
  */
 export function useDebouncedValue<T>(
   givenValue: T,
-  { defaultValue = givenValue, debounceMs = Duration.FormDebounce }: { defaultValue?: T; debounceMs?: number } = {},
+  { defaultValue = givenValue, debounceMs = Duration.FormThrottle }: { defaultValue?: T; debounceMs?: number } = {},
 ) {
   const [value, setValue] = useState<T>(defaultValue)
   useEffect(() => {

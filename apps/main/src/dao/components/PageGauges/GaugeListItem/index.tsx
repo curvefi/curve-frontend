@@ -19,6 +19,7 @@ import IconButton from '@ui/IconButton'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
 import { DAO_ROUTES } from '@ui-kit/shared/routes'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { Chain } from '@ui-kit/utils/network'
 
 type Props = {
@@ -69,7 +70,7 @@ const GaugeListItem = ({
 
   useEffect(() => {
     if (open && !gaugeWeightHistoryMapper[gaugeData.address]) {
-      void getHistoricGaugeWeights(gaugeData.address)
+      getHistoricGaugeWeights(gaugeData.address).catch(errorFallback)
     }
   }, [gaugeData.address, gaugeWeightHistoryMapper, getHistoricGaugeWeights, open])
 
@@ -113,7 +114,7 @@ const GaugeListItem = ({
                   message={t`Error fetching historical gauge weights data`}
                   onClick={(e?: MouseEvent) => {
                     e?.stopPropagation()
-                    void getHistoricGaugeWeights(gaugeData.address)
+                    getHistoricGaugeWeights(gaugeData.address).catch(errorFallback)
                   }}
                 />
               </ErrorWrapper>

@@ -7,6 +7,7 @@ import Box from '@ui/Box'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import UserGaugeVotesTable from './UserGaugeVotesTable'
 import UserHeader from './UserHeader'
 import UserLocksTable from './UserLocksTable'
@@ -51,14 +52,14 @@ const UserPage = ({ routerParams: { userAddress: rUserAddress } }: UserPageProps
 
   useEffect(() => {
     if (Object.keys(allHolders).length === 0 && holdersLoading && !holdersError) {
-      void getVeCrvHolders()
+      getVeCrvHolders().catch(errorFallback)
     }
   }, [getVeCrvHolders, allHolders, holdersLoading, holdersError])
 
   // Get user ENS
   useEffect(() => {
     if (!userMapper[userAddress] && provider) {
-      void getUserEns(userAddress)
+      getUserEns(userAddress).catch(errorFallback)
     }
   }, [getUserEns, userAddress, userMapper, provider])
 

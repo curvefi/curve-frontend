@@ -15,6 +15,7 @@ import TextCaption from '@ui/TextCaption'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
 const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
@@ -266,27 +267,27 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   }, [timeOption])
 
   const refetchPricesData = useCallback(() => {
-    if (market?.addresses.controller) {
-      void fetchOraclePoolOhlcData(
-        rChainId,
-        market.addresses.controller,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
-    }
-    if (market?.addresses.amm) {
-      void fetchLlammaOhlcData(
-        rChainId,
-        rOwmId,
-        market.addresses.amm,
-        chartInterval,
-        timeUnit,
-        chartTimeSettings.start,
-        chartTimeSettings.end,
-      )
-    }
+    Promise.all([
+      market?.addresses.controller &&
+        fetchOraclePoolOhlcData(
+          rChainId,
+          market.addresses.controller,
+          chartInterval,
+          timeUnit,
+          chartTimeSettings.start,
+          chartTimeSettings.end,
+        ),
+      market?.addresses.amm &&
+        fetchLlammaOhlcData(
+          rChainId,
+          rOwmId,
+          market.addresses.amm,
+          chartInterval,
+          timeUnit,
+          chartTimeSettings.start,
+          chartTimeSettings.end,
+        ),
+    ]).catch(errorFallback)
   }, [
     chartInterval,
     chartTimeSettings.end,
@@ -316,7 +317,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
       const startTime = getThreeHundredResultsAgo(timeOption, endTime)
 
       if (market?.addresses.controller && market?.addresses.amm) {
-        void fetchMoreData(
+        fetchMoreData(
           rChainId,
           market?.addresses.controller,
           market?.addresses.amm,
@@ -324,7 +325,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
           timeUnit,
           startTime,
           endTime,
-        )
+        ).catch(errorFallback)
       }
     },
     [timeOption, fetchMoreData, rChainId, market?.addresses.amm, market?.addresses.controller, chartInterval, timeUnit],

@@ -21,6 +21,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -308,7 +309,9 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           storedFormValues.debt !== formValues.debt ||
           !get()[sliceKey].liqRangesMapper[activeKeyLiqRange]
         ) {
-          void get()[sliceKey].fetchLiqRanges(activeKeyLiqRange, chainId, isLeverage, llamma, clonedFormValues)
+          get()
+            [sliceKey].fetchLiqRanges(activeKeyLiqRange, chainId, isLeverage, llamma, clonedFormValues)
+            .catch(errorFallback)
         }
 
         // fetch approval and estimate gas, detail
@@ -322,25 +325,16 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           }
 
           // fetch detail info
-          void get()[sliceKey].fetchDetailInfo(
-            activeKey,
-            chainId,
-            isLeverage,
-            llamma,
-            clonedFormValues,
-            signerAddress,
-            maxSlippage,
-          )
+          get()
+            [
+              sliceKey
+            ].fetchDetailInfo(activeKey, chainId, isLeverage, llamma, clonedFormValues, signerAddress, maxSlippage)
+            .catch(errorFallback)
 
           if (signerAddress && !collateralError) {
-            void get()[sliceKey].fetchEstGasApproval(
-              activeKey,
-              chainId,
-              isLeverage,
-              llamma,
-              clonedFormValues,
-              maxSlippage,
-            )
+            get()
+              [sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, clonedFormValues, maxSlippage)
+              .catch(errorFallback)
           }
         } else {
           if (isLeverage) {
@@ -395,7 +389,9 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           error: resp.error,
         })
 
-        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
+        get()
+          [sliceKey].fetchEstGasApproval(activeKey, chainId, isLeverage, llamma, formValues, maxSlippage)
+          .catch(errorFallback)
 
         return resp
       }
@@ -422,7 +418,12 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
         // update user events api
-        void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+        getUserMarketCollateralEvents(
+          wallet?.account?.address,
+          networks[chainId].id,
+          llamma.controller,
+          resp.hash,
+        ).catch(errorFallback)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({

@@ -17,6 +17,8 @@ import { type CurveApi, isLoading, notify, useConnection } from '@ui-kit/feature
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { errorFallback } from '@ui-kit/utils/error.util'
+import { useThrottle } from '@ui-kit/utils/timers'
 
 const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const isSubscribed = useRef(false)
@@ -29,7 +31,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const formValues = useStore((state) => state.lockedCrv.formValues)
   const fetchStepApprove = useStore((state) => state.lockedCrv.fetchStepApprove)
   const fetchStepIncreaseCrv = useStore((state) => state.lockedCrv.fetchStepIncreaseCrv)
-  const setFormValues = useStore((state) => state.lockedCrv.setFormValues)
+  const setFormValues = useThrottle(useStore((state) => state.lockedCrv.setFormValues))
 
   const [steps, setSteps] = useState<Step[]>([])
   const [txInfoBar, setTxInfoBar] = useState<ReactNode>(null)
@@ -38,9 +40,9 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   const haveSigner = !!signerAddress
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
+    async (updatedFormValues: Partial<FormValues>, isFullReset?: boolean) => {
       setTxInfoBar(null)
-      setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
+      await setFormValues(curve, isLoadingCurve, rFormType, updatedFormValues, vecrvInfo, isFullReset)
     },
     [curve, isLoadingCurve, vecrvInfo, rFormType, setFormValues],
   )
@@ -119,7 +121,7 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
   // onMount
   useEffect(() => {
     isSubscribed.current = true
-    updateFormValues({}, true)
+    updateFormValues({}, true).catch(errorFallback)
 
     return () => {
       isSubscribed.current = false
@@ -155,7 +157,10 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
           haveSigner={haveSigner}
           formType={rFormType}
           vecrvInfo={vecrvInfo}
-          handleInpLockedAmt={useCallback((lockedAmt) => updateFormValues({ lockedAmt }), [updateFormValues])}
+          handleInpLockedAmt={useCallback(
+            (lockedAmt) => updateFormValues({ lockedAmt }).catch(errorFallback),
+            [updateFormValues],
+          )}
           {...formValues}
         />
       </StyledForm>
@@ -172,7 +177,10 @@ const FormLockCrv = ({ curve, rChainId, rFormType, vecrvInfo }: PageVecrv) => {
 
       <FormActions haveSigner={haveSigner} loading={loading}>
         {formStatus.error && (
-          <AlertFormError errorKey={formStatus.error} handleBtnClose={() => updateFormValues({}, false)} />
+          <AlertFormError
+            errorKey={formStatus.error}
+            handleBtnClose={() => updateFormValues({}, false).catch(errorFallback)}
+          />
         )}
         {txInfoBar}
         <Stepper steps={steps} />

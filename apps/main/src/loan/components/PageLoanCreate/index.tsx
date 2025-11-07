@@ -15,6 +15,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -41,7 +42,7 @@ const LoanCreate = ({
   ...props
 }: PageLoanCreateProps & {
   loanExists: boolean | undefined
-  fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => void
+  fetchInitial: (curve: LlamaApi, isLeverage: boolean, llamma: Llamma) => Promise<void>
 }) => {
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
@@ -68,7 +69,7 @@ const LoanCreate = ({
         push(getLoanManagePathname(params, rCollateralId, 'loan'))
       } else {
         if (curve && llamma) {
-          fetchInitial(curve, formType === 'leverage', llamma)
+          fetchInitial(curve, formType === 'leverage', llamma).catch(errorFallback)
         }
         push(getLoanCreatePathname(params, rCollateralId, formType))
       }

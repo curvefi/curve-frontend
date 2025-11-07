@@ -36,6 +36,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'llamma' | 'llammaId' | 'params' | 'rChainId'> {}
 
@@ -76,9 +77,9 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const { userState } = userLoanDetails ?? {}
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        await setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],
@@ -104,7 +105,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
     const updatedFormValues = { ...formValues }
     updatedFormValues.debt = debt
     updatedFormValues.debtError = ''
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const onDebtChanged = useCallback(
@@ -116,7 +117,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         debt,
         debtError: '',
         isFullRepay: decimal(userWalletBalances.stablecoin) == value,
-      })
+      }).catch(errorFallback)
     },
     [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
   )
@@ -127,7 +128,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
     updatedFormValues.debt = ''
     updatedFormValues.debtError = ''
     updatedFormValues.isFullRepay = isFullRepay
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const handleBtnClickPay = useCallback(
@@ -371,9 +372,9 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           <>
             {formStatus.error ? (
               <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-            ) : formStatus.warning ? (
-              <AlertFormWarning errorKey={formStatus.warning} />
-            ) : null}
+            ) : (
+              formStatus.warning && <AlertFormWarning errorKey={formStatus.warning} />
+            )}
           </>
         )}
         {txInfoBar}

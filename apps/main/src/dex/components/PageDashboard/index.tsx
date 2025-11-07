@@ -25,6 +25,7 @@ import { breakpoints } from '@ui/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const Dashboard = ({
   curve,
@@ -74,9 +75,8 @@ const Dashboard = ({
   }
 
   const updateFormValues = useCallback(
-    (updatedFormValues: Partial<FormValues>) => {
-      setFormValues(rChainId, !pageLoaded ? null : curve, poolsMapper, updatedFormValues)
-    },
+    async (updatedFormValues: Partial<FormValues>) =>
+      setFormValues(rChainId, !pageLoaded ? null : curve, poolsMapper, updatedFormValues),
     [curve, pageLoaded, poolsMapper, rChainId, setFormValues],
   )
 
@@ -91,14 +91,14 @@ const Dashboard = ({
 
   // curvejs change
   useEffect(() => {
-    updateFormValues({})
+    updateFormValues({}).catch(errorFallback)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, !pageLoaded, haveAllPools, poolsMapper])
 
   // signerAddress
   useEffect(() => {
     if (signerAddress) {
-      updateFormValues({ walletAddress: signerAddress })
+      updateFormValues({ walletAddress: signerAddress }).catch(errorFallback)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signerAddress])

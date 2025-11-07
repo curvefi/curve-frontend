@@ -5,6 +5,7 @@ import ErrorMessage from '@/dao/components/ErrorMessage'
 import useStore from '@/dao/store/useStore'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface GaugeWeightHistoryChartProps {
   gaugeAddress: string
@@ -21,7 +22,7 @@ const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistory
 
   useEffect(() => {
     if (!gaugeWeightHistoryMapper[gaugeAddress]) {
-      void getHistoricGaugeWeights(gaugeAddress)
+      getHistoricGaugeWeights(gaugeAddress).catch(errorFallback)
     }
   }, [gaugeAddress, gaugeWeightHistoryMapper, getHistoricGaugeWeights])
 
@@ -33,7 +34,7 @@ const GaugeWeightHistoryChart = ({ gaugeAddress, minHeight }: GaugeWeightHistory
             message={t`Error fetching historical gauge weights data`}
             onClick={(e?: MouseEvent) => {
               e?.stopPropagation()
-              void getHistoricGaugeWeights(gaugeAddress)
+              getHistoricGaugeWeights(gaugeAddress).catch(errorFallback)
             }}
           />
         </ErrorWrapper>

@@ -6,7 +6,7 @@ import Statistics from '@/loan/components/PageCrvUsdStaking/Statistics'
 import StatsBanner from '@/loan/components/PageCrvUsdStaking/StatsBanner'
 import UserInformation from '@/loan/components/PageCrvUsdStaking/UserInformation'
 import UserPosition from '@/loan/components/PageCrvUsdStaking/UserPosition'
-import { useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
+import { invalidateScrvUsdUserBalances, useScrvUsdUserBalances } from '@/loan/entities/scrvusd-userBalances'
 import useStore from '@/loan/store/useStore'
 import type { NetworkUrlParams } from '@/loan/types/loan.types'
 import { Stack, useMediaQuery } from '@mui/material'
@@ -15,6 +15,7 @@ import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { Sizing } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const { MaxWidth } = SizesAndSpaces
 
@@ -33,7 +34,6 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
     data: userScrvUsdBalance,
     isFetching: isUserScrvUsdBalanceFetching,
     isFetched: isUserScrvUsdBalanceFetched,
-    refetch: refetchUserScrvUsdBalance,
   } = useScrvUsdUserBalances({ userAddress: address })
 
   const isUserScrvUsdBalanceZero = !address || !userScrvUsdBalance || BigNumber(userScrvUsdBalance.scrvUSD).isZero()
@@ -49,22 +49,16 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
   const columnView = useMediaQuery(`(max-width: ${columnViewBreakPoint})`)
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (!lendApi || !address) return
-      // ensure user balances are up to date on load
-      void refetchUserScrvUsdBalance()
-      fetchExchangeRate()
-      fetchCrvUsdSupplies()
-    }
-
-    void fetchData()
-  }, [lendApi, fetchExchangeRate, fetchCrvUsdSupplies, refetchUserScrvUsdBalance, address])
+    if (!lendApi || !address) return
+    // ensure user balances are up to date on load
+    invalidateScrvUsdUserBalances({ userAddress: address })
+    fetchExchangeRate()
+    fetchCrvUsdSupplies()
+  }, [lendApi, fetchExchangeRate, fetchCrvUsdSupplies, address])
 
   useEffect(() => {
-    if (!lendApi || !chainId || !address || inputAmount === '0') return
-
-    if (stakingModule === 'deposit') {
-      void checkApproval.depositApprove(inputAmount)
+    if (lendApi && chainId && address && inputAmount !== '0' && stakingModule === 'deposit') {
+      checkApproval.depositApprove(inputAmount).catch(errorFallback)
     }
   }, [checkApproval, lendApi, chainId, inputAmount, stakingModule, address])
 

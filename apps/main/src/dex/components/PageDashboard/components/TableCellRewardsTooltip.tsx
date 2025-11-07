@@ -5,6 +5,7 @@ import { RewardCrv } from '@/dex/types/main.types'
 import { rewardsApyCrvText } from '@/dex/utils/utilsCurvejs'
 import Box from '@ui/Box'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 type Props = {
   crv?: RewardCrv[]
@@ -18,13 +19,13 @@ const TableCellRewardsTooltip = ({ crv = [], userCrvApy, fetchUserPoolBoost }: P
 
   useEffect(() => {
     isSubscribed.current = true
-    void (async () => {
+    ;(async () => {
       const fetchedBoosted = await fetchUserPoolBoost()
 
       if (isSubscribed.current) {
         setBoost(fetchedBoosted)
       }
-    })()
+    })().catch(errorFallback)
 
     return () => {
       isSubscribed.current = false

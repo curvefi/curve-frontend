@@ -35,6 +35,7 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
 
@@ -73,9 +74,9 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const { data: collateralUsdRate } = useTokenUsdRate({ chainId: network?.chainId, tokenAddress: collateralAddress })
 
   const updateFormValues = useCallback(
-    (updatedFormValues: FormValues) => {
+    async (updatedFormValues: FormValues) => {
       if (chainId && llamma) {
-        void setFormValues(chainId, llamma, updatedFormValues)
+        await setFormValues(chainId, llamma, updatedFormValues)
       }
     },
     [chainId, llamma, setFormValues],
@@ -102,7 +103,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
     const updatedFormValues = { ...formValues }
     updatedFormValues.collateral = collateral
     updatedFormValues.collateralError = ''
-    updateFormValues(updatedFormValues)
+    updateFormValues(updatedFormValues).catch(errorFallback)
   }
 
   const onCollateralChanged = useCallback(
@@ -110,7 +111,7 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       const { formStatus, formValues } = useStore.getState().loanCollateralIncrease
       if (formValues.collateral === (val ?? '')) return
       reset(!!formStatus.error, formStatus.isComplete)
-      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' })
+      updateFormValues({ ...formValues, collateral: val ?? '', collateralError: '' }).catch(errorFallback)
     },
     [reset, updateFormValues],
   )
@@ -345,9 +346,10 @@ const CollateralIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
       <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
         {formStatus.error ? (
           <AlertFormError errorKey={formStatus.error} handleBtnClose={() => reset(true, false)} />
-        ) : detailInfo.healthNotFull !== healthMode.percent && healthMode.message ? (
-          <AlertBox alertType="warning">{healthMode.message}</AlertBox>
-        ) : null}
+        ) : (
+          detailInfo.healthNotFull !== healthMode.percent &&
+          healthMode.message && <AlertBox alertType="warning">{healthMode.message}</AlertBox>
+        )}
         {txInfoBar}
         {steps && <Stepper steps={steps} />}
       </LoanFormConnect>

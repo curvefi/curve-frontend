@@ -8,12 +8,13 @@ import type { TheadSortButtonProps } from '@ui/Table/TheadSortButton'
 import IconTooltip from '@ui/Tooltip/TooltipIcon'
 import { breakpoints } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 const TableHead = ({ tableLabel }: { tableLabel: TableLabel }) => {
   const { isLite, isLoading, formValues, updateFormValues } = useDashboardContext()
 
   const handleBtnClickSort = (sortBy: string, sortByOrder: Order) => {
-    updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder: sortByOrder as Order })
+    updateFormValues({ sortBy: sortBy as SORT_ID, sortByOrder: sortByOrder as Order }).catch(errorFallback)
   }
 
   const props: Omit<TheadSortButtonProps<SortId>, 'sortIdKey'> = {

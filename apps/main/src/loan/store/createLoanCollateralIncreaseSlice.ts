@@ -13,6 +13,7 @@ import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { errorFallback } from '@ui-kit/utils/error.util'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
 type StateKey = keyof typeof DEFAULT_STATE
@@ -133,8 +134,10 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
 
       // fetch detail, approval, est gas, set loading
       if (haveCollateral) {
-        void get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues)
-        void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues)
+        Promise.all([
+          get()[sliceKey].fetchDetailInfo(activeKey, chainId, llamma, cFormValues),
+          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, cFormValues),
+        ]).catch(errorFallback)
       } else {
         get()[sliceKey].setStateByActiveKey('detailInfo', activeKey, DEFAULT_DETAIL_INFO)
         get()[sliceKey].setStateByActiveKey('formEstGas', activeKey, DEFAULT_FORM_EST_GAS)
@@ -165,7 +168,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
         })
 
         if (!resp.error) {
-          void get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues)
+          get()[sliceKey].fetchEstGasApproval(activeKey, chainId, llamma, formValues).catch(errorFallback)
         }
         return resp
       }
@@ -183,7 +186,9 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
       // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash).catch(
+        errorFallback,
+      )
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info
         const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)

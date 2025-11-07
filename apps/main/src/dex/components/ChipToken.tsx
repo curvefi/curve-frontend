@@ -8,6 +8,7 @@ import Spinner from '@ui/Spinner'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { fetchTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { copyToClipboard, shortenAddress } from '@ui-kit/utils'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 interface ButtonProps extends AriaButtonProps {
   className?: string
@@ -52,7 +53,7 @@ const ChipToken = ({ className, isHighlight, tokenName, tokenAddress, ...props }
 
   const handleMouseEnter = useCallback(() => {
     if (usdRate == null) {
-      void fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate)
+      fetchTokenUsdRate({ chainId, tokenAddress }).then(setUsdRate).catch(errorFallback)
     }
   }, [usdRate, chainId, tokenAddress])
 

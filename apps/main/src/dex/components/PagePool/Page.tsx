@@ -8,6 +8,7 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { errorFallback } from '@ui-kit/utils/error.util'
 
 export const PagePool = () => {
   const push = useNavigate()
@@ -35,12 +36,12 @@ export const PagePool = () => {
       return
     }
     if (!isHydrated && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
-      void (async () => {
+      ;(async () => {
         const foundPoolData = await fetchNewPool(curveApi, rPoolId)
         if (!foundPoolData) {
           push(reRoutePathname)
         }
-      })()
+      })().catch(errorFallback)
     }
   }, [curveApi, fetchNewPool, haveAllPools, network, isHydrated, props, poolData, push, rChainId])
 
