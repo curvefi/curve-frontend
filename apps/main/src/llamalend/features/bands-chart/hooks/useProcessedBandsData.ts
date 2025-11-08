@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import type { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
+import type { ChartDataPoint, FetchedBandsBalances } from '@/llamalend/features/bands-chart/types'
 
 type ProcessedBandsData = {
-  marketBandsBalances: ParsedBandsBalances[] | undefined
-  userBandsBalances: ParsedBandsBalances[] | undefined
+  marketBandsBalances: FetchedBandsBalances[] | undefined
+  userBandsBalances: FetchedBandsBalances[] | undefined
   oraclePriceBand: number | null | undefined
   collateralUsdRate: number | null | undefined
   borrowedUsdRate: number | null | undefined
@@ -24,7 +24,7 @@ export const useProcessedBandsData = ({
     const hasCollateralRate = typeof collateralUsdRate === 'number' && Number.isFinite(collateralUsdRate)
     const hasBorrowedRate = typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate)
 
-    const getBandValues = (band: ParsedBandsBalances) => {
+    const getBandValues = (band: FetchedBandsBalances) => {
       const collateralAmount = Number(band.collateral ?? 0)
       const borrowedAmount = Number(band.borrowed ?? 0)
 
@@ -34,11 +34,11 @@ export const useProcessedBandsData = ({
       return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
     }
 
-    const marketTuples: [string, ChartDataPoint][] = marketBands.map((band) => {
+    const marketTuples: [number, ChartDataPoint][] = marketBands.map((band) => {
       const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
 
       return [
-        String(band.n),
+        band.n,
         {
           n: Number(band.n),
           pUpDownMedian: Number(band.pUpDownMedian),
@@ -58,10 +58,10 @@ export const useProcessedBandsData = ({
       ]
     })
 
-    const bandsMap = new Map<string, ChartDataPoint>(marketTuples)
+    const bandsMap = new Map<number, ChartDataPoint>(marketTuples)
 
     userBands.forEach((band) => {
-      const key = String(band.n)
+      const key = band.n
       const existing = bandsMap.get(key)
       const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
 

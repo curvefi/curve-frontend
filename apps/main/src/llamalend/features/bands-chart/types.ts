@@ -49,16 +49,18 @@ export type DerivedChartData = {
 export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 
-// Parsed bands balance type used in chart data
-export type ParsedBandsBalances = {
+export type FetchedBandsBalances = {
   borrowed: string
   collateral: string
-  collateralUsd: string
-  collateralBorrowedUsd: number
   isLiquidationBand: string
-  isOraclePriceBand: boolean
-  n: number | string
-  p_up: string | number
-  p_down: string | number
-  pUpDownMedian: string
+  n: number
+  p_up: number
+  p_down: number
+  pUpDownMedian: number
+}
+
+export type ParsedBandsBalances = FetchedBandsBalances & {
+  borrowedValueUsd: number
+  collateralValueUsd: number
+  totalBandValueUsd: number
 }

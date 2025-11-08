@@ -2,6 +2,7 @@ import { useAccount } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
 import { useMarketUserBandsBalances } from '@/llamalend/features/bands-chart/queries/market-user-bands-balances.query'
+import { parseFetchedBandsBalances } from '@/llamalend/features/bands-chart/queries/utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import { useMarketLiquidationBand } from '@/llamalend/queries/market-liquidation-band.query'
 import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
@@ -60,9 +61,11 @@ export const useBandsData = ({
     marketId: llammaId,
   })
 
+  const parsedUserBandsBalances = parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate)
+
   const chartData = useProcessedBandsData({
-    marketBandsBalances: marketBandsBalances,
-    userBandsBalances: userBandsBalances,
+    marketBandsBalances: parseFetchedBandsBalances(marketBandsBalances, collateralUsdRate, borrowedUsdRate),
+    userBandsBalances: parsedUserBandsBalances,
     oraclePriceBand,
     collateralUsdRate: collateralUsdRate ?? null,
     borrowedUsdRate: borrowedUsdRate ?? null,
@@ -83,7 +86,7 @@ export const useBandsData = ({
     isLoading,
     isError,
     chartData,
-    userBandsBalances,
+    userBandsBalances: parsedUserBandsBalances,
     oraclePrice,
   }
 }

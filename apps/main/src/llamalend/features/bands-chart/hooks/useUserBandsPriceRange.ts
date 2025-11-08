@@ -19,7 +19,7 @@ export const useUserBandsPriceRange = (
   useMemo(() => {
     if (userBandsBalances.length === 0) return null
 
-    const userBandNumbers = new Set(userBandsBalances.map((band) => Number(band.n)))
+    const userBandNumbers = new Set(userBandsBalances.map((band) => band.n))
     const userBands = chartData.filter((d) => userBandNumbers.has(d.n))
 
     if (userBands.length === 0) return null

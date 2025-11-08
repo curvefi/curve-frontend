@@ -28,7 +28,7 @@ export const useInitialZoomIndices = (
     }
 
     // Find indices of user's bands
-    const userBandNumbers = new Set(userBandsBalances.map((b) => Number(b.n)))
+    const userBandNumbers = new Set(userBandsBalances.map((b) => b.n))
     const userIndices = chartData.map((d, i) => (userBandNumbers.has(d.n) ? i : -1)).filter((i) => i !== -1)
 
     if (userIndices.length === 0) {

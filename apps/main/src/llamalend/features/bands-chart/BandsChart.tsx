@@ -6,7 +6,6 @@ import { Token } from '@/llamalend/features/borrow/types'
 import { Box, Stack } from '@mui/material'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { Slider } from '@ui-kit/shared/ui/Slider'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -15,8 +14,6 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
-
-const { Spacing } = SizesAndSpaces
 
 type BandsChartProps = {
   collateralToken?: Token

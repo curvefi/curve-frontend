@@ -1,50 +1,62 @@
 import lodash from 'lodash'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
+import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
-import type { BandsBalances, BandsBalancesArr, ParsedBandsBalances } from '../types'
+import type { BandsBalances, BandsBalancesArr, FetchedBandsBalances, ParsedBandsBalances } from '../types'
 
 export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
-  market: LendMarketTemplate | MintMarketTemplate,
+  market: LlamaMarketTemplate,
   isMarket: boolean,
 ) {
   // filter out bands that doesn't have borrowed or collaterals
-  const ns = isMarket
-    ? bandsBalancesArr
-        .filter((b) => {
+  const ns = (
+    isMarket
+      ? bandsBalancesArr.filter((b) => {
           const { borrowed, collateral } = bandsBalances[b.band] ?? {}
           return +borrowed > 0 || +collateral > 0
         })
-        .map((b) => b.band)
-    : bandsBalancesArr.map((b) => b.band)
+      : bandsBalancesArr
+  ).map((b) => b.band)
 
-  // TODO: handle errors
-  const { results } = await PromisePool.for(ns).process(async (n) => {
+  const { results }: { results: FetchedBandsBalances[] } = await PromisePool.for(ns).process(async (n) => {
     const { collateral, borrowed } = bandsBalances[n]
     const [p_up, p_down] = await market.calcBandPrices(+n)
-    const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
     const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toString()
-    const collateralUsd = new BN(collateral).multipliedBy(sqrt)
 
     return {
       borrowed,
       collateral,
-      collateralUsd: collateralUsd.toString(),
-      collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
       isOraclePriceBand: false, // update this with detail info oracle price
-      n: n.toString(),
-      p_up,
-      p_down,
-      pUpDownMedian,
-    } as ParsedBandsBalances
+      n: n,
+      p_up: Number(p_up),
+      p_down: Number(p_down),
+      pUpDownMedian: Number(pUpDownMedian),
+    }
   })
 
   return results.reverse()
 }
+
+export const parseFetchedBandsBalances = (
+  bandsBalances: FetchedBandsBalances[] | undefined,
+  collateralUsdRate: number | undefined,
+  borrowedUsdRate: number | undefined,
+): ParsedBandsBalances[] =>
+  bandsBalances?.map((band) => {
+    const collateralValueUsd = Number(band.collateral) * (collateralUsdRate ?? 0)
+    const borrowedValueUsd = Number(band.borrowed) * (borrowedUsdRate ?? 0)
+
+    return {
+      ...band,
+      collateralValueUsd,
+      borrowedValueUsd,
+      totalBandValueUsd: collateralValueUsd + borrowedValueUsd,
+      isOraclePriceBand: false, // update this with detail info oracle price
+    }
+  }) ?? []
 
 export const sortBands = (bandsBalances: BandsBalances) => ({
   bandsBalancesArr: lodash
