@@ -212,7 +212,6 @@ export type UserLoss = {
   loss_pct: string
 }
 export type UserLoanState = { collateral: string; borrowed: string; debt: string; N: string; error: string }
-export type UsersLoansStatesMapper = { [userActiveKey: string]: UserLoanState }
 export type UserLoanDetails = {
   details: {
     health: string
