@@ -9,7 +9,6 @@ import {
   UserLoanState,
   UserMarketBalances,
   UsersLoansDetailsMapper,
-  UsersLoansHealthsMapper,
   UsersLoansStatesMapper,
   UsersMarketsBalancesMapper,
 } from '@/lend/types/lend.types'
@@ -24,7 +23,6 @@ type SliceState = {
   marketsBalancesMapper: UsersMarketsBalancesMapper
 
   // for market list
-  loansHealthsMapper: UsersLoansHealthsMapper
   loansStatesMapper: UsersLoansStatesMapper
 }
 
@@ -56,7 +54,6 @@ const DEFAULT_STATE: SliceState = {
   marketsBalancesMapper: {},
 
   // for market list
-  loansHealthsMapper: {},
   loansStatesMapper: {},
 }
 
@@ -95,7 +92,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
 
       const fnMapper = {
         loansDetailsMapper: apiLending.user.fetchLoansDetails,
-        loansHealthsMapper: apiLending.user.fetchLoansDetailsHealth,
         loansStatesMapper: apiLending.user.fetchLoansDetailsState,
         marketsBalancesMapper: apiLending.user.fetchMarketBalances,
       }
