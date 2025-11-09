@@ -25,11 +25,11 @@ export const useProcessedBandsData = ({
     const hasBorrowedRate = typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate)
 
     const getBandValues = (band: FetchedBandsBalances) => {
-      const collateralAmount = Number(band.collateral ?? 0)
-      const borrowedAmount = Number(band.borrowed ?? 0)
+      const collateralAmount = Number(band.collateral)
+      const borrowedAmount = Number(band.borrowed)
 
-      const collateralValueUsd = hasCollateralRate ? collateralAmount * (collateralUsdRate as number) : undefined
-      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * (borrowedUsdRate as number) : undefined
+      const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : undefined
+      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * borrowedUsdRate : undefined
 
       return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
     }

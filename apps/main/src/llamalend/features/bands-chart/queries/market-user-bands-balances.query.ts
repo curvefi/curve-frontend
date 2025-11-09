@@ -1,10 +1,10 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model'
+import type { UserMarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { loanExistsValidationGroup } from '@ui-kit/lib/model/query/loan-exists-validation'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
 import type { BandsBalances } from '../types'
 import { sortBands, fetchChartBandBalancesData } from './utils'
 import { liquidationBandValidationGroup } from './validation'
@@ -15,10 +15,7 @@ type MarketUserBandsBalancesQuery = UserMarketQuery & {
   loanExists: boolean
   liquidationBand: number
 }
-type MarketUserBandsBalancesParams = UserMarketParams & {
-  loanExists: boolean | undefined | null
-  liquidationBand: number | null | undefined
-}
+type MarketUserBandsBalancesParams = FieldsOf<MarketUserBandsBalancesQuery>
 
 const marketUserBandsBalancesValidationSuite = createValidationSuite((params: MarketUserBandsBalancesParams) => {
   userMarketValidationSuite(params)

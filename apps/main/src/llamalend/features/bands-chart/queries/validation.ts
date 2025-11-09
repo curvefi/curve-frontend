@@ -1,6 +1,6 @@
 import { enforce, group, test } from 'vest'
 
-export const liquidationBandValidationGroup = ({ liquidationBand }: { liquidationBand: number | null | undefined }) =>
+export const liquidationBandValidationGroup = ({ liquidationBand }: { liquidationBand?: number | null | undefined }) =>
   group('liquidationBandValidation', () => {
     test('liquidationBand', () => {
       if (liquidationBand != null) {

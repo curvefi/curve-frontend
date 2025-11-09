@@ -4,8 +4,7 @@ import { type MarketQuery, queryFactory, rootKeys, MarketParams } from '@ui-kit/
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 
 export const { useQuery: useMarketLiquidationBand } = queryFactory({
-  queryKey: ({ chainId, marketId }: MarketParams) =>
-    [...rootKeys.market({ chainId, marketId }), 'liquidationBand'] as const,
+  queryKey: (params: MarketParams) => [...rootKeys.market(params), 'market-liquidation-band'] as const,
   queryFn: async ({ marketId }: MarketQuery): Promise<number | null> => {
     const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {

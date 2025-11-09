@@ -1,20 +1,18 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { MarketQuery, MarketParams } from '@ui-kit/lib/model'
+import type { MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
-import { createValidationSuite } from '@ui-kit/lib/validation'
+import { createValidationSuite, FieldsOf } from '@ui-kit/lib/validation'
 import { sortBands, fetchChartBandBalancesData } from './utils'
 import { liquidationBandValidationGroup } from './validation'
 
 const isMarket = true
 
-type MarketBandsBalancesParams = MarketParams & {
-  liquidationBand: number | null | undefined
-}
 type MarketBandsBalancesQuery = MarketQuery & {
   liquidationBand: number
 }
+type MarketBandsBalancesParams = FieldsOf<MarketBandsBalancesQuery>
 
 export const marketBandsBalancesValidationSuite = createValidationSuite((params: MarketBandsBalancesParams) => {
   marketIdValidationSuite(params)

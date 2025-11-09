@@ -17,12 +17,12 @@ export const useUserBandsPriceRange = (
   userBandsBalances: ParsedBandsBalances[],
 ): UserBandsPriceRange =>
   useMemo(() => {
-    if (userBandsBalances.length === 0) return null
+    if (!userBandsBalances.length) return null
 
     const userBandNumbers = new Set(userBandsBalances.map((band) => band.n))
     const userBands = chartData.filter((d) => userBandNumbers.has(d.n))
 
-    if (userBands.length === 0) return null
+    if (!userBands.length) return null
 
     const minBand = userBands[userBands.length - 1]
     const maxBand = userBands[0]

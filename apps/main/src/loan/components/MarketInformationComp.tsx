@@ -8,18 +8,17 @@ import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
 import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
-import { getLib } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
-import { useReleaseChannel } from '@ui-kit/hooks/useLocalStorage'
+import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { ReleaseChannel } from '@ui-kit/utils'
 
 const { Spacing } = SizesAndSpaces
 
 type MarketInformationCompProps = {
   llamma: Llamma | null
-  llammaId: string
+  marketId: string
   chainId: ChainId
   chartExpanded: boolean
   page?: 'create' | 'manage'
@@ -32,15 +31,14 @@ const EMPTY_BANDS_BALANCES: never[] = []
  */
 export const MarketInformationComp = ({
   llamma,
-  llammaId,
+  marketId,
   chainId,
   chartExpanded,
   page = 'manage',
 }: MarketInformationCompProps) => {
-  const api = getLib('llamaApi')
+  const { llamaApi: api } = useConnection()
   const theme = useTheme()
-  const [releaseChannel] = useReleaseChannel()
-  const isBeta = releaseChannel === ReleaseChannel.Beta
+  const newBandsChartEnabled = useNewBandsChart()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const collateralTokenAddress = llamma?.coinAddresses[1]
   const borrowedTokenAddress = llamma?.coinAddresses[0]
@@ -52,7 +50,7 @@ export const MarketInformationComp = ({
     isError: isBandsError,
   } = useBandsData({
     chainId,
-    llammaId,
+    marketId,
     api,
     collateralTokenAddress,
     borrowedTokenAddress,
@@ -78,17 +76,17 @@ export const MarketInformationComp = ({
     <>
       {!chartExpanded && (
         <Stack
-          display={{ mobile: 'block', tablet: isBeta ? 'grid' : undefined }}
-          gridTemplateColumns={{ tablet: isBeta ? '1fr 0.5fr' : undefined }}
+          display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.5fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
             rChainId={chainId}
-            llammaId={llammaId}
+            llammaId={marketId}
             llamma={llamma}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          {isBeta && (
+          {newBandsChartEnabled && (
             <BandsChart
               isLoading={isBandsLoading}
               isError={isBandsError}
@@ -101,9 +99,9 @@ export const MarketInformationComp = ({
           )}
         </Stack>
       )}
-      {isAdvancedMode && !isBeta && (
+      {isAdvancedMode && !newBandsChartEnabled && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <BandsComp llamma={llamma} llammaId={llammaId} page={page} />
+          <BandsComp llamma={llamma} llammaId={marketId} page={page} />
         </Stack>
       )}
       {llamma && isAdvancedMode && (
@@ -134,7 +132,7 @@ export const MarketInformationComp = ({
           </Stack>
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
             <SubTitle>{t`Loan Parameters`}</SubTitle>
-            <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
+            <LoanInfoParameters llamma={llamma} llammaId={marketId} />
           </Stack>
         </Stack>
       )}

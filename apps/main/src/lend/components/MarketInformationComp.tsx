@@ -44,7 +44,7 @@ export const MarketInformationComp = ({
   const api = getLib('llamaApi')
   const theme = useTheme()
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-  const useNewBandsChartEnabled = useNewBandsChart()
+  const newBandsChartEnabled = useNewBandsChart()
   const {
     chartData,
     userBandsBalances,
@@ -53,7 +53,7 @@ export const MarketInformationComp = ({
     isError: isBandsError,
   } = useBandsData({
     chainId: rChainId,
-    llammaId: rOwmId,
+    marketId: rOwmId,
     api,
     collateralTokenAddress,
     borrowedTokenAddress,
@@ -79,8 +79,8 @@ export const MarketInformationComp = ({
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
         <Stack
-          display={{ mobile: 'block', tablet: useNewBandsChartEnabled ? 'grid' : undefined }}
-          gridTemplateColumns={{ tablet: useNewBandsChartEnabled ? '1fr 0.3fr' : undefined }}
+          display={{ mobile: 'block', tablet: newBandsChartEnabled ? 'grid' : undefined }}
+          gridTemplateColumns={{ tablet: newBandsChartEnabled ? '1fr 0.3fr' : undefined }}
           sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}
         >
           <ChartOhlcWrapper
@@ -89,7 +89,7 @@ export const MarketInformationComp = ({
             userActiveKey={userActiveKey}
             betaBackgroundColor={theme.design.Layer[1].Fill}
           />
-          {useNewBandsChartEnabled && (
+          {newBandsChartEnabled && (
             <BandsChart
               isLoading={isBandsLoading}
               isError={isBandsError}
@@ -102,7 +102,7 @@ export const MarketInformationComp = ({
           )}
         </Stack>
       )}
-      {type === 'borrow' && !useNewBandsChartEnabled && isAdvancedMode && (
+      {type === 'borrow' && !newBandsChartEnabled && isAdvancedMode && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
           <BandsComp pageProps={pageProps} page={page} loanExists={loanExists} />
         </Stack>

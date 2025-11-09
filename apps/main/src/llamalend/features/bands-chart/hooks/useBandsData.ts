@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useProcessedBandsData } from '@/llamalend/features/bands-chart/hooks/useProcessedBandsData'
 import { useMarketBandsBalances } from '@/llamalend/features/bands-chart/queries/market-bands-balances.query'
@@ -13,13 +14,13 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 
 export const useBandsData = ({
   chainId,
-  llammaId,
+  marketId,
   api,
   collateralTokenAddress,
   borrowedTokenAddress,
 }: {
   chainId: IChainId
-  llammaId: string
+  marketId: string
   api: LlamaApi | undefined | null
   collateralTokenAddress: string | undefined
   borrowedTokenAddress: string | undefined
@@ -29,16 +30,16 @@ export const useBandsData = ({
   const { data: borrowedUsdRate } = useTokenUsdRate({ chainId, tokenAddress: borrowedTokenAddress })
   const { data: loanExists, isLoading: isLoanExistsLoading } = useLoanExists({
     chainId,
-    marketId: llammaId,
+    marketId,
     userAddress: userAddress,
   })
   const { data: liquidationBand, isLoading: isLiquidationBandLoading } = useMarketLiquidationBand({
     chainId,
-    marketId: llammaId,
+    marketId,
   })
   const { data: userBandsBalances, isLoading: isUserBandsBalancesLoading } = useMarketUserBandsBalances({
     chainId,
-    marketId: llammaId,
+    marketId,
     userAddress: userAddress,
     loanExists,
     liquidationBand,
@@ -49,20 +50,22 @@ export const useBandsData = ({
     isError: isMarketBandsBalancesError,
   } = useMarketBandsBalances({
     chainId,
-    marketId: llammaId,
+    marketId,
     liquidationBand,
   })
   const { data: oraclePriceBand, isLoading: isMarketOraclePriceBandLoading } = useMarketOraclePriceBand({
     chainId,
-    marketId: llammaId,
+    marketId,
   })
   const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice({
     chainId,
-    marketId: llammaId,
+    marketId,
   })
 
-  const parsedUserBandsBalances = parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate)
-
+  const parsedUserBandsBalances = useMemo(
+    () => parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate),
+    [userBandsBalances, collateralUsdRate, borrowedUsdRate],
+  )
   const chartData = useProcessedBandsData({
     marketBandsBalances: parseFetchedBandsBalances(marketBandsBalances, collateralUsdRate, borrowedUsdRate),
     userBandsBalances: parsedUserBandsBalances,
