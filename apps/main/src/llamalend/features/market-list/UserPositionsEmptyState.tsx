@@ -1,10 +1,10 @@
+import { PositionsEmptyState } from '@/llamalend/constants'
 import Button from '@mui/material/Button'
 import type { Table } from '@tanstack/react-table'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { MarketRateType } from '@ui-kit/types/market'
-import { PositionsEmptyState } from './columns.enum'
 
 type EmptyStateConfig = {
   title: string
