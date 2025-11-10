@@ -5,6 +5,7 @@ import { devtools, persist, type PersistOptions } from 'zustand/middleware'
 import type { ThemeKey } from '@ui-kit/themes/basic-theme'
 
 export const SMALL_POOL_TVL = 10000
+export const MIN_POOLS_DISPLAYED = 10
 
 export type UserProfileState = {
   theme: ThemeKey
