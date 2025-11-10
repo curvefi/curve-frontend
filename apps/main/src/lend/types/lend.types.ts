@@ -8,6 +8,7 @@ import type { BaseConfig } from '@ui/utils'
 import type { LlamaApi } from '@ui-kit/features/connect-wallet'
 
 export type { Wallet } from '@ui-kit/features/connect-wallet'
+export type { UserLoanDetails } from '@/lend/entities/user-loan-details.query'
 
 export type Api = LlamaApi
 export type AlertType = 'info' | 'warning' | 'error' | 'danger'
@@ -212,26 +213,6 @@ export type UserLoss = {
   loss_pct: string
 }
 export type UserLoanState = { collateral: string; borrowed: string; debt: string; N: string; error: string }
-export type UserLoanDetails = {
-  details: {
-    health: string
-    healthFull: string
-    healthNotFull: string
-    bands: number[]
-    bandsBalances: ParsedBandsBalances[]
-    bandsPct: string
-    isCloseToLiquidation: boolean
-    loss?: UserLoss
-    prices: string[]
-    range: number | null
-    state: { collateral: string; borrowed: string; debt: string; N: string }
-    status: { label: string; colorKey: HealthColorKey; tooltip: string }
-    leverage: string
-    pnl: Record<string, string>
-  } | null
-  error: string
-}
-export type UsersLoansDetailsMapper = { [userActiveKey: string]: UserLoanDetails }
 export type UserMarketBalances = {
   collateral: string
   borrowed: string

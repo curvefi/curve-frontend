@@ -1,10 +1,10 @@
 import lodash from 'lodash'
 import { ReactNode, useEffect, useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 import ChartBandBalances from '@/lend/components/ChartBandBalances'
 import type { BrushStartEndIndex } from '@/lend/components/ChartBandBalances/types'
 import { DEFAULT_BAND_CHART_DATA } from '@/lend/components/DetailsUser/utils'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
-import { helpers } from '@/lend/lib/apiLending'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import useStore from '@/lend/store/useStore'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { t } from '@ui-kit/lib/i18n'
@@ -12,22 +12,23 @@ import { t } from '@ui-kit/lib/i18n'
 const DetailsUserLoanChartBandBalances = ({
   rChainId,
   rOwmId,
-  api,
   market,
   selectorMenu,
-}: Pick<PageContentProps, 'api' | 'rChainId' | 'rOwmId' | 'market'> & {
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'market'> & {
   selectorMenu?: ReactNode
 }) => {
   const loansPrices = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const loansStatsBands = useStore((state) => state.markets.statsBandsMapper[rChainId]?.[rOwmId])
-  const userActiveKey = helpers.getUserActiveKey(api, market!)
 
   const [brushIndex, setBrushIndex] = useState<BrushStartEndIndex>({
     startIndex: undefined,
     endIndex: undefined,
   })
 
-  const { bandsBalances } = useUserLoanDetails(userActiveKey)
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { bandsBalances } = userLoanDetails ?? {}
+
   const { liquidationBand } = loansStatsBands?.bands ?? {}
   const { oraclePrice, oraclePriceBand } = loansPrices?.prices ?? {}
 

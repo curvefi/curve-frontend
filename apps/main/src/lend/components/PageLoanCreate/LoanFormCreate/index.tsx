@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
@@ -12,8 +13,8 @@ import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCrea
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -54,7 +55,6 @@ const LoanCreate = ({
   const formStatus = useStore((state) => state.loanCreate.formStatus)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const maxRecv = useStore((state) => state.loanCreate.maxRecv[activeKeyMax])
-  const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const refetchMaxRecv = useStore((state) => state.loanCreate.refetchMaxRecv)
   const fetchStepApprove = useStore((state) => state.loanCreate.fetchStepApprove)
@@ -62,6 +62,10 @@ const LoanCreate = ({
   const setStateByKeyMarkets = useStore((state) => state.markets.setStateByKey)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const resetState = useStore((state) => state.loanCreate.resetState)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { state: userState } = userLoanDetails ?? {}
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)

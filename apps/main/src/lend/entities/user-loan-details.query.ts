@@ -6,7 +6,8 @@ import {
   _sortBands,
   helpers,
 } from '@/lend/lib/apiLending'
-import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import { ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import { invalidateLoanExists } from '@/llamalend/queries/loan-exists'
 import type { Address } from '@curvefi/prices-api'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
@@ -17,7 +18,14 @@ import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-v
 type UserLoanDetailsQuery = UserMarketQuery<Address>
 type UserLoanDetailsParams = UserMarketParams<Address>
 
-type UserLoanDetails = {
+type UserLoss = {
+  deposited_collateral: string
+  current_collateral_estimation: string
+  loss: string
+  loss_pct: string
+}
+
+export type UserLoanDetails = {
   health: string
   healthFull: string
   healthNotFull: string
@@ -100,7 +108,8 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
   validationSuite: userMarketValidationSuite,
 })
 
-export const invalidateAllUserBorrowDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
-  invalidateUserMarketBalances({ chainId, marketId })
-  invalidateUserLoanDetails({ chainId, marketId })
+export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) => {
+  invalidateLoanExists(params)
+  invalidateUserMarketBalances(params)
+  invalidateUserLoanDetails(params)
 }

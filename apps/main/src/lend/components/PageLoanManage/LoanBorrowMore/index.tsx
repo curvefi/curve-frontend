@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
@@ -14,7 +15,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -57,12 +58,15 @@ const LoanBorrowMore = ({
   const formValues = useStore((state) => state.loanBorrowMore.formValues)
   const maxRecv = useStore((state) => state.loanBorrowMore.maxRecv[activeKeyMax])
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepApprove = useStore((state) => state.loanBorrowMore.fetchStepApprove)
   const fetchStepIncrease = useStore((state) => state.loanBorrowMore.fetchStepIncrease)
   const refetchMaxRecv = useStore((state) => state.loanBorrowMore.refetchMaxRecv)
   const setFormValues = useStore((state) => state.loanBorrowMore.setFormValues)
   const resetState = useStore((state) => state.loanBorrowMore.resetState)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { state: userState } = userLoanDetails ?? {}
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 

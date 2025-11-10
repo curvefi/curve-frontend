@@ -10,7 +10,7 @@ import type {
 import { _parseValue, DEFAULT_FORM_STATUS, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details.query'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'

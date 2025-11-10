@@ -9,7 +9,7 @@ import {
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details.query'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
@@ -291,8 +291,6 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
             void user.fetchAll(api, market, true)
           } else {
             void user.fetchUserMarketBalances(api, market, true)
-            const userActiveKey = getUserActiveKey(api, market)
-            user.setStateByActiveKey('loansDetailsMapper', userActiveKey, undefined)
           }
           void markets.fetchAll(api, market, true)
           invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })

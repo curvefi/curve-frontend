@@ -29,8 +29,6 @@ import {
   Provider,
   RewardCrv,
   RewardOther,
-  UserLoanDetails,
-  UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
@@ -314,85 +312,6 @@ const market = {
 }
 
 const user = {
-  fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchUsersLoansDetails', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserLoanDetails } = {}
-    const { signerAddress } = api
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        results[userActiveKey] = {
-          details: null,
-          error,
-        }
-      })
-      .process(async (market) => {
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
-          await Promise.all([
-            market.userState(),
-            market.userHealth(),
-            market.userHealth(false),
-            market.userRange(),
-            market.userBands(),
-            market.userPrices(),
-            market.userBandsBalances(),
-            market.oraclePriceBand(),
-            market.currentLeverage(signerAddress),
-            market.currentPnL(signerAddress),
-          ])
-
-        // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
-        let loss: UserLoss | undefined
-        try {
-          loss = await market.userLoss()
-        } catch (error) {
-          console.error('Failed to fetch user loss:', error)
-        }
-
-        const resp = await market.stats.bandsInfo()
-        const { liquidationBand } = resp ?? {}
-
-        const reversedUserBands = _reverseBands(bands)
-        const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
-          reversedUserBands[0],
-          liquidationBand,
-          oraclePriceBand,
-        )
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
-          liquidationBand,
-          market,
-          false,
-        )
-
-        results[userActiveKey] = {
-          details: {
-            state,
-            health: +healthNotFull < 0 ? healthNotFull : healthFull,
-            healthFull,
-            healthNotFull,
-            bands: reversedUserBands,
-            bandsBalances: parsedBandsBalances,
-            bandsPct: range ? await market.calcRangePct(range) : '0',
-            isCloseToLiquidation,
-            range,
-            prices,
-            loss,
-            leverage,
-            pnl,
-            status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
-          },
-          error: '',
-        }
-      })
-
-    return results
-  },
   fetchMarketBalances: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersMarketBalances', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserMarketBalances } = {}

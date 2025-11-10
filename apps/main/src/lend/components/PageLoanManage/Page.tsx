@@ -179,7 +179,7 @@ const Page = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+            <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -220,7 +220,6 @@ const Page = () => {
             <MarketInformationComp
               pageProps={pageProps}
               chartExpanded={chartExpanded}
-              userActiveKey={userActiveKey}
               type="borrow"
               loanExists={loanExists}
             />

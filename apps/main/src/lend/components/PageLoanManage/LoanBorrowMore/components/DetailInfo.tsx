@@ -15,9 +15,8 @@ const DetailInfo = ({
   activeStep,
   healthMode,
   steps,
-  userActiveKey,
   setHealthMode,
-}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market' | 'userActiveKey'> & {
+}: Pick<PageContentProps, 'rChainId' | 'rOwmId' | 'api' | 'market'> & {
   activeStep: number | null
   healthMode: HealthMode
   steps: Step[]
@@ -35,14 +34,7 @@ const DetailInfo = ({
   return (
     <>
       {isAdvancedMode && (
-        <DetailInfoLiqRange
-          isManage
-          rChainId={rChainId}
-          rOwmId={rOwmId}
-          {...detailInfo}
-          healthMode={healthMode}
-          userActiveKey={userActiveKey}
-        />
+        <DetailInfoLiqRange isManage rChainId={rChainId} rOwmId={rOwmId} {...detailInfo} healthMode={healthMode} />
       )}
 
       <DetailInfoHealth
@@ -53,7 +45,6 @@ const DetailInfo = ({
         amount={formValues.debt}
         formType=""
         healthMode={healthMode}
-        userActiveKey={userActiveKey}
         setHealthMode={setHealthMode}
       />
       <DetailInfoRate isBorrow rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />

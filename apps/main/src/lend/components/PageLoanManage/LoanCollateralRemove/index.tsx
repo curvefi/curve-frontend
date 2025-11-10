@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
@@ -13,7 +14,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import { DEFAULT_FORM_VALUES } from '@/lend/store/createLoanCollateralRemoveSlice'
@@ -41,10 +42,13 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
   const formValues = useStore((state) => state.loanCollateralRemove.formValues)
   const maxRemovable = useStore((state) => state.loanCollateralRemove.maxRemovable)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
-  const { state: userState } = useUserLoanDetails(userActiveKey)
   const fetchStepDecrease = useStore((state) => state.loanCollateralRemove.fetchStepDecrease)
   const setFormValues = useStore((state) => state.loanCollateralRemove.setFormValues)
   const resetState = useStore((state) => state.loanCollateralRemove.resetState)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { state: userState } = userLoanDetails ?? {}
 
   const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
 
@@ -244,14 +248,7 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
       {/* detail info */}
       <StyledDetailInfoWrapper>
         {isAdvancedMode && (
-          <DetailInfoLiqRange
-            isManage
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            {...detailInfo}
-            healthMode={healthMode}
-            userActiveKey={userActiveKey}
-          />
+          <DetailInfoLiqRange isManage rChainId={rChainId} rOwmId={rOwmId} {...detailInfo} healthMode={healthMode} />
         )}
         <DetailInfoHealth
           isManage
@@ -261,7 +258,6 @@ const LoanCollateralRemove = ({ rChainId, rOwmId, isLoaded, api, market, userAct
           amount={formValues.collateral}
           healthMode={healthMode}
           formType="collateral-decrease"
-          userActiveKey={userActiveKey}
           setHealthMode={setHealthMode}
         />
         <DetailInfoEstimateGas

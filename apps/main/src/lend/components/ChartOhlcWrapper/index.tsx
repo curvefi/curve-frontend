@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
 import PoolActivity from '@/lend/components/ChartOhlcWrapper/PoolActivity'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import useStore from '@/lend/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -17,7 +18,7 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { ChartOhlcWrapperProps, LendingMarketTokens } from './types'
 
-const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
+const ChartOhlcWrapper = ({ rChainId, rOwmId, betaBackgroundColor }: ChartOhlcWrapperProps) => {
   const market = useOneWayMarket(rChainId, rOwmId).data
   const borrowMoreActiveKey = useStore((state) => state.loanBorrowMore.activeKey)
   const loanRepayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -27,7 +28,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
   const loanCreateLeverageDetailInfo = useStore((state) => state.loanCreate.detailInfoLeverage[activeKey])
-  const userPrices = useUserLoanDetails(userActiveKey)?.prices ?? null
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const borrowMorePrices = useStore((state) => state.loanBorrowMore.detailInfo[borrowMoreActiveKey]?.prices ?? null)
   const repayActiveKey = useStore((state) => state.loanRepay.activeKey)
@@ -58,6 +58,10 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   const liqRangeNewVisible = useStore((state) => state.ohlcCharts.liqRangeNewVisible)
   const oraclePriceVisible = useStore((state) => state.ohlcCharts.oraclePriceVisible)
   const priceInfo = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId]?.prices ?? null)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { prices: userPrices } = userLoanDetails ?? {}
 
   const { oraclePrice } = priceInfo ?? {}
   const [poolInfo, setPoolInfo] = useState<'chart' | 'poolActivity'>('chart')

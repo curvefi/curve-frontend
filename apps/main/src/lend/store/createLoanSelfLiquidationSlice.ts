@@ -4,11 +4,11 @@ import type { FormStatus } from '@/lend/components/PageLoanManage/LoanSelfLiquid
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS, DEFAULT_FORM_STATUS as FORM_STATUS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details.query'
 import apiLending from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, FormWarning, FutureRates, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, FormWarning, FutureRates, OneWayMarketTemplate, type UserLoanState } from '@/lend/types/lend.types'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
@@ -78,13 +78,19 @@ const createLoanSelfLiquidationSlice = (
       // loading
       sliceState.setStateByKey('formStatus', { ...formStatus, loading: true })
 
-      const { userLoanDetailsResp, userLoanBalancesResp } = await user.fetchAll(api, market, true)
+      const { userLoanBalancesResp } = await user.fetchAll(api, market, true)
+      let state: UserLoanState
+      try {
+        state = { ...(await market.userState()), error: '' }
+      } catch (error) {
+        state = { collateral: '', borrowed: '', debt: '', N: '', error }
+      }
 
       const borrowedTokenDecimals = market.borrowed_token.decimals
 
-      if (userLoanDetailsResp && userLoanBalancesResp) {
+      if (!state.error && userLoanBalancesResp) {
         const walletBorrowed = userLoanBalancesResp.borrowed
-        const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userLoanDetailsResp.details?.state ?? {}
+        const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = state ?? {}
 
         const resp = await loanSelfLiquidation.detailInfo(api, market, maxSlippage)
         const { tokensToLiquidate, futureRates } = resp

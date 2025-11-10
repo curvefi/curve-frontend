@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useMarketOnChainRates } from '@/lend/entities/market-details'
-import { useUserLoanDetails } from '@/lend/entities/user-loan-details'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'

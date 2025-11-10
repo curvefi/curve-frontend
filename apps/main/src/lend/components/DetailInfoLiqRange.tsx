@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
 import type { LiqRangeSliderIdx } from '@/lend/store/types'
 import useStore from '@/lend/store/useStore'
 import { ChainId, HealthMode } from '@/lend/types/lend.types'
@@ -10,7 +11,7 @@ import Icon from '@ui/Icon'
 import { Chip } from '@ui/Typography'
 import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
-import { useUserLoanDetails } from '../hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '../entities/user-loan-details.query'
 
 const DetailInfoLiqRange = ({
   rChainId,
@@ -25,7 +26,6 @@ const DetailInfoLiqRange = ({
   loading,
   prices: newPrices,
   selectedLiqRange,
-  userActiveKey,
   handleLiqRangesEdit,
 }: {
   rChainId: ChainId
@@ -40,10 +40,12 @@ const DetailInfoLiqRange = ({
   loading: boolean
   prices: string[]
   selectedLiqRange?: LiqRangeSliderIdx
-  userActiveKey: string
   handleLiqRangesEdit?: () => void
 }) => {
-  const { prices: currPrices, bands: currBands } = useUserLoanDetails(userActiveKey)
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { prices: currPrices, bands: currBands } = userLoanDetails ?? {}
+
   const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
   const { prices: loanPrices } = loanPricesResp ?? {}
   const { parsedNewBands, parsedNewPrices } = useMemo(

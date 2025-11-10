@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
 import AlertNoLoanFound from '@/lend/components/AlertNoLoanFound'
@@ -12,7 +13,7 @@ import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -63,13 +64,15 @@ const LoanRepay = ({
   const formEstGas = useStore((state) => state.loanRepay.formEstGas[activeKey])
   const formStatus = useStore((state) => state.loanRepay.formStatus)
   const formValues = useStore((state) => state.loanRepay.formValues)
-  const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchStepApprove = useStore((state) => state.loanRepay.fetchStepApprove)
   const fetchStepRepay = useStore((state) => state.loanRepay.fetchStepRepay)
-  const fetchAllUserDetails = useStore((state) => state.user.fetchAll)
   const setFormValues = useStore((state) => state.loanRepay.setFormValues)
   const resetState = useStore((state) => state.loanRepay.resetState)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { state: userState } = userLoanDetails ?? {}
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
@@ -459,10 +462,7 @@ const LoanRepay = ({
               }
 
               if (api && market && userBalances && userState?.debt && borrowedTokenDecimals) {
-                const { userLoanDetailsResp } = await fetchAllUserDetails(api, market, true)
-                const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } =
-                  userLoanDetailsResp?.details?.state ?? {}
-
+                const { borrowed: stateBorrowed = '0', debt: stateDebt = '0' } = userState ?? {}
                 const amountNeeded = sum([stateDebt, stateBorrowed], borrowedTokenDecimals)
                 const amountNeededWithInterestRate = amountNeeded + getPercentage(amountNeeded, 1n)
 

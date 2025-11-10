@@ -19,7 +19,6 @@ const DetailInfoNonLeverage = ({
   isLoaded,
   market,
   steps,
-  userActiveKey,
   handleSelLiqRange,
   selectedLiqRange,
   setHealthMode,
@@ -51,7 +50,6 @@ const DetailInfoNonLeverage = ({
             healthMode={signerAddress ? healthMode : null}
             isEditLiqRange={isEditLiqRange}
             selectedLiqRange={selectedLiqRange}
-            userActiveKey={userActiveKey}
             handleLiqRangesEdit={handleLiqRangesEdit}
           />
           <DetailInfoN isLoaded={isLoaded} n={formValues.n} />
@@ -75,7 +73,6 @@ const DetailInfoNonLeverage = ({
         formType="create-loan"
         healthMode={healthMode}
         setHealthMode={setHealthMode}
-        userActiveKey={userActiveKey}
       />
       <DetailInfoRate isBorrow={true} rChainId={rChainId} rOwmId={rOwmId} futureRates={detailInfo?.futureRates} />
       {isAdvancedMode && (

@@ -13,11 +13,11 @@ import {
 import type { FormDetailInfo, FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/lend/components/PageLoanManage/utils'
 import { invalidateMarketDetails } from '@/lend/entities/market-details'
-import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
+import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details.query'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
-import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { Api, ChainId, OneWayMarketTemplate, type UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import { Chain } from '@curvefi/prices-api'
@@ -218,10 +218,12 @@ const createLoanBorrowMore = (
 
       // validation - if in soft-liquidation mode, user cannot add more collateral
       if (signerAddress && +cFormValues.userCollateral > 0) {
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        const state = await user.loansDetailsMapper[userActiveKey]?.details?.state
-
-        if (!state) return
+        let state: UserLoanState
+        try {
+          state = { ...(await market.userState()), error: '' }
+        } catch (error) {
+          state = { collateral: '', borrowed: '', debt: '', N: '', error }
+        }
 
         const isInSoftLiquidationMode = +state.borrowed > 0
         if (isInSoftLiquidationMode) {

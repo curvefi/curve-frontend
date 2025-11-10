@@ -158,7 +158,7 @@ const Page = () => {
             </ExpandButton>
           </Box>
           <PriceAndTradesExpandedWrapper variant="secondary">
-            <ChartOhlcWrapper rChainId={rChainId} userActiveKey={userActiveKey} rOwmId={rOwmId} />
+            <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} />
           </PriceAndTradesExpandedWrapper>
         </PriceAndTradesExpandedContainer>
       )}
@@ -186,13 +186,7 @@ const Page = () => {
           </MarketInformationTabs>
           <Stack>
             <MarketDetails {...marketDetails} />
-            <MarketInformationComp
-              pageProps={pageProps}
-              chartExpanded={chartExpanded}
-              userActiveKey={userActiveKey}
-              type="borrow"
-              page="create"
-            />
+            <MarketInformationComp pageProps={pageProps} chartExpanded={chartExpanded} type="borrow" page="create" />
           </Stack>
         </Stack>
       </DetailPageStack>

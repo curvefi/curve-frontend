@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertFormWarning from '@/lend/components/AlertFormWarning'
 import AlertSummary from '@/lend/components/AlertLoanSummary'
@@ -11,7 +12,7 @@ import LoanFormConnect from '@/lend/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/lend/components/PageLoanManage/LoanSelfLiquidation/types'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
 import { NOFITY_MESSAGE } from '@/lend/constants'
-import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/lend/entities/user-loan-details.query'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
@@ -51,12 +52,15 @@ const LoanSelfLiquidation = ({
   const formStatus = useStore((state) => state.loanSelfLiquidation.formStatus)
   const futureRates = useStore((state) => state.loanSelfLiquidation.futureRates)
   const liquidationAmt = useStore((state) => state.loanSelfLiquidation.liquidationAmt)
-  const { state: userState } = useUserLoanDetails(userActiveKey)
   const userBalances = useStore((state) => state.user.marketsBalancesMapper[userActiveKey])
   const fetchDetails = useStore((state) => state.loanSelfLiquidation.fetchDetails)
   const fetchStepApprove = useStore((state) => state.loanSelfLiquidation.fetchStepApprove)
   const fetchStepLiquidate = useStore((state) => state.loanSelfLiquidation.fetchStepLiquidate)
   const resetState = useStore((state) => state.loanSelfLiquidation.resetState)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: rOwmId, userAddress })
+  const { state: userState } = userLoanDetails ?? {}
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 

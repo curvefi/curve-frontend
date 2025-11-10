@@ -28,7 +28,6 @@ const DetailInfoLeverage = ({
   isLoaded,
   market,
   steps,
-  userActiveKey,
   handleSelLiqRange,
   selectedLiqRange,
   setHealthMode,
@@ -106,7 +105,6 @@ const DetailInfoLeverage = ({
                   healthMode={healthMode}
                   isValidFormValues={haveValues && haveDebt}
                   setHealthMode={setHealthMode}
-                  userActiveKey={userActiveKey}
                 />
               </>
             }
@@ -117,7 +115,6 @@ const DetailInfoLeverage = ({
             isValidFormValues={haveValues && haveDebt}
             loading={loading}
             selectedLiqRange={selectedLiqRange}
-            userActiveKey={userActiveKey}
             handleLiqRangesEdit={handleLiqRangesEdit}
           />
           <DetailInfoN isLoaded={isLoaded} n={formValues.n} />
@@ -159,7 +156,6 @@ const DetailInfoLeverage = ({
             healthMode={healthMode}
             isValidFormValues={haveValues && haveDebt}
             setHealthMode={setHealthMode}
-            userActiveKey={userActiveKey}
           />
         </>
       )}

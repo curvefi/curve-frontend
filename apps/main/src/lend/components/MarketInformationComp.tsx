@@ -16,7 +16,6 @@ type MarketInformationCompProps = {
   pageProps: PageContentProps
   chartExpanded: boolean
   loanExists?: boolean
-  userActiveKey: string
   type: 'borrow' | 'supply'
   page?: 'create' | 'manage'
 }
@@ -28,7 +27,6 @@ export const MarketInformationComp = ({
   pageProps,
   chartExpanded,
   loanExists = false,
-  userActiveKey,
   type,
   page = 'manage',
 }: MarketInformationCompProps) => {
@@ -40,12 +38,7 @@ export const MarketInformationComp = ({
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill, gap: Spacing.md, padding: Spacing.md }}>
-          <ChartOhlcWrapper
-            rChainId={rChainId}
-            rOwmId={rOwmId}
-            userActiveKey={userActiveKey}
-            betaBackgroundColor={theme.design.Layer[1].Fill}
-          />
+          <ChartOhlcWrapper rChainId={rChainId} rOwmId={rOwmId} betaBackgroundColor={theme.design.Layer[1].Fill} />
         </Stack>
       )}
       {type === 'borrow' && isAdvancedMode && (

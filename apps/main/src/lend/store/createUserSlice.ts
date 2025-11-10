@@ -2,14 +2,7 @@ import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
 import apiLending, { helpers } from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
-import {
-  Api,
-  OneWayMarketTemplate,
-  UserLoanDetails,
-  UserMarketBalances,
-  UsersLoansDetailsMapper,
-  UsersMarketsBalancesMapper,
-} from '@/lend/types/lend.types'
+import { Api, OneWayMarketTemplate, UserMarketBalances, UsersMarketsBalancesMapper } from '@/lend/types/lend.types'
 import { getLoanExists } from '@/llamalend/queries/loan-exists'
 import { log } from '@ui-kit/lib/logging'
 
@@ -17,7 +10,6 @@ type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
 
 type SliceState = {
-  loansDetailsMapper: UsersLoansDetailsMapper
   marketsBalancesMapper: UsersMarketsBalancesMapper
 }
 
@@ -31,9 +23,8 @@ export type UserSlice = {
     fetchLoanDatas(key: string, api: Api, markets: OneWayMarketTemplate[], shouldRefetch?: boolean): Promise<void>
 
     // individual
-    fetchUserLoanDetails(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserLoanDetails>
     fetchUserMarketBalances(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<UserMarketBalances>
-    fetchAll(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanDetailsResp: UserLoanDetails | null; userLoanBalancesResp: UserMarketBalances; }>
+    fetchAll(api: Api, market: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<{ userLoanBalancesResp: UserMarketBalances; }>
 
     // helpers
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -44,7 +35,6 @@ export type UserSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  loansDetailsMapper: {},
   marketsBalancesMapper: {},
 }
 
@@ -82,7 +72,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
       if (!api.signerAddress) return
 
       const fnMapper = {
-        loansDetailsMapper: apiLending.user.fetchLoansDetails,
         marketsBalancesMapper: apiLending.user.fetchMarketBalances,
       }
 
@@ -127,12 +116,6 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
 
     // individual
-    fetchUserLoanDetails: async (api, market, shouldRefetch) => {
-      const key = 'loansDetailsMapper'
-      await get()[sliceKey].fetchDatas(key, api, [market], shouldRefetch)
-      const userActiveKey = helpers.getUserActiveKey(api, market)
-      return get()[sliceKey][key][userActiveKey]
-    },
     fetchUserMarketBalances: async (api, market, shouldRefetch) => {
       const key = 'marketsBalancesMapper'
       await get()[sliceKey].fetchDatas(key, api, [market], shouldRefetch)
@@ -141,11 +124,10 @@ const createUserSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>[
     },
     fetchAll: async (api, market, shouldRefetch) => {
       const userActiveKey = helpers.getUserActiveKey(api, market)
-      const keys = ['loansDetailsMapper', 'marketsBalancesMapper'] as const
+      const keys = ['marketsBalancesMapper'] as const
 
       await Promise.all(keys.map((key) => get()[sliceKey].fetchLoanDatas(key, api, [market], shouldRefetch)))
       return {
-        userLoanDetailsResp: get()[sliceKey].loansDetailsMapper[userActiveKey],
         userLoanBalancesResp: get()[sliceKey].marketsBalancesMapper[userActiveKey],
       }
     },
