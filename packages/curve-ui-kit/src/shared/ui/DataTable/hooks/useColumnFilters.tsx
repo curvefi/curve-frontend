@@ -38,11 +38,15 @@ const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string 
 /**
  * Manage column filters synced with the URL query string. Removes legacy localStorage on first run.
  */
-export function useColumnFilters<TColumnId extends string>(
-  tableTitle: string,
-  columns: ColumnEnum<TColumnId>,
-  defaultFilters?: ColumnFilters<TColumnId>,
-) {
+export function useColumnFilters<TColumnId extends string>({
+  columns,
+  defaultFilters,
+  title: tableTitle,
+}: {
+  title: string
+  columns: ColumnEnum<TColumnId>
+  defaultFilters?: ColumnFilters<TColumnId>
+}) {
   useEffect(() => {
     // remove legacy filters from local storage. This may be deleted after dec/2025
     localStorage.removeItem(`table-filters-${kebabCase(tableTitle)}`)
@@ -72,5 +76,5 @@ export function useColumnFilters<TColumnId extends string>(
     history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
   }, [columns, searchParams])
 
-  return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
+  return { columnFilters, columnFiltersById, setColumnFilter, resetFilters }
 }

@@ -28,6 +28,7 @@ import type { Chain } from '@curvefi/prices-api'
 import { combineCampaigns } from '@ui-kit/entities/campaigns'
 import { getCampaignsExternal } from '@ui-kit/entities/campaigns/campaigns-external'
 import { getCampaignsMerkl } from '@ui-kit/entities/campaigns/campaigns-merkl'
+import { MIN_POOLS_DISPLAYED } from '@ui-kit/features/user-profile/store'
 import { groupSearchTerms, searchByText, takeTopWithMin } from '@ui-kit/utils'
 import { fetchNetworks, getNetworks } from '../entities/networks'
 
@@ -153,10 +154,12 @@ const createPoolListSlice = (set: StoreApi<State>['setState'], get: StoreApi<Sta
     filterSmallTvl: (poolDatas, tvlMapper, chainId) => {
       const networks = getNetworks()
       const { hideSmallPoolsTvl } = networks[chainId]
-
-      const result = takeTopWithMin(poolDatas, (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'), hideSmallPoolsTvl, 10)
-
-      return result
+      return takeTopWithMin(
+        poolDatas,
+        (pd) => +(tvlMapper?.[pd.pool.id]?.value || '0'),
+        hideSmallPoolsTvl,
+        MIN_POOLS_DISPLAYED,
+      )
     },
     sortFn: (sortKey, order, poolDatas, rewardsApyMapper, tvlMapper, volumeMapper, isCrvRewardsEnabled, chainId) => {
       const networks = getNetworks()

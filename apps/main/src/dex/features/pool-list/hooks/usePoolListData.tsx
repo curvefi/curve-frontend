@@ -4,7 +4,7 @@ import { CROSS_CHAIN_ADDRESSES } from '@/dex/constants'
 import { POOL_TEXT_FIELDS } from '@/dex/features/pool-list/columns'
 import { getUserActiveKey } from '@/dex/store/createUserSlice'
 import useStore from '@/dex/store/useStore'
-import type { NetworkConfig, PoolData } from '@/dex/types/main.types'
+import { NetworkConfig, PoolData, PoolDataMapper } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { notFalsy, recordValues } from '@curvefi/prices-api/objects.util'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -30,7 +30,7 @@ const getPoolTags = (hasPosition: boolean, { pool, pool: { address, id, name, re
 export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig) {
   const { curveApi } = useConnection()
   const userActiveKey = getUserActiveKey(curveApi)
-  const poolDataMapper = useStore((state) => state.pools.poolsMapper[chainId])
+  const poolDataMapper = useStore((state): PoolDataMapper | undefined => state.pools.poolsMapper[chainId])
   const rewardsApyMapper = useStore((state) => state.pools.rewardsApyMapper[chainId])
   const tvlMapper = useStore((state) => state.pools.tvlMapper[chainId])
   const userPoolList = useStore((state) => state.user.poolList[userActiveKey])
@@ -45,7 +45,7 @@ export function usePoolListData({ id: network, chainId, isLite }: NetworkConfig)
   )
 
   usePageVisibleInterval(async () => {
-    if (curveApi && !isEmpty(rewardsApyMapper)) {
+    if (curveApi && !isEmpty(rewardsApyMapper) && poolsData) {
       await fetchPoolsRewardsApy(chainId, poolsData)
     }
   }, REFRESH_INTERVAL['11m'])

@@ -2,6 +2,7 @@ import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'
 import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const PATH = '/dex/arbitrum/pools/'
 
@@ -91,6 +92,19 @@ describe('DEX Pools', () => {
       }
       cy.get(`[data-testid="filter-chip-${chip}"]`).click()
       cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should(isMobile ? 'not.be.visible' : 'not.exist')
+    }
+
+    /**
+     * Makes sure that the filter chips are visible during the given callback.
+     * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
+     */
+    function withFilterChips(callback: () => Cypress.Chainable, isMobile = breakpoint === 'mobile') {
+      if (!isMobile) return callback()
+      cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+      return callback().then((result) => {
+        cy.get('body').click(0, 0)
+        return cy.wrap(result)
+      })
     }
 
     it('sorts by volume', () => {
@@ -195,6 +209,33 @@ describe('DEX Pools', () => {
       )
     })
   })
+
+  it('filters small pools', () => {
+    // by default, small pools are hidden, if we sort by TVL (asc), we should see only pools above the threshold
+    visitAndWait(width, height, { query: { sort: 'tvl' } })
+    getTopUsdValues('tvl').then((vals) =>
+      expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.equal('[]'),
+    )
+    toggleSmallPools()
+    // now for sure there is at least one empty TVL pool
+    cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$0')
+    getTopUsdValues('tvl').then((vals) =>
+      expect(JSON.stringify(vals.filter((v) => v.parsed < SMALL_POOL_TVL))).to.not.equal('[]'),
+    )
+  })
+
+  function toggleSmallPools(isDesktop = breakpoint == 'desktop') {
+    if (isDesktop) {
+      cy.get(`[data-testid='user-profile-button']`).click()
+      cy.get(`[data-testid='small-pools-switch']`).click()
+      cy.get('body').click(0, 0) // close the user profile menu
+    } else {
+      cy.get(`[data-testid='menu-toggle']`).click()
+      cy.get(`[data-testid='sidebar-settings']`).click()
+      cy.get(`[data-testid='small-pools-switch']`).click()
+      cy.get(`[data-testid='menu-toggle']`).click()
+    }
+  }
 
   /**
    * Makes sure that the filter chips are visible during the given callback.

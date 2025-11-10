@@ -48,11 +48,11 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   const { markets: data = [], userHasPositions } = result ?? {}
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title,
-    LlamaMarketColumnId,
+    columns: LlamaMarketColumnId,
     defaultFilters,
-  )
+  })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], 'userSort')
   const { columnSettings, columnVisibility, sortField } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
