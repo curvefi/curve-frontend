@@ -45,7 +45,7 @@ const emptyStateConfigs = (
 
 const noPositionsSubTitle: Record<MarketRateType, string> = {
   [MarketRateType.Borrow]: t`Borrow with LLAMMA to stay exposed, reduce liquidation risk, and access liquidity without selling.`,
-  [MarketRateType.Supply]: t`Supply assets to lending markets and earn yield on your deposits.`,
+  [MarketRateType.Supply]: t`Lend assets to earn yield and support deep liquidity across Curve.`,
 }
 
 export const UserPositionsEmptyState = ({
