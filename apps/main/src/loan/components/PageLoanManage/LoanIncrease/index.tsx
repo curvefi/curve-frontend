@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -15,7 +16,7 @@ import {
   DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageLoanManage/utils'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, getMaxRecvActiveKey } from '@/loan/store/createLoanIncreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -39,10 +40,10 @@ import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId'> {}
+interface Props extends Pick<PageLoanManageProps, 'curve' | 'isReady' | 'llamma' | 'llammaId' | 'rChainId'> {}
 
 // Borrow more
-const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
+const LoanIncrease = ({ curve, isReady, llamma, llammaId, rChainId }: Props) => {
   const isSubscribed = useRef(false)
 
   const activeKey = useStore((state) => state.loanIncrease.activeKey)
@@ -53,7 +54,14 @@ const LoanIncrease = ({ curve, isReady, llamma, llammaId }: Props) => {
   const maxRecvActiveKey = llamma ? getMaxRecvActiveKey(llamma, formValues.collateral) : ''
   const maxRecv = useStore((state) => state.loanIncrease.maxRecv[maxRecvActiveKey])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useUserLoanDetails(llammaId)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
+
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_USER_WALLET_BALANCES,

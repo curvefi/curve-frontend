@@ -1,4 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useAccount } from 'wagmi'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -11,7 +13,7 @@ import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLo
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanDecreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -50,7 +52,14 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
   const formStatus = useStore((state) => state.loanDecrease.formStatus)
   const formValues = useStore((state) => state.loanDecrease.formValues)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-  const userLoanDetails = useUserLoanDetails(llammaId)
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
+
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )
@@ -140,7 +149,13 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       const resp = await fetchStepDecrease(payloadActiveKey, curve, llamma, formValues)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const txInfoBarMessage = resp.loanExists
+        const loanExists = await refetchLoanExists({
+          chainId,
+          marketId: llammaId,
+          userAddress,
+        })
+
+        const txInfoBarMessage = loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is payoff and will no longer be manageable.`
 
@@ -149,7 +164,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
             description={txInfoBarMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (resp.loanExists) {
+              if (loanExists) {
                 reset(false, true)
               } else {
                 push(getCollateralListPathname(params))
@@ -160,7 +175,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       }
       notification?.dismiss()
     },
-    [activeKey, fetchStepDecrease, push, params, rChainId, reset],
+    [fetchStepDecrease, activeKey, chainId, llammaId, userAddress, rChainId, reset, push, params],
   )
 
   const getSteps = useCallback(
