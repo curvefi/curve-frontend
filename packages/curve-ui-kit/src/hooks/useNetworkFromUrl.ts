@@ -14,8 +14,8 @@ export function useNetworkFromUrl<T extends NetworkMapping>(networks: T | undefi
     [networkId, networks],
   )
   useEffect(() => {
-    if (network || !pathname || !networks) {
-      return
+    if (network || !pathname || !networks || pathname === '/') {
+      return // Do not auto-redirect on while loading or on root (let `ConnectionProvider` decide based on the wallet state)
     }
     const { location } = window
     const redirectUrl = networkId ? replaceNetworkInPath(pathname, 'ethereum') : getHashRedirectUrl(location)

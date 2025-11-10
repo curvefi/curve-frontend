@@ -13,7 +13,7 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/ethereum/pools')
   })
 
-  it(`should open the Main DApp successfully at ${path}`, () => {
+  it(`should open the DEX app successfully at ${path}`, () => {
     cy.visit(path)
     cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')

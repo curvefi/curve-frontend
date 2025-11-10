@@ -7,9 +7,14 @@ export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | un
   const pathname = usePathname()
   const push = useNavigate()
   return useCallback(
-    <TChainId extends number>([walletChainId]: [TChainId, TChainId]) => {
-      const network = networks?.[walletChainId]?.id
-      if (pathname && network) {
+    <TChainId extends number>([networkChainId, walletChainId]: [TChainId | undefined, TChainId | undefined]) => {
+      const network =
+        (walletChainId && networks?.[walletChainId]?.id) || (networkChainId && networks?.[networkChainId]?.id)
+      if (pathname === '/') {
+        console.info(`At root path, redirecting to the available network ${network}...`)
+        return push(`/dex/${network ?? 'ethereum'}/swap`)
+      }
+      if (network) {
         console.warn(`Network switched to ${network}, redirecting...`, pathname)
         push(replaceNetworkInPath(pathname, network))
       }
