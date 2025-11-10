@@ -1,11 +1,14 @@
 import { useMemo, useState } from 'react'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
 
+const { Height, Spacing } = SizesAndSpaces
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   // Calculate total positions across all markets (independent of filters)
   const openPositionsCount = useMemo((): Record<MarketRateType, number | undefined> => {
@@ -47,6 +50,20 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
 
   return (
     <Stack>
+      <Stack
+        direction="row"
+        alignItems="end"
+        sx={{
+          minHeight: Height.userPositionsTitle,
+          paddingBlockEnd: Spacing.sm,
+          paddingInline: Spacing.md,
+          flexGrow: 1,
+          borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+          backgroundColor: (t) => t.design.Layer[1].Fill,
+        }}
+      >
+        <Typography variant="headingXsBold">Your Positions</Typography>
+      </Stack>
       <Stack
         direction="row"
         justifyContent="space-between"
