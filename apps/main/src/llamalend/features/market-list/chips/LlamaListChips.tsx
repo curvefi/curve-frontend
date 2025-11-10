@@ -60,7 +60,7 @@ export const LlamaListChips = ({
               hiddenMarketCount={hiddenMarketCount}
               resetFilters={resetFilters}
               hasFilters={hasFilters}
-              isUserPositions
+              isUserPositions={isUserPositions}
               {...filterProps}
             />
           </Grid>
