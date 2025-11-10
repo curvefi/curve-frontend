@@ -168,22 +168,13 @@ describe(`LlamaLend Markets`, () => {
   })
 
   it(`should allow filtering by token`, () => {
-    const tokenField = 'collateral_token'
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click()
     } else {
       cy.get(`[data-testid="btn-expand-filters"]`).click()
     }
-
-    const collateralCoins = vaultData.ethereum.data
-      .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
-      .map((d) => d[tokenField].symbol)
-
-    const collateral = oneOf(...collateralCoins)
-    const borrowed = oneOf('CRV', 'crvUSD')
-
-    selectCoin(collateral, 'collateral')
-    selectCoin(borrowed, 'borrowed')
+    selectCoin('collateral')
+    selectCoin('borrowed')
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
@@ -316,6 +307,25 @@ describe(`LlamaLend Markets`, () => {
     }
     cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
   }
+
+  function selectCoin(type: TokenType) {
+    const symbol = oneOf(
+      ...vaultData.ethereum.data
+        .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
+        .map((d) => d[`${type}_token`].symbol),
+    )
+    const columnId = `assets_${type}_symbol`
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
+    cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+    cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
+    cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
+    cy.get('body').click(0, 0) // close popover
+    cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
+
+    cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
+    cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+  }
 })
 
 describe(`LlamaLend Storage Migration`, () => {
@@ -342,20 +352,6 @@ function visitAndWait([width, height]: [number, number, Breakpoint], options?: P
   cy.viewport(width, height)
   cy.visit('/llamalend/ethereum/markets/', { ...LOAD_TIMEOUT, ...options })
   cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
-}
-
-const selectCoin = (symbol: string, type: TokenType) => {
-  const columnId = `assets_${type}_symbol`
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
-  cy.get(`[data-testid="menu-${columnId}"]`).should('not.exist') // clicking on clear closes the menu
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
-  cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
-  cy.get('body').click(0, 0) // close popover
-  cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
-
-  cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
-  cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
 }
 
 function enableGraphColumn() {
