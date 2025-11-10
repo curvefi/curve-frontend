@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -16,13 +17,17 @@ const { Height, Spacing } = SizesAndSpaces
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   const { provider, connect } = useWallet()
   // Calculate total positions across all markets (independent of filters)
-  const openPositionsCount = useMemo((): Record<MarketRateType, number | undefined> => {
-    const markets = props.result?.markets
-    return {
-      [MarketRateType.Borrow]: markets?.filter((market) => market.userHasPositions?.[MarketRateType.Borrow]).length,
-      [MarketRateType.Supply]: markets?.filter((market) => market.userHasPositions?.[MarketRateType.Supply]).length,
-    }
-  }, [props.result?.markets])
+  const { markets } = props.result ?? {}
+  const openPositionsCount = useMemo(
+    (): Record<MarketRateType, string | undefined> =>
+      fromEntries(
+        Object.values(MarketRateType).map((type) => [
+          type,
+          markets && `${markets.filter((market) => market.userHasPositions?.[type]).length}`,
+        ]),
+      ),
+    [markets],
+  )
 
   // Define tabs with position counts
   const tabs: TabOption<MarketRateType>[] = useMemo(
@@ -30,16 +35,12 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       {
         value: MarketRateType.Borrow,
         label: t`Borrowing`,
-        endAdornment: openPositionsCount[MarketRateType.Borrow]
-          ? String(openPositionsCount[MarketRateType.Borrow])
-          : undefined,
+        endAdornment: openPositionsCount[MarketRateType.Borrow],
       },
       {
         value: MarketRateType.Supply,
         label: t`Lending`,
-        endAdornment: openPositionsCount[MarketRateType.Supply]
-          ? String(openPositionsCount[MarketRateType.Supply])
-          : undefined,
+        endAdornment: openPositionsCount[MarketRateType.Supply],
       },
     ],
     [openPositionsCount],

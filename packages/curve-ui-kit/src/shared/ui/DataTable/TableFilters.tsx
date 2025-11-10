@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 import Collapse from '@mui/material/Collapse'
 import Fade from '@mui/material/Fade'
 import Grid from '@mui/material/Grid'
@@ -53,10 +53,7 @@ export const TableFilters = <ColumnIds extends string>({
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = useMemo(
-    () => (hasSearchBar ? isSearchExpanded || !!searchText : false),
-    [hasSearchBar, isSearchExpanded, searchText],
-  )
+  const isExpandedOrValue = hasSearchBar && (isSearchExpanded || !!searchText)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
   return (
     <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
@@ -67,7 +64,7 @@ export const TableFilters = <ColumnIds extends string>({
           </Grid>
         </Fade>
         <Grid
-          size={{ mobile: hasSearchBar && isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
+          size={{ mobile: isExpandedOrValue ? 12 : 'auto', tablet: 6 }}
           display="flex"
           justifyContent="flex-end"
           gap={Spacing.xs}
