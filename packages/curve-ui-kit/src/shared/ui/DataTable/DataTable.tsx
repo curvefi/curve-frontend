@@ -53,6 +53,7 @@ export const DataTable = <T extends TableItem>({
   children,
   loading,
   maxHeight,
+  rowLimit,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -60,9 +61,11 @@ export const DataTable = <T extends TableItem>({
   children?: ReactNode // passed to <FilterRow />
   loading: boolean
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
+  rowLimit?: number
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table, shouldStickFirstColumn } = rowProps
   const { rows } = table.getRowModel()
+  const visibleRows = rowLimit ? rows.slice(0, rowLimit) : rows
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
@@ -115,12 +118,12 @@ export const DataTable = <T extends TableItem>({
           ) : rows.length === 0 ? (
             emptyState
           ) : (
-            rows.map((row, index) => (
-              <DataRow<T> key={row.id} row={row} isLast={index === rows.length - 1} {...rowProps} />
+            visibleRows.map((row, index) => (
+              <DataRow<T> key={row.id} row={row} isLast={index === visibleRows.length - 1} {...rowProps} />
             ))
           )}
         </TableBody>
-        {table.getPageCount() > 1 && (
+        {!rowLimit && table.getPageCount() > 1 && (
           <TableFooter>
             <TableRow>
               <TableCell colSpan={columnCount}>
