@@ -19,11 +19,12 @@ export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | un
         ? replaceNetworkInPath(pathname, newNetworkId)
         : getHashRedirectUrl(location, newNetworkId)
       console.warn(
-        `Redirecting from ${href} to ${redirectUrl}...`,
-        `Supported networks: ${recordValues(networks ?? {})
+        "Redirecting from %s to %s...", href, redirectUrl,
+        "Supported networks: %s.",
+        recordValues(networks ?? {})
           .map((n) => n.id)
-          .join(', ')}.`,
-        `Wallet has chain ${walletChainId} app ${networkChainId}`,
+          .join(', '),
+        "Wallet has chain %s app %s", walletChainId, networkChainId
       )
       return navigate(redirectUrl, { replace: true })
     },
