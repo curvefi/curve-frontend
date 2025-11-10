@@ -179,10 +179,12 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
 
       const { stateCollateral, userBorrowed, userCollateral } = cFormValues
 
-      // userState
-      const userState = await user.fetchUserLoanState(api, market, shouldRefetch)
-
-      if (typeof userState === 'undefined') return
+      let userState: UserLoanState
+      try {
+        userState = { ...(await market.userState()), error: '' }
+      } catch (error) {
+        userState = { collateral: '', borrowed: '', debt: '', N: '', error }
+      }
 
       // validation
       const userBalancesResp = await user.fetchUserMarketBalances(api, market, true)

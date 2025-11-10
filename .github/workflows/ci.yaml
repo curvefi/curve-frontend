@@ -59,6 +59,14 @@ jobs:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
 
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
+          path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
+
   cypress-component-rpc:
     name: Cypress component tests with RPC
     if: github.ref_name == 'main'
@@ -88,6 +96,8 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
+          retention-days: 1
+          if-no-files-found: error
 
   cypress-e2e:
     strategy:
@@ -98,7 +108,7 @@ jobs:
         include:
           - browser: chrome
             count: 2
-    name: Cypress in ${{ matrix.browser }} ${{ matrix.count }}
+    name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +144,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-main-${{ matrix.browser }}-${{ matrix.count }}
+          name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
           retention-days: 1
           if-no-files-found: error

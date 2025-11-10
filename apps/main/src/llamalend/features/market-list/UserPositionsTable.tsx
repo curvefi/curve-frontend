@@ -69,11 +69,11 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
 
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title,
     migration,
     defaultFilters,
-  )
+  })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})

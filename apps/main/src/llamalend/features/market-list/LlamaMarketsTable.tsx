@@ -37,11 +37,7 @@ const useDefaultLlamaFilter = (minLiquidity: number) =>
     [minLiquidity],
   )
 
-const migration: MigrationOptions<ColumnFiltersState> = {
-  version: 2,
-  // migration from v1 to v2: add deprecated filter
-  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
-}
+const migration: MigrationOptions<ColumnFiltersState> = { version: 2 }
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
@@ -60,11 +56,11 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    LOCAL_STORAGE_KEY,
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+    title: LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
-  )
+  })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
