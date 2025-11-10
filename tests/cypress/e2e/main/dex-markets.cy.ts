@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'
-import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 
 const PATH = '/dex/arbitrum/pools/'
@@ -58,8 +58,7 @@ describe('DEX Pools', () => {
   let width: number, height: number
 
   beforeEach(() => {
-    ;[width, height, breakpoint] = [...oneMobileViewport(), 'mobile']
-    // ;[width, height, breakpoint] = oneViewport()
+    ;[width, height, breakpoint] = oneViewport()
   })
 
   describe('First page', () => {

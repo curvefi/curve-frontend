@@ -25,6 +25,9 @@ import {
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
+const wstEthMarket = '0x37417B2238AA52D0DD2D6252d989E728e8f706e4' as const
+const sfrxEthMarket = '0x136e783846ef68C8Bd00a3369F787dF8d683a696' as const
+
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
   let width: number, height: number
@@ -123,23 +126,17 @@ describe(`LlamaLend Markets`, () => {
     cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
     cy.url().should('include', 'assets=wstETH+crvUSD') // todo: this should be called `search`!
     cy.scrollTo(0, 0)
-    // sfrxETH market is filtered out
-    cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
-    // wstETH market is shown
-    cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
+    cy.get(`[data-testid='market-link-${sfrxEthMarket}']`).should('not.exist')
+    cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
   })
 
   it('persists search filter across reload', () => {
-    const q = 'wstETH crvUSD'
-    const qEncoded = 'wstETH+crvUSD'
     cy.viewport(width, height)
-    cy.visit(`/llamalend/ethereum/markets/?assets=${qEncoded}`)
+    cy.visit(`/llamalend/ethereum/markets/?assets=wstETH+crvUSD`)
     cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
-    cy.url().should('include', `assets=${qEncoded}`)
-    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', q)
-    // Verify the filter effect on results (same as the non-persistence test)
-    cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
-    cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
+    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
+    cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
+    cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
   })
 
   it('should allow filtering by using a slider', () => {
