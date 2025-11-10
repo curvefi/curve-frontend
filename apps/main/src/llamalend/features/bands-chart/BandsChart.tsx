@@ -1,5 +1,5 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
-import { useEffect, useMemo, useRef, memo } from 'react'
+import { useEffect, useMemo, memo, useRef } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
@@ -45,9 +45,9 @@ const BandsChartComponent = ({
   oraclePrice,
   height = 420, // TODO: set correct default value when the combined chart header (OHLC chart + bands chart) is implemented
 }: BandsChartProps) => {
+  const palette = useBandsChartPalette()
   const chartRef = useRef<ReactECharts | null>(null)
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const palette = useBandsChartPalette()
   const derived = useDerivedChartData(chartData)
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
@@ -71,23 +71,27 @@ const BandsChartComponent = ({
     chartData,
   })
 
-  const containerDimensions = useResizeObserver(containerRef, { threshold: 0 })
-
+  // Ensure the chart resizes on window resize and on initial mount (e.g., after layout/visibility changes)
   useEffect(() => {
-    const instance = chartRef.current?.getEchartsInstance?.()
-    if (!instance || !containerDimensions) return
-
-    const [width, height] = containerDimensions
-    if (width > 0 && height > 0) {
-      instance.resize({ width, height })
+    const handleResize = () => {
+      const instance = chartRef.current?.getEchartsInstance?.()
+      instance?.resize()
     }
-  }, [containerDimensions])
+    window.addEventListener('resize', handleResize)
+    // Trigger once after mount in case the container measured after paint
+    requestAnimationFrame(handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
+  // Observe container size changes (covers layout changes not tied to window resize)
+  const containerDimensions = useResizeObserver(containerRef)
   useEffect(() => {
+    if (!containerDimensions) return
     const instance = chartRef.current?.getEchartsInstance?.()
-    if (!instance) return
-    instance.resize()
-  }, [height, finalOption])
+    instance?.resize()
+  }, [containerDimensions, height])
 
   if (!chartData?.length) {
     return (
@@ -145,7 +149,7 @@ const BandsChartComponent = ({
           onEvents={{ datazoom: onDataZoom }}
           notMerge={true}
           lazyUpdate={true}
-          autoResize={false}
+          autoResize={true}
         />
       </Box>
       <Slider
