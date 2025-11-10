@@ -1,9 +1,12 @@
 import { type Address, zeroAddress } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
+import type { INetworkName as LlamaNetworkId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { requireLib } from '@ui-kit/features/connect-wallet'
+import { Chain } from '@curvefi/prices-api'
+import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import type { BaseConfig } from '@ui/utils'
+import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { CRVUSD } from '@ui-kit/utils'
 
 /**
@@ -71,3 +74,21 @@ export const calculateLtv = (
   if (collateralValue === 0 || debtValue === 0) return 0
   return (debtValue / collateralValue) * 100
 }
+
+/**
+ * Sends a new transaction hash to the backend to update user events.
+ * Note that the backend data will not be directly updated, but this will trigger a background refresh.
+ * Therefore, we don't invalidate the `userLendCollateralEvents` query immediately after calling this function.
+ */
+export const updateUserEventsApi = (
+  wallet: Wallet,
+  { id: networkId }: BaseConfig<LlamaNetworkId>,
+  marketController: string,
+  txHash: string,
+) =>
+  void getUserMarketCollateralEvents(
+    wallet.account.address,
+    networkId as Chain,
+    marketController as Address,
+    txHash as `0x${string}`,
+  )

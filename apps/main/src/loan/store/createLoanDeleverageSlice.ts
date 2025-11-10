@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import {
   DEFAULT_DETAIL_INFO,
@@ -11,7 +12,6 @@ import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
 import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -149,7 +149,7 @@ const createLoanDeleverageSlice = (
     },
     fetchStepRepay: async (activeKey, curve, llamma, formValues, maxSlippage) => {
       const { provider, wallet } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
@@ -159,8 +159,8 @@ const createLoanDeleverageSlice = (
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
-      // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true
         const cFormStatus = cloneDeep(DEFAULT_FORM_STATUS)

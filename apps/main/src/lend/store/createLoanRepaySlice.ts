@@ -15,9 +15,8 @@ import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, FormError, OneWayMarketTemplate, UserLoanState } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -238,7 +237,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
       const { formStatus, ...sliceState } = get()[sliceKey]
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       sliceState.setStateByKey('formStatus', {
@@ -263,13 +262,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         maxSlippage,
         swapRequired,
       )
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         const loanExists = await refetchLoanExists({
