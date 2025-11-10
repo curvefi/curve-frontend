@@ -283,7 +283,7 @@ export const LargeTokenInput = ({
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
          */
-        if (newBalance === '') onBalance(undefined)
+        if (newBalance === '' || newBalance == null) onBalance(undefined)
 
         return
       }
