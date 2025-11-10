@@ -22,7 +22,6 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -431,8 +430,11 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
             liqRangesMapper: {},
           })
 
-          await get().loans.fetchLoanDetails(curve, llamma)
-          invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
+          // re-fetch loan info
+          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+          if (!loanExists) {
+            get().loans.resetUserDetailsState(llamma)
+          }
 
           // reset form values
           const updatedFormValues = DEFAULT_FORM_VALUES
@@ -450,7 +452,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
             maxRecv: {},
           })
 
-          return resp
+          return { ...resp, loanExists }
         }
       }
     },

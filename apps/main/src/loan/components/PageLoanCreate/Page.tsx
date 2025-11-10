@@ -63,6 +63,7 @@ const Page = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
   const fetchUserLoanWalletBalances = useStore((state) => state.loans.fetchUserLoanWalletBalances)
+  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const setFormValues = useStore((state) => state.loanCreate.setFormValues)
   const setStateByKeys = useStore((state) => state.loanCreate.setStateByKeys)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
@@ -120,6 +121,7 @@ const Page = () => {
   useEffect(() => {
     if (isHydrated && curve) {
       if (market) {
+        resetUserDetailsState(market)
         fetchInitial(curve, isLeverage, market)
         void fetchLoanDetails(curve, market)
         setLoaded(true)

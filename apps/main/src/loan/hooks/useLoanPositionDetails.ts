@@ -1,11 +1,11 @@
 import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
-import { useAccount } from 'wagmi'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
@@ -16,7 +16,6 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
-import { useUserLoanDetails } from '../entities/user-loan-details.query'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -37,16 +36,13 @@ export const useLoanPositionDetails = ({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
   })
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails, isFetching: userLoanDetailsLoading } = useUserLoanDetails({
-    chainId,
-    marketId: llammaId,
-    userAddress,
-  })
-  const { collateral, stablecoin, debt } = userLoanDetails?.userState ?? {}
-  const { userPrices, userBands, userStatus, healthFull, healthNotFull } = userLoanDetails ?? {}
-
+  const { collateral, stablecoin, debt } = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userState) ?? {}
+  const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
+  const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
+  const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
+  const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
+  const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)

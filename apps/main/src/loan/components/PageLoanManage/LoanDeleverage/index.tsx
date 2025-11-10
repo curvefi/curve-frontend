@@ -1,7 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
-import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
@@ -24,7 +22,7 @@ import {
   DEFAULT_HEALTH_MODE,
   hasDeleverage,
 } from '@/loan/components/PageLoanManage/utils'
-import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
@@ -71,14 +69,7 @@ const LoanDeleverage = ({
   const formValues = useStore((state) => state.loanDeleverage.formValues)
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails } = useUserLoanDetails({
-    chainId: rChainId,
-    marketId: llammaId,
-    userAddress,
-  })
-
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
   const userWalletBalancesLoading = useStore((state) => state.loans.userWalletBalancesLoading)
   const fetchStepRepay = useStore((state) => state.loanDeleverage.fetchStepRepay)
@@ -136,13 +127,7 @@ const LoanDeleverage = ({
       const resp = await fetchStepRepay(payloadActiveKey, curve, llamma, formValues, maxSlippage)
 
       if (isSubscribed.current && resp && resp.hash && resp.activeKey === activeKey) {
-        const loanExists = await refetchLoanExists({
-          chainId,
-          marketId: llammaId,
-          userAddress,
-        })
-
-        const txInfoBarMessage = loanExists
+        const txInfoBarMessage = resp.loanExists
           ? t`Transaction complete`
           : t`Transaction complete. This loan is paid-off and will no longer be manageable.`
 
@@ -151,7 +136,7 @@ const LoanDeleverage = ({
             description={txInfoBarMessage}
             txHash={scanTxPath(networks[rChainId], resp.hash)}
             onClose={() => {
-              if (loanExists) {
+              if (resp.loanExists) {
                 updateFormValues({}, '', true)
               } else {
                 push(getCollateralListPathname(params))
@@ -162,18 +147,7 @@ const LoanDeleverage = ({
       }
       if (typeof dismiss === 'function') dismiss()
     },
-    [
-      collateralName,
-      fetchStepRepay,
-      activeKey,
-      chainId,
-      llammaId,
-      userAddress,
-      rChainId,
-      updateFormValues,
-      push,
-      params,
-    ],
+    [activeKey, collateralName, fetchStepRepay, push, params, rChainId, updateFormValues],
   )
 
   const getSteps = useCallback(

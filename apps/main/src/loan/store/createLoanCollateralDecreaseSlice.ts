@@ -15,7 +15,6 @@ import { getTokenName } from '@/loan/utils/utilsLoan'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -168,10 +167,10 @@ const createLoanCollateralDecrease = (set: StoreApi<State>['setState'], get: Sto
       // update user events api
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       void get()[sliceKey].fetchMaxRemovable(chainId, llamma)
-
-      await get().loans.fetchLoanDetails(curve, llamma)
-      invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists) {
+        get().loans.resetUserDetailsState(llamma)
+      }
       if (resp.activeKey === get()[sliceKey].activeKey) {
         get()[sliceKey].setStateByKeys({
           detailInfo: {},
