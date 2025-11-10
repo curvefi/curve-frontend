@@ -23,6 +23,3 @@ export const useDexMarketList = useBetaChannel
 
 /** New unified borrow form (BorrowTabContents) */
 export const useBorrowUnifiedForm = useBetaChannel
-
-/** New user profile button on the header */
-export const useUserProfileButton = useStableChannel
