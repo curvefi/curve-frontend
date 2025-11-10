@@ -56,6 +56,7 @@ export type LoanCreateSlice = {
     // steps
     fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepCreate(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    onLoanCreated(api: Api, market: OneWayMarketTemplate): Promise<void>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -328,27 +329,35 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
           sliceState.setStateByKey('formStatus', { ...formStatus, isInProgress: false, step: '', stepError: error })
           return { ...resp, error }
         } else {
-          const loanExists = await refetchLoanExists({
-            chainId,
-            marketId: market.id,
-            userAddress: wallet?.account?.address,
-          })
-          if (loanExists) {
-            // api calls
-            await user.fetchAll(api, market, true)
-            void markets.fetchAll(api, market, true)
-            markets.setStateByKey('marketDetailsView', 'user')
-            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-            // update formStatus
-            sliceState.setStateByKeys({
-              ...DEFAULT_STATE,
-              formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
-            })
-          }
-          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
+          await sliceState.onLoanCreated(api, market)
           return { ...resp, error }
         }
       }
+    },
+    onLoanCreated: async (api, market) => {
+      const { markets, user } = get()
+      const { formStatus, ...sliceState } = get()[sliceKey]
+      const { chainId } = api
+      const { wallet } = useWallet.getState()
+
+      const loanExists = await refetchLoanExists({
+        chainId,
+        marketId: market.id,
+        userAddress: wallet?.account?.address,
+      })
+      if (loanExists) {
+        // api calls
+        await user.fetchAll(api, market, true)
+        void markets.fetchAll(api, market, true)
+        markets.setStateByKey('marketDetailsView', 'user')
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        // update formStatus
+        sliceState.setStateByKeys({
+          ...DEFAULT_STATE,
+          formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
+        })
+      }
+      invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
     },
 
     // helpers

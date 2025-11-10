@@ -1,5 +1,6 @@
 import { useCallback, useEffect } from 'react'
 import { FormProvider } from 'react-hook-form'
+import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -46,11 +47,13 @@ export const BorrowTabContents = <ChainId extends IChainId>({
   networks,
   chainId,
   onUpdate,
+  onCreated,
 }: {
   market: LlamaMarketTemplate | undefined
   networks: NetworkDict<ChainId>
   chainId: ChainId
   onUpdate: OnBorrowFormUpdate
+  onCreated: CreateLoanOptions['onCreated']
 }) => {
   const network = networks[chainId]
   const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
@@ -68,7 +71,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     txHash,
     formErrors,
     tooMuchDebt,
-  } = useBorrowForm({ market, network, preset })
+  } = useBorrowForm({ market, network, preset, onCreated })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
   useFormSync(values, onUpdate)
 
