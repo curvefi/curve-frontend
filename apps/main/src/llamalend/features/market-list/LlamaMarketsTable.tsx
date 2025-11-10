@@ -3,8 +3,6 @@ import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
 import Button from '@mui/material/Button'
-import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
@@ -14,6 +12,7 @@ import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
@@ -40,11 +39,7 @@ const useDefaultLlamaFilter = (minLiquidity: number) =>
     [minLiquidity],
   )
 
-const migration: MigrationOptions<ColumnFiltersState> = {
-  version: 2,
-  // migration from v1 to v2: add deprecated filter
-  migrate: (oldValue, initial) => [...initial.filter((i) => !oldValue.some((o) => o.id === i.id)), ...oldValue],
-}
+const migration: MigrationOptions<ColumnFiltersState> = { version: 2 }
 
 const pagination = { pageIndex: 0, pageSize: 200 }
 
@@ -63,11 +58,11 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
-    LOCAL_STORAGE_KEY,
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+    title: LOCAL_STORAGE_KEY,
     migration,
     defaultFilters,
-  )
+  })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
   const { columnSettings, columnVisibility, toggleVisibility, sortField } = useLlamaTableVisibility(
     LOCAL_STORAGE_KEY,
@@ -93,16 +88,15 @@ export const LlamaMarketsTable = ({
       table={table}
       emptyState={
         <EmptyStateRow table={table}>
-          {isError ? (
-            t`Could not load markets`
-          ) : (
-            <Stack direction="column" gap={Spacing.sm} alignItems="center">
-              <Typography component="span">{t`No markets found`}</Typography>
-              <Button size="small" onClick={resetFilters}>
-                {t`Show All Markets`}
+          <EmptyStateCard
+            title={isError ? t`Could not load markets` : t`No markets found`}
+            subtitle={isError ? undefined : t`Try adjusting your filters or search query`}
+            action={
+              <Button size="small" onClick={isError ? onReload : resetFilters}>
+                {isError ? t`Reload` : t`Show All Markets`}
               </Button>
-            </Stack>
-          )}
+            }
+          />
         </EmptyStateRow>
       }
       expandedPanel={LlamaMarketExpandedPanel}

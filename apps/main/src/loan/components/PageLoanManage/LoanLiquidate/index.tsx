@@ -1,5 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useAccount } from 'wagmi'
+import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import AlertFormError from '@/loan/components/AlertFormError'
 import AlertFormWarning from '@/loan/components/AlertFormWarning'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -8,7 +10,7 @@ import LoanFormConnect from '@/loan/components/LoanFormConnect'
 import type { FormStatus, StepKey } from '@/loan/components/PageLoanManage/LoanLiquidate/types'
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_FORM_EST_GAS } from '@/loan/components/PageLoanManage/utils'
-import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
+import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS, haveEnoughCrvusdForLiquidation } from '@/loan/store/createLoanLiquidate'
 import useStore from '@/loan/store/useStore'
@@ -37,8 +39,14 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
   const formEstGas = useStore((state) => state.loanLiquidate.formEstGas ?? DEFAULT_FORM_EST_GAS)
   const formStatus = useStore((state) => state.loanLiquidate.formStatus)
   const liquidationAmt = useStore((state) => state.loanLiquidate.liquidationAmt)
-  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore((state) => state.loans.userWalletBalancesMapper[llammaId])
+
+  const { address: userAddress } = useAccount()
+  const { data: userLoanDetails } = useUserLoanDetails({
+    chainId: rChainId,
+    marketId: llammaId,
+    userAddress,
+  })
 
   const fetchTokensToLiquidate = useStore((state) => state.loanLiquidate.fetchTokensToLiquidate)
   const fetchStepApprove = useStore((state) => state.loanLiquidate.fetchStepApprove)
@@ -119,8 +127,13 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
             const notification = notify(notifyMessage, 'pending')
 
             const resp = await fetchStepLiquidate(curve, llamma, liquidationAmt, maxSlippage)
+            const loanExists = await refetchLoanExists({
+              chainId,
+              marketId: llammaId,
+              userAddress,
+            })
 
-            if (isSubscribed.current && resp && resp.hash && !resp.loanExists) {
+            if (isSubscribed.current && resp && resp.hash && !loanExists) {
               const TxDescription = (
                 <>
                   <Trans>
@@ -154,7 +167,7 @@ const LoanLiquidate = ({ curve, llamma, llammaId, params, rChainId }: Props) => 
 
       return stepsKey.map((k) => stepsObj[k])
     },
-    [fetchStepApprove, fetchStepLiquidate, params, reset],
+    [fetchStepApprove, fetchStepLiquidate, llammaId, params, reset, userAddress],
   )
 
   // onMount

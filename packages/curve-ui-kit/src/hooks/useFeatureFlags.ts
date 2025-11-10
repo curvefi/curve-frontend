@@ -3,14 +3,14 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
 
 /** LargeTokenInput replaces legacy amount inputs */
-const useLargeTokenInput = useBetaChannel
+const useLargeTokenInput = useStableChannel
 
 /** Negation of useLargeTokenInput for readability. */
 export const useLegacyTokenInput = () => !useLargeTokenInput()
@@ -23,6 +23,3 @@ export const useDexMarketList = useBetaChannel
 
 /** New unified borrow form (BorrowTabContents) */
 export const useBorrowUnifiedForm = useBetaChannel
-
-/** New user profile button on the header */
-export const useUserProfileButton = () => useStableChannel() && !isCypress

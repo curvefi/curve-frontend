@@ -6,6 +6,7 @@ import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
 import type { BaseConfig } from '@ui/utils'
+export type { UserLoanDetails } from '../entities/user-loan-details.query'
 
 export type { LlamaApi, Wallet } from '@ui-kit/features/connect-wallet'
 
@@ -85,22 +86,6 @@ export type BandsBalancesData = {
   stablecoin: string
   collateralStablecoinUsd: number
 }
-export type UserLoanDetails = {
-  loading: boolean
-  healthFull: string
-  healthNotFull: string
-  userBands: number[]
-  userBandsRange: number | null
-  userBandsPct: string
-  userHealth: string
-  userPrices: string[]
-  userState: { collateral: string; stablecoin: string; debt: string }
-  userBandsBalances: BandsBalancesData[]
-  userIsCloseToLiquidation: boolean
-  userLiquidationBand: number | null
-  userLoss: { deposited_collateral: string; current_collateral_estimation: string; loss: string; loss_pct: string }
-  userStatus: { label: string; colorKey: HealthColorKey; tooltip: string }
-}
 export type UserWalletBalances = {
   stablecoin: string
   collateral: string
@@ -117,6 +102,5 @@ export interface CollateralAlert extends TooltipProps {
 }
 
 export type TitleKey = keyof typeof TITLE
-export type TitleMapper = Record<TITLE, { title: ReactNode; tooltip?: ReactNode; tooltipProps?: TooltipProps }>
 export type FetchStatus = '' | 'loading' | 'success' | 'error'
 export type TransactionStatus = '' | 'loading' | 'confirming' | 'error' | 'success'

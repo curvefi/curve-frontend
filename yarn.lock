@@ -710,15 +710,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/api@npm:2.68.15":
-  version: 2.68.15
-  resolution: "@curvefi/api@npm:2.68.15"
+"@curvefi/api@npm:2.68.17":
+  version: 2.68.17
+  resolution: "@curvefi/api@npm:2.68.17"
   dependencies:
     "@curvefi/ethcall": "npm:^6.0.16"
     bignumber.js: "npm:^9.3.1"
     ethers: "npm:^6.15.0"
     memoizee: "npm:^0.4.17"
-  checksum: 10c0/d1daafc97954fed7d2f539b9bcbe57749a29e4b76263ff84d041d94d7d6dc004ae47ce7f2d23873786bd7a0c22cc304833c686bf2d444463a77135f95cfc2451
+  checksum: 10c0/c5e2c67afd6dac6eda0ed47d2b41ca829ddfe308ff3b4b859a10e73656db5dca2c54d36808c8f32c641bae3a688157ea4e5aae62bbe00119ecf877ff0e019284
   languageName: node
   linkType: hard
 

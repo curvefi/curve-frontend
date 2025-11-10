@@ -310,6 +310,7 @@ export const SizesAndSpaces = {
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
     actionCard: '29rem', // 464px
+    emptyStateCard: '27.5rem', // 440px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px
     sliderInput: {

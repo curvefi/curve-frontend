@@ -1,4 +1,5 @@
 import lodash from 'lodash'
+import { zeroAddress } from 'viem'
 import type { StoreApi } from 'zustand'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanDecrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
@@ -14,6 +15,7 @@ import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
+import { getUserLoanDetails, invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -46,7 +48,7 @@ export type LoanDecreaseSlice = {
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
+    ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -123,12 +125,13 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       } else {
         // validate debt
         const haveDebt = +debt > 0
-        const userState = get().loans.userDetailsMapper[llamma.id]?.userState
+        const { debt: userDebt = '' } =
+          getUserLoanDetails({ chainId, marketId: llamma.id, userAddress: zeroAddress })?.userState ?? {}
         const userWalletBalances = get().loans.userWalletBalancesMapper[llamma.id]
-        const isValidDebt = haveDebt && +userState?.debt > 0
+        const isValidDebt = haveDebt && +userDebt > 0
 
         cFormValues.debtError = ''
-        if (+debt > +userState?.debt) {
+        if (+debt > +userDebt) {
           cFormValues.debtError = 'too-much'
         } else if (+debt > +userWalletBalances?.stablecoin) {
           cFormValues.debtError = 'not-enough'
@@ -151,7 +154,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
         // fetch approval, estimate gas and detail info
         if (isValidDebt && !cFormValues.debtError) {
           // do not fetch endpoint if payoff amount is same as input
-          const isMaxPayable = +debt === +userState.debt
+          const isMaxPayable = +debt === +userDebt
           const clonedFormStatus = cloneDeep(get()[sliceKey].formStatus)
           clonedFormStatus.warning = isMaxPayable ? 'warning-is-payoff-amount' : ''
           get()[sliceKey].setStateByKey('formStatus', clonedFormStatus)
@@ -212,12 +215,8 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       // update user events api
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
       if (activeKey === get()[sliceKey].activeKey) {
-        // re-fetch loan info
-        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-
-        if (!loanExists) {
-          get().loans.resetUserDetailsState(llamma)
-        }
+        await get().loans.fetchLoanDetails(curve, llamma)
+        invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
 
         get()[sliceKey].setStateByKey('formStatus', {
           ...get()[sliceKey].formStatus,
@@ -233,7 +232,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
           formValues: DEFAULT_FORM_VALUES,
         })
 
-        return { ...resp, loanExists }
+        return resp
       }
     },
 

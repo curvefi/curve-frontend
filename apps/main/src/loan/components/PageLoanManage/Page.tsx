@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { styled } from 'styled-components'
 import { Address } from 'viem'
 import { useAccount } from 'wagmi'
@@ -16,7 +16,6 @@ import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
-import useTitleMapper from '@/loan/hooks/useTitleMapper'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
@@ -44,7 +43,6 @@ const Page = () => {
   const { rFormType, rCollateralId } = parseCollateralParams(params)
   const push = useNavigate()
   const { connectState, llamaApi: curve = null, isHydrated } = useConnection()
-  const titleMapper = useTitleMapper()
   const rChainId = useChainId(params)
   const { address } = useAccount()
 
@@ -54,16 +52,11 @@ const Page = () => {
   const isMdUp = useLayoutStore((state) => state.isMdUp)
   const { data: loanExists } = useLoanExists({ chainId: rChainId, marketId, userAddress: address })
   const fetchLoanDetails = useStore((state) => state.loans.fetchLoanDetails)
-  const fetchUserLoanDetails = useStore((state) => state.loans.fetchUserLoanDetails)
-  const resetUserDetailsState = useStore((state) => state.loans.resetUserDetailsState)
   const chartExpanded = useStore((state) => state.ohlcCharts.chartExpanded)
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect: connectWallet } = useWallet()
 
-  const [loaded, setLoaded] = useState(false)
-
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
-  const isReady = !!curve?.signerAddress && !!market
 
   const marketDetails = useMarketDetails({ chainId: rChainId, llamma: market, llammaId: marketId })
   const positionDetails = useLoanPositionDetails({
@@ -93,41 +86,25 @@ const Page = () => {
   })
 
   useEffect(() => {
-    if (isHydrated && curve && rCollateralId && market) {
-      void (async () => {
-        const fetchedLoanDetails = await fetchLoanDetails(curve, market)
-        if (!fetchedLoanDetails.loanExists) {
-          resetUserDetailsState(market)
-          push(getLoanCreatePathname(params, rCollateralId))
-        }
-        setLoaded(true)
-      })()
+    if (curve && market) {
+      if (loanExists === false) {
+        push(getLoanCreatePathname(params, rCollateralId))
+      } else {
+        void fetchLoanDetails(curve, market)
+      }
     }
-  }, [
-    isReady,
-    isHydrated,
-    rFormType,
-    curve,
-    rCollateralId,
-    market,
-    fetchLoanDetails,
-    resetUserDetailsState,
-    push,
-    params,
-  ])
+  }, [curve, fetchLoanDetails, loanExists, market, params, push, rCollateralId])
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
     if (market && rFormType === 'deleverage' && !hasDeleverage(market)) {
       push(getLoanCreatePathname(params, market.id))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [loaded, rFormType, market])
+  }, [rFormType, market, push, params])
 
   usePageVisibleInterval(() => {
-    if (curve?.signerAddress && market && loanExists) {
+    if (curve && market && loanExists) {
       void fetchLoanDetails(curve, market)
-      void fetchUserLoanDetails(curve, market)
     }
   }, REFRESH_INTERVAL['1m'])
 
@@ -174,7 +151,6 @@ const Page = () => {
               rChainId={rChainId}
               rCollateralId={rCollateralId}
               rFormType={rFormType as FormType}
-              titleMapper={titleMapper}
             />
           )}
         </AppPageFormsWrapper>
