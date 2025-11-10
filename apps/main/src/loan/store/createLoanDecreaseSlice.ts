@@ -209,7 +209,7 @@ const createLoanDecrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDecrease.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.debt, formValues.isFullRepay)
-      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
 
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info

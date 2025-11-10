@@ -173,7 +173,7 @@ const createLoanSelfLiquidationSlice = (
 
       // api calls
       const { error, ...resp } = await loanSelfLiquidation.selfLiquidate(provider, market, maxSlippage)
-      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp) {
         const loanExists = await refetchLoanExists({

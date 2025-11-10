@@ -138,7 +138,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       const chainId = curve.chainId as ChainId
       const liquidateFn = networks[chainId].api.loanLiquidate.liquidate
       const resp = await liquidateFn(provider, llamma, maxSlippage)
-      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
       const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
       if (!loanExists) {
         get().loans.resetUserDetailsState(llamma)

@@ -219,7 +219,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
 
       // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
-      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
       // re-fetch loan info

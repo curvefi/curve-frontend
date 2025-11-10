@@ -182,7 +182,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
       const chainId = curve.chainId as ChainId
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
-      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
 
       if (activeKey === get()[sliceKey].activeKey) {
         // re-fetch loan info

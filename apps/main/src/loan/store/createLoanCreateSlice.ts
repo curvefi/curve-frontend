@@ -421,7 +421,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       if (n !== null) {
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
-        updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+        updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
 
         if (resp.activeKey === get()[sliceKey].activeKey) {
           get()[sliceKey].setStateByKeys({

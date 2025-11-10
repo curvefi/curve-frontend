@@ -304,7 +304,7 @@ const createLoanBorrowMore = (
         isLeverage,
       )
 
-      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {

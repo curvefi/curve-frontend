@@ -159,7 +159,7 @@ const createLoanDeleverageSlice = (
       const chainId = curve.chainId as ChainId
       const repayFn = networks[chainId].api.loanDeleverage.repay
       const resp = await repayFn(activeKey, provider, llamma, formValues.collateral, maxSlippage)
-      updateUserEventsApi(wallet, networks[chainId], llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         let loanExists = true

@@ -4,7 +4,8 @@ import type { INetworkName as LlamaNetworkId, INetworkName } from '@curvefi/llam
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
+import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import type { BaseConfig } from '@ui/utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { CRVUSD } from '@ui-kit/utils'
@@ -83,12 +84,12 @@ export const calculateLtv = (
 export const updateUserEventsApi = (
   wallet: Wallet,
   { id: networkId }: BaseConfig<LlamaNetworkId>,
-  marketController: string,
+  market: LlamaMarketTemplate,
   txHash: string,
-) =>
-  void getUserMarketCollateralEvents(
-    wallet.account.address,
-    networkId as Chain,
-    marketController as Address,
-    txHash as `0x${string}`,
-  )
+) => {
+  const [address, updateEvents] =
+    market instanceof LendMarketTemplate
+      ? [market.addresses.controller, getLendUserMarketCollateralEvents]
+      : [market.controller, getMintUserMarketCollateralEvents]
+  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as `0x${string}`)
+}

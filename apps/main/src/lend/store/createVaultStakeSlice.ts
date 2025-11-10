@@ -137,7 +137,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
       // api calls
       const { amount } = formValues
       const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
-      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api

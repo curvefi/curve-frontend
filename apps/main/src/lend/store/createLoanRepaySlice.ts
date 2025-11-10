@@ -262,7 +262,7 @@ const createLoanRepaySlice = (set: StoreApi<State>['setState'], get: StoreApi<St
         maxSlippage,
         swapRequired,
       )
-      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         const loanExists = await refetchLoanExists({

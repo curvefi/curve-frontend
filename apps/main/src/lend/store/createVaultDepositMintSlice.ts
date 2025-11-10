@@ -177,7 +177,7 @@ const createVaultMint = (
       const fn = _isDeposit(formType) ? apiLending.vaultDeposit.deposit : apiLending.vaultMint.mint
       const { amount } = formValues
       const resp = await fn(activeKey, provider, market, amount)
-      updateUserEventsApi(wallet, networks[chainId], market.addresses.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api
