@@ -7,9 +7,14 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
+import { useWallet } from '@ui-kit/features/connect-wallet'
+import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
+import Button from '@mui/material/Button'
 
 const { Height, Spacing } = SizesAndSpaces
+
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
+  const { provider, connect } = useWallet()
   // Calculate total positions across all markets (independent of filters)
   const openPositionsCount = useMemo((): Record<MarketRateType, number | undefined> => {
     const markets = props.result?.markets
@@ -49,7 +54,11 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
   const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
 
   return (
-    <Stack>
+    <Stack
+      sx={{
+        backgroundColor: (t) => t.design.Layer[1].Fill,
+      }}
+    >
       <Stack
         direction="row"
         alignItems="end"
@@ -59,30 +68,43 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           paddingInline: Spacing.md,
           flexGrow: 1,
           borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
-          backgroundColor: (t) => t.design.Layer[1].Fill,
         }}
       >
         <Typography variant="headingXsBold">Your Positions</Typography>
       </Stack>
-      <Stack
-        direction="row"
-        justifyContent="space-between"
-        // needed for the bottom border to be the same height as the tabs
-        alignItems="stretch"
-        sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
-      >
-        <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
-        <Stack
-          alignItems="center"
-          direction="row"
-          justifyContent="end"
-          sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}` }}
-        >
-          <LlamaMonitorBotButton />
+
+      {!provider ? (
+        <Stack alignSelf="center" paddingBlock={Spacing.md}>
+          <EmptyStateCard
+            action={
+              <Button size="medium" onClick={() => connect()}>
+                {t`Connect to view positions`}
+              </Button>
+            }
+          />
         </Stack>
-      </Stack>
-      {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
-      <UserPositionsTable key={tab} {...props} tab={tab} />
+      ) : (
+        <>
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            // needed for the bottom border to be the same height as the tabs
+            alignItems="stretch"
+          >
+            <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
+            <Stack
+              alignItems="center"
+              direction="row"
+              justifyContent="end"
+              sx={{ flexGrow: 1, borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}` }}
+            >
+              <LlamaMonitorBotButton />
+            </Stack>
+          </Stack>
+          {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
+          <UserPositionsTable key={tab} {...props} tab={tab} />
+        </>
+      )}
     </Stack>
   )
 }
