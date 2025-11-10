@@ -1,7 +1,7 @@
 import { orderBy } from 'lodash'
 import { oneOf } from '@cy/support/generators'
 import { setShowSmallPools } from '@cy/support/helpers/user-profile'
-import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneViewport } from '@cy/support/ui'
+import { API_LOAD_TIMEOUT, type Breakpoint, LOAD_TIMEOUT, oneMobileViewport } from '@cy/support/ui'
 
 const PATH = '/dex/arbitrum/pools/'
 
@@ -22,12 +22,16 @@ function parseCompactUsd(value: string): number {
   return num * 10 ** (unitIndex * 3)
 }
 
-function visitAndWait(width: number, height: number, options?: { page?: number } & Partial<Cypress.VisitOptions>) {
+function visitAndWait(
+  width: number,
+  height: number,
+  options?: { query?: Record<string, string> } & Partial<Cypress.VisitOptions>,
+) {
   cy.viewport(width, height)
-  const { page } = options ?? {}
-  cy.visit(`${PATH}${page ? `?page=${page}` : ''}`, options)
+  const { query } = options ?? {}
+  cy.visit(`${PATH}${query ? `?${new URLSearchParams(query)}` : ''}`, options)
   cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
-  if (page) {
+  if (query?.['page']) {
     cy.get('[data-testid="table-pagination"]').should('be.visible')
   }
 }
@@ -53,7 +57,8 @@ describe('DEX Pools', () => {
   let width: number, height: number
 
   beforeEach(() => {
-    ;[width, height, breakpoint] = oneViewport()
+    ;[width, height, breakpoint] = [...oneMobileViewport(), 'mobile']
+    // ;[width, height, breakpoint] = oneViewport()
   })
 
   describe('First page', () => {
@@ -75,6 +80,10 @@ describe('DEX Pools', () => {
       }
     }
 
+    /**
+     * Clicks on the given filter chip, opening the drawer on mobile if needed.
+     * Not using `withFilterChips` because the drawer closes automatically in this case.
+     */
     function clickFilterChip(chip: string, isMobile = breakpoint === 'mobile') {
       if (isMobile) {
         cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
@@ -86,7 +95,7 @@ describe('DEX Pools', () => {
 
     it('sorts by volume', () => {
       getTopUsdValues('volume').then((vals) => expectOrder(vals, 'desc')) // initial is Volume desc
-      // initial sort may be present; after sorting ascending, URL should include sort=volume
+      cy.url().should('not.include', 'volume') // initial sort not in URL
       if (breakpoint === 'mobile') return // on mobile, we cannot sort ascending at the moment
       sortBy('volume', 'asc')
       getTopUsdValues('volume').then((vals) => expectOrder(vals, 'asc'))
@@ -94,7 +103,7 @@ describe('DEX Pools', () => {
     })
 
     it('sorts by TVL (desc/asc)', () => {
-      // check URL reflects sorting changes
+      cy.url().should('not.include', 'tvl') // initial sort not in URL
       sortBy('tvl', 'desc')
       getTopUsdValues('tvl').then((vals) => expectOrder(vals, 'desc'))
       cy.url().should('include', 'sort=-tvl')
@@ -106,29 +115,19 @@ describe('DEX Pools', () => {
 
     it('filters by currency chip', () => {
       const currency = oneOf('usd', 'btc')
-      cy.get('[data-testid^="data-table-row-"]').then(($before) => {
-        const beforeCount = $before.length
+      const getHiddenCount = () =>
+        withFilterChips(() => cy.get('[data-testid="hidden-market-count"]').then(([{ innerText }]) => innerText))
+
+      getHiddenCount().then((beforeCount) => {
+        expect(isNaN(+beforeCount), `Cannot parse hidden count ${beforeCount}`).to.be.false
         clickFilterChip(currency)
-        cy.url().should('include', `filter=${currency}`)
-        cy.get('[data-testid^="data-table-row-"]').then(($after) => {
-          const afterCount = $after.length
-          expect(afterCount).to.be.lessThan(beforeCount)
-          // chip is in the drawer for mobile, check on desktop only
-          if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(`(${afterCount})`)
+        getHiddenCount().then((afterCount) => {
+          expect(+afterCount).to.be.greaterThan(+beforeCount)
+          // chip is in the drawer for mobile, check on desktop that we show count
+          if (breakpoint !== 'mobile') cy.get(`[data-testid="filter-chip-${currency}"]`).contains(/\(\d+\)/)
         })
         cy.get('[data-testid="data-table-cell-PoolName"]').contains(currency.toUpperCase())
       })
-    })
-
-    it('persists currency filter across reload', () => {
-      const currency = oneOf('usd', 'btc')
-      const currencyUpper = currency.toUpperCase()
-      cy.viewport(width, height)
-      cy.visit(`${PATH}?filter=${currency}`)
-      cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
-      cy.url().should('include', `filter=${currency}`)
-      // Verify content reflects the filter
-      cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(currencyUpper)
     })
 
     it('navigates to pool deposit page by clicking a row', () => {
@@ -142,13 +141,23 @@ describe('DEX Pools', () => {
     })
   })
 
+  it('persists currency filter across reload', () => {
+    const filter = oneOf('usd', 'btc')
+    visitAndWait(width, height, { query: { filter } })
+    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+    cy.url().should('include', `filter=${filter}`)
+    cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(filter.toUpperCase())
+    withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
+    cy.url().should('not.include', '?')
+  })
+
   it('paginates', () => {
     const getPages = ($buttons: JQuery) =>
       Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
 
     // open page 5 (1-based)
     visitAndWait(width, height, {
-      page: 5,
+      query: { page: '5' },
       // show small pools so we have more pages to test with, and the tests are more stable
       onBeforeLoad: (win) => setShowSmallPools(win.localStorage),
     })
@@ -186,4 +195,18 @@ describe('DEX Pools', () => {
       )
     })
   })
+
+  /**
+   * Makes sure that the filter chips are visible during the given callback.
+   * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
+   */
+  function withFilterChips(callback: () => Cypress.Chainable, isMobile = breakpoint === 'mobile') {
+    if (!isMobile) return callback()
+    cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+    cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+    return callback().then((result) => {
+      cy.get('body').click(0, 0)
+      return cy.wrap(result)
+    })
+  }
 })

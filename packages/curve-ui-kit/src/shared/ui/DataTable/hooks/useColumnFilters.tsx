@@ -1,6 +1,6 @@
 import { kebabCase } from 'lodash'
 import { useCallback, useEffect, useMemo } from 'react'
-import { type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
+import { notFalsy, type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
 
 // Similar to `ColumnFiltersState` from react-table, but more specific to have only string values (they are saved in url)
@@ -29,7 +29,7 @@ const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string 
   const { history, location } = window // avoid depending on the router so we can keep the function identity stable
   const params = new URLSearchParams([
     ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== id),
-    ...((value ?? '') !== '' ? [[id, value!] as [string, string]] : []),
+    ...notFalsy(value && [id, value]),
   ])
   const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
   history.pushState(null, '', params.size ? `?${search}` : location.pathname)
@@ -67,15 +67,10 @@ export function useColumnFilters<TColumnId extends string>(
   )
 
   const resetFilters = useCallback(() => {
-    const allowed = new Set(recordValues(columns))
     const params = new URLSearchParams(searchParams)
-    // remove all allowed filter keys
-    for (const key of allowed) params.delete(key)
-    // set defaults
-    defaultFilters?.forEach(({ id, value }) => params.set(id, value))
-    const pathname = params.size ? `?${params.toString()}` : location.pathname
-    history.pushState(null, '', pathname)
-  }, [defaultFilters, columns, searchParams])
+    recordValues(columns).forEach((key) => params.delete(key))
+    history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
+  }, [columns, searchParams])
 
   return [columnFilters, columnFiltersById, setColumnFilter, resetFilters] as const
 }
