@@ -1,7 +1,7 @@
 import { styled } from '@mui/material/styles'
 import { keyframes } from '@mui/material/styles'
-import { createSvgIcon } from '@mui/material/utils'
 import type { SvgIconProps } from '@mui/material/SvgIcon'
+import { createSvgIcon } from '@mui/material/utils'
 
 export const BellIcon = createSvgIcon(
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" fill="none">
