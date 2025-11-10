@@ -200,7 +200,7 @@ export const NumericTextField = ({
         ...sx,
         ...(adornment === 'bands' && {
           flexShrink: 0,
-          maxWidth: MaxWidth.sliderInput.bands,
+          minWidth: MaxWidth.sliderInput.bands,
         }),
       }}
       slotProps={{
