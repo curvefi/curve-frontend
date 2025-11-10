@@ -1,4 +1,7 @@
+import { styled } from '@mui/material/styles'
+import { keyframes } from '@mui/material/styles'
 import { createSvgIcon } from '@mui/material/utils'
+import type { SvgIconProps } from '@mui/material/SvgIcon'
 
 export const BellIcon = createSvgIcon(
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" fill="none">
@@ -11,3 +14,26 @@ export const BellIcon = createSvgIcon(
   </svg>,
   'Bell',
 )
+
+// Bell ringing animation - smooth shake with rotation
+const bellRing = keyframes`
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-12deg); }
+  30% { transform: rotate(10deg); }
+  40% { transform: rotate(-8deg); }
+  50% { transform: rotate(6deg); }
+  60% { transform: rotate(-4deg); }
+  70% { transform: rotate(2deg); }
+  80% { transform: rotate(-1deg); }
+  90% { transform: rotate(0.5deg); }
+  100% { transform: rotate(0deg); }
+`
+
+// BellRingingIcon component with hover animation
+export const BellRingingIcon = styled(BellIcon)<SvgIconProps>(({ theme }) => ({
+  '&:hover': {
+    animation: `${bellRing} 0.6s ease-in-out`,
+    transformOrigin: 'top center',
+  },
+}))

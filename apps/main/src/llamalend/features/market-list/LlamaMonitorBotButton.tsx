@@ -4,7 +4,7 @@ import Link from '@mui/material/Link'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { ArrowTopRightIcon } from '@ui-kit/shared/icons/ArrowTopRightIcon'
-import { BellIcon } from '@ui-kit/shared/icons/BellIcon'
+import { BellRingingIcon } from '@ui-kit/shared/icons/BellIcon'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -22,7 +22,7 @@ export const LlamaMonitorBotButton = () => {
       size="extraSmall"
       sx={{ marginInlineEnd: Spacing.lg }}
     >
-      <BellIcon />
+      <BellRingingIcon />
     </IconButton>
   ) : (
     <Button
@@ -30,7 +30,7 @@ export const LlamaMonitorBotButton = () => {
       size="extraSmall"
       component={Link}
       sx={{ textDecoration: 'underline', textUnderlineOffset: '2px', '&:hover': { textDecoration: 'underline' } }}
-      startIcon={<BellIcon fontSize={'small'} />}
+      startIcon={<BellRingingIcon fontSize={'small'} />}
       endIcon={<ArrowTopRightIcon fontSize={'small'} />}
       href={LLAMA_MONITOR_BOT_URL}
       target="_blank"
