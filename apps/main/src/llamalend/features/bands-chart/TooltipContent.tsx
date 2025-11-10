@@ -66,7 +66,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
               </TooltipItem>
               <TooltipItem variant="subItem" title={borrowToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandBorrowedAmount)}
-                {`$${formatUsd(data.bandBorrowedValueUsd ?? 0)}`}
+                {`${formatUsd(data.bandBorrowedValueUsd ?? 0)}`}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>

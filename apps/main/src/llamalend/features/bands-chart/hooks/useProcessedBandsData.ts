@@ -40,59 +40,56 @@ export const useProcessedBandsData = ({
       return [
         band.n,
         {
-          n: Number(band.n),
-          pUpDownMedian: Number(band.pUpDownMedian),
-          p_up: Number(band.p_up),
-          p_down: Number(band.p_down),
+          n: band.n,
+          pUpDownMedian: band.pUpDownMedian,
+          p_up: band.p_up,
+          p_down: band.p_down,
           bandCollateralAmount: collateralAmount,
           bandCollateralValueUsd: collateralValueUsd,
           bandBorrowedAmount: borrowedAmount,
           bandBorrowedValueUsd: borrowedValueUsd,
           bandTotalCollateralValueUsd:
-            collateralValueUsd === undefined && borrowedValueUsd === undefined
-              ? undefined
-              : (collateralValueUsd ?? 0) + (borrowedValueUsd ?? 0),
+            typeof collateralValueUsd === 'number' && typeof borrowedValueUsd === 'number'
+              ? collateralValueUsd + borrowedValueUsd
+              : undefined,
           isLiquidationBand: band.isLiquidationBand,
-          isOraclePriceBand: Number(band.n) === oraclePriceBand,
+          isOraclePriceBand: band.n === oraclePriceBand,
+        },
+      ]
+    })
+
+    const userTuples: [number, ChartDataPoint][] = userBands.map((band) => {
+      const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
+      return [
+        band.n,
+        {
+          n: band.n,
+          pUpDownMedian: band.pUpDownMedian,
+          p_up: band.p_up,
+          p_down: band.p_down,
+          userBandCollateralAmount: collateralAmount,
+          userBandCollateralValueUsd: collateralValueUsd,
+          userBandBorrowedAmount: borrowedAmount,
+          userBandBorrowedValueUsd: borrowedValueUsd,
+          userBandTotalCollateralValueUsd:
+            typeof collateralValueUsd === 'number' && typeof borrowedValueUsd === 'number'
+              ? collateralValueUsd + borrowedValueUsd
+              : undefined,
+          isLiquidationBand: band.isLiquidationBand,
+          isOraclePriceBand: band.n === oraclePriceBand,
         },
       ]
     })
 
     const bandsMap = new Map<number, ChartDataPoint>(marketTuples)
 
-    userBands.forEach((band) => {
-      const key = band.n
+    userTuples.forEach(([key, userBandData]) => {
       const existing = bandsMap.get(key)
-      const { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd } = getBandValues(band)
-
       if (existing) {
-        existing.userBandCollateralAmount = collateralAmount
-        existing.userBandCollateralValueUsd = collateralValueUsd
-        existing.userBandBorrowedAmount = borrowedAmount
-        existing.userBandBorrowedValueUsd = borrowedValueUsd
-        existing.userBandTotalCollateralValueUsd =
-          collateralValueUsd === undefined && borrowedValueUsd === undefined
-            ? undefined
-            : (collateralValueUsd ?? 0) + (borrowedValueUsd ?? 0)
-        return
+        bandsMap.set(key, { ...existing, ...userBandData })
+      } else {
+        bandsMap.set(key, userBandData)
       }
-
-      bandsMap.set(key, {
-        n: Number(band.n),
-        pUpDownMedian: Number(band.pUpDownMedian),
-        p_up: Number(band.p_up),
-        p_down: Number(band.p_down),
-        userBandCollateralAmount: collateralAmount,
-        userBandCollateralValueUsd: collateralValueUsd,
-        userBandBorrowedAmount: borrowedAmount,
-        userBandBorrowedValueUsd: borrowedValueUsd,
-        userBandTotalCollateralValueUsd:
-          collateralValueUsd === undefined && borrowedValueUsd === undefined
-            ? undefined
-            : (collateralValueUsd ?? 0) + (borrowedValueUsd ?? 0),
-        isLiquidationBand: band.isLiquidationBand,
-        isOraclePriceBand: Number(band.n) === oraclePriceBand,
-      })
     })
 
     const parsedData = Array.from(bandsMap.values())

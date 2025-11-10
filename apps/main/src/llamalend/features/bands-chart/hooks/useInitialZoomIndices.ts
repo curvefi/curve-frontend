@@ -38,9 +38,11 @@ export const useInitialZoomIndices = (
     let [startIndex, endIndex] = [Math.min(...userIndices), Math.max(...userIndices)]
 
     // Expand range to include oracle price if available
-    const oracleIdx =
-      chartData.findIndex((d) => d.isOraclePriceBand) ||
-      (oraclePrice ? chartData.findIndex((d) => Math.abs(d.pUpDownMedian - Number(oraclePrice)) < 0.01) : -1)
+    let oracleIdx = chartData.findIndex((d) => d.isOraclePriceBand)
+
+    if (oracleIdx === -1 && oraclePrice) {
+      oracleIdx = chartData.findIndex((d) => Math.abs(d.pUpDownMedian - Number(oraclePrice)) < 0.01)
+    }
 
     if (oracleIdx !== -1) {
       startIndex = Math.min(startIndex, oracleIdx)
