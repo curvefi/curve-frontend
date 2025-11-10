@@ -278,12 +278,12 @@ export const LargeTokenInput = ({
         cancelSetBalance()
 
         /**
-         * When the balance is invalid, we don't set the internal balance state to 0, but we do emit the onBalance event
-         * with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
+         * When the balance is has been mad empty, we don't set the internal balance state to 0, but we do emit the onBalance event
+         * with undefined. This allows the UI to transition from a previously valid state to indicating "no value",
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
          */
-        onBalance(undefined)
+        if (newBalance === '') onBalance(undefined)
 
         return
       }
