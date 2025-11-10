@@ -20,7 +20,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
-import { SliderInput } from './SliderInput'
+import { SliderInput, SliderInputProps } from './SliderInput'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
@@ -191,6 +191,9 @@ export type LargeTokenInputProps = {
    * @param balance The new balance value
    */
   onBalance: (balance: Decimal | undefined) => void
+
+  /** Optional props forwarded to the slider */
+  sliderProps?: SliderInputProps['sliderProps']
 }
 
 /**
@@ -247,6 +250,7 @@ export const LargeTokenInput = ({
   balance: externalBalance,
   inputBalanceUsd,
   testId,
+  sliderProps,
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
@@ -427,6 +431,7 @@ export const LargeTokenInput = ({
               onChange={(value) => handlePercentageChange(value as Decimal)}
               sliderProps={{
                 'data-rail-background': 'danger',
+                ...sliderProps,
               }}
               min={MIN_PERCENTAGE}
               max={MAX_PERCENTAGE}
