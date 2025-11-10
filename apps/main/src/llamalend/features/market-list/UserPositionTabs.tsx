@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
@@ -11,8 +10,9 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
+import { UserPositionHeader } from './UserPositionHeader'
 
-const { Height, Spacing } = SizesAndSpaces
+const { Spacing } = SizesAndSpaces
 
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   const { provider, connect } = useWallet()
@@ -60,20 +60,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
         backgroundColor: (t) => t.design.Layer[1].Fill,
       }}
     >
-      <Stack
-        direction="row"
-        alignItems="end"
-        sx={{
-          minHeight: Height.userPositionsTitle,
-          paddingBlockEnd: Spacing.sm,
-          paddingInline: Spacing.md,
-          flexGrow: 1,
-          borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
-        }}
-      >
-        <Typography variant="headingXsBold">Your Positions</Typography>
-      </Stack>
-
+      <UserPositionHeader />
       {!provider ? (
         <Stack alignSelf="center" paddingBlock={Spacing.md}>
           <EmptyStateCard
