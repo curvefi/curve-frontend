@@ -35,6 +35,11 @@ const DEFAULT_SORT = {
   [MarketRateType.Supply]: DEFAULT_SORT_SUPPLY,
 }
 
+const SORT_QUERY_FIELD = {
+  [MarketRateType.Borrow]: 'userSortBorrow',
+  [MarketRateType.Supply]: 'userSortSupply',
+}
+
 const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState => {
   if (isError) return PositionsEmptyState.Error
   if (!hasPositions) return PositionsEmptyState.Positions
@@ -61,11 +66,6 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const userData = useMemo(() => data.filter((market) => market.userHasPositions?.[tab]), [data, tab])
   const [isShowingAll, showAllRows] = useShowAllPositionsRows(tab)
 
-  const displayedData = useMemo(
-    () => (isShowingAll ? userData : userData.slice(0, DEFAULT_VISIBLE_ROWS)),
-    [userData, isShowingAll],
-  )
-
   const defaultFilters = useDefaultUserFilter(tab)
   const title = LOCAL_STORAGE_KEYS[tab]
   const [columnFilters, columnFiltersById, setColumnFilter, resetFilters] = useColumnFilters(
@@ -73,7 +73,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     migration,
     defaultFilters,
   )
-  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], 'userSort')
+  const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
@@ -81,7 +81,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
-    data: displayedData,
+    data: userData,
     state: { expanded, sorting, columnVisibility, columnFilters },
     initialState: { pagination },
     onSortingChange,
@@ -94,6 +94,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     <>
       <DataTable
         table={table}
+        rowLimit={isShowingAll ? undefined : DEFAULT_VISIBLE_ROWS}
         emptyState={
           <UserPositionsEmptyState
             state={getEmptyState(isError, userData.length > 0)}
