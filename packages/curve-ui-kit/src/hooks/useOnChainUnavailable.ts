@@ -1,24 +1,32 @@
 import { useCallback } from 'react'
+import { recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkMapping } from '@ui/utils'
-import { replaceNetworkInPath } from '@ui-kit/shared/routes'
-import { useNavigate, usePathname } from './router'
+import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
+import { getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
+import { useNavigate } from './router'
 
 export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | undefined) {
-  const pathname = usePathname()
-  const push = useNavigate()
+  const navigate = useNavigate()
   return useCallback(
     <TChainId extends number>([networkChainId, walletChainId]: [TChainId | undefined, TChainId | undefined]) => {
-      const network =
-        (walletChainId && networks?.[walletChainId]?.id) || (networkChainId && networks?.[networkChainId]?.id)
-      if (pathname === '/') {
-        console.info(`At root path, redirecting to the available network ${network}...`)
-        return push(`/dex/${network ?? 'ethereum'}/swap`)
-      }
-      if (network) {
-        console.warn(`Network switched to ${network}, redirecting...`, pathname)
-        push(replaceNetworkInPath(pathname, network))
-      }
+      const newNetworkId =
+        (walletChainId && networks?.[walletChainId]?.id) ||
+        (networkChainId && networks?.[networkChainId]?.id) ||
+        ('ethereum' as const)
+      const { location } = window // Use window location to preserve full URL including hash
+      const { pathname, href } = location
+      const redirectUrl = getCurrentNetwork(pathname)
+        ? replaceNetworkInPath(pathname, newNetworkId)
+        : getHashRedirectUrl(location, newNetworkId)
+      console.warn(
+        `Redirecting from ${href} to ${redirectUrl}...`,
+        `Supported networks: ${recordValues(networks ?? {})
+          .map((n) => n.id)
+          .join(', ')}.`,
+        `Wallet has chain ${walletChainId} app ${networkChainId}`,
+      )
+      return navigate(redirectUrl, { replace: true })
     },
-    [networks, pathname, push],
+    [networks, navigate],
   )
 }
