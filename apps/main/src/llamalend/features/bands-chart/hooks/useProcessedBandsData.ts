@@ -95,12 +95,20 @@ export const useProcessedBandsData = ({
     const parsedData = Array.from(bandsMap.values())
     const firstDataIdx = parsedData.findIndex(_findDataIndex)
     const lastDataIdx = parsedData.findLastIndex(_findDataIndex)
+    const oracleIdx = parsedData.findIndex((d) => d.isOraclePriceBand)
 
     if (firstDataIdx === -1) {
       return parsedData.sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
     }
 
-    const slicedData = parsedData.slice(firstDataIdx, lastDataIdx + 1)
+    // Expand slice to include a small neighborhood around the oracle band in order to always show oracle price mark line
+    const neighborhood = 1
+    const leftOracleIdx = oracleIdx !== -1 ? Math.max(0, oracleIdx - neighborhood) : firstDataIdx
+    const rightOracleIdx = oracleIdx !== -1 ? Math.min(parsedData.length - 1, oracleIdx + neighborhood) : lastDataIdx
+    const sliceStartIdx = Math.min(firstDataIdx, leftOracleIdx)
+    const sliceEndIdx = Math.max(lastDataIdx, rightOracleIdx)
+
+    const slicedData = parsedData.slice(sliceStartIdx, sliceEndIdx + 1)
     return slicedData.sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
   }, [marketBandsBalances, userBandsBalances, oraclePriceBand, collateralUsdRate, borrowedUsdRate])
 

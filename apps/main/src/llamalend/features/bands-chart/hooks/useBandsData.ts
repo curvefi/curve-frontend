@@ -44,6 +44,10 @@ export const useBandsData = ({
     loanExists,
     liquidationBand,
   })
+  const { data: oraclePriceBand, isLoading: isMarketOraclePriceBandLoading } = useMarketOraclePriceBand({
+    chainId,
+    marketId,
+  })
   const {
     data: marketBandsBalances,
     isLoading: isMarketBandsBalancesLoading,
@@ -52,10 +56,7 @@ export const useBandsData = ({
     chainId,
     marketId,
     liquidationBand,
-  })
-  const { data: oraclePriceBand, isLoading: isMarketOraclePriceBandLoading } = useMarketOraclePriceBand({
-    chainId,
-    marketId,
+    oraclePriceBand,
   })
   const { data: oraclePrice, isLoading: isMarketOraclePriceLoading } = useMarketOraclePrice({
     chainId,
