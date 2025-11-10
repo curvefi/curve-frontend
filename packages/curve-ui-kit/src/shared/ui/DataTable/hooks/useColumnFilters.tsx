@@ -58,23 +58,24 @@ export function useColumnFilters<TColumnId extends string>({
     [searchParams, columns, defaultFilters],
   )
 
-  const columnFiltersById: PartialRecord<TColumnId, string> = useMemo(
-    () =>
-      columnFilters.reduce(
-        (acc, filter) => ({
-          ...acc,
-          [filter.id]: filter.value,
-        }),
-        {} as PartialRecord<TColumnId, string>,
-      ),
-    [columnFilters],
-  )
-
-  const resetFilters = useCallback(() => {
-    const params = new URLSearchParams(searchParams)
-    recordValues(columns).forEach((key) => params.delete(key))
-    history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
-  }, [columns, searchParams])
-
-  return { columnFilters, columnFiltersById, setColumnFilter, resetFilters }
+  return {
+    columnFilters,
+    columnFiltersById: useMemo(
+      () =>
+        columnFilters.reduce(
+          (acc, filter) => ({
+            ...acc,
+            [filter.id]: filter.value,
+          }),
+          {} as PartialRecord<TColumnId, string>,
+        ),
+      [columnFilters],
+    ),
+    setColumnFilter,
+    resetFilters: useCallback(() => {
+      const params = new URLSearchParams(searchParams)
+      recordValues(columns).forEach((key) => params.delete(key))
+      history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
+    }, [columns, searchParams]),
+  }
 }
