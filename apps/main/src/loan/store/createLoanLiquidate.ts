@@ -9,7 +9,6 @@ import { ChainId, LlamaApi, Llamma, UserWalletBalances } from '@/loan/types/loan
 import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -44,7 +43,7 @@ export type LoanLiquidateSlice = {
       llamma: Llamma,
       liquidationAmt: string,
       maxSlippage: string,
-    ): Promise<{ error: string; hash: string } | undefined>
+    ): Promise<{ error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -141,10 +140,10 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
       const resp = await liquidateFn(provider, llamma, maxSlippage)
       // update user events api
       void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
-
-      await get().loans.fetchLoanDetails(curve, llamma)
-      invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
-
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists) {
+        get().loans.resetUserDetailsState(llamma)
+      }
       get()[sliceKey].setStateByKeys({
         formEstGas: DEFAULT_FORM_EST_GAS,
         formStatus: {
@@ -156,7 +155,7 @@ const createLoanLiquidate = (set: StoreApi<State>['setState'], get: StoreApi<Sta
         },
         liquidationAmt: '',
       })
-      return resp
+      return { ...resp, loanExists }
     },
 
     // slice helpers

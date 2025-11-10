@@ -1,18 +1,37 @@
-import { zeroAddress } from 'viem'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
+import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
-import { getChartBandBalancesData, reverseBands, sortBands } from '@/loan/utils/utilsCurvejs'
+import {
+  getChartBandBalancesData,
+  getIsUserCloseToLiquidation,
+  getLiquidationStatus,
+  parseUserLoss,
+  reverseBands,
+  sortBands,
+} from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
-import { fetchUserLoanDetails } from '../entities/user-loan-details.query'
 
 export const network = {
   1: {
     blockchainId: 'ethereum',
   },
+}
+
+const DEFAULT_USER_STATE = {
+  collateral: '0',
+  stablecoin: '0',
+  debt: '0',
+}
+
+const DEFAULT_USER_LOSS = {
+  deposited_collateral: '0',
+  current_collateral_estimation: '0',
+  loss: '0',
+  loss_pct: '0',
 }
 
 const DEFAULT_BAND_BALANCES = {
@@ -139,6 +158,98 @@ const detailInfo = {
       balances,
       bandsBalances: parsedBandsBalances,
     }
+  },
+  userLoanInfo: async (llamma: Llamma, address: string) => {
+    log('userLoanInfo', llamma.collateralSymbol, address)
+    const loanExists = await llamma.loanExists(address)
+    const fetchedPartialUserLoanInfo = await detailInfo.userLoanPartialInfo(llamma, address)
+
+    const [userBandsRangeResult, userPricesResult, userLossResult, userBandsBalancesResult] = await Promise.allSettled([
+      loanExists ? llamma.userRange(address) : Promise.resolve(0),
+      loanExists ? llamma.userPrices(address) : Promise.resolve([] as string[]),
+      loanExists ? llamma.userLoss(address) : Promise.resolve(DEFAULT_USER_LOSS),
+      loanExists ? llamma.userBandsBalances(address) : Promise.resolve(DEFAULT_BAND_BALANCES),
+    ])
+
+    const userBandsRange = fulfilledValue(userBandsRangeResult) ?? null
+    const userPrices = fulfilledValue(userPricesResult) ?? ([] as string[])
+    const userLoss = fulfilledValue(userLossResult) ?? DEFAULT_USER_LOSS
+    const userBandsBalances = fulfilledValue(userBandsBalancesResult) ?? DEFAULT_BAND_BALANCES
+
+    const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
+
+    const parsedBandsBalances = await getChartBandBalancesData(
+      sortBands(userBandsBalances),
+      userLiquidationBand,
+      llamma,
+    )
+
+    const fetchedUserDetails: UserLoanDetails = {
+      loading: false,
+      ...fetchedPartialUserLoanInfo,
+      userBandsBalances: parsedBandsBalances,
+      userBandsRange,
+      userBandsPct: userBandsRange ? llamma.calcRangePct(userBandsRange) : '0',
+      userPrices,
+      userLoss: parseUserLoss(userLoss),
+      userStatus: getLiquidationStatus(healthNotFull, userIsCloseToLiquidation, userState.stablecoin),
+    }
+
+    return fetchedUserDetails
+  },
+  userLoanPartialInfo: async (llamma: Llamma, address: string) => {
+    log('userLoanInfo', llamma.collateralSymbol, address)
+    const loanExists = await llamma?.loanExists(address)
+
+    const [
+      healthFullResult,
+      healthNotFullResult,
+      userBandsResult,
+      userStateResult,
+      liquidatingBandResult,
+      oraclePriceBandResult,
+    ] = await Promise.allSettled([
+      loanExists ? llamma.userHealth(true, address) : Promise.resolve(''),
+      loanExists ? llamma.userHealth(false, address) : Promise.resolve(''),
+      loanExists ? llamma.userBands(address) : Promise.resolve([0, 0]),
+      loanExists ? llamma.userState(address) : Promise.resolve(DEFAULT_USER_STATE),
+      loanExists ? llamma.stats.liquidatingBand() : Promise.resolve(null),
+      loanExists ? llamma.oraclePriceBand() : Promise.resolve(null),
+    ])
+
+    const healthFull = fulfilledValue(healthFullResult) ?? ''
+    const healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
+    const userBands = fulfilledValue(userBandsResult) ?? ([0, 0] as [number, number])
+    const userState = fulfilledValue(userStateResult) ?? DEFAULT_USER_STATE
+    const userLiquidationBand = fulfilledValue(liquidatingBandResult) ?? null
+    const oraclePriceBand = fulfilledValue(oraclePriceBandResult) ?? null
+
+    const reversedUserBands = reverseBands(userBands)
+    const userIsCloseToLiquidation = getIsUserCloseToLiquidation(
+      reversedUserBands[0],
+      userLiquidationBand,
+      oraclePriceBand,
+    )
+
+    const fetchedUserDetails: {
+      healthFull: UserLoanDetails['healthFull']
+      healthNotFull: UserLoanDetails['healthNotFull']
+      userBands: UserLoanDetails['userBands']
+      userHealth: UserLoanDetails['userHealth']
+      userIsCloseToLiquidation: UserLoanDetails['userIsCloseToLiquidation']
+      userState: UserLoanDetails['userState']
+      userLiquidationBand: UserLoanDetails['userLiquidationBand']
+    } = {
+      healthFull,
+      healthNotFull,
+      userBands: reversedUserBands,
+      userHealth: +healthNotFull < 0 ? healthNotFull : healthFull,
+      userIsCloseToLiquidation,
+      userState,
+      userLiquidationBand,
+    }
+
+    return fetchedUserDetails
   },
   userBalances: async (llamma: Llamma) => {
     log('userBalances', llamma.collateralSymbol)
@@ -636,13 +747,19 @@ const loanLiquidate = {
     const resp = { tokensToLiquidate: '', warning: '', error: '' }
 
     try {
-      const userLoanDetails = await fetchUserLoanDetails({ chainId, marketId: llamma.id, userAddress: zeroAddress })
+      const [userLoanDetailsResult, tokensToLiquidateResult] = await Promise.allSettled([
+        networks[chainId].api.detailInfo.userLoanInfo(llamma, ''),
+        llamma.tokensToLiquidate(),
+      ])
+
+      const userLoanDetails = fulfilledValue(userLoanDetailsResult) ?? ({} as UserLoanDetails)
+      const tokensToLiquidate = fulfilledValue(tokensToLiquidateResult) ?? ''
+
       if (userLoanDetails?.userLiquidationBand === null) {
         resp.warning = 'warning-not-in-liquidation-mode'
-        return resp
+      } else {
+        resp.tokensToLiquidate = tokensToLiquidate
       }
-
-      resp.tokensToLiquidate = await llamma.tokensToLiquidate()
 
       return resp
     } catch (error) {

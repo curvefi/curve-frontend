@@ -1,5 +1,4 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
-import { useAccount } from 'wagmi'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -12,7 +11,7 @@ import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLo
 import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { DEFAULT_WALLET_BALANCES } from '@/loan/constants'
-import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import { DEFAULT_FORM_STATUS } from '@/loan/store/createLoanCollateralDecreaseSlice'
 import useStore from '@/loan/store/useStore'
@@ -48,9 +47,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
   const formValues = useStore((state) => state.loanCollateralDecrease.formValues)
   const maxRemovable = useStore((state) => state.loanCollateralDecrease.maxRemovable)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: llammaId, userAddress })
+  const userLoanDetails = useUserLoanDetails(llammaId)
   const userWalletBalances = useStore(
     (state) => state.loans.userWalletBalancesMapper[llammaId] ?? DEFAULT_WALLET_BALANCES,
   )

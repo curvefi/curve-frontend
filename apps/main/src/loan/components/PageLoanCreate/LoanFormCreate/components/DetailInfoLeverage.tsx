@@ -1,5 +1,4 @@
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstGas from '@/loan/components/DetailInfoEstimateGas'
 import DetailInfoHealth from '@/loan/components/DetailInfoHealth'
@@ -9,7 +8,7 @@ import DetailInfoSlippageTolerance from '@/loan/components/DetailInfoSlippageTol
 import DetailInfoTradeRoutes from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfoTradeRoutes'
 import type { FormDetailInfo, FormDetailInfoSharedProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_DETAIL_INFO_LEVERAGE } from '@/loan/components/PageLoanCreate/utils'
-import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import DetailInfo from '@ui/DetailInfo'
@@ -43,13 +42,7 @@ const DetailInfoLeverage = ({
   const isEditLiqRange = useStore((state) => state.loanCreate.isEditLiqRange)
   const liqRanges = useStore((state) => state.loanCreate.liqRanges[activeKeyLiqRange])
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails } = useUserLoanDetails({
-    chainId,
-    marketId: llammaId,
-    userAddress,
-  })
+  const userLoanDetails = useUserLoanDetails(llammaId)
 
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
 
