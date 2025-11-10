@@ -30,8 +30,6 @@ import {
   RewardCrv,
   RewardOther,
   UserLoanDetails,
-  UserLoanHealth,
-  UserLoanState,
   UserLoss,
   UserMarketBalances,
 } from '@/lend/types/lend.types'
@@ -316,45 +314,6 @@ const market = {
 }
 
 const user = {
-  fetchLoansDetailsHealth: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchUsersLoansDetailsHealth', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserLoanHealth } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        results[userActiveKey] = { healthFull: '', healthNotFull: '', error }
-      })
-      .process(async (market) => {
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        const [healthFull, healthNotFull] = await Promise.all([market.userHealth(), market.userHealth(false)])
-
-        results[userActiveKey] = { healthFull, healthNotFull, error: '' }
-      })
-
-    return results
-  },
-  fetchLoansDetailsState: async (api: Api, markets: OneWayMarketTemplate[]) => {
-    log('fetchUsersLoansDetailsState', api.chainId, markets.length)
-    const results: { [userActiveKey: string]: UserLoanState } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        results[userActiveKey] = { collateral: '', borrowed: '', debt: '', N: '', error }
-      })
-      .process(async (market) => {
-        const userActiveKey = helpers.getUserActiveKey(api, market)
-        const state = await market.userState()
-        results[userActiveKey] = { ...state, error: '' }
-      })
-
-    return results
-  },
   fetchLoansDetails: async (api: Api, markets: OneWayMarketTemplate[]) => {
     log('fetchUsersLoansDetails', api.chainId, markets.length)
     const results: { [userActiveKey: string]: UserLoanDetails } = {}

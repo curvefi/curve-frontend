@@ -5,8 +5,7 @@ import Container from '@mui/material/Container'
 import Toolbar from '@mui/material/Toolbar'
 import { ConnectWalletIndicator } from '@ui-kit/features/connect-wallet'
 import { ChainSwitcher } from '@ui-kit/features/switch-chain'
-import { UserProfileButton } from '@ui-kit/features/user-profile'
-import { useUserProfileButton } from '@ui-kit/hooks/useFeatureFlags'
+import { UserProfile } from '@ui-kit/features/user-profile'
 import { type AppMenuOption } from '@ui-kit/shared/routes'
 import { GlobalBanner } from '@ui-kit/shared/ui/GlobalBanner'
 import { DEFAULT_BAR_SIZE } from '@ui-kit/themes/components'
@@ -47,7 +46,7 @@ export const DesktopHeader = ({
           <Box sx={{ flexGrow: 1 }} />
 
           <Box display="flex" marginLeft={2} justifyContent="flex-end" gap={3} alignItems="center">
-            <UserProfileButton visible={useUserProfileButton()} />
+            <UserProfile />
             <ChainSwitcher networks={supportedNetworks} />
             <ConnectWalletIndicator />
           </Box>
