@@ -2,7 +2,9 @@ import { useMemo, useState } from 'react'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { useWallet } from '@ui-kit/features/connect-wallet'
+import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { t } from '@ui-kit/lib/i18n'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
@@ -10,12 +12,13 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
-import { UserPositionHeader } from './UserPositionHeader'
+import { UserPositionStatistics } from './UserPositionStatistics'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, Height } = SizesAndSpaces
 
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
   const { provider, connect } = useWallet()
+  const isMobile = useIsMobile()
   // Calculate total positions across all markets (independent of filters)
   const { markets } = props.result ?? {}
   const openPositionsCount = useMemo(
@@ -60,7 +63,19 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
         backgroundColor: (t) => t.design.Layer[1].Fill,
       }}
     >
-      <UserPositionHeader />
+      <Stack
+        direction="row"
+        alignItems="end"
+        sx={{
+          minHeight: Height.userPositionsTitle,
+          paddingBlockEnd: Spacing.sm,
+          paddingInline: Spacing.md,
+          flexGrow: 1,
+          borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+        }}
+      >
+        <Typography variant="headingXsBold">Your Positions</Typography>
+      </Stack>
       {!provider ? (
         <Stack alignSelf="center" paddingBlock={Spacing.md}>
           <EmptyStateCard
@@ -73,6 +88,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
         </Stack>
       ) : (
         <>
+          {!isMobile && <UserPositionStatistics />}
           <Stack
             direction="row"
             justifyContent="space-between"
