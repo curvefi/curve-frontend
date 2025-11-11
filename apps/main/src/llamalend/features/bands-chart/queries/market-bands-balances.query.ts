@@ -68,6 +68,8 @@ export const { useQuery: useMarketBandsBalances } = queryFactory({
         data.push({
           borrowed: '0',
           collateral: '0',
+          collateralUsd: 0,
+          collateralBorrowedUsd: 0,
           isLiquidationBand: normalizedLiquidationBand ? (normalizedLiquidationBand === +band ? 'SL' : '') : '',
           n: band,
           p_up: Number(p_up),

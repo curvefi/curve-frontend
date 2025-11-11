@@ -52,6 +52,8 @@ export type BandsBalancesArr = { borrowed: string; collateral: string; band: num
 export type FetchedBandsBalances = {
   borrowed: string
   collateral: string
+  collateralUsd: number
+  collateralBorrowedUsd: number
   isLiquidationBand: string
   n: number
   p_up: number

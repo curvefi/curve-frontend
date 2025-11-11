@@ -67,12 +67,13 @@ export const useBandsData = ({
     () => parseFetchedBandsBalances(userBandsBalances, collateralUsdRate, borrowedUsdRate),
     [userBandsBalances, collateralUsdRate, borrowedUsdRate],
   )
+
   const chartData = useProcessedBandsData({
-    marketBandsBalances: parseFetchedBandsBalances(marketBandsBalances, collateralUsdRate, borrowedUsdRate),
+    marketBandsBalances: marketBandsBalances,
     userBandsBalances: parsedUserBandsBalances,
     oraclePriceBand,
-    collateralUsdRate: collateralUsdRate ?? null,
-    borrowedUsdRate: borrowedUsdRate ?? null,
+    collateralUsdRate,
+    borrowedUsdRate,
   })
 
   const isLoading =
