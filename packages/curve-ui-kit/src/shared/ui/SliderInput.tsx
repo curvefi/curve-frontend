@@ -1,4 +1,4 @@
-import { clamp } from 'lodash'
+import { clamp, sortBy } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
@@ -67,17 +67,20 @@ const sliderInputMaxWidthMap: Record<NonNullable<SliderInputProps<any>['layoutDi
   column: MaxWidth.sliderInput.md,
 }
 
+/**
+ * Applies a function to either a single value or to both values of a tuple, preserving the shape.
+ */
+const apply = <T, R>(value: T | [T, T], fn: (v: T) => R): R | [R, R] =>
+  Array.isArray(value) ? [fn(value[0]), fn(value[1])] : fn(value)
+
 /** Clamps a Decimal or Decimal range between min and max bounds */
 const clampDecimal = <T extends Decimal | DecimalRangeValue>(
   value: Decimal | DecimalRangeValue,
   min: number,
   max: number,
-): T =>
-  isRangeValue(value)
-    ? (value.map((v) => decimal(clamp(Number(v), min, max))) as T)
-    : (decimal(clamp(Number(value), min, max)) as T)
+): T => apply(value, (v) => decimal(clamp(Number(v), min, max))) as T
 
-const isRangeValue = <T,>(value: T | [T, T]): value is [T, T] => Array.isArray(value)
+const isRangeValue = (value: Decimal | DecimalRangeValue): value is DecimalRangeValue => Array.isArray(value)
 
 /**
  * A controlled slider component with synchronized numeric input fields.
@@ -128,42 +131,28 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   const displayValue = useMemo((): T => internalValue ?? value, [internalValue, value])
 
   /** The slider's numeric value with sliderValueTransform mapping if provided (e.g. logarithmic scales) */
-  const sliderValue = useMemo<SliderValue>(
-    () =>
-      (isRangeValue(displayValue)
-        ? displayValue.map((value) => mapToSliderValue(Number(value)))
-        : mapToSliderValue(Number(displayValue))) as SliderValue,
+  const sliderValue = useMemo(
+    (): SliderValue => apply(displayValue, (v) => mapToSliderValue(Number(v))) as SliderValue,
     [displayValue, mapToSliderValue],
   )
 
   /** Commits value without debouncing for slider and inputs on slider release and input blur */
   const commitValue = useCallback(
     (nextValue: T | undefined) => {
-      if (nextValue == null) {
-        return
-      }
+      if (nextValue == null) return
       setInternalValue(nextValue)
       cancelDebounce()
-      if (isRange) {
-        const [first, second] = nextValue as DecimalRangeValue
-        if (first != null && second != null) {
-          onChange([first, second] as T)
-        }
-      } else {
-        onChange(nextValue as T)
-      }
+      if (Array.isArray(nextValue) && nextValue.find((v) => v == null)) return
+      onChange(nextValue as T)
     },
-    [cancelDebounce, isRange, onChange, setInternalValue],
+    [cancelDebounce, onChange, setInternalValue],
   )
 
   /**Converts slider's numeric value to Decimal and maps back to original value space */
   const computeSliderValue = useCallback(
     (rawValue: SliderValue): T | undefined => {
-      if (isRangeValue(rawValue)) {
-        const [first, second] = rawValue.map((v) => decimal(mapFromSliderValue(v)))
-        return first == null || second == null ? undefined : ([first, second] as T)
-      }
-      return (decimal(mapFromSliderValue(rawValue)) as T) ?? undefined
+      const mapped = apply(rawValue, (v) => decimal(mapFromSliderValue(v)))
+      return Array.isArray(mapped) && mapped.find((v) => v == null) ? undefined : (mapped as T)
     },
     [mapFromSliderValue],
   )
@@ -192,7 +181,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
     (index: number) => (newValue: string | undefined) => {
       const numericValue = Number(newValue)
       if (isRange) {
-        const currentRange = (displayValue as DecimalRangeValue) ?? []
+        const currentRange = displayValue as DecimalRangeValue
         const nextFirst = index === 0 ? numericValue : Number(currentRange[0])
         let nextSecond = index === 1 ? numericValue : Number(currentRange[1])
         if (nextFirst > nextSecond) {
@@ -212,24 +201,12 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
 
   const handleInputBlur = useCallback(
     (index: number) => (blurValue: Decimal | undefined) => {
-      if (blurValue == null) {
-        return
-      }
-      if (isRange) {
-        const currentRange = (displayValue as DecimalRangeValue) ?? []
-        let firstNumber = index === 0 ? Number(blurValue) : Number(currentRange[0])
-        let secondNumber = index === 1 ? Number(blurValue) : Number(currentRange[1])
-        if (firstNumber > secondNumber) {
-          if (index === 0) {
-            secondNumber = firstNumber
-          } else {
-            firstNumber = secondNumber
-          }
-        }
-        commitValue([decimal(firstNumber), decimal(secondNumber)] as T)
-        return
-      }
-      commitValue(blurValue as T)
+      if (blurValue == null) return
+      commitValue(
+        (isRange
+          ? sortBy([...(displayValue as DecimalRangeValue).filter((_, i) => i !== index), blurValue])
+          : blurValue) as T,
+      )
     },
     [commitValue, displayValue, isRange],
   )
