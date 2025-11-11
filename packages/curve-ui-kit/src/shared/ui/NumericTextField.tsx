@@ -88,12 +88,8 @@ const getDisplayValue = (val?: Decimal) => (val == null ? '' : String(val))
  * Computes a formatted value for display purposes.
  * Applies an optional formatter when provided and the value is defined.
  */
-const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) => {
-  if (val == null) {
-    return ''
-  }
-  return format?.(val) ?? getDisplayValue(val)
-}
+const getFormattedDisplayValue = (val: Decimal | undefined, format?: (value: Decimal | undefined) => string) =>
+  val == null ? '' : (format?.(val) ?? getDisplayValue(val))
 
 const AdornmentTypography = ({ children }: { children: ReactNode }) => (
   <Typography variant="bodySBold" color="textTertiary">

@@ -193,7 +193,7 @@ export type LargeTokenInputProps = {
   onBalance: (balance: Decimal | undefined) => void
 
   /** Optional props forwarded to the slider */
-  sliderProps?: SliderInputProps['sliderProps']
+  sliderProps?: SliderInputProps<Decimal>['sliderProps']
 }
 
 /**
