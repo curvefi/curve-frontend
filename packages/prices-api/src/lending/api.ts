@@ -48,10 +48,10 @@ export async function getOracle(
 }
 
 export async function getUserMarketCollateralEvents(
-  userAddr: Address | '' = '',
+  userAddr: Address,
   chain: Chain,
-  marketController: string,
-  txHash?: string,
+  marketController: Address,
+  txHash?: `0x${string}`, // used to let the backend know that a new transaction was created, so it can batch an update
   options?: Options,
 ) {
   const host = getHost(options)
