@@ -31,12 +31,12 @@ const dummyData = [
 ]
 
 export const UserPositionStatistics = () => (
-    <Grid container spacing={Spacing.sm}>
-      {dummyData.map((item) => (
-        <UserPositionStatisticItem key={item.label} {...item} value={formatNumber(item.value, { abbreviate: true })} />
-      ))}
-    </Grid>
-  )
+  <Grid container spacing={Spacing.sm} sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    {dummyData.map((item) => (
+      <UserPositionStatisticItem key={item.label} {...item} value={formatNumber(item.value, { abbreviate: true })} />
+    ))}
+  </Grid>
+)
 
 const UserPositionStatisticItem = ({
   label,
@@ -49,23 +49,23 @@ const UserPositionStatisticItem = ({
   startAdornment?: string
   isLoading?: boolean
 }) => (
-    <Grid size={3} padding={Spacing.md}>
-      <Stack>
-        <Typography variant="bodyXsRegular" color="textTertiary">
-          {label}
-        </Typography>
-        {isLoading ? (
-          <Skeleton variant="rectangular" width={110} height={32} />
-        ) : (
-          <Stack direction="row" alignItems="baseline">
-            {startAdornment && (
-              <Typography variant="highlightM" color="textSecondary">
-                {startAdornment}
-              </Typography>
-            )}
-            <Typography variant="highlightXl">{value}</Typography>
-          </Stack>
-        )}
-      </Stack>
-    </Grid>
-  )
+  <Grid size={3} padding={Spacing.md}>
+    <Stack>
+      <Typography variant="bodyXsRegular" color="textTertiary">
+        {label}
+      </Typography>
+      {isLoading ? (
+        <Skeleton variant="rectangular" width={110} height={32} />
+      ) : (
+        <Stack direction="row" alignItems="baseline">
+          {startAdornment && (
+            <Typography variant="highlightM" color="textSecondary">
+              {startAdornment}
+            </Typography>
+          )}
+          <Typography variant="highlightXl">{value}</Typography>
+        </Stack>
+      )}
+    </Stack>
+  </Grid>
+)

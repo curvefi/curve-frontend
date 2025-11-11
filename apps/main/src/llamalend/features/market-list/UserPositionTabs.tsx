@@ -58,11 +58,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
   const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
 
   return (
-    <Stack
-      sx={{
-        backgroundColor: (t) => t.design.Layer[1].Fill,
-      }}
-    >
+    <Stack>
       <Stack
         direction="row"
         alignItems="end"
@@ -72,12 +68,20 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           paddingInline: Spacing.md,
           flexGrow: 1,
           borderBottom: (t) => `1px solid ${t.design.Tabs.UnderLined.Default.Outline}`,
+          backgroundColor: (t) => t.design.Layer[1].Fill,
         }}
       >
         <Typography variant="headingXsBold">Your Positions</Typography>
       </Stack>
       {!provider ? (
-        <Stack alignSelf="center" paddingBlock={Spacing.md}>
+        <Stack
+          paddingBlock={Spacing.md}
+          alignItems="center"
+          width="100%"
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+          }}
+        >
           <EmptyStateCard
             action={
               <Button size="medium" onClick={() => connect()}>
@@ -94,6 +98,9 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
             justifyContent="space-between"
             // needed for the bottom border to be the same height as the tabs
             alignItems="stretch"
+            sx={{
+              backgroundColor: (t) => t.design.Layer[1].Fill,
+            }}
           >
             <TabsSwitcher value={tab} onChange={setTab} variant="underlined" size="small" options={tabs} />
             <Stack
