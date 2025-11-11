@@ -1,7 +1,8 @@
 import type { EChartsOption } from 'echarts-for-react'
-import { formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui-kit/utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
+import { getPriceMin, getPriceMax } from './utils'
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
@@ -89,9 +90,8 @@ export const getChartOptions = (
 
   // Secondary value y-axis will mirror category spacing using index space
   // Price domain for value y-axis
-  const priceMin = Math.min(...chartData.map((d) => d.p_down))
-  const priceMax = Math.max(...chartData.map((d) => d.p_up))
-
+  const priceMin = getPriceMin(chartData, oraclePrice)
+  const priceMax = getPriceMax(chartData, oraclePrice)
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
@@ -136,7 +136,7 @@ export const getChartOptions = (
         showMinLabel: true,
         showMaxLabel: false,
         margin: 8,
-        formatter: (value: number) => `$${formatNumber(value, { notation: 'compact' })}`,
+        formatter: (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true }),
       },
       splitLine: {
         show: true,
@@ -159,7 +159,8 @@ export const getChartOptions = (
         snap: true,
         label: {
           show: true,
-          formatter: (params: any) => `$${formatNumber(Number(params.value), { notation: 'compact' })}`,
+          formatter: (params: any) =>
+            formatNumber(Number(params.value), { unit: 'dollar', abbreviate: true, highPrecision: true }),
           padding: [2, 4],
           borderRadius: 0,
           backgroundColor: palette.oraclePriceLineColor,
@@ -171,7 +172,7 @@ export const getChartOptions = (
         overflow: 'break',
         showMinLabel: true,
         showMaxLabel: false,
-        formatter: (value: number | string) => `$${formatNumber(Number(value), { notation: 'compact' })}`,
+        formatter: (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true, highPrecision: true }),
       },
       min: priceMin,
       max: priceMax,

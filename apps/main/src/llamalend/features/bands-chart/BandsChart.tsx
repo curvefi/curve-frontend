@@ -14,6 +14,7 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
+import { getPriceMin, getPriceMax } from './utils'
 
 type BandsChartProps = {
   collateralToken?: Token
@@ -52,8 +53,8 @@ const BandsChartComponent = ({
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
-  const priceMin = useMemo(() => chartData.length && Math.min(...chartData.map((d) => d.p_down)), [chartData])
-  const priceMax = useMemo(() => chartData.length && Math.max(...chartData.map((d) => d.p_up)), [chartData])
+  const priceMin = useMemo(() => getPriceMin(chartData, oraclePrice), [chartData, oraclePrice])
+  const priceMax = useMemo(() => getPriceMax(chartData, oraclePrice), [chartData, oraclePrice])
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],

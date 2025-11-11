@@ -21,15 +21,17 @@ export const useProcessedBandsData = ({
 
     const marketBands = marketBandsBalances ?? []
     const userBands = userBandsBalances ?? []
-    const hasCollateralRate = typeof collateralUsdRate === 'number' && Number.isFinite(collateralUsdRate)
-    const hasBorrowedRate = typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate)
+    const hasCollateralRate =
+      typeof collateralUsdRate === 'number' && Number.isFinite(collateralUsdRate) && collateralUsdRate > 0
+    const hasBorrowedRate =
+      typeof borrowedUsdRate === 'number' && Number.isFinite(borrowedUsdRate) && borrowedUsdRate > 0
 
     const getBandValues = (band: FetchedBandsBalances) => {
       const collateralAmount = Number(band.collateral)
       const borrowedAmount = Number(band.borrowed)
 
-      const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : undefined
-      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * borrowedUsdRate : undefined
+      const collateralValueUsd = hasCollateralRate ? collateralAmount * collateralUsdRate : band.collateralUsd
+      const borrowedValueUsd = hasBorrowedRate ? borrowedAmount * borrowedUsdRate : band.collateralBorrowedUsd
 
       return { collateralAmount, borrowedAmount, collateralValueUsd, borrowedValueUsd }
     }
@@ -92,33 +94,5 @@ export const useProcessedBandsData = ({
       }
     })
 
-    const parsedData = Array.from(bandsMap.values())
-    const firstDataIdx = parsedData.findIndex(_findDataIndex)
-    const lastDataIdx = parsedData.findLastIndex(_findDataIndex)
-    const oracleIdx = parsedData.findIndex((d) => d.isOraclePriceBand)
-
-    if (firstDataIdx === -1) {
-      return parsedData.sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
-    }
-
-    // Expand slice to include a small neighborhood around the oracle band in order to always show oracle price mark line
-    const neighborhood = 1
-    const leftOracleIdx = oracleIdx !== -1 ? Math.max(0, oracleIdx - neighborhood) : firstDataIdx
-    const rightOracleIdx = oracleIdx !== -1 ? Math.min(parsedData.length - 1, oracleIdx + neighborhood) : lastDataIdx
-    const sliceStartIdx = Math.min(firstDataIdx, leftOracleIdx)
-    const sliceEndIdx = Math.max(lastDataIdx, rightOracleIdx)
-
-    const slicedData = parsedData.slice(sliceStartIdx, sliceEndIdx + 1)
-    return slicedData.sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
+    return Array.from(bandsMap.values()).sort((a, b) => b.pUpDownMedian - a.pUpDownMedian)
   }, [marketBandsBalances, userBandsBalances, oraclePriceBand, collateralUsdRate, borrowedUsdRate])
-
-function _findDataIndex(d: ChartDataPoint) {
-  return (
-    (d.bandCollateralValueUsd ?? 0) > 0 ||
-    (d.bandBorrowedValueUsd ?? 0) > 0 ||
-    d.isLiquidationBand === 'SL' ||
-    d.isOraclePriceBand ||
-    (d.userBandCollateralValueUsd ?? 0) > 0 ||
-    (d.userBandBorrowedValueUsd ?? 0) > 0
-  )
-}
