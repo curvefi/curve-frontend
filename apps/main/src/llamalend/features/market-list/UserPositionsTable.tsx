@@ -138,7 +138,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
                 onSortingChange={onSortingChange}
                 sortField={sortField}
                 data={userData}
-                isUserPositions
+                userPositionsTab={tab}
                 {...filterProps}
               />
             </>
