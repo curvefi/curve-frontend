@@ -56,6 +56,7 @@ const createAppSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['
     // reset stores
     if (isUserSwitched || !curveApi.signerAddress) {
       loans.setStateByKey('userWalletBalancesMapper', {})
+      loans.setStateByKey('userDetailsMapper', {})
     }
 
     const markets = curveApi.mintMarkets.getMarketList().map((name) => curveApi.getMintMarket(name))

@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/CollateralIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -11,10 +12,8 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
-import { invalidateAllUserBorrowDetails } from '../entities/user-loan-details.query'
 
 type StateKey = keyof typeof DEFAULT_STATE
 const { cloneDeep } = lodash
@@ -47,7 +46,7 @@ export type LoanCollateralIncreaseSlice = {
       curve: LlamaApi,
       llamma: Llamma,
       formValues: FormValues,
-    ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    ): Promise<{ activeKey: string; error: string; hash: string; loanExists: boolean } | undefined>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -173,7 +172,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
     },
     fetchStepIncrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const { provider, wallet } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
@@ -183,11 +182,15 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
       const chainId = curve.chainId as ChainId
       const addCollateralFn = networks[chainId].api.collateralIncrease.addCollateral
       const resp = await addCollateralFn(activeKey, provider, llamma, formValues.collateral)
-      // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
+
       if (activeKey === get()[sliceKey].activeKey) {
-        await get().loans.fetchLoanDetails(curve, llamma)
-        invalidateAllUserBorrowDetails({ chainId, marketId: llamma.id, userAddress: wallet?.account?.address })
+        // re-fetch loan info
+        const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+
+        if (!loanExists) {
+          get().loans.resetUserDetailsState(llamma)
+        }
 
         get()[sliceKey].setStateByKeys({
           detailInfo: {},
@@ -202,7 +205,7 @@ const createLoanCollateralIncrease = (set: StoreApi<State>['setState'], get: Sto
           },
         })
 
-        return resp
+        return { ...resp, loanExists }
       }
     },
 

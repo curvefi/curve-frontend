@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import { useAccount } from 'wagmi'
 import PoolActivity from '@/loan/components/ChartOhlcWrapper/PoolActivity'
-import { useUserLoanDetails } from '@/loan/entities/user-loan-details.query'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import useStore from '@/loan/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -27,11 +26,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   const collateralDecreaseActiveKey = useStore((state) => state.loanCollateralDecrease.activeKey)
   const formValues = useStore((state) => state.loanCreate.formValues)
   const activeKeyLiqRange = useStore((state) => state.loanCreate.activeKeyLiqRange)
-
-  const { address: userAddress } = useAccount()
-  const { data: userLoanDetails } = useUserLoanDetails({ chainId: rChainId, marketId: llammaId, userAddress })
-  const { userPrices } = userLoanDetails ?? {}
-
+  const userPrices = useUserLoanDetails(llammaId)?.userPrices ?? null
   const liqRangesMapper = useStore((state) => state.loanCreate.liqRangesMapper[activeKeyLiqRange])
   const increaseLoanPrices = useStore((state) => state.loanIncrease.detailInfo[increaseActiveKey]?.prices ?? null)
   const decreaseLoanPrices = useStore((state) => state.loanDecrease.detailInfo[decreaseActiveKey]?.prices ?? null)
