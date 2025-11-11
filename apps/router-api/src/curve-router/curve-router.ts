@@ -44,6 +44,24 @@ async function routerGetToStoredRate(routes: IRoute, curve: CurveJS, toAddress: 
   ] as Decimal
 }
 
+function getWarnings(
+  fromAmount: string,
+  toAmount: string,
+  isStableswapRoute: boolean,
+  toStoredRate: string | undefined,
+): RouteResponse['warnings'] {
+  const exchangeRate = Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toNumber() : 0
+  const isExchangeRateLow =
+    isStableswapRoute &&
+    Number(toAmount) &&
+    (toStoredRate && Number(toStoredRate) > 1
+      ? // toStoredRate is above 1 if the "toToken" is of type oracle or erc4626 in a stableswap-ng pool
+        Number(fromAmount) / Number(toAmount) < Number(toStoredRate) * LOW_EXCHANGE_RATE
+      : Number(toAmount) / Number(fromAmount) < LOW_EXCHANGE_RATE)
+  const isHighSlippage = isStableswapRoute && exchangeRate > LOW_EXCHANGE_RATE
+  return notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage')
+}
+
 /**
  * Runs the router to get the optimal route and builds the response.
  */
@@ -76,15 +94,7 @@ export async function buildCurveRouteResponse(
     routeUrlId: pool?.id,
   }))
   const isStableswapRoute = pools.every(([, p]) => !p?.isCrypto)
-  const exchangeRate = Number(fromAmount) ? new BigNumber(toAmount).dividedBy(fromAmount).toNumber() : 0
-  const isExchangeRateLow =
-    isStableswapRoute &&
-    Number(toAmount) &&
-    (toStoredRate && Number(toStoredRate) > 1
-      ? // toStoredRate is above 1 if the "toToken" is of type oracle or erc4626 in a stableswap-ng pool
-        Number(fromAmount) / Number(toAmount) < Number(toStoredRate) * LOW_EXCHANGE_RATE
-      : Number(toAmount) / Number(fromAmount) < LOW_EXCHANGE_RATE)
-  const isHighSlippage = isStableswapRoute && exchangeRate > LOW_EXCHANGE_RATE
+  const warnings = getWarnings(fromAmount, toAmount, isStableswapRoute, toStoredRate)
 
   return [
     {
@@ -94,7 +104,7 @@ export async function buildCurveRouteResponse(
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,
-      warnings: notFalsy(isExchangeRateLow && 'low-exchange-rate', isHighSlippage && 'high-slippage'),
+      warnings: warnings,
       route: parsedRoutes.map(
         ({ name, inputCoinAddress, outputCoinAddress, ...args }): RouteStep => ({
           name,

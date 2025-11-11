@@ -7,10 +7,7 @@ import { type OptimalRouteQuery, type RouteResponse } from './optimal-route.sche
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
-const routers = {
-  curve: buildCurveRouteResponse,
-  enso: buildEnsoRouteResponse,
-}
+const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse }
 
 /**
  * Handles the optimal route request. Returns the optimal route for the given parameters.
@@ -35,7 +32,7 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
 
   failures.forEach((res) => request.log.error({ message: 'route calculation failed', error: res.reason }))
   if (!successes.length) {
-    // throw fastify error
+    if (failures.length === 1) throw failures[0].reason
     throw new Error(`Failed to calculate optimal route for ${router.join(', ')}`)
   }
 
