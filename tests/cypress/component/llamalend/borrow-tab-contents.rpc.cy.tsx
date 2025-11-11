@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import networks from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
@@ -35,6 +36,7 @@ const MARKETS = {
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
+const onCreated: CreateLoanOptions['onCreated'] = async (...args) => console.info('form created', ...args)
 
 type BorrowTabTestProps = { type: LlamaMarketType }
 
@@ -50,7 +52,13 @@ function BorrowTabTest({ type }: BorrowTabTestProps) {
     [isHydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
   )
   return market ? (
-    <BorrowTabContents market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} />
+    <BorrowTabContents
+      market={market}
+      networks={networks}
+      chainId={chainId}
+      onUpdate={onUpdate}
+      onCreated={onCreated}
+    />
   ) : (
     <Skeleton />
   )
