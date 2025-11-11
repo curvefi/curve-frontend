@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { decimal } from '@ui-kit/utils'
 import { BORROW_PRESET_RANGES } from '../constants'
 
 const { Spacing } = SizesAndSpaces
@@ -37,7 +37,7 @@ export const LiquidationRangeSlider = ({
       </Grid>
       <Grid size={12}>
         <SliderInput
-          onChange={(val) => setRange(parseInt(val as Decimal))}
+          onChange={(val) => setRange(parseInt(val))}
           aria-label={t`Bands`}
           value={decimal(range) ?? `${minValue}`}
           min={minValue}

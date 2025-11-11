@@ -7,14 +7,14 @@ import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
-import { SliderInput, SliderInputProps, type DecimalRangeValue } from '@ui-kit/shared/ui/SliderInput'
-import { decimal, formatNumber } from '@ui-kit/utils'
-import { powerMap, invertPowerMap } from '@ui-kit/utils/interpolations'
+import { type DecimalRangeValue, SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
+import { type Decimal, decimal, formatNumber } from '@ui-kit/utils'
+import { invertPowerMap, powerMap } from '@ui-kit/utils/interpolations'
 import type { LlamaMarketColumnId } from '../columns.enum'
 
 type NumberRange = [number, number]
 
-type OnSliderChange = NonNullable<SliderInputProps['onChange']>
+type OnSliderChange<T extends Decimal | [Decimal, Decimal]> = NonNullable<SliderInputProps<T>['onChange']>
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -30,7 +30,7 @@ const calculatePowerExponent = (isPowerScale: boolean, minValue: number, maxValu
   if (!isPowerScale || maxValue <= minValue) return undefined
   const safeMax = Math.max(maxValue, 1)
   const exponent = Math.trunc(Math.log10(safeMax) - 2)
-  return exponent > 1 ? exponent : 1
+  return Math.max(exponent, 1)
 }
 
 /**
@@ -38,13 +38,11 @@ const calculatePowerExponent = (isPowerScale: boolean, minValue: number, maxValu
  */
 const calculateSliderValueTransform = (minValue: number, maxValue: number, isPowerScale: boolean) => {
   const powerExponent = calculatePowerExponent(isPowerScale, minValue, maxValue)
-
   if (powerExponent == null) {
-    return undefined
+    return
   }
 
   const [sliderMin, sliderMax] = [0, 1]
-
   return {
     /** Convert the current value into the 0-1 slider space. */
     toSlider: (value: number) => invertPowerMap(clamp(value, minValue, maxValue), minValue, maxValue, powerExponent),
@@ -115,20 +113,6 @@ export const RangeSliderFilter = <T,>({
     ),
   })
 
-  const sliderRangeValue = useMemo<DecimalRangeValue>(
-    () => [decimal(`${range[0]}`) ?? '0', decimal(`${range[1]}`) ?? '0'],
-    [range],
-  )
-
-  const onChange = useCallback<OnSliderChange>(
-    (newRange) => {
-      if (Array.isArray(newRange)) {
-        setRange([Number(newRange[0]), Number(newRange[1])] as NumberRange)
-      }
-    },
-    [setRange],
-  )
-
   return (
     // this is not a real select, but we reuse the component so the design is correct
     <Select
@@ -155,11 +139,14 @@ export const RangeSliderFilter = <T,>({
       }}
     >
       <Stack paddingBlock={3} paddingInline={4}>
-        <SliderInput
+        <SliderInput<DecimalRangeValue>
           layoutDirection="column"
           size="medium"
-          value={sliderRangeValue}
-          onChange={onChange}
+          value={useMemo(() => range.map(decimal) as DecimalRangeValue, [range])}
+          onChange={useCallback<OnSliderChange<DecimalRangeValue>>(
+            (newRange) => setRange(newRange.map(Number) as NumberRange),
+            [setRange],
+          )}
           min={0}
           max={maxValue}
           step={sliderValueTransform?.sliderStep ?? step}
