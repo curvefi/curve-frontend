@@ -3,9 +3,8 @@ import { useEffect, useMemo, memo, useRef } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Token } from '@/llamalend/features/borrow/types'
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
-import { Slider } from '@ui-kit/shared/ui/Slider'
 import { getChartOptions } from './chartOptions'
 import { EmptyState } from './EmptyState'
 import { useBandsChartPalette } from './hooks/useBandsChartPalette'
@@ -14,7 +13,6 @@ import { useBandsChartZoom } from './hooks/useBandsChartZoom'
 import { useDerivedChartData } from './hooks/useDerivedChartData'
 import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
-import { getPriceMin, getPriceMax } from './utils'
 
 type BandsChartProps = {
   collateralToken?: Token
@@ -53,18 +51,11 @@ const BandsChartComponent = ({
   const initialZoomIndices = useInitialZoomIndices(chartData, userBandsBalances, oraclePrice)
   const userBandsPriceRange = useUserBandsPriceRange(chartData, userBandsBalances)
   const tooltipFormatter = useBandsChartTooltip(chartData, collateralToken, borrowToken)
-  const priceMin = useMemo(() => getPriceMin(chartData, oraclePrice), [chartData, oraclePrice])
-  const priceMax = useMemo(() => getPriceMax(chartData, oraclePrice), [chartData, oraclePrice])
   const option: EChartsOption = useMemo(
     () => getChartOptions(chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter),
     [chartData, derived, userBandsPriceRange, oraclePrice, palette, tooltipFormatter],
   )
-  const {
-    option: finalOption,
-    onDataZoom,
-    zoomRange,
-    setZoomRange,
-  } = useBandsChartZoom({
+  const { option: finalOption, onDataZoom } = useBandsChartZoom({
     option,
     chartDataLength: chartData.length,
     initialZoomIndices,
@@ -120,66 +111,29 @@ const BandsChartComponent = ({
     )
   }
 
-  const rawValues: [number, number] = [
-    typeof zoomRange.startValue === 'number' ? zoomRange.startValue : priceMin,
-    typeof zoomRange.endValue === 'number' ? zoomRange.endValue : priceMax,
-  ]
-  const normalizedValues = rawValues.sort((a, b) => a - b) as [number, number]
-
   return (
-    <Stack
-      direction="row"
-      sx={{ width: '100%', minHeight: `${height}px`, height, gap: 2, minWidth: 0, alignItems: 'stretch' }}
+    <Box
+      ref={containerRef}
+      sx={{
+        display: 'flex',
+        fontVariantNumeric: 'tabular-nums',
+        width: '100%',
+        minHeight: `${height}px`,
+        height,
+        minWidth: 0,
+      }}
     >
-      <Box
-        ref={containerRef}
-        sx={{
-          display: 'flex',
-          fontVariantNumeric: 'tabular-nums',
-          flex: 1,
-          minWidth: 0,
-          height: '100%',
-          '& *': { cursor: 'default' },
-        }}
-      >
-        <ReactECharts
-          ref={chartRef}
-          option={finalOption}
-          style={{ width: '100%', height: '100%' }}
-          opts={{ renderer: 'canvas' }}
-          onEvents={{ datazoom: onDataZoom }}
-          notMerge={true}
-          lazyUpdate={true}
-          autoResize={true}
-        />
-      </Box>
-      <Slider
-        orientation="vertical"
-        size="small"
-        value={normalizedValues}
-        min={priceMin}
-        max={priceMax}
-        onChange={(_e, val) => {
-          if (Array.isArray(val)) {
-            const [minV, maxV] = val.sort((a, b) => a - b)
-            setZoomRange({ startValue: minV, endValue: maxV })
-          }
-        }}
-        onChangeCommitted={(_e, val) => {
-          if (Array.isArray(val)) {
-            const [minV, maxV] = val.sort((a, b) => a - b)
-            setZoomRange({ startValue: minV, endValue: maxV })
-          }
-        }}
-        data-rail-background="filled"
-        sx={{
-          // disable MUI's default padding for coarse touch devices to match design
-          '@media (pointer: coarse)': {
-            padding: `0`,
-          },
-        }}
+      <ReactECharts
+        ref={chartRef}
+        option={finalOption}
+        style={{ width: '100%', height: '100%' }}
+        opts={{ renderer: 'canvas' }}
+        onEvents={{ datazoom: onDataZoom }}
+        notMerge={true}
+        lazyUpdate={true}
+        autoResize={true}
       />
-    </Stack>
+    </Box>
   )
 }
 

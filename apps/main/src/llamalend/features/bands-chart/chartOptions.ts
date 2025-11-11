@@ -88,10 +88,15 @@ export const getChartOptions = (
 ): EChartsOption => {
   if (chartData.length === 0) return {}
 
+  const dataZoomWidth = 20
+  const gridPadding = { left: 0, top: 16, bottom: 16 }
+  const gridRight = 16 + dataZoomWidth
+  const labelXOffset = 16 - (gridRight - dataZoomWidth)
+
   // Secondary value y-axis will mirror category spacing using index space
   // Price domain for value y-axis
-  const priceMin = getPriceMin(chartData, oraclePrice)
-  const priceMax = getPriceMax(chartData, oraclePrice)
+  const priceMin = getPriceMin(chartData)
+  const priceMax = getPriceMax(chartData)
   // Generate mark areas using exact price edges
   const markAreas = userBandsPriceRange
     ? [[{ yAxis: userBandsPriceRange.lowerBandPriceDown }, { yAxis: userBandsPriceRange.upperBandPriceUp }]]
@@ -104,15 +109,23 @@ export const getChartOptions = (
     backgroundColor: 'transparent',
     animation: false,
     grid: {
-      left: 0,
-      right: 4,
-      top: 0,
-      bottom: 0,
+      left: gridPadding.left,
+      right: gridRight,
+      top: gridPadding.top,
+      bottom: gridPadding.bottom,
       containLabel: true,
     },
     tooltip: {
       trigger: 'axis',
-      axisPointer: { type: 'shadow', axis: 'y', snap: true },
+      axisPointer: {
+        type: 'shadow',
+        axis: 'y',
+        snap: true,
+        triggerTooltip: true,
+        shadowStyle: {
+          opacity: 0.1,
+        },
+      },
       formatter: tooltipFormatter,
       backgroundColor: 'transparent',
       borderWidth: 0,
@@ -121,6 +134,8 @@ export const getChartOptions = (
       extraCssText:
         'white-space: normal; overflow-wrap: anywhere; word-break: break-word; max-width: none !important; width: max-content !important;',
       confine: false,
+      // Only show tooltip when there's actual data at the hovered position
+      triggerOn: 'mousemove',
     },
     xAxis: {
       type: 'value',
@@ -140,9 +155,6 @@ export const getChartOptions = (
           formatNumber(value, {
             unit: 'dollar',
             abbreviate: true,
-            highPrecision: true,
-            minimumSignificantDigits: 4,
-            maximumSignificantDigits: 4,
           }),
       },
       splitLine: {
@@ -170,9 +182,6 @@ export const getChartOptions = (
             formatNumber(Number(params.value), {
               unit: 'dollar',
               abbreviate: true,
-              highPrecision: true,
-              minimumSignificantDigits: 4,
-              maximumSignificantDigits: 4,
             }),
           padding: [2, 4],
           borderRadius: 0,
@@ -189,9 +198,6 @@ export const getChartOptions = (
           formatNumber(value, {
             unit: 'dollar',
             abbreviate: true,
-            highPrecision: true,
-            minimumSignificantDigits: 4,
-            maximumSignificantDigits: 4,
           }),
       },
       min: priceMin,
@@ -234,6 +240,7 @@ export const getChartOptions = (
                   position: 'start',
                   align: 'left',
                   verticalAlign: 'middle',
+                  offset: [-labelXOffset, 0],
                   ...createLabelStyle(line.lineStyle, palette),
                 },
               })),
@@ -252,14 +259,42 @@ export const getChartOptions = (
     })(),
     dataZoom: [
       {
+        type: 'slider',
+        yAxisIndex: 0,
+        orient: 'vertical',
+        right: 10,
+        width: dataZoomWidth,
+        brushSelect: false,
+        showDataShadow: false,
+        borderColor: 'none',
+        backgroundColor: palette.zoomTrackBackgroundColor,
+        fillerColor: palette.zoomThumbColor,
+        handleSize: '100%',
+        handleStyle: { color: palette.zoomThumbColor, borderColor: palette.zoomThumbHandleBorderColor },
+        textStyle: { color: palette.textColorInverted, fontSize: 10 },
+        showDetail: false,
+        labelFormatter: (value: number | string) =>
+          formatNumber(Number(value), {
+            unit: 'dollar',
+            abbreviate: true,
+          }),
+        dataBackground: {
+          lineStyle: {
+            color: palette.gridColor,
+            opacity: 0.5,
+          },
+          areaStyle: {
+            color: palette.gridColor,
+            opacity: 0.2,
+          },
+        },
+      },
+      {
         type: 'inside',
         yAxisIndex: 0,
         orient: 'vertical',
-        // Disable user interactions; allow only programmatic updates from the external slider
-        zoomOnMouseWheel: false,
-        moveOnMouseWheel: false,
-        moveOnMouseMove: false,
-        brushSelect: false,
+        zoomOnMouseWheel: 'shift',
+        moveOnMouseWheel: true,
       },
     ],
   }

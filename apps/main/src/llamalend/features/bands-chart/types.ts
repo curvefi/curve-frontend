@@ -30,6 +30,9 @@ export type BandsChartPalette = {
   userRangeLabelBackgroundColor: string
   oraclePriceLineColor: string
   liquidationBandOutlineColor: string
+  zoomTrackBackgroundColor: string
+  zoomThumbColor: string
+  zoomThumbHandleBorderColor: string
 }
 
 export type UserBandsPriceRange = {

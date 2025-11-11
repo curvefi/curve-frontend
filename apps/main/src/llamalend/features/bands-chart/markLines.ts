@@ -35,9 +35,6 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
       formatNumber(userBandsPriceRange.lowerBandPriceDown, {
         unit: 'dollar',
         abbreviate: true,
-        highPrecision: true,
-        minimumSignificantDigits: 4,
-        maximumSignificantDigits: 4,
       }),
       'end',
       palette.userRangeLabelBackgroundColor,
@@ -47,9 +44,6 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
       formatNumber(userBandsPriceRange.upperBandPriceUp, {
         unit: 'dollar',
         abbreviate: true,
-        highPrecision: true,
-        minimumSignificantDigits: 4,
-        maximumSignificantDigits: 4,
       }),
       'end',
       palette.userRangeLabelBackgroundColor,
@@ -75,9 +69,6 @@ const createOraclePriceMarkLine = (
       formatNumber(+oraclePrice, {
         unit: 'dollar',
         abbreviate: true,
-        highPrecision: true,
-        minimumSignificantDigits: 4,
-        maximumSignificantDigits: 4,
       }),
       'end',
       palette.oraclePriceLineColor,

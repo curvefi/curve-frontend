@@ -20,8 +20,6 @@ type Params = {
 type ZoomReturn = {
   option: EChartsOption
   onDataZoom: (event: Record<string, unknown>) => void
-  zoomRange: ZoomRange
-  setZoomRange: (range: ZoomRange) => void
 }
 
 export const useBandsChartZoom = ({
@@ -84,17 +82,12 @@ export const useBandsChartZoom = ({
     const batch = Array.isArray(event.batch) && event.batch.length > 0 ? event.batch[0] : null
     const start = (event.start ?? batch?.start) as number | undefined
     const end = (event.end ?? batch?.end) as number | undefined
-    const startValue = (event as any).startValue ?? (batch as any)?.startValue
-    const endValue = (event as any).endValue ?? (batch as any)?.endValue
 
-    if (start != null || end != null || startValue != null || endValue != null) {
-      const newRange: ZoomRange = {
-        ...{ start },
-        ...{ end },
-        ...{ startValue },
-        ...{ endValue },
-      }
-      setUserZoom(newRange)
+    if (typeof start === 'number' || typeof end === 'number') {
+      setUserZoom({
+        ...(typeof start === 'number' ? { start } : {}),
+        ...(typeof end === 'number' ? { end } : {}),
+      })
     }
   }, [])
 
@@ -106,7 +99,7 @@ export const useBandsChartZoom = ({
     const zoomToApply = userZoom ?? defaultZoom
 
     const zoomedDataZoom = option.dataZoom.map((zoom: Record<string, unknown>) => {
-      if (zoom && 'type' in zoom && (zoom.type === 'slider' || zoom.type === 'inside')) {
+      if (zoom && 'type' in zoom && zoom.type === 'slider') {
         return {
           ...zoom,
           ...(zoomToApply.startValue != null && { startValue: zoomToApply.startValue }),
@@ -125,14 +118,8 @@ export const useBandsChartZoom = ({
     }
   }, [option, defaultZoom, userZoom])
 
-  const setZoomRange = useCallback((range: ZoomRange) => {
-    setUserZoom(range)
-  }, [])
-
   return {
     option: zoomedOption,
     onDataZoom: handleDataZoom,
-    zoomRange: userZoom ?? defaultZoom,
-    setZoomRange,
   }
 }
