@@ -7,6 +7,7 @@ import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { Stack, useTheme } from '@mui/material'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
@@ -58,22 +59,8 @@ export const MarketInformationComp = ({
     collateralTokenAddress,
     borrowedTokenAddress,
   })
-  const collateralToken =
-    market && collateralTokenAddress
-      ? {
-          symbol: market.collateral_token.symbol,
-          address: collateralTokenAddress,
-          chain: networks[rChainId].id,
-        }
-      : undefined
-  const borrowToken =
-    market && borrowedTokenAddress
-      ? {
-          symbol: market.borrowed_token.symbol,
-          address: borrowedTokenAddress,
-          chain: networks[rChainId].id,
-        }
-      : undefined
+  const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol)
+  const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.borrowed_token.symbol)
 
   return (
     <>

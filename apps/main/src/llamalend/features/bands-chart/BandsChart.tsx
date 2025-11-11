@@ -1,8 +1,7 @@
 import ReactECharts, { type EChartsOption } from 'echarts-for-react'
 import { useEffect, useMemo, memo, useRef } from 'react'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
-import { ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
-import { Token } from '@/llamalend/features/borrow/types'
+import { BandsChartToken, ChartDataPoint, ParsedBandsBalances } from '@/llamalend/features/bands-chart/types'
 import { Box } from '@mui/material'
 import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { getChartOptions } from './chartOptions'
@@ -15,8 +14,8 @@ import { useInitialZoomIndices } from './hooks/useInitialZoomIndices'
 import { useUserBandsPriceRange } from './hooks/useUserBandsPriceRange'
 
 type BandsChartProps = {
-  collateralToken?: Token
-  borrowToken?: Token
+  collateralToken: BandsChartToken
+  borrowToken: BandsChartToken
   chartData: ChartDataPoint[]
   isError: boolean
   isLoading: boolean

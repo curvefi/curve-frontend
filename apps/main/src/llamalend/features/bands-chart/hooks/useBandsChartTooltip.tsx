@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-import { ChartDataPoint } from '@/llamalend/features/bands-chart/types'
-import { Token } from '@/llamalend/features/borrow/types'
+import { BandsChartToken, ChartDataPoint } from '@/llamalend/features/bands-chart/types'
 import { ThemeProvider, useTheme } from '@mui/material'
 import { TooltipContent } from '../TooltipContent'
 
@@ -17,7 +16,11 @@ type TooltipItemParams = { dataIndex: number }
  * - Provides a formatter function for ECharts
  * - Handles cleanup on unmount
  */
-export const useBandsChartTooltip = (chartData: ChartDataPoint[], collateralToken?: Token, borrowToken?: Token) => {
+export const useBandsChartTooltip = (
+  chartData: ChartDataPoint[],
+  collateralToken: BandsChartToken,
+  borrowToken: BandsChartToken,
+) => {
   const theme = useTheme()
   const tooltipRef = useRef<HTMLDivElement | null>(null)
   const tooltipRootRef = useRef<Root | null>(null)

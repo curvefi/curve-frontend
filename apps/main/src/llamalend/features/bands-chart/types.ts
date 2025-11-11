@@ -1,3 +1,7 @@
+import { Decimal } from '@ui-kit/utils/decimal'
+
+export type BandsChartToken = { symbol: string; address: string } | undefined
+
 export type ChartDataPoint = {
   n: number
   pUpDownMedian: number
@@ -53,8 +57,8 @@ export type BandsBalances = { [band: number]: { borrowed: string; collateral: st
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 
 export type FetchedBandsBalances = {
-  borrowed: string
-  collateral: string
+  borrowed: Decimal
+  collateral: Decimal
   collateralUsd: number
   collateralBorrowedUsd: number
   isLiquidationBand: string

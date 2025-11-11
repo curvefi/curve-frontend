@@ -1,4 +1,4 @@
-import { formatNumber } from '@ui-kit/utils'
+import { formatUsd } from '@ui-kit/utils'
 import { ChartDataPoint, BandsChartPalette, UserBandsPriceRange } from './types'
 
 type MarkLine = {
@@ -32,19 +32,13 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
   return [
     createMarkLine(
       userBandsPriceRange.lowerBandPriceDown,
-      formatNumber(userBandsPriceRange.lowerBandPriceDown, {
-        unit: 'dollar',
-        abbreviate: true,
-      }),
+      formatUsd(userBandsPriceRange.lowerBandPriceDown),
       'end',
       palette.userRangeLabelBackgroundColor,
     ),
     createMarkLine(
       userBandsPriceRange.upperBandPriceUp,
-      formatNumber(userBandsPriceRange.upperBandPriceUp, {
-        unit: 'dollar',
-        abbreviate: true,
-      }),
+      formatUsd(userBandsPriceRange.upperBandPriceUp),
       'end',
       palette.userRangeLabelBackgroundColor,
     ),
@@ -63,17 +57,7 @@ const createOraclePriceMarkLine = (
   const price = Number(oraclePrice)
   if (!Number.isFinite(price)) return []
 
-  return [
-    createMarkLine(
-      price,
-      formatNumber(+oraclePrice, {
-        unit: 'dollar',
-        abbreviate: true,
-      }),
-      'end',
-      palette.oraclePriceLineColor,
-    ),
-  ]
+  return [createMarkLine(price, formatUsd(+oraclePrice), 'end', palette.oraclePriceLineColor)]
 }
 
 /**

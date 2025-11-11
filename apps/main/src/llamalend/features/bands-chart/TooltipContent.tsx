@@ -4,14 +4,14 @@ import { Box, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
-import { ChartDataPoint } from './types'
+import { BandsChartToken, ChartDataPoint } from './types'
 
 const { Spacing } = SizesAndSpaces
 
 type TooltipContentProps = {
   data: ChartDataPoint
-  collateralToken: Token | undefined
-  borrowToken: Token | undefined
+  collateralToken: BandsChartToken
+  borrowToken: BandsChartToken
 }
 
 const calculateBandShare = (numerator: number | undefined, denominator: number | undefined): string =>
@@ -21,6 +21,8 @@ const calculateBandShare = (numerator: number | undefined, denominator: number |
 
 const formatAbbreviatedNumber = (value: number | undefined): string =>
   typeof value === 'number' ? `${formatNumber(value, { abbreviate: true })}` : '?'
+
+const formatUsdValue = (value: number | undefined): string => (typeof value === 'number' ? formatUsd(value) : '?')
 
 export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipContentProps) => {
   const hasMarketData =
@@ -43,11 +45,11 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             <TooltipItem title={t`Your share of band`}>{userBandShare}</TooltipItem>
             <TooltipItem variant="subItem" title={collateralToken?.symbol}>
               {formatAbbreviatedNumber(data.userBandCollateralAmount)}
-              {formatUsd(data.userBandCollateralValueUsd ?? 0)}
+              {formatUsdValue(data.userBandCollateralValueUsd)}
             </TooltipItem>
             <TooltipItem variant="subItem" title={borrowToken?.symbol}>
               {formatAbbreviatedNumber(data.userBandBorrowedAmount)}
-              {formatUsd(data.userBandBorrowedValueUsd ?? 0)}
+              {formatUsdValue(data.userBandBorrowedValueUsd)}
             </TooltipItem>
           </TooltipItems>
         )}
@@ -62,17 +64,15 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
               <TooltipItem title={t`Band balances`}>{`${collateralBandShare} / ${borrowedBandShare}`}</TooltipItem>
               <TooltipItem variant="subItem" title={collateralToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandCollateralAmount)}
-                {`${formatUsd(data.bandCollateralValueUsd ?? 0)}`}
+                {formatUsdValue(data.bandCollateralValueUsd)}
               </TooltipItem>
               <TooltipItem variant="subItem" title={borrowToken?.symbol}>
                 {formatAbbreviatedNumber(data.bandBorrowedAmount)}
-                {`${formatUsd(data.bandBorrowedValueUsd ?? 0)}`}
+                {formatUsdValue(data.bandBorrowedValueUsd)}
               </TooltipItem>
             </TooltipItems>
             <TooltipItem variant="primary" title={t`Band liquidity`}>
-              {typeof data.bandTotalCollateralValueUsd === 'number'
-                ? `${formatUsd(data.bandTotalCollateralValueUsd ?? 0)}`
-                : '?'}
+              {formatUsdValue(data.bandTotalCollateralValueUsd)}
             </TooltipItem>
           </>
         )}

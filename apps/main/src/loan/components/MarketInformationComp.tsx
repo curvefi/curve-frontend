@@ -1,11 +1,11 @@
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
+import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
 import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import { SubTitle } from '@/loan/components/LoanInfoLlamma/styles'
-import networks from '@/loan/networks'
 import type { ChainId, Llamma } from '@/loan/types/loan.types'
 import { Stack, useTheme } from '@mui/material'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -55,22 +55,8 @@ export const MarketInformationComp = ({
     collateralTokenAddress,
     borrowedTokenAddress,
   })
-  const collateralToken =
-    llamma && collateralTokenAddress
-      ? {
-          symbol: llamma.collateralSymbol,
-          address: collateralTokenAddress,
-          chain: networks[chainId].id,
-        }
-      : undefined
-  const borrowToken =
-    llamma && borrowedTokenAddress
-      ? {
-          symbol: llamma.coins[0],
-          address: borrowedTokenAddress,
-          chain: networks[chainId].id,
-        }
-      : undefined
+  const collateralToken = getBandsChartToken(collateralTokenAddress, llamma?.collateralSymbol)
+  const borrowToken = getBandsChartToken(borrowedTokenAddress, llamma?.coins[0])
 
   return (
     <>
