@@ -32,13 +32,25 @@ const createUserRangeMarkLines = (userBandsPriceRange: UserBandsPriceRange, pale
   return [
     createMarkLine(
       userBandsPriceRange.lowerBandPriceDown,
-      formatNumber(userBandsPriceRange.lowerBandPriceDown, { unit: 'dollar', abbreviate: true, highPrecision: true }),
+      formatNumber(userBandsPriceRange.lowerBandPriceDown, {
+        unit: 'dollar',
+        abbreviate: true,
+        highPrecision: true,
+        minimumSignificantDigits: 4,
+        maximumSignificantDigits: 4,
+      }),
       'end',
       palette.userRangeLabelBackgroundColor,
     ),
     createMarkLine(
       userBandsPriceRange.upperBandPriceUp,
-      formatNumber(userBandsPriceRange.upperBandPriceUp, { unit: 'dollar', abbreviate: true, highPrecision: true }),
+      formatNumber(userBandsPriceRange.upperBandPriceUp, {
+        unit: 'dollar',
+        abbreviate: true,
+        highPrecision: true,
+        minimumSignificantDigits: 4,
+        maximumSignificantDigits: 4,
+      }),
       'end',
       palette.userRangeLabelBackgroundColor,
     ),
@@ -60,7 +72,13 @@ const createOraclePriceMarkLine = (
   return [
     createMarkLine(
       price,
-      formatNumber(+oraclePrice, { unit: 'dollar', abbreviate: true, highPrecision: true }),
+      formatNumber(+oraclePrice, {
+        unit: 'dollar',
+        abbreviate: true,
+        highPrecision: true,
+        minimumSignificantDigits: 4,
+        maximumSignificantDigits: 4,
+      }),
       'end',
       palette.oraclePriceLineColor,
     ),

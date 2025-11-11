@@ -43,11 +43,11 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             <TooltipItem title={t`Your share of band`}>{userBandShare}</TooltipItem>
             <TooltipItem variant="subItem" title={collateralToken?.symbol}>
               {formatAbbreviatedNumber(data.userBandCollateralAmount)}
-              {`${formatUsd(data.userBandCollateralValueUsd ?? 0)}`}
+              {formatUsd(data.userBandCollateralValueUsd ?? 0)}
             </TooltipItem>
             <TooltipItem variant="subItem" title={borrowToken?.symbol}>
               {formatAbbreviatedNumber(data.userBandBorrowedAmount)}
-              {`${formatUsd(data.userBandBorrowedValueUsd ?? 0)}`}
+              {formatUsd(data.userBandBorrowedValueUsd ?? 0)}
             </TooltipItem>
           </TooltipItems>
         )}
@@ -56,7 +56,7 @@ export const TooltipContent = ({ data, collateralToken, borrowToken }: TooltipCo
             <TooltipItems secondary>
               <TooltipItem title={t`Band range`}>
                 {typeof data.p_down === 'number' && typeof data.p_up === 'number'
-                  ? `${formatNumber(data.p_down, { unit: 'dollar', abbreviate: false })} - ${formatNumber(data.p_up, { unit: 'dollar', abbreviate: false })}`
+                  ? `${formatNumber(data.p_down, { unit: 'dollar', abbreviate: false, highPrecision: true, minimumSignificantDigits: 4, maximumSignificantDigits: 4 })} - ${formatNumber(data.p_up, { unit: 'dollar', abbreviate: false, highPrecision: true, minimumSignificantDigits: 4, maximumSignificantDigits: 4 })}`
                   : '?'}
               </TooltipItem>
               <TooltipItem title={t`Band balances`}>{`${collateralBandShare} / ${borrowedBandShare}`}</TooltipItem>

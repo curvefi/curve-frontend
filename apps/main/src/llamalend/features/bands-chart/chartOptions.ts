@@ -136,7 +136,14 @@ export const getChartOptions = (
         showMinLabel: true,
         showMaxLabel: false,
         margin: 8,
-        formatter: (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true }),
+        formatter: (value: number) =>
+          formatNumber(value, {
+            unit: 'dollar',
+            abbreviate: true,
+            highPrecision: true,
+            minimumSignificantDigits: 4,
+            maximumSignificantDigits: 4,
+          }),
       },
       splitLine: {
         show: true,
@@ -160,7 +167,13 @@ export const getChartOptions = (
         label: {
           show: true,
           formatter: (params: any) =>
-            formatNumber(Number(params.value), { unit: 'dollar', abbreviate: true, highPrecision: true }),
+            formatNumber(Number(params.value), {
+              unit: 'dollar',
+              abbreviate: true,
+              highPrecision: true,
+              minimumSignificantDigits: 4,
+              maximumSignificantDigits: 4,
+            }),
           padding: [2, 4],
           borderRadius: 0,
           backgroundColor: palette.oraclePriceLineColor,
@@ -172,7 +185,14 @@ export const getChartOptions = (
         overflow: 'break',
         showMinLabel: true,
         showMaxLabel: false,
-        formatter: (value: number) => formatNumber(value, { unit: 'dollar', abbreviate: true, highPrecision: true }),
+        formatter: (value: number) =>
+          formatNumber(value, {
+            unit: 'dollar',
+            abbreviate: true,
+            highPrecision: true,
+            minimumSignificantDigits: 4,
+            maximumSignificantDigits: 4,
+          }),
       },
       min: priceMin,
       max: priceMax,
