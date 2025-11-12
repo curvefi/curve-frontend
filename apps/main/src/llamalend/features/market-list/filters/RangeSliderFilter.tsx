@@ -18,6 +18,32 @@ type NumberRange = [number, number]
 type OnSliderChange<T extends Decimal | [Decimal, Decimal]> = NonNullable<SliderInputProps<T>['onChange']>
 
 /**
+ * Props for the RangeSliderFilter component.
+ */
+type RangeSliderFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
+  /** The array of data items to calculate min/max values from. */
+  data: TKey[]
+  /** The display title for this filter (shown on mobile). */
+  title: string
+  /** The nested field path in the data object to filter on. */
+  field: DeepKeys<TKey>
+  /** The unique identifier for this filter column. */
+  id: TColumnId
+  /** Function to format numbers for committed filter values. */
+  format: (value: number) => string
+  /** Optional adornment for the numeric text fields. */
+  adornment?: NumericTextFieldProps['adornment']
+  /** Optional scale transformation mode ('power' for non-linear scaling). */
+  scale?: 'power'
+  /** The minimum value for the slider range (defaults to 0). */
+  min?: number
+  /** Optional override for the maximum value (calculated from data if not provided). */
+  max?: number
+  /** The default minimum value for the range (defaults to min). */
+  defaultMin?: number
+}
+
+/**
  * Get the maximum value from a field in an array of objects.
  * TODO: validate T[K] is number with typescript. DeepKeys makes it hard to do this.
  */
@@ -66,36 +92,28 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
   format,
   field,
   id,
-  defaultMinimum = 0,
   adornment,
   scale,
-}: FilterProps<TColumnId> & {
-  data: TKey[]
-  title: string
-  field: DeepKeys<TKey>
-  id: TColumnId
-  format: (value: number) => string
-  defaultMinimum?: number
-  adornment?: NumericTextFieldProps['adornment']
-  scale?: 'power'
-}) => {
+  max,
+  min = 0,
+  defaultMin = min,
+}: RangeSliderFilterProps<TKey, TColumnId>) => {
   const isMobile = useIsMobile()
-  const minValue = 0
-  const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
+  const maxValue = useMemo(() => max ?? Math.ceil(getMaxValueFromData(data, field)), [max, data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const isPowerScale = scale === 'power'
 
   const sliderValueTransform = useMemo(
-    () => calculateSliderValueTransform(minValue, maxValue, isPowerScale),
-    [minValue, maxValue, isPowerScale],
+    () => calculateSliderValueTransform(min, maxValue, isPowerScale),
+    [min, maxValue, isPowerScale],
   )
 
-  const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
-  // Currently applied filter range
+  const defaultRange = useMemo<NumberRange>(() => [defaultMin, maxValue], [defaultMin, maxValue])
+  // Currently applied filter rangedefaultMin
   const appliedRange = useMemo((): NumberRange => {
-    const [min, max] = parseRangeFilter(columnFiltersById[id]) ?? []
-    return [min ?? defaultMinimum, max ?? maxValue]
-  }, [columnFiltersById, id, maxValue, defaultMinimum])
+    const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
+    return [minFilter ?? defaultMin, maxFilter ?? maxValue]
+  }, [columnFiltersById, id, maxValue, defaultMin])
 
   const [range, setRange] = useUniqueDebounce({
     // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and would clear the filter.
@@ -107,10 +125,10 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
           serializeRangeFilter(
             newRange.every((value, i) => value === defaultRange[i])
               ? null // remove the filter if the range is the same as the default range
-              : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+              : [newRange[0] === defaultMin ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
           ),
         ),
-      [defaultMinimum, defaultRange, id, maxValue, setColumnFilter],
+      [defaultMin, defaultRange, id, maxValue, setColumnFilter],
     ),
   })
 
@@ -148,7 +166,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
             (newRange) => setRange(newRange.map(Number) as NumberRange),
             [setRange],
           )}
-          min={0}
+          min={min}
           max={maxValue}
           step={sliderValueTransform?.sliderStep ?? step}
           sliderValueTransform={sliderValueTransform}
