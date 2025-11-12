@@ -2,6 +2,7 @@ import lodash from 'lodash'
 import { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
+import { decimal, type Decimal } from '@ui-kit/utils/decimal'
 import type { BandsBalances, BandsBalancesArr, FetchedBandsBalances, ParsedBandsBalances } from '../types'
 
 export async function fetchChartBandBalancesData(
@@ -28,8 +29,8 @@ export async function fetchChartBandBalancesData(
     const collateralUsd = new BN(collateral).multipliedBy(sqrt) // this only works when borrowed tokens value = 1 usd (might not work in LLv2)
 
     return {
-      borrowed,
-      collateral,
+      borrowed: decimal(borrowed) as Decimal,
+      collateral: decimal(collateral) as Decimal,
       collateralUsd: collateralUsd.toNumber(),
       collateralBorrowedUsd: collateralUsd.plus(borrowed).toNumber(),
       isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
