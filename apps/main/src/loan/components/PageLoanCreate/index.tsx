@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
@@ -48,6 +49,13 @@ const LoanCreate = ({
   const collateralAlert = useCollateralAlert(llamma?.address)
   const isBorrowUnifiedForm = useBorrowUnifiedForm()
   const onUpdate = useOnFormUpdate(props)
+  const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
+
+  const onCreated: CreateLoanOptions['onCreated'] = useCallback(
+    async (_hash, { slippage, leverageEnabled }) =>
+      curve && llamma && (await onLoanCreated(curve, leverageEnabled, llamma, slippage)),
+    [curve, llamma, onLoanCreated],
+  )
 
   type Tab = 'create' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
@@ -87,7 +95,13 @@ const LoanCreate = ({
         fullWidth={!isBorrowUnifiedForm}
       />
       {isBorrowUnifiedForm ? (
-        <BorrowTabContents networks={networks} chainId={rChainId} market={llamma ?? undefined} onUpdate={onUpdate} />
+        <BorrowTabContents
+          networks={networks}
+          chainId={rChainId}
+          market={llamma ?? undefined}
+          onUpdate={onUpdate}
+          onCreated={onCreated}
+        />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AppFormContentWrapper>

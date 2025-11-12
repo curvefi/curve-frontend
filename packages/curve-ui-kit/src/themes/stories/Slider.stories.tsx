@@ -1,11 +1,51 @@
 import { ComponentProps } from 'react'
+import { useState } from 'react'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { Slider } from '@ui-kit/shared/ui/Slider'
+import { geometricMap, powerMap } from '@ui-kit/utils/interpolations'
+import { formatNumber } from '@ui-kit/utils/number'
 
-const SliderStory = (props: ComponentProps<typeof Slider>) => {
-  const { orientation = 'horizontal', ...sliderProps } = props
-  const containerWidth = 320
+const POW_MIN_VALUE = 0
+// geometric function cannot divide by 0, so we use 1 as the minimum value
+const GEO_MIN_VALUE = 1
+const MAX_VALUE = 160000000
+
+const SliderStory = (
+  props: ComponentProps<typeof Slider> & {
+    containerWidth?: number | string
+    scaleType?: 'linear' | 'power' | 'geometric'
+    powerExponent?: number
+  },
+) => {
+  const {
+    containerWidth = 320,
+    orientation = 'horizontal',
+    scaleType = 'linear',
+    defaultValue = 40,
+    powerExponent = Math.trunc(Math.log10(MAX_VALUE) - 2),
+    ...sliderProps
+  } = props
+  const [value, setValue] = useState<number | number[]>(defaultValue)
+
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    setValue(newValue)
+  }
+
+  function valueLabelFormat(value: number) {
+    return formatNumber(value, { abbreviate: true })
+  }
+
+  function calculateValue(value: number) {
+    if (scaleType === 'power') {
+      return powerMap(value, POW_MIN_VALUE, MAX_VALUE, powerExponent)
+    } else if (scaleType === 'geometric') {
+      return geometricMap(value, GEO_MIN_VALUE, MAX_VALUE)
+    }
+    // linear
+    return value
+  }
+
   return (
     <Box
       sx={{
@@ -13,12 +53,19 @@ const SliderStory = (props: ComponentProps<typeof Slider>) => {
         height: orientation === 'horizontal' ? 'auto' : containerWidth,
       }}
     >
-      <Slider orientation={orientation} {...sliderProps} />
+      <Slider
+        value={value}
+        scale={calculateValue}
+        onChange={handleChange}
+        valueLabelFormat={valueLabelFormat}
+        orientation={orientation}
+        {...sliderProps}
+      />
     </Box>
   )
 }
 
-const meta: Meta<typeof Slider> = {
+const meta: Meta<typeof SliderStory> = {
   title: 'UI Kit/Primitives/Slider',
   component: SliderStory,
   args: {
@@ -29,6 +76,8 @@ const meta: Meta<typeof Slider> = {
     step: 1,
     defaultValue: 50,
     orientation: 'horizontal',
+    scaleType: 'linear',
+    valueLabelDisplay: 'off',
   },
   argTypes: {
     'data-rail-background': {
@@ -54,10 +103,24 @@ const meta: Meta<typeof Slider> = {
     step: {
       control: 'number',
     },
+    scaleType: {
+      control: 'select',
+      options: ['linear', 'power', 'geometric'],
+      description: 'The scale type of the slider.',
+    },
     orientation: {
       control: 'select',
       options: ['horizontal', 'vertical'],
       description: 'The orientation of the slider.',
+    },
+    valueLabelDisplay: {
+      control: 'select',
+      options: ['auto', 'on', 'off'],
+      description: 'The display of the value label.',
+    },
+    powerExponent: {
+      control: 'number',
+      description: 'The power exponent of the slider.',
     },
   },
   parameters: {
@@ -65,7 +128,7 @@ const meta: Meta<typeof Slider> = {
   },
 }
 
-type Story = StoryObj<typeof Slider>
+type Story = StoryObj<typeof SliderStory>
 
 export const Default: Story = {}
 
@@ -75,7 +138,6 @@ export const RailBackgroundFilled: Story = {
     defaultValue: 40,
   },
 }
-
 export const RailBackgroundBordered: Story = {
   args: {
     'data-rail-background': 'bordered',
@@ -136,6 +198,39 @@ export const ValueLabelDisplay: Story = {
   args: {
     valueLabelDisplay: 'auto',
     'data-rail-background': 'default',
+  },
+}
+export const LinearScale: Story = {
+  args: {
+    min: POW_MIN_VALUE,
+    max: MAX_VALUE,
+    step: 0.001,
+    defaultValue: MAX_VALUE / 2,
+    valueLabelDisplay: 'on',
+    scaleType: 'linear',
+    'data-rail-background': 'bordered',
+  },
+}
+export const PowerScale: Story = {
+  args: {
+    min: 0,
+    max: 1,
+    step: 0.001,
+    defaultValue: 0.5,
+    valueLabelDisplay: 'on',
+    scaleType: 'power',
+    'data-rail-background': 'bordered',
+  },
+}
+export const GeometricScale: Story = {
+  args: {
+    min: 0,
+    max: 1,
+    step: 0.001,
+    defaultValue: 0.5,
+    valueLabelDisplay: 'on',
+    scaleType: 'geometric',
+    'data-rail-background': 'bordered',
   },
 }
 export const DefaultVertical: Story = {
