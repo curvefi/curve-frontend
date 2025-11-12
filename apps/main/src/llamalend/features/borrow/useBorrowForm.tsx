@@ -16,7 +16,7 @@ import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.util
 import { BORROW_PRESET_RANGES } from './constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
-import { useCreateLoanMutation } from './queries/create-loan.mutation'
+import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { type BorrowForm, BorrowPreset } from './types'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
@@ -24,12 +24,15 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: (
 
 export function useBorrowForm<ChainId extends IChainId>({
   market,
+  network,
   network: { id: chain, chainId },
   preset,
+  onCreated,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<INetworkName, ChainId>
   preset: BorrowPreset
+  onCreated: CreateLoanOptions['onCreated']
 }) {
   const { address: userAddress } = useAccount()
   const form = useForm<BorrowForm>({
@@ -62,7 +65,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     error: creationError,
     txHash,
     reset: resetCreation,
-  } = useCreateLoanMutation({ chainId, poolId: market?.id, reset: form.reset })
+  } = useCreateLoanMutation({ network, poolId: market?.id, reset: form.reset, onCreated })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
 
