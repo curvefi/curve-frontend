@@ -12,7 +12,6 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMonitorBotButton } from './LlamaMonitorBotButton'
 import { UserPositionsTable, type UserPositionsTableProps } from './UserPositionsTable'
-import { UserPositionStatistics } from './UserPositionStatistics'
 
 const { Spacing, Height } = SizesAndSpaces
 
@@ -92,7 +91,6 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
         </Stack>
       ) : (
         <>
-          {!isMobile && <UserPositionStatistics />}
           <Stack
             direction="row"
             justifyContent="space-between"
