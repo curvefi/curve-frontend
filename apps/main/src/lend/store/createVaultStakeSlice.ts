@@ -10,8 +10,7 @@ import apiLending, { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -129,7 +128,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
     fetchStepStake: async (activeKey, formType, api, market, formValues) => {
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       // update formStatus
       const partialFormStatus: Partial<FormStatus> = { isInProgress: true, step: 'STAKE' }
@@ -138,13 +137,7 @@ const createVaultStake = (set: StoreApi<State>['setState'], get: StoreApi<State>
       // api calls
       const { amount } = formValues
       const resp = await apiLending.vaultStake.stake(activeKey, provider, market, amount)
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         // re-fetch api

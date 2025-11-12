@@ -17,9 +17,8 @@ import type { LiqRange, LiqRangesMapper } from '@/lend/store/types'
 import type { State } from '@/lend/store/useStore'
 import { Api, ChainId, OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { _parseActiveKey } from '@/lend/utils/helpers'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
-import { Chain } from '@curvefi/prices-api'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -57,6 +56,7 @@ export type LoanCreateSlice = {
     // steps
     fetchStepApprove(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ hashes: string[]; activeKey: string; error: string } | undefined>
     fetchStepCreate(activeKey: string, api: Api, market: OneWayMarketTemplate, maxSlippage: string, formValues: FormValues, isLeverage: boolean): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    onLoanCreated(api: Api, market: OneWayMarketTemplate): Promise<void>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -299,7 +299,7 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       const { provider, wallet } = useWallet.getState()
       const { chainId } = api
 
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
       if (n === null) return
 
       // update formStatus
@@ -322,40 +322,42 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
         maxSlippage,
         isLeverage,
       )
-      // update user events api
-      void getUserMarketCollateralEvents(
-        wallet?.account?.address,
-        networks[chainId].name as Chain,
-        market.addresses.controller,
-        resp.hash,
-      )
+      updateUserEventsApi(wallet, networks[chainId], market, resp.hash)
 
       if (resp.activeKey === get()[sliceKey].activeKey) {
         if (error) {
           sliceState.setStateByKey('formStatus', { ...formStatus, isInProgress: false, step: '', stepError: error })
           return { ...resp, error }
         } else {
-          const loanExists = await refetchLoanExists({
-            chainId,
-            marketId: market.id,
-            userAddress: wallet?.account?.address,
-          })
-          if (loanExists) {
-            // api calls
-            await user.fetchAll(api, market, true)
-            void markets.fetchAll(api, market, true)
-            markets.setStateByKey('marketDetailsView', 'user')
-            invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
-            // update formStatus
-            sliceState.setStateByKeys({
-              ...DEFAULT_STATE,
-              formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
-            })
-          }
-          invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
+          await sliceState.onLoanCreated(api, market)
           return { ...resp, error }
         }
       }
+    },
+    onLoanCreated: async (api, market) => {
+      const { markets, user } = get()
+      const { formStatus, ...sliceState } = get()[sliceKey]
+      const { chainId } = api
+      const { wallet } = useWallet.getState()
+
+      const loanExists = await refetchLoanExists({
+        chainId,
+        marketId: market.id,
+        userAddress: wallet?.account?.address,
+      })
+      if (loanExists) {
+        // api calls
+        await user.fetchAll(api, market, true)
+        void markets.fetchAll(api, market, true)
+        markets.setStateByKey('marketDetailsView', 'user')
+        invalidateAllUserBorrowDetails({ chainId: api.chainId, marketId: market.id })
+        // update formStatus
+        sliceState.setStateByKeys({
+          ...DEFAULT_STATE,
+          formStatus: { ...DEFAULT_FORM_STATUS, isApproved: true, isComplete: true },
+        })
+      }
+      invalidateMarketDetails({ chainId: api.chainId, marketId: market.id })
     },
 
     // helpers

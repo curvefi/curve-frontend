@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { FormStatus, FormValues } from '@/loan/components/PageLoanManage/LoanIncrease/types'
 import type { FormDetailInfo, FormEstGas } from '@/loan/components/PageLoanManage/types'
 import {
@@ -11,7 +12,6 @@ import networks from '@/loan/networks'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -206,7 +206,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
     },
     fetchStepIncrease: async (activeKey: string, curve: LlamaApi, llamma: Llamma, formValues: FormValues) => {
       const { provider, wallet } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      if (!provider || !wallet) return setMissingProvider(get()[sliceKey])
 
       get()[sliceKey].setStateByKey('formStatus', {
         ...get()[sliceKey].formStatus,
@@ -219,8 +219,7 @@ const createLoanIncrease = (set: StoreApi<State>['setState'], get: StoreApi<Stat
 
       // re-fetch max
       const resp = await borrowMoreFn(activeKey, provider, llamma, collateral, debt)
-      // update user events api
-      void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+      updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
       void get()[sliceKey].fetchMaxRecv(chainId, llamma, formValues)
 
       // re-fetch loan info
