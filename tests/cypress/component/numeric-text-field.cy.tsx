@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { NumericTextField } from '@ui-kit/shared/ui/NumericTextField'
-import type { Decimal } from '@ui-kit/utils'
+import { NumericTextField, type NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
+import { formatNumber, type Decimal } from '@ui-kit/utils'
 
 const INITIAL_VALUE = '5'
 
@@ -8,17 +8,19 @@ function TestComponent({
   initialValue = INITIAL_VALUE,
   max,
   min,
+  format,
 }: {
   initialValue?: Decimal
   max?: Decimal
   min?: Decimal
+  format?: NumericTextFieldProps['format']
 }) {
   const [value, setValue] = useState<Decimal | undefined>(initialValue)
   const [tempValue, setTempValue] = useState<string | undefined>(initialValue)
 
   return (
     <>
-      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} max={max} min={min} />
+      <NumericTextField value={value} onBlur={setValue} onChange={setTempValue} max={max} min={min} format={format} />
       <div>
         Comitted value: <span data-testid="state-value">{value}</span>
       </div>
@@ -173,5 +175,23 @@ describe('NumericTextField', () => {
       cy.get('input').type(character)
       cy.get('[data-testid="state-temp-value"]').should('have.text', expectedTempValue)
     }
+  })
+
+  it('applies formatting when provided and toggles raw value on focus', () => {
+    const formatWithAbbreviation: NonNullable<NumericTextFieldProps['format']> = (value) =>
+      value == null ? '' : formatNumber(Number(value), { abbreviate: true })
+
+    cy.mount(<TestComponent initialValue="1000" format={formatWithAbbreviation} />)
+
+    cy.get('input').should('have.value', '1k')
+    cy.get('input').focus().should('have.value', '1000')
+    cy.get('input').click().clear().type('5000')
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '5000')
+    cy.get('[data-testid="state-value"]').should('have.text', '1000')
+
+    cy.get('input').blur()
+    cy.get('input').should('have.value', '5k')
+    cy.get('[data-testid="state-value"]').should('have.text', '5000')
+    cy.get('[data-testid="state-temp-value"]').should('have.text', '5000')
   })
 })

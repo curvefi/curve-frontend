@@ -67,7 +67,7 @@ describe(`LlamaLend Markets`, () => {
     })
     if (breakpoint == 'mobile') {
       cy.get(`[data-testid="data-table-cell-tvl"]`).first().contains('$')
-      cy.get('[data-testid="btn-drawer-sort-lamalend-markets"]').click()
+      openDrawer('sort')
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').contains('Utilization', LOAD_TIMEOUT)
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"] li[value="utilizationPercent"]').click()
       cy.get('[data-testid="drawer-sort-menu-lamalend-markets"]').should('not.be.visible')
@@ -134,22 +134,64 @@ describe(`LlamaLend Markets`, () => {
       ['tvl', '$10k -'],
       ['utilizationPercent', '0% -'],
     )
-    cy.viewport(1400, 800) // TODO: fix the slider in different viewports, the new design should help with that
+    // Keep the viewport stable for slider width.
+    const [width, height, breakpoint] = oneOf([1200, 800, 'desktop'], [500, 800, 'mobile'])
+    cy.viewport(width, height)
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
-      cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+      // Expand the filters
+      if (breakpoint == 'mobile') {
+        openDrawer('filter')
+      } else {
+        cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+      }
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('contain', initialFilterText)
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
-      /**
-       * Using `force: true` to bypass Cypress' element visibility check.
-       * The slider may have pseudo-elements that interfere with Cypress' ability to interact with it.
-       * We've tried alternative approaches (adding waits, adjusting click coordinates) but they didn't resolve the issue.
-       * The application behavior works correctly despite this test accommodation.
-       */
-
       cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
-      cy.get(`[data-testid="slider-${columnId}"]`).click(40, 10, { force: true, waitForAnimations: true })
+      cy.get(`[data-testid="slider-${columnId}"]`).then(($el) => {
+        const width = $el.width() ?? 80
+        const height = $el.height() ?? 24
+        // With log slider a click from the left is not enough to filter
+        // Click 20px from the right edge and vertically centered
+        cy.wrap($el).click(width - 20, height / 2, { waitForAnimations: true })
+      })
+      // close the select menu
+      cy.get('body').click(0, 0, { waitForAnimations: true })
+      cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
+      cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+    })
+  })
+
+  it(`should allow filtering by using a slider input`, () => {
+    const [columnId, newValue] = oneOf(['liquidityUsd', '30000000'], ['tvl', '80000000'], ['utilizationPercent', '80'])
+    // Keep the viewport stable for slider width.
+    const [width, height, breakpoint] = oneOf([1200, 800, 'desktop'], [500, 800, 'mobile'])
+    cy.viewport(width, height)
+    cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
+      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).should('not.be.visible')
+      // Expand the filters
+      if (breakpoint == 'mobile') {
+        openDrawer('filter')
+      } else {
+        cy.get(`[data-testid="btn-expand-filters"]`).click({ waitForAnimations: true })
+      }
+      //  open the chosen filter
+      cy.get(`[data-testid="minimum-slider-filter-${columnId}"]`).click({ waitForAnimations: true })
+      cy.get(`[data-testid="slider-${columnId}"]`).should('be.visible')
+
+      // Always type into the right input when the slider has a range.
+      cy.get(`[data-testid="slider-${columnId}"]`)
+        .closest('[role="presentation"]')
+        .find('input[type="text"]')
+        .then(($inputs) => {
+          const target = $inputs.length > 1 ? $inputs.eq($inputs.length - 1) : $inputs.eq(0)
+          cy.wrap(target).click().type('{selectAll}').type(newValue).blur()
+        })
+
+      // Close the menu
+      cy.get('body').click(0, 0, { waitForAnimations: true })
+      closeDrawer()
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
     })
@@ -169,7 +211,7 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by token`, () => {
     if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click()
+      openDrawer('filter')
     } else {
       cy.get(`[data-testid="btn-expand-filters"]`).click()
     }
@@ -179,7 +221,7 @@ describe(`LlamaLend Markets`, () => {
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
     if (breakpoint == 'mobile') {
-      cy.get(`[data-testid="btn-drawer-filter-lamalend-markets"]`).click()
+      openDrawer('filter')
     }
     // on desktop, the favorite icon is not visible until hovered - but cypress doesn't support that so use force
     cy.get(`[data-testid="favorite-icon"]`).first().click({ force: true })
@@ -272,6 +314,10 @@ describe(`LlamaLend Markets`, () => {
       cy.get(`[data-testid="expand-icon"]`).first().click()
       cy.get(`[data-testid="data-table-expansion-row"]`).should('be.visible')
     }
+  }
+
+  function openDrawer(type: 'filter' | 'sort') {
+    cy.get(`[data-testid="btn-drawer-${type}-lamalend-markets"]`).click({ waitForAnimations: true })
   }
 
   function closeDrawer() {
