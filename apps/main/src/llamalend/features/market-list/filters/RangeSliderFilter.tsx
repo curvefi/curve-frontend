@@ -97,7 +97,7 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
   max,
   min = 0,
   defaultMin = min,
-}: RangeSliderFilterProps<TKey, TColumnId extends string>) => {
+}: RangeSliderFilterProps<TKey, TColumnId>) => {
   const isMobile = useIsMobile()
   const maxValue = useMemo(() => max ?? Math.ceil(getMaxValueFromData(data, field)), [max, data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
