@@ -1,5 +1,5 @@
 import type { FastifyRequest } from 'fastify'
-import { partition } from 'lodash'
+import lodash from 'lodash'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { handleTimeout } from '../router.utils'
@@ -25,15 +25,16 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
       ),
     ),
   )
-  const [successes, failures] = partition(
+  const [successes, failures] = lodash.partition(
     results,
     (res): res is PromiseFulfilledResult<RouteResponse[]> => res.status === 'fulfilled',
   )
 
   failures.forEach((res) => request.log.error({ message: 'route calculation failed', error: res.reason }))
   if (!successes.length) {
-    if (failures.length === 1) throw failures[0].reason
-    throw new Error(`Failed to calculate optimal route for ${router.join(', ')}`)
+    const reasons = failures.map((f) => f.reason)
+    if (reasons.length === 1) throw reasons[0]
+    throw new Error(`Failed to calculate optimal route for ${router.join(', ')}: ${reasons.join('; ')}`)
   }
 
   const result = successes.flatMap((res) => res.value)
