@@ -53,7 +53,7 @@ export const TableFilters = <ColumnIds extends string>({
   const [isSearchExpanded, , , toggleSearchExpanded] = useSwitch(false)
   const isMobile = useIsMobile()
   const isCollapsible = collapsible || (isMobile && chips)
-  const isExpandedOrValue = hasSearchBar && (isSearchExpanded || !!searchText)
+  const isExpandedOrValue = Boolean(isSearchExpanded || searchText)
   const hideTitle = hasSearchBar && isExpandedOrValue && isMobile
   return (
     <Stack paddingBlockEnd={{ mobile: Spacing.sm.tablet }} paddingBlockStart={{ mobile: Spacing.md.tablet }}>
