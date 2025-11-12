@@ -6,11 +6,12 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import { type Decimal, decimal, formatNumber } from '@ui-kit/utils'
 import { invertPowerMap, powerMap } from '@ui-kit/utils/interpolations'
-import type { LlamaMarketColumnId } from '../columns.enum'
 
 type NumberRange = [number, number]
 
@@ -19,19 +20,15 @@ type OnSliderChange<T extends Decimal | [Decimal, Decimal]> = NonNullable<Slider
 /**
  * Props for the RangeSliderFilter component.
  */
-type RangeSliderFilterProps<T> = {
-  /** The current state of all column filters. */
-  columnFilters: Record<string, unknown>
-  /** Callback to update a specific column filter by ID. */
-  setColumnFilter: (id: string, value: unknown) => void
+type RangeSliderFilterProps<TKey, TColumnId extends string> = FilterProps<TColumnId> & {
   /** The array of data items to calculate min/max values from. */
-  data: T[]
+  data: TKey[]
   /** The display title for this filter (shown on mobile). */
   title: string
   /** The nested field path in the data object to filter on. */
-  field: DeepKeys<T>
+  field: DeepKeys<TKey>
   /** The unique identifier for this filter column. */
-  id: LlamaMarketColumnId
+  id: TColumnId
   /** Function to format numbers for committed filter values. */
   format: (value: number) => string
   /** Optional adornment for the numeric text fields. */
@@ -87,8 +84,8 @@ const calculateSliderValueTransform = (minValue: number, maxValue: number, isPow
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <T,>({
-  columnFilters,
+export const RangeSliderFilter = <TKey, TColumnId extends string>({
+  columnFiltersById,
   setColumnFilter,
   data,
   title,
@@ -100,7 +97,7 @@ export const RangeSliderFilter = <T,>({
   max,
   min = 0,
   defaultMin = min,
-}: RangeSliderFilterProps<T>) => {
+}: RangeSliderFilterProps<TKey, TColumnId extends string>) => {
   const isMobile = useIsMobile()
   const maxValue = useMemo(() => max ?? Math.ceil(getMaxValueFromData(data, field)), [max, data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
@@ -114,9 +111,9 @@ export const RangeSliderFilter = <T,>({
   const defaultRange = useMemo<NumberRange>(() => [defaultMin, maxValue], [defaultMin, maxValue])
   // Currently applied filter rangedefaultMin
   const appliedRange = useMemo((): NumberRange => {
-    const [minFilter, maxFilter] = (columnFilters[id] as NumberRange) ?? []
+    const [minFilter, maxFilter] = parseRangeFilter(columnFiltersById[id]) ?? []
     return [minFilter ?? defaultMin, maxFilter ?? maxValue]
-  }, [columnFilters, id, maxValue, defaultMin])
+  }, [columnFiltersById, id, maxValue, defaultMin])
 
   const [range, setRange] = useUniqueDebounce({
     // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and would clear the filter.
@@ -125,9 +122,11 @@ export const RangeSliderFilter = <T,>({
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultRange[i])
-            ? undefined // remove the filter if the range is the same as the default range
-            : [newRange[0] === defaultMin ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          serializeRangeFilter(
+            newRange.every((value, i) => value === defaultRange[i])
+              ? null // remove the filter if the range is the same as the default range
+              : [newRange[0] === defaultMin ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          ),
         ),
       [defaultMin, defaultRange, id, maxValue, setColumnFilter],
     ),

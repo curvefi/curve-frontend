@@ -57,7 +57,7 @@ export const PoolListFilterChips = ({
                   data-testid={`filter-chip-${key}`}
                   label={notFalsy(label, filterKey == key && resultCount != null && ` (${resultCount})`).join(' ')}
                   selected={filterKey == key}
-                  toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? undefined : key)}
+                  toggle={() => setColumnFilter(PoolColumnId.PoolTags, filterKey === key ? null : key)}
                 />
               ),
           )}

@@ -1,9 +1,9 @@
-import lodash from 'lodash'
 import { useMemo, useState } from 'react'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { LlamaListMarketChips } from '@/llamalend/features/market-list/chips/LlamaListMarketChips'
+import Grid from '@mui/material/Grid'
+import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
@@ -11,16 +11,17 @@ import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { MarketRateType } from '@ui-kit/types/market'
 import { type LlamaMarketsResult } from '../../entities/llama-markets'
-import { UserPositionFilterChips } from './chips/UserPositionFilterChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
-const { isEqual } = lodash
+const { Spacing } = SizesAndSpaces
+
 const LOCAL_STORAGE_KEYS = {
   // not using the t`` here as the value is used as a key in the local storage
   [MarketRateType.Borrow]: 'My Borrow Positions',
@@ -41,7 +42,6 @@ export type UserPositionsTableProps = {
   tab: MarketRateType
 }
 
-const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 const pagination = { pageIndex: 0, pageSize: 50 }
 
 export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableProps) => {
@@ -50,7 +50,7 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
   const title = LOCAL_STORAGE_KEYS[tab]
   const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title,
-    migration,
+    columns: LlamaMarketColumnId,
     defaultFilters,
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], 'userSort')
@@ -86,15 +86,9 @@ export const UserPositionsTable = ({ result, loading, tab }: UserPositionsTableP
         onSearch={onSearch}
         chips={
           showChips && (
-            <UserPositionFilterChips
-              columnFiltersById={columnFiltersById}
-              setColumnFilter={setColumnFilter}
-              userHasPositions={userHasPositions}
-              tab={tab}
-              searchText={searchText}
-              onSearch={onSearch}
-              testId={title}
-            />
+            <Grid container size={12} spacing={Spacing.sm}>
+              <LlamaListMarketChips columnFiltersById={columnFiltersById} setColumnFilter={setColumnFilter} />
+            </Grid>
           )
         }
       />

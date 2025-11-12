@@ -40,6 +40,6 @@ describe('Basic Access Test', () => {
     cy.visit('/dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
-    cy.contains('LBTC/wBTCN', LOAD_TIMEOUT).should('be.visible')
+    cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
   })
 })

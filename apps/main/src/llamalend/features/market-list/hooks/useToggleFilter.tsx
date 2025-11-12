@@ -1,16 +1,13 @@
 import { useCallback } from 'react'
-import type { LlamaMarketKey } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 
 /** Hook for managing a single boolean filter */
 export function useToggleFilter(
-  key: LlamaMarketKey,
-  { columnFiltersById, setColumnFilter }: FilterProps<LlamaMarketKey>,
+  key: LlamaMarketColumnId,
+  { columnFiltersById, setColumnFilter }: FilterProps<LlamaMarketColumnId> & { defaultValue?: true },
 ) {
-  const isSelected = !!columnFiltersById[key]
-  const toggle = useCallback(
-    () => setColumnFilter(key, isSelected ? undefined : true),
-    [isSelected, key, setColumnFilter],
-  )
+  const isSelected = ![null, undefined, '', 'no'].includes(columnFiltersById[key])
+  const toggle = useCallback(() => setColumnFilter(key, isSelected ? null : 'yes'), [isSelected, key, setColumnFilter])
   return [isSelected, toggle] as const
 }

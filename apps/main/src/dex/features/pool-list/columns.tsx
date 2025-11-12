@@ -4,7 +4,13 @@ import { createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import type { ColumnDef, DeepKeys } from '@tanstack/table-core'
 import { AccessorFn } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
-import { boolFilterFn, filterByText, inListFilterFn, multiFilterFn } from '@ui-kit/shared/ui/DataTable/filters'
+import {
+  boolFilterFn,
+  filterByText,
+  inListFilterFn,
+  multiFilterFn,
+  rangeFilterFn,
+} from '@ui-kit/shared/ui/DataTable/filters'
 import { PoolTitleCell } from './cells/PoolTitleCell/PoolTitleCell'
 import { RewardsBaseCell } from './cells/RewardsBaseCell'
 import { RewardsBaseHeader } from './cells/RewardsBaseHeader'
@@ -22,7 +28,7 @@ export enum PoolColumnId {
   RewardsOther = 'RewardsOther', // == RewardsCrv + RewardsIncentives
   Volume = 'volume',
   Tvl = 'tvl',
-  PoolTags = 'tags',
+  PoolTags = 'filter', // using `filter` to keep the old links valid
 }
 
 const columnHelper = createColumnHelper<PoolListItem>()
@@ -90,6 +96,7 @@ export const POOL_LIST_COLUMNS = [
     cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   columnHelper.accessor((row) => (row.tvl ? +row.tvl.value : null), {
     id: PoolColumnId.Tvl,
@@ -97,9 +104,10 @@ export const POOL_LIST_COLUMNS = [
     cell: UsdCell,
     meta: { type: 'numeric' },
     sortUndefined: 'last',
+    filterFn: rangeFilterFn,
   }),
   hidden(PoolColumnId.UserHasPositions, PoolColumnId.UserHasPositions, boolFilterFn),
-  hidden(PoolColumnId.PoolTags, PoolColumnId.PoolTags, inListFilterFn),
+  hidden(PoolColumnId.PoolTags, (p) => p.tags, inListFilterFn),
   hidden(PoolColumnId.RewardsCrv, (row) => row.rewards?.crv, multiFilterFn),
   hidden(PoolColumnId.RewardsIncentives, (row) => (row.rewards ? sum(row.rewards.other) : undefined), multiFilterFn),
 ] satisfies PoolColumn[]
