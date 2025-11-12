@@ -104,7 +104,6 @@ export const Duration = {
   Tooltip: { Enter: 500, Exit: 500 },
   Flicker: 1000,
   FormDebounce: 500,
-  SliderDebounce: 300,
   Transition: 256,
   Focus: 50,
   Delay: 100,
