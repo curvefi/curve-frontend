@@ -71,6 +71,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
     title,
     columns: LlamaMarketColumnId,
     defaultFilters,
+    scope: tab.toLowerCase(),
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
   const { columnSettings, columnVisibility, sortField, toggleVisibility } = useLlamaTableVisibility(title, sorting, tab)
