@@ -1,11 +1,16 @@
 import { useCallback } from 'react'
-import { useAccount, useConfig } from 'wagmi'
-import { getLlamaMarket } from '@/llamalend/llama.utils'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import { useConfig } from 'wagmi'
+import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
+import type {
+  IChainId as LlamaChainId,
+  IChainId,
+  INetworkName as LlamaNetworkId,
+} from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { useMutation } from '@tanstack/react-query'
-import { notify } from '@ui-kit/features/connect-wallet'
+import type { BaseConfig } from '@ui/utils'
+import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
@@ -23,7 +28,10 @@ type BorrowMutationContext = {
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 
-type CreateLoanOptions = BorrowMutationContext & {
+export type CreateLoanOptions = {
+  poolId: string | undefined
+  network: BaseConfig<LlamaNetworkId, LlamaChainId>
+  onCreated: (hash: `0x${string}`, mutation: BorrowMutation & { txHash: `0x${string}` }) => void
   reset: () => void
 }
 
@@ -51,10 +59,10 @@ const getCreateMethods = (poolId: string, leverageEnabled: boolean) => {
   }
 }
 
-export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoanOptions) => {
   const config = useConfig()
-  const { address: userAddress } = useAccount()
-  const mutationKey = ['create-loan', { chainId, poolId }] as const
+  const { wallet } = useConnection()
+  const mutationKey = ['create-loan', { chainId: network.chainId, poolId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
@@ -76,13 +84,17 @@ export const useCreateLoanMutation = ({ chainId, poolId }: CreateLoanOptions) =>
       },
       [poolId, config],
     ),
-    onSuccess: (tx, mutation) => {
-      logSuccess(mutationKey, tx)
+    onSuccess: async (txHash, mutation) => {
+      logSuccess(mutationKey, txHash)
       notify(t`Loan created successfully`, 'success')
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: userAddress }) }),
-        queryClient.invalidateQueries({ queryKey: borrowExpectedCollateralQueryKey({ chainId, poolId, ...mutation }) }),
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: wallet?.account.address }) }),
+        queryClient.invalidateQueries({
+          queryKey: borrowExpectedCollateralQueryKey({ chainId: network?.chainId, poolId, ...mutation }),
+        }),
       ])
+      updateUserEventsApi(wallet!, network, getLlamaMarket(poolId!), txHash)
+      onCreated(txHash, { ...mutation, txHash })
     },
   })
 
