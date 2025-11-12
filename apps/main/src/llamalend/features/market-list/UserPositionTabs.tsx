@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -56,6 +56,11 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
   }, [props.result?.userHasPositions, tabs])
 
   const [tab, setTab] = useState<MarketRateType>(defaultTab.value)
+
+  // Update tab when defaultTab changes (e.g., when user positions data loads)
+  useEffect(() => {
+    setTab(defaultTab.value)
+  }, [defaultTab.value])
 
   return (
     <Stack>
