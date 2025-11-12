@@ -4,6 +4,7 @@ import { TextFieldProps } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { useDebounce } from '@ui-kit/hooks/useDebounce'
 import { SliderSize } from '@ui-kit/themes/components/slider/types'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal } from '@ui-kit/utils'
 import { NumericTextField, NumericTextFieldProps } from './NumericTextField'
@@ -48,8 +49,6 @@ export type SliderInputProps<T extends Decimal | DecimalRangeValue> = {
   /** Additional props forwarded to the inputs */
   inputProps?: Omit<NumericTextFieldProps, 'size' | 'value' | 'onChange' | 'min' | 'max' | 'disabled' | 'aria-label'>
 }
-
-const DEBOUNCE_VALUE = 700
 
 /**
  * Mapping between the slider sizes and correspoding input sizes
@@ -101,7 +100,7 @@ export const SliderInput = <T extends Decimal | DecimalRangeValue>({
   inputProps,
   sliderValueTransform,
   testId,
-  debounceMs = DEBOUNCE_VALUE,
+  debounceMs = Duration.sliderDebounce,
 }: SliderInputProps<T>) => {
   const isRange = isRangeValue(value)
   type SliderValue = T extends Decimal ? number : RangeValue
