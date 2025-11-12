@@ -27,7 +27,7 @@ type LlamaListChipsProps = {
   data: LlamaMarket[]
   minLiquidity?: number
   userPositionsTab?: MarketRateType
-} & FilterProps<string>
+} & FilterProps<LlamaMarketColumnId>
 
 export const LlamaListChips = ({
   hiddenMarketCount,

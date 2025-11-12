@@ -2,10 +2,9 @@ import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { PositionsEmptyState } from '@/llamalend/constants'
 import { useShowAllPositionsRows } from '@/llamalend/hooks/useShowAllPositionsRows'
-import { ColumnFiltersState, ExpandedState, useReactTable } from '@tanstack/react-table'
+import { ExpandedState, useReactTable } from '@tanstack/react-table'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
@@ -58,7 +57,6 @@ export type UserPositionsTableProps = {
   tab: MarketRateType
 }
 
-const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
 const pagination = { pageIndex: 0, pageSize: 50 }
 const DEFAULT_VISIBLE_ROWS = 3
 
@@ -71,7 +69,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
   const title = LOCAL_STORAGE_KEYS[tab]
   const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title,
-    migration,
+    columns: LlamaMarketColumnId,
     defaultFilters,
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT[tab], SORT_QUERY_FIELD[tab])
@@ -123,7 +121,7 @@ export const UserPositionsTable = ({ onReload, result, loading, isError, tab }: 
           collapsible={
             <LendingMarketsFilters
               data={userData}
-              columnFilters={columnFiltersById}
+              columnFiltersById={columnFiltersById}
               setColumnFilter={setColumnFilter}
             />
           }

@@ -1,7 +1,6 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
 import type { Address } from '@curvefi/prices-api'
-import type { ColumnFiltersState } from '@tanstack/table-core'
 import type { VisibilityVariants } from '@ui-kit/shared/ui/DataTable/visibility.types'
 import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { type MigrationOptions, useStoredState } from './useStoredState'
@@ -55,12 +54,6 @@ export const useFilterExpanded = (tableTitle: string) =>
 
 export const useBorrowPreset = <T extends 'Safe' | 'MaxLtv' | 'Custom'>(defaultValue: T) =>
   useLocalStorage<T>('borrow-preset', defaultValue)
-
-export const useTableFilters = (
-  tableTitle: string,
-  defaultFilters: ColumnFiltersState,
-  migration: MigrationOptions<ColumnFiltersState>,
-) => useLocalStorage<ColumnFiltersState>(`table-filters-${kebabCase(tableTitle)}`, defaultFilters, migration)
 
 export const useTableColumnVisibility = <Variant extends string, ColumnIds>(
   tableTitle: string,

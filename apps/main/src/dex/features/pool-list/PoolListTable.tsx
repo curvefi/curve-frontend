@@ -4,18 +4,19 @@ import { type PoolListItem } from '@/dex/features/pool-list/types'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import { type NetworkConfig } from '@/dex/types/main.types'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
-import { ColumnFiltersState, ExpandedState, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
+import { ExpandedState, getPaginationRowModel, useReactTable } from '@tanstack/react-table'
 import { CurveApi } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { MIN_POOLS_DISPLAYED, SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { useIsTablet } from '@ui-kit/hooks/useBreakpoints'
 import { usePageFromQueryString } from '@ui-kit/hooks/usePageFromQueryString'
 import { useSortFromQueryString } from '@ui-kit/hooks/useSortFromQueryString'
-import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'
 import { t } from '@ui-kit/lib/i18n'
 import { getTableOptions } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { DataTable } from '@ui-kit/shared/ui/DataTable/DataTable'
 import { EmptyStateRow } from '@ui-kit/shared/ui/DataTable/EmptyStateRow'
+import { serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFilters'
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
@@ -29,8 +30,6 @@ import { DEFAULT_SORT, usePoolListVisibilitySettings } from './hooks/usePoolList
 
 const LOCAL_STORAGE_KEY = 'dex-pool-list'
 
-const migration: MigrationOptions<ColumnFiltersState> = { version: 1 }
-
 const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
   const hideSmallPools = useUserProfileStore((s) => s.hideSmallPools)
   const { hideSmallPoolsTvl: minTvl = SMALL_POOL_TVL } = useNetworkFromUrl() ?? {}
@@ -40,20 +39,23 @@ const useDefaultPoolsFilter = (data: PoolListItem[] | undefined) => {
         data &&
           hideSmallPools && {
             id: PoolColumnId.Tvl,
-            value: [
+            value: serializeRangeFilter([
               minCutoffForTopK(data, (pool) => +(pool.tvl?.value ?? 0), minTvl, MIN_POOLS_DISPLAYED),
               null, // no upper limit
-            ],
+            ])!,
           },
       ),
     [data, minTvl, hideSmallPools],
   )
 }
 
-const useSearch = (columnFiltersById: Record<string, unknown>, setColumnFilter: (id: string, value: unknown) => void) =>
+const useSearch = (
+  columnFiltersById: PartialRecord<PoolColumnId, string>,
+  setColumnFilter: (id: PoolColumnId, value: string | null) => void,
+) =>
   [
     (columnFiltersById[PoolColumnId.PoolName] as string) ?? '',
-    useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || undefined), [setColumnFilter]),
+    useCallback((search: string) => setColumnFilter(PoolColumnId.PoolName, search || null), [setColumnFilter]),
   ] as const
 
 const PER_PAGE = 50
@@ -69,7 +71,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   const defaultFilters = useDefaultPoolsFilter(data)
   const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
-    migration,
+    columns: PoolColumnId,
     defaultFilters,
   })
   const [sorting, onSortingChange] = useSortFromQueryString(DEFAULT_SORT)
