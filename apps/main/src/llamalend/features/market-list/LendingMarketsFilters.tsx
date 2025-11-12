@@ -122,6 +122,7 @@ export const LendingMarketsFilters = ({
           format={formatPercent}
           data={data}
           adornment="percentage"
+          max={100}
           {...filterProps}
         />
       </TableFilterColumn>
