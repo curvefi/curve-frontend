@@ -1,5 +1,5 @@
 import type { FastifyRequest } from 'fastify'
-import { partition } from 'lodash'
+import lodash from 'lodash'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
 import { handleTimeout } from '../router.utils'
@@ -7,10 +7,7 @@ import { type OptimalRouteQuery, type RouteResponse } from './optimal-route.sche
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
-const routers = {
-  curve: buildCurveRouteResponse,
-  enso: buildEnsoRouteResponse,
-}
+const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse }
 
 /**
  * Handles the optimal route request. Returns the optimal route for the given parameters.
@@ -28,7 +25,7 @@ export const getOptimalRoute = async (request: FastifyRequest<{ Querystring: Opt
       ),
     ),
   )
-  const [successes, failures] = partition(
+  const [successes, failures] = lodash.partition(
     results,
     (res): res is PromiseFulfilledResult<RouteResponse[]> => res.status === 'fulfilled',
   )
