@@ -31,7 +31,7 @@ export const PoolListFilterDrawer = ({
 }: Props) => {
   const [open, openDrawer, closeDrawer, , setOpen] = useSwitch(false)
   const setFilterAndClose = useCallback(
-    (id: PoolColumnId, value: unknown) => {
+    (id: PoolColumnId, value: string | null) => {
       setColumnFilter(id, value)
       closeDrawer()
     },

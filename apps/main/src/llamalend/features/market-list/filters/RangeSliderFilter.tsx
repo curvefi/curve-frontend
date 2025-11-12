@@ -6,11 +6,12 @@ import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
 import { type DecimalRangeValue, SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
 import { type Decimal, decimal, formatNumber } from '@ui-kit/utils'
 import { invertPowerMap, powerMap } from '@ui-kit/utils/interpolations'
-import type { LlamaMarketColumnId } from '../columns.enum'
 
 type NumberRange = [number, number]
 
@@ -57,8 +58,8 @@ const calculateSliderValueTransform = (minValue: number, maxValue: number, isPow
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
  */
-export const RangeSliderFilter = <T,>({
-  columnFilters,
+export const RangeSliderFilter = <TKey, TColumnId extends string>({
+  columnFiltersById,
   setColumnFilter,
   data,
   title,
@@ -68,13 +69,11 @@ export const RangeSliderFilter = <T,>({
   defaultMinimum = 0,
   adornment,
   scale,
-}: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
-  data: T[]
+}: FilterProps<TColumnId> & {
+  data: TKey[]
   title: string
-  field: DeepKeys<T>
-  id: LlamaMarketColumnId
+  field: DeepKeys<TKey>
+  id: TColumnId
   format: (value: number) => string
   defaultMinimum?: number
   adornment?: NumericTextFieldProps['adornment']
@@ -94,9 +93,9 @@ export const RangeSliderFilter = <T,>({
   const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
   // Currently applied filter range
   const appliedRange = useMemo((): NumberRange => {
-    const [min, max] = (columnFilters[id] as NumberRange) ?? []
+    const [min, max] = parseRangeFilter(columnFiltersById[id]) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
-  }, [columnFilters, id, maxValue, defaultMinimum])
+  }, [columnFiltersById, id, maxValue, defaultMinimum])
 
   const [range, setRange] = useUniqueDebounce({
     // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and would clear the filter.
@@ -105,9 +104,11 @@ export const RangeSliderFilter = <T,>({
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
-          newRange.every((value, i) => value === defaultRange[i])
-            ? undefined // remove the filter if the range is the same as the default range
-            : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          serializeRangeFilter(
+            newRange.every((value, i) => value === defaultRange[i])
+              ? null // remove the filter if the range is the same as the default range
+              : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
+          ),
         ),
       [defaultMinimum, defaultRange, id, maxValue, setColumnFilter],
     ),

@@ -25,6 +25,9 @@ import {
 import { SMALL_POOL_TVL } from '@ui-kit/features/user-profile/store'
 import { MarketRateType } from '@ui-kit/types/market'
 
+const wstEthMarket = '0x37417B2238AA52D0DD2D6252d989E728e8f706e4' as const
+const sfrxEthMarket = '0x136e783846ef68C8Bd00a3369F787dF8d683a696' as const
+
 describe(`LlamaLend Markets`, () => {
   let breakpoint: Breakpoint
   let width: number, height: number
@@ -120,15 +123,23 @@ describe(`LlamaLend Markets`, () => {
   it('should find markets by text', () => {
     cy.get('[data-testid="btn-expand-search-Llamalend Markets"]').click({ waitForAnimations: true })
     cy.get("[data-testid^='table-text-search-'] input").should('be.focused') // element is focused when animation completes
-    cy.get("[data-testid='table-text-search-Llamalend Markets']").type('wstETH crvUSD')
+    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").type('wstETH crvUSD')
+    cy.url().should('include', 'assets=wstETH+crvUSD') // todo: this should be called `search`!
     cy.scrollTo(0, 0)
-    // sfrxETH market is filtered out
-    cy.get(`[data-testid='market-link-0x136e783846ef68C8Bd00a3369F787dF8d683a696']`).should('not.exist')
-    // wstETH market is shown
-    cy.get(`[data-testid="market-link-0x37417B2238AA52D0DD2D6252d989E728e8f706e4"]`).should('exist')
+    cy.get(`[data-testid='market-link-${sfrxEthMarket}']`).should('not.exist')
+    cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
   })
 
-  it(`should allow filtering by using a slider`, () => {
+  it('persists search filter across reload', () => {
+    cy.viewport(width, height)
+    cy.visit(`/llamalend/ethereum/markets/?assets=wstETH+crvUSD`)
+    cy.get('[data-testid="data-table"]', LOAD_TIMEOUT).should('be.visible')
+    cy.get("[data-testid='table-text-search-Llamalend Markets'] input").should('have.value', 'wstETH crvUSD')
+    cy.get(`[data-testid="market-link-${wstEthMarket}"]`).should('exist')
+    cy.get('[data-testid="data-table-cell-assets"]').first().contains('wstETH')
+  })
+
+  it('should allow filtering by using a slider', () => {
     const [columnId, initialFilterText] = oneOf(
       ['liquidityUsd', '$0 -'],
       ['tvl', '$10k -'],
@@ -194,6 +205,7 @@ describe(`LlamaLend Markets`, () => {
       closeDrawer()
       cy.get(`[data-testid="slider-${columnId}"]`).should('not.exist')
       cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+      cy.url().should('include', `${columnId}=`)
     })
   })
 
@@ -201,12 +213,15 @@ describe(`LlamaLend Markets`, () => {
     const chains = Object.keys(vaultData)
     const chain = oneOf(...chains)
     cy.get(`[data-testid="chip-chain-${chain}"]`).click()
+    cy.url().should('include', `chain=${chain}`)
 
     cy.get(`[data-testid="data-table-cell-assets"]:first [data-testid="chain-icon-${chain}"]`).should('be.visible')
 
     const otherChain = oneOf(...chains.filter((c) => c !== chain))
     cy.get(`[data-testid="chip-chain-${otherChain}"]`).click()
     ;[chain, otherChain].forEach((c) => cy.get(`[data-testid="chain-icon-${c}"]`).should('be.visible'))
+    cy.url().should('include', chain)
+    cy.url().should('include', otherChain)
   })
 
   it(`should allow filtering by token`, () => {
@@ -215,8 +230,8 @@ describe(`LlamaLend Markets`, () => {
     } else {
       cy.get(`[data-testid="btn-expand-filters"]`).click()
     }
-    selectCoin('collateral')
-    selectCoin('borrowed')
+    checkCoinSelection('collateral')
+    checkCoinSelection('borrowed')
   })
 
   it('should allow filtering favorites', { scrollBehavior: false }, () => {
@@ -228,22 +243,28 @@ describe(`LlamaLend Markets`, () => {
 
     closeDrawer()
     withFilterChips(() => cy.get(`[data-testid="chip-favorites"]`).click())
+    cy.url().should('include', 'isFavorite=yes')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length', 1)
     cy.get(`[data-testid="favorite-icon"]:visible`).should('not.exist')
     cy.get(`[data-testid="favorite-icon-filled"]:visible`).click()
     cy.get(`[data-testid="table-empty-row"]`).should('exist')
     withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
+    cy.url().should('not.include', 'isFavorite=')
     cy.get(`[data-testid^="data-table-row"]`).should('have.length.above', 1)
   })
 
   it(`should allow filtering by market type`, () =>
     withFilterChips(() =>
       cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
-        const [type, otherType] = shuffle('mint', 'lend')
-        cy.get(`[data-testid="chip-${type}"]`).click()
-        cy.get(`[data-testid^="pool-type-"]`).each(($el) => expect($el.attr('data-testid')).equals(`pool-type-${type}`))
+        const [type, otherType] = shuffle('Mint', 'Lend')
+        cy.get(`[data-testid="chip-${type.toLowerCase()}"]`).click()
+        cy.url().should('include', `type=${type}`)
+        cy.get(`[data-testid^="pool-type-"]`).each(($el) =>
+          expect($el.attr('data-testid')).equals(`pool-type-${type.toLowerCase()}`),
+        )
         cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
-        cy.get(`[data-testid="chip-${otherType}"]`).click()
+        cy.get(`[data-testid="chip-${otherType.toLowerCase()}"]`).click()
+        cy.url().should('include', `type=${type},${otherType}`)
         cy.get(`[data-testid^="data-table-row"]`).should('have.length', length)
       }),
     ))
@@ -354,7 +375,7 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="line-graph-${type}"] path`).first().should('have.attr', 'stroke', color)
   }
 
-  function selectCoin(type: TokenType) {
+  function checkCoinSelection(type: TokenType) {
     const symbol = oneOf(
       ...vaultData.ethereum.data
         .filter((d) => d.total_assets_usd - d.total_debt_usd > SMALL_POOL_TVL)
@@ -367,10 +388,13 @@ describe(`LlamaLend Markets`, () => {
     cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu again
     cy.get(`[data-testid="menu-${columnId}"] [value="${symbol}"]`).click() // select the token
     cy.get('body').click(0, 0) // close popover
+
     cy.get(`[data-testid="data-table-cell-assets"] [data-testid^="token-icon-${symbol}"]`).should('exist') // token might be hidden behind other tokens
+    cy.url().should('include', `assets_${type}_symbol=${encodeURIComponent(symbol)}`)
 
     cy.get(`[data-testid="multi-select-filter-${columnId}"]`).click() // open the menu
     cy.get(`[data-testid="multi-select-clear"]`).click() // deselect previously selected tokens
+    cy.url().should('not.include', `assets_${type}_symbol`)
   }
 })
 
