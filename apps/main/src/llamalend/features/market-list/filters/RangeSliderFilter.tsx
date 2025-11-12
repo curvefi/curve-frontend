@@ -102,7 +102,7 @@ export const RangeSliderFilter = <T,>({
   defaultMin = min,
 }: RangeSliderFilterProps<T>) => {
   const isMobile = useIsMobile()
-  const maxValue = max ?? useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
+  const maxValue = useMemo(() => max ?? Math.ceil(getMaxValueFromData(data, field)), [max, data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
   const isPowerScale = scale === 'power'
 
