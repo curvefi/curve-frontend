@@ -13,7 +13,7 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/ethereum/pools')
   })
 
-  it(`should open the Main DApp successfully at ${path}`, () => {
+  it(`should open the DEX app successfully at ${path}`, () => {
     cy.visit(path)
     cy.title(LOAD_TIMEOUT).should('equal', 'Swap - Curve')
     cy.url().should('include', '/dex')
@@ -40,6 +40,6 @@ describe('Basic Access Test', () => {
     cy.visit('/dex/corn/pools')
     cy.title(LOAD_TIMEOUT).should('equal', 'Pools - Curve')
     cy.url().should('include', '/dex/corn/pools')
-    cy.contains('LBTC/wBTCN', LOAD_TIMEOUT).should('be.visible')
+    cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
   })
 })

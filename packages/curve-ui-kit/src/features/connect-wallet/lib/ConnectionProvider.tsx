@@ -13,7 +13,6 @@ import {
 import { useIsDocumentFocused } from '@ui-kit/features/layout/utils'
 import type { AppName } from '@ui-kit/shared/routes'
 import { globalLibs, isWalletMatching } from './utils'
-import type { WagmiChainId } from './wagmi/wagmi-config'
 
 const { FAILURE, LOADING, HYDRATING, SUCCESS } = ConnectState
 
@@ -30,9 +29,9 @@ export const ConnectionProvider = <App extends AppName>({
   children,
 }: {
   /** Network configuration to connect to. */
-  network: NetworkDef<AppNetworkId<App>, AppChainId<App>>
+  network: NetworkDef<AppNetworkId<App>, AppChainId<App>> | undefined // network can be undefined while loading or on the root
   /** Callback when the wallet is connected to an unsupported chain. */
-  onChainUnavailable: ([unsupportedChainId, walletChainId]: [AppChainId<App>, AppChainId<App>]) => void
+  onChainUnavailable: (walletChainId?: number) => void
   app: App
   hydrate: HydratorMap
   children: ReactNode
@@ -46,26 +45,20 @@ export const ConnectionProvider = <App extends AppName>({
 
   useEffect(() => {
     /**
-     * Updates the wallet chain if the network changes or the wallet is connected to a different chain.
-     * This is separate from the rest of initApp to avoid unnecessary reinitialization, as isFocused can change frequently.
+     * Checks the wallet chain if the network changes or the wallet is connected to a different chain.
+     * Separate from the heavier `initApp` because `isFocused` changes often.
      */
-    async function updateWalletChain() {
-      const networkChainId = Number(network.chainId) as AppChainId<App>
-      if (networkChainId !== walletChainId) {
-        setConnectState(LOADING)
-        if (isFocused && !(await switchChainAsync({ chainId: networkChainId as WagmiChainId }))) {
-          console.warn(`Failed to switch wallet to chain ${networkChainId}, current chain is ${walletChainId}`)
-          setConnectState(FAILURE)
-          onChainUnavailable([networkChainId, walletChainId as AppChainId<App>])
-        }
-        return // hook is called again after since it depends on walletChainId
-      }
+    if (isReconnecting) return // wait for wagmi to auto-reconnect
+    if (!network) return onChainUnavailable(walletChainId) // will redirect to the wallet's chain if supported
+    if (network.chainId == walletChainId) return // all good
+    if (isFocused) {
+      setConnectState(LOADING)
+      switchChainAsync({ chainId: network.chainId }).catch((e) => {
+        console.error(`Error updating wallet chain from ${walletChainId} to ${network.chainId}`, e)
+        setConnectState(FAILURE)
+      })
     }
-    updateWalletChain().catch((e) => {
-      console.error('Error updating wallet chain', e)
-      setConnectState(FAILURE)
-    })
-  }, [isFocused, walletChainId, network.chainId, onChainUnavailable, switchChainAsync, wallet])
+  }, [isFocused, isReconnecting, walletChainId, network, onChainUnavailable, switchChainAsync, wallet])
 
   useEffect(() => {
     if (isReconnecting) return // wait for wagmi to auto-reconnect
@@ -86,14 +79,14 @@ export const ConnectionProvider = <App extends AppName>({
      * Initialize the app by connecting to the wallet and setting up the library.
      */
     const initLib = async () => {
-      const networkChainId = Number(network.chainId) as AppChainId<App>
+      if (!network) return
       try {
-        if (walletChainId !== networkChainId) {
-          return // wait for the wallet to be connected to the right chain
+        if (walletChainId != network.chainId) {
+          return // wait for the wallet to be connected to the right chain or for the redirect to take effect
         }
 
         const prevLib = globalLibs.get(libKey)
-        if (isWalletMatching(wallet, prevLib, networkChainId)) {
+        if (isWalletMatching(wallet, prevLib, network.chainId)) {
           return await hydrateApp(prevLib) // already connected to the right chain and wallet, no need to reinitialize
         }
 

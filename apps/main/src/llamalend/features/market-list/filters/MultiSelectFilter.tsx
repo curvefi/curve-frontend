@@ -11,18 +11,19 @@ import useResizeObserver from '@ui-kit/hooks/useResizeObserver'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { CheckIcon } from '@ui-kit/shared/icons/CheckIcon'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { InvertOnHover } from '@ui-kit/shared/ui/InvertOnHover'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
-import type { LlamaMarketColumnId } from '../columns.enum'
 
 const { Spacing } = SizesAndSpaces
 
 /**
  * A filter for tanstack tables that allows multi-select of string values.
  */
-export const MultiSelectFilter = <T,>({
-  columnFilters,
+export const MultiSelectFilter = <TKeys, TColumnId extends string>({
+  columnFiltersById,
   setColumnFilter,
   data,
   defaultText,
@@ -31,14 +32,12 @@ export const MultiSelectFilter = <T,>({
   selectedItemRender,
   field,
   id,
-}: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
-  data: T[]
+}: FilterProps<TColumnId> & {
+  data: TKeys[]
   defaultText: string
   defaultTextMobile: string
-  field: DeepKeys<T>
-  id: LlamaMarketColumnId
+  field: DeepKeys<TKeys>
+  id: TColumnId
   renderItem?: (value: string) => ReactNode
   selectedItemRender?: (value: string) => ReactNode
 }) => {
@@ -48,11 +47,11 @@ export const MultiSelectFilter = <T,>({
   const [selectWidth] = useResizeObserver(selectRef) ?? []
   const [isOpen, open, close] = useSwitch(false)
   const options = useMemo(() => getUniqueSortedStrings(data, field), [data, field])
-  const selectedOptions = columnFilters[id] as string[] | undefined
+  const selectedOptions = parseListFilter(columnFiltersById[id])
   const onClear = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation()
-      setColumnFilter(id, undefined)
+      setColumnFilter(id, null)
       close()
     },
     [id, setColumnFilter, close],
@@ -65,7 +64,7 @@ export const MultiSelectFilter = <T,>({
       const options = selectedOptions?.includes(value)
         ? selectedOptions.filter((v) => v !== value)
         : [...(selectedOptions ?? []), value]
-      setColumnFilter(id, options.length ? options : undefined)
+      setColumnFilter(id, serializeListFilter(options))
     },
     [setColumnFilter, id, selectedOptions],
   )

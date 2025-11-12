@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash'
 import { useMemo } from 'react'
 import useStore from '@/dex/store/useStore'
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
@@ -18,7 +19,7 @@ enum ERROR {
 }
 
 type Props = {
-  columnFiltersById: Record<PoolColumnId, unknown>
+  columnFiltersById: PartialRecord<PoolColumnId, string>
   signerAddress: Address | undefined
   resetFilters: () => void
 }
