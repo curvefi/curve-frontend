@@ -43,7 +43,7 @@ describe('LargeTokenInput', () => {
     cy.get('[data-testid="on-balance-called"]').should('have.text', 'false')
   })
 
-  it('updates state value on blur', () => {
+  it('should update state value on blur', () => {
     cy.mount(<TestComponent />)
 
     // Break up the chain - type first
@@ -64,4 +64,17 @@ describe('LargeTokenInput', () => {
     cy.get('input').should('have.value', '.5')
     cy.get('[data-testid="debounced-balance"]').should('have.text', '.5')
   })
+
+  for (const specialChar of ['-', '.']) {
+    it(`should allow entering a single ${specialChar} after selecting a previous valid value`, () => {
+      cy.mount(<TestComponent />)
+
+      cy.get('input').type('5').blur()
+      cy.get('input').should('have.value', '5')
+      cy.get('[data-testid="debounced-balance"]').should('have.text', '5')
+
+      cy.get('input').click().type(specialChar).blur()
+      cy.get('input').should('have.value', specialChar)
+    })
+  }
 })

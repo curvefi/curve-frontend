@@ -79,7 +79,29 @@ export const WagmiConnectModal = () => {
   }))
 
   return (
-    <ModalDialog open={showModal} onClose={closeModal} title={t`Connect Wallet`} titleAction={<WalletIcon />} compact>
+    <ModalDialog
+      open={showModal}
+      onClose={closeModal}
+      title={t`Connect Wallet`}
+      titleAction={<WalletIcon />}
+      compact
+      sx={{
+        /*
+          When connecting with WalletConnect, we hide this dialog because the MUI Dialog
+          component adds a tabIndex of -1 to its container. This prevents text input in
+          the "Search wallet" field of the WC modal — it's not a z-index issue, but
+          caused by the tabIndex itself.
+
+          Although MUI provides a slotProp for the container, the tabIndex is still set
+          to -1 internally, regardless of what you specify. Other slotProps work fine,
+          so this behavior seems hardcoded in MUI.
+
+          The most reliable fix is to skip rendering this modal while WalletConnect
+          is connecting, rather than patching the tabIndex via a flaky JavaScript hack.
+        */
+        ...(isConnectingType === 'walletConnect' && { display: 'none' }),
+      }}
+    >
       {error ? (
         <Alert variant="filled" severity="error">
           <AlertTitle>{t`Error connecting wallet`}</AlertTitle>

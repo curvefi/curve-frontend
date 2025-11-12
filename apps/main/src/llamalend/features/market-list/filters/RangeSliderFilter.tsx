@@ -1,7 +1,6 @@
-import lodash from 'lodash'
+import lodash, { clamp } from 'lodash'
 import { useCallback, useMemo } from 'react'
 import Select from '@mui/material/Select'
-import type { SliderProps } from '@mui/material/Slider'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { type DeepKeys } from '@tanstack/table-core'
@@ -9,7 +8,14 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { parseRangeFilter, serializeRangeFilter } from '@ui-kit/shared/ui/DataTable/filters'
-import { Slider } from '@ui-kit/shared/ui/Slider'
+import { NumericTextFieldProps } from '@ui-kit/shared/ui/NumericTextField'
+import { type DecimalRangeValue, SliderInput, SliderInputProps } from '@ui-kit/shared/ui/SliderInput'
+import { type Decimal, decimal, formatNumber } from '@ui-kit/utils'
+import { invertPowerMap, powerMap } from '@ui-kit/utils/interpolations'
+
+type NumberRange = [number, number]
+
+type OnSliderChange<T extends Decimal | [Decimal, Decimal]> = NonNullable<SliderInputProps<T>['onChange']>
 
 /**
  * Get the maximum value from a field in an array of objects.
@@ -18,9 +24,36 @@ import { Slider } from '@ui-kit/shared/ui/Slider'
 const getMaxValueFromData = <T, K extends DeepKeys<T>>(data: T[], field: K) =>
   data.reduce((acc, item) => Math.max(acc, lodash.get(item, field) as number), 0)
 
-type NumberRange = [number, number]
+/**
+ * Calculate a power exponent that feels "good" based on the max value.
+ */
+const calculatePowerExponent = (isPowerScale: boolean, minValue: number, maxValue: number): number | undefined => {
+  if (!isPowerScale || maxValue <= minValue) return undefined
+  const safeMax = Math.max(maxValue, 1)
+  const exponent = Math.trunc(Math.log10(safeMax) - 2)
+  return Math.max(exponent, 1)
+}
 
-type OnSliderChange = NonNullable<SliderProps['onChange']>
+/**
+ * Helpers that convert real values to and from the slider's value space.
+ */
+const calculateSliderValueTransform = (minValue: number, maxValue: number, isPowerScale: boolean) => {
+  const powerExponent = calculatePowerExponent(isPowerScale, minValue, maxValue)
+  if (powerExponent == null) {
+    return
+  }
+
+  const [sliderMin, sliderMax] = [0, 1]
+  return {
+    /** Convert the current value into the 0-1 slider space. */
+    toSlider: (value: number) => invertPowerMap(clamp(value, minValue, maxValue), minValue, maxValue, powerExponent),
+    /** Bring the normalized slider value back into the actual units. */
+    fromSlider: (value: number) => powerMap(clamp(value, sliderMin, sliderMax), minValue, maxValue, powerExponent),
+    sliderMin,
+    sliderMax,
+    sliderStep: 0.001,
+  }
+}
 
 /**
  * A filter for tanstack tables that allows filtering by a range using a slider.
@@ -34,6 +67,8 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
   field,
   id,
   defaultMinimum = 0,
+  adornment,
+  scale,
 }: FilterProps<TColumnId> & {
   data: TKey[]
   title: string
@@ -41,32 +76,43 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
   id: TColumnId
   format: (value: number) => string
   defaultMinimum?: number
+  adornment?: NumericTextFieldProps['adornment']
+  scale?: 'power'
 }) => {
+  const isMobile = useIsMobile()
+  const minValue = 0
   const maxValue = useMemo(() => Math.ceil(getMaxValueFromData(data, field)), [data, field]) // todo: round this to a nice number
   const step = useMemo(() => Math.ceil(+maxValue.toPrecision(2) / 100), [maxValue])
-  const defaultValue = useMemo((): NumberRange => {
+  const isPowerScale = scale === 'power'
+
+  const sliderValueTransform = useMemo(
+    () => calculateSliderValueTransform(minValue, maxValue, isPowerScale),
+    [minValue, maxValue, isPowerScale],
+  )
+
+  const defaultRange = useMemo<NumberRange>(() => [defaultMinimum, maxValue], [defaultMinimum, maxValue])
+  // Currently applied filter range
+  const appliedRange = useMemo((): NumberRange => {
     const [min, max] = parseRangeFilter(columnFiltersById[id]) ?? []
     return [min ?? defaultMinimum, max ?? maxValue]
   }, [columnFiltersById, id, maxValue, defaultMinimum])
-  const isMobile = useIsMobile()
 
   const [range, setRange] = useUniqueDebounce({
-    defaultValue,
+    // Separate default and applied range, because the input's onBlur event that didn’t actually change anything could trigger the callback, and would clear the filter.
+    defaultValue: appliedRange,
     callback: useCallback(
       (newRange: NumberRange) =>
         setColumnFilter(
           id,
           serializeRangeFilter(
-            newRange.every((value, i) => value === defaultValue[i])
-              ? null // remove the filter if the range is the same as the default
+            newRange.every((value, i) => value === defaultRange[i])
+              ? null // remove the filter if the range is the same as the default range
               : [newRange[0] === defaultMinimum ? null : newRange[0], newRange[1] === maxValue ? null : newRange[1]],
           ),
         ),
-      [defaultMinimum, defaultValue, id, maxValue, setColumnFilter],
+      [defaultMinimum, defaultRange, id, maxValue, setColumnFilter],
     ),
   })
-
-  const onChange = useCallback<OnSliderChange>((_, newRange) => setRange(newRange as NumberRange), [setRange])
 
   return (
     // this is not a real select, but we reuse the component so the design is correct
@@ -84,21 +130,34 @@ export const RangeSliderFilter = <TKey, TColumnId extends string>({
         </Typography>
       )}
       value="" // we actually don't use the value of the select, but it needs to be set to avoid a warning
-      MenuProps={{ elevation: 3 }}
+      MenuProps={{
+        elevation: 3,
+        MenuListProps: {
+          disableListWrap: true,
+          // needed to prevent the menu from collapsing after a value is selected
+          variant: 'menu',
+        },
+      }}
     >
-      <Stack paddingBlock={3} paddingInline={4} direction="row" spacing={6} alignItems="center">
-        <Typography>{format(0)}</Typography>
-        <Slider
-          data-testid={`slider-${id}`}
-          aria-label={title}
-          getAriaValueText={format}
-          value={range}
-          onChange={onChange}
+      <Stack paddingBlock={3} paddingInline={4}>
+        <SliderInput<DecimalRangeValue>
+          layoutDirection="column"
+          size="medium"
+          value={useMemo(() => range.map(decimal) as DecimalRangeValue, [range])}
+          onChange={useCallback<OnSliderChange<DecimalRangeValue>>(
+            (newRange) => setRange(newRange.map(Number) as NumberRange),
+            [setRange],
+          )}
           min={0}
           max={maxValue}
-          step={step}
+          step={sliderValueTransform?.sliderStep ?? step}
+          sliderValueTransform={sliderValueTransform}
+          inputProps={{
+            format: (value) => formatNumber(Number(value), { abbreviate: true }),
+            adornment,
+          }}
+          testId={id}
         />
-        <Typography>{format(maxValue)}</Typography>
       </Stack>
     </Select>
   )

@@ -20,7 +20,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
 import { Balance, type Props as BalanceProps } from './Balance'
 import { NumericTextField } from './NumericTextField'
-import { TradingSlider } from './TradingSlider'
+import { SliderInput, SliderInputProps } from './SliderInput'
 
 const { Spacing, FontSize, FontWeight, Sizing } = SizesAndSpaces
 
@@ -191,6 +191,9 @@ export type LargeTokenInputProps = {
    * @param balance The new balance value
    */
   onBalance: (balance: Decimal | undefined) => void
+
+  /** Optional props forwarded to the slider */
+  sliderProps?: SliderInputProps<Decimal>['sliderProps']
 }
 
 /**
@@ -231,6 +234,8 @@ const calculateNewPercentage = (newBalance: Decimal, max: Decimal) =>
 /** Converts two decimals to BigNumber for comparison. Undefined is considered zero. */
 const bigNumEquals = (a?: Decimal, b?: Decimal) => new BigNumber(a ?? 0).isEqualTo(b ?? 0)
 
+const [MIN_PERCENTAGE, MAX_PERCENTAGE] = [0, 100]
+
 export const LargeTokenInput = ({
   ref,
   tokenSelector,
@@ -245,6 +250,7 @@ export const LargeTokenInput = ({
   balance: externalBalance,
   inputBalanceUsd,
   testId,
+  sliderProps,
 }: LargeTokenInputProps) => {
   const [percentage, setPercentage] = useState<Decimal | undefined>(undefined)
   const [balance, setBalance, cancelSetBalance] = useUniqueDebounce({
@@ -278,12 +284,12 @@ export const LargeTokenInput = ({
         cancelSetBalance()
 
         /**
-         * When the balance is invalid, we don't set the internal balance state to 0, but we do emit the onBalance event
-         * with undefined. This allows the UI to transition from a previously valid state to indicating "no valid value"
+         * When the balance has been made empty, we don't set the internal balance state to 0, but we do emit the onBalance event
+         * with undefined. This allows the UI to transition from a previously valid state to indicating "no value",
          * rather than being stuck displaying outdated valid data. For example, action cards can show "no change" instead of
          * remaining in a previous valid state that no longer matches the actual input, like going from "5" to empty input.
          */
-        onBalance(undefined)
+        if (!newBalance) onBalance(undefined)
 
         return
       }
@@ -419,11 +425,20 @@ export const LargeTokenInput = ({
               zIndex: 1, // required, otherwise the slider background and border don't show up
             }}
           >
-            <TradingSlider
+            <SliderInput
               disabled={disabled}
-              percentage={percentage}
-              onChange={handlePercentageChange}
-              onCommit={handlePercentageChange}
+              value={percentage ?? `${MIN_PERCENTAGE}`}
+              onChange={(value) => handlePercentageChange(value as Decimal)}
+              sliderProps={{
+                'data-rail-background': 'danger',
+                ...sliderProps,
+              }}
+              min={MIN_PERCENTAGE}
+              max={MAX_PERCENTAGE}
+              inputProps={{
+                variant: 'standard',
+                adornment: 'percentage',
+              }}
             />
           </Stack>
         )}

@@ -1,5 +1,6 @@
 import lodash from 'lodash'
 import type { StoreApi } from 'zustand'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import { refetchLoanExists } from '@/llamalend/queries/loan-exists'
 import type {
   FormDetailInfoLeverage,
@@ -19,7 +20,6 @@ import type { LiqRange, LiqRangesMapper } from '@/loan/store/types'
 import type { State } from '@/loan/store/useStore'
 import { ChainId, LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { loadingLRPrices } from '@/loan/utils/utilsCurvejs'
-import { getUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { useWallet } from '@ui-kit/features/connect-wallet'
 import { setMissingProvider } from '@ui-kit/utils/store.util'
 
@@ -100,6 +100,13 @@ export type LoanCreateSlice = {
       formValues: FormValues,
       maxSlippage: string,
     ): Promise<{ activeKey: string; error: string; hash: string } | undefined>
+    onLoanCreated(
+      curve: LlamaApi,
+      isLeverage: boolean,
+      llamma: Llamma,
+      maxSlippage: string,
+      error?: string,
+    ): Promise<boolean>
 
     // steps helper
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
@@ -410,10 +417,11 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
     ) => {
       const chainId = curve.chainId as ChainId
       const { provider, wallet } = useWallet.getState()
-      if (!provider) return setMissingProvider(get()[sliceKey])
+      const sliceState = get()[sliceKey]
+      if (!provider || !wallet) return setMissingProvider(sliceState)
 
-      get()[sliceKey].setStateByKey('formStatus', {
-        ...get()[sliceKey].formStatus,
+      sliceState.setStateByKey('formStatus', {
+        ...sliceState.formStatus,
         isInProgress: true,
         step: 'CREATE',
       })
@@ -421,42 +429,43 @@ const createLoanCreate = (set: StoreApi<State>['setState'], get: StoreApi<State>
       if (n !== null) {
         const createFn = networks[chainId].api.loanCreate.create
         const resp = await createFn(activeKey, provider, llamma, isLeverage, collateral, debt, n, maxSlippage)
-        // update user events api
-        void getUserMarketCollateralEvents(wallet?.account?.address, networks[chainId].id, llamma.controller, resp.hash)
+        updateUserEventsApi(wallet, networks[chainId], llamma, resp.hash)
 
-        if (resp.activeKey === get()[sliceKey].activeKey) {
-          get()[sliceKey].setStateByKeys({
-            liqRanges: {},
-            liqRangesMapper: {},
-          })
-
-          // re-fetch loan info
-          const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
-          if (!loanExists) {
-            get().loans.resetUserDetailsState(llamma)
-          }
-
-          // reset form values
-          const updatedFormValues = DEFAULT_FORM_VALUES
-          get()[sliceKey].setStateByKeys({
-            ...getCreateLoanActiveKey(llamma, updatedFormValues, isLeverage, maxSlippage),
-            isEditLiqRange: false,
-            formStatus: {
-              ...get()[sliceKey].formStatus,
-              error: resp.error,
-              isInProgress: false,
-              isComplete: !resp.error,
-              step: '',
-            },
-            formValues: updatedFormValues,
-            maxRecv: {},
-          })
-
+        if (resp.activeKey === sliceState.activeKey) {
+          const loanExists = await sliceState.onLoanCreated(curve, isLeverage, llamma, maxSlippage, resp.error)
           return { ...resp, loanExists }
         }
       }
     },
+    onLoanCreated: async (curve: LlamaApi, isLeverage: boolean, llamma: Llamma, maxSlippage: string, error = '') => {
+      get()[sliceKey].setStateByKeys({
+        liqRanges: {},
+        liqRangesMapper: {},
+      })
 
+      // re-fetch loan info
+      const { loanExists } = await get().loans.fetchLoanDetails(curve, llamma)
+      if (!loanExists) {
+        get().loans.resetUserDetailsState(llamma)
+      }
+
+      // reset form values
+      const updatedFormValues = DEFAULT_FORM_VALUES
+      get()[sliceKey].setStateByKeys({
+        ...getCreateLoanActiveKey(llamma, updatedFormValues, isLeverage, maxSlippage),
+        isEditLiqRange: false,
+        formStatus: {
+          ...get()[sliceKey].formStatus,
+          error,
+          isInProgress: false,
+          isComplete: !error,
+          step: '',
+        },
+        formValues: updatedFormValues,
+        maxRecv: {},
+      })
+      return loanExists
+    },
     setStateByActiveKey: <T>(key: StateKey, activeKey: string, value: T) => {
       if (Object.keys(get()[sliceKey][key] ?? {}).length > 30) {
         get().setAppStateByKey(sliceKey, key, { [activeKey]: value })
