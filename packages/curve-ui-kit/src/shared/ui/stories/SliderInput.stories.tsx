@@ -2,12 +2,9 @@ import { useEffect, useState, ComponentProps } from 'react'
 import { fn } from 'storybook/test'
 import Box from '@mui/material/Box'
 import type { Meta, StoryObj } from '@storybook/react-vite'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal } from '@ui-kit/utils'
 import { formatNumber } from '@ui-kit/utils/number'
 import { DecimalRangeValue, SliderInput } from '../SliderInput'
-
-const { Spacing } = SizesAndSpaces
 
 type SliderInputStoryProps = Omit<ComponentProps<typeof SliderInput>, 'value'> & {
   value?: Decimal | DecimalRangeValue
