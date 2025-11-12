@@ -15,11 +15,11 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
-  queryFn: ({ chainId, tokenAddress }: TokenQuery): Promise<number> => {
+  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number | undefined> => {
     const curve = getLib('curveApi')
-    if (curve?.chainId === chainId) return curve.getUsdRate(tokenAddress)
+    if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
     const llama = getLib('llamaApi')
-    if (llama?.chainId === chainId) return llama.getUsdRate(tokenAddress)
+    if (llama?.chainId === chainId) return await llama.getUsdRate(tokenAddress)
     throw new Error('No matching API library found')
   },
   staleTime: '5m',
