@@ -14,7 +14,6 @@
     "build": "yarn workspaces foreach --parallel --all run build",
     "start": "yarn workspace main start",
     "dev": "yarn workspaces foreach --parallel --interlaced --all run dev",
-    "dev-router-api": "yarn workspace router-api dev",
     "lint": "eslint . --ext .ts,.tsx",
     "lint:fix": "eslint . --ext .ts,.tsx --fix",
     "typecheck": "yarn workspaces foreach --parallel --all run typecheck",
