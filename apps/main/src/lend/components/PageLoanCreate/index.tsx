@@ -35,11 +35,12 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
   )
 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rChainId, rOwmId, rFormType, market, params } = pageProps
+  const { rChainId, rOwmId, rFormType, market, params, api } = pageProps
   const push = useNavigate()
   const shouldUseBorrowUnifiedForm = useBorrowUnifiedForm()
   const onUpdate = useOnFormUpdate(pageProps)
 
+  const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
   const resetState = useStore((state) => state.loanCreate.resetState)
 
   type Tab = 'create' | 'leverage'
@@ -53,6 +54,11 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
             ...(market?.leverage.hasLeverage() ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
           ],
     [market?.leverage, shouldUseBorrowUnifiedForm],
+  )
+
+  const onCreated = useCallback(
+    async () => api && market && (await onLoanCreated(api, market)),
+    [api, market, onLoanCreated],
   )
 
   return (
@@ -69,7 +75,13 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         fullWidth={!shouldUseBorrowUnifiedForm}
       />
       {shouldUseBorrowUnifiedForm ? (
-        <BorrowTabContents networks={networks} chainId={rChainId} market={market ?? undefined} onUpdate={onUpdate} />
+        <BorrowTabContents
+          networks={networks}
+          chainId={rChainId}
+          market={market ?? undefined}
+          onUpdate={onUpdate}
+          onCreated={onCreated}
+        />
       ) : (
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AppFormContentWrapper>
