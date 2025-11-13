@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
-import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
+import { STABLESWAP, CRYPTOSWAP, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import { useNetworkByChain } from '@/dex/entities/networks'
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
@@ -48,6 +48,15 @@ const PoolType = ({ chainId }: Props) => {
             {!tricryptoFactory && !twocryptoFactory && (
               <DisabledMessage>{t`Cryptoswap pools are currently unavailable on this chain`}</DisabledMessage>
             )}
+          </SelectButtonWrapper>
+          <SelectButtonWrapper>
+            <SelectButton
+              selected={swapType === FXSWAP}
+              name={FXSWAP}
+              descriptionName={t`FXSwap`}
+              description={t`We love Forex innit?!`}
+              handleClick={() => updateSwapType(FXSWAP, chainId)}
+            />
           </SelectButtonWrapper>
         </OptionsWrapper>
       </Wrapper>

@@ -14,6 +14,7 @@ import {
   TOKEN_F,
   TOKEN_G,
   TOKEN_H,
+  FXSWAP,
 } from '@/dex/components/PageCreatePool/constants'
 import SelectToken from '@/dex/components/PageCreatePool/TokensInPool/SelectToken'
 import SetOracle from '@/dex/components/PageCreatePool/TokensInPool/SetOracle'
@@ -783,6 +784,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
           onClick={addToken}
           variant="filled"
           disabled={
+            swapType === FXSWAP ||
             (swapType === STABLESWAP && stableswapFactory && tokensInPool.tokenAmount === 8) ||
             (swapType === STABLESWAP && !stableswapFactory && tokensInPool.tokenAmount === 4) ||
             (swapType === STABLESWAP && tokensInPool.metaPoolToken) ||

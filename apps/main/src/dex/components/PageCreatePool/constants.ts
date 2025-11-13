@@ -3,6 +3,7 @@ import { t } from '@ui-kit/lib/i18n'
 
 export const CRYPTOSWAP = 'Cryptoswap'
 export const STABLESWAP = 'Stableswap'
+export const FXSWAP = 'FXSwap'
 export const TOKEN_A = 'tokenA'
 export const TOKEN_B = 'tokenB'
 export const TOKEN_C = 'tokenC'
@@ -183,14 +184,6 @@ export const POOL_PRESETS: PRESETS = {
       feeGamma: '0.00035',
       adjustmentStep: '0.0000001',
       maHalfTime: '600',
-    },
-  },
-  9: {
-    name: 'FXSwap',
-    descriptionName: t`FXSwap (Coming soon!)`,
-    description: t`Suitable for forex tokens with low volatility`,
-    defaultParams: {
-      ...fillerParams,
     },
   },
 }

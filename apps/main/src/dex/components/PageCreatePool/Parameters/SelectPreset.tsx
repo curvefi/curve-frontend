@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
-import { CRYPTOSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
+import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import useStore from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -122,86 +122,71 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                 </SelectButtonWrapper>
               </>
             )}
-            {swapType === CRYPTOSWAP && tokenAmount === 2 && (
-              <>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 3}
-                    name={POOL_PRESETS[3].name}
-                    descriptionName={t(POOL_PRESETS[3].descriptionName)}
-                    description={t(POOL_PRESETS[3].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(3)
-                      setMidValue(t(POOL_PRESETS[3].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[3].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                  />
-                </SelectButtonWrapper>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 4}
-                    name={POOL_PRESETS[4].name}
-                    descriptionName={t(POOL_PRESETS[4].descriptionName)}
-                    description={t(POOL_PRESETS[4].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(4)
-                      setMidValue(t(POOL_PRESETS[4].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[4].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                  />
-                </SelectButtonWrapper>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 5}
-                    name={POOL_PRESETS[5].name}
-                    descriptionName={t(POOL_PRESETS[5].descriptionName)}
-                    description={t(POOL_PRESETS[5].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(5)
-                      setMidValue(t(POOL_PRESETS[5].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[5].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                  />
-                </SelectButtonWrapper>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 6}
-                    name={POOL_PRESETS[6].name}
-                    descriptionName={t(POOL_PRESETS[6].descriptionName)}
-                    description={t(POOL_PRESETS[6].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(6)
-                      setMidValue(t(POOL_PRESETS[6].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[6].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                  />
-                </SelectButtonWrapper>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 9}
-                    name={POOL_PRESETS[9].name}
-                    descriptionName={t(POOL_PRESETS[9].descriptionName)}
-                    description={t(POOL_PRESETS[9].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(9)
-                      setMidValue(t(POOL_PRESETS[9].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[9].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                    disabled={true} // Coming soon!
-                  />
-                </SelectButtonWrapper>
-              </>
-            )}
+            {(swapType === CRYPTOSWAP && tokenAmount === 2) ||
+              (swapType === FXSWAP && (
+                <>
+                  <SelectButtonWrapper>
+                    <SelectButton
+                      selected={poolPresetIndex === 3}
+                      name={POOL_PRESETS[3].name}
+                      descriptionName={t(POOL_PRESETS[3].descriptionName)}
+                      description={t(POOL_PRESETS[3].description)}
+                      handleClick={() => {
+                        updatePoolPresetIndex(3)
+                        setMidValue(t(POOL_PRESETS[3].defaultParams.midFee))
+                        setOutValue(t(POOL_PRESETS[3].defaultParams.outFee))
+                        overlayTriggerState.close()
+                      }}
+                      paddingSize={'small'}
+                    />
+                  </SelectButtonWrapper>
+                  <SelectButtonWrapper>
+                    <SelectButton
+                      selected={poolPresetIndex === 4}
+                      name={POOL_PRESETS[4].name}
+                      descriptionName={t(POOL_PRESETS[4].descriptionName)}
+                      description={t(POOL_PRESETS[4].description)}
+                      handleClick={() => {
+                        updatePoolPresetIndex(4)
+                        setMidValue(t(POOL_PRESETS[4].defaultParams.midFee))
+                        setOutValue(t(POOL_PRESETS[4].defaultParams.outFee))
+                        overlayTriggerState.close()
+                      }}
+                      paddingSize={'small'}
+                    />
+                  </SelectButtonWrapper>
+                  <SelectButtonWrapper>
+                    <SelectButton
+                      selected={poolPresetIndex === 5}
+                      name={POOL_PRESETS[5].name}
+                      descriptionName={t(POOL_PRESETS[5].descriptionName)}
+                      description={t(POOL_PRESETS[5].description)}
+                      handleClick={() => {
+                        updatePoolPresetIndex(5)
+                        setMidValue(t(POOL_PRESETS[5].defaultParams.midFee))
+                        setOutValue(t(POOL_PRESETS[5].defaultParams.outFee))
+                        overlayTriggerState.close()
+                      }}
+                      paddingSize={'small'}
+                    />
+                  </SelectButtonWrapper>
+                  <SelectButtonWrapper>
+                    <SelectButton
+                      selected={poolPresetIndex === 6}
+                      name={POOL_PRESETS[6].name}
+                      descriptionName={t(POOL_PRESETS[6].descriptionName)}
+                      description={t(POOL_PRESETS[6].description)}
+                      handleClick={() => {
+                        updatePoolPresetIndex(6)
+                        setMidValue(t(POOL_PRESETS[6].defaultParams.midFee))
+                        setOutValue(t(POOL_PRESETS[6].defaultParams.outFee))
+                        overlayTriggerState.close()
+                      }}
+                      paddingSize={'small'}
+                    />
+                  </SelectButtonWrapper>
+                </>
+              ))}
             {swapType === CRYPTOSWAP && tokenAmount === 3 && (
               <>
                 <SelectButtonWrapper>
