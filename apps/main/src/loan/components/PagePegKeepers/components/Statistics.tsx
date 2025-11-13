@@ -3,7 +3,6 @@ import { CardContent } from '@mui/material'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -13,15 +12,16 @@ import { CRVUSD_UNIT } from '../constants'
 const { Spacing } = SizesAndSpaces
 
 export const Statistics = () => {
-  const { data: crvusdTotalSupply, isLoading, isError } = useAppStatsTotalCrvusdSupply({ chainId: Chain.Ethereum })
+  const { data: crvusdTotalSupply, isLoading } = useAppStatsTotalCrvusdSupply({ chainId: Chain.Ethereum })
   const { total, minted, pegKeepersDebt } = crvusdTotalSupply ?? {}
+
+  const share = !total || !minted ? undefined : ((+total - +minted) / +total) * 100
+
   return (
     <Card>
       <CardHeader title={t`Statistics`} />
 
       <CardContent>
-        {isError && <Typography color="error" variant="bodyXsBold">{t`Unable to get total supply`}</Typography>}
-
         <Stack direction="row" gap={Spacing.md}>
           <Metric
             loading={isLoading}
@@ -37,7 +37,7 @@ export const Statistics = () => {
             loading={isLoading}
             size="large"
             label={t`Reserve share of crvUSD supply`}
-            value={total && minted && ((+total - +minted) / +total) * 100}
+            value={share}
             valueOptions={{ unit: 'percentage' }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve-share"

@@ -273,4 +273,5 @@ export enum FormError {
   WalletBalances = 'error-wallet-balances',
   StepApprove = 'error-step-approve',
   LiquidationMode = 'error-liquidation-mode',
+  TotalSupply = 'error-total-supply',
 }
