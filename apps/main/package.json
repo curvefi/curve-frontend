@@ -26,6 +26,8 @@
     "@tanstack/react-router-devtools": "^1.134.9",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.2",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.0.9",
