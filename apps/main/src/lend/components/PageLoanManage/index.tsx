@@ -12,6 +12,9 @@ import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 const tabsLoan: TabOption<LoanFormType>[] = [
   { value: 'loan-increase', label: t`Borrow more` },
@@ -49,7 +52,13 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   return (
-    <Stack>
+    <Stack
+      sx={{
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginLeft: { mobile: 'auto', tablet: 'auto', desktop: 0 },
+        marginRight: { mobile: 'auto', tablet: 'auto', desktop: 0 },
+      }}
+    >
       <TabsSwitcher
         variant="contained"
         size="medium"

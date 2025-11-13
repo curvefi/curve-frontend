@@ -16,6 +16,9 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 /**
  * Callback that synchronizes the `ChartOhlc` component with the `RangeSlider` component in the new `BorrowTabContents`.
@@ -85,7 +88,13 @@ const LoanCreate = ({
   )
 
   return (
-    <>
+    <Stack
+      sx={{
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginLeft: { mobile: 'auto', tablet: 'auto', desktop: 0 },
+        marginRight: { mobile: 'auto', tablet: 'auto', desktop: 0 },
+      }}
+    >
       <TabsSwitcher
         variant="contained"
         size="medium"
@@ -108,7 +117,7 @@ const LoanCreate = ({
           </AppFormContentWrapper>
         </Stack>
       )}
-    </>
+    </Stack>
   )
 }
 

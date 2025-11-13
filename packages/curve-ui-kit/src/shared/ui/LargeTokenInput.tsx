@@ -90,7 +90,7 @@ const BalanceTextField = ({ balance, name, isError, onChange, disabled }: Balanc
     variant="standard"
     value={balance}
     name={name}
-    sx={{ flex: '1 1 0', minWidth: 0 }}
+    fullWidth
     slotProps={{
       input: {
         disableUnderline: true,
