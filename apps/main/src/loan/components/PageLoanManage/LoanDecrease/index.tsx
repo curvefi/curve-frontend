@@ -307,7 +307,18 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           }}
           maxBalance={{
             balance: decimal(userState?.debt),
-            chips: 'max',
+            chips:
+              userState?.debt == null
+                ? []
+                : [
+                    {
+                      label: 'Max',
+                      newBalance: () =>
+                        (+userWalletBalances?.stablecoin < +userState.debt
+                          ? userWalletBalances.stablecoin
+                          : userState.debt) as Decimal,
+                    },
+                  ],
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={
