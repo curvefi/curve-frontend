@@ -3,6 +3,12 @@ import { getUsdPrice } from '@curvefi/prices-api/usd-price'
 import { ContractParams, type ContractQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { contractValidationSuite } from '@ui-kit/lib/model/query/contract-validation'
 
+/**
+ * Retrieves the usd price for a given token contract from the prices API.
+ * This is less efficient than `useTokenUsdRate` because it requires a HTTP request per token.
+ * However, it works multi-chain and without llamalend-js being initialized (which requires a wallet).
+ * @returns The USD price of the token, or undefined if not found.
+ */
 export const { useQuery: useTokenUsdPrice } = queryFactory({
   queryKey: (params: ContractParams) => [...rootKeys.contract(params), 'usd-price'] as const,
   queryFn: async ({ blockchainId, contractAddress }: ContractQuery) => {
@@ -11,7 +17,7 @@ export const { useQuery: useTokenUsdPrice } = queryFactory({
       return usdPrice
     } catch (e) {
       if (e instanceof FetchError && e.status === 404) {
-        return // do not retry 404 errors from the prices API
+        return null // do not retry 404 errors from the prices API
       }
       throw e
     }

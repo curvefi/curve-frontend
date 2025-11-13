@@ -8,6 +8,13 @@ import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
 
 const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
+/**
+ * Hook to fetch the USD rate for a specific token on a specific blockchain.
+ * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
+ * However, the libraries will cache the HTTP requests internally, so we don't need a HTTP request per token.
+ * Note llamalend-js cannot be initialized without a wallet.
+ * @see `useTokenUsdPrice` For multi-chain support.
+ */
 export const {
   getQueryData: getTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,

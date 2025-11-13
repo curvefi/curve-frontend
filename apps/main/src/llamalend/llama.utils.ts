@@ -66,8 +66,8 @@ export const calculateLtv = (
   debtAmount: number,
   collateralAmount: number,
   collateralBorrowTokenAmount: number,
-  borrowTokenUsdRate: number | undefined,
-  collateralTokenUsdRate: number | undefined,
+  borrowTokenUsdRate: number | null | undefined,
+  collateralTokenUsdRate: number | null | undefined,
 ) => {
   const collateralValue =
     collateralAmount * (collateralTokenUsdRate ?? 0) + collateralBorrowTokenAmount * (borrowTokenUsdRate ?? 0)
