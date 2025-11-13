@@ -8,8 +8,11 @@ export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: st
 
 type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 
-const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : undefined)
-const scopedKey = (scope: string | undefined, id: string) => (scope ? `${scopedPrefix(scope)}${id}` : id)
+/** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
+const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
+/** Get scoped key for URLSearchParams */
+const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
+
 /**
  * Parse URLSearchParams into ColumnFilters, keeping only allowed keys.
  */
@@ -19,21 +22,13 @@ function parseFilters<TColumnId extends string>(
   defaultFilters: ColumnFilters<TColumnId> | undefined,
   scope?: string,
 ): ColumnFilters<TColumnId> {
-  const allowed = new Set(recordValues(columns))
+  const allowed = new Set(recordValues(columns).map((id) => scopedKey(scope, id)))
   const filterPrefix = scopedPrefix(scope)
   return [
     ...(defaultFilters?.filter(({ id }) => !search.has(scopedKey(scope, id))) ?? []),
     ...Array.from(search.entries())
-      .filter(([key, value]) => {
-        if (!value) return false
-        const columnId = filterPrefix ? (key.startsWith(filterPrefix) ? key.slice(filterPrefix.length) : null) : key
-        if (columnId === null) return false
-        return allowed.has(columnId as TColumnId)
-      })
-      .map(([key, value]) => {
-        const columnId = (filterPrefix ? key.slice(filterPrefix.length) : key) as TColumnId
-        return { id: columnId, value }
-      }),
+      .filter(([key, value]) => value && allowed.has(key))
+      .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value })),
   ]
 }
 
