@@ -96,7 +96,7 @@ export const useBorrowPositionDetails = ({
     },
     borrowAPY: {
       rate: borrowApy == null ? null : Number(borrowApy),
-      averageRate: averageRate,
+      averageRate,
       averageRateLabel: averageMultiplierString,
       rebasingYield: rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,

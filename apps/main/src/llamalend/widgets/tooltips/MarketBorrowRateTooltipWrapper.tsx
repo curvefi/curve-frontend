@@ -13,7 +13,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market }: MarketBorrowRateToolt
   const {
     rewards,
     type: marketType,
-    rates: { borrowApy: borrowRate, borrowTotalApy },
+    rates: { borrowApy: borrowRate, borrowTotalApy, borrowFutureRate },
     assets: {
       collateral: { rebasingYield, symbol: collateralSymbol },
     },
@@ -24,6 +24,7 @@ export const MarketBorrowRateTooltipWrapper = ({ market }: MarketBorrowRateToolt
     <MarketBorrowRateTooltipContent
       marketType={marketType}
       borrowRate={borrowRate}
+      borrowFutureRate={borrowFutureRate}
       averageRate={averageRate}
       periodLabel={period}
       totalBorrowRate={borrowTotalApy}

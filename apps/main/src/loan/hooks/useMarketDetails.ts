@@ -1,3 +1,4 @@
+import { last } from 'lodash'
 import { useMemo } from 'react'
 import type { MarketDetailsProps } from '@/llamalend/features/market-details'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
@@ -78,15 +79,15 @@ export const useMarketDetails = ({ chainId, llamma, llammaId }: UseMarketDetails
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      futureRate: loanDetails?.parameters?.future_rate ? Number(loanDetails?.parameters?.future_rate) : null,
       averageRate: averageRate,
       averageRateLabel: averageMultiplierString,
-      rebasingYield: crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? null,
+      rebasingYield: last(crvUsdSnapshots)?.collateralToken.rebasingYield ?? null,
       averageRebasingYield: averageRebasingYield ?? null,
       totalAverageBorrowRate,
       extraRewards: campaigns,
       totalBorrowRate: loanDetails?.parameters?.rate
-        ? Number(loanDetails?.parameters?.rate) -
-          (crvUsdSnapshots?.[crvUsdSnapshots.length - 1]?.collateralToken.rebasingYield ?? 0)
+        ? Number(loanDetails?.parameters?.rate) - (last(crvUsdSnapshots)?.collateralToken.rebasingYield ?? 0)
         : null,
       loading: isSnapshotsLoading || (loanDetails?.loading ?? true),
     },

@@ -109,6 +109,7 @@ export const useLoanPositionDetails = ({
     },
     borrowAPY: {
       rate: loanDetails?.parameters?.rate ? Number(loanDetails?.parameters?.rate) : null,
+      futureRate: loanDetails?.parameters?.future_rate ? Number(loanDetails?.parameters?.future_rate) : null,
       rebasingYield: collateralRebasingYield ?? null,
       averageRate: averageRate,
       averageRebasingYield: averageRebasingYield ?? null,

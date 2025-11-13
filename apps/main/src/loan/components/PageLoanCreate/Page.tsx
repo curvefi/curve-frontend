@@ -228,15 +228,13 @@ const Page = () => {
           )}
           <Stack>
             <MarketDetails {...marketDetails} />
-            {
-              <MarketInformationComp
-                llamma={market ?? null}
-                llammaId={marketId}
-                chainId={rChainId}
-                chartExpanded={chartExpanded}
-                page="create"
-              />
-            }
+            <MarketInformationComp
+              llamma={market ?? null}
+              llammaId={marketId}
+              chainId={rChainId}
+              chartExpanded={chartExpanded}
+              page="create"
+            />
           </Stack>
         </Stack>
       </DetailPageStack>

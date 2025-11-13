@@ -6,6 +6,7 @@ export type GetMarketsResponse = {
     factory_address: Address
     llamma: Address
     rate: number
+    future_rate: number
     total_debt: number
     total_debt_usd: number
     n_loans: number
