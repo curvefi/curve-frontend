@@ -15,7 +15,7 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
-  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number | undefined> => {
+  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number> => {
     const curve = getLib('curveApi')
     if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
     const llama = getLib('llamaApi')
