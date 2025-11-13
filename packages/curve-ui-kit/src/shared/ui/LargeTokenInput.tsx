@@ -384,7 +384,7 @@ export const LargeTokenInput = ({
         )}
 
         {/** Second row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="center" gap={Spacing.md} sx={{ maxWidth: '100%' }}>
+        <Stack direction="row" alignItems="center" gap={Spacing.md}>
           <BalanceTextField
             disabled={disabled}
             balance={balance}
