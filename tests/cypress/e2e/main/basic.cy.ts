@@ -42,4 +42,10 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/corn/pools')
     cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
   })
+
+  it('shows 404 on /dex/:network/404', () => {
+    cy.visit('/dex/ethereum/404', { failOnStatusCode: false })
+    cy.get('[data-testid="error-subtitle"]').should('contain.text', 'Page Not Found')
+    cy.url().should('include', '/dex/ethereum/404/deposit')
+  })
 })

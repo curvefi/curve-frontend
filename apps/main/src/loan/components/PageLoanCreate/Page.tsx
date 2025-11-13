@@ -19,7 +19,6 @@ import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
-  getCollateralListPathname,
   getLoanCreatePathname,
   getLoanManagePathname,
   parseCollateralParams,
@@ -40,6 +39,7 @@ import { useNavigate, useParams } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { CRVUSD } from '@ui-kit/utils/address'
 
@@ -125,9 +125,6 @@ const Page = () => {
         fetchInitial(curve, isLeverage, market)
         void fetchLoanDetails(curve, market)
         setLoaded(true)
-      } else {
-        console.warn(`Collateral ${rCollateralId} not found for chain ${rChainId}. Redirecting to market list.`)
-        push(getCollateralListPathname(params))
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,7 +171,9 @@ const Page = () => {
     </AppPageFormTitleWrapper>
   )
 
-  return provider ? (
+  return isHydrated && !market ? (
+    <ErrorPage title="404" subtitle={t`Market Not Found`} hideRetry />
+  ) : provider ? (
     <>
       {chartExpanded && (
         <PriceAndTradesExpandedContainer>
