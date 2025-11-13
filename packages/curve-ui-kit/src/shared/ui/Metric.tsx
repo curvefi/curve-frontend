@@ -227,7 +227,7 @@ export const Metric = ({
           valueOptions={valueOptions}
           change={change}
           size={size}
-          copyValue={value == null ? undefined : copyValue}
+          copyValue={value || value === 0 ? copyValue : undefined}
           tooltip={valueTooltip}
           testId={testId}
         />
