@@ -115,10 +115,10 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
         ...useStore.getState().loanDecrease.formValues,
         debt,
         debtError: '',
-        isFullRepay: decimal(userWalletBalances.stablecoin) == value,
+        isFullRepay: decimal(userState?.debt) == value,
       })
     },
-    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userWalletBalances.stablecoin],
+    [formStatus.error, formStatus.isComplete, reset, updateFormValues, userState?.debt],
   )
 
   const handleInpChangeFullRepay = (isFullRepay: boolean) => {
@@ -307,7 +307,18 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
           }}
           maxBalance={{
             balance: decimal(userState?.debt),
-            chips: 'max',
+            chips:
+              userState?.debt == null
+                ? []
+                : [
+                    {
+                      label: 'Max',
+                      newBalance: () =>
+                        (+userWalletBalances?.stablecoin < +userState.debt
+                          ? userWalletBalances.stablecoin
+                          : userState.debt) as Decimal,
+                    },
+                  ],
           }}
           balance={decimal(formValues.debt)}
           tokenSelector={
