@@ -309,8 +309,8 @@ export const SizesAndSpaces = {
     banner: '96rem', // 1536px
     footer: '96rem', // 1536px
     connectWallet: '50rem', // 800px
-    dexActionCard: '23,375rem', // 374px
-    actionCard: '29rem', // 464px
+    actionCard: '23.375rem', // 374px
+    scrvUsdActionCard: '29rem', // 464px // the scrvusd action card isn't refactored to use the new token inputs yet
     emptyStateCard: '27.5rem', // 440px
     section: '59.5rem', // 952px
     tooltip: '27.5rem', // 440px

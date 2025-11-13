@@ -72,7 +72,6 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
           push(getLoanCreatePathname(params, rOwmId, key))
         }}
         options={tabs}
-        fullWidth={!shouldUseBorrowUnifiedForm}
       />
       {shouldUseBorrowUnifiedForm ? (
         <BorrowTabContents

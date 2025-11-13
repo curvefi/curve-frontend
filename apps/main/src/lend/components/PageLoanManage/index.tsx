@@ -49,27 +49,34 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Stack>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
         options={tabs}
-        fullWidth
       />
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={subTab}
+          onChange={setSubTab}
+          options={subTabs}
+          fullWidth
+        />
 
-      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
-
-      <AppFormContentWrapper>
-        {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
-        {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
-        {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
-        {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
-        {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
-        {/** Leverage has no subtabs */}
-        {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
-      </AppFormContentWrapper>
+        <AppFormContentWrapper>
+          {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
+          {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+          {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
+          {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
+          {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+          {/** Leverage has no subtabs */}
+          {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
+        </AppFormContentWrapper>
+      </Stack>
     </Stack>
   )
 }

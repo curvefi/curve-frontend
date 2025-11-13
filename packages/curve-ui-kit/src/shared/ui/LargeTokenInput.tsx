@@ -90,7 +90,7 @@ const BalanceTextField = ({ balance, name, isError, onChange, disabled }: Balanc
     variant="standard"
     value={balance}
     name={name}
-    fullWidth
+    sx={{ flex: '1 1 0', minWidth: 0 }}
     slotProps={{
       input: {
         disableUnderline: true,
@@ -384,7 +384,7 @@ export const LargeTokenInput = ({
         )}
 
         {/** Second row containing the token selector and balance input text */}
-        <Stack direction="row" alignItems="center" gap={Spacing.md}>
+        <Stack direction="row" alignItems="center" gap={Spacing.md} sx={{ maxWidth: '100%' }}>
           <BalanceTextField
             disabled={disabled}
             balance={balance}
@@ -393,7 +393,6 @@ export const LargeTokenInput = ({
             isError={isError}
             onChange={handleBalanceChange}
           />
-
           {tokenSelector}
         </Stack>
 

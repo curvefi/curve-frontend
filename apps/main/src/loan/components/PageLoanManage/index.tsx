@@ -54,27 +54,35 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
   const formProps = { curve, isReady, llamma, llammaId, rChainId }
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Stack>
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rCollateralId, key as FormType))}
         options={tabs}
-        fullWidth
       />
 
-      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={subTab}
+          onChange={setSubTab}
+          options={subTabs}
+          fullWidth
+        />
 
-      <AppFormContentWrapper>
-        {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
-        {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
-        {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
-        {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
-        {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
-        {/** Deleverage has no subtabs */}
-        {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
-      </AppFormContentWrapper>
+        <AppFormContentWrapper>
+          {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
+          {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
+          {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
+          {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
+          {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
+          {/** Deleverage has no subtabs */}
+          {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
+        </AppFormContentWrapper>
+      </Stack>
     </Stack>
   )
 }

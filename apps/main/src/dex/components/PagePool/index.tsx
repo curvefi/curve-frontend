@@ -233,7 +233,7 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
         <AppPageFormsWrapper className="grid-transfer">
           <Stack
             sx={{
-              width: { mobile: '100%', tablet: MaxWidth.dexActionCard, desktop: MaxWidth.dexActionCard },
+              width: { mobile: '100%', tablet: MaxWidth.actionCard },
               marginLeft: { mobile: 'auto', tablet: 'auto', desktop: 0 },
               marginRight: { mobile: 'auto', tablet: 'auto', desktop: 0 },
             }}

@@ -92,7 +92,6 @@ const LoanCreate = ({
         value={rFormType || 'create'}
         onChange={(key) => handleTabClick(key as FormType)}
         options={tabs}
-        fullWidth={!isBorrowUnifiedForm}
       />
       {isBorrowUnifiedForm ? (
         <BorrowTabContents

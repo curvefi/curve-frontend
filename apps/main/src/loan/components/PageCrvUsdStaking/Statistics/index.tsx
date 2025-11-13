@@ -51,7 +51,7 @@ const Statistics = ({ isChartExpanded, toggleChartExpanded, hideExpandChart }: S
       width="100%"
       sx={{
         maxWidth: isChartExpanded
-          ? `calc(${MaxWidth.actionCard} + ${Sizing[200]} + ${MaxWidth.section})`
+          ? `calc(${MaxWidth.scrvUsdActionCard} + ${Sizing[200]} + ${MaxWidth.section})`
           : MaxWidth.section,
       }}
     >

@@ -24,7 +24,7 @@ const Page = () => {
         gap={PrimitiveSpacing[600]}
         alignItems="center"
         sx={{
-          maxWidth: `calc(${MaxWidth.actionCard} + ${PrimitiveSpacing[200]} + ${MaxWidth.section})`, // action card + gap + section
+          maxWidth: `calc(${MaxWidth.scrvUsdActionCard} + ${PrimitiveSpacing[200]} + ${MaxWidth.section})`, // action card + gap + section
         }}
       >
         <Stack
