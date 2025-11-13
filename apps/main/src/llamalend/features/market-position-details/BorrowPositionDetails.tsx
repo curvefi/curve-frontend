@@ -22,6 +22,7 @@ export type Pnl = {
 export type Health = { value: number | undefined | null; loading: boolean }
 export type BorrowAPY = {
   rate: number | undefined | null
+  futureRate?: number | null
   averageRate: number | undefined | null
   averageRateLabel: string
   rebasingYield: number | null

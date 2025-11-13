@@ -1,4 +1,5 @@
 import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -12,7 +13,7 @@ import { RewardsIcons } from './RewardsIcons'
 import { SupplyRateLendTooltip } from './SupplyRateLendTooltip'
 import { SupplyRateMintTooltip } from './SupplyRateMintTooltip'
 
-const { Spacing } = SizesAndSpaces
+const { Spacing, IconSize } = SizesAndSpaces
 
 const RateTypes = {
   [LlamaMarketColumnId.LendRate]: MarketRateType.Supply,
@@ -35,7 +36,8 @@ export const RateCell = ({
   getValue,
   column: { id },
 }: CellContext<LlamaMarket, number | null>) => {
-  const rateType = RateTypes[id as keyof typeof RateTypes]
+  const key = id as keyof typeof RateTypes
+  const rateType = RateTypes[key]
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
 
@@ -47,6 +49,18 @@ export const RateCell = ({
         <Stack gap={Spacing.xs} alignItems="end">
           <Typography variant="tableCellMBold" color="textPrimary">
             {rate == null ? '—' : formatPercent(rate)}
+            {id === LlamaMarketColumnId.BorrowRate && market.rates.borrowFutureRate && (
+              <>
+                <ArrowForwardIcon
+                  sx={{
+                    width: IconSize.sm,
+                    height: IconSize.sm,
+                    color: (t) => t.palette.text.tertiary,
+                  }}
+                />
+                {formatPercent(market.rates.borrowFutureRate)}
+              </>
+            )}
           </Typography>
 
           <RewardsIcons market={market} rateType={rateType} />

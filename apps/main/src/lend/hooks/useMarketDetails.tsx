@@ -138,6 +138,7 @@ export const useMarketDetails = ({
     },
     borrowAPY: {
       rate: borrowApy != null ? Number(borrowApy) : null,
+      futureRate: null, // not available for lend markets, for now
       averageRate: averageBorrowApy ?? null,
       averageRateLabel: averageMultiplierString,
       rebasingYield: collateralRebasingYield ?? null,

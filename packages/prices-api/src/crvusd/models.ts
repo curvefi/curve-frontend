@@ -6,6 +6,7 @@ export type Market = {
   factoryAddress: Address
   llamma: Address
   rate: number
+  futureRate: number
   borrowed: number
   borrowedUsd: number
   borrowable: number

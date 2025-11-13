@@ -14,6 +14,7 @@ import { RewardsTooltipItems } from './RewardTooltipItems'
 export type MarketBorrowRateTooltipContentProps = {
   marketType: LlamaMarketType
   borrowRate: number | null | undefined
+  borrowFutureRate?: number | null
   totalBorrowRate: number | null | undefined
   totalAverageBorrowRate: number | null | undefined
   averageRate: number | null | undefined
@@ -32,6 +33,7 @@ const messages: Record<LlamaMarketType, string> = {
 export const MarketBorrowRateTooltipContent = ({
   marketType,
   borrowRate,
+  borrowFutureRate,
   totalBorrowRate,
   totalAverageBorrowRate,
   averageRate,
@@ -56,11 +58,17 @@ export const MarketBorrowRateTooltipContent = ({
         </TooltipItem>
       </TooltipItems>
 
+      {borrowFutureRate && (
+        <TooltipItems secondary>
+          <TooltipItem title={t`Future borrow rate`}>{formatPercent(borrowFutureRate)}</TooltipItem>
+        </TooltipItems>
+      )}
+
       {extraRewards.length > 0 && (
         <TooltipItems secondary>
           <RewardsTooltipItems
             title={t`Borrowing incentives`}
-            tooltipType={'borrow'}
+            tooltipType="borrow"
             extraRewards={extraRewards}
             extraIncentives={[]}
           />
