@@ -36,7 +36,7 @@ type BorrowToken = {
 }
 type BorrowAPY = {
   rate: number | undefined | null
-  futureRate: number | undefined | null
+  futureRate?: number | null
   averageRate: number | undefined | null
   averageRateLabel: string
   rebasingYield: number | null

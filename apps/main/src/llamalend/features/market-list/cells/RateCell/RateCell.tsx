@@ -36,8 +36,7 @@ export const RateCell = ({
   getValue,
   column: { id },
 }: CellContext<LlamaMarket, number | null>) => {
-  const key = id as keyof typeof RateTypes
-  const rateType = RateTypes[key]
+  const rateType = RateTypes[id as keyof typeof RateTypes]
   if (!rateType) throw new Error(`RateCell: Unsupported column ID "${id}"`)
   const Tooltip = TooltipComponents[rateType][market.type]
 
