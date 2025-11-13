@@ -62,6 +62,11 @@ export const lendRoutes = lendLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
+    path: '$network/markets/$market',
+    loader: ({ params: { network, market } }) => redirectTo(`/lend/${network}/markets/${market}/manage/`),
+    ...layoutProps,
+  }),
+  createRoute({
     path: '$network/markets/$market/create/$formType',
     component: PageLoanCreate,
     head: ({ params }) => ({
