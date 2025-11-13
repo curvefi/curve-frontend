@@ -13,7 +13,12 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { getLoanCreatePathname, getLoanManagePathname, parseMarketParams } from '@/lend/utils/utilsRouter'
+import {
+  getCollateralListPathname,
+  getLoanCreatePathname,
+  getLoanManagePathname,
+  parseMarketParams,
+} from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
@@ -120,7 +125,7 @@ const Page = () => {
   const hasSupplyPosition = (supplyPositionDetails.shares.value ?? 0) > 0
 
   return isSuccess && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} hideRetry />
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
       {chartExpanded && networks[rChainId].pricesData && (

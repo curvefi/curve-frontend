@@ -13,7 +13,7 @@ import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
-import { parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { getCollateralListPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
@@ -123,7 +123,7 @@ const Page = () => {
   }
 
   return isSuccess && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} hideRetry />
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
       {chartExpanded && network.pricesData && (

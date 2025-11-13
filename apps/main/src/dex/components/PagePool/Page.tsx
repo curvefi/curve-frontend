@@ -8,6 +8,8 @@ import type { PoolUrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { t } from '@ui-kit/lib/i18n'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 
 export const PagePool = () => {
   const push = useNavigate()
@@ -28,12 +30,8 @@ export const PagePool = () => {
   useEffect(() => {
     if (!rChainId) return
 
-    const { pool: rPoolId, formType: rFormType } = props
+    const { pool: rPoolId } = props
     const reRoutePathname = getPath(props, ROUTE.PAGE_POOLS)
-    if (!rFormType || network.excludePoolsMapper[rPoolId]) {
-      push(reRoutePathname)
-      return
-    }
     if (!isHydrated && curveApi?.chainId === rChainId && haveAllPools && !poolData) {
       void (async () => {
         const foundPoolData = await fetchNewPool(curveApi, rPoolId)
@@ -44,10 +42,10 @@ export const PagePool = () => {
     }
   }, [curveApi, fetchNewPool, haveAllPools, network, isHydrated, props, poolData, push, rChainId])
 
-  return (
-    rFormType &&
-    poolDataCacheOrApi?.pool?.id === rPoolId &&
-    hasDepositAndStake != null && (
+  return !rFormType || network.excludePoolsMapper[rPoolId] ? (
+    <ErrorPage title="404" subtitle={t`Pool Not Found`} continueUrl={getPath(props, ROUTE.PAGE_POOLS)} />
+  ) : (
+    rFormType && poolDataCacheOrApi?.pool?.id === rPoolId && hasDepositAndStake != null && (
       <Transfer
         curve={curveApi}
         params={props}

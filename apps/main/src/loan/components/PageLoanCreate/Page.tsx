@@ -24,6 +24,7 @@ import {
   parseCollateralParams,
   useChainId,
 } from '@/loan/utils/utilsRouter'
+import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper, AppPageFormTitleWrapper } from '@ui/AppPage'
@@ -172,7 +173,7 @@ const Page = () => {
   )
 
   return isHydrated && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} hideRetry />
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
       {chartExpanded && (

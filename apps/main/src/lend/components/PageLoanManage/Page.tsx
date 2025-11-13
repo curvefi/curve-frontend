@@ -16,6 +16,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
@@ -151,7 +152,7 @@ const Page = () => {
   }
 
   return isSuccess && !market ? (
-    <ErrorPage title="404" subtitle={t`Market Not Found`} hideRetry />
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
   ) : provider ? (
     <>
       {chartExpanded && network.pricesData && (
