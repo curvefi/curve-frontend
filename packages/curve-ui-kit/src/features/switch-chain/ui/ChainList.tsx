@@ -7,7 +7,7 @@ import MenuList from '@mui/material/MenuList'
 import type { NetworkDef } from '@ui/utils'
 import { usePathname } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
-import { AppNames } from '@ui-kit/shared/routes'
+import { getCurrentApp, getInternalUrl } from '@ui-kit/shared/routes'
 import { MenuItem } from '@ui-kit/shared/ui/MenuItem'
 import { MenuSectionHeader } from '@ui-kit/shared/ui/MenuSectionHeader'
 import { RouterLink as Link } from '@ui-kit/shared/ui/RouterLink'
@@ -17,17 +17,6 @@ import { ChainSwitcherIcon } from './ChainSwitcherIcon'
 enum ChainType {
   test = 'test',
   main = 'main',
-}
-
-/**
- * Returns a new pathname with a different network
- * @param pathname The current pathname
- * @param networkId The new network ID
- * @returns The new pathname
- */
-function getNetworkPathname(pathname: string, networkId: string) {
-  const [, appName = AppNames[0], , ...rest] = pathname.split('/')
-  return ['', appName, networkId, ...rest].join('/')
 }
 
 export function ChainList({
@@ -78,7 +67,8 @@ export function ChainList({
                       key={network.id}
                       value={network.id}
                       component={Link}
-                      href={getNetworkPathname(pathname, network.id)}
+                      // navigate to app root to avoid deep-linking to non-existing resources across chains
+                      href={getInternalUrl(getCurrentApp(pathname), network.id)}
                       isSelected={network.id == selectedNetworkId}
                       icon={<ChainSwitcherIcon networkId={network.id} size={36} />}
                       label={network.name}
