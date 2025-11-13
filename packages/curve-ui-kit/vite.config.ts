@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src'),
+      '@': resolve(__dirname, '../../apps/main/src'),
       '@ui': resolve(__dirname, '../ui/src'),
       '@ui-kit': resolve(__dirname, './src'),
       '@external-rewards': resolve(__dirname, '../external-rewards/src/index.ts'),
