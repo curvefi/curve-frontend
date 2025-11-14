@@ -1,10 +1,4 @@
-import path from 'path'
 import type { StorybookConfig } from '@storybook/react-vite'
-import { fileURLToPath } from 'url'
-
-// Get __dirname equivalent for ES modules
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const config: StorybookConfig = {
   stories: [
@@ -74,15 +68,6 @@ const config: StorybookConfig = {
   //       prop.parent ? /@mui/.test(prop.parent.fileName) || !/node_modules/.test(prop.parent.fileName) : true,
   //   },
   // },
-
-  viteFinal: async (config) => {
-    config.resolve = config.resolve || {}
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': path.resolve(__dirname, '../src'),
-    }
-    return config
-  },
 
   previewHead: (head) => `
     ${head}
