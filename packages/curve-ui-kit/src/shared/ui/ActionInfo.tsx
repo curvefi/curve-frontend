@@ -115,8 +115,14 @@ const ActionInfo = ({
 
   const errorMessage = (typeof error === 'object' && error?.message) || (typeof error === 'string' && error)
   return (
-    <Stack direction="row" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
-      <Typography flexGrow={1} variant={labelSize[size]} color={labelColor ?? 'textSecondary'} textAlign="start">
+    <Stack direction="row" alignItems="center" columnGap={Spacing.sm} data-testid={testId} sx={sx}>
+      <Typography
+        flexGrow={1}
+        variant={labelSize[size]}
+        color={labelColor ?? 'textSecondary'}
+        textAlign="start"
+        component="div"
+      >
         {label}
       </Typography>
 

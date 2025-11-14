@@ -23,3 +23,6 @@ export const useDexMarketList = useBetaChannel
 
 /** New unified borrow form (BorrowTabContents) */
 export const useBorrowUnifiedForm = useBetaChannel
+
+/** New bands chart (BandsChart) */
+export const useNewBandsChart = useBetaChannel

@@ -231,7 +231,7 @@ const Page = () => {
             {
               <MarketInformationComp
                 llamma={market ?? null}
-                llammaId={marketId}
+                marketId={marketId}
                 chainId={rChainId}
                 chartExpanded={chartExpanded}
                 page="create"
