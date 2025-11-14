@@ -1,14 +1,12 @@
 import { useCallback } from 'react'
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { LlamaMarketColumnId } from '../columns.enum'
 
 export const useSearch = (
-  columnFiltersById: Record<string, unknown>,
-  setColumnFilter: (id: string, value: unknown) => void,
+  columnFiltersById: PartialRecord<LlamaMarketColumnId, string>,
+  setColumnFilter: (id: LlamaMarketColumnId, value: string | null) => void,
 ) =>
   [
     (columnFiltersById[LlamaMarketColumnId.Assets] as string) ?? '',
-    useCallback(
-      (search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || undefined),
-      [setColumnFilter],
-    ),
+    useCallback((search: string) => setColumnFilter(LlamaMarketColumnId.Assets, search || null), [setColumnFilter]),
   ] as const

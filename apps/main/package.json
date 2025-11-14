@@ -17,7 +17,7 @@
     "postpublish": "pinst --enable"
   },
   "dependencies": {
-    "@curvefi/llamalend-api": "1.0.35",
+    "@curvefi/llamalend-api": "1.0.39",
     "@ethersproject/abi": "^5.8.0",
     "@hookform/error-message": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",
@@ -26,6 +26,8 @@
     "@tanstack/react-router-devtools": "^1.134.9",
     "@types/memoizee": "^0.4.12",
     "curve-ui-kit": "*",
+    "echarts": "^6.0.0",
+    "echarts-for-react": "^3.0.2",
     "external-rewards": "*",
     "fuse.js": "^7.1.0",
     "lightweight-charts": "^5.0.9",

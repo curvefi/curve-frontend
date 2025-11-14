@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
+import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-price-band.query'
+import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import type { LiquidationRangeData } from '@/llamalend/widgets/ChartLiquidationRange'
 import { t } from '@ui-kit/lib/i18n'
-import { useBorrowOraclePriceBand } from '../queries/borrow-oracle-price-band.query'
-import { useBorrowOraclePrice } from '../queries/borrow-oracle-price.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
 import type { BorrowFormQueryParams } from '../types'
 
@@ -12,8 +12,8 @@ import type { BorrowFormQueryParams } from '../types'
  */
 export const useLiquidationRangeChartData = (params: BorrowFormQueryParams): LiquidationRangeData[] => {
   const { data: prices } = useBorrowPrices(params)
-  const { data: oraclePrice } = useBorrowOraclePrice(params)
-  const { data: oraclePriceBand } = useBorrowOraclePriceBand(params)
+  const { data: oraclePrice } = useMarketOraclePrice(params)
+  const { data: oraclePriceBand } = useMarketOraclePriceBand(params)
   return useMemo(
     () => [
       {

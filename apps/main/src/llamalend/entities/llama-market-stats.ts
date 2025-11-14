@@ -2,9 +2,9 @@ import { useAccount } from 'wagmi'
 import { useUserLendingVaultEarnings, useUserLendingVaultStats } from '@/llamalend/entities/lending-vaults'
 import { type LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/entities/mint-markets'
-import { useTokenUsdPrice } from '@/llamalend/entities/usd-prices'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { LlamaMarketType } from '@ui-kit/types/market'
 
 const statsColumns = [

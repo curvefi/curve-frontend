@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import type { Theme } from '@mui/material/styles'
 import type { SxProps } from '@mui/system'
 import {
@@ -43,8 +44,8 @@ export const getExtraColumnPadding = <T>(column: Column<T, any>) => ({
 })
 
 export type FilterProps<T extends string> = {
-  columnFiltersById: Record<T, unknown>
-  setColumnFilter: (id: T, value: unknown) => void
+  columnFiltersById: PartialRecord<T, string>
+  setColumnFilter: (id: T, value: string | null) => void
 }
 
 export const getTableOptions = <T>(result: T | undefined) => ({

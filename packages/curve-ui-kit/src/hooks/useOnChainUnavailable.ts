@@ -1,19 +1,22 @@
 import { useCallback } from 'react'
 import type { NetworkMapping } from '@ui/utils'
-import { replaceNetworkInPath } from '@ui-kit/shared/routes'
-import { useNavigate, usePathname } from './router'
+import { getHashRedirectUrl } from '@ui-kit/shared/route-redirects'
+import { getCurrentNetwork, replaceNetworkInPath } from '@ui-kit/shared/routes'
+import { useNavigate } from './router'
 
 export function useOnChainUnavailable<T extends NetworkMapping>(networks: T | undefined) {
-  const pathname = usePathname()
-  const push = useNavigate()
+  const navigate = useNavigate()
   return useCallback(
-    <TChainId extends number>([walletChainId]: [TChainId, TChainId]) => {
-      const network = networks?.[walletChainId]?.id
-      if (pathname && network) {
-        console.warn(`Network switched to ${network}, redirecting...`, pathname)
-        push(replaceNetworkInPath(pathname, network))
-      }
+    (walletChainId?: number) => {
+      const { location } = window // Use window location to preserve full URL including hash
+      const { pathname, href } = location
+      const networkId = (walletChainId && networks?.[walletChainId]?.id) || ('ethereum' as const)
+      const redirectUrl = getCurrentNetwork(pathname)
+        ? replaceNetworkInPath(pathname, networkId)
+        : getHashRedirectUrl(location, networkId)
+      console.warn('Redirecting from %s to %s...', href, redirectUrl)
+      return navigate(redirectUrl, { replace: true })
     },
-    [networks, pathname, push],
+    [networks, navigate],
   )
 }
