@@ -1,4 +1,4 @@
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 import type { IRouteStep } from '@curvefi/api/lib/interfaces'
 
 export type Decimal = `${number}`
@@ -96,8 +96,6 @@ export type RouteStep = {
   args?: CurveRouteArgs | Record<string, unknown>
   chainId: number
 }
-
-type Hex = `0x${string}`
 
 export type TransactionData = { data: Hex; to: Address; from: Address; value: Hex }
 

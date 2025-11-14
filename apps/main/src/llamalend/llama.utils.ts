@@ -1,4 +1,4 @@
-import { type Address, zeroAddress } from 'viem'
+import { type Address, Hex, zeroAddress } from 'viem'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName as LlamaNetworkId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
@@ -91,5 +91,5 @@ export const updateUserEventsApi = (
     market instanceof LendMarketTemplate
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
-  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as `0x${string}`)
+  void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as Hex)
 }
