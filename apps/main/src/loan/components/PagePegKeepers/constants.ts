@@ -1,7 +1,16 @@
+import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { DEX_ROUTES, getInternalUrl } from '@ui-kit/shared/routes'
 import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 export const CRVUSD_UNIT = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
+
+export const PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS = '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC' as const
+
+/** Default query settings for consistency */
+export const query = {
+  staleTime: REFRESH_INTERVAL['5m'],
+  refetchInterval: REFRESH_INTERVAL['5m'],
+}
 
 export const PEG_KEEPERS = [
   {

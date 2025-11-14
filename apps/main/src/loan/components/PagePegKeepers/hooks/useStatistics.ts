@@ -1,15 +1,7 @@
 import { useReadContracts } from 'wagmi'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
-import { PEG_KEEPERS } from '../constants'
-
-const PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS = '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC' as const
-
-const query = {
-  staleTime: REFRESH_INTERVAL['5m'],
-  refetchInterval: REFRESH_INTERVAL['5m'],
-}
+import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS, query } from '../constants'
 
 const pegkeeperDebtContracts = PEG_KEEPERS.map((pegkeeper) => ({
   abi: pegkeeperAbi,

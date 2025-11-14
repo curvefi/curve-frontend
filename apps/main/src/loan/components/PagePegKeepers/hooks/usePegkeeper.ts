@@ -1,17 +1,10 @@
 import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
-import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
+import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, query } from '../constants'
 import type { PegKeeper } from '../types'
-
-const PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS = '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC'
-
-const query = {
-  staleTime: REFRESH_INTERVAL['5m'],
-  refetchInterval: REFRESH_INTERVAL['5m'],
-}
 
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
   const { data: debt, refetch: refetchDebt } = useReadContract({
