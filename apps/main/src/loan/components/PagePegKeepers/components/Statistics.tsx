@@ -12,26 +12,42 @@ import { useStatistics } from '../hooks/useStatistics'
 const { Spacing } = SizesAndSpaces
 
 export const Statistics = () => {
-  const { data: pegKeepersDebt, isFetching, isError } = useStatistics()
+  const { totalDebt, totalCeiling, isFetchingDebt, isFetchingCeiling, isErrorDebt, isErrorCeiling } = useStatistics()
 
   return (
     <Card>
       <CardHeader title={t`Statistics`} />
 
       <CardContent>
-        {isError && (
-          <Typography color="error" variant="bodyXsBold">{t`Unable to fetch required data for stats`}</Typography>
+        {isErrorDebt && (
+          <Typography color="error" variant="bodyXsBold">{t`Unable to fetch required data for total debt`}</Typography>
+        )}
+        {isErrorCeiling && (
+          <Typography
+            color="error"
+            variant="bodyXsBold"
+          >{t`Unable to fetch required data for total ceiling`}</Typography>
         )}
 
         <Stack direction="row" gap={Spacing.md}>
           <Metric
-            loading={isFetching}
+            loading={isFetchingDebt}
             size="large"
             label={t`Peg stabilisation reserve`}
-            value={pegKeepersDebt != null ? Number(pegKeepersDebt) : undefined}
+            value={totalDebt != null ? Number(totalDebt) : undefined}
             valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve"
+          />
+
+          <Metric
+            loading={isFetchingCeiling}
+            size="large"
+            label={t`Total debt ceiling`}
+            value={totalCeiling != null ? Number(totalCeiling) : undefined}
+            valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
+            sx={{ flex: 1 }}
+            testId="pegkeeper-stats-total-ceiling"
           />
         </Stack>
       </CardContent>
