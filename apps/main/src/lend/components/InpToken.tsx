@@ -1,7 +1,6 @@
 import { useCallback } from 'react'
 import InpChipUsdRate from '@/lend/components/InpChipUsdRate'
 import { StyledInpChip } from '@/lend/components/PageLoanManage/styles'
-import { FieldsTitle } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import type { NetworkConfig } from '@/lend/types/lend.types'
 import Box from '@ui/Box'
 import InputProvider, { InputDebounced, InputMaxBtn } from '@ui/InputComp'
@@ -17,7 +16,7 @@ const InpToken = ({
   id,
   testId,
   maxTestId,
-  inpTopLabel,
+  inpLabel,
   inpError,
   inpDisabled,
   inpLabelLoading,
@@ -34,7 +33,7 @@ const InpToken = ({
   id: string
   testId?: string
   maxTestId?: string
-  inpTopLabel?: string
+  inpLabel?: string
   inpError: string
   inpDisabled: boolean
   inpLabelLoading: boolean
@@ -53,7 +52,6 @@ const InpToken = ({
   const onBalance = useCallback((val?: Decimal) => handleInpChange(val ?? ''), [handleInpChange])
   return useLegacyTokenInput() ? (
     <Box grid gridRowGap={1}>
-      {inpTopLabel && <FieldsTitle>{inpTopLabel}</FieldsTitle>}
       <InputProvider
         grid
         gridTemplateColumns="1fr auto"
@@ -113,7 +111,7 @@ const InpToken = ({
         usdRate,
         buttonTestId: maxTestId,
       }}
-      label={inpTopLabel}
+      label={inpLabel}
       balance={decimal(inpValue)}
       tokenSelector={
         <TokenLabel blockchainId={network.id} tooltip={tokenSymbol} address={tokenAddress} label={tokenSymbol ?? '?'} />
