@@ -9,12 +9,20 @@ import { Metric } from '@ui-kit/shared/ui/Metric'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Chain } from '@ui-kit/utils'
 import { CRVUSD_UNIT } from '../constants'
+import { useStatistics } from '../hooks/useStatistics'
 
 const { Spacing } = SizesAndSpaces
 
 export const Statistics = () => {
-  const { data: crvusdTotalSupply, isLoading, isError } = useAppStatsTotalCrvusdSupply({ chainId: Chain.Ethereum })
-  const { total, minted, pegKeepersDebt } = crvusdTotalSupply ?? {}
+  const {
+    data: crvusdTotalSupply,
+    isFetching: isLoadingSupply,
+    isError,
+  } = useAppStatsTotalCrvusdSupply({ chainId: Chain.Ethereum })
+  const { total, minted } = crvusdTotalSupply ?? {}
+
+  const { data: pegKeepersDebt, isFetching: isLoadingStats } = useStatistics()
+
   return (
     <Card>
       <CardHeader title={t`Statistics`} />
@@ -24,17 +32,17 @@ export const Statistics = () => {
 
         <Stack direction="row" gap={Spacing.md}>
           <Metric
-            loading={isLoading}
+            loading={isLoadingStats}
             size="large"
             label={t`Peg stabilisation reserve`}
-            value={pegKeepersDebt && Number(pegKeepersDebt)}
+            value={pegKeepersDebt != null ? Number(pegKeepersDebt) : undefined}
             valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve"
           />
 
           <Metric
-            loading={isLoading}
+            loading={isLoadingSupply}
             size="large"
             label={t`Reserve share of crvUSD supply`}
             value={total && minted && ((+total - +minted) / +total) * 100}
