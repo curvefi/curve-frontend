@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { fromEntries } from '@curvefi/prices-api/objects.util'
+import { useAccount } from 'wagmi'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -15,7 +16,8 @@ import { UserPositionsTable, type UserPositionsTableProps } from './UserPosition
 const { Spacing, Height } = SizesAndSpaces
 
 export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | 'openPositionsByMarketType'>) => {
-  const { provider, connect } = useWallet()
+  const { connect } = useWallet()
+  const { address } = useAccount()
   const { markets } = props.result ?? {}
 
   // Calculate total positions number across all markets (independent of filters)
@@ -76,24 +78,7 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
       >
         <Typography variant="headingXsBold">Your Positions</Typography>
       </Stack>
-      {!provider ? (
-        <Stack
-          paddingBlock={Spacing.md}
-          alignItems="center"
-          width="100%"
-          sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-          }}
-        >
-          <EmptyStateCard
-            action={
-              <Button size="medium" onClick={() => connect()}>
-                {t`Connect to view positions`}
-              </Button>
-            }
-          />
-        </Stack>
-      ) : (
+      {address ? (
         <>
           <Stack
             direction="row"
@@ -117,6 +102,23 @@ export const UserPositionsTabs = (props: Omit<UserPositionsTableProps, 'tab' | '
           {/* the key is needed to force a re-render when the tab changes, otherwise filters have stale state for few milliseconds */}
           <UserPositionsTable key={tab} {...props} tab={tab} />
         </>
+      ) : (
+        <Stack
+          paddingBlock={Spacing.md}
+          alignItems="center"
+          width="100%"
+          sx={{
+            backgroundColor: (t) => t.design.Layer[1].Fill,
+          }}
+        >
+          <EmptyStateCard
+            action={
+              <Button size="medium" onClick={() => connect()}>
+                {t`Connect to view positions`}
+              </Button>
+            }
+          />
+        </Stack>
       )}
     </Stack>
   )
