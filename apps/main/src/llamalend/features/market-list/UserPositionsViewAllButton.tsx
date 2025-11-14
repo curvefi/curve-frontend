@@ -14,7 +14,7 @@ export const UserPositionsViewAllButton = ({ onClick }: { onClick: () => void })
     }}
   >
     <Button color="ghost" size="extraSmall" onClick={onClick} endIcon={<ArrowDownIcon fontSize="small" />}>
-      {t`view all positions`}
+      {t`View all positions`}
     </Button>
   </Stack>
 )
