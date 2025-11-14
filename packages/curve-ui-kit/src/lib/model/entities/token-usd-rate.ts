@@ -8,6 +8,13 @@ import { tokenValidationGroup } from '@ui-kit/lib/model/query/token-validation'
 
 const QUERY_KEY_IDENTIFIER = 'usdRate' as const
 
+/**
+ * Hook to fetch the USD rate for a specific token on a specific blockchain.
+ * Note this is limited to a single chain per time, since it's implemented using Curve and Llama APIs.
+ * However, the libraries will cache the HTTP requests internally, so we don't need a HTTP request per token.
+ * Note llamalend-js cannot be initialized without a wallet.
+ * @see `useTokenUsdPrice` For multi-chain support.
+ */
 export const {
   getQueryData: getTokenUsdRateQueryData,
   useQuery: useTokenUsdRate,
@@ -15,11 +22,11 @@ export const {
   getQueryOptions: getTokenUsdRateQueryOptions,
 } = queryFactory({
   queryKey: (params: TokenParams) => [...rootKeys.token(params), QUERY_KEY_IDENTIFIER] as const,
-  queryFn: ({ chainId, tokenAddress }: TokenQuery): Promise<number> => {
+  queryFn: async ({ chainId, tokenAddress }: TokenQuery): Promise<number> => {
     const curve = getLib('curveApi')
-    if (curve?.chainId === chainId) return curve.getUsdRate(tokenAddress)
+    if (curve?.chainId === chainId) return await curve.getUsdRate(tokenAddress)
     const llama = getLib('llamaApi')
-    if (llama?.chainId === chainId) return llama.getUsdRate(tokenAddress)
+    if (llama?.chainId === chainId) return await llama.getUsdRate(tokenAddress)
     throw new Error('No matching API library found')
   },
   staleTime: '5m',

@@ -8,6 +8,11 @@ export type ColumnFilters<TColumnId extends string> = { id: TColumnId; value: st
 
 type ColumnEnum<TColumnId extends string> = Record<string, TColumnId>
 
+/** Get scoped prefix for URL keys, so we can have multiple tables on the same page without conflicts. */
+const scopedPrefix = (scope: string | undefined) => (scope ? `${scope}-` : '')
+/** Get scoped key for URLSearchParams */
+const scopedKey = (scope: string | undefined, columnId: string) => `${scopedPrefix(scope)}${columnId}`
+
 /**
  * Parse URLSearchParams into ColumnFilters, keeping only allowed keys.
  */
@@ -15,21 +20,24 @@ function parseFilters<TColumnId extends string>(
   search: URLSearchParams,
   columns: ColumnEnum<TColumnId>,
   defaultFilters: ColumnFilters<TColumnId> | undefined,
+  scope?: string,
 ): ColumnFilters<TColumnId> {
-  const allowed = new Set(recordValues(columns))
+  const allowed = new Set(recordValues(columns).map((id) => scopedKey(scope, id)))
+  const filterPrefix = scopedPrefix(scope)
   return [
-    ...(defaultFilters?.filter(({ id }) => !search.has(id)) ?? []),
+    ...(defaultFilters?.filter(({ id }) => !search.has(scopedKey(scope, id))) ?? []),
     ...Array.from(search.entries())
-      .filter(([key, value]) => allowed.has(key as TColumnId) && Boolean(value))
-      .map(([key, value]) => ({ id: key as TColumnId, value })),
+      .filter(([key, value]) => value && allowed.has(key))
+      .map(([key, value]) => ({ id: key.slice(filterPrefix.length) as TColumnId, value })),
   ]
 }
 
-const setColumnFilter = <TColumnId extends string>(id: TColumnId, value: string | null) => {
+const setColumnFilter = <TColumnId extends string>(scope: string | undefined, id: TColumnId, value: string | null) => {
   const { history, location } = window // avoid depending on the router so we can keep the function identity stable
+  const scoped = scopedKey(scope, id)
   const params = new URLSearchParams([
-    ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== id),
-    ...notFalsy(value && [id, value]),
+    ...[...new URLSearchParams(location.search).entries()].filter(([key]) => key !== scoped),
+    ...notFalsy(value && [scoped, value]),
   ])
   const search = params.toString().replaceAll('%2C', ',') // keep commas unencoded for better readability
   history.pushState(null, '', params.size ? `?${search}` : location.pathname)
@@ -42,10 +50,12 @@ export function useColumnFilters<TColumnId extends string>({
   columns,
   defaultFilters,
   title: tableTitle,
+  scope,
 }: {
   title: string
   columns: ColumnEnum<TColumnId>
   defaultFilters?: ColumnFilters<TColumnId>
+  scope?: string
 }) {
   useEffect(() => {
     // remove legacy filters from local storage. This may be deleted after dec/2025
@@ -54,8 +64,8 @@ export function useColumnFilters<TColumnId extends string>({
 
   const searchParams = useSearchParams()
   const columnFilters = useMemo(
-    () => parseFilters(searchParams, columns, defaultFilters),
-    [searchParams, columns, defaultFilters],
+    () => parseFilters(searchParams, columns, defaultFilters, scope),
+    [searchParams, columns, defaultFilters, scope],
   )
 
   return {
@@ -71,11 +81,11 @@ export function useColumnFilters<TColumnId extends string>({
         ),
       [columnFilters],
     ),
-    setColumnFilter,
+    setColumnFilter: useCallback((id: TColumnId, value: string | null) => setColumnFilter(scope, id, value), [scope]),
     resetFilters: useCallback(() => {
       const params = new URLSearchParams(searchParams)
-      recordValues(columns).forEach((key) => params.delete(key))
+      recordValues(columns).forEach((key) => params.delete(scopedKey(scope, key)))
       history.pushState(null, '', params.size ? `?${params.toString()}` : location.pathname)
-    }, [columns, searchParams]),
+    }, [columns, scope, searchParams]),
   }
 }

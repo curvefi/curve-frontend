@@ -50,7 +50,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
   const collateral = leverageEnabled ? expectedCollateral?.totalCollateral : userCollateral
   return {
     data:
-      debt == null || !collateral || !collateralUsdRate
+      debt == null || !collateral || !collateralUsdRate || borrowUsdRate == null
         ? null
         : (new BigNumber(debt)
             .times(borrowUsdRate)
