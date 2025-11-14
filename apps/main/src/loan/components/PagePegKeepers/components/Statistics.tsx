@@ -34,7 +34,7 @@ export const Statistics = () => {
             loading={isFetchingDebt}
             size="large"
             label={t`Peg stabilisation reserve`}
-            value={totalDebt != null ? Number(totalDebt) : undefined}
+            value={totalDebt && Number(totalDebt)}
             valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve"
@@ -44,7 +44,7 @@ export const Statistics = () => {
             loading={isFetchingCeiling}
             size="large"
             label={t`Total debt ceiling`}
-            value={totalCeiling != null ? Number(totalCeiling) : undefined}
+            value={totalCeiling && Number(totalCeiling)}
             valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-total-ceiling"
