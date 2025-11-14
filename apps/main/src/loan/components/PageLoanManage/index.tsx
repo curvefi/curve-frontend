@@ -60,8 +60,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
     <Stack
       sx={{
         width: { mobile: '100%', tablet: MaxWidth.actionCard },
-        marginLeft: { mobile: 'auto', tablet: 'auto', desktop: 0 },
-        marginRight: { mobile: 'auto', tablet: 'auto', desktop: 0 },
+        marginInline: { mobile: 'auto', desktop: 0 },
       }}
     >
       <TabsSwitcher
