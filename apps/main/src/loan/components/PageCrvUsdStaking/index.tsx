@@ -82,7 +82,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
       gap={Sizing[400]}
       width="100%"
       sx={{
-        [`@media (max-width: calc(${MaxWidth.scrvUsdActionCard} + ${Sizing[200]} + ${MaxWidth.section} + ${Sizing[400]}))`]:
+        [`@media (max-width: calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section} + ${Sizing[400]}))`]:
           {
             padding: `0 ${Sizing[100]}`,
           },
@@ -93,7 +93,7 @@ const CrvUsdStaking = ({ params }: { params: NetworkUrlParams }) => {
         gap={Sizing[200]}
         width="100%"
         justifyContent={'center'}
-        sx={{ maxWidth: `calc(${MaxWidth.scrvUsdActionCard} + ${Sizing[200]} + ${MaxWidth.section})` }}
+        sx={{ maxWidth: `calc(${MaxWidth.legacyActionCard} + ${Sizing[200]} + ${MaxWidth.section})` }}
       >
         {showStatsBanner && (
           <Fade in={showStatsBanner}>

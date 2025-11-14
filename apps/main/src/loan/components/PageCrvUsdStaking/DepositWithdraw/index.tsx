@@ -119,7 +119,7 @@ const DepositWithdraw = ({ className }: DepositWithdrawProps) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: ${MaxWidth.scrvUsdActionCard};
+  max-width: ${MaxWidth.legacyActionCard};
   width: 100%;
 `
 
