@@ -12,6 +12,9 @@ const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
 const AmountArraySchema = { type: 'array', items: DecimalSchema, minItems: 1, maxItems: 1 } as const
+const RouteProviders = ['curve', 'enso'] as const
+
+export type RouteProvider = (typeof RouteProviders)[number]
 
 const optimalRouteQuerySchema = {
   type: 'object',
@@ -19,6 +22,13 @@ const optimalRouteQuerySchema = {
   additionalProperties: false,
   properties: {
     chainId: { type: 'integer', minimum: 1, default: 1 },
+    router: {
+      type: 'array',
+      items: { type: 'string', enum: RouteProviders },
+      minItems: 1,
+      maxItems: 2,
+      uniqueItems: true,
+    },
     tokenIn: AddressArraySchema,
     tokenOut: AddressArraySchema,
     amountIn: AmountArraySchema,
@@ -28,6 +38,7 @@ const optimalRouteQuerySchema = {
 
 export type OptimalRouteQuery = {
   chainId: number
+  router?: RouteProvider[]
   tokenIn: [Address]
   tokenOut: [Address]
   amountIn?: [Decimal]
@@ -38,6 +49,7 @@ const routeItemSchema = {
   type: 'object',
   required: ['amountOut', 'priceImpact', 'createdAt', 'route'],
   properties: {
+    router: { type: 'string', enum: RouteProviders },
     amountIn: DecimalSchema,
     amountOut: DecimalSchema,
     priceImpact: { anyOf: [{ type: 'number' }, { type: 'null' }] },
@@ -102,6 +114,7 @@ export type RouteStep = {
 }
 
 export type RouteResponse = {
+  router: RouteProvider
   amountIn: Decimal
   amountOut: Decimal
   priceImpact: number | null
