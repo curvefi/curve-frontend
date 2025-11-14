@@ -393,7 +393,6 @@ export const LargeTokenInput = ({
             isError={isError}
             onChange={handleBalanceChange}
           />
-
           {tokenSelector}
         </Stack>
 
