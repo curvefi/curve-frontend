@@ -120,16 +120,12 @@ const Page = () => {
   )
 
   useEffect(() => {
-    if (isHydrated && curve) {
-      if (market) {
-        resetUserDetailsState(market)
-        fetchInitial(curve, isLeverage, market)
-        void fetchLoanDetails(curve, market)
-        setLoaded(true)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHydrated, curve, market])
+    if (!isHydrated || !curve || !market) return
+    resetUserDetailsState(market)
+    fetchInitial(curve, isLeverage, market)
+    void fetchLoanDetails(curve, market)
+    setLoaded(true)
+  }, [isHydrated, curve, market, resetUserDetailsState, fetchInitial, isLeverage, fetchLoanDetails])
 
   // redirect if loan exists
   useEffect(() => {
