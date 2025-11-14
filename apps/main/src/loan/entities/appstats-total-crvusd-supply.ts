@@ -1,4 +1,3 @@
-import networks from '@/loan/networks'
 import type { ChainId } from '@/loan/types/loan.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { EmptyValidationSuite } from '@ui-kit/lib'
@@ -26,6 +25,6 @@ export const { useQuery: useCrvUsdTotalSupply } = queryFactory({
  */
 export const { useQuery: useAppStatsTotalCrvusdSupply } = queryFactory({
   queryKey: (params: ChainParams<ChainId>) => ['appStatsTotalCrvusdSupply', { chainId: params.chainId }] as const,
-  queryFn: ({ chainId }: ChainQuery<ChainId>) => networks[chainId].api.helpers.getTotalSupply(requireLib('llamaApi')),
+  queryFn: async (_: ChainQuery<ChainId>) => await requireLib('llamaApi').totalSupply(),
   validationSuite: llamaApiValidationSuite,
 })

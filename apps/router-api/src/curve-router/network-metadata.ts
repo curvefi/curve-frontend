@@ -1,5 +1,5 @@
 import { NETWORK_CONSTANTS } from '@curvefi/api/lib/constants/network_constants.js'
-import type { CurveJS } from '../curvejs'
+import type { CurveJS } from './curvejs'
 
 /**
  * Resolve the RPC URL for a given chain ID from environment variables.
