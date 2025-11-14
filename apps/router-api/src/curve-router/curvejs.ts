@@ -1,6 +1,6 @@
 import { FastifyBaseLogger } from 'fastify'
 import { type default as curveApi, createCurve } from '@curvefi/api'
-import { resolveRpc } from './rpc/network-metadata'
+import { resolveRpc } from './network-metadata'
 
 export type CurveJS = typeof curveApi
 type ChainId = number
