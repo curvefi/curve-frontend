@@ -20,7 +20,7 @@ type LlamaListChipsProps = {
   resetFilters: () => void
   hasFilters: boolean
   children?: ReactNode
-  userHasPositions?: LlamaMarketsResult['userHasPositions']
+  userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
   hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
