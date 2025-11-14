@@ -1,3 +1,4 @@
+import { formatEther } from 'ethers'
 import { useReadContracts } from 'wagmi'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
@@ -49,5 +50,12 @@ export function useStatistics() {
       .map((x) => x.result)
       .reduce((acc, curr) => acc + curr, 0n)
 
-  return { totalDebt, totalCeiling, isFetchingDebt, isFetchingCeiling, isErrorDebt, isErrorCeiling }
+  return {
+    totalDebt: totalDebt != null ? formatEther(totalDebt) : undefined,
+    totalCeiling: totalCeiling != null ? formatEther(totalCeiling) : undefined,
+    isFetchingDebt,
+    isFetchingCeiling,
+    isErrorDebt,
+    isErrorCeiling,
+  }
 }
