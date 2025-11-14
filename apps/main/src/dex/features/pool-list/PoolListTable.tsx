@@ -1,4 +1,3 @@
-import { isEqual } from 'lodash'
 import { useCallback, useMemo, useState } from 'react'
 import { type PoolListItem } from '@/dex/features/pool-list/types'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
@@ -69,7 +68,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
   const { data, isLoading, isReady, userHasPositions } = usePoolListData(network)
 
   const defaultFilters = useDefaultPoolsFilter(data)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: PoolColumnId,
     defaultFilters,
@@ -122,7 +121,7 @@ export const PoolListTable = ({ network, curve }: { network: NetworkConfig; curv
           <PoolListChips
             poolFilters={poolFilters}
             hiddenMarketCount={data ? data.length - resultCount : 0}
-            hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+            hasFilters={hasFilters}
             resetFilters={resetFilters}
             onSortingChange={onSortingChange}
             sortField={sortField}
