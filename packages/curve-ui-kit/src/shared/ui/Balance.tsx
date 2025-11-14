@@ -30,7 +30,10 @@ const BalanceButton = ({ children, onClick, loading, disabled, testId }: Balance
     loading={loading}
     disabled={disabled}
     data-testid={testId}
-    sx={{ '&:hover .balance': { textDecoration: 'underline' } }}
+    sx={{
+      '&:hover .balance': { textDecoration: 'underline' },
+      '&.Mui-disabled': { backgroundColor: 'unset' },
+    }}
   >
     {children}
   </Button>
@@ -38,24 +41,25 @@ const BalanceButton = ({ children, onClick, loading, disabled, testId }: Balance
 
 type BalanceTextProps<T> = {
   symbol: string
+  disabled?: boolean
   balance?: T
   loading?: boolean
 }
 
-const BalanceText = <T extends Amount>({ symbol, balance, loading = false }: BalanceTextProps<T>) => (
+const BalanceText = <T extends Amount>({ symbol, balance, disabled = false, loading = false }: BalanceTextProps<T>) => (
   <WithSkeleton loading={loading}>
     <Tooltip title={t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
       <Stack direction="row" gap={Spacing.xs} alignItems="center">
         <Typography
           className="balance"
           variant="highlightXs"
-          color={balance != null ? 'textPrimary' : 'textTertiary'}
+          color={disabled ? 'textDisabled' : balance != null ? 'textPrimary' : 'textTertiary'}
           data-testid="balance-value"
         >
           {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
         </Typography>
 
-        <Typography variant="highlightXs" color="textPrimary">
+        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'}>
           {symbol}
         </Typography>
       </Stack>
@@ -102,7 +106,15 @@ export const Balance = <T extends Amount>({
   buttonTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && <AccountBalanceWalletOutlinedIcon sx={{ width: IconSize.xs, height: IconSize.xs }} />}
+    {!hideIcon && (
+      <AccountBalanceWalletOutlinedIcon
+        sx={{
+          width: IconSize.xs,
+          height: IconSize.xs,
+          ...(disabled && { color: (t) => t.palette.text.disabled }),
+        }}
+      />
+    )}
 
     <WithWrapper
       Wrapper={BalanceButton}
@@ -111,7 +123,7 @@ export const Balance = <T extends Amount>({
       disabled={disabled}
       testId={buttonTestId}
     >
-      <BalanceText symbol={symbol} balance={balance} loading={loading} />
+      <BalanceText symbol={symbol} balance={balance} disabled={disabled} loading={loading} />
     </WithWrapper>
 
     {notionalValueUsd != null && !loading && (
