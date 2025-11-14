@@ -99,8 +99,8 @@ export async function buildCurveRouteResponse(
   return [
     {
       router: 'curve',
-      amountIn: fromAmount,
-      amountOut: toAmount as Decimal,
+      amountIn: [fromAmount],
+      amountOut: [toAmount as Decimal],
       priceImpact,
       createdAt: Date.now(),
       isStableswapRoute,

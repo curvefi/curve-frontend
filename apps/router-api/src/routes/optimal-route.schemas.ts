@@ -12,7 +12,7 @@ const AddressSchema = { type: 'string', pattern: ADDRESS_HEX_PATTERN } as const
 const AddressArraySchema = { type: 'array', items: AddressSchema, minItems: 1, maxItems: 1 } as const
 const DecimalSchema = { type: 'string', pattern: DECIMAL_PATTERN }
 const AmountArraySchema = { type: 'array', items: DecimalSchema, minItems: 1, maxItems: 1 } as const
-const RouteProviders = ['curve', 'enso'] as const
+const RouteProviders = ['curve', 'enso', 'odos'] as const
 
 export type RouteProvider = (typeof RouteProviders)[number]
 
@@ -26,7 +26,7 @@ const optimalRouteQuerySchema = {
       type: 'array',
       items: { type: 'string', enum: RouteProviders },
       minItems: 1,
-      maxItems: 2,
+      maxItems: RouteProviders.length,
       uniqueItems: true,
     },
     tokenIn: AddressArraySchema,
@@ -34,6 +34,7 @@ const optimalRouteQuerySchema = {
     amountIn: AmountArraySchema,
     amountOut: AmountArraySchema,
     fromAddress: AddressSchema,
+    slippage: { type: 'number', minimum: 0 },
   },
 } as const
 
@@ -45,6 +46,7 @@ export type OptimalRouteQuery = {
   amountIn?: [Decimal]
   amountOut?: [Decimal]
   fromAddress?: Address
+  slippage?: number
 }
 
 const routeItemSchema = {
@@ -97,12 +99,12 @@ export type RouteStep = {
   chainId: number
 }
 
-export type TransactionData = { data: Hex; to: Address; from: Address; value: Hex }
+export type TransactionData = { data: Hex; to: Address; from: Address; value: Decimal }
 
 export type RouteResponse = {
   router: RouteProvider
-  amountIn: Decimal
-  amountOut: Decimal
+  amountIn: [Decimal]
+  amountOut: [Decimal]
   priceImpact: number | null
   createdAt: number
   warnings: ('high-slippage' | 'low-exchange-rate')[]
