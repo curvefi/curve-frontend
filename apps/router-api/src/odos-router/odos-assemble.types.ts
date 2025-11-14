@@ -1,3 +1,4 @@
+import type { Address, Hex } from 'viem'
 import type { Decimal } from '../routes/optimal-route.schemas'
 
 /**
