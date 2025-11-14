@@ -154,6 +154,16 @@ describe('DEX Pools', () => {
     })
   })
 
+  it('persists currency filter across reload', () => {
+    const filter = oneOf('usd', 'btc')
+    visitAndWait(width, height, { query: { filter } })
+    cy.get('[data-testid^="data-table-row-"]', API_LOAD_TIMEOUT).should('have.length.greaterThan', 0)
+    cy.url().should('include', `filter=${filter}`)
+    cy.get('[data-testid="data-table-cell-PoolName"]').first().contains(filter.toUpperCase())
+    withFilterChips(() => cy.get(`[data-testid="reset-filter"]`).click())
+    cy.url().should('not.include', '?')
+  })
+
   it('paginates', () => {
     const getPages = ($buttons: JQuery) =>
       Cypress.$.makeArray($buttons).map((el) => el.dataset.testid?.replace('btn-page-', ''))
@@ -224,5 +234,19 @@ describe('DEX Pools', () => {
       cy.get(`[data-testid='small-pools-switch']`).click()
       cy.get(`[data-testid='menu-toggle']`).click()
     }
+  }
+
+  /**
+   * Makes sure that the filter chips are visible during the given callback.
+   * On mobile, the filters are hidden behind a drawer and need to be expanded for some actions.
+   */
+  function withFilterChips(callback: () => Cypress.Chainable, isMobile = breakpoint === 'mobile') {
+    if (!isMobile) return callback()
+    cy.get('[data-testid="btn-drawer-filter-dex-pools"]').click()
+    cy.get('[data-testid="drawer-filter-menu-dex-pools"]').should('be.visible')
+    return callback().then((result) => {
+      cy.get('body').click(0, 0)
+      return cy.wrap(result)
+    })
   }
 })

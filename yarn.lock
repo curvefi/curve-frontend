@@ -734,15 +734,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@curvefi/llamalend-api@npm:1.0.35":
-  version: 1.0.35
-  resolution: "@curvefi/llamalend-api@npm:1.0.35"
+"@curvefi/llamalend-api@npm:1.0.39":
+  version: 1.0.39
+  resolution: "@curvefi/llamalend-api@npm:1.0.39"
   dependencies:
     "@curvefi/ethcall": "npm:6.0.16"
     bignumber.js: "npm:9.3.1"
     ethers: "npm:6.15.0"
     memoizee: "npm:0.4.17"
-  checksum: 10c0/8ba2934008648654b9d9bf3ac53c01f65850631ae3bbcb2f23a3f4f2159b2283866c993e8369fc64513cea77cc5e6b7219821a236ff481627d471395adba7fab
+  checksum: 10c0/3c51984b64e514d5cecbb7c0b089c8614a30cbb9b2486c3d9f7c4e7e198c0861a7e1b3b8904ee5eeea5ef7f9a3c6bf594f0f50845234f67bebcf0774f2319cad
   languageName: node
   linkType: hard
 
@@ -9515,6 +9515,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"echarts-for-react@npm:^3.0.2":
+  version: 3.0.4
+  resolution: "echarts-for-react@npm:3.0.4"
+  dependencies:
+    fast-deep-equal: "npm:^3.1.3"
+    size-sensor: "npm:^1.0.1"
+  peerDependencies:
+    echarts: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0
+    react: ^15.0.0 || >=16.0.0
+  checksum: 10c0/2687e759bfeb9305b3f7c13848514855e9947e5b42087f6e6dba4bbb147ad3d4df50c18269b954bcdc9f62905bf549e5209f06c56fe3db80c5391adae2acea5f
+  languageName: node
+  linkType: hard
+
+"echarts@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "echarts@npm:6.0.0"
+  dependencies:
+    tslib: "npm:2.3.0"
+    zrender: "npm:6.0.0"
+  checksum: 10c0/60bbb4f00ac679d2f81d7a0aa684597c8ccc46041c5ae536def4c4bbb85d5557c1653a536ac6e11f42757718ab66e2bbc35d53d795173c50e8541154c8d59bbd
+  languageName: node
+  linkType: hard
+
 "eciesjs@npm:^0.4.11":
   version: 0.4.15
   resolution: "eciesjs@npm:0.4.15"
@@ -12771,7 +12794,7 @@ __metadata:
   resolution: "main@workspace:apps/main"
   dependencies:
     "@curvefi/api": "npm:*"
-    "@curvefi/llamalend-api": "npm:1.0.35"
+    "@curvefi/llamalend-api": "npm:1.0.39"
     "@eslint/js": "npm:*"
     "@ethersproject/abi": "npm:^5.8.0"
     "@hookform/error-message": "npm:^2.0.1"
@@ -12787,6 +12810,8 @@ __metadata:
     "@vitejs/plugin-react": "npm:*"
     babel-plugin-styled-components: "npm:^2.1.4"
     curve-ui-kit: "npm:*"
+    echarts: "npm:^6.0.0"
+    echarts-for-react: "npm:^3.0.2"
     eslint: "npm:*"
     eslint-config-custom: "npm:*"
     external-rewards: "npm:*"
@@ -15182,6 +15207,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"size-sensor@npm:^1.0.1":
+  version: 1.0.2
+  resolution: "size-sensor@npm:1.0.2"
+  checksum: 10c0/2cb020cd54ae7bea76a0600ba82c1a09daf51e8bec6f96355e17b4806eb24003626e3349d6cb091f821ed5fbba193f59ca59f0ea7f6dd8b75d7c20b96c465c26
+  languageName: node
+  linkType: hard
+
 "slash@npm:^3.0.0":
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
@@ -16093,6 +16125,13 @@ __metadata:
   version: 1.14.1
   resolution: "tslib@npm:1.14.1"
   checksum: 10c0/69ae09c49eea644bc5ebe1bca4fa4cc2c82b7b3e02f43b84bd891504edf66dbc6b2ec0eef31a957042de2269139e4acff911e6d186a258fb14069cd7f6febce2
+  languageName: node
+  linkType: hard
+
+"tslib@npm:2.3.0":
+  version: 2.3.0
+  resolution: "tslib@npm:2.3.0"
+  checksum: 10c0/a845aed84e7e7dbb4c774582da60d7030ea39d67307250442d35c4c5dd77e4b44007098c37dd079e100029c76055f2a362734b8442ba828f8cc934f15ed9be61
   languageName: node
   linkType: hard
 
@@ -17448,6 +17487,15 @@ __metadata:
   version: 4.1.12
   resolution: "zod@npm:4.1.12"
   checksum: 10c0/b64c1feb19e99d77075261eaf613e0b2be4dfcd3551eff65ad8b4f2a079b61e379854d066f7d447491fcf193f45babd8095551a9d47973d30b46b6d8e2c46774
+  languageName: node
+  linkType: hard
+
+"zrender@npm:6.0.0":
+  version: 6.0.0
+  resolution: "zrender@npm:6.0.0"
+  dependencies:
+    tslib: "npm:2.3.0"
+  checksum: 10c0/c794e05ee969c750de6d17cfff60d9d4e6342d1591cf6ba3e488fb084ac7a0415355fe4aec55f83a400fd4cda63792db0533362455058ac06f6e1343be28d0ce
   languageName: node
   linkType: hard
 

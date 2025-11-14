@@ -53,6 +53,7 @@ export const LiquidationRangeSlider = ({
           <Typography variant="bodySBold">{t`Adjust N:`}</Typography>
           <Slider
             aria-label={t`Liquidation range`}
+            size="medium"
             getAriaValueText={format}
             value={sliderValue}
             onChange={(_, n) => setSliderValue(n as number)}

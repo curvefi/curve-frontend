@@ -39,7 +39,7 @@ export function createTestWagmiConfigFromVNet({
   privateKey?: Hex
 }) {
   const { adminRpcUrl: rpcUrl, publicRpcUrl: explorerUrl } = getRpcUrls(vnet)
-  return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl })
+  return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId: vnet.fork_config.network_id })
 }
 
 /**
@@ -87,32 +87,30 @@ export function withVirtualTestnet(opts: () => GetVirtualTestnetOptions) {
  * })
  * ```
  */
-export function createVirtualTestnet(opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions>) {
+export function createVirtualTestnet(
+  opts: (uuid: number) => DeepPartial<CreateVirtualTestnetOptions> & { chain_id?: number },
+) {
   let vnet: CreateVirtualTestnetResponse
 
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
+    const { chain_id = 1, ...givenOptions } = opts(uuid)
 
-    const defaultOpts: CreateVirtualTestnetOptions = {
-      slug: `testnet-${uuid}`,
-      display_name: `Testnet ${uuid}`,
-      fork_config: {
-        network_id: 1,
-      },
-      virtual_network_config: {
-        chain_config: { chain_id: 1 },
-      },
+    const defaultOptions: CreateVirtualTestnetOptions = {
+      slug: `testnet-${chain_id}-${uuid}`,
+      display_name: `Testnet for ${chain_id} (${uuid})`,
+      fork_config: { network_id: chain_id },
+      virtual_network_config: { chain_config: { chain_id: chain_id } },
       sync_state_config: { enabled: false },
     }
 
-    const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
-
-    createVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((created) => (vnet = created))
+    const options = Cypress._.merge(tenderlyAccount, defaultOptions, givenOptions)
+    createVirtualTestnetRequest(options).then((created) => (vnet = created))
   })
 
   after(() => {
     if (!vnet) return
-    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
+    deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 
   return () => vnet
@@ -144,19 +142,14 @@ export function forkVirtualTestnet(
 
   before(() => {
     const uuid = Cypress._.random(0, 1e6)
-
-    const defaultOpts: Partial<ForkVirtualTestnetOptions> = {
-      wait: true,
-    }
-
-    const finalOpts = Cypress._.merge({}, defaultOpts, opts(uuid))
-
-    forkVirtualTestnetRequest({ ...tenderlyAccount, ...finalOpts }).then((forked) => (vnet = forked))
+    const defaultOpts = { wait: true }
+    const finalOpts = Cypress._.merge(tenderlyAccount, defaultOpts, opts(uuid))
+    forkVirtualTestnetRequest(finalOpts).then((forked) => (vnet = forked))
   })
 
   after(() => {
     if (!vnet) return
-    deleteVirtualTestnetRequest({ ...tenderlyAccount!, vnetId: vnet.id })
+    deleteVirtualTestnetRequest({ ...tenderlyAccount, vnetId: vnet.id })
   })
 
   return () => vnet

@@ -1,9 +1,10 @@
 import { useCallback, useMemo } from 'react'
-import type { LlamaMarket, LlamaMarketKey } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import Grid from '@mui/material/Grid'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'
-import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { type FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
+import { parseListFilter, serializeListFilter } from '@ui-kit/shared/ui/DataTable/filters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { getUniqueSortedStrings } from '@ui-kit/utils/sorting'
 import { LlamaMarketColumnId } from '../columns.enum'
@@ -16,19 +17,21 @@ export const ChainFilterChip = ({
   setColumnFilter,
 }: {
   data: LlamaMarket[]
-} & FilterProps<LlamaMarketKey>) => {
+} & FilterProps<LlamaMarketColumnId>) => {
   const chains = useMemo(() => getUniqueSortedStrings(data, LlamaMarketColumnId.Chain), [data])
-  const selectedChains = columnFiltersById[LlamaMarketColumnId.Chain] as string[] | undefined
+  const selectedChains = parseListFilter(columnFiltersById[LlamaMarketColumnId.Chain])
 
   const toggleChain = useCallback(
     (chain: string) =>
       setColumnFilter(
         LlamaMarketColumnId.Chain,
-        selectedChains?.includes(chain)
-          ? selectedChains.length === 1
-            ? undefined
-            : selectedChains.filter((c) => c !== chain)
-          : [...(selectedChains ?? []), chain],
+        serializeListFilter(
+          selectedChains?.includes(chain)
+            ? selectedChains.length === 1
+              ? undefined
+              : selectedChains.filter((c) => c !== chain)
+            : [...(selectedChains ?? []), chain],
+        ),
       ),
     [selectedChains, setColumnFilter],
   )

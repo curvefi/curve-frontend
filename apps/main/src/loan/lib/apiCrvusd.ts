@@ -47,36 +47,6 @@ const DEFAULT_PARAMETERS = {
   loan_discount: '',
 }
 
-const helpers = {
-  getUsdRate: async (api: LlamaApi, tokenAddress: string) => {
-    log('getUsdRate', tokenAddress)
-    const resp: { usdRate: string | number; error: string } = { usdRate: 0, error: '' }
-    try {
-      resp.usdRate = await api.getUsdRate(tokenAddress)
-      return resp
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-usd-rate')
-      resp.usdRate = 'NaN'
-      return resp
-    }
-  },
-  getTotalSupply: async (api: LlamaApi) => {
-    log('getTotalSupply', api.chainId)
-    const resp = { total: '', minted: '', pegKeepersDebt: '', error: '' }
-    try {
-      const fetchedTotalSupply = await api.totalSupply()
-      return { ...fetchedTotalSupply, error: '' }
-    } catch (error) {
-      console.error(error)
-      resp.error = getErrorMessage(error, 'error-total-supply')
-      return resp
-    }
-  },
-  waitForTransaction,
-  waitForTransactions,
-}
-
 const detailInfo = {
   priceInfo: async (llamma: Llamma) => {
     log('priceInfo', llamma.collateralSymbol)
@@ -501,7 +471,7 @@ const loanCreate = {
       resp.hashes = isLeverage
         ? await llamma.leverage.createLoanApprove(collateral)
         : await llamma.createLoanApprove(collateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
+      await waitForTransactions(resp.hashes, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -525,7 +495,7 @@ const loanCreate = {
       resp.hash = isLeverage
         ? await llamma.leverage.createLoan(collateral, debt, n, +maxSlippage)
         : await llamma.createLoan(collateral, debt, n)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -619,7 +589,7 @@ const loanIncrease = {
 
     try {
       resp.hashes = await llamma.borrowMoreApprove(parsedCollateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
+      await waitForTransactions(resp.hashes, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -635,7 +605,7 @@ const loanIncrease = {
 
     try {
       resp.hash = await llamma.borrowMore(parsedCollateral, parsedDebt)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -696,7 +666,7 @@ const loanDecrease = {
 
     try {
       resp.hashes = isFullRepay ? await llamma.fullRepayApprove() : await llamma.repayApprove(debt)
-      await helpers.waitForTransactions(resp.hashes, provider)
+      await waitForTransactions(resp.hashes, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -710,7 +680,7 @@ const loanDecrease = {
 
     try {
       resp.hash = isFullRepay ? await llamma.fullRepay() : await llamma.repay(debt)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -773,7 +743,7 @@ const loanLiquidate = {
     const resp = { hashes: [] as string[], error: '' }
     try {
       resp.hashes = await llamma.selfLiquidateApprove()
-      await helpers.waitForTransactions(resp.hashes, provider)
+      await waitForTransactions(resp.hashes, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -786,7 +756,7 @@ const loanLiquidate = {
     const resp = { hash: '', error: '' }
     try {
       resp.hash = await llamma.selfLiquidate(+slippage)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -847,7 +817,7 @@ const collateralIncrease = {
 
     try {
       resp.hashes = await llamma.addCollateralApprove(collateral)
-      await helpers.waitForTransactions(resp.hashes, provider)
+      await waitForTransactions(resp.hashes, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -861,7 +831,7 @@ const collateralIncrease = {
 
     try {
       resp.hash = await llamma.addCollateral(collateral)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -938,7 +908,7 @@ const collateralDecrease = {
 
     try {
       resp.hash = await llamma.removeCollateral(collateral)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -1064,7 +1034,7 @@ const loanDeleverage = {
 
     try {
       resp.hash = await llamma.deleverage.repay(collateral, +maxSlippage)
-      await helpers.waitForTransaction(resp.hash, provider)
+      await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {
       console.error(error)
@@ -1075,7 +1045,6 @@ const loanDeleverage = {
 }
 
 const crvusdjsApi = {
-  helpers,
   detailInfo,
 
   loanCreate,

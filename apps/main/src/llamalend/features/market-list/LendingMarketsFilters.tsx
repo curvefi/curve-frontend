@@ -4,6 +4,7 @@ import { type AssetDetails, LlamaMarket } from '@/llamalend/entities/llama-marke
 import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'
+import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { TableFilterColumn } from '@ui-kit/shared/ui/DataTable/TableFilterColumn'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
@@ -41,9 +42,7 @@ export const LendingMarketsFilters = ({
   minLiquidity = 0,
   data,
   ...filterProps
-}: {
-  columnFilters: Record<string, unknown>
-  setColumnFilter: (id: string, value: unknown) => void
+}: FilterProps<LlamaMarketColumnId> & {
   data: LlamaMarket[]
   minLiquidity?: number
 }) => {
@@ -95,6 +94,8 @@ export const LendingMarketsFilters = ({
           title={t`TVL`}
           format={formatUsd}
           data={data}
+          adornment="dollar"
+          scale="power"
           {...filterProps}
         />
       </TableFilterColumn>
@@ -106,6 +107,8 @@ export const LendingMarketsFilters = ({
           title={t`Liquidity`}
           format={formatUsd}
           data={data}
+          adornment="dollar"
+          scale="power"
           {...filterProps}
         />
       </TableFilterColumn>
@@ -117,6 +120,8 @@ export const LendingMarketsFilters = ({
           title={t`Utilization`}
           format={formatPercent}
           data={data}
+          adornment="percentage"
+          max={100}
           {...filterProps}
         />
       </TableFilterColumn>
