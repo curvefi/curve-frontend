@@ -8,6 +8,7 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { Trans } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -16,6 +17,8 @@ import { DataRow, type DataRowProps } from './DataRow'
 import { FilterRow } from './FilterRow'
 import { HeaderCell } from './HeaderCell'
 import { SkeletonRows } from './SkeletonRows'
+import { TableViewAllCell } from './TableViewAllCell'
+import { useTableRowLimit } from './useTableRowLimit'
 
 /**
  * Scrolls to the top of the window whenever the column filters change.
@@ -54,6 +57,7 @@ export const DataTable = <T extends TableItem>({
   loading,
   maxHeight,
   rowLimit,
+  viewAllLabel,
   ...rowProps
 }: {
   table: TanstackTable<T>
@@ -62,10 +66,17 @@ export const DataTable = <T extends TableItem>({
   loading: boolean
   maxHeight?: `${number}rem` // also sets overflowY to 'auto'
   rowLimit?: number
+  viewAllLabel?: string
 } & Omit<DataRowProps<T>, 'row' | 'isLast'>) => {
   const { table, shouldStickFirstColumn } = rowProps
   const { rows } = table.getRowModel()
-  const visibleRows = rowLimit ? rows.slice(0, rowLimit) : rows
+  const { isLimited, isLoading: isLoadingViewAll, handleShowAll } = useTableRowLimit(rowLimit)
+  // When number of rows are limited, show only rowLimit rows
+  const visibleRows = isLimited && rowLimit ? rows.slice(0, rowLimit) : rows
+  const showViewAllButton = isLimited && rows.length > rowLimit!
+  // pagination should bw shown if no rows limit and if needed
+  const showPagination = !isLimited && table.getPageCount() > 1
+
   const headerGroups = table.getHeaderGroups()
   const columnCount = useMemo(() => headerGroups.reduce((acc, group) => acc + group.headers.length, 0), [headerGroups])
   const top = useLayoutStore((state) => state.navHeight)
@@ -123,12 +134,19 @@ export const DataTable = <T extends TableItem>({
             ))
           )}
         </TableBody>
-        {!rowLimit && table.getPageCount() > 1 && (
+        {(showPagination || showViewAllButton) && (
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={columnCount}>
-                <TablePagination table={table} />
-              </TableCell>
+              {showViewAllButton && (
+                <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
+                  {viewAllLabel ? viewAllLabel : <Trans>View all</Trans>}
+                </TableViewAllCell>
+              )}
+              {showPagination && (
+                <TableCell colSpan={columnCount}>
+                  <TablePagination table={table} />
+                </TableCell>
+              )}
             </TableRow>
           </TableFooter>
         )}
