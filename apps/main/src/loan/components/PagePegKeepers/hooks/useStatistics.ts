@@ -15,7 +15,11 @@ const pegkeeperDebtContracts = PEG_KEEPERS.map((pegkeeper) => ({
 }))
 
 export function useStatistics() {
-  const { data: debt, isFetching } = useReadContracts({
+  const {
+    data: debt,
+    isFetching,
+    isError,
+  } = useReadContracts({
     contracts: pegkeeperDebtContracts,
     query,
   })
@@ -27,5 +31,5 @@ export function useStatistics() {
       .map((x) => x.result)
       .reduce((acc, curr) => acc + curr, 0n)
 
-  return { data: totalDebt, isFetching }
+  return { data: totalDebt, isFetching, isError }
 }

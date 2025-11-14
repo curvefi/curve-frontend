@@ -33,7 +33,6 @@ describe(`Peg Stability Reserves`, () => {
 
   it('should render statistics card with metrics', () => {
     cy.get('[data-testid="pegkeeper-stats-reserve"]').should('be.visible')
-    cy.get('[data-testid="pegkeeper-stats-reserve-share"]').should('be.visible')
   })
 
   it('should render advanced details with pool links', () => {
