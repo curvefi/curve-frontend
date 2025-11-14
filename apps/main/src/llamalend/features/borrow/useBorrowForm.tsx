@@ -15,6 +15,7 @@ import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES } from './constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
+import { useTokenBalances } from './hooks/useTokenBalances'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { type BorrowForm, BorrowPreset } from './types'
@@ -77,6 +78,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     params,
     isPending: form.formState.isSubmitting || isCreating,
     onSubmit: form.handleSubmit(onSubmit), // todo: handle form errors
+    tokenBalances: useTokenBalances(borrowToken, collateralToken, params, form),
     maxTokenValues: useMaxTokenValues(collateralToken, params, form),
     borrowToken,
     collateralToken,

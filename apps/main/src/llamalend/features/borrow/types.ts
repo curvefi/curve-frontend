@@ -14,7 +14,12 @@ export type CompleteBorrowForm = {
   leverageEnabled: boolean
 }
 
-type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
+type CalculatedValues = {
+  borrowBalance: Decimal | undefined
+  collateralBalance: Decimal | undefined
+  maxDebt: Decimal | undefined
+  maxCollateral: Decimal | undefined
+}
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
 export type BorrowForm = MakeOptional<CompleteBorrowForm, 'debt' | 'userCollateral'> & CalculatedValues

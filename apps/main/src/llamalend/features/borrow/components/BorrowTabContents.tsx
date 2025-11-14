@@ -61,6 +61,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     values,
     onSubmit,
     isPending,
+    tokenBalances,
     maxTokenValues,
     params,
     form,
@@ -89,9 +90,10 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                     token={collateralToken}
                     name="userCollateral"
                     form={form}
-                    isLoading={maxTokenValues.isCollateralLoading}
+                    isLoading={maxTokenValues.isCollateralLoading || tokenBalances.isCollateralBalanceLoading}
                     isError={maxTokenValues.isCollateralError}
                     max={values.maxCollateral}
+                    balance={tokenBalances.collateralBalance}
                     testId="borrow-collateral-input"
                   />
                   <BorrowFormTokenInput
@@ -99,9 +101,10 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                     token={borrowToken}
                     name="debt"
                     form={form}
-                    isLoading={maxTokenValues.isDebtLoading}
+                    isLoading={maxTokenValues.isDebtLoading || tokenBalances.isBorrowBalanceLoading}
                     isError={maxTokenValues.isDebtError}
                     max={values.maxDebt}
+                    balance={tokenBalances.borrowBalance}
                     testId="borrow-debt-input"
                   />
                 </Stack>

@@ -15,6 +15,7 @@ export const BorrowFormTokenInput = ({
   label,
   token,
   name,
+  balance,
   max,
   isLoading,
   isError,
@@ -25,6 +26,7 @@ export const BorrowFormTokenInput = ({
   token: Token | undefined
   isError: boolean
   isLoading: boolean
+  balance: Decimal | undefined
   max: Decimal | undefined
   name: keyof typeof maxField
   form: UseFormReturn<BorrowForm>
@@ -45,10 +47,7 @@ export const BorrowFormTokenInput = ({
     onBalance={useCallback((v?: Decimal) => form.setValue(name, v, setValueOptions), [form, name])}
     isError={isError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
     message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
-    walletBalance={useMemo(
-      () => ({ balance: undefined, symbol: token?.symbol, loading: isLoading }),
-      [isLoading, token],
-    )}
+    walletBalance={useMemo(() => ({ balance, symbol: token?.symbol, loading: isLoading }), [balance, isLoading, token])}
     maxBalance={useMemo(() => ({ balance: max, chips: 'max' }), [max])}
   />
 )
