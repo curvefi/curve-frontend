@@ -6,7 +6,6 @@ import type { FilterKey, Order, PoolListTableLabel, SearchParams, SortKey } from
 import { useNetworkByChain } from '@/dex/entities/networks'
 import { useNetworkFromUrl } from '@/dex/hooks/useChainId'
 import useSearchTermMapper from '@/dex/hooks/useSearchTermMapper'
-import Settings from '@/dex/layout/default/Settings'
 import useStore from '@/dex/store/useStore'
 import { breakpoints } from '@ui/utils/responsive'
 import { useConnection } from '@ui-kit/features/connect-wallet'
@@ -102,22 +101,19 @@ const OldPoolListPage = () => {
   }, [curveApi?.signerAddress, poolDatasLength, rChainId, searchParams, defaultSortBy, poolFilters])
 
   return (
-    <>
-      <Container $isLite={isLite}>
-        {rChainId && parsedSearchParams && (
-          <PoolList
-            rChainId={rChainId}
-            curve={curveApi}
-            isLite={isLite}
-            tableLabels={TABLE_LABEL}
-            searchParams={parsedSearchParams}
-            searchTermMapper={searchTermMapper}
-            updatePath={updatePath}
-          />
-        )}
-      </Container>
-      <Settings showScrollButton />
-    </>
+    <Container $isLite={isLite}>
+      {rChainId && parsedSearchParams && (
+        <PoolList
+          rChainId={rChainId}
+          curve={curveApi}
+          isLite={isLite}
+          tableLabels={TABLE_LABEL}
+          searchParams={parsedSearchParams}
+          searchTermMapper={searchTermMapper}
+          updatePath={updatePath}
+        />
+      )}
+    </Container>
   )
 }
 

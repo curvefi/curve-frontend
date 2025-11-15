@@ -16,6 +16,7 @@ import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
 import { Header as Header } from '@ui-kit/widgets/Header'
+import { ScrollUpButton } from '@ui-kit/widgets/ScrollUpButton'
 
 const { MinHeight } = SizesAndSpaces
 
@@ -84,5 +85,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
     <Footer appName={currentApp} networkId={network.id} />
+    <ScrollUpButton />
   </Stack>
 )

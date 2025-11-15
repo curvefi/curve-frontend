@@ -3,11 +3,7 @@ import Button from '@ui/Button'
 import Icon from '@ui/Icon'
 import { useLayoutStore } from '@ui-kit/features/layout'
 
-type Props = {
-  showScrollButton?: boolean
-}
-
-const Settings = ({ showScrollButton }: Props) => {
+export const ScrollUpButton = () => {
   const isShowScrollButton = useLayoutStore((state) => state.showScrollButton)
 
   const handleScrollTopClick = () => {
@@ -21,8 +17,8 @@ const Settings = ({ showScrollButton }: Props) => {
   return (
     <Wrapper>
       <StyledScrollUpButton
-        className={showScrollButton && isShowScrollButton ? 'pop-in' : ''}
-        show={showScrollButton ? isShowScrollButton : false}
+        className={isShowScrollButton ? 'pop-in' : ''}
+        show={isShowScrollButton}
         variant="icon-filled"
         onClick={handleScrollTopClick}
       >
@@ -37,14 +33,8 @@ type ScrollUpButtonProps = {
 }
 
 const popIn = keyframes`
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+  0% { opacity: 0; transform: scale(0.5); }
+  100% { opacity: 1; transform: scale(1); }
 `
 
 const StyledScrollUpButton = styled(Button)<ScrollUpButtonProps>`
@@ -64,5 +54,3 @@ const Wrapper = styled.div`
   padding: 1rem;
   z-index: var(--z-index-page-settings);
 `
-
-export default Settings
