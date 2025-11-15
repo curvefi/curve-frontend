@@ -26,7 +26,7 @@ const useAppStats = (currentApp: string, network: NetworkDef) =>
     dao: [],
     crvusd: useLoanAppStats(currentApp === 'crvusd' && network?.chainId === 1 ? 1 : undefined),
     lend: useLendAppStats(currentApp === 'lend' ? (network?.chainId as LlamaChainId) : undefined),
-    llamalend: useLlamalendAppStats(currentApp === 'llamalend'),
+    llamalend: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'llamalend'),
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
   })[currentApp]
 
