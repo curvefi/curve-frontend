@@ -190,7 +190,7 @@ export const POOL_PRESETS: PRESETS = {
   9: {
     name: 'FXSwap',
     descriptionName: t`FXSwap`,
-    description: t`Suitable for FX swaps`,
+    description: t`Suitable for forex tokens with low volatility`,
     defaultParams: {
       ...fillerParams,
       midFee: '0.25', // 25/10_000 * 10**10 (25 bps)

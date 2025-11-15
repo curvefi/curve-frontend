@@ -54,7 +54,7 @@ const PoolType = ({ chainId }: Props) => {
               selected={swapType === FXSWAP}
               name={FXSWAP}
               descriptionName={t`FXSwap`}
-              description={t`We love Forex innit?!`}
+              description={t`Suitable for forex tokens with low volatility`}
               handleClick={() => updateSwapType(FXSWAP, chainId)}
             />
           </SelectButtonWrapper>
