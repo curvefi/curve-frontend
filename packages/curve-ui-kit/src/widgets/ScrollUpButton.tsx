@@ -1,56 +1,47 @@
-import { styled, keyframes } from 'styled-components'
-import Button from '@ui/Button'
-import Icon from '@ui/Icon'
+import Button from '@mui/material/Button'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { PinTopIcon } from '@ui-kit/shared/icons/PinTopIcon'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { ButtonSize } = SizesAndSpaces
 
 export const ScrollUpButton = () => {
   const isShowScrollButton = useLayoutStore((state) => state.showScrollButton)
 
-  const handleScrollTopClick = () => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    })
-  }
-
   return (
-    <Wrapper>
-      <StyledScrollUpButton
-        className={isShowScrollButton ? 'pop-in' : ''}
-        show={isShowScrollButton}
-        variant="icon-filled"
-        onClick={handleScrollTopClick}
-      >
-        <Icon name="UpToTop" size={24} />
-      </StyledScrollUpButton>
-    </Wrapper>
+    <Button
+      variant="contained"
+      onClick={() =>
+        window.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        })
+      }
+      sx={{
+        // Put on the bottom right corner
+        position: 'fixed',
+        inset: 'auto 4rem 4rem auto',
+
+        // Make sure it's always on top
+        zIndex: 'var(--z-index-page-settings)',
+
+        // Make a perfectly square button
+        minWidth: 'unset',
+        width: ButtonSize.md,
+        height: ButtonSize.md,
+
+        // Fade in and out animation
+        opacity: isShowScrollButton ? 1 : 0,
+        scale: isShowScrollButton ? 1 : 0.5,
+        transition: 'opacity .25s, scale .25s',
+
+        // Disable pointer events when hidden, so it doesn't block other elements
+        // Avoid using display: none for better animation (fade out)
+        pointerEvents: isShowScrollButton ? 'auto' : 'none',
+      }}
+    >
+      <PinTopIcon />
+    </Button>
   )
 }
-
-type ScrollUpButtonProps = {
-  show: boolean
-}
-
-const popIn = keyframes`
-  0% { opacity: 0; transform: scale(0.5); }
-  100% { opacity: 1; transform: scale(1); }
-`
-
-const StyledScrollUpButton = styled(Button)<ScrollUpButtonProps>`
-  padding: 0.5rem;
-  opacity: 0;
-
-  &.pop-in {
-    animation: ${popIn} 0.25s;
-    animation-fill-mode: forwards;
-  }
-`
-
-const Wrapper = styled.div`
-  position: fixed;
-  bottom: 2rem;
-  right: 1rem;
-  padding: 1rem;
-  z-index: var(--z-index-page-settings);
-`
