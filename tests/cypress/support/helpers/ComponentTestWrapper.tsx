@@ -2,7 +2,6 @@ import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
 import { WalletToast } from '@ui-kit/features/connect-wallet'
-import { useLayoutStore } from '@ui-kit/features/layout'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -38,9 +37,6 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
       initialEntries: ['/'],
     }),
   })
-
-  const setNavHeight = useLayoutStore((state) => state.setNavHeight)
-  setNavHeight(0) // No header in component tests, so wallet toast should be at top
 
   return (
     <>
