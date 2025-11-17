@@ -40,3 +40,5 @@ export const useParams = <T>(): T => {
  * Note that during navigation, this will reflect the *new* pathname before the navigation is complete.
  */
 export const usePathname = () => useTanstackLocation().pathname
+
+export const useLocation = useTanstackLocation
