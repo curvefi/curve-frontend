@@ -378,7 +378,7 @@ export async function getNetworks() {
       stableswapFactory: true,
       twocryptoFactory: true,
       tricryptoFactory: true,
-      fxswapFactory: true,
+      fxswapFactory: false,
       pricesApi: isUpgraded,
       isLite: !isUpgraded,
       isCrvRewardsEnabled: isUpgraded,

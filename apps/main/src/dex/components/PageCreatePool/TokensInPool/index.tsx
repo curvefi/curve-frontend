@@ -774,7 +774,7 @@ const TokensInPool = ({ curve, chainId, haveSigner }: Props) => {
       ) : (
         <Row>
           <ExplainerWrapper flex flexColumn>
-            <p>{t`Rebasing tokens are not supported in ${swapType === CRYPTOSWAP ? CRYPTOSWAP : FXSWAP} pools`}</p>
+            <p>{t`Rebasing tokens are not supported in ${swapType} pools`}</p>
           </ExplainerWrapper>
         </Row>
       )}
