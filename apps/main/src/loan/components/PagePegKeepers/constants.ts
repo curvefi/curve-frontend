@@ -3,6 +3,8 @@ import { CRVUSD_ADDRESS } from '@ui-kit/utils'
 
 export const CRVUSD_UNIT = { symbol: 'crvUSD', position: 'suffix' as const, abbreviate: true }
 
+export const PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS = '0xC9332fdCB1C491Dcc683bAe86Fe3cb70360738BC' as const
+
 export const PEG_KEEPERS = [
   {
     address: '0x9201da0d97caaaff53f01b2fb56767c7072de340',
