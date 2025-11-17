@@ -4,7 +4,7 @@ import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { Decimal } from '@ui-kit/utils'
 import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
-import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
+import { useCreateLoanMaxReceive } from '../queries/create-loan-max-receive.query'
 import { setValueOptions } from '../react-form.utils'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
@@ -27,7 +27,7 @@ export function useMaxTokenValues(
     isError: isBalanceError,
     isLoading: isBalanceLoading,
   } = useTokenBalance(params, collateralToken)
-  const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useMaxBorrowReceive(params)
+  const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,
     isError: isErrorMaxLeverage,

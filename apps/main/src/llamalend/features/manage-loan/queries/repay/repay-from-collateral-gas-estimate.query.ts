@@ -1,13 +1,10 @@
-import { useMemo } from 'react'
-import { ethAddress } from 'viem'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
+import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
@@ -50,16 +47,12 @@ export const useRepayFromCollateralEstimateGas = <ChainId extends IChainId>(
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const network = chainId && networks[chainId]
-  const { data: ethRate, isLoading: ethRateLoading } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const { data: gasInfo, isLoading: gasInfoLoading } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
   const { data: estimate, isLoading: estimateLoading } = useRepayFromCollateralGasEstimate(query, enabled)
-  const data = useMemo(
-    () =>
-      !estimate || !network
-        ? {}
-        : { repayFromCollateral: calculateGas(estimate.repayFromCollateral, gasInfo, ethRate, network) },
-    [estimate, network, gasInfo, ethRate],
+  const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
+    networks,
+    chainId,
+    estimate,
+    enabled,
   )
-  return { data, isLoading: ethRateLoading || gasInfoLoading || estimateLoading }
+  return { data, isLoading: estimateLoading || conversionLoading }
 }

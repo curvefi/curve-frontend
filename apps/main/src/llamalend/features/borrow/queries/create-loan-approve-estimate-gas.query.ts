@@ -1,30 +1,32 @@
-import { useMemo } from 'react'
-import { ethAddress } from 'viem'
+import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { calculateGas, useGasInfoAndUpdateLib } from '@ui-kit/lib/model/entities/gas-info'
-import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import type { BorrowFormQuery } from '../types'
-import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
+import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-type BorrowGasEstimateQuery<T = IChainId> = BorrowFormQuery<T>
-type GasEstimateParams<T = IChainId> = FieldsOf<BorrowGasEstimateQuery<T>>
+type CreateLoanApproveEstimateGasQuery<T = IChainId> = BorrowFormQuery<T>
+type GasEstimateParams<T = IChainId> = FieldsOf<CreateLoanApproveEstimateGasQuery<T>>
 
-const { useQuery: useGasEstimate } = queryFactory({
+const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
   queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
-      'borrow-gas-estimation',
+      'estimateGas.createLoanApprove',
       { userBorrowed },
       { userCollateral },
       { leverageEnabled },
     ] as const,
-  queryFn: async ({ marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: BorrowGasEstimateQuery) => {
+  queryFn: async ({
+    marketId,
+    userBorrowed = '0',
+    userCollateral = '0',
+    leverageEnabled,
+  }: CreateLoanApproveEstimateGasQuery) => {
     const market = getLlamaMarket(marketId)
     return {
       createLoanApprove: !leverageEnabled
@@ -37,25 +39,21 @@ const { useQuery: useGasEstimate } = queryFactory({
     }
   },
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [maxBorrowReceiveKey(params)],
+  dependencies: (params) => [createLoanMaxReceiveKey(params)],
 })
 
-export const useBorrowEstimateGas = <ChainId extends IChainId>(
+export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: GasEstimateParams<ChainId>,
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const network = chainId && networks[chainId]
-  const { data: ethRate, isLoading: ethRateLoading } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const { data: gasInfo, isLoading: gasInfoLoading } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
-  const { data: estimate, isLoading: estimateLoading } = useGasEstimate(query, enabled)
-  const data = useMemo(
-    () =>
-      !estimate || !network
-        ? {}
-        : { createLoanApprove: calculateGas(estimate.createLoanApprove, gasInfo, ethRate, network) },
-    [estimate, network, gasInfo, ethRate],
+  const { data: estimate, isLoading: estimateLoading } = useCreateLoanApproveEstimateGas(query, enabled)
+  const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
+    networks,
+    chainId,
+    estimate,
+    enabled,
   )
-  return { data, isLoading: ethRateLoading || gasInfoLoading || estimateLoading }
+  return { data, isLoading: estimateLoading || conversionLoading }
 }

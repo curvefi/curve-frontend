@@ -10,7 +10,7 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal } from '@ui-kit/utils'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
+import { useCreateLoanExpectedCollateral } from '../queries/create-loan-expected-collateral.query'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
 const { Spacing } = SizesAndSpaces
@@ -30,7 +30,7 @@ export const LeverageInput = ({
   isError: boolean
   isLoading: boolean
 }) => {
-  const { leverage } = useBorrowExpectedCollateral(params).data ?? {}
+  const { leverage } = useCreateLoanExpectedCollateral(params).data ?? {}
 
   const onLeverageChanged = useCallback(
     (x: ChangeEvent<HTMLInputElement>) => form.setValue('leverageEnabled', x.target.checked),

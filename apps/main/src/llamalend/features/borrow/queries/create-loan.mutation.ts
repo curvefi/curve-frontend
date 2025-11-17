@@ -17,9 +17,9 @@ import { t } from '@ui-kit/lib/i18n'
 import { Address, Amount, Decimal } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
-import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
 import type { BorrowForm, BorrowFormQuery } from '../types'
 import { borrowFormValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
 type BorrowMutationContext = {
   chainId: IChainId
@@ -90,7 +90,7 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: wallet?.account.address }) }),
         queryClient.invalidateQueries({
-          queryKey: borrowExpectedCollateralQueryKey({ chainId: network?.chainId, marketId, ...mutation }),
+          queryKey: createLoanExpectedCollateralQueryKey({ chainId: network?.chainId, marketId, ...mutation }),
         }),
       ])
       updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)

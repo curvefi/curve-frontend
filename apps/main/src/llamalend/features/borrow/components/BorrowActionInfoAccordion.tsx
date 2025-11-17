@@ -13,10 +13,10 @@ import { Decimal, formatPercent } from '@ui-kit/utils'
 import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { useCreateLoanBands } from '../queries/borrow-bands.query'
-import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
-import { useBorrowHealth } from '../queries/borrow-health.query'
-import { useBorrowPrices } from '../queries/borrow-prices.query'
+import { useCreateLoanEstimateGas } from '../queries/create-loan-approve-estimate-gas.query'
+import { useCreateLoanBands } from '../queries/create-loan-bands.query'
+import { useCreateLoanHealth } from '../queries/create-loan-health.query'
+import { useCreateLoanPrices } from '../queries/create-loan-prices.query'
 import { type BorrowForm, type BorrowFormQueryParams, type Token } from '../types'
 import { BorrowLeverageActionInfos } from './BorrowLeverageActionInfos'
 
@@ -43,16 +43,20 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
   onSlippageChange: (newSlippage: Decimal) => void
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
-  const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
+  const { data: health, isLoading: healthLoading, error: healthError } = useCreateLoanHealth(params, !tooMuchDebt) // visible when !isOpen
   const { data: bands, isLoading: bandsLoading, error: bandsError } = useCreateLoanBands(params, isOpen && !tooMuchDebt)
-  const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
+  const {
+    data: prices,
+    isLoading: pricesLoading,
+    error: pricesError,
+  } = useCreateLoanPrices(params, isOpen && !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
   const {
     data: futureRates,
     isLoading: futureRatesLoading,
     error: futureRatesError,
   } = useMarketFutureRates(params, isOpen)
-  const { data: gas, isLoading: gasLoading } = useBorrowEstimateGas(networks, params, isOpen && !tooMuchDebt)
+  const { data: gas, isLoading: gasLoading } = useCreateLoanEstimateGas(networks, params, isOpen && !tooMuchDebt)
 
   const {
     data: loanToValue,

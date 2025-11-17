@@ -4,7 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
-export const { useQuery: useBorrowRouteImage } = queryFactory({
+export const { useQuery: useCreateLoanRouteImage } = queryFactory({
   queryKey: ({ chainId, marketId, userBorrowed = '0', debt = '0' }: BorrowFormQueryParams) =>
     [...rootKeys.market({ chainId, marketId }), 'createLoanRouteImage', { userBorrowed }, { debt }] as const,
   queryFn: async ({ marketId, userBorrowed = '0', debt = '0' }: BorrowFormQuery): Promise<string | undefined> => {

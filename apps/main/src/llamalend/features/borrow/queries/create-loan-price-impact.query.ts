@@ -2,12 +2,12 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
-import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
 type BorrowPriceImpactResult = number // percentage
 
-export const { useQuery: useBorrowPriceImpact } = queryFactory({
+export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
   queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
@@ -31,5 +31,5 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [borrowExpectedCollateralQueryKey(params)],
+  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })

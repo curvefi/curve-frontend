@@ -4,9 +4,9 @@ import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../types'
-import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
-import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
+import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type BorrowPricesReceiveQuery = BorrowFormQuery
 type BorrowPricesReceiveParams = FieldsOf<BorrowPricesReceiveQuery>
@@ -14,7 +14,7 @@ type BorrowPricesReceiveParams = FieldsOf<BorrowPricesReceiveQuery>
 type BorrowPricesResult = [Decimal, Decimal]
 const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as BorrowPricesResult
 
-export const { useQuery: useBorrowPrices } = queryFactory({
+export const { useQuery: useCreateLoanPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -53,7 +53,7 @@ export const { useQuery: useBorrowPrices } = queryFactory({
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
   dependencies: (params) => [
-    maxBorrowReceiveKey(params),
-    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+    createLoanMaxReceiveKey(params),
+    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
   ],
 })
