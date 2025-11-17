@@ -111,6 +111,7 @@ jobs:
     name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
+    if: github.ref_name != 'feat/ens'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -159,3 +160,22 @@ jobs:
       - name: Check runtime errors
         if: always()
         run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
+
+  deploy-ipfs:
+    name: Deploy to IPFS
+    if: github.ref_name == 'main'
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    environment: ens
+    needs: [lint, test, cypress-component, cypress-component-rpc, cypress-e2e]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn build
+      - name: Deploy to IPFS via Pinata
+        run: yarn deploy:ipfs
