@@ -93,6 +93,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                     isError={maxTokenValues.isCollateralError}
                     max={values.maxCollateral}
                     testId="borrow-collateral-input"
+                    network={network}
                   />
                   <BorrowFormTokenInput
                     label={t`Borrow`}
@@ -103,6 +104,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                     isError={maxTokenValues.isDebtError}
                     max={values.maxDebt}
                     testId="borrow-debt-input"
+                    network={network}
                   />
                 </Stack>
 
