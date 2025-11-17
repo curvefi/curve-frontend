@@ -141,6 +141,10 @@ jobs:
           NODE_ENV: test
           CYPRESS_VIDEO: ${{ matrix.browser == 'firefox' && 'false' || 'true' }}  # Firefox doesn't support recording
 
+      - name: Check runtime errors
+        if: always()
+        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -155,7 +159,3 @@ jobs:
           name: dev-server-log-${{ matrix.browser }}-${{ matrix.count }}
           if-no-files-found: error
           path: e2e-*.log
-
-      - name: Check runtime errors
-        if: always()
-        run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
