@@ -1,6 +1,7 @@
 import { type ReactElement } from 'react'
 import { WagmiProvider, type ResolvedRegister } from 'wagmi'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
+import { WalletToast } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -24,23 +25,18 @@ type Props = {
 export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   // Create a minimal router for testing environment
   const router = createRouter({
-    routeTree: createRootRoute({
-      component: () => children,
-    }),
-    history: createMemoryHistory({
-      initialEntries: ['/'],
-    }),
+    routeTree: createRootRoute({ component: () => children }),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
   })
 
   return (
-    <>
-      <ThemeProvider theme="light">
-        <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
-          <QueryProvider persister={persister} queryClient={queryClient}>
-            <RouterProvider router={router} />
-          </QueryProvider>
-        </WithWrapper>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme="light">
+      <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
+        <QueryProvider persister={persister} queryClient={queryClient}>
+          <RouterProvider router={router} />
+          <WalletToast />
+        </QueryProvider>
+      </WithWrapper>
+    </ThemeProvider>
   )
 }

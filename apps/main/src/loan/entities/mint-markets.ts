@@ -31,8 +31,11 @@ export const useMintMarket = ({ chainId, marketId }: { chainId: ChainId; marketI
   const mintMarketMapping = useMintMarketMapping({ chainId })
   const { llamaApi: api } = useConnection()
 
-  return useMemo(
-    () => api && mintMarketMapping && api.getMintMarket(isAddress(marketId) ? mintMarketMapping[marketId] : marketId),
-    [api, marketId, mintMarketMapping],
-  )
+  return useMemo(() => {
+    try {
+      return api && mintMarketMapping && api.getMintMarket(isAddress(marketId) ? mintMarketMapping[marketId] : marketId)
+    } catch (e) {
+      console.warn(e) // bad urls should not crash the page, a 404 page will be displayed
+    }
+  }, [api, marketId, mintMarketMapping])
 }

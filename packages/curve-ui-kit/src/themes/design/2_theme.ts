@@ -127,7 +127,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
       },
     },
     Success: {
@@ -538,7 +537,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: color[850],
       },
     },
     Success: {
@@ -892,7 +890,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violets[200],
       },
     },
     Success: {
