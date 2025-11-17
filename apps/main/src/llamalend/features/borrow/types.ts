@@ -15,6 +15,7 @@ export type CompleteBorrowForm = {
   leverageEnabled: boolean
 }
 
+// todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
