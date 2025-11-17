@@ -3,7 +3,7 @@ import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
-import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, query } from '../constants'
+import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS } from '../constants'
 import type { PegKeeper } from '../types'
 
 export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKeeper) {
@@ -11,7 +11,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     abi: pegkeeperAbi,
     address,
     functionName: 'debt',
-    query,
   })
 
   // There's an `estimate_caller_profit` view function in the abi, but it's very inaccurate (by design)
@@ -25,7 +24,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     address,
     functionName: 'update',
     query: {
-      ...query,
       retry: false, // If it fails it's most likely because the profit is actually zero
     },
   })
@@ -35,7 +33,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     address,
     functionName: 'estimate_caller_profit',
     query: {
-      ...query,
       enabled: estCallerProfitError,
     },
   })
@@ -45,7 +42,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     address: PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS,
     functionName: 'debt_ceiling',
     args: [address],
-    query,
   })
 
   const {
@@ -57,7 +53,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     address: poolAddress,
     functionName: 'price_oracle',
     query: {
-      ...query,
       retry: false, // Don't retry with a delay, immediately use the fallback option
     },
   })
@@ -69,7 +64,6 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
     functionName: 'price_oracle',
     args: [0n],
     query: {
-      ...query,
       enabled: priceOracleError,
       retry: false, // No point in retrying multiple times. If it fails it's prob not supported.
     },

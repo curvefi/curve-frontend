@@ -2,7 +2,7 @@ import { formatEther } from 'ethers'
 import { useReadContracts } from 'wagmi'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
-import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS, query } from '../constants'
+import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'
 
 const pegkeeperDebtContracts = PEG_KEEPERS.map((pegkeeper) => ({
   abi: pegkeeperAbi,
@@ -24,7 +24,6 @@ export function useStatistics() {
     isError: isErrorDebt,
   } = useReadContracts({
     contracts: pegkeeperDebtContracts,
-    query,
   })
 
   const totalDebt =
@@ -40,7 +39,6 @@ export function useStatistics() {
     isError: isErrorCeiling,
   } = useReadContracts({
     contracts: pegkeeperDebtCeilingContracts,
-    query,
   })
 
   const totalCeiling =
