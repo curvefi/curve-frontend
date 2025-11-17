@@ -8,7 +8,7 @@ import TableFooter from '@mui/material/TableFooter'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { Trans } from '@ui-kit/lib/i18n'
+import { t } from '@ui-kit/lib/i18n'
 import { TablePagination } from '@ui-kit/shared/ui/DataTable/TablePagination'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -139,7 +139,7 @@ export const DataTable = <T extends TableItem>({
             <TableRow>
               {showViewAllButton && (
                 <TableViewAllCell colSpan={columnCount} onClick={handleShowAll} isLoading={isLoadingViewAll}>
-                  {viewAllLabel ? viewAllLabel : <Trans>View all</Trans>}
+                  {viewAllLabel || t`View all`}
                 </TableViewAllCell>
               )}
               {showPagination && (

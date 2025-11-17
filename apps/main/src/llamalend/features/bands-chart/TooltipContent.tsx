@@ -1,4 +1,3 @@
-import { Token } from '@/llamalend/features/borrow/types'
 import { TooltipItem, TooltipItems, TooltipWrapper } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Box, Typography } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'

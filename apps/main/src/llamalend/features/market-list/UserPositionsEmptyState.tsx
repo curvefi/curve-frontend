@@ -31,7 +31,7 @@ const emptyStateConfigs = (
     buttonLabel: t`Reload`,
     onButtonClick: onReload,
   },
-  [PositionsEmptyState.Positions]: {
+  [PositionsEmptyState.NoPositions]: {
     title: t`No active positions`,
     subtitle: noPositionsSubTitle[tab],
   },

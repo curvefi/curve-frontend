@@ -38,11 +38,8 @@ const SORT_QUERY_FIELD = {
   [MarketRateType.Supply]: 'userSortSupply',
 }
 
-const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState => {
-  if (isError) return PositionsEmptyState.Error
-  if (!hasPositions) return PositionsEmptyState.Positions
-  return PositionsEmptyState.Filtered
-}
+const getEmptyState = (isError: boolean, hasPositions: boolean): PositionsEmptyState =>
+  isError ? PositionsEmptyState.Error : hasPositions ? PositionsEmptyState.Filtered : PositionsEmptyState.NoPositions
 
 const useDefaultUserFilter = (type: MarketRateType) =>
   useMemo(() => [{ id: LlamaMarketColumnId.UserHasPositions, value: type }], [type])
