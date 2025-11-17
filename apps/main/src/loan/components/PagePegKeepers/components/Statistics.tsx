@@ -35,7 +35,7 @@ export const Statistics = () => {
             size="large"
             label={t`Peg stabilisation reserve`}
             value={totalDebt && Number(totalDebt)}
-            valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
+            valueOptions={{ unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-reserve"
           />
@@ -45,7 +45,7 @@ export const Statistics = () => {
             size="large"
             label={t`Total debt ceiling`}
             value={totalCeiling && Number(totalCeiling)}
-            valueOptions={{ decimals: 3, unit: CRVUSD_UNIT }}
+            valueOptions={{ unit: CRVUSD_UNIT }}
             sx={{ flex: 1 }}
             testId="pegkeeper-stats-total-ceiling"
           />
