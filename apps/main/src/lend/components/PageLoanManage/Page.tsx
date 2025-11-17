@@ -16,6 +16,7 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams } from '@/lend/types/lend.types'
 import { getVaultPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
+import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
@@ -37,6 +38,7 @@ import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -46,7 +48,7 @@ const Page = () => {
   const { rMarket, rChainId, rFormType } = parseMarketParams(params)
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
-  const market = useOneWayMarket(rChainId, rMarket).data
+  const { data: market, isSuccess } = useOneWayMarket(rChainId, rMarket)
   const rOwmId = market?.id ?? ''
   const userActiveKey = helpers.getUserActiveKey(api, market!)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
@@ -149,21 +151,9 @@ const Page = () => {
     supply: getVaultPathname(params, rOwmId, 'deposit'),
   }
 
-  if (!provider) {
-    return (
-      <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-        <ConnectWalletPrompt
-          description={t`Connect your wallet to view market`}
-          connectText={t`Connect`}
-          loadingText={t`Connecting`}
-          connectWallet={() => connect()}
-          isLoading={isLoading(connectState)}
-        />
-      </Box>
-    )
-  }
-
-  return (
+  return isSuccess && !market ? (
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+  ) : provider ? (
     <>
       {chartExpanded && network.pricesData && (
         <PriceAndTradesExpandedContainer>
@@ -228,6 +218,16 @@ const Page = () => {
         </Stack>
       </DetailPageStack>
     </>
+  ) : (
+    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+      <ConnectWalletPrompt
+        description={t`Connect your wallet to view market`}
+        connectText={t`Connect`}
+        loadingText={t`Connecting`}
+        connectWallet={() => connect()}
+        isLoading={isLoading(connectState)}
+      />
+    </Box>
   )
 }
 

@@ -42,4 +42,13 @@ describe('Basic Access Test', () => {
     cy.url().should('include', '/dex/corn/pools')
     cy.contains(/LBTC\/wBTCN/i, LOAD_TIMEOUT).should('be.visible')
   })
+
+  it('shows 404 on /dex/:network/pools/404', () => {
+    cy.visit('/dex/ethereum/pools/404', { failOnStatusCode: false })
+    cy.get('[data-testid="error-subtitle"]', LOAD_TIMEOUT).should('contain.text', 'Not Found')
+    cy.url().should('include', '/dex/ethereum/pools/404/deposit')
+    cy.get('[data-testid="continue-button"]').click()
+    cy.get('[data-testid="data-table-head"]', LOAD_TIMEOUT).should('be.visible') // on the pools list page
+    cy.get('[data-testid="error-subtitle"]').should('not.exist')
+  })
 })

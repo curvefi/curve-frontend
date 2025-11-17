@@ -69,6 +69,11 @@ export const crvusdRoutes = crvusdLayoutRoute.addChildren([
     ...layoutProps,
   }),
   createRoute({
+    path: '$network/markets/$collateralId',
+    loader: ({ params: { network, collateralId } }) => redirectTo(`/crvusd/${network}/markets/${collateralId}/create/`),
+    ...layoutProps,
+  }),
+  createRoute({
     path: '$network/markets/$collateralId/create/$formType',
     component: CreateLoan,
     head: ({ params }) => ({

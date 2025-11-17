@@ -1,3 +1,4 @@
+import type { Address } from 'viem'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { MarketQuery } from '@ui-kit/lib/model'
@@ -14,6 +15,7 @@ export type CompleteBorrowForm = {
   leverageEnabled: boolean
 }
 
+// todo: get rid of this, it's incorrect. We only did it because it was easier to run the validation suite
 type CalculatedValues = { maxDebt: Decimal | undefined; maxCollateral: Decimal | undefined }
 
 /** Borrow creation form as used in the UI, with some fields still optional or being filled in */
@@ -30,6 +32,6 @@ export type BorrowFormQuery<T = IChainId> = MarketQuery<T> & CompleteBorrowForm
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
-export type Token = { symbol: string; address: string; chain: INetworkName }
+export type Token = { symbol: string; address: Address; chain: INetworkName }
 
 export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]

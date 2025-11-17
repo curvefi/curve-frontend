@@ -13,3 +13,12 @@ export const BORROW_PRESET_RANGES = {
   [BorrowPreset.MaxLtv]: 4,
   [BorrowPreset.Custom]: 10,
 }
+
+export const LLAMA_MONITOR_BOT_URL = 'https://t.me/LlamalendMonitorBot'
+
+// Enum for the empty state of the user positions table
+export enum PositionsEmptyState {
+  Error = 'error',
+  NoPositions = 'no-positions',
+  Filtered = 'filtered',
+}
