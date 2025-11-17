@@ -25,28 +25,18 @@ type Props = {
 export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
   // Create a minimal router for testing environment
   const router = createRouter({
-    routeTree: createRootRoute({
-      component: () => (
-        <>
-          <WalletToast />
-          {children}
-        </>
-      ),
-    }),
-    history: createMemoryHistory({
-      initialEntries: ['/'],
-    }),
+    routeTree: createRootRoute({ component: () => children }),
+    history: createMemoryHistory({ initialEntries: ['/'] }),
   })
 
   return (
-    <>
-      <ThemeProvider theme="light">
-        <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
-          <QueryProvider persister={persister} queryClient={queryClient}>
-            <RouterProvider router={router} />
-          </QueryProvider>
-        </WithWrapper>
-      </ThemeProvider>
-    </>
+    <ThemeProvider theme="light">
+      <WithWrapper Wrapper={WagmiProvider} shouldWrap={config} config={config!} reconnectOnMount={autoConnect}>
+        <QueryProvider persister={persister} queryClient={queryClient}>
+          <RouterProvider router={router} />
+          <WalletToast />
+        </QueryProvider>
+      </WithWrapper>
+    </ThemeProvider>
   )
 }
