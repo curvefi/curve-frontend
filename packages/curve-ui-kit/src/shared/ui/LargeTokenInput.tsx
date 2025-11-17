@@ -375,6 +375,7 @@ export const LargeTokenInput = ({
                     size="extraSmall"
                     color="default"
                     clickable
+                    disabled={disabled}
                     onClick={() => handleChip(chip)}
                   ></Chip>
                 ))}
