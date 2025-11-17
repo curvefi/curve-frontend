@@ -1,7 +1,7 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { decimal, type Decimal } from '@ui-kit/utils'
+import { type Decimal } from '@ui-kit/utils'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
@@ -12,26 +12,6 @@ type RepayExpectedBorrowedResult = {
   userBorrowed: Decimal
   avgPrice: Decimal
 }
-
-const convertNumbers = ({
-  totalBorrowed,
-  borrowedFromStateCollateral,
-  borrowedFromUserCollateral,
-  userBorrowed,
-  avgPrice,
-}: {
-  totalBorrowed: string
-  borrowedFromStateCollateral: string
-  borrowedFromUserCollateral: string
-  userBorrowed: string
-  avgPrice: string
-}): RepayExpectedBorrowedResult => ({
-  totalBorrowed: totalBorrowed as Decimal,
-  borrowedFromStateCollateral: decimal(borrowedFromStateCollateral),
-  borrowedFromUserCollateral: decimal(borrowedFromUserCollateral),
-  userBorrowed: userBorrowed as Decimal,
-  avgPrice: decimal(avgPrice),
-})
 
 export const { useQuery: useRepayFromCollateralExpectedBorrowed } = queryFactory({
   queryKey: ({
@@ -49,22 +29,21 @@ export const { useQuery: useRepayFromCollateralExpectedBorrowed } = queryFactory
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({
-    marketId,
-    stateCollateral,
-    userCollateral,
-    userBorrowed,
-  }: RepayFromCollateralQuery): Promise<RepayExpectedBorrowedResult | null> => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
     const market = getLlamaMarket(marketId)
-    if (market instanceof LendMarketTemplate) {
-      return convertNumbers(await market.leverage.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed))
-    }
-    if (market.leverageV2.hasLeverage()) {
-      return convertNumbers(
-        await market.leverageV2.repayExpectedBorrowed(stateCollateral, userCollateral, userBorrowed),
-      )
-    }
-    return null
+    return market instanceof LendMarketTemplate
+      ? ((await market.leverage.repayExpectedBorrowed(
+          stateCollateral,
+          userCollateral,
+          userBorrowed,
+        )) as RepayExpectedBorrowedResult)
+      : market.leverageV2.hasLeverage()
+        ? ((await market.leverageV2.repayExpectedBorrowed(
+            stateCollateral,
+            userCollateral,
+            userBorrowed,
+          )) as RepayExpectedBorrowedResult)
+        : null
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
