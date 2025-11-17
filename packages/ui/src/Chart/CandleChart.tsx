@@ -52,6 +52,10 @@ const SL_RANGE_AREA_SERIES_DEFAULTS = {
 } as const
 
 type Props = {
+  /**
+   * If the chart is used on a Llamalend market page we hide the candle series label and label line.
+   */
+  isLlamalend: boolean
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
@@ -72,6 +76,7 @@ type Props = {
 }
 
 const CandleChart = ({
+  isLlamalend,
   chartHeight,
   ohlcData,
   volumeData,
@@ -355,11 +360,13 @@ const CandleChart = ({
 
     candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
       priceLineStyle: 3,
+      priceLineVisible: !isLlamalend,
       upColor: memoizedColors.green,
       downColor: memoizedColors.red,
       borderVisible: false,
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
+      lastValueVisible: !isLlamalend,
       priceFormat: createPriceFormatter(totalDecimalPlacesRef),
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
@@ -421,7 +428,7 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [memoizedColors.green, memoizedColors.red])
+  }, [isLlamalend, memoizedColors.green, memoizedColors.red])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {
@@ -563,11 +570,15 @@ const CandleChart = ({
     const isBothRanges = liquidationRange?.current && liquidationRange?.new
     const currentColors = isBothRanges
       ? {
-          top: memoizedColors.rangeBackgroundOld,
-          bottom: memoizedColors.rangeBackgroundOld,
-          line: memoizedColors.rangeLineOld,
+          top: memoizedColors.rangeBackground,
+          bottom: memoizedColors.rangeBackground,
+          line: memoizedColors.rangeLineTop,
         }
-      : { top: memoizedColors.rangeBackground, bottom: memoizedColors.rangeBackground, line: memoizedColors.rangeLine }
+      : {
+          top: memoizedColors.rangeBackground,
+          bottom: memoizedColors.rangeBackground,
+          line: memoizedColors.rangeLineTop,
+        }
 
     // Update current range series
     if (liqRangeCurrentVisible) {
@@ -584,22 +595,20 @@ const CandleChart = ({
       applySeriesOptions(newAreaSeriesRef.current, {
         top: memoizedColors.rangeBackground,
         bottom: memoizedColors.rangeBackground,
-        line: memoizedColors.rangeLine,
+        line: memoizedColors.rangeLineTop,
       })
       applySeriesOptions(newAreaBgSeriesRef.current, {
         top: memoizedColors.backgroundColor,
         bottom: memoizedColors.backgroundColor,
-        line: memoizedColors.rangeLine,
+        line: memoizedColors.rangeLineTop,
       })
     }
   }, [
     liqRangeCurrentVisible,
     liqRangeNewVisible,
-    memoizedColors.rangeLine,
+    memoizedColors.rangeLineTop,
     memoizedColors.rangeBackground,
     memoizedColors.backgroundColor,
-    memoizedColors.rangeLineOld,
-    memoizedColors.rangeBackgroundOld,
     liquidationRange,
   ])
 

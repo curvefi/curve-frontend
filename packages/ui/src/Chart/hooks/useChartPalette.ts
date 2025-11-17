@@ -13,9 +13,11 @@ export type ChartColors = {
   volumeGreen: string
   oraclePrice: string
   rangeBackground: string
-  rangeLine: string
-  rangeBackgroundOld: string
-  rangeLineOld: string
+  rangeLineTop: string
+  rangeLineBottom: string
+  rangeBackgroundFuture: string
+  rangeLineFutureTop: string
+  rangeLineFutureBottom: string
 }
 
 type UseChartPaletteOptions = {
@@ -31,10 +33,12 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const error = theme.design.Chart.Candles.Negative
   const textPrimary = theme.palette.text.primary
   const textHighlight = theme.palette.text.highlight
-  const rangeLine = theme.design.Chart.Lines.Line2
+  const rangeLineTop = error
+  const rangeLineBottom = theme.design.Chart.Lines.Line2
   const rangeBackground = theme.design.Chart.LiquidationZone.Current
-  const rangeLineOld = theme.design.Chart.Lines.Line3
-  const rangeBackgroundOld = theme.design.Chart.LiquidationZone.Future
+  const rangeLineFutureTop = theme.design.Chart.Lines.Line1
+  const rangeLineFutureBottom = theme.design.Chart.Lines.Line1
+  const rangeBackgroundFuture = theme.design.Chart.LiquidationZone.Future
   const oraclePrice = primary
   const cursorVertLine = theme.design.Chart.Lines.Line1
 
@@ -51,9 +55,11 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
       volumeGreen: success,
       oraclePrice,
       rangeBackground,
-      rangeLine,
-      rangeBackgroundOld,
-      rangeLineOld,
+      rangeLineTop,
+      rangeLineBottom,
+      rangeBackgroundFuture,
+      rangeLineFutureTop,
+      rangeLineFutureBottom,
     }),
     [
       backgroundColor,
@@ -65,9 +71,11 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
       cursorVertLine,
       oraclePrice,
       rangeBackground,
-      rangeLine,
-      rangeBackgroundOld,
-      rangeLineOld,
+      rangeLineTop,
+      rangeLineBottom,
+      rangeBackgroundFuture,
+      rangeLineFutureTop,
+      rangeLineFutureBottom,
     ],
   )
 }

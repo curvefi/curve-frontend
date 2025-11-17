@@ -292,6 +292,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   }
 
   const ChartWrapperProps: ChartWrapperProps = {
+    isLlamalend: true,
     chartType: 'crvusd',
     chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
     chartHeight,

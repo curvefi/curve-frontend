@@ -199,6 +199,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
         <ChartWrapper
+          isLlamalend={false}
           chartType="poolPage"
           chartStatus={chartStatus}
           chartHeight={chartHeight}
@@ -264,6 +265,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
       )}
       {poolInfo === 'chart' && (
         <ChartWrapper
+          isLlamalend={false}
           chartType="poolPage"
           chartStatus={chartStatus}
           chartHeight={chartHeight}
