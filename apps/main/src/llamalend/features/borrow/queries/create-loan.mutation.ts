@@ -23,20 +23,20 @@ import { borrowFormValidationSuite } from './borrow.validation'
 
 type BorrowMutationContext = {
   chainId: IChainId
-  poolId: string | undefined
+  marketId: string | undefined
 }
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 
 export type CreateLoanOptions = {
-  poolId: string | undefined
+  marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onCreated: (hash: `0x${string}`, mutation: BorrowMutation & { txHash: `0x${string}` }) => void
   reset: () => void
 }
 
-const getCreateMethods = (poolId: string, leverageEnabled: boolean) => {
-  const market = getLlamaMarket(poolId)
+const getCreateMethods = (marketId: string, leverageEnabled: boolean) => {
+  const market = getLlamaMarket(marketId)
   const parent = leverageEnabled
     ? market instanceof LendMarketTemplate
       ? market.leverage
@@ -59,10 +59,10 @@ const getCreateMethods = (poolId: string, leverageEnabled: boolean) => {
   }
 }
 
-export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLoanOptions) => {
   const config = useConfig()
   const { wallet } = useConnection()
-  const mutationKey = ['create-loan', { chainId: network.chainId, poolId }] as const
+  const mutationKey = ['create-loan', { chainId: network.chainId, marketId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
@@ -70,7 +70,7 @@ export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoan
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
         const { userCollateral, userBorrowed, debt, leverageEnabled, slippage, range } = mutation
-        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverageEnabled)
+        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(marketId!, leverageEnabled)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
           const approvalTxHashes = (await createLoanApprove(userCollateral, userBorrowed)) as Address[]
@@ -82,7 +82,7 @@ export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoan
         await waitForTransactionReceipt(config, { hash: loanTxHash })
         return loanTxHash
       },
-      [poolId, config],
+      [marketId, config],
     ),
     onSuccess: async (txHash, mutation) => {
       logSuccess(mutationKey, txHash)
@@ -90,10 +90,10 @@ export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoan
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: wallet?.account.address }) }),
         queryClient.invalidateQueries({
-          queryKey: borrowExpectedCollateralQueryKey({ chainId: network?.chainId, poolId, ...mutation }),
+          queryKey: borrowExpectedCollateralQueryKey({ chainId: network?.chainId, marketId, ...mutation }),
         }),
       ])
-      updateUserEventsApi(wallet!, network, getLlamaMarket(poolId!), txHash)
+      updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
       onCreated(txHash, { ...mutation, txHash })
     },
   })

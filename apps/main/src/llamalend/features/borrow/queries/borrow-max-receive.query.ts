@@ -52,14 +52,14 @@ export const maxReceiveValidation = createValidationSuite(
 export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = queryFactory({
   queryKey: ({
     chainId,
-    poolId,
+    marketId,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
   }: BorrowMaxReceiveParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanMaxRecv',
       { userBorrowed },
       { userCollateral },
@@ -67,13 +67,13 @@ export const { useQuery: useMaxBorrowReceive, queryKey: maxBorrowReceiveKey } = 
       { leverageEnabled },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = `0`,
     userCollateral = `0`,
     range,
     leverageEnabled,
   }: BorrowMaxReceiveQuery): Promise<BorrowMaxReceiveResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     if (!leverageEnabled) {
       return convertNumbers({ maxDebt: await market.createLoanMaxRecv(userCollateral, range) })
     }

@@ -8,21 +8,21 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 type BorrowPriceImpactResult = number // percentage
 
 export const { useQuery: useBorrowPriceImpact } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
       { userCollateral },
       { userBorrowed },
       { debt },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))
       : market.leverageV2.hasLeverage()

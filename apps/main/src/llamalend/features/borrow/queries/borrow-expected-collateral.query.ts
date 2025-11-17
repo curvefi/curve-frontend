@@ -38,9 +38,9 @@ const convertNumbers = ({
 })
 
 export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCollateralQueryKey } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = '0', userCollateral = '0', debt, slippage }: BorrowFormQueryParams) =>
+  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', debt, slippage }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanExpectedCollateral',
       { userCollateral },
       { userBorrowed },
@@ -48,13 +48,13 @@ export const { useQuery: useBorrowExpectedCollateral, queryKey: borrowExpectedCo
       { slippage },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt,
     slippage,
   }: BorrowFormQuery): Promise<BorrowExpectedCollateralResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     if (market instanceof LendMarketTemplate) {
       return convertNumbers(
         await market.leverage.createLoanExpectedCollateral(userCollateral, userBorrowed, debt, +slippage),

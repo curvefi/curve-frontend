@@ -14,7 +14,7 @@ import type { BorrowForm, BorrowFormQueryParams } from '../types'
  * then updates the form with these values.
  *
  * @param collateralToken - The collateral token object containing its address.
- * @param params - The parameters required to fetch max borrowable amounts, including chainId, poolId, and userAddress.
+ * @param params - The parameters required to fetch max borrowable amounts, including chainId, marketId, and userAddress.
  * @param form - The react-hook-form instance managing the borrow form state.
  */
 export function useMaxTokenValues(

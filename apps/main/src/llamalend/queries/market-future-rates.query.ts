@@ -4,13 +4,12 @@ import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.valid
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { type PoolQuery } from '@ui-kit/lib/model'
+import { type MarketQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { decimal, type Decimal } from '@ui-kit/utils'
 
-type BorrowApyQuery = PoolQuery<IChainId> & { debt: Decimal }
+type BorrowApyQuery = MarketQuery<IChainId> & { debt: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
 export type BorrowFutureRatesResult = {
@@ -35,19 +34,16 @@ const convertRates = ({
 const reserves = 0 as const
 
 export const { useQuery: useMarketFutureRates } = queryFactory({
-  queryKey: ({ chainId, poolId, debt }: BorrowFutureApyParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'market-future-rates', { debt }] as const,
-  queryFn: async ({ poolId, debt }: BorrowApyQuery) => {
-    const market = getLlamaMarket(poolId)
+  queryKey: ({ chainId, marketId, debt }: BorrowFutureApyParams) =>
+    [...rootKeys.market({ chainId, marketId }), 'market-future-rates', { debt }] as const,
+  queryFn: async ({ marketId, debt }: BorrowApyQuery) => {
+    const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
       ? convertRates(await market.stats.futureRates(reserves, debt))
       : convertRates({ borrowApr: (await market.stats.parameters()).future_rate })
   },
-  validationSuite: createValidationSuite(({ chainId, poolId, debt }: BorrowFutureApyParams) => {
-    poolValidationGroup({ chainId, poolId })
-    llamaApiValidationGroup({ chainId })
-    group('borrowFormValidationGroup', () => {
-      validateDebt(debt)
-    })
+  validationSuite: createValidationSuite(({ chainId, marketId, debt }: BorrowFutureApyParams) => {
+    marketIdValidationSuite({ chainId, marketId })
+    group('borrowFormValidationGroup', () => validateDebt(debt))
   }),
 })

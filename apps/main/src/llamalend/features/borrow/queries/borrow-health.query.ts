@@ -7,9 +7,17 @@ import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
 export const { useQuery: useBorrowHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverageEnabled, range }: BorrowFormQueryParams) =>
+  queryKey: ({
+    chainId,
+    marketId,
+    userBorrowed,
+    userCollateral,
+    debt,
+    leverageEnabled,
+    range,
+  }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanHealth',
       { userCollateral },
       { userBorrowed },
@@ -18,14 +26,14 @@ export const { useQuery: useBorrowHealth } = queryFactory({
       { range },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<number> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof LendMarketTemplate
         ? +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))

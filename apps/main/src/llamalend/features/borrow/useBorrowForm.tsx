@@ -53,7 +53,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   const values = form.watch()
   const params = useDebouncedValue(
     useMemo(
-      () => ({ chainId, poolId: market?.id, userAddress, ...values }),
+      () => ({ chainId, marketId: market?.id, userAddress, ...values }),
       [chainId, market?.id, userAddress, values],
     ),
   )
@@ -65,7 +65,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     error: creationError,
     txHash,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, poolId: market?.id, reset: form.reset, onCreated })
+  } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
 

@@ -1,9 +1,9 @@
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
-import type { UserPoolQuery } from '@ui-kit/lib/model'
+import type { UserMarketQuery } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 
-export type CollateralQuery<T = IChainId> = UserPoolQuery<T> & { userCollateral: Decimal }
+export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & { userCollateral: Decimal }
 
 export type CollateralHealthQuery<T = IChainId> = CollateralQuery<T> & { isFull: boolean }
 

@@ -16,16 +16,16 @@ type BorrowGasEstimateQuery<T = IChainId> = BorrowFormQuery<T>
 type GasEstimateParams<T = IChainId> = FieldsOf<BorrowGasEstimateQuery<T>>
 
 const { useQuery: useGasEstimate } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
+  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: GasEstimateParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'borrow-gas-estimation',
       { userBorrowed },
       { userCollateral },
       { leverageEnabled },
     ] as const,
-  queryFn: async ({ poolId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: BorrowGasEstimateQuery) => {
-    const market = getLlamaMarket(poolId)
+  queryFn: async ({ marketId, userBorrowed = '0', userCollateral = '0', leverageEnabled }: BorrowGasEstimateQuery) => {
+    const market = getLlamaMarket(marketId)
     return {
       createLoanApprove: !leverageEnabled
         ? await market.estimateGas.createLoanApprove(userCollateral)

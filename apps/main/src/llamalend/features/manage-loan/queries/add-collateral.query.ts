@@ -13,30 +13,30 @@ import {
 } from './manage-loan.types'
 
 export const { useQuery: useAddCollateralBands } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral }: CollateralParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'addCollateralBands', { userCollateral }] as const,
-  queryFn: async ({ poolId, userCollateral }: CollateralQuery) =>
-    await getLlamaMarket(poolId).addCollateralBands(userCollateral),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralBands', { userCollateral }] as const,
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
+    await getLlamaMarket(marketId).addCollateralBands(userCollateral),
   validationSuite: collateralValidationSuite,
 })
 
 export const { useQuery: useAddCollateralPrices } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral }: CollateralParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'addCollateralPrices', { userCollateral }] as const,
-  queryFn: async ({ poolId, userCollateral }: CollateralQuery) =>
-    (await getLlamaMarket(poolId).addCollateralPrices(userCollateral)) as Decimal[],
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralPrices', { userCollateral }] as const,
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
+    (await getLlamaMarket(marketId).addCollateralPrices(userCollateral)) as Decimal[],
   validationSuite: collateralValidationSuite,
 })
 
 export const { useQuery: useAddCollateralHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral, isFull }: CollateralHealthParams) =>
+  queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) =>
     [
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'addCollateralHealth',
       { userCollateral },
       { isFull },
     ] as const,
-  queryFn: async ({ poolId, userCollateral, isFull }: CollateralHealthQuery) =>
-    (await getLlamaMarket(poolId).addCollateralHealth(userCollateral, isFull)) as Decimal,
+  queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
+    (await getLlamaMarket(marketId).addCollateralHealth(userCollateral, isFull)) as Decimal,
   validationSuite: collateralHealthValidationSuite,
 })

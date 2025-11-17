@@ -17,7 +17,7 @@ const convertNumbers = (prices: string[]) => [prices[0], prices[1]] as BorrowPri
 export const { useQuery: useBorrowPrices } = queryFactory({
   queryKey: ({
     chainId,
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
@@ -25,7 +25,7 @@ export const { useQuery: useBorrowPrices } = queryFactory({
     range,
   }: BorrowPricesReceiveParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanPrices',
       { userCollateral },
       { userBorrowed },
@@ -34,14 +34,14 @@ export const { useQuery: useBorrowPrices } = queryFactory({
       { range },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
   }: BorrowPricesReceiveQuery): Promise<BorrowPricesResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return !leverageEnabled
       ? convertNumbers(await market.createLoanPrices(userCollateral, debt, range))
       : market instanceof LendMarketTemplate

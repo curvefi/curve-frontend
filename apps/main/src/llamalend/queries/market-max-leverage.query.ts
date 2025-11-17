@@ -4,19 +4,19 @@ import { validateRange } from '@/llamalend/queries/validation/borrow-fields.vali
 import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
-import { type PoolQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
+import { type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { Decimal } from '@ui-kit/utils'
 
-type MaxLeverageQuery = PoolQuery<IChainId> & { range: number }
+type MaxLeverageQuery = MarketQuery<IChainId> & { range: number }
 type MaxLeverageParams = FieldsOf<MaxLeverageQuery>
 
 export const { useQuery: useMarketMaxLeverage } = queryFactory({
-  queryKey: ({ chainId, poolId, range }: MaxLeverageParams) =>
-    [...rootKeys.pool({ chainId, poolId }), 'maxLeverage', { range }] as const,
-  queryFn: async ({ poolId, range }: MaxLeverageQuery): Promise<Decimal> => {
-    const market = getLlamaMarket(poolId)
+  queryKey: ({ chainId, marketId, range }: MaxLeverageParams) =>
+    [...rootKeys.market({ chainId, marketId }), 'maxLeverage', { range }] as const,
+  queryFn: async ({ marketId, range }: MaxLeverageQuery): Promise<Decimal> => {
+    const market = getLlamaMarket(marketId)
     return hasLeverage(market)
       ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
         ? ((await market.leverageV2.maxLeverage(range)) as Decimal)

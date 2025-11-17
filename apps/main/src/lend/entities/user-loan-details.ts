@@ -7,15 +7,14 @@ import {
   helpers,
 } from '@/lend/lib/apiLending'
 import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
-import type { Address } from '@curvefi/prices-api'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
 import type { UserMarketQuery, UserMarketParams } from '@ui-kit/lib/model/query/root-keys'
 import { userMarketValidationSuite } from '@ui-kit/lib/model/query/user-market-validation'
 
-type UserLoanDetailsQuery = UserMarketQuery<Address>
-type UserLoanDetailsParams = UserMarketParams<Address>
+type UserLoanDetailsQuery = UserMarketQuery<ChainId>
+type UserLoanDetailsParams = UserMarketParams<ChainId>
 
 type UserLoanDetails = {
   health: string

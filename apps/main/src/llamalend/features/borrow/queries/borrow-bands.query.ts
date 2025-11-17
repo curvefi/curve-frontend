@@ -11,7 +11,7 @@ type BorrowBandsResult = [number, number]
 export const { useQuery: useCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
@@ -19,7 +19,7 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
     range,
   }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanBands',
       { userCollateral },
       { userBorrowed },
@@ -28,14 +28,14 @@ export const { useQuery: useCreateLoanBands } = queryFactory({
       { range },
     ] as const,
   queryFn: ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<BorrowBandsResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof LendMarketTemplate
         ? market.leverage.createLoanBands(userCollateral, userBorrowed, debt, range)

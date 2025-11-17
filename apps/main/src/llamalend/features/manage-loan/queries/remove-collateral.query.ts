@@ -11,47 +11,47 @@ import {
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { type FieldsOf } from '@ui-kit/lib'
-import type { UserPoolQuery, UserQuery } from '@ui-kit/lib/model'
+import type { UserMarketQuery, UserQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationSuite } from '@ui-kit/lib/model/query/curve-api-validation'
 import type { Decimal } from '@ui-kit/utils'
 
-type MaxRemovableQuery<T = IChainId> = UserPoolQuery<T> & UserQuery
+type MaxRemovableQuery<T = IChainId> = UserMarketQuery<T> & UserQuery
 type MaxRemovableParams<T = IChainId> = FieldsOf<MaxRemovableQuery<T>>
 
 export const { useQuery: useMaxRemovableCollateral, queryKey: maxRemovableCollateralKey } = queryFactory({
-  queryKey: (params: MaxRemovableParams) => [...rootKeys.userPool(params), 'maxRemovable'] as const,
-  queryFn: async ({ poolId }: MaxRemovableQuery) => (await getLlamaMarket(poolId).maxRemovable()) as Decimal,
+  queryKey: (params: MaxRemovableParams) => [...rootKeys.userMarket(params), 'maxRemovable'] as const,
+  queryFn: async ({ marketId }: MaxRemovableQuery) => (await getLlamaMarket(marketId).maxRemovable()) as Decimal,
   validationSuite: llamaApiValidationSuite,
 })
 
 export const { useQuery: useRemoveCollateralBands } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral }: CollateralParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'removeCollateralBands', { userCollateral }] as const,
-  queryFn: async ({ poolId, userCollateral }: CollateralQuery) =>
-    await getLlamaMarket(poolId).removeCollateralBands(userCollateral),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'removeCollateralBands', { userCollateral }] as const,
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
+    await getLlamaMarket(marketId).removeCollateralBands(userCollateral),
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
 })
 
 export const { useQuery: useRemoveCollateralPrices } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral }: CollateralParams) =>
-    [...rootKeys.userPool({ chainId, poolId, userAddress }), 'removeCollateralPrices', { userCollateral }] as const,
-  queryFn: async ({ poolId, userCollateral }: CollateralQuery) =>
-    await getLlamaMarket(poolId).removeCollateralPrices(userCollateral),
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'removeCollateralPrices', { userCollateral }] as const,
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
+    await getLlamaMarket(marketId).removeCollateralPrices(userCollateral),
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
 })
 
 export const { useQuery: useRemoveCollateralHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userAddress, userCollateral, isFull }: CollateralHealthParams) =>
+  queryKey: ({ chainId, marketId, userAddress, userCollateral, isFull }: CollateralHealthParams) =>
     [
-      ...rootKeys.userPool({ chainId, poolId, userAddress }),
+      ...rootKeys.userMarket({ chainId, marketId, userAddress }),
       'removeCollateralHealth',
       { userCollateral },
       { isFull },
     ] as const,
-  queryFn: async ({ poolId, userCollateral, isFull }: CollateralHealthQuery) =>
-    (await getLlamaMarket(poolId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
+  queryFn: async ({ marketId, userCollateral, isFull }: CollateralHealthQuery) =>
+    (await getLlamaMarket(marketId).removeCollateralHealth(userCollateral, isFull)) as Decimal,
   validationSuite: collateralHealthValidationSuite,
 })
