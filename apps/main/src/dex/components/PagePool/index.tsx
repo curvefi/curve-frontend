@@ -45,8 +45,10 @@ import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const DEFAULT_SEED: Seed = { isSeed: null, loaded: false }
+const { MaxWidth } = SizesAndSpaces
 
 const Transfer = (pageTransferProps: PageTransferProps) => {
   const { params, curve, hasDepositAndStake, poolData, poolDataCacheOrApi, routerParams } = pageTransferProps
@@ -229,7 +231,12 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
 
       <Wrapper isAdvanceMode={true} chartExpanded={chartExpanded}>
         <AppPageFormsWrapper className="grid-transfer">
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <Stack
+            sx={{
+              width: { mobile: '100%', tablet: MaxWidth.actionCard },
+              marginInline: { mobile: 'auto', desktop: 0 },
+            }}
+          >
             {!isMdUp && <TitleComp />}
             <TabsSwitcher
               variant="contained"
@@ -237,60 +244,60 @@ const Transfer = (pageTransferProps: PageTransferProps) => {
               value={!rFormType ? 'deposit' : rFormType}
               onChange={(key) => toggleForm(key as TransferFormType)}
               options={tabs}
-              fullWidth
             />
-
-            {rFormType === 'swap' ? (
-              <AppFormContentWrapper>
-                {poolAlert?.isDisableSwap ? (
-                  <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
-                ) : (
-                  <Swap
-                    {...pageTransferProps}
-                    chainIdPoolId={chainIdPoolId}
-                    poolAlert={poolAlert}
-                    maxSlippage={maxSlippage}
-                    seed={seed}
-                    tokensMapper={tokensMapper}
-                    userPoolBalances={userPoolBalances}
-                    userPoolBalancesLoading={userPoolBalancesLoading}
-                  />
-                )}
-              </AppFormContentWrapper>
-            ) : rFormType === 'deposit' ? (
-              <Deposit
-                {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
-                blockchainId={networkId}
-                hasDepositAndStake={hasDepositAndStake}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
-              />
-            ) : rFormType === 'withdraw' ? (
-              <Withdraw
-                {...pageTransferProps}
-                chainIdPoolId={chainIdPoolId}
-                blockchainId={networkId}
-                poolAlert={poolAlert}
-                maxSlippage={maxSlippage}
-                seed={seed}
-                tokensMapper={tokensMapper}
-                userPoolBalances={userPoolBalances}
-                userPoolBalancesLoading={userPoolBalancesLoading}
-              />
-            ) : rFormType === 'manage-gauge' ? (
-              poolData ? (
-                <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
-              ) : (
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              {rFormType === 'swap' ? (
                 <AppFormContentWrapper>
-                  <BlockSkeleton width={339} />
+                  {poolAlert?.isDisableSwap ? (
+                    <AlertBox {...poolAlert}>{poolAlert.message}</AlertBox>
+                  ) : (
+                    <Swap
+                      {...pageTransferProps}
+                      chainIdPoolId={chainIdPoolId}
+                      poolAlert={poolAlert}
+                      maxSlippage={maxSlippage}
+                      seed={seed}
+                      tokensMapper={tokensMapper}
+                      userPoolBalances={userPoolBalances}
+                      userPoolBalancesLoading={userPoolBalancesLoading}
+                    />
+                  )}
                 </AppFormContentWrapper>
-              )
-            ) : null}
+              ) : rFormType === 'deposit' ? (
+                <Deposit
+                  {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
+                  blockchainId={networkId}
+                  hasDepositAndStake={hasDepositAndStake}
+                  poolAlert={poolAlert}
+                  maxSlippage={maxSlippage}
+                  seed={seed}
+                  tokensMapper={tokensMapper}
+                  userPoolBalances={userPoolBalances}
+                  userPoolBalancesLoading={userPoolBalancesLoading}
+                />
+              ) : rFormType === 'withdraw' ? (
+                <Withdraw
+                  {...pageTransferProps}
+                  chainIdPoolId={chainIdPoolId}
+                  blockchainId={networkId}
+                  poolAlert={poolAlert}
+                  maxSlippage={maxSlippage}
+                  seed={seed}
+                  tokensMapper={tokensMapper}
+                  userPoolBalances={userPoolBalances}
+                  userPoolBalancesLoading={userPoolBalancesLoading}
+                />
+              ) : rFormType === 'manage-gauge' ? (
+                poolData ? (
+                  <ManageGauge poolId={poolData.pool.id} chainId={rChainId} />
+                ) : (
+                  <AppFormContentWrapper>
+                    <BlockSkeleton width={339} />
+                  </AppFormContentWrapper>
+                )
+              ) : null}
+            </Stack>
           </Stack>
         </AppPageFormsWrapper>
 

@@ -1,4 +1,4 @@
-import { kebabCase } from 'lodash'
+import { isEqual, kebabCase } from 'lodash'
 import { useCallback, useEffect, useMemo } from 'react'
 import { notFalsy, type PartialRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import { useSearchParams } from '@ui-kit/hooks/router'
@@ -70,6 +70,10 @@ export function useColumnFilters<TColumnId extends string>({
 
   return {
     columnFilters,
+    hasFilters: useMemo(
+      () => columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters),
+      [columnFilters, defaultFilters],
+    ),
     columnFiltersById: useMemo(
       () =>
         columnFilters.reduce(

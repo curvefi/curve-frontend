@@ -289,6 +289,7 @@ const LoanDecrease = ({ curve, llamma, llammaId, params, rChainId }: Props) => {
       ) : (
         <LargeTokenInput
           name="debt"
+          label={t`Debt to repay`}
           isError={!!formValues.debtError}
           message={
             formValues.debtError === 'too-much'

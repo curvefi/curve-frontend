@@ -1,15 +1,11 @@
 import { styled } from 'styled-components'
 import Proposals from '@/dao/components/PageProposals/index'
-import Settings from '@/dao/layout/Settings'
 import { breakpoints } from '@ui/utils'
 
 export const PageDao = () => (
-  <>
-    <Container>
-      <Proposals />
-    </Container>
-    <Settings showScrollButton />
-  </>
+  <Container>
+    <Proposals />
+  </Container>
 )
 
 const Container = styled.div`

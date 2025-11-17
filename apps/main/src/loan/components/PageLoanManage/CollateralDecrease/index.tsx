@@ -266,6 +266,7 @@ const CollateralDecrease = ({ curve, llamma, llammaId, rChainId }: Props) => {
           <>
             <LargeTokenInput
               name="collateral"
+              label={t`Collateral to remove`}
               isError={!!formValues.collateralError}
               {...(formValues.collateralError === 'too-much' && {
                 message: t`Cannot be greater than ${maxRemovable ? formatNumber(maxRemovable) : '0'}`,

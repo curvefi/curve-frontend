@@ -10,7 +10,7 @@ import DetailInfo from '@/lend/components/PageLoanCreate/LoanFormCreate/componen
 import type { FormEstGas, FormStatus, FormValues, StepKey } from '@/lend/components/PageLoanCreate/types'
 import { _parseValue, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanCreate/utils'
 import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
-import { FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
+import { FieldsTitle, FieldsWrapper } from '@/lend/components/SharedFormStyles/FieldsWrapper'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import useMarketAlert from '@/lend/hooks/useMarketAlert'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
@@ -317,10 +317,10 @@ const LoanCreate = ({
   return (
     <>
       <FieldsWrapper $showBorder={isLeverage}>
+        {isLeverage && <FieldsTitle>{t`Add from wallet:`}</FieldsTitle>}
         <InpToken
           network={network}
           id="userCollateral"
-          {...(isLeverage ? { inpTopLabel: t`Add from wallet:` } : {})}
           inpError={formValues.userCollateralError}
           inpDisabled={disabled}
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
