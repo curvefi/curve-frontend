@@ -1,0 +1,13 @@
+import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import type { Decimal } from '@ui-kit/utils'
+import { type CollateralParams, type CollateralQuery } from '../manage-loan.types'
+import { collateralValidationSuite } from '../manage-loan.validation'
+
+export const { useQuery: useAddCollateralPrices } = queryFactory({
+  queryKey: ({ chainId, marketId, userAddress, userCollateral }: CollateralParams) =>
+    [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'addCollateralPrices', { userCollateral }] as const,
+  queryFn: async ({ marketId, userCollateral }: CollateralQuery) =>
+    (await getLlamaMarket(marketId).addCollateralPrices(userCollateral)) as Decimal[],
+  validationSuite: collateralValidationSuite,
+})
