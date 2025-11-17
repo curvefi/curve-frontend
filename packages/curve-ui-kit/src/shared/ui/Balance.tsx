@@ -30,10 +30,7 @@ const BalanceButton = ({ children, onClick, loading, disabled, testId }: Balance
     loading={loading}
     disabled={disabled}
     data-testid={testId}
-    sx={{
-      '&:hover .balance': { textDecoration: 'underline' },
-      '&.Mui-disabled': { backgroundColor: 'unset' },
-    }}
+    sx={{ '&:hover .balance': { textDecoration: 'underline' } }}
   >
     {children}
   </Button>
