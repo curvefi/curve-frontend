@@ -54,7 +54,35 @@ export const Blues = {
   '950': '#171e55',
 } as const
 
-export const Violet = {
+export const Yellows = {
+  '50': '#fff9e6',
+  '100': '#fff9f0',
+  '200': '#fff1db',
+  '300': '#ffe6bd',
+  '400': '#ffd88b',
+  '500': '#ffc300',
+  '600': '#e0ab00',
+  '700': '#c19300',
+  '800': '#a37c0c',
+  '900': '#84671d',
+  '950': '#665223',
+} as const
+
+export const Oranges = {
+  '50': '#f0ddd1',
+  '100': '#f3cfb9',
+  '200': '#f5bd98',
+  '300': '#f4ab7a',
+  '400': '#f49753',
+  '500': '#f77f00',
+  '600': '#d36c00',
+  '700': '#b15900',
+  '800': '#8f4700',
+  '900': '#6f3601',
+  '950': '#4e2708',
+} as const
+
+export const Violets = {
   '50': '#efedfc',
   '100': '#dbd9f7',
   '200': '#c6c4f2',

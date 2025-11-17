@@ -26,6 +26,6 @@ function parseSort(search: URLSearchParams, defaultSort: SortingState, fieldName
 function updateSort(search: URLSearchParams, state: SortingState, fieldName: string): string {
   const params = new URLSearchParams(search)
   params.delete(fieldName)
-  state.forEach(({ id, desc }) => params.append('sort', `${desc ? '-' : ''}${id}`))
+  state.forEach(({ id, desc }) => params.append(fieldName, `${desc ? '-' : ''}${id}`))
   return `?${params.toString()}`
 }
