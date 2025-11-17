@@ -1,3 +1,4 @@
+import type { Address } from 'viem'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
 import type { PoolQuery } from '@ui-kit/lib/model'
@@ -30,7 +31,7 @@ export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
-export type Token = { symbol: string; address: string; chain: INetworkName }
+export type Token = { symbol: string; address: Address; chain: INetworkName }
 
 /**
  * Preset options for borrowing
