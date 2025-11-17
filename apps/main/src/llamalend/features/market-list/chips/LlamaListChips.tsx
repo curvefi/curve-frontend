@@ -6,6 +6,7 @@ import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { FilterProps } from '@ui-kit/shared/ui/DataTable/data-table.utils'
 import { HiddenMarketsResetFilters } from '@ui-kit/shared/ui/DataTable/HiddenMarketsResetFilters'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaMarketColumnId } from '../columns.enum'
 import { MarketListFilterDrawer } from '../drawers/MarketListFilterDrawer'
 import { MarketSortDrawer } from '../drawers/MarketSortDrawer'
@@ -20,11 +21,12 @@ type LlamaListChipsProps = {
   hasFilters: boolean
   children?: ReactNode
   userHasPositions: LlamaMarketsResult['userHasPositions'] | undefined
-  hasFavorites: boolean | undefined
+  hasFavorites?: boolean
   onSortingChange: OnChangeFn<SortingState>
   sortField: LlamaMarketColumnId
   data: LlamaMarket[]
-  minLiquidity: number
+  minLiquidity?: number
+  userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
 export const LlamaListChips = ({
@@ -36,10 +38,12 @@ export const LlamaListChips = ({
   onSortingChange,
   sortField,
   data,
-  minLiquidity,
+  minLiquidity = 0,
+  userPositionsTab,
   ...filterProps
 }: LlamaListChipsProps) => {
   const isMobile = useIsMobile()
+  const hasPopularFilters = userPositionsTab === MarketRateType.Borrow || !userPositionsTab
   return (
     <Grid container spacing={Spacing.sm} size={{ mobile: 12, tablet: 'auto' }}>
       {isMobile ? (
@@ -58,18 +62,23 @@ export const LlamaListChips = ({
               hiddenMarketCount={hiddenMarketCount}
               resetFilters={resetFilters}
               hasFilters={hasFilters}
+              userPositionsTab={userPositionsTab}
               {...filterProps}
             />
           </Grid>
         </Grid>
       ) : (
         <>
-          <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <LlamaListMarketChips {...filterProps} />
-          </Grid>
-          <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
-            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
-          </Grid>
+          {hasPopularFilters && (
+            <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+              <LlamaListMarketChips {...filterProps} />
+            </Grid>
+          )}
+          {!userPositionsTab && (
+            <Grid container columnSpacing={Spacing.xs} justifyContent="flex-end" size={{ mobile: 12, tablet: 'auto' }}>
+              <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+            </Grid>
+          )}
         </>
       )}
       {hiddenMarketCount != null && !isMobile && (

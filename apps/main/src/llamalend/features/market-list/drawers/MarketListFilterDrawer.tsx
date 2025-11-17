@@ -11,6 +11,7 @@ import { DrawerHeader } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerHeader'
 import { DrawerItems } from '@ui-kit/shared/ui/SwipeableDrawer/DrawerItems'
 import { SwipeableDrawer } from '@ui-kit/shared/ui/SwipeableDrawer/SwipeableDrawer'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketRateType } from '@ui-kit/types/market'
 import { LlamaListMarketChips } from '../chips/LlamaListMarketChips'
 import { LlamaListUserChips } from '../chips/LlamaListUserChips'
 import { LendingMarketsFilters } from '../LendingMarketsFilters'
@@ -25,6 +26,7 @@ type Props = {
   hiddenMarketCount?: number
   resetFilters: () => void
   hasFilters: boolean
+  userPositionsTab?: MarketRateType
 } & FilterProps<LlamaMarketColumnId>
 
 export const MarketListFilterDrawer = ({
@@ -35,9 +37,12 @@ export const MarketListFilterDrawer = ({
   hiddenMarketCount,
   resetFilters,
   hasFilters,
+  userPositionsTab,
   ...filterProps
 }: Props) => {
   const [open, openDrawer, closeDrawer] = useSwitch(false)
+  const hasPopularFilters = userPositionsTab === MarketRateType.Borrow || !userPositionsTab
+  const showUserChips = !userPositionsTab
   return (
     <SwipeableDrawer
       paperSx={{ maxHeight: SizesAndSpaces.MaxHeight.drawer }}
@@ -63,10 +68,12 @@ export const MarketListFilterDrawer = ({
         />
       </DrawerHeader>
       <DrawerItems data-testid="drawer-filter-menu-lamalend-markets">
-        <DrawerHeader title={t`Popular Filters`} />
+        {hasPopularFilters && <DrawerHeader title={t`Popular Filters`} />}
         <Grid container spacing={Spacing.sm}>
-          <LlamaListMarketChips {...filterProps} />
-          <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+          {hasPopularFilters && <LlamaListMarketChips {...filterProps} />}
+          {showUserChips && (
+            <LlamaListUserChips userHasPositions={userHasPositions} hasFavorites={hasFavorites} {...filterProps} />
+          )}
         </Grid>
         <DrawerHeader title={t`Extras Filters`} />
         <LendingMarketsFilters {...filterProps} data={data} minLiquidity={minLiquidity} />
