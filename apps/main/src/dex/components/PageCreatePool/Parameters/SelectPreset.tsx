@@ -239,7 +239,17 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                 </SelectButtonWrapper>
               </>
             )}
-            {swapType !== FXSWAP ? (
+            {swapType === FXSWAP ? (
+              <PresetMessage>
+                {t`FXSwap pools are experimental and still evolving. Can't find the right preset?`}
+                <StyledExternalLink
+                  href="https://quiver-meadow-354.notion.site/27f599aae0648017bae7d050934d5493"
+                  target="_blank"
+                >
+                  {t`Reach out to the team.`}
+                </StyledExternalLink>
+              </PresetMessage>
+            ) : (
               <PresetMessage>
                 {t`Can't find the pool preset you want? Check out`}
                 <StyledExternalLink
@@ -251,16 +261,6 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                   curvesim
                 </StyledExternalLink>
                 {t`to sim).`}
-              </PresetMessage>
-            ) : (
-              <PresetMessage>
-                {t`FXSwap pools are experimental and still evolving. Can't find the right preset?`}
-                <StyledExternalLink
-                  href="https://quiver-meadow-354.notion.site/27f599aae0648017bae7d050934d5493"
-                  target="_blank"
-                >
-                  {t`Reach out to the team.`}
-                </StyledExternalLink>
               </PresetMessage>
             )}
           </SelectPresetWrapper>
