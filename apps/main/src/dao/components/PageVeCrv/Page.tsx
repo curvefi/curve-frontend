@@ -4,7 +4,6 @@ import { useAccount } from 'wagmi'
 import FormCrvLocker from '@/dao/components/PageVeCrv/index'
 import type { FormType } from '@/dao/components/PageVeCrv/types'
 import { useLockerVecrvInfo } from '@/dao/entities/locker-vecrv-info'
-import Settings from '@/dao/layout/Settings'
 import { networksIdMapper } from '@/dao/networks'
 import useStore from '@/dao/store/useStore'
 import { type VeCrvUrlParams } from '@/dao/types/dao.types'
@@ -39,35 +38,32 @@ export const PageVeCrv = () => {
   )
 
   return (
-    <>
-      <Container variant="primary" shadowed data-testid="vecrv-page">
-        <BoxHeader className="title-text">
-          <IconButton hidden />
-          {t`CRV Locker`}
-          <IconButton hidden />
-        </BoxHeader>
+    <Container variant="primary" shadowed data-testid="vecrv-page">
+      <BoxHeader className="title-text">
+        <IconButton hidden />
+        {t`CRV Locker`}
+        <IconButton hidden />
+      </BoxHeader>
 
-        {rChainId === 1 ? (
-          <Stack gap={Spacing.md}>
-            {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
-              <FormCrvLocker
-                curve={curveApi}
-                rChainId={rChainId}
-                rFormType={rFormType as FormType}
-                vecrvInfo={vecrvInfo}
-              />
-            ) : (
-              <SpinnerWrapper>
-                <Spinner />
-              </SpinnerWrapper>
-            )}
-          </Stack>
-        ) : (
-          <WrongNetwork />
-        )}
-      </Container>
-      <Settings showScrollButton />
-    </>
+      {rChainId === 1 ? (
+        <Stack gap={Spacing.md}>
+          {rChainId && rFormType && vecrvInfo && !isLoadingCurve ? (
+            <FormCrvLocker
+              curve={curveApi}
+              rChainId={rChainId}
+              rFormType={rFormType as FormType}
+              vecrvInfo={vecrvInfo}
+            />
+          ) : (
+            <SpinnerWrapper>
+              <Spinner />
+            </SpinnerWrapper>
+          )}
+        </Stack>
+      ) : (
+        <WrongNetwork />
+      )}
+    </Container>
   )
 }
 

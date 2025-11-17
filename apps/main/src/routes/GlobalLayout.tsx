@@ -10,8 +10,10 @@ import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interf
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
+import { useLayoutStore } from '@ui-kit/features/layout'
 import { t } from '@ui-kit/lib/i18n'
 import { APP_LINK, AppMenuOption, type AppName } from '@ui-kit/shared/routes'
+import { ScrollUpButton } from '@ui-kit/shared/ui/ScrollUpButton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { ErrorBoundary } from '@ui-kit/widgets/ErrorBoundary'
 import { Footer } from '@ui-kit/widgets/Footer'
@@ -84,5 +86,6 @@ export const GlobalLayout = <TId extends string, TChainId extends number>({
       <ErrorBoundary title={t`Page error`}>{children}</ErrorBoundary>
     </Box>
     <Footer appName={currentApp} networkId={network.id} />
+    <ScrollUpButton visible={useLayoutStore((state) => state.showScrollButton)} />
   </Stack>
 )

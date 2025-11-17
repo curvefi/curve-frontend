@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { useMemo, useState } from 'react'
 import { type LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import { ChainFilterChip } from '@/llamalend/features/market-list/chips/ChainFilterChip'
@@ -25,7 +24,6 @@ import { useSearch } from './hooks/useSearch'
 import { LendingMarketsFilters } from './LendingMarketsFilters'
 import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
-const { isEqual } = lodash
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
 const useDefaultLlamaFilter = (minLiquidity: number) =>
@@ -54,7 +52,7 @@ export const LlamaMarketsTable = ({
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
-  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters } = useColumnFilters({
+  const { columnFilters, columnFiltersById, setColumnFilter, resetFilters, hasFilters } = useColumnFilters({
     title: LOCAL_STORAGE_KEY,
     columns: LlamaMarketColumnId,
     defaultFilters,
@@ -115,7 +113,7 @@ export const LlamaMarketsTable = ({
             <ChainFilterChip data={data} {...filterProps} />
             <LlamaListChips
               hiddenMarketCount={result ? data.length - table.getFilteredRowModel().rows.length : 0}
-              hasFilters={columnFilters.length > 0 && !isEqual(columnFilters, defaultFilters)}
+              hasFilters={hasFilters}
               resetFilters={resetFilters}
               userHasPositions={userHasPositions}
               hasFavorites={hasFavorites}

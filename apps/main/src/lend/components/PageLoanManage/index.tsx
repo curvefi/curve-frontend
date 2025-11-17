@@ -12,6 +12,9 @@ import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { MaxWidth } = SizesAndSpaces
 
 const tabsLoan: TabOption<LoanFormType>[] = [
   { value: 'loan-increase', label: t`Borrow more` },
@@ -49,27 +52,39 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
   useEffect(() => setSubTab(subTabs[0]?.value), [subTabs])
 
   return (
-    <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+    <Stack
+      sx={{
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginInline: { mobile: 'auto', desktop: 0 },
+      }}
+    >
       <TabsSwitcher
         variant="contained"
         size="medium"
         value={!rFormType ? 'loan' : rFormType}
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
         options={tabs}
-        fullWidth
       />
+      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+        <TabsSwitcher
+          variant="underlined"
+          size="small"
+          value={subTab}
+          onChange={setSubTab}
+          options={subTabs}
+          fullWidth
+        />
 
-      <TabsSwitcher variant="underlined" size="small" value={subTab} onChange={setSubTab} options={subTabs} fullWidth />
-
-      <AppFormContentWrapper>
-        {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
-        {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
-        {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
-        {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
-        {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
-        {/** Leverage has no subtabs */}
-        {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
-      </AppFormContentWrapper>
+        <AppFormContentWrapper>
+          {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
+          {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+          {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
+          {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
+          {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+          {/** Leverage has no subtabs */}
+          {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
+        </AppFormContentWrapper>
+      </Stack>
     </Stack>
   )
 }

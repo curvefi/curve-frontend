@@ -375,6 +375,7 @@ export const LargeTokenInput = ({
                     size="extraSmall"
                     color="default"
                     clickable
+                    disabled={disabled}
                     onClick={() => handleChip(chip)}
                   ></Chip>
                 ))}
@@ -393,7 +394,6 @@ export const LargeTokenInput = ({
             isError={isError}
             onChange={handleBalanceChange}
           />
-
           {tokenSelector}
         </Stack>
 

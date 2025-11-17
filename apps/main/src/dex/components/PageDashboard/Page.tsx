@@ -1,7 +1,6 @@
 import { styled } from 'styled-components'
 import Dashboard from '@/dex/components/PageDashboard/index'
 import { useChainId } from '@/dex/hooks/useChainId'
-import Settings from '@/dex/layout/default/Settings'
 import type { NetworkUrlParams } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
@@ -14,33 +13,28 @@ export const PageDashboard = () => {
   const { curveApi = null, connectState } = useConnection()
   const rChainId = useChainId(props.network)
   const { provider, connect: connectWallet } = useWallet()
-  return (
-    <>
-      {!provider ? (
-        <Box display="flex" fillWidth flexJustifyContent="center">
-          <ConnectWalletWrapper data-testid="dashboard-page">
-            <ConnectWalletPrompt
-              description="Connect wallet to view dashboard"
-              connectText="Connect Wallet"
-              loadingText="Connecting"
-              connectWallet={() => connectWallet()}
-              isLoading={isLoading(connectState)}
-            />
-          </ConnectWalletWrapper>
-        </Box>
+  return !provider ? (
+    <Box display="flex" fillWidth flexJustifyContent="center">
+      <ConnectWalletWrapper data-testid="dashboard-page">
+        <ConnectWalletPrompt
+          description="Connect wallet to view dashboard"
+          connectText="Connect Wallet"
+          loadingText="Connecting"
+          connectWallet={() => connectWallet()}
+          isLoading={isLoading(connectState)}
+        />
+      </ConnectWalletWrapper>
+    </Box>
+  ) : (
+    <Container data-testid="dashboard-page">
+      {rChainId ? (
+        <Dashboard curve={curveApi} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
       ) : (
-        <Container data-testid="dashboard-page">
-          {rChainId ? (
-            <Dashboard curve={curveApi} rChainId={rChainId} params={props} pageLoaded={!isLoading(connectState)} />
-          ) : (
-            <SpinnerWrapper minHeight="50vh">
-              <Spinner />
-            </SpinnerWrapper>
-          )}
-        </Container>
+        <SpinnerWrapper minHeight="50vh">
+          <Spinner />
+        </SpinnerWrapper>
       )}
-      <Settings showScrollButton />
-    </>
+    </Container>
   )
 }
 
