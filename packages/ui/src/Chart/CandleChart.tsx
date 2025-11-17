@@ -9,34 +9,21 @@ import {
   LineSeries,
 } from 'lightweight-charts'
 import lodash from 'lodash'
-import { useEffect, useRef, useState, useCallback, useMemo, RefObject } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
+import { formatNumber } from '@ui-kit/utils/'
 import type { ChartColors } from './hooks/useChartPalette'
 import type { LpPriceOhlcDataFormatted, ChartHeight, VolumeData, OraclePriceData, LiquidationRanges } from './types'
 import { calculateRobustPriceRange } from './utils'
 
-/**
- * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
- * @returns Price format configuration object
- */
-const createPriceFormatter = (totalDecimalPlacesRef: RefObject<number>) => ({
+const createPriceFormatter = () => ({
   type: 'custom' as const,
-  formatter: (price: number) => {
-    const [, fraction] = price.toString().split('.')
-
-    if (!fraction) {
-      return price.toFixed(4)
-    }
-
-    const nonZeroIndex = fraction.split('').findIndex((char: string) => char !== '0')
-
-    // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-    // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-    totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-    return price.toFixed(totalDecimalPlacesRef.current)
-  },
-  minMove: 0.0000001,
+  formatter: (price: number) =>
+    formatNumber(price, {
+      abbreviate: false,
+      maximumSignificantDigits: 4,
+    }),
+  minMove: 0.0001,
 })
 
 /**
@@ -107,7 +94,6 @@ const CandleChart = ({
   const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
-  const totalDecimalPlacesRef = useRef(4)
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
@@ -116,6 +102,8 @@ const CandleChart = ({
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
+
+  const priceFormat = useMemo(() => createPriceFormatter(), [])
 
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
@@ -234,6 +222,17 @@ const CandleChart = ({
     }
   }, [])
 
+  // Ensure price axis labels use the same formatter
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      localization: {
+        priceFormatter: priceFormat.formatter,
+      },
+    })
+  }, [priceFormat])
+
   // Update chart colors when they change
   useEffect(() => {
     if (!chartRef.current) return
@@ -250,7 +249,7 @@ const CandleChart = ({
   useEffect(() => {
     if (!chartRef.current || wrapperDimensions.width <= 0) return
 
-    const width = Math.max(1, wrapperDimensions.width) // Ensure width is at least 1
+    const width = Math.max(1, wrapperDimensions.width)
     const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
 
     chartRef.current.applyOptions({
@@ -315,7 +314,6 @@ const CandleChart = ({
       if (visible && chartRef.current) {
         ref.current = chartRef.current.addSeries(AreaSeries, {
           ...SL_RANGE_AREA_SERIES_DEFAULTS,
-          priceFormat: createPriceFormatter(totalDecimalPlacesRef),
         })
       }
     })
@@ -343,7 +341,6 @@ const CandleChart = ({
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
       lastValueVisible: !isLlamalend,
-      priceFormat: createPriceFormatter(totalDecimalPlacesRef),
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
