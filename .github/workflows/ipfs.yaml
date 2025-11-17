@@ -1,0 +1,27 @@
+name: IPFS
+on: [push]
+env:
+  DO_NOT_TRACK: 1
+  IBM_TELEMETRY_DISABLED: true
+permissions:
+  contents: read
+jobs:
+  deploy-ipfs:
+    name: Deploy to IPFS
+    if: github.ref_name == 'feat/ens'
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    environment: ens
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+      - run: yarn set version stable
+      - run: yarn install --immutable
+      - run: yarn build
+      - name: Deploy to IPFS via Pinata
+        run: yarn deploy:ipfs
+        env:
+          PINATA_JWT: ${{ secrets.PINATA_JWT }}

@@ -22,7 +22,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md}\"",
     "prepare": "husky",
     "storybook": "yarn workspace curve-ui-kit run storybook",
-    "storybook:build": "yarn workspace curve-ui-kit run build:storybook"
+    "storybook:build": "yarn workspace curve-ui-kit run build:storybook",
+    "deploy:ipfs": "node .github/deploy-ipfs.mjs ./apps/main/dist"
   },
   "devDependencies": {
     "@commitlint/cli": "^20.1.0",
