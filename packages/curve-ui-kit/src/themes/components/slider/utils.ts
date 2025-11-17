@@ -1,7 +1,7 @@
 import { sortBy } from 'lodash'
 import { SliderProps } from '@mui/material/Slider'
 import { DesignSystem } from '@ui-kit/themes/design'
-import { Blues, Violet } from '@ui-kit/themes/design/0_primitives'
+import { Blues, Violets } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type {
   GradientStopsDefinition,
@@ -207,5 +207,5 @@ export const orientationToDirection = (orientation: SliderProps['orientation']):
 export const thumbColorsMap: Record<DesignSystem['theme'], string> = {
   light: Blues[500],
   dark: Blues[50],
-  chad: Violet[700],
+  chad: Violets[700],
 }

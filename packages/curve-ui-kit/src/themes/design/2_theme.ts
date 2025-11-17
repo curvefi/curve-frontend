@@ -1,5 +1,5 @@
 import { alpha } from '@mui/material'
-import { Blues, Grays, Greens, Reds, TransitionFunction, Violet } from './0_primitives'
+import { Blues, Grays, Greens, Reds, Yellows, TransitionFunction, Violets, Oranges } from './0_primitives'
 import { SurfacesAndText } from './1_surfaces_text'
 
 const { plain, inverted } = SurfacesAndText
@@ -127,7 +127,6 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Grays[500],
       },
     },
     Success: {
@@ -271,6 +270,24 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     },
   } as const
 
+  const Chart = {
+    LiquidationZone: {
+      Current: Yellows[400],
+      Future: Blues[200],
+    },
+    Candles: {
+      Positive: Greens[400],
+      Negative: Reds[600],
+    },
+    Lines: {
+      Positive: Greens[400],
+      Negative: Reds[600],
+      Line1: Color.Primary[400],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
+    },
+  } as const
+
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
@@ -359,6 +376,7 @@ export const createLightDesign = (Light: typeof plain.Light | typeof inverted.Li
     Tabs,
     Chips,
     Badges,
+    Chart,
     Toggles,
     Table,
     Inputs,
@@ -519,7 +537,6 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: color[850],
       },
     },
     Success: {
@@ -663,6 +680,24 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     },
   } as const
 
+  const Chart = {
+    LiquidationZone: {
+      Current: Oranges[950],
+      Future: Blues[800],
+    },
+    Candles: {
+      Positive: Greens[300],
+      Negative: Reds[500],
+    },
+    Lines: {
+      Positive: Greens[300],
+      Negative: Reds[500],
+      Line1: Color.Primary[400],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
+    },
+  } as const
+
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
@@ -751,6 +786,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
     Tabs,
     Chips,
     Badges,
+    Chart,
     Toggles,
     Table,
     Inputs,
@@ -762,7 +798,7 @@ export const createDarkDesign = (Dark: typeof plain.Dark | typeof inverted.Dark)
 export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad) => {
   const Color = {
     Neutral: Grays,
-    Primary: Violet,
+    Primary: Violets,
     Secondary: Greens,
     Tertiary: Reds,
   } as const
@@ -806,7 +842,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Primary: {
       Default: {
         Label: Grays[50],
-        Fill: Violet[950],
+        Fill: Violets[950],
       },
       Hover: {
         Label: Grays[50],
@@ -814,7 +850,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violet[200],
+        Fill: Violets[200],
       },
     },
     Secondary: {
@@ -824,7 +860,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Hover: {
         Label: Grays[50],
-        Fill: Violet[500],
+        Fill: Violets[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
@@ -837,12 +873,12 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Outline: Grays[300],
       },
       Hover: {
-        Label: Violet[500],
-        Outline: Violet[500],
+        Label: Violets[500],
+        Outline: Violets[500],
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Outline: Violet[200],
+        Outline: Violets[200],
       },
     },
     Ghost: {
@@ -854,7 +890,6 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
       },
       Disabled: {
         Label: Text.TextColors.Disabled,
-        Fill: Violet[200],
       },
     },
     Success: {
@@ -998,6 +1033,24 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     },
   } as const
 
+  const Chart = {
+    LiquidationZone: {
+      Current: Yellows[400],
+      Future: Blues[200],
+    },
+    Candles: {
+      Positive: Greens[400],
+      Negative: Reds[600],
+    },
+    Lines: {
+      Positive: Greens[400],
+      Negative: Reds[600],
+      Line1: Color.Primary[500],
+      Line2: Yellows[500],
+      Line3: Color.Secondary[500],
+    },
+  } as const
+
   const Toggles = {
     Default: {
       Label: Text.TextColors.Primary,
@@ -1029,18 +1082,18 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
         Fill: InputBaseDefaultFill,
         Border: {
           Default: Grays[200],
-          Active: Violet[400],
-          Filled: Violet[600],
+          Active: Violets[400],
+          Filled: Violets[600],
           Error: Reds[500],
         },
       },
       Nested: {
         Nested: Grays[50],
-        Fill: Violet[50],
+        Fill: Violets[50],
         Border: {
           Default: Grays[200],
-          Active: Violet[400],
-          Filled: Violet[600],
+          Active: Violets[400],
+          Filled: Violets[600],
           Error: Reds[500],
         },
       },
@@ -1086,6 +1139,7 @@ export const createChadDesign = (Chad: typeof plain.Chad | typeof inverted.Chad)
     Tabs,
     Chips,
     Badges,
+    Chart,
     Toggles,
     Table,
     Inputs,

@@ -4,6 +4,7 @@ import { withThemeFromJSXProvider } from '@storybook/addon-themes'
 import { DocsContainer } from '@storybook/addon-docs/blocks'
 import type { Decorator, Preview, ReactRenderer } from '@storybook/react-vite'
 import { chadTheme, darkTheme, lightTheme } from '../src/themes'
+import { createRouter, createRootRoute, RouterProvider, createMemoryHistory } from '@tanstack/react-router'
 
 const themes = {
   light: lightTheme(),
@@ -21,10 +22,20 @@ export const decorators: Decorator[] = [
     Provider: ThemeProvider,
     GlobalStyles: CssBaseline,
   }),
-  (Story) => (
-    <>
-      <style>
-        {`
+  (Story) => {
+    const router = createRouter({
+      routeTree: createRootRoute({
+        component: () => <Story />,
+      }),
+      history: createMemoryHistory({
+        initialEntries: ['/'],
+      }),
+    })
+
+    return (
+      <>
+        <style>
+          {`
         @font-face {
           font-family: MonaSans;
           src: url('fonts/Mona-Sans.woff2') format('woff2');
@@ -41,10 +52,11 @@ export const decorators: Decorator[] = [
           src: url('fonts/Minecraft-Bold.otf') format('opentype');
         }
         `}
-      </style>
-      <Story />
-    </>
-  ),
+        </style>
+        <RouterProvider router={router} />
+      </>
+    )
+  },
 ]
 
 const preview: Preview = {

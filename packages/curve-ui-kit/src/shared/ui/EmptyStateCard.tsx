@@ -11,7 +11,7 @@ export const EmptyStateCard = ({
   subtitle,
   action,
 }: {
-  title: string
+  title?: string
   subtitle?: string
   action?: ReactNode
 }) => (
@@ -25,11 +25,13 @@ export const EmptyStateCard = ({
     <LlamaIcon sx={{ width: IconSize.xxl, height: IconSize.xxl }} />
     {/* Needed because no gap between the title and subtitle */}
     <Stack direction="column">
-      <Typography component="span" variant="headingSBold">
-        {title}
-      </Typography>
+      {title && (
+        <Typography component="span" variant="headingSBold" textAlign="center">
+          {title}
+        </Typography>
+      )}
       {subtitle && (
-        <Typography component="span" variant="bodyMRegular" color="text.secondary">
+        <Typography component="span" variant="bodyMRegular" color="text.secondary" textAlign="center">
           {subtitle}
         </Typography>
       )}
