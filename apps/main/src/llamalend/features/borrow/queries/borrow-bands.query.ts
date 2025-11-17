@@ -8,7 +8,7 @@ import { borrowQueryValidationSuite } from './borrow.validation'
 
 type BorrowBandsResult = [number, number]
 
-export const { useQuery: useBorrowBands } = queryFactory({
+export const { useQuery: useCreateLoanBands } = queryFactory({
   queryKey: ({
     chainId,
     poolId,

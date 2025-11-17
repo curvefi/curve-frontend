@@ -32,14 +32,4 @@ export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 /** A simple token representation */
 export type Token = { symbol: string; address: string; chain: INetworkName }
 
-/**
- * Preset options for borrowing
- * @see BORROW_PRESET_RANGES
- **/
-export enum BorrowPreset {
-  Safe = 'Safe',
-  MaxLtv = 'MaxLtv',
-  Custom = 'Custom',
-}
-
 export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]

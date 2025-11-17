@@ -3,7 +3,7 @@ import type { UseFormReturn } from 'react-hook-form'
 import { type Address } from 'viem'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { Decimal } from '@ui-kit/utils'
-import { useMaxLeverage } from '../queries/borrow-max-leverage.query'
+import { useMarketMaxLeverage } from '../../../queries/market-max-leverage.query'
 import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
 import { setValueOptions } from '../react-form.utils'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
@@ -32,7 +32,7 @@ export function useMaxTokenValues(
     data: maxTotalLeverage,
     isError: isErrorMaxLeverage,
     isLoading: isLoadingMaxLeverage,
-  } = useMaxLeverage(params)
+  } = useMarketMaxLeverage(params)
 
   const { maxDebt, maxLeverage: maxBorrowLeverage, maxTotalCollateral } = maxBorrow ?? {}
   const maxCollateral =

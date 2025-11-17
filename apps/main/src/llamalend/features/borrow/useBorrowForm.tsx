@@ -13,11 +13,11 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { BORROW_PRESET_RANGES } from './constants'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
-import { type BorrowForm, BorrowPreset } from './types'
+import { type BorrowForm } from './types'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])

@@ -6,8 +6,7 @@ import ToggleButton from '@mui/material/ToggleButton'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { BORROW_PRESET_RANGES } from '../constants'
-import { BorrowPreset } from '../types'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
 
 const PRESETS = {
   [BorrowPreset.Safe]: {

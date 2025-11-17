@@ -1,6 +1,6 @@
 import { group } from 'vest'
-import { validateDebt } from '@/llamalend/features/borrow/queries/borrow.validation'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
+import { validateDebt } from '@/llamalend/queries/validation/borrow-fields.validation'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
@@ -8,16 +8,16 @@ import { type PoolQuery } from '@ui-kit/lib/model'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { poolValidationGroup } from '@ui-kit/lib/model/query/pool-validation'
-import type { CompleteBorrowForm } from '../types'
+import { decimal, type Decimal } from '@ui-kit/utils'
 
-type BorrowApyQuery = PoolQuery<IChainId> & Pick<CompleteBorrowForm, 'debt'>
+type BorrowApyQuery = PoolQuery<IChainId> & { debt: Decimal }
 type BorrowFutureApyParams = FieldsOf<BorrowApyQuery>
 
 export type BorrowFutureRatesResult = {
-  borrowApr: number
-  borrowApy?: number
-  lendApr?: number
-  lendApy?: number
+  borrowApr: Decimal
+  borrowApy?: Decimal
+  lendApr?: Decimal
+  lendApy?: Decimal
 }
 
 const convertRates = ({
@@ -26,10 +26,10 @@ const convertRates = ({
   lendApr,
   lendApy,
 }: { [K in keyof BorrowFutureRatesResult]: string }): BorrowFutureRatesResult => ({
-  borrowApr: +borrowApr,
-  ...(borrowApy && { borrowApy: +borrowApy }),
-  ...(lendApy && { lendApy: +lendApy }),
-  ...(lendApr && { lendApr: +lendApr }),
+  borrowApr: decimal(borrowApr)!,
+  borrowApy: decimal(borrowApy),
+  lendApy: decimal(lendApy),
+  lendApr: decimal(lendApr),
 })
 
 const reserves = 0 as const

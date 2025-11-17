@@ -1,4 +1,5 @@
 import type { NetworkDict } from '@/llamalend/llamalend.types'
+import { useMarketRates } from '@/llamalend/queries/market-rates'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
@@ -9,11 +10,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatPercent } from '@ui-kit/utils'
+import { useMarketFutureRates } from '../../../queries/market-future-rates.query'
 import { getHealthValueColor } from '../../market-position-details/utils'
 import { useLoanToValue } from '../hooks/useLoanToValue'
-import { useMarketRates } from '../queries/borrow-apy.query'
-import { useBorrowBands } from '../queries/borrow-bands.query'
-import { useMarketFutureRates } from '../queries/borrow-future-apy.query'
+import { useCreateLoanBands } from '../queries/borrow-bands.query'
 import { useBorrowEstimateGas } from '../queries/borrow-gas-estimate.query'
 import { useBorrowHealth } from '../queries/borrow-health.query'
 import { useBorrowPrices } from '../queries/borrow-prices.query'
@@ -44,7 +44,7 @@ export const BorrowActionInfoAccordion = <ChainId extends IChainId>({
 }) => {
   const [isOpen, , , toggle] = useSwitch(false)
   const { data: health, isLoading: healthLoading, error: healthError } = useBorrowHealth(params, !tooMuchDebt) // visible when !isOpen
-  const { data: bands, isLoading: bandsLoading, error: bandsError } = useBorrowBands(params, isOpen && !tooMuchDebt)
+  const { data: bands, isLoading: bandsLoading, error: bandsError } = useCreateLoanBands(params, isOpen && !tooMuchDebt)
   const { data: prices, isLoading: pricesLoading, error: pricesError } = useBorrowPrices(params, isOpen && !tooMuchDebt)
   const { data: rates, isLoading: ratesLoading, error: ratesError } = useMarketRates(params, isOpen)
   const {

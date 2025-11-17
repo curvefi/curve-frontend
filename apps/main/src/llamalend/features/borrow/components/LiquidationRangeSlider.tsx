@@ -5,7 +5,7 @@ import { t } from '@ui-kit/lib/i18n'
 import { SliderInput } from '@ui-kit/shared/ui/SliderInput'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal } from '@ui-kit/utils'
-import { BORROW_PRESET_RANGES } from '../constants'
+import { BORROW_PRESET_RANGES } from '../../../constants'
 
 const { Spacing } = SizesAndSpaces
 
