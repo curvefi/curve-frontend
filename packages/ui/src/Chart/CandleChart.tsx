@@ -6,7 +6,6 @@ import {
   LineStyle,
   AreaSeries,
   CandlestickSeries,
-  HistogramSeries,
   LineSeries,
 } from 'lightweight-charts'
 import lodash from 'lodash'
@@ -103,7 +102,6 @@ const CandleChart = ({
   const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
-  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
   const ohlcDataRef = useRef(ohlcData)
@@ -293,28 +291,6 @@ const CandleChart = ({
     })
   }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
 
-  // Volume series effect - only create once when chart is ready
-  useEffect(() => {
-    if (!chartRef.current || volumeSeriesRef.current) return
-
-    volumeSeriesRef.current = chartRef.current.addSeries(HistogramSeries, {
-      priceFormat: {
-        type: 'volume',
-      },
-      priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-    })
-    volumeSeriesRef.current.priceScale().applyOptions({
-      scaleMargins: {
-        top: 0.7,
-        bottom: 0,
-      },
-    })
-
-    return () => {
-      volumeSeriesRef.current = null
-    }
-  }, [])
-
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {
     if (!chartRef.current) return
@@ -463,13 +439,6 @@ const CandleChart = ({
 
     candlestickSeriesRef.current.setData(ohlcData)
   }, [ohlcData])
-
-  // Update volume data when it changes
-  useEffect(() => {
-    if (!volumeSeriesRef.current || !volumeData) return
-
-    volumeSeriesRef.current.setData(volumeData)
-  }, [volumeData])
 
   // Update oracle price data when it changes
   useEffect(() => {
