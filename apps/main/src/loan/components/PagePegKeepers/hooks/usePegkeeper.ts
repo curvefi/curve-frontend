@@ -1,5 +1,6 @@
 import { formatEther } from 'viem'
 import { useReadContract, useWriteContract, useSimulateContract } from 'wagmi'
+import type { Decimal } from '@ui-kit/utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { abi as priceOracleAbi, abiFallback as priceOracleFallbackAbi } from '../abi/priceOracle'
@@ -98,15 +99,15 @@ export function usePegkeeper({ address, pool: { address: poolAddress } }: PegKee
 
   return {
     rate,
-    debt: debt !== undefined ? formatEther(debt) : undefined,
+    debt: debt == null ? undefined : (formatEther(debt) as Decimal),
     estCallerProfit: estCallerProfitError
-      ? estCallerProfitFallback !== undefined
-        ? formatEther(estCallerProfitFallback)
-        : undefined
-      : estCallerProfit?.result !== undefined
-        ? formatEther(estCallerProfit.result)
-        : undefined,
-    debtCeiling: debtCeiling !== undefined ? formatEther(debtCeiling) : undefined,
+      ? estCallerProfitFallback == null
+        ? undefined
+        : (formatEther(estCallerProfitFallback) as Decimal)
+      : estCallerProfit?.result == null
+        ? undefined
+        : (formatEther(estCallerProfit.result) as Decimal),
+    debtCeiling: debtCeiling == null ? undefined : (formatEther(debtCeiling) as Decimal),
     rebalance,
     isRebalancing,
   }

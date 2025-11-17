@@ -1,5 +1,6 @@
-import { formatEther } from 'ethers'
+import { formatEther } from 'viem'
 import { useReadContracts } from 'wagmi'
+import type { Decimal } from '@ui-kit/utils'
 import { abi as pegkeeperAbi } from '../abi/pegkeeper'
 import { abi as pegkeeperDebtCeilingAbi } from '../abi/pegkeeperDebtCeiling'
 import { PEG_KEEPER_DEBT_CEILINGS_CONTRACT_ADDRESS, PEG_KEEPERS } from '../constants'
@@ -49,8 +50,8 @@ export function useStatistics() {
       .reduce((acc, curr) => acc + curr, 0n)
 
   return {
-    totalDebt: totalDebt != null ? formatEther(totalDebt) : undefined,
-    totalCeiling: totalCeiling != null ? formatEther(totalCeiling) : undefined,
+    totalDebt: totalDebt == null ? undefined : (formatEther(totalDebt) as Decimal),
+    totalCeiling: totalCeiling == null ? undefined : (formatEther(totalCeiling) as Decimal),
     isFetchingDebt,
     isFetchingCeiling,
     isErrorDebt,
