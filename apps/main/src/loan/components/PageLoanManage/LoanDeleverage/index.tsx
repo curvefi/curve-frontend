@@ -329,6 +329,7 @@ const LoanDeleverage = ({
         <LargeTokenInput
           name="collateral"
           testId="inpCollateral"
+          label={t`Amount to deleverage`}
           isError={!!formValues.collateralError}
           message={
             formValues.collateralError === 'too-much'

@@ -67,7 +67,7 @@ const chipSizes: Record<ChipSizes, ChipSizeDefinition> = {
 }
 
 // overrides for clickable chips
-const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
+export const chipSizeClickable: Record<ChipSizes, Partial<ChipSizeDefinition> & { deleteIconSize: Responsive }> = {
   extraSmall: {
     font: 'buttonXs',
     height: Sizing.sm,

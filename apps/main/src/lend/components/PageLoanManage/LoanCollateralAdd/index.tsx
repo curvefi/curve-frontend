@@ -194,6 +194,7 @@ const LoanCollateralAdd = ({ rChainId, rOwmId, api, isLoaded, market, userActive
           inpLabelLoading={!!signerAddress && typeof userBalances === 'undefined'}
           inpLabelDescription={formatNumber(userBalances?.collateral, { defaultValue: '-' })}
           inpValue={formValues.collateral}
+          inpLabel={t`Collateral to add`}
           tokenAddress={market?.collateral_token?.address}
           tokenSymbol={market?.collateral_token?.symbol}
           tokenBalance={userBalances?.collateral}
