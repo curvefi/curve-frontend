@@ -15,7 +15,7 @@ const PoolType = ({ chainId }: Props) => {
   const swapType = useStore((state) => state.createPool.swapType)
   const updateSwapType = useStore((state) => state.createPool.updateSwapType)
   const {
-    data: { stableswapFactory, tricryptoFactory, twocryptoFactory },
+    data: { stableswapFactory, tricryptoFactory, twocryptoFactory, fxswapFactory },
   } = useNetworkByChain({ chainId })
 
   return (
@@ -51,6 +51,7 @@ const PoolType = ({ chainId }: Props) => {
           </SelectButtonWrapper>
           <SelectButtonWrapper>
             <SelectButton
+              disabled={!fxswapFactory}
               selected={swapType === FXSWAP}
               name={FXSWAP}
               descriptionName={t`FXSwap`}
