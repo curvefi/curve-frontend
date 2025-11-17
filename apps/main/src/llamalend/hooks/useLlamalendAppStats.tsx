@@ -20,7 +20,7 @@ const { useQuery: useAppStatsDailyVolume } = queryFactory({
 
 /**
  * Gets the total supply of crvUSD from the Curve Finance API.
- * It includes the fully supply and is more reliable than on-chain data.
+ * It includes the full supply, including YB mints, and is more reliable than on-chain data.
  */
 const { useQuery: useCrvUsdTotalSupply } = queryFactory({
   queryKey: () => ['getCrvusdTotalSupplyNumber'] as const,
