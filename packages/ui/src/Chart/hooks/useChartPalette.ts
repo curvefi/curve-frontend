@@ -27,7 +27,14 @@ type UseChartPaletteOptions = {
 export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const theme = useTheme()
 
-  const backgroundColor = options?.backgroundOverride ?? theme.palette.background.paper
+  const legacyBackground =
+    typeof window === 'undefined'
+      ? undefined
+      : getComputedStyle(document.body ?? document.documentElement)
+          .getPropertyValue('--box--secondary--background-color')
+          .trim()
+
+  const backgroundColor = options?.backgroundOverride ?? legacyBackground ?? theme.palette.background.paper
   const primary = theme.palette.primary.main
   const success = theme.design.Chart.Candles.Positive
   const error = theme.design.Chart.Candles.Negative
