@@ -15,6 +15,7 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useUniqueDebounce } from '@ui-kit/hooks/useDebounce'
 import { t } from '@ui-kit/lib/i18n'
+import { chipSizeClickable } from '@ui-kit/themes/components/chip'
 import { Duration, TransitionFunction } from '@ui-kit/themes/design/0_primitives'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { decimal, type Decimal, formatNumber } from '@ui-kit/utils'
@@ -345,7 +346,14 @@ export const LargeTokenInput = ({
       <Stack gap={Spacing.xs} sx={{ padding: Spacing.sm }}>
         {/** First row is an optional label describing the input and/or chips */}
         {(label || showChips) && (
-          <Stack direction="row" alignItems="center">
+          <Stack
+            direction="row"
+            alignItems="center"
+            sx={{
+              // Prevent small size difference in inputs when there's only a label and no chips
+              minHeight: chipSizeClickable['extraSmall'].height,
+            }}
+          >
             {label && (
               <Typography variant="bodyXsRegular" color="textSecondary">
                 {label}
@@ -375,6 +383,7 @@ export const LargeTokenInput = ({
                     size="extraSmall"
                     color="default"
                     clickable
+                    disabled={disabled}
                     onClick={() => handleChip(chip)}
                   ></Chip>
                 ))}

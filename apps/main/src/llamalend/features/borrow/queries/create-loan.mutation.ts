@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
 import type {
@@ -31,7 +32,7 @@ type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 export type CreateLoanOptions = {
   poolId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onCreated: (hash: `0x${string}`, mutation: BorrowMutation & { txHash: `0x${string}` }) => void
+  onCreated: (hash: Hex, mutation: BorrowMutation & { txHash: Hex }) => void
   reset: () => void
 }
 
