@@ -41,7 +41,7 @@ type Props = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
-  isLlamalend: boolean
+  hideCandleSeriesLabel: boolean
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
   volumeData?: VolumeData[]
@@ -62,7 +62,7 @@ type Props = {
 }
 
 const CandleChart = ({
-  isLlamalend,
+  hideCandleSeriesLabel,
   chartHeight,
   ohlcData,
   volumeData,
@@ -342,13 +342,13 @@ const CandleChart = ({
 
     candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
       priceLineStyle: LineStyle.LargeDashed,
-      priceLineVisible: !isLlamalend,
+      priceLineVisible: !hideCandleSeriesLabel,
       upColor: memoizedColors.green,
       downColor: memoizedColors.red,
       borderVisible: false,
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
-      lastValueVisible: !isLlamalend,
+      lastValueVisible: !hideCandleSeriesLabel,
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
@@ -409,7 +409,7 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [isLlamalend, memoizedColors.green, memoizedColors.red])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
 
   // Update candlestick colors when theme colors change
   useEffect(() => {

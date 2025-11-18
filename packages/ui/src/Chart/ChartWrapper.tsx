@@ -25,7 +25,7 @@ export type ChartWrapperProps = {
   /**
    * If the chart is used on a Llamalend market page we hide the candle series label and label line.
    */
-  isLlamalend: boolean
+  hideCandleSeriesLabel: boolean
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
@@ -56,7 +56,7 @@ export type ChartWrapperProps = {
 }
 
 const ChartWrapper = ({
-  isLlamalend,
+  hideCandleSeriesLabel,
   chartType,
   chartStatus,
   chartHeight,
@@ -183,7 +183,7 @@ const ChartWrapper = ({
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
             <CandleChart
-              isLlamalend={isLlamalend}
+              hideCandleSeriesLabel={hideCandleSeriesLabel}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
               volumeData={volumeData}

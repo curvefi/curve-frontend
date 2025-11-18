@@ -343,7 +343,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   }
 
   const ChartWrapperProps: ChartWrapperProps = {
-    isLlamalend: true,
+    hideCandleSeriesLabel: true,
     chartType: 'crvusd',
     chartStatus: currentChart.fetchStatus,
     chartHeight,
