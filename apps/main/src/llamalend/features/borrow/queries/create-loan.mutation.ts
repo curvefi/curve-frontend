@@ -3,6 +3,7 @@ import { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -14,16 +15,13 @@ import { useMutation } from '@tanstack/react-query'
 import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
-import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import { Address } from '@ui-kit/utils'
-import { waitFor } from '@ui-kit/utils/time.utils'
+import { waitForApproval } from '@ui-kit/utils/time.utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { getBalanceQueryKey } from '@wagmi/core/query'
 import { fetchBorrowCreateLoanIsApproved } from '../queries/borrow-create-loan-approved.query'
 import type { BorrowForm, BorrowFormQuery } from '../types'
 import { borrowFormValidationSuite } from './borrow.validation'
-import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
 type BorrowMutationContext = {
   chainId: IChainId
@@ -31,8 +29,6 @@ type BorrowMutationContext = {
 }
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
-
-const APPROVE_TIMEOUT = { timeout: 2 * 60 * 1000 } // 2 minutes
 
 export type CreateLoanOptions = {
   marketId: string | undefined
@@ -78,12 +74,12 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
         const market = getLlamaMarket(marketId!)
 
         const params = { ...mutation, chainId, marketId }
-        if (!(await fetchBorrowCreateLoanIsApproved(params))) {
-          const approvalTxHashes = await approve(market, mutation)
-          await Promise.all(approvalTxHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
-          notify(t`Approved loan creation`, 'success')
-          await waitFor(() => fetchBorrowCreateLoanIsApproved(params), APPROVE_TIMEOUT)
-        }
+        await waitForApproval({
+          isApproved: () => fetchBorrowCreateLoanIsApproved(params),
+          onApprove: () => approve(market, mutation),
+          message: t`Approved loan creation`,
+          config,
+        })
 
         const hash = await create(market, mutation)
         await waitForTransactionReceipt(config, { hash })
@@ -94,12 +90,8 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
     onSuccess: async (txHash, mutation) => {
       logSuccess(mutationKey, txHash)
       notify(t`Loan created successfully`, 'success')
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: wallet?.account.address }) }),
-        queryClient.invalidateQueries({
-          queryKey: createLoanExpectedCollateralQueryKey({ chainId, marketId, ...mutation }),
-        }),
-      ])
+      const userAddress = wallet?.account.address
+      await invalidateUserMarketQueries({ marketId, userAddress })
       updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
       onCreated(txHash, { ...mutation, txHash })
     },

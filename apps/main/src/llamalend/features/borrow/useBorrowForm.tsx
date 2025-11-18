@@ -59,7 +59,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     ),
   )
 
-  const { data: isApproved } = useBorrowCreateLoanIsApproved(params, !!market)
+  const { data: isApproved } = useBorrowCreateLoanIsApproved(params)
 
   const {
     onSubmit,

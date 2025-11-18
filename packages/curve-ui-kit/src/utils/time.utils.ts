@@ -1,3 +1,7 @@
+import { Hex } from 'viem'
+import { notify } from '@ui-kit/features/connect-wallet'
+import { type Config, waitForTransactionReceipt } from '@wagmi/core'
+
 /**
  * Handles a promise with a timeout. If the promise does not resolve within the specified timeout, it rejects with an error.
  */
@@ -23,4 +27,27 @@ export const waitFor = async (
     }
   }
   await handleTimeout<void>(waitUntil(), timeout, message)
+}
+
+/**
+ * Waits for approval by checking isApproved, and if not approved, calls onApprove,
+ * waits for the transactions to be mined and then waits until isApproved returns true.
+ */
+export async function waitForApproval({
+  onApprove,
+  config,
+  isApproved,
+  message,
+  timeout = 2 * 60 * 1000, // 2 minutes
+}: {
+  onApprove: () => Promise<Hex[]>
+  message: string
+  isApproved: () => Promise<boolean>
+  config: Config
+  timeout?: number
+}) {
+  if (await isApproved()) return
+  await Promise.all((await onApprove()).map((hash) => waitForTransactionReceipt(config, { hash })))
+  notify(message, 'success')
+  await waitFor(isApproved, { timeout })
 }
