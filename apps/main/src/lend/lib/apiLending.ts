@@ -18,12 +18,9 @@ import {
   MarketPrices,
   MarketRates,
   MarketRewards,
-  MarketStatAmmBalances,
   MarketStatBands,
   MarketStatCapAndAvailable,
   MarketStatParameters,
-  MarketStatTotals,
-  MarketTotalLiquidity,
   MaxRecvLeverageResp,
   ParsedBandsBalances,
   Provider,
@@ -129,24 +126,6 @@ const market = {
 
     return results
   },
-  fetchStatsAmmBalances: async (markets: OneWayMarketTemplate[]) => {
-    log('fetchStatsAmmBalances', markets.length)
-    const results: { [id: string]: MarketStatAmmBalances } = {}
-    const useMultiCall = markets.length > 1
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { borrowed: '', collateral: '', error }
-      })
-      .process(async (market) => {
-        const resp = await market.stats.ammBalances(useMultiCall, USE_API)
-        results[market.id] = { ...resp, error: '' }
-      })
-
-    return results
-  },
   fetchStatsCapAndAvailable: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsCapAndAvailable', markets.length)
     const results: { [id: string]: MarketStatCapAndAvailable } = {}
@@ -161,24 +140,6 @@ const market = {
       .process(async (market) => {
         const resp = await market.stats.capAndAvailable(useMultiCall, USE_API)
         results[market.id] = { ...resp, error: '' }
-      })
-
-    return results
-  },
-  fetchStatsTotals: async (markets: OneWayMarketTemplate[]) => {
-    log('fetchStatsTotals', markets.length)
-    const results: { [id: string]: MarketStatTotals } = {}
-    const useMultiCall = markets.length > 1
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { totalDebt: '', error }
-      })
-      .process(async (market) => {
-        const totalDebt = await market.stats.totalDebt(useMultiCall, USE_API)
-        results[market.id] = { totalDebt, error: '' }
       })
 
     return results
@@ -228,23 +189,6 @@ const market = {
       .process(async (market) => {
         const rates = await market.stats.rates(useMultiCall, USE_API)
         results[market.id] = { rates, error: '' }
-      })
-
-    return results
-  },
-  fetchMarketsVaultsTotalLiquidity: async (markets: OneWayMarketTemplate[]) => {
-    log('fetchMarketsVaultsTotalLiquidity', markets.length)
-    const results: { [id: string]: MarketTotalLiquidity } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        console.error(errorObj)
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { totalLiquidity: '', error }
-      })
-      .process(async (market) => {
-        const totalLiquidity = await market.vault.totalLiquidity()
-        results[market.id] = { totalLiquidity, error: '' }
       })
 
     return results
