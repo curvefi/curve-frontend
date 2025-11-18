@@ -71,6 +71,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     txHash,
     formErrors,
     tooMuchDebt,
+    isApproved,
   } = useBorrowForm({ market, network, preset, onCreated })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
   useFormSync(values, onUpdate)
@@ -139,7 +140,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   disabled={formErrors.length > 0}
                   data-testid="borrow-submit-button"
                 >
-                  {isPending ? t`Processing...` : t`Approve & Borrow`}
+                  {isPending ? t`Processing...` : isApproved ? t`Borrow` : t`Approve & Borrow`}
                 </Button>
 
                 <BorrowFormAlert
