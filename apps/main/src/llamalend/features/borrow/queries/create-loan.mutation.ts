@@ -16,6 +16,7 @@ import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
 import { Address, Amount, Decimal } from '@ui-kit/utils'
+import { waitFor } from '@ui-kit/utils/time.utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
 import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
@@ -28,6 +29,8 @@ type BorrowMutationContext = {
 }
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
+
+const APPROVE_TIMEOUT = { timeout: 2 * 60 * 1000 } // 2 minutes
 
 export type CreateLoanOptions = {
   poolId: string | undefined
@@ -70,13 +73,14 @@ export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoan
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
-        const { userCollateral, userBorrowed, debt, leverageEnabled, slippage, range } = mutation
+        const { userCollateral, userBorrowed, debt, range, slippage, leverageEnabled } = mutation
         const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(poolId!, leverageEnabled)
 
         if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
           const approvalTxHashes = (await createLoanApprove(userCollateral, userBorrowed)) as Address[]
           await Promise.all(approvalTxHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
           notify(t`Approved loan creation`, 'success')
+          await waitFor(() => createLoanIsApproved(userCollateral, userBorrowed), APPROVE_TIMEOUT)
         }
 
         const loanTxHash = await createLoan(userCollateral, userBorrowed, debt, range, slippage)

@@ -42,7 +42,7 @@ const customTransport = (account: PrivateKeyAccount, tenderly: TenderlyConfig) =
       }
       if (method === 'eth_sendTransaction') {
         return await sendVnetTransaction({ tenderly, tx: param as RpcTransactionRequest }).catch((err) => {
-          console.error(`Custom transport failed for method ${method}, falling back to HTTP transport. Error: ${err}`)
+          console.error(`Tenderly failed for ${method}(${JSON.stringify(param)}). Error: ${err}`)
           throw err
         })
       }

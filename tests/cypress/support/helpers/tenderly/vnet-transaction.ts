@@ -1,6 +1,5 @@
 import type { RpcTransactionRequest } from 'viem'
 import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
-import type { VnetTransactionResponse } from '@cy/support/helpers/tenderly/vnet-transaction.types'
 
 type SendVnetTransactionOptions = {
   /** Tenderly configuration */
@@ -27,7 +26,7 @@ export async function sendVnetTransaction({
   if (!response.ok) {
     throw new Error(`Failed to send virtual testnet transaction: ${response.status} ${response.statusText}: ${text}`)
   }
-  const { tx_hash } = JSON.parse(text) as VnetTransactionResponse
+  const { tx_hash } = JSON.parse(text)
   console.info(
     'Created VNet transaction',
     `https://dashboard.tenderly.co/${projectSlug}/project/testnet/${vnetId}/tx/${tx_hash}`,
