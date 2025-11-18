@@ -13,12 +13,13 @@ import { t } from '@ui-kit/lib/i18n'
 import type { Decimal } from '@ui-kit/utils'
 import { waitForApproval } from '@ui-kit/utils/time.utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { collateralValidationSuite } from '../queries/manage-loan.validation'
+import { fetchAddCollateralIsApproved } from '../queries/add-collateral/add-collateral-approved.query'
+import { collateralValidationSuite, type CollateralForm } from '../queries/manage-loan.validation'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 
 export type AddCollateralOptions = {
-  marketId: string | null | undefined
+  marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onAdded?: (hash: Hex, mutation: AddCollateralMutation & { txHash: Hex }) => void
 }
@@ -42,8 +43,9 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
       async (mutation: AddCollateralMutation) => {
         assertValidity(collateralValidationSuite, { chainId, marketId, ...mutation })
         const market = getLlamaMarket(marketId!)
+
         await waitForApproval({
-          isApproved: () => market.addCollateralIsApproved(mutation.userCollateral),
+          isApproved: () => fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }),
           onApprove: () => approve(market, mutation),
           message: t`Approved collateral addition`,
           config,
@@ -53,7 +55,7 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
         await waitForTransactionReceipt(config, { hash })
         return hash
       },
-      [chainId, config, marketId],
+      [chainId, config, marketId, userAddress],
     ),
     onSuccess: async (txHash, mutation) => {
       logSuccess(mutationKey, txHash)
@@ -64,5 +66,7 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
     },
   })
 
-  return { mutateAsync, error, txHash: data, isPending, isSuccess, reset }
+  const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as AddCollateralMutation), [mutateAsync])
+
+  return { onSubmit, mutateAsync, error, txHash: data, isPending, isSuccess, reset }
 }

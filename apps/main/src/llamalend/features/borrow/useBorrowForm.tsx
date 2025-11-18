@@ -6,7 +6,6 @@ import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
@@ -18,6 +17,7 @@ import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
+import { useFormErrors } from './react-form.utils'
 import { type BorrowForm } from './types'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
@@ -59,8 +59,6 @@ export function useBorrowForm<ChainId extends IChainId>({
     ),
   )
 
-  const { data: isApproved } = useBorrowCreateLoanIsApproved(params)
-
   const {
     onSubmit,
     isPending: isCreating,
@@ -86,16 +84,8 @@ export function useBorrowForm<ChainId extends IChainId>({
     isCreated,
     creationError,
     txHash,
-    isApproved,
+    isApproved: useBorrowCreateLoanIsApproved(params),
     tooMuchDebt: !!form.formState.errors['maxDebt'],
-    formErrors: useMemo(
-      () =>
-        notFalsy(
-          ...recordEntries(form.formState.errors)
-            .filter(([field, error]) => field in form.formState.dirtyFields && error?.message)
-            .map(([field, error]) => [field, error!.message!] as const),
-        ),
-      [form.formState],
-    ),
+    formErrors: useFormErrors(form.formState),
   }
 }

@@ -11,12 +11,12 @@ import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { Decimal } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { collateralValidationSuite } from '../queries/manage-loan.validation'
+import { collateralValidationSuite, type CollateralForm } from '../queries/manage-loan.validation'
 
 type RemoveCollateralMutation = { userCollateral: Decimal }
 
 export type RemoveCollateralOptions = {
-  marketId: string | null | undefined
+  marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onRemoved?: (hash: Hex, mutation: RemoveCollateralMutation & { txHash: Hex }) => void
 }
@@ -55,5 +55,7 @@ export const useRemoveCollateralMutation = ({ network, marketId, onRemoved }: Re
     },
   })
 
-  return { mutateAsync, error, txHash: data, isPending, isSuccess, reset }
+  const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as RemoveCollateralMutation), [mutateAsync])
+
+  return { onSubmit, mutateAsync, error, txHash: data, isPending, isSuccess, reset }
 }

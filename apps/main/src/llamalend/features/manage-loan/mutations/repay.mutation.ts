@@ -13,12 +13,12 @@ import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { Decimal } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { repayFromCollateralValidationSuite } from '../queries/manage-loan.validation'
+import { repayFromCollateralValidationSuite, type RepayForm } from '../queries/manage-loan.validation'
 
 type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBorrowed: Decimal }
 
 export type RepayOptions = {
-  marketId: string | null | undefined
+  marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onRepaid?: (hash: Hex, mutation: RepayMutation & { txHash: Hex }) => void
 }
@@ -58,5 +58,7 @@ export const useRepayMutation = ({ network, marketId, onRepaid }: RepayOptions) 
     },
   })
 
-  return { mutateAsync, error, txHash: data, isPending, isSuccess, reset }
+  const onSubmit = useCallback((form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])
+
+  return { onSubmit, mutateAsync, error, txHash: data, isPending, isSuccess, reset }
 }

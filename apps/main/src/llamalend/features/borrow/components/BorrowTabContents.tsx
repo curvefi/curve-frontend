@@ -141,7 +141,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   disabled={formErrors.length > 0}
                   data-testid="borrow-submit-button"
                 >
-                  {isPending ? t`Processing...` : isApproved ? t`Borrow` : t`Approve & Borrow`}
+                  {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
                 </Button>
 
                 <BorrowFormAlert
