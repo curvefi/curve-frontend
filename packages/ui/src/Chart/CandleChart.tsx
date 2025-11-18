@@ -179,6 +179,7 @@ const CandleChart = ({
       },
       timeScale: {
         timeVisible: true, // Default, will be updated by separate effect
+        borderVisible: false,
       },
       rightPriceScale: {
         autoScale: true,
@@ -191,10 +192,12 @@ const CandleChart = ({
       },
       grid: {
         vertLines: {
-          visible: false,
+          visible: true,
+          color: '#C3BCDB44',
         },
         horzLines: {
-          visible: false,
+          visible: true,
+          color: '#C3BCDB44',
         },
       },
       crosshair: {
@@ -206,8 +209,7 @@ const CandleChart = ({
           labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
         },
         horzLine: {
-          color: '#9B7DFF',
-          labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
+          visible: false,
         },
       },
     })
@@ -242,8 +244,16 @@ const CandleChart = ({
         background: { type: ColorType.Solid, color: memoizedColors.backgroundColor },
         textColor: memoizedColors.textColor,
       },
+      grid: {
+        vertLines: {
+          color: memoizedColors.gridLine,
+        },
+        horzLines: {
+          color: memoizedColors.gridLine,
+        },
+      },
     })
-  }, [memoizedColors.backgroundColor, memoizedColors.textColor])
+  }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
 
   // Update chart dimensions when they change
   useEffect(() => {
