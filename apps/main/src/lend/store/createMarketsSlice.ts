@@ -10,12 +10,9 @@ import {
   MarketsPricesMapper,
   MarketsRatesMapper,
   MarketsRewardsMapper,
-  MarketsStatsAMMBalancesMapper,
   MarketsStatsBandsMapper,
   MarketsStatsCapAndAvailableMapper,
   MarketsStatsParametersMapper,
-  MarketsStatsTotalsMapper,
-  MarketsTotalLiquidityMapper,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
 import { getErrorMessage } from '@/lend/utils/helpers'
@@ -25,14 +22,11 @@ type StateKey = keyof typeof DEFAULT_STATE
 type SliceState = {
   statsParametersMapper: { [chainId: string]: MarketsStatsParametersMapper }
   statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
-  statsTotalsMapper: { [chainId: string]: MarketsStatsTotalsMapper }
-  statsAmmBalancesMapper: { [chainId: string]: MarketsStatsAMMBalancesMapper }
   statsCapAndAvailableMapper: { [chainId: string]: MarketsStatsCapAndAvailableMapper }
   maxLeverageMapper: { [chainId: string]: MarketsMaxLeverageMapper }
   pricesMapper: { [chainId: string]: MarketsPricesMapper }
   ratesMapper: { [chainId: string]: MarketsRatesMapper }
   rewardsMapper: { [chainId: string]: MarketsRewardsMapper }
-  totalLiquidityMapper: { [chainId: string]: MarketsTotalLiquidityMapper }
   marketDetailsView: MarketDetailsView
   vaultPricePerShare: { [chainId: string]: { [owmId: string]: { pricePerShare: string; error: string } } }
 }
@@ -59,14 +53,11 @@ export type MarketsSlice = {
 const DEFAULT_STATE: SliceState = {
   statsParametersMapper: {},
   statsBandsMapper: {},
-  statsTotalsMapper: {},
-  statsAmmBalancesMapper: {},
   statsCapAndAvailableMapper: {},
   maxLeverageMapper: {},
   pricesMapper: {},
   ratesMapper: {},
   rewardsMapper: {},
-  totalLiquidityMapper: {},
   marketDetailsView: '',
   vaultPricePerShare: {},
 }
@@ -82,13 +73,10 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const fnMapper = {
         statsParametersMapper: apiLending.market.fetchStatsParameters,
         statsBandsMapper: apiLending.market.fetchStatsBands,
-        statsTotalsMapper: apiLending.market.fetchStatsTotals,
-        statsAmmBalancesMapper: apiLending.market.fetchStatsAmmBalances,
         statsCapAndAvailableMapper: apiLending.market.fetchStatsCapAndAvailable,
         pricesMapper: apiLending.market.fetchMarketsPrices,
         ratesMapper: apiLending.market.fetchMarketsRates,
         rewardsMapper: apiLending.market.fetchMarketsVaultsRewards,
-        totalLiquidityMapper: apiLending.market.fetchMarketsVaultsTotalLiquidity,
         maxLeverageMapper: apiLending.market.fetchMarketsMaxLeverage,
       }
 
@@ -115,13 +103,10 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const keys = [
         'statsParametersMapper',
         'statsBandsMapper',
-        'statsTotalsMapper',
-        'statsAmmBalancesMapper',
         'statsCapAndAvailableMapper',
         'pricesMapper',
         'ratesMapper',
         'rewardsMapper',
-        'totalLiquidityMapper',
       ] as const
 
       // invalidate and refetch onchain data
