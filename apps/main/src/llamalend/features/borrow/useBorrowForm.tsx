@@ -15,6 +15,7 @@ import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES } from './constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
+import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { type BorrowForm, BorrowPreset } from './types'
@@ -58,6 +59,8 @@ export function useBorrowForm<ChainId extends IChainId>({
     ),
   )
 
+  const { data: isApproved } = useBorrowCreateLoanIsApproved(params, !!market)
+
   const {
     onSubmit,
     isPending: isCreating,
@@ -83,6 +86,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     isCreated,
     creationError,
     txHash,
+    isApproved,
     tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useMemo(
       () =>
