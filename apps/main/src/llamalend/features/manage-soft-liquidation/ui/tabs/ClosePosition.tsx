@@ -18,24 +18,27 @@ type ClosePositionProps = {
   /** The token that's been borrowed that has to be paid back */
   debtToken?: Token & { amount: Decimal }
   /** The tokens the user gets when closing his position */
-  collateralToRecover?: (Token & { amount?: Decimal; usd: Decimal })[]
+  collateralToRecover?: (Token & { amount?: Decimal; usd: number })[]
   /** Whether the user has sufficient stablecoins to close the position */
-  canClose: { requiredToClose: Decimal; missing: Decimal }
+  canClose: { missing?: Decimal }
   /** Current operation status */
   status: Status
 }
 
 type ClosePositionCallbacks = {
   /** Called when close action is triggered */
-  onClose: (
-    debtToken: ClosePositionProps['debtToken'],
-    collateralToRecover: ClosePositionProps['collateralToRecover'],
-  ) => void
+  onClose: () => void
 }
 
 export type Props = ClosePositionProps & ClosePositionCallbacks
 
-export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status = 'idle', onClose }: Props) => (
+export const ClosePosition = ({
+  debtToken,
+  collateralToRecover,
+  canClose: { missing },
+  status = 'idle',
+  onClose,
+}: Props) => (
   <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
     <Stack direction="row" gap={Spacing.xs} justifyContent="space-around">
       <Metric
@@ -49,7 +52,7 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
 
       <Metric
         label={t`Collateral to recover`}
-        value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + +x.usd, 0)}
+        value={collateralToRecover && collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
         valueOptions={{ unit: 'dollar' }}
         notional={(collateralToRecover ?? [])
           .filter((x) => +(x.amount ?? '0') > 0)
@@ -64,14 +67,14 @@ export const ClosePosition = ({ debtToken, collateralToRecover, canClose, status
     </Stack>
 
     <AlertClosePosition />
-    {+canClose.missing > 0 && debtToken?.symbol && (
-      <AlertAdditionalCrvUsd debtTokenSymbol={debtToken?.symbol} missing={+canClose.missing} />
+    {missing && +missing > 0 && debtToken?.symbol && (
+      <AlertAdditionalCrvUsd debtTokenSymbol={debtToken?.symbol} missing={+missing} />
     )}
 
     <Stack gap={Spacing.xs}>
       <Button
-        disabled={status === 'close' || +canClose.missing > 0 || +(debtToken?.amount ?? '') <= 0}
-        onClick={() => onClose(debtToken, collateralToRecover)}
+        disabled={status === 'close' || (missing && +missing > 0) || +(debtToken?.amount ?? '') <= 0}
+        onClick={onClose}
         sx={{ position: 'relative' }}
       >
         {status === 'idle' ? t`Repay debt & close position` : t`Closing position`}

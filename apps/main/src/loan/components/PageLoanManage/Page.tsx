@@ -3,6 +3,7 @@ import { styled } from 'styled-components'
 import { Address } from 'viem'
 import { useAccount } from 'wagmi'
 import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
+import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { BorrowPositionDetails, NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
@@ -16,6 +17,7 @@ import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
+import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
@@ -30,6 +32,7 @@ import { breakpoints } from '@ui/utils/responsive'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { useManageSoftLiquidation } from '@ui-kit/hooks/useFeatureFlags'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
@@ -58,6 +61,8 @@ const Page = () => {
   const setChartExpanded = useStore((state) => state.ohlcCharts.setChartExpanded)
   const { provider, connect: connectWallet } = useWallet()
 
+  const loanStatus = useUserLoanDetails(market?.id ?? '')?.userStatus?.colorKey ?? ''
+  const isManageSoftLiq = useManageSoftLiquidation() && loanStatus !== 'healthy' && loanStatus !== ''
   const [loaded, setLoaded] = useState(false)
 
   const isValidRouterParams = !!rChainId && !!rCollateralId && !!rFormType
@@ -165,7 +170,8 @@ const Page = () => {
       )}
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {isValidRouterParams && (
+          {isManageSoftLiq && <ManageSoftLiquidation marketId={marketId} chainId={rChainId} />}
+          {isValidRouterParams && !isManageSoftLiq && (
             <LoanMange
               {...formProps}
               params={params}

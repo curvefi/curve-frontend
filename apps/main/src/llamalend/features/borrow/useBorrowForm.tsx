@@ -15,6 +15,7 @@ import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
+import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { type BorrowForm } from './types'
@@ -25,7 +26,7 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: (
 export function useBorrowForm<ChainId extends IChainId>({
   market,
   network,
-  network: { id: chain, chainId },
+  network: { chainId },
   preset,
   onCreated,
 }: {
@@ -58,6 +59,8 @@ export function useBorrowForm<ChainId extends IChainId>({
     ),
   )
 
+  const { data: isApproved } = useBorrowCreateLoanIsApproved(params, !!market)
+
   const {
     onSubmit,
     isPending: isCreating,
@@ -67,7 +70,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     reset: resetCreation,
   } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
 
-  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
+  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
@@ -83,6 +86,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     isCreated,
     creationError,
     txHash,
+    isApproved,
     tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useMemo(
       () =>
