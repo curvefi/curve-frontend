@@ -26,7 +26,7 @@ const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: (
 export function useBorrowForm<ChainId extends IChainId>({
   market,
   network,
-  network: { id: chain, chainId },
+  network: { chainId },
   preset,
   onCreated,
 }: {
@@ -70,7 +70,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     reset: resetCreation,
   } = useCreateLoanMutation({ network, poolId: market?.id, reset: form.reset, onCreated })
 
-  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market, chain), [market, chain]) ?? {}
+  const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 
   useCallbackAfterFormUpdate(form, resetCreation) // reset creation state on form change
 
