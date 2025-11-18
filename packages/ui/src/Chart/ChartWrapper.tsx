@@ -1,5 +1,6 @@
 import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useTheme } from '@mui/material/styles'
 import Button from 'ui/src/Button/Button'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
@@ -85,6 +86,7 @@ const ChartWrapper = ({
 }: ChartWrapperProps) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
+  const theme = useTheme()
 
   const wrapperRef = useRef(null)
 
@@ -148,7 +150,7 @@ const ChartWrapper = ({
             <TipWrapper>
               {oraclePriceData && oraclePriceData?.length > 0 && (
                 <StyledCheckbox
-                  fillColor="var(--chart-oracle-price-line)"
+                  fillColor={theme.palette.primary.main}
                   blank
                   isSelected={oraclePriceVisible}
                   onChange={() => toggleOraclePriceVisible()}
@@ -158,7 +160,7 @@ const ChartWrapper = ({
               )}
               {liquidationRange?.new && toggleLiqRangeNewVisible && (
                 <StyledCheckbox
-                  fillColor="var(--chart-liq-range)"
+                  fillColor={theme.design.Chart.LiquidationZone.Future}
                   blank
                   isSelected={liqRangeNewVisible}
                   onChange={() => toggleLiqRangeNewVisible()}
@@ -168,7 +170,7 @@ const ChartWrapper = ({
               )}
               {liquidationRange?.current && (
                 <StyledCheckbox
-                  fillColor={liquidationRange.new ? 'var(--chart-liq-range-old)' : 'var(--chart-liq-range)'}
+                  fillColor={theme.design.Chart.LiquidationZone.Current}
                   blank
                   isSelected={liqRangeCurrentVisible}
                   onChange={() => toggleLiqRangeCurrentVisible()}

@@ -285,6 +285,7 @@ const CandleChart = ({
         horzLine: {
           color: memoizedColors.cursorLabel,
           labelBackgroundColor: memoizedColors.cursorLabel,
+          style: LineStyle.Dashed,
         },
       },
     })
@@ -333,7 +334,7 @@ const CandleChart = ({
     if (!chartRef.current || candlestickSeriesRef.current) return
 
     candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-      priceLineStyle: 3,
+      priceLineStyle: LineStyle.LargeDashed,
       priceLineVisible: !isLlamalend,
       upColor: memoizedColors.green,
       downColor: memoizedColors.red,
@@ -421,7 +422,7 @@ const CandleChart = ({
 
     oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
       lineWidth: 2 as LineWidth,
-      priceLineStyle: 3,
+      priceLineStyle: LineStyle.Dashed,
       visible: false, // Default visibility, will be updated by separate effect
     })
 
@@ -533,18 +534,11 @@ const CandleChart = ({
       }
     }
 
-    const isBothRanges = liquidationRange?.current && liquidationRange?.new
-    const currentColors = isBothRanges
-      ? {
-          top: memoizedColors.rangeBackground,
-          bottom: memoizedColors.rangeBackground,
-          line: memoizedColors.rangeLineTop,
-        }
-      : {
-          top: memoizedColors.rangeBackground,
-          bottom: memoizedColors.rangeBackground,
-          line: memoizedColors.rangeLineTop,
-        }
+    const currentColors = {
+      top: memoizedColors.rangeBackground,
+      bottom: memoizedColors.rangeBackground,
+      line: memoizedColors.rangeLineTop,
+    }
 
     // Update current range series
     if (liqRangeCurrentVisible) {
@@ -552,21 +546,21 @@ const CandleChart = ({
       applySeriesOptions(currentAreaBgSeriesRef.current, {
         top: memoizedColors.backgroundColor,
         bottom: memoizedColors.backgroundColor,
-        line: currentColors.line,
+        line: memoizedColors.rangeLineBottom,
       })
     }
 
     // Update new range series
     if (liqRangeNewVisible) {
       applySeriesOptions(newAreaSeriesRef.current, {
-        top: memoizedColors.rangeBackground,
-        bottom: memoizedColors.rangeBackground,
-        line: memoizedColors.rangeLineTop,
+        top: memoizedColors.rangeBackgroundFuture,
+        bottom: memoizedColors.rangeBackgroundFuture,
+        line: memoizedColors.rangeLineFutureTop,
       })
       applySeriesOptions(newAreaBgSeriesRef.current, {
         top: memoizedColors.backgroundColor,
         bottom: memoizedColors.backgroundColor,
-        line: memoizedColors.rangeLineTop,
+        line: memoizedColors.rangeLineFutureBottom,
       })
     }
   }, [
@@ -576,6 +570,10 @@ const CandleChart = ({
     memoizedColors.rangeBackground,
     memoizedColors.backgroundColor,
     liquidationRange,
+    memoizedColors.rangeLineBottom,
+    memoizedColors.rangeBackgroundFuture,
+    memoizedColors.rangeLineFutureTop,
+    memoizedColors.rangeLineFutureBottom,
   ])
 
   // Update timescale when lastTimescale changes
