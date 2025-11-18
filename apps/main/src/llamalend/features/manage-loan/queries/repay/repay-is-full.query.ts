@@ -4,7 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
-export const { useQuery: useRepayFromCollateralIsAvailable } = queryFactory({
+export const { useQuery: useRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,7 +15,7 @@ export const { useQuery: useRepayFromCollateralIsAvailable } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayIsAvailable',
+      'repayIsFull',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
@@ -29,10 +29,10 @@ export const { useQuery: useRepayFromCollateralIsAvailable } = queryFactory({
   }: RepayFromCollateralQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
-      ? await market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+      ? await market.leverage.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
       : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
-        : await market.deleverage.isAvailable(userCollateral, userAddress)
+        ? await market.leverageV2.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
+        : await market.deleverage.isFullRepayment(userCollateral, userAddress)
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,

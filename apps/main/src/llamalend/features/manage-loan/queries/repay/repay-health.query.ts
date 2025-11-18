@@ -5,7 +5,7 @@ import type { Decimal } from '@ui-kit/utils'
 import { type RepayFromCollateralHealthQuery, type RepayFromCollateralHealthParams } from '../manage-loan.types'
 import { repayFromCollateralIsFullValidationSuite } from '../manage-loan.validation'
 
-export const { useQuery: useRepayFromCollateralHealth } = queryFactory({
+export const { useQuery: useRepayHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,

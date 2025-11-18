@@ -4,7 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
-export const { useQuery: useRepayFromCollateralIsFull } = queryFactory({
+export const { useQuery: useRepayRouteImage } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,7 +15,7 @@ export const { useQuery: useRepayFromCollateralIsFull } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayIsFull',
+      'repayRouteImage',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
@@ -24,15 +24,15 @@ export const { useQuery: useRepayFromCollateralIsFull } = queryFactory({
     marketId,
     stateCollateral,
     userCollateral,
-    userBorrowed,
-    userAddress,
-  }: RepayFromCollateralQuery): Promise<boolean> => {
+  }: RepayFromCollateralQuery): Promise<string | undefined> => {
     const market = getLlamaMarket(marketId)
-    return market instanceof LendMarketTemplate
-      ? await market.leverage.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
-      : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
-        : await market.deleverage.isFullRepayment(userCollateral, userAddress)
+    if (market instanceof LendMarketTemplate) {
+      return await market.leverage.repayRouteImage(stateCollateral, userCollateral)
+    }
+    if (market.leverageV2.hasLeverage()) {
+      return await market.leverageV2.repayRouteImage(stateCollateral, userCollateral)
+    }
+    return undefined
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,

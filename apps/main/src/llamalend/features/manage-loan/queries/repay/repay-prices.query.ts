@@ -1,10 +1,11 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
+import type { Decimal } from '@ui-kit/utils'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
-export const { useQuery: useRepayFromCollateralRouteImage } = queryFactory({
+export const { useQuery: useRepayPrices } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,25 +16,20 @@ export const { useQuery: useRepayFromCollateralRouteImage } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayRouteImage',
+      'repayPrices',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
     ] as const,
-  queryFn: async ({
-    marketId,
-    stateCollateral,
-    userCollateral,
-  }: RepayFromCollateralQuery): Promise<string | undefined> => {
+  queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
     const market = getLlamaMarket(marketId)
-    if (market instanceof LendMarketTemplate) {
-      return await market.leverage.repayRouteImage(stateCollateral, userCollateral)
-    }
-    if (market.leverageV2.hasLeverage()) {
-      return await market.leverageV2.repayRouteImage(stateCollateral, userCollateral)
-    }
-    return undefined
+    return (
+      market instanceof LendMarketTemplate
+        ? await market.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed)
+        : market.leverageV2.hasLeverage()
+          ? await market.leverageV2.repayPrices(stateCollateral, userCollateral, userBorrowed)
+          : await market.deleverage.repayPrices(userCollateral)
+    ) as Decimal[]
   },
-  staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
 })

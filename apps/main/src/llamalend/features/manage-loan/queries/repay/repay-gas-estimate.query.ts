@@ -1,6 +1,6 @@
+import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { type NetworkDict } from '@/llamalend/llamalend.types'
-import { useEstimateGas } from '@/llamalend/hooks/useEstimateGas'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
@@ -11,7 +11,7 @@ import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 type RepayFromCollateralGasQuery<T = IChainId> = RepayFromCollateralQuery<T>
 type RepayFromCollateralGasParams<T = IChainId> = FieldsOf<RepayFromCollateralGasQuery<T>>
 
-const { useQuery: useRepayFromCollateralGasEstimate } = queryFactory({
+const { useQuery: useRepayGasEstimate } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -41,13 +41,13 @@ const { useQuery: useRepayFromCollateralGasEstimate } = queryFactory({
   validationSuite: repayFromCollateralValidationSuite,
 })
 
-export const useRepayFromCollateralEstimateGas = <ChainId extends IChainId>(
+export const useRepayEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   query: RepayFromCollateralGasParams<ChainId>,
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading } = useRepayFromCollateralGasEstimate(query, enabled)
+  const { data: estimate, isLoading: estimateLoading } = useRepayGasEstimate(query, enabled)
   const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
     networks,
     chainId,

@@ -1,11 +1,19 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { Decimal } from '@ui-kit/utils'
+import { type Decimal } from '@ui-kit/utils'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
-export const { useQuery: useRepayFromCollateralPrices } = queryFactory({
+type RepayExpectedBorrowedResult = {
+  totalBorrowed: Decimal
+  borrowedFromStateCollateral: Decimal
+  borrowedFromUserCollateral: Decimal
+  userBorrowed: Decimal
+  avgPrice: Decimal
+}
+
+export const { useQuery: useRepayExpectedBorrowed } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -16,20 +24,27 @@ export const { useQuery: useRepayFromCollateralPrices } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayPrices',
+      'repayExpectedBorrowed',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralQuery) => {
     const market = getLlamaMarket(marketId)
-    return (
-      market instanceof LendMarketTemplate
-        ? await market.leverage.repayPrices(stateCollateral, userCollateral, userBorrowed)
-        : market.leverageV2.hasLeverage()
-          ? await market.leverageV2.repayPrices(stateCollateral, userCollateral, userBorrowed)
-          : await market.deleverage.repayPrices(userCollateral)
-    ) as Decimal[]
+    return market instanceof LendMarketTemplate
+      ? ((await market.leverage.repayExpectedBorrowed(
+          stateCollateral,
+          userCollateral,
+          userBorrowed,
+        )) as RepayExpectedBorrowedResult)
+      : market.leverageV2.hasLeverage()
+        ? ((await market.leverageV2.repayExpectedBorrowed(
+            stateCollateral,
+            userCollateral,
+            userBorrowed,
+          )) as RepayExpectedBorrowedResult)
+        : null
   },
+  staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
 })

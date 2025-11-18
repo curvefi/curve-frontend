@@ -4,9 +4,7 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
 import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
 
-type RepayPriceImpactResult = number
-
-export const { useQuery: useRepayFromCollateralPriceImpact } = queryFactory({
+export const { useQuery: useRepayBands } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,7 +15,7 @@ export const { useQuery: useRepayFromCollateralPriceImpact } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayPriceImpact',
+      'repayBands',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
@@ -27,14 +25,13 @@ export const { useQuery: useRepayFromCollateralPriceImpact } = queryFactory({
     stateCollateral,
     userCollateral,
     userBorrowed,
-  }: RepayFromCollateralQuery): Promise<RepayPriceImpactResult> => {
+  }: RepayFromCollateralQuery): Promise<[number, number]> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
-      ? +(await market.leverage.repayPriceImpact(stateCollateral, userCollateral))
+      ? await market.leverage.repayBands(stateCollateral, userCollateral, userBorrowed)
       : market.leverageV2.hasLeverage()
-        ? +(await market.leverageV2.repayPriceImpact(stateCollateral, userCollateral))
-        : +(await market.deleverage.priceImpact(userCollateral))
+        ? await market.leverageV2.repayBands(stateCollateral, userCollateral, userBorrowed)
+        : await market.deleverage.repayBands(userCollateral)
   },
-  staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
 })
