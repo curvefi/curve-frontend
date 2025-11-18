@@ -21,7 +21,7 @@ const { MinHeight } = SizesAndSpaces
 const useAppStats = (currentApp: string, network: NetworkDef) =>
   ({
     dao: [],
-    crvusd: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'crvusd' && network?.chainId === 1),
+    crvusd: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'crvusd'),
     lend: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'lend'),
     llamalend: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'llamalend'),
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
