@@ -35,7 +35,7 @@ type ImproveHealthCallbacks = {
   /** Callback triggered when debt balance amount changes */
   onDebtBalance: (balance: Decimal) => void
   /** Callback triggered when repay action is initiated */
-  onRepay: (debtToken: Token, debtBalance: Decimal) => void
+  onRepay: (debtBalance: Decimal) => void
   /** Callback triggered when limited approval is requested */
   onApproveLimited: () => void
   /** Callback triggered when infinite approval is requested */
@@ -66,8 +66,9 @@ export const ImproveHealth = ({
     chips: 'max' as const,
   }
 
-  const repayBalanceTooHigh = debtToken && debtBalance > (maxBalance.balance ?? 0)
-  const cantRepay = !debtToken || debtBalance === '0' || +debtBalance > +(userBalance ?? 0) || repayBalanceTooHigh
+  const repayBalanceTooHigh = debtToken && +debtBalance > +(maxBalance.balance ?? 0)
+  const cantRepay =
+    status !== 'idle' || !debtToken || +debtBalance === 0 || +debtBalance > +(userBalance ?? 0) || repayBalanceTooHigh
 
   return (
     <Stack gap={Spacing.md} sx={{ padding: Spacing.md }}>
@@ -85,10 +86,11 @@ export const ImproveHealth = ({
         walletBalance={{ balance: userBalance, symbol: debtToken?.symbol, loading: !userBalance }}
         maxBalance={maxBalance}
         message={t`Repaying debt will increase your health temporarily.`}
+        disabled={status !== 'idle'}
         onBalance={(balance) => {
           balance ??= '0'
 
-          if (debtBalance !== balance) {
+          if (+debtBalance !== +balance) {
             setDebtBalance(balance)
             onDebtBalance(balance)
           }
@@ -113,7 +115,7 @@ export const ImproveHealth = ({
           open={isOpen}
           executing={status === 'idle' ? false : status === 'repay' ? 'primary' : status}
           disabled={cantRepay}
-          onPrimary={() => onRepay(debtToken!, debtBalance)}
+          onPrimary={() => onRepay(debtBalance)}
           onOption={(id) => {
             close()
             BUTTON_OPTION_CALLBACKS[id]()

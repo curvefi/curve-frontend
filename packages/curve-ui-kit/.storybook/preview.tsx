@@ -24,12 +24,8 @@ export const decorators: Decorator[] = [
   }),
   (Story) => {
     const router = createRouter({
-      routeTree: createRootRoute({
-        component: () => <Story />,
-      }),
-      history: createMemoryHistory({
-        initialEntries: ['/'],
-      }),
+      routeTree: createRootRoute({ component: Story }),
+      history: createMemoryHistory({ initialEntries: ['/'] }),
     })
 
     return (

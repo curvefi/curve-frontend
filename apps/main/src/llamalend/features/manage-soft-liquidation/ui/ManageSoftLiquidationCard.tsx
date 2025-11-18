@@ -24,20 +24,20 @@ export type Props = {
   closePosition: ClosePositionProps
 }
 
-export const ManageSoftLiquidation = ({ actionInfos, improveHealth, closePosition }: Props) => {
+export const ManageSoftLiquidationCard = ({ actionInfos, improveHealth, closePosition }: Props) => {
   const [subTab, setSubTab] = useState<SubTab>(subTabs[0].value)
 
   return (
-    <Stack sx={{ gap: Spacing.sm }}>
+    <Stack
+      sx={{
+        gap: Spacing.sm,
+        width: { mobile: '100%', tablet: MaxWidth.actionCard },
+        marginInline: { mobile: 'auto', desktop: 0 },
+      }}
+    >
       <Stack>
         <TabsSwitcher variant="contained" size="medium" value="manage" options={tabs} fullWidth />
-        <Box
-          sx={{
-            backgroundColor: (t) => t.design.Layer[1].Fill,
-            maxWidth: MaxWidth.actionCard,
-            minWidth: MinWidth.actionCard,
-          }}
-        >
+        <Box sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <TabsSwitcher
             variant="underlined"
             size="small"

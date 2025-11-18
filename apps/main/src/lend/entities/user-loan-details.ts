@@ -6,7 +6,7 @@ import {
   _sortBands,
   helpers,
 } from '@/lend/lib/apiLending'
-import { ChainId, UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import { UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
@@ -99,7 +99,7 @@ export const { useQuery: useUserLoanDetails, invalidate: invalidateUserLoanDetai
   validationSuite: userMarketValidationSuite,
 })
 
-export const invalidateAllUserBorrowDetails = ({ chainId, marketId }: { chainId: ChainId; marketId: string }) => {
-  invalidateUserMarketBalances({ chainId, marketId })
-  invalidateUserLoanDetails({ chainId, marketId })
+export const invalidateAllUserBorrowDetails = (params: UserLoanDetailsParams) => {
+  invalidateUserMarketBalances(params)
+  invalidateUserLoanDetails(params)
 }
