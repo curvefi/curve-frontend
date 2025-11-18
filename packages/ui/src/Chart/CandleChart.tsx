@@ -13,7 +13,7 @@ import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
 import { formatNumber } from '@ui-kit/utils/'
 import type { ChartColors } from './hooks/useChartPalette'
-import type { LpPriceOhlcDataFormatted, ChartHeight, VolumeData, OraclePriceData, LiquidationRanges } from './types'
+import type { LpPriceOhlcDataFormatted, ChartHeight, OraclePriceData, LiquidationRanges } from './types'
 import { calculateRobustPriceRange } from './utils'
 
 const createPriceFormatter = () => ({
@@ -44,7 +44,6 @@ type Props = {
   hideCandleSeriesLabel: boolean
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
-  volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
@@ -65,7 +64,6 @@ const CandleChart = ({
   hideCandleSeriesLabel,
   chartHeight,
   ohlcData,
-  volumeData,
   oraclePriceData,
   liquidationRange,
   timeOption,

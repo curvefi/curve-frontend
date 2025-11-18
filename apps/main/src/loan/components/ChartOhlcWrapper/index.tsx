@@ -300,7 +300,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     betaBackgroundColor,
     themeType: theme,
     ohlcData: chartOhlcObject.data,
-    volumeData: chartLlammaOhlc.volumeData,
     oraclePriceData: chartOhlcObject.oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,

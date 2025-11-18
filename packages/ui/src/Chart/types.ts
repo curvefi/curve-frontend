@@ -53,12 +53,6 @@ export interface LpPriceOhlcDataFormatted {
   low: number
 }
 
-export interface VolumeData {
-  time: UTCTimestamp
-  value: number
-  color: string
-}
-
 export interface LlamaBaselinePriceData {
   time: UTCTimestamp
   base_price: number

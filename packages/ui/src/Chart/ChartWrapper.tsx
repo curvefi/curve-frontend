@@ -18,7 +18,6 @@ import type {
   LpPriceOhlcDataFormatted,
   OraclePriceData,
   TimeOptions,
-  VolumeData,
 } from './types'
 
 export type ChartWrapperProps = {
@@ -33,7 +32,6 @@ export type ChartWrapperProps = {
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
-  volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartIndex?: number
@@ -63,7 +61,6 @@ const ChartWrapper = ({
   chartExpanded,
   betaBackgroundColor,
   ohlcData,
-  volumeData,
   oraclePriceData,
   liquidationRange,
   selectedChartIndex,
@@ -186,7 +183,6 @@ const ChartWrapper = ({
               hideCandleSeriesLabel={hideCandleSeriesLabel}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
-              volumeData={volumeData}
               oraclePriceData={oraclePriceData}
               liquidationRange={liquidationRange}
               timeOption={timeOption}

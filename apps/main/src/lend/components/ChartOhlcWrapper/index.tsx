@@ -351,7 +351,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
     betaBackgroundColor,
     themeType: theme,
     ohlcData: currentChart.data,
-    volumeData: chartLlammaOhlc.volumeData,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,
