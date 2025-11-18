@@ -40,9 +40,9 @@ export const AlertRepayBalanceTooHigh = ({ symbol, input, userBalance, debt }: P
 
         {showDebtMessage && !showBalanceMessage && (
           <Typography variant="bodySRegular" color="textSecondary">
-            {t`You're trying to repay ${input} `}
+            {t`You're trying to repay `}
             <strong>{formatTokens({ symbol, amount: +input })}</strong>
-            {t`, but you only owe ${debt} `}
+            {t`, but you only owe `}
             <strong>{formatTokens({ symbol, amount: +debt })}</strong>
           </Typography>
         )}

@@ -12,18 +12,15 @@ const { IconSize } = SizesAndSpaces
  * Button component that redirects users to the DEX swap page with crvUSD pre-selected as the destination token.
  * Opens in a new tab and dynamically determines the network based on the current pathname.
  */
-export const ButtonGetCrvUsd = () => {
-  const networkId = getCurrentNetwork(usePathname()) ?? 'ethereum'
-  return (
-    <Button
-      component={Link}
-      color="ghost"
-      href={`${getInternalUrl('dex', networkId, DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`}
-      target="_blank"
-      size="extraSmall"
-      endIcon={<CallMade sx={{ width: IconSize.md, height: IconSize.md }} />}
-    >
-      Get crvUSD
-    </Button>
-  )
-}
+export const ButtonGetCrvUsd = () => (
+  <Button
+    component={Link}
+    color="ghost"
+    href={`${getInternalUrl('dex', getCurrentNetwork(usePathname()) ?? 'ethereum', DEX_ROUTES.PAGE_SWAP)}?to=${CRVUSD_ADDRESS}`}
+    target="_blank"
+    size="extraSmall"
+    endIcon={<CallMade sx={{ width: IconSize.md, height: IconSize.md }} />}
+  >
+    Get crvUSD
+  </Button>
+)

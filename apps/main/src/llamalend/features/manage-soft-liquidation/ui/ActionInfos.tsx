@@ -16,7 +16,7 @@ const { Spacing } = SizesAndSpaces
 export type Props = {
   loading?: boolean
   health: HealthProps
-  loan: {
+  loanInfo: {
     borrowRate?: BorrowRateProps
     debt?: DebtProps
     ltv?: LtvProps
@@ -36,7 +36,7 @@ export type Props = {
 export const ActionInfos = ({
   loading = false,
   health,
-  loan: { borrowRate, debt, ltv, collateral },
+  loanInfo: { borrowRate, debt, ltv, collateral },
   collateral: { borrowed, leverage, assetsToWithdraw },
   transaction: { estimatedTxCost },
 }: Props) => (
