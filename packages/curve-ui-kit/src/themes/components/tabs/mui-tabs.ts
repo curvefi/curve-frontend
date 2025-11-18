@@ -44,7 +44,7 @@ const BORDER_SIZE_LARGE = '4px' as const
  *    keeping color changes instantenously.
  */
 
-export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components['MuiTab'] => ({
+export const defineMuiTab = ({ Tabs: { Transition }, Text }: DesignSystem): Components['MuiTab'] => ({
   styleOverrides: {
     root: {
       transition: Transition,
@@ -60,6 +60,16 @@ export const defineMuiTab = ({ Tabs: { Transition } }: DesignSystem): Components
         content: '""',
         position: 'absolute',
         height: BORDER_SIZE,
+      },
+      // Count typography color states
+      '& .tab-end-adornment': {
+        color: Text.TextColors.Tertiary,
+      },
+      '&:hover .tab-end-adornment': {
+        color: 'inherit',
+      },
+      '&.Mui-selected .tab-end-adornment': {
+        color: Text.TextColors.Secondary,
       },
     },
   },

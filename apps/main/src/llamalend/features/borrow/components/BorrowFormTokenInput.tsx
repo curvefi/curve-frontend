@@ -1,5 +1,9 @@
 import { useCallback, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
+import { useAccount } from 'wagmi'
+import type { INetworkName, IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { BaseConfig } from '@ui/utils'
+import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { Decimal } from '@ui-kit/utils'
@@ -16,10 +20,11 @@ export const BorrowFormTokenInput = ({
   token,
   name,
   max,
-  isLoading,
+  isLoading: isMaxLoading,
   isError,
   form,
   testId,
+  network,
 }: {
   label: string
   token: Token | undefined
@@ -29,26 +34,36 @@ export const BorrowFormTokenInput = ({
   name: keyof typeof maxField
   form: UseFormReturn<BorrowForm>
   testId?: string
-}) => (
-  <LargeTokenInput
-    name={name}
-    label={label}
-    testId={testId}
-    tokenSelector={
-      <TokenLabel
-        blockchainId={token?.chain}
-        tooltip={token?.symbol}
-        address={token?.address}
-        label={token?.symbol ?? '?'}
-      />
-    }
-    onBalance={useCallback((v?: Decimal) => form.setValue(name, v, setValueOptions), [form, name])}
-    isError={isError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
-    message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
-    walletBalance={useMemo(
-      () => ({ balance: undefined, symbol: token?.symbol, loading: isLoading }),
-      [isLoading, token],
-    )}
-    maxBalance={useMemo(() => ({ balance: max, chips: 'max' }), [max])}
-  />
-)
+  network: BaseConfig<INetworkName, IChainId>
+}) => {
+  const { address: userAddress } = useAccount()
+  const {
+    data: balance,
+    isLoading: isBalanceLoading,
+    isError: isBalanceError,
+  } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
+  return (
+    <LargeTokenInput
+      name={name}
+      label={label}
+      testId={testId}
+      tokenSelector={
+        <TokenLabel
+          blockchainId={token?.chain}
+          tooltip={token?.symbol}
+          address={token?.address}
+          label={token?.symbol ?? '?'}
+        />
+      }
+      onBalance={useCallback((v?: Decimal) => form.setValue(name, v, setValueOptions), [form, name])}
+      isError={isError || isBalanceError || !!form.formState.errors[name] || !!form.formState.errors[maxField[name]]}
+      message={form.formState.errors[name]?.message ?? form.formState.errors[maxField[name]]?.message}
+      walletBalance={useMemo(
+        // todo: separate isLoading for balance and for maxBalance
+        () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading || isMaxLoading }),
+        [balance, isMaxLoading, isBalanceLoading, token?.symbol],
+      )}
+      maxBalance={useMemo(() => ({ balance: max, chips: 'max' }), [max])}
+    />
+  )
+}

@@ -90,7 +90,7 @@ export const TableSearchField = ({ value, onChange, testId, toggleExpanded, isEx
   ) : (
     <Box
       sx={{
-        width: { mobile: '100%', tablet: '478px' },
+        width: '100%',
         maxWidth: '100%',
       }}
     >

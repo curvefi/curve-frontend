@@ -91,6 +91,7 @@ const InpTokenRemove = ({
   ) : (
     <LargeTokenInput
       name="collateral"
+      label={t`Collateral to remove`}
       isError={!!inpError}
       message={
         inpError === 'too-much'

@@ -32,9 +32,10 @@ import {
 } from '@ui/Chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
-import { useNavigate, useParams } from '@ui-kit/hooks/router'
+import { useParams } from '@ui-kit/hooks/router'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { ErrorPage } from '@ui-kit/pages/ErrorPage'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -47,7 +48,6 @@ const Page = () => {
   const { llamaApi: api = null, connectState } = useConnection()
   const titleMapper = useTitleMapper()
   const { provider, connect } = useWallet()
-  const push = useNavigate()
 
   const isPageVisible = useLayoutStore((state) => state.isPageVisible)
   const isMdUp = useLayoutStore((state) => state.isMdUp)
@@ -79,13 +79,6 @@ const Page = () => {
     borrowToken: market?.borrowed_token,
     network,
   })
-
-  useEffect(() => {
-    if (isSuccess && !market) {
-      console.warn(`Market ${rMarket} not found. Redirecting to market list.`)
-      push(getCollateralListPathname(params))
-    }
-  }, [isSuccess, market, params, push, rMarket])
 
   useEffect(() => {
     // delay fetch rest after form details are fetched first
@@ -129,20 +122,9 @@ const Page = () => {
     supply: getVaultPathname(params, rOwmId, 'deposit'),
   }
 
-  if (!provider) {
-    return (
-      <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
-        <ConnectWalletPrompt
-          description={t`Connect your wallet to view market`}
-          connectText={t`Connect`}
-          loadingText={t`Connecting`}
-          connectWallet={() => connect()}
-          isLoading={isLoading(connectState)}
-        />
-      </Box>
-    )
-  }
-  return (
+  return isSuccess && !market ? (
+    <ErrorPage title="404" subtitle={t`Market Not Found`} continueUrl={getCollateralListPathname(params)} />
+  ) : provider ? (
     <>
       {chartExpanded && network.pricesData && (
         <PriceAndTradesExpandedContainer>
@@ -197,6 +179,16 @@ const Page = () => {
         </Stack>
       </DetailPageStack>
     </>
+  ) : (
+    <Box display="flex" fillWidth flexJustifyContent="center" margin="var(--spacing-3) 0">
+      <ConnectWalletPrompt
+        description={t`Connect your wallet to view market`}
+        connectText={t`Connect`}
+        loadingText={t`Connecting`}
+        connectWallet={() => connect()}
+        isLoading={isLoading(connectState)}
+      />
+    </Box>
   )
 }
 
