@@ -6,7 +6,7 @@ import {
   _sortBands,
   helpers,
 } from '@/lend/lib/apiLending'
-import { UserLoss, ParsedBandsBalances, HealthColorKey } from '@/lend/types/lend.types'
+import { UserLoss, ParsedBandsBalances, HealthColorKey, ChainId } from '@/lend/types/lend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
