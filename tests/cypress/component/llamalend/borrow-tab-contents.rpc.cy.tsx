@@ -36,13 +36,12 @@ const MARKETS = {
 const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
 
 const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
-const onCreated: CreateLoanOptions['onCreated'] = async (...args) => console.info('form created', ...args)
 
-type BorrowTabTestProps = { type: LlamaMarketType }
+type BorrowTabTestProps = { type: LlamaMarketType } & Pick<CreateLoanOptions, 'onCreated'>
 
 const prefetch = () => prefetchMarkets({})
 
-function BorrowTabTest({ type }: BorrowTabTestProps) {
+function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
   const { isHydrated, llamaApi } = useConnection()
   const { id } = MARKETS[type]
   const market = useMemo(
@@ -105,7 +104,8 @@ describe('BorrowTabContents Component Tests', () => {
   const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
   it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
-    cy.mount(<BorrowTabTestWrapper type={marketType} />)
+    const onCreated = cy.stub()
+    cy.mount(<BorrowTabTestWrapper type={marketType} onCreated={onCreated} />)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]', LOAD_TIMEOUT).should('exist')
     cy.get('[data-testid="borrow-collateral-input"] input[type="text"]').first().type(collateral)
     cy.get('[data-testid="borrow-debt-input"] [data-testid="balance-value"]').should('not.contain.text', '?')
@@ -140,7 +140,9 @@ describe('BorrowTabContents Component Tests', () => {
     }
 
     cy.get('[data-testid="borrow-form-errors"]').should('not.exist')
-    // todo: actually sign a transaction with the wagmi test connector and start a loan
-    cy.get('[data-testid="borrow-submit-button"]').should('be.enabled')
+    cy.get('[data-testid="borrow-submit-button"]').click()
+    cy.get('[data-testid="borrow-submit-button"]').should('be.disabled')
+    cy.get('[data-testid="borrow-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="borrow-submit-button"]').then(() => expect(onCreated).to.be.called)
   })
 })

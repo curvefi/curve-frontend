@@ -33,11 +33,7 @@ export const createVirtualTestnet = ({
     .request({
       method: 'POST',
       url: `https://api.tenderly.co/api/v1/account/${accountSlug}/project/${projectSlug}/vnets`,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        'X-Access-Key': accessKey,
-      },
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json', 'X-Access-Key': accessKey },
       body: createOptions,
       failOnStatusCode: false,
     })

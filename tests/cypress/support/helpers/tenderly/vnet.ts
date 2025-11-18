@@ -39,7 +39,18 @@ export function createTestWagmiConfigFromVNet({
   privateKey?: Hex
 }) {
   const { adminRpcUrl: rpcUrl, publicRpcUrl: explorerUrl } = getRpcUrls(vnet)
-  return createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId: vnet.fork_config.network_id })
+  return createTestWagmiConfig({
+    privateKey,
+    rpcUrl,
+    explorerUrl,
+    chainId: vnet.fork_config.network_id,
+    tenderly: {
+      accountSlug: tenderlyAccount.accountSlug,
+      projectSlug: tenderlyAccount.projectSlug,
+      accessKey: tenderlyAccount.accessKey,
+      vnetId: vnet.id,
+    },
+  })
 }
 
 /**
