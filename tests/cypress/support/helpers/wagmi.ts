@@ -1,5 +1,6 @@
 import { defineChain, http, type Hex } from 'viem'
 import { mainnet, arbitrum } from 'viem/chains'
+import type { TenderlyConfig } from '@cy/support/helpers/tenderly/account'
 import { createWagmiConfig } from '@ui-kit/features/connect-wallet'
 import { createTestConnector } from './test-connector'
 
@@ -13,6 +14,8 @@ type Options = {
   explorerUrl?: string
   /** Chain ID for the test network */
   chainId: number | string
+  /** Tenderly configuration  */
+  tenderly: TenderlyConfig
 }
 
 /**
@@ -21,7 +24,7 @@ type Options = {
  * @param options - Configuration options
  * @returns Configured Wagmi config instance for testing
  */
-export function createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId }: Options) {
+export function createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId, tenderly }: Options) {
   // Tenderly docs recommends using chain ID 73571 to prevent replay attack, but a lot of our code relies on `if chain === Chain.Ethereum`.
   // Should be okay, since we're not using real life wallets. A browser wallet extension isn't even available.
   const chainDef = [mainnet, arbitrum].find((c) => c.id === +chainId) as typeof mainnet
@@ -36,6 +39,6 @@ export function createTestWagmiConfig({ privateKey, rpcUrl, explorerUrl, chainId
   return createWagmiConfig({
     chains: [chain],
     transports: { [chain.id]: http(rpcUrl) },
-    connectors: [createTestConnector({ privateKey, chain })],
+    connectors: [createTestConnector({ privateKey, chain, tenderly })],
   })
 }
