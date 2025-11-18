@@ -52,7 +52,7 @@ export const ClosePosition = ({
 
       <Metric
         label={t`Collateral to recover`}
-        value={collateralToRecover == null ? undefined : collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
+        value={collateralToRecover && collateralToRecover.reduce((acc, x) => acc + x.usd, 0)}
         valueOptions={{ unit: 'dollar' }}
         notional={(collateralToRecover ?? [])
           .filter((x) => +(x.amount ?? '0') > 0)
