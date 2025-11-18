@@ -1,12 +1,12 @@
 import { useCallback } from 'react'
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { useMutation } from '@tanstack/react-query'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
@@ -37,25 +37,24 @@ export const useRepayMutation = ({ network, marketId, onRepaid }: RepayOptions) 
   const userAddress = wallet?.account.address
   const mutationKey = ['manage-loan', 'repay', { chainId, marketId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation, Hex>({
+    marketId,
     mutationKey,
-    mutationFn: useCallback(
-      async (mutation: RepayMutation) => {
-        assertValidity(repayFromCollateralValidationSuite, { chainId, marketId, userAddress, ...mutation })
-        const market = getLlamaMarket(marketId!)
-        const hash = await repay(market, mutation)
-        await waitForTransactionReceipt(config, { hash })
-        return hash
-      },
-      [chainId, config, marketId, userAddress],
-    ),
-    onSuccess: async (txHash, mutation) => {
+    mutationFn: async (mutation, { market }) => {
+      assertValidity(repayFromCollateralValidationSuite, { chainId, marketId, userAddress, ...mutation })
+      const hash = await repay(market, mutation)
+      await waitForTransactionReceipt(config, { hash })
+      return hash
+    },
+    pendingMessage: t`Repaying debt`,
+    onSuccess: async (txHash, mutation, { market }) => {
       logSuccess(mutationKey, txHash)
       notify(t`Debt repaid successfully`, 'success')
       await invalidateUserMarketQueries({ marketId, userAddress })
-      updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
+      updateUserEventsApi(wallet!, network, market, txHash)
       onRepaid?.(txHash, { ...mutation, txHash })
     },
+    onError: (error) => notify(error.message, 'error'),
   })
 
   const onSubmit = useCallback((form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])

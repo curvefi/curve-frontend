@@ -4,7 +4,7 @@ import { useConfig } from 'wagmi'
 import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
 import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import { useMutation } from '@tanstack/react-query'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
@@ -33,26 +33,26 @@ export const useRemoveCollateralMutation = ({ network, marketId, onRemoved }: Re
   const userAddress = wallet?.account.address
   const mutationKey = ['manage-loan', 'remove-collateral', { chainId, marketId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RemoveCollateralMutation, Hex>({
+    marketId,
     mutationKey,
-    mutationFn: useCallback(
-      async (mutation: RemoveCollateralMutation) => {
-        if (!marketId) throw new Error('Missing marketId')
-        const { userCollateral } = mutation
-        assertValidity(collateralValidationSuite, { chainId, marketId, userAddress, userCollateral })
-        const hash = await removeCollateral(marketId, mutation)
-        await waitForTransactionReceipt(config, { hash })
-        return hash
-      },
-      [chainId, config, marketId, userAddress],
-    ),
-    onSuccess: async (txHash, mutation) => {
+    mutationFn: async (mutation) => {
+      if (!marketId) throw new Error('Missing marketId')
+      const { userCollateral } = mutation
+      assertValidity(collateralValidationSuite, { chainId, marketId, userAddress, userCollateral })
+      const hash = await removeCollateral(marketId, mutation)
+      await waitForTransactionReceipt(config, { hash })
+      return hash
+    },
+    pendingMessage: t`Removing collateral`,
+    onSuccess: async (txHash, mutation, { market }) => {
       logSuccess(mutationKey, txHash)
       notify(t`Collateral removed successfully`, 'success')
       await invalidateUserMarketQueries({ marketId, userAddress })
-      updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
+      updateUserEventsApi(wallet!, network, market, txHash)
       onRemoved?.(txHash, { ...mutation, txHash })
     },
+    onError: (error) => notify(error.message, 'error'),
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as RemoveCollateralMutation), [mutateAsync])

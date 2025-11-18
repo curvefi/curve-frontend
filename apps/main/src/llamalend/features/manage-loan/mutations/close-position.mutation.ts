@@ -5,35 +5,36 @@ import { useConfig } from 'wagmi'
 // and the lend app uses those split up queries from llamalend app.
 // eslint-disable-next-line import/no-restricted-paths
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
-import { getTokens } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/invalidation'
 import { notify } from '@ui-kit/features/connect-wallet'
+import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys, type UserMarketParams } from '@ui-kit/lib/model'
 import { waitForTransactionReceipt } from '@wagmi/core'
 
-const getSymbol = (market?: LlamaMarketTemplate) => (market && getTokens(market))?.borrowToken?.symbol ?? '?'
-
-export function useRepay(params: UserMarketParams) {
+/**
+ * Hook for closing a market position by self liquidating the user's position
+ * @param params - The user market params to close the position for
+ * @returns Mutation object for closing the position
+ */
+export function useClosePositionMutation(params: UserMarketParams) {
   const { marketId } = params
+  const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const config = useConfig()
 
-  return useLlammaMutation({
-    mutationKey: [...rootKeys.userMarket(params), 'repay'] as const,
+  return useLlammaMutation<void, { hash: Hex }>({
+    mutationKey: [...rootKeys.userMarket(params), 'close-position'] as const,
     marketId,
-    mutationFn: async ({ debt }: { debt: string }, { market }) => {
-      // TODO: Doesn't support leveraged lend and mint markets yet.
-      // see const { loanRepay } = apiLending when you get to it
-      const hash = (await market.repay(+debt)) as Hex
+    mutationFn: async (_: void, { market }) => {
+      const hash = (await market.selfLiquidate(+maxSlippage)) as Hex
       await waitForTransactionReceipt(config, { hash })
 
       return { hash }
     },
-    pendingMessage: ({ debt }, market) => t`Repaying debt: ${debt} ${getSymbol(market)}`,
-    onSuccess: (_, { debt }: { debt: string }, { market }) => {
-      notify(t`Repaid debt: ${debt} ${getSymbol(market)}`, 'success')
+    pendingMessage: t`Closing position`,
+    onSuccess: () => {
+      notify(t`Position closed`, 'success')
       invalidateAllUserMarketDetails(params) //TODO: There's no nice and easy way to reset mint market user state yet
       invalidateAllUserBorrowDetails(params)
     },

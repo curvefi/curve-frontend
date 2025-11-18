@@ -1,8 +1,9 @@
 import { useCallback } from 'react'
-import { Hex } from 'viem'
+import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
 import type {
   IChainId as LlamaChainId,
@@ -11,7 +12,6 @@ import type {
 } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import { useMutation } from '@tanstack/react-query'
 import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
@@ -66,35 +66,34 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
   const { chainId } = network
   const mutationKey = ['create-loan', { chainId, marketId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMutation, Hex>({
+    marketId,
     mutationKey,
-    mutationFn: useCallback(
-      async (mutation: BorrowMutation) => {
-        assertValidity(borrowFormValidationSuite, mutation)
-        const market = getLlamaMarket(marketId!)
+    mutationFn: async (mutation, { market }) => {
+      assertValidity(borrowFormValidationSuite, mutation)
 
-        const params = { ...mutation, chainId, marketId }
-        await waitForApproval({
-          isApproved: () => fetchBorrowCreateLoanIsApproved(params),
-          onApprove: () => approve(market, mutation),
-          message: t`Approved loan creation`,
-          config,
-        })
+      const params = { ...mutation, chainId, marketId }
+      await waitForApproval({
+        isApproved: () => fetchBorrowCreateLoanIsApproved(params),
+        onApprove: () => approve(market, mutation),
+        message: t`Approved loan creation`,
+        config,
+      })
 
-        const hash = await create(market, mutation)
-        await waitForTransactionReceipt(config, { hash })
-        return hash
-      },
-      [marketId, chainId, config],
-    ),
-    onSuccess: async (txHash, mutation) => {
+      const hash = await create(market, mutation)
+      await waitForTransactionReceipt(config, { hash })
+      return hash
+    },
+    pendingMessage: t`Creating loan`,
+    onSuccess: async (txHash, mutation, { market }) => {
       logSuccess(mutationKey, txHash)
       notify(t`Loan created successfully`, 'success')
       const userAddress = wallet?.account.address
       await invalidateUserMarketQueries({ marketId, userAddress })
-      updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
+      updateUserEventsApi(wallet!, network, market, txHash)
       onCreated(txHash, { ...mutation, txHash })
     },
+    onError: (error) => notify(error.message, 'error'),
   })
 
   const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])
