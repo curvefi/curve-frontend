@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
+import { Grays } from '@ui-kit/themes/design/0_primitives'
 
 export type ChartColors = {
   backgroundColor: string
   lineColor: string
   textColor: string
+  gridLine: string
   green: string
   red: string
   cursorLabel: string
@@ -38,7 +40,7 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const primary = theme.palette.primary.main
   const success = theme.design.Chart.Candles.Positive
   const error = theme.design.Chart.Candles.Negative
-  const textPrimary = theme.palette.text.primary
+  const textPrimary = theme.palette.text.tertiary
   const textHighlight = theme.palette.text.highlight
   const rangeLineTop = error
   const rangeLineBottom = theme.design.Chart.Lines.Line2
@@ -48,12 +50,14 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const rangeBackgroundFuture = theme.design.Chart.LiquidationZone.Future
   const oraclePrice = primary
   const cursorVertLine = theme.design.Chart.Lines.Line1
+  const gridLine = Grays[300]
 
   return useMemo(
     () => ({
       backgroundColor,
       lineColor: primary,
       textColor: textPrimary,
+      gridLine,
       green: success,
       red: error,
       cursorLabel: textHighlight,
@@ -72,6 +76,7 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
       backgroundColor,
       primary,
       textPrimary,
+      gridLine,
       success,
       error,
       textHighlight,
