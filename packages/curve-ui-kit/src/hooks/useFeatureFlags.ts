@@ -26,3 +26,10 @@ export const useBorrowUnifiedForm = useBetaChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
+
+/**
+ * New card for managing soft liquidations
+ * Temporarily disabled until we have a Tenderly account again so we can test for lend markets,
+ * but also I want to see the feature implementation to be progressed further along.
+ */
+export const useManageSoftLiquidation = () => false

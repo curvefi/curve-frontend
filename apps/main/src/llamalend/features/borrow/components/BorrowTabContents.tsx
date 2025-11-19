@@ -71,6 +71,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
     txHash,
     formErrors,
     tooMuchDebt,
+    isApproved,
   } = useBorrowForm({ market, network, preset, onCreated })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
   useFormSync(values, onUpdate)
@@ -87,6 +88,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   <BorrowFormTokenInput
                     label={t`Collateral`}
                     token={collateralToken}
+                    blockchainId={network.id}
                     name="userCollateral"
                     form={form}
                     isLoading={maxTokenValues.isCollateralLoading}
@@ -98,6 +100,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   <BorrowFormTokenInput
                     label={t`Borrow`}
                     token={borrowToken}
+                    blockchainId={network.id}
                     name="debt"
                     form={form}
                     isLoading={maxTokenValues.isDebtLoading}
@@ -139,7 +142,7 @@ export const BorrowTabContents = <ChainId extends IChainId>({
                   disabled={formErrors.length > 0}
                   data-testid="borrow-submit-button"
                 >
-                  {isPending ? t`Processing...` : t`Approve & Borrow`}
+                  {isPending ? t`Processing...` : isApproved ? t`Borrow` : t`Approve & Borrow`}
                 </Button>
 
                 <BorrowFormAlert

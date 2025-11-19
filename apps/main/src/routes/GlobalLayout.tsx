@@ -1,12 +1,9 @@
 import { type ReactNode } from 'react'
 import daoNetworks from '@/dao/networks'
 import { useDexAppStats, useDexRoutes } from '@/dex/hooks/useDexAppStats'
-import { useLendAppStats } from '@/lend/hooks/useLendAppStats'
 import lendNetworks from '@/lend/networks'
 import { useLlamalendAppStats } from '@/llamalend/hooks/useLlamalendAppStats'
-import { useLoanAppStats } from '@/loan/hooks/useLoanAppStats'
 import crvusdNetworks from '@/loan/networks'
-import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import type { NetworkDef, NetworkMapping } from '@ui/utils'
@@ -24,9 +21,9 @@ const { MinHeight } = SizesAndSpaces
 const useAppStats = (currentApp: string, network: NetworkDef) =>
   ({
     dao: [],
-    crvusd: useLoanAppStats(currentApp === 'crvusd' && network?.chainId === 1 ? 1 : undefined),
-    lend: useLendAppStats(currentApp === 'lend' ? (network?.chainId as LlamaChainId) : undefined),
-    llamalend: useLlamalendAppStats(currentApp === 'llamalend'),
+    crvusd: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'crvusd' && network?.chainId === 1),
+    lend: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'lend'),
+    llamalend: useLlamalendAppStats({ chainId: network?.chainId }, currentApp === 'llamalend'),
     dex: useDexAppStats(currentApp === 'dex' ? network : undefined),
   })[currentApp]
 
