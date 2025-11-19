@@ -1,15 +1,15 @@
 import { group } from 'vest'
-import type {
-  CollateralHealthParams,
-  CollateralParams,
-  RepayFromCollateralHealthParams,
-  RepayFromCollateralParams,
-} from '@/llamalend/features/manage-loan/queries/manage-loan.types'
 import {
   validateIsFull,
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
+import type {
+  CollateralHealthParams,
+  CollateralParams,
+  RepayFromCollateralHealthParams,
+  RepayFromCollateralParams,
+} from '@/llamalend/queries/validation/manage-loan.types'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'

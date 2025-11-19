@@ -1,19 +1,22 @@
 import { useCallback } from 'react'
 import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
+import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
+import {
+  repayFromCollateralValidationSuite,
+  type RepayForm,
+} from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import type { Decimal } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
-import { repayFromCollateralValidationSuite, type RepayForm } from '../queries/manage-loan.validation'
 
 type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBorrowed: Decimal }
 

@@ -2,8 +2,8 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { type Decimal } from '@ui-kit/utils'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
+import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
+import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
 
 type RepayExpectedBorrowedResult = {
   totalBorrowed: Decimal

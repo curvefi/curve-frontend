@@ -5,14 +5,16 @@ import type { Decimal } from '@ui-kit/utils'
 
 export type CollateralQuery<T = IChainId> = UserMarketQuery<T> & { userCollateral: Decimal }
 
-export type CollateralHealthQuery<T = IChainId> = CollateralQuery<T> & { isFull: boolean }
+type HealthQuery = { isFull: boolean }
+
+export type CollateralHealthQuery<T = IChainId> = CollateralQuery<T> & HealthQuery
 
 export type RepayFromCollateralQuery<T = IChainId> = CollateralQuery<T> & {
   stateCollateral: Decimal
   userBorrowed: Decimal
 }
 
-export type RepayFromCollateralHealthQuery<T = IChainId> = RepayFromCollateralQuery<T> & { isFull: boolean }
+export type RepayFromCollateralHealthQuery<T = IChainId> = RepayFromCollateralQuery<T> & HealthQuery
 
 export type RepayFromCollateralParams<T = IChainId> = FieldsOf<RepayFromCollateralQuery<T>>
 export type RepayFromCollateralHealthParams<T = IChainId> = FieldsOf<RepayFromCollateralHealthQuery<T>>

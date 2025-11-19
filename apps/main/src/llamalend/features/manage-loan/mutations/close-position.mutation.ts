@@ -6,7 +6,8 @@ import { useConfig } from 'wagmi'
 // eslint-disable-next-line import/no-restricted-paths
 import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-details'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { invalidateAllUserMarketDetails } from '@/llamalend/queries/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -18,7 +19,7 @@ import { waitForTransactionReceipt } from '@wagmi/core'
  * @param params - The user market params to close the position for
  * @returns Mutation object for closing the position
  */
-export function useClosePositionMutation(params: UserMarketParams) {
+export function useClosePositionMutation(params: UserMarketParams<IChainId>) {
   const { marketId } = params
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   const config = useConfig()

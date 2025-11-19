@@ -6,17 +6,17 @@ import {
   type RemoveCollateralOptions,
   useRemoveCollateralMutation,
 } from '@/llamalend/features/manage-loan/mutations/remove-collateral.mutation'
-import type { CollateralParams } from '@/llamalend/features/manage-loan/queries/manage-loan.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useRemoveCollateralBands } from '@/llamalend/queries/remove-collateral/remove-collateral-bands.query'
+import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
+import { useRemoveCollateralHealth } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
+import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
+import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
+import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   collateralFormValidationSuite,
   type CollateralForm,
-} from '@/llamalend/features/manage-loan/queries/manage-loan.validation'
-import { useRemoveCollateralBands } from '@/llamalend/features/manage-loan/queries/remove-collateral/remove-collateral-bands.query'
-import { useRemoveCollateralEstimateGas } from '@/llamalend/features/manage-loan/queries/remove-collateral/remove-collateral-gas-estimate.query'
-import { useRemoveCollateralHealth } from '@/llamalend/features/manage-loan/queries/remove-collateral/remove-collateral-health.query'
-import { useMaxRemovableCollateral } from '@/llamalend/features/manage-loan/queries/remove-collateral/remove-collateral-max-removable.query'
-import { useRemoveCollateralPrices } from '@/llamalend/features/manage-loan/queries/remove-collateral/remove-collateral-prices.query'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+} from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'

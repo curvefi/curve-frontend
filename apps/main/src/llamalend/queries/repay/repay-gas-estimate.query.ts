@@ -5,8 +5,8 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { RepayFromCollateralQuery } from '../manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
+import type { RepayFromCollateralQuery } from '../validation/manage-loan.types'
+import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
 
 type RepayFromCollateralGasQuery<T = IChainId> = RepayFromCollateralQuery<T>
 type RepayFromCollateralGasParams<T = IChainId> = FieldsOf<RepayFromCollateralGasQuery<T>>

@@ -6,17 +6,17 @@ import {
   type AddCollateralOptions,
   useAddCollateralMutation,
 } from '@/llamalend/features/manage-loan/mutations/add-collateral.mutation'
-import { useAddCollateralIsApproved } from '@/llamalend/features/manage-loan/queries/add-collateral/add-collateral-approved.query'
-import { useAddCollateralBands } from '@/llamalend/features/manage-loan/queries/add-collateral/add-collateral-bands.query'
-import { useAddCollateralEstimateGas } from '@/llamalend/features/manage-loan/queries/add-collateral/add-collateral-gas-estimate.query'
-import { useAddCollateralHealth } from '@/llamalend/features/manage-loan/queries/add-collateral/add-collateral-health.query'
-import { useAddCollateralPrices } from '@/llamalend/features/manage-loan/queries/add-collateral/add-collateral-prices.query'
-import type { CollateralParams } from '@/llamalend/features/manage-loan/queries/manage-loan.types'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
+import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
+import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
+import { useAddCollateralHealth } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
+import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   collateralFormValidationSuite,
   type CollateralForm,
-} from '@/llamalend/features/manage-loan/queries/manage-loan.validation'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+} from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
 import type { BaseConfig } from '@ui/utils'

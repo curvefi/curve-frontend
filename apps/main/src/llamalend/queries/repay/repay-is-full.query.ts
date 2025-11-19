@@ -1,12 +1,10 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
+import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
+import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
 
-type RepayPriceImpactResult = number
-
-export const { useQuery: useRepayPriceImpact } = queryFactory({
+export const { useQuery: useRepayIsFull } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -17,7 +15,7 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayPriceImpact',
+      'repayIsFull',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
@@ -27,13 +25,14 @@ export const { useQuery: useRepayPriceImpact } = queryFactory({
     stateCollateral,
     userCollateral,
     userBorrowed,
-  }: RepayFromCollateralQuery): Promise<RepayPriceImpactResult> => {
+    userAddress,
+  }: RepayFromCollateralQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
-      ? +(await market.leverage.repayPriceImpact(stateCollateral, userCollateral))
+      ? await market.leverage.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
       : market.leverageV2.hasLeverage()
-        ? +(await market.leverageV2.repayPriceImpact(stateCollateral, userCollateral))
-        : +(await market.deleverage.priceImpact(userCollateral))
+        ? await market.leverageV2.repayIsFull(stateCollateral, userCollateral, userBorrowed, userAddress)
+        : await market.deleverage.isFullRepayment(userCollateral, userAddress)
   },
   staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,

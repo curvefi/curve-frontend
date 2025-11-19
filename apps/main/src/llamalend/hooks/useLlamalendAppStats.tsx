@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
 import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
+import { fetchJson } from '@curvefi/prices-api/fetch'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { queryFactory } from '@ui-kit/lib/model'
@@ -11,9 +12,10 @@ import { CRVUSD_ADDRESS, decimal, formatNumber, formatUsd } from '@ui-kit/utils'
 const { useQuery: useAppStatsDailyVolume } = queryFactory({
   queryKey: () => ['appStatsDailyVolume'] as const,
   queryFn: async () => {
-    const resp = await fetch('https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms')
-    const { data } = (await resp.json()) as { data: { totalVolume: number } }
-    return data.totalVolume
+    const resp = await fetchJson<{ data: { totalVolume: number } }>(
+      'https://api.curve.finance/api/getVolumes/ethereum/crvusd-amms',
+    )
+    return resp.data.totalVolume
   },
   validationSuite: EmptyValidationSuite,
 })

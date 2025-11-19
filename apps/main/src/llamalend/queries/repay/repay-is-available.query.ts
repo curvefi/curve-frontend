@@ -1,10 +1,10 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../manage-loan.types'
-import { repayFromCollateralValidationSuite } from '../manage-loan.validation'
+import { type RepayFromCollateralParams, type RepayFromCollateralQuery } from '../validation/manage-loan.types'
+import { repayFromCollateralValidationSuite } from '../validation/manage-loan.validation'
 
-export const { useQuery: useRepayBands } = queryFactory({
+export const { useQuery: useRepayIsAvailable } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
@@ -15,7 +15,7 @@ export const { useQuery: useRepayBands } = queryFactory({
   }: RepayFromCollateralParams) =>
     [
       ...rootKeys.userMarket({ chainId, marketId, userAddress }),
-      'repayBands',
+      'repayIsAvailable',
       { stateCollateral },
       { userCollateral },
       { userBorrowed },
@@ -25,13 +25,15 @@ export const { useQuery: useRepayBands } = queryFactory({
     stateCollateral,
     userCollateral,
     userBorrowed,
-  }: RepayFromCollateralQuery): Promise<[number, number]> => {
+    userAddress,
+  }: RepayFromCollateralQuery): Promise<boolean> => {
     const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
-      ? await market.leverage.repayBands(stateCollateral, userCollateral, userBorrowed)
+      ? await market.leverage.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
       : market.leverageV2.hasLeverage()
-        ? await market.leverageV2.repayBands(stateCollateral, userCollateral, userBorrowed)
-        : await market.deleverage.repayBands(userCollateral)
+        ? await market.leverageV2.repayIsAvailable(stateCollateral, userCollateral, userBorrowed, userAddress)
+        : await market.deleverage.isAvailable(userCollateral, userAddress)
   },
+  staleTime: '1m',
   validationSuite: repayFromCollateralValidationSuite,
 })
