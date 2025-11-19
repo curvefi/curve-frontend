@@ -2,14 +2,22 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
-import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
-import { maxBorrowReceiveKey } from './borrow-max-receive.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
+import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-export const { useQuery: useBorrowHealth } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed, userCollateral, debt, leverageEnabled, range }: BorrowFormQueryParams) =>
+export const { useQuery: useCreateLoanHealth } = queryFactory({
+  queryKey: ({
+    chainId,
+    marketId,
+    userBorrowed,
+    userCollateral,
+    debt,
+    leverageEnabled,
+    range,
+  }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanHealth',
       { userCollateral },
       { userBorrowed },
@@ -18,14 +26,14 @@ export const { useQuery: useBorrowHealth } = queryFactory({
       { range },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
   }: BorrowFormQuery): Promise<number> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof LendMarketTemplate
         ? +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
@@ -37,7 +45,7 @@ export const { useQuery: useBorrowHealth } = queryFactory({
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
   dependencies: (params) => [
-    maxBorrowReceiveKey(params),
-    ...(params.leverageEnabled ? [borrowExpectedCollateralQueryKey(params)] : []),
+    createLoanMaxReceiveKey(params),
+    ...(params.leverageEnabled ? [createLoanExpectedCollateralQueryKey(params)] : []),
   ],
 })

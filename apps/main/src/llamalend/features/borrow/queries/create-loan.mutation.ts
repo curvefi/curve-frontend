@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 import { Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { getLlamaMarket, updateUserEventsApi } from '@/llamalend/llama.utils'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -16,18 +15,17 @@ import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { queryClient } from '@ui-kit/lib/api/query-client'
 import { t } from '@ui-kit/lib/i18n'
-import { Address } from '@ui-kit/utils'
+import { Address, Amount, Decimal } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
-import { fetchBorrowCreateLoanIsApproved } from '../queries/borrow-create-loan-approved.query'
-import { borrowExpectedCollateralQueryKey } from '../queries/borrow-expected-collateral.query'
 import type { BorrowForm, BorrowFormQuery } from '../types'
 import { borrowFormValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
 type BorrowMutationContext = {
   chainId: IChainId
-  poolId: string | undefined
+  marketId: string | undefined
 }
 
 type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
@@ -35,61 +33,61 @@ type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 const APPROVE_TIMEOUT = { timeout: 2 * 60 * 1000 } // 2 minutes
 
 export type CreateLoanOptions = {
-  poolId: string | undefined
+  marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onCreated: (hash: Hex, mutation: BorrowMutation & { txHash: Hex }) => void
   reset: () => void
 }
 
-const approve = async (
-  market: LlamaMarketTemplate,
-  { userCollateral, userBorrowed, leverageEnabled }: BorrowMutation,
-) =>
-  (leverageEnabled
-    ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
-      ? await market.leverageV2.createLoanApprove(userCollateral, userBorrowed)
-      : await market.leverage.createLoanApprove(userCollateral, userBorrowed)
-    : await market.createLoanApprove(userCollateral)) as Address[]
-
-const create = async (
-  market: LlamaMarketTemplate,
-  { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage }: BorrowMutation,
-) => {
-  if (leverageEnabled && (market instanceof LendMarketTemplate || market.leverageV2.hasLeverage())) {
-    const parent = market instanceof LendMarketTemplate ? market.leverage : market.leverageV2
-    return (await parent.createLoan(userCollateral, userBorrowed, debt, range, +slippage)) as Address
+const getCreateMethods = (marketId: string, leverageEnabled: boolean) => {
+  const market = getLlamaMarket(marketId)
+  const parent = leverageEnabled
+    ? market instanceof LendMarketTemplate
+      ? market.leverage
+      : market.leverageV2.hasLeverage()
+        ? market.leverageV2
+        : market.leverage
+    : market
+  return {
+    createLoanIsApproved: parent.createLoanIsApproved.bind(parent),
+    createLoanApprove: parent.createLoanApprove.bind(parent),
+    createLoan: async (collateral: Amount, userBorrowed: Amount, debt: Amount, range: number, slippage: Decimal) => {
+      if (leverageEnabled && (market instanceof LendMarketTemplate || market.leverageV2.hasLeverage())) {
+        const parent = market instanceof LendMarketTemplate ? market.leverage : market.leverageV2
+        return (await parent.createLoan(collateral, userBorrowed, debt, range, +slippage)) as Address
+      }
+      console.assert(!+userBorrowed, `userBorrowed not supported in this market`)
+      const parent = leverageEnabled && market instanceof MintMarketTemplate ? market.leverage : market
+      return (await parent.createLoan(collateral, debt, range, +slippage)) as Address
+    },
   }
-  console.assert(!+userBorrowed, `userBorrowed not supported in this market`)
-  const parent = leverageEnabled && market instanceof MintMarketTemplate ? market.leverage : market
-  return (await parent.createLoan(userCollateral, debt, range, +slippage)) as Address
 }
 
-export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLoanOptions) => {
   const config = useConfig()
   const { wallet } = useConnection()
-  const { chainId } = network
-  const mutationKey = ['create-loan', { chainId, poolId }] as const
+  const mutationKey = ['create-loan', { chainId: network.chainId, marketId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     mutationFn: useCallback(
       async (mutation: BorrowMutation) => {
         assertValidity(borrowFormValidationSuite, mutation)
-        const market = getLlamaMarket(poolId!)
+        const { userCollateral, userBorrowed, debt, range, slippage, leverageEnabled } = mutation
+        const { createLoanIsApproved, createLoanApprove, createLoan } = getCreateMethods(marketId!, leverageEnabled)
 
-        const params = { ...mutation, chainId, poolId }
-        if (!(await fetchBorrowCreateLoanIsApproved(params))) {
-          const approvalTxHashes = await approve(market, mutation)
+        if (!(await createLoanIsApproved(userCollateral, userBorrowed))) {
+          const approvalTxHashes = (await createLoanApprove(userCollateral, userBorrowed)) as Address[]
           await Promise.all(approvalTxHashes.map((hash) => waitForTransactionReceipt(config, { hash })))
           notify(t`Approved loan creation`, 'success')
-          await waitFor(() => fetchBorrowCreateLoanIsApproved(params), APPROVE_TIMEOUT)
+          await waitFor(() => createLoanIsApproved(userCollateral, userBorrowed), APPROVE_TIMEOUT)
         }
 
-        const hash = await create(market, mutation)
-        await waitForTransactionReceipt(config, { hash })
-        return hash
+        const loanTxHash = await createLoan(userCollateral, userBorrowed, debt, range, slippage)
+        await waitForTransactionReceipt(config, { hash: loanTxHash })
+        return loanTxHash
       },
-      [poolId, chainId, config],
+      [marketId, config],
     ),
     onSuccess: async (txHash, mutation) => {
       logSuccess(mutationKey, txHash)
@@ -97,10 +95,10 @@ export const useCreateLoanMutation = ({ network, poolId, onCreated }: CreateLoan
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getBalanceQueryKey({ address: wallet?.account.address }) }),
         queryClient.invalidateQueries({
-          queryKey: borrowExpectedCollateralQueryKey({ chainId, poolId, ...mutation }),
+          queryKey: createLoanExpectedCollateralQueryKey({ chainId: network?.chainId, marketId, ...mutation }),
         }),
       ])
-      updateUserEventsApi(wallet!, network, getLlamaMarket(poolId!), txHash)
+      updateUserEventsApi(wallet!, network, getLlamaMarket(marketId!), txHash)
       onCreated(txHash, { ...mutation, txHash })
     },
   })

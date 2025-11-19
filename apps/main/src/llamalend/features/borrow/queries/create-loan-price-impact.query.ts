@@ -2,27 +2,27 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
-import { borrowExpectedCollateralQueryKey } from './borrow-expected-collateral.query'
 import { borrowQueryValidationSuite } from './borrow.validation'
+import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 
 type BorrowPriceImpactResult = number // percentage
 
-export const { useQuery: useBorrowPriceImpact } = queryFactory({
-  queryKey: ({ chainId, poolId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
+export const { useQuery: useCreateLoanPriceImpact } = queryFactory({
+  queryKey: ({ chainId, marketId, userBorrowed = '0', userCollateral = '0', debt = '0' }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanPriceImpact',
       { userCollateral },
       { userBorrowed },
       { debt },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
   }: BorrowFormQuery): Promise<BorrowPriceImpactResult> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return market instanceof LendMarketTemplate
       ? +(await market.leverage.createLoanPriceImpact(userBorrowed, debt))
       : market.leverageV2.hasLeverage()
@@ -31,5 +31,5 @@ export const { useQuery: useBorrowPriceImpact } = queryFactory({
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,
-  dependencies: (params) => [borrowExpectedCollateralQueryKey(params)],
+  dependencies: (params) => [createLoanExpectedCollateralQueryKey(params)],
 })
