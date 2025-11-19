@@ -4,22 +4,22 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
 import { borrowQueryValidationSuite } from './borrow.validation'
 
-export const { useQuery: useBorrowCreateLoanIsApproved, fetchQuery: fetchBorrowCreateLoanIsApproved } = queryFactory({
-  queryKey: ({ chainId, poolId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowFormQueryParams) =>
+export const { useQuery: useBorrowCreateLoanIsApproved } = queryFactory({
+  queryKey: ({ chainId, marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowFormQueryParams) =>
     [
-      ...rootKeys.pool({ chainId, poolId }),
+      ...rootKeys.market({ chainId, marketId }),
       'createLoanIsApproved',
       { userCollateral },
       { userBorrowed },
       { leverageEnabled },
     ] as const,
   queryFn: async ({
-    poolId,
+    marketId,
     userBorrowed = '0',
     userCollateral = '0',
     leverageEnabled,
   }: BorrowFormQuery): Promise<boolean> => {
-    const market = getLlamaMarket(poolId)
+    const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof MintMarketTemplate && market.leverageV2.hasLeverage()
         ? await market.leverageV2.createLoanIsApproved(userCollateral, userBorrowed)

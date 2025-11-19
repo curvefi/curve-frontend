@@ -2,8 +2,11 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
-import { type RepayFromCollateralHealthQuery, type RepayFromCollateralHealthParams } from '../manage-loan.types'
-import { repayFromCollateralIsFullValidationSuite } from '../manage-loan.validation'
+import {
+  type RepayFromCollateralHealthQuery,
+  type RepayFromCollateralHealthParams,
+} from '../validation/manage-loan.types'
+import { repayFromCollateralIsFullValidationSuite } from '../validation/manage-loan.validation'
 
 export const { useQuery: useRepayHealth } = queryFactory({
   queryKey: ({
