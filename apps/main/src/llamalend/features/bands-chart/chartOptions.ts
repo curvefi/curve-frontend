@@ -13,13 +13,14 @@ const createCustomRectSeries = (
   color: string,
   softLiquidationBandOutlineColor: string,
   data: Array<[number, number, number, number, number, number]>,
+  enableSoftLiquidationOutline: boolean,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
 ) => ({
   name,
   type: 'custom' as const,
   animation: false,
-  clip: false,
+  clip: true,
   encode: { y: 0 },
   data,
   emphasis: {
@@ -44,15 +45,19 @@ const createCustomRectSeries = (
     const topRight = api.coord([startX + widthX, pUp])
     const bottomLeft = api.coord([startX, pDown])
 
-    const left = Math.min(topLeft[0], topRight[0])
+    const axisEdgeX = Math.max(topLeft[0], topRight[0])
+    let left = Math.min(topLeft[0], topRight[0])
     const top = Math.min(topLeft[1], bottomLeft[1])
-    let width = Math.abs(topRight[0] - topLeft[0])
+    let width = axisEdgeX - left
     const height = Math.abs(bottomLeft[1] - topLeft[1])
 
     // Ensure minimal pixel width/height for visibility when zoomed out
     const minWidthPx = 3
     const minHeightPx = 3
-    if (width < minWidthPx) width = minWidthPx
+    if (width < minWidthPx) {
+      left = axisEdgeX - minWidthPx
+      width = minWidthPx
+    }
 
     // Adaptive vertical gap: keep spacing but never collapse band below min height
     const desiredGap = 1
@@ -66,8 +71,8 @@ const createCustomRectSeries = (
       shape: { x: left, y: paddedTop, width, height: paddedHeight },
       style: api.style({
         fill: color,
-        stroke: isSoftLiquidationBand ? softLiquidationBandOutlineColor : 'transparent',
-        lineWidth: isSoftLiquidationBand ? 2 : 0,
+        stroke: isSoftLiquidationBand && enableSoftLiquidationOutline ? softLiquidationBandOutlineColor : 'transparent',
+        lineWidth: isSoftLiquidationBand && enableSoftLiquidationOutline ? 2 : 0,
       }),
     }
   },
@@ -206,6 +211,7 @@ export const getChartOptions = (
     series: (() => {
       const marketSeriesData: Array<[number, number, number, number, number, number]> = []
       const userSeriesData: Array<[number, number, number, number, number, number]> = []
+      const outlineSeriesData: Array<[number, number, number, number, number, number]> = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
         const median = d.pUpDownMedian
@@ -218,6 +224,7 @@ export const getChartOptions = (
         const userStart = marketWidth
         marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq])
         userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq])
+        outlineSeriesData.push([median, marketStart, marketWidth + userWidth, pDown, pUp, isLiq])
       }
 
       const marketSeries = createCustomRectSeries(
@@ -225,6 +232,7 @@ export const getChartOptions = (
         palette.marketBandColor,
         palette.liquidationBandOutlineColor,
         marketSeriesData,
+        false,
         markAreas.length > 0
           ? { silent: true, itemStyle: { color: palette.userRangeHighlightColor }, data: markAreas }
           : undefined,
@@ -253,9 +261,23 @@ export const getChartOptions = (
         palette.userBandColor,
         palette.liquidationBandOutlineColor,
         userSeriesData,
+        false,
       )
 
-      return [marketSeries, userSeries]
+      const outlineSeries = {
+        ...createCustomRectSeries(
+          'Soft Liquidation Outline',
+          'transparent',
+          palette.liquidationBandOutlineColor,
+          outlineSeriesData,
+          true,
+        ),
+        silent: true,
+        z: 2,
+        emphasis: { disabled: true },
+      }
+
+      return [marketSeries, userSeries, outlineSeries]
     })(),
     dataZoom: [
       {
