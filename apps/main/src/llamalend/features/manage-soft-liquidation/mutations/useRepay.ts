@@ -8,7 +8,8 @@ import { invalidateAllUserBorrowDetails } from '@/lend/entities/user-loan-detail
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { invalidateAllUserMarketDetails } from '@/llamalend/queries/invalidation'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
 import { rootKeys, type UserMarketParams } from '@ui-kit/lib/model'
@@ -16,7 +17,7 @@ import { waitForTransactionReceipt } from '@wagmi/core'
 
 const getSymbol = (market?: LlamaMarketTemplate) => (market && getTokens(market))?.borrowToken?.symbol ?? '?'
 
-export function useRepay(params: UserMarketParams) {
+export function useRepay(params: UserMarketParams<IChainId>) {
   const { marketId } = params
   const config = useConfig()
 

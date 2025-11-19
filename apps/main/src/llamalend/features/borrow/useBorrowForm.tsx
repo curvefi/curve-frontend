@@ -13,12 +13,12 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { BORROW_PRESET_RANGES } from './constants'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
 import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
 import { borrowFormValidationSuite } from './queries/borrow.validation'
 import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
-import { type BorrowForm, BorrowPreset } from './types'
+import { type BorrowForm } from './types'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
@@ -54,7 +54,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   const values = form.watch()
   const params = useDebouncedValue(
     useMemo(
-      () => ({ chainId, poolId: market?.id, userAddress, ...values }),
+      () => ({ chainId, marketId: market?.id, userAddress, ...values }),
       [chainId, market?.id, userAddress, values],
     ),
   )
@@ -68,7 +68,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     error: creationError,
     txHash,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, poolId: market?.id, reset: form.reset, onCreated })
+  } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 

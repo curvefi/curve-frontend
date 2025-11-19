@@ -1,7 +1,7 @@
 import type { Address } from 'viem'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { FieldsOf } from '@ui-kit/lib'
-import type { PoolQuery } from '@ui-kit/lib/model'
+import type { MarketQuery } from '@ui-kit/lib/model'
 import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
@@ -27,21 +27,11 @@ export type BorrowFormExternalFields = Omit<BorrowForm, keyof CalculatedValues>
 export type OnBorrowFormUpdate = (form: BorrowFormExternalFields) => Promise<void>
 
 /** Full query type for borrow creation queries, including pool identification and all form fields */
-export type BorrowFormQuery<T = IChainId> = PoolQuery<T> & CompleteBorrowForm
+export type BorrowFormQuery<T = IChainId> = MarketQuery<T> & CompleteBorrowForm
 /** Fields of the borrow form query before validation */
 export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
 export type Token = { symbol: string; address: Address }
-
-/**
- * Preset options for borrowing
- * @see BORROW_PRESET_RANGES
- **/
-export enum BorrowPreset {
-  Safe = 'Safe',
-  MaxLtv = 'MaxLtv',
-  Custom = 'Custom',
-}
 
 export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]

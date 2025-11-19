@@ -1,7 +1,7 @@
 import type { UserMarketParams } from '@ui-kit/lib/model'
-import { invalidateUserBalances } from './user-balances.query'
-import { invalidateUserHealth } from './user-health.query'
-import { invalidateUserState } from './user-state.query'
+import { invalidateUserBalances } from '../user-balances.query'
+import { invalidateUserHealth } from '../user-health.query'
+import { invalidateUserState } from '../user-state.query'
 
 /**
  * Helper function to easily invalidate the entire user state of a market.

@@ -1,58 +1,17 @@
-import { enforce, group, test } from 'vest'
+import { group } from 'vest'
+import {
+  validateDebt,
+  validateMaxCollateral,
+  validateMaxDebt,
+  validateRange,
+  validateSlippage,
+  validateUserBorrowed,
+  validateUserCollateral,
+} from '@/llamalend/queries/validation/borrow-fields.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { Decimal } from '@ui-kit/utils'
-import { BORROW_PRESET_RANGES } from '../constants'
 import { type BorrowForm, type BorrowFormQueryParams } from '../types'
-
-const validateUserBorrowed = (userBorrowed: Decimal | null | undefined) =>
-  test('userBorrowed', 'Borrow amount must be a non-negative number', () => {
-    enforce(userBorrowed).isNumeric().gte(0)
-  })
-
-const validateUserCollateral = (userCollateral: Decimal | undefined | null) =>
-  test('userCollateral', `Collateral amount must be a positive number`, () => {
-    enforce(userCollateral).isNumeric().gt(0)
-  })
-
-export const validateDebt = (debt: Decimal | undefined | null, required: boolean = true) => {
-  test('debt', `Debt must be a positive number${required ? '' : ' or null'}`, () => {
-    if (required || debt != null) {
-      enforce(debt).isNumeric().gt(0)
-    }
-  })
-}
-
-const validateSlippage = (slippage: Decimal | null | undefined) =>
-  test('slippage', 'Slippage must be a number between 0 and 100', () => {
-    enforce(slippage).isNumeric().gte(0).lte(100)
-  })
-
-export const validateRange = (range: number | null | undefined, { MaxLtv, Safe } = BORROW_PRESET_RANGES) => {
-  test('range', `Range must be number between ${MaxLtv} and ${Safe}`, () => {
-    enforce(range).isNumeric().gte(MaxLtv).lte(Safe)
-  })
-}
-
-export const validateMaxDebt = (debt: Decimal | undefined | null, maxDebt: Decimal | undefined | null) => {
-  test('debt', 'Debt must be less than or equal to maximum borrowable amount', () => {
-    if (debt != null && maxDebt != null) {
-      enforce(debt).lte(maxDebt)
-    }
-  })
-}
-
-export const validateMaxCollateral = (
-  userCollateral: Decimal | undefined | null,
-  maxCollateral: Decimal | undefined | null,
-) => {
-  test('userCollateral', 'Collateral must be less than or equal to your wallet balance', () => {
-    if (userCollateral != null && maxCollateral != null) {
-      enforce(userCollateral).lte(maxCollateral)
-    }
-  })
-}
 
 export const borrowFormValidationGroup = (
   { userBorrowed, userCollateral, debt, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,
