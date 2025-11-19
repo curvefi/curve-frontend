@@ -1,4 +1,5 @@
 import type { EChartsOption } from 'echarts-for-react'
+import { Duration } from '@ui-kit/themes/design/0_primitives'
 import { formatNumber } from '@ui-kit/utils'
 import { generateMarkLines, createLabelStyle } from './markLines'
 import { ChartDataPoint, BandsChartPalette, DerivedChartData, UserBandsPriceRange } from './types'
@@ -19,7 +20,10 @@ const createCustomRectSeries = (
 ) => ({
   name,
   type: 'custom' as const,
-  animation: false,
+  animation: true,
+  animationDuration: Duration.Transition,
+  animationDurationUpdate: Duration.Transition,
+  animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
   clip: true,
   encode: { y: 0 },
   data,
@@ -112,7 +116,10 @@ export const getChartOptions = (
 
   return {
     backgroundColor: 'transparent',
-    animation: false,
+    animation: true,
+    animationDuration: Duration.Transition,
+    animationDurationUpdate: Duration.Transition,
+    animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
     grid: {
       left: gridPadding.left,
       right: gridRight,
@@ -238,6 +245,9 @@ export const getChartOptions = (
           : undefined,
         markLines.length > 0
           ? {
+              animation: false,
+              animationDuration: 0,
+              animationDurationUpdate: 0,
               silent: false,
               symbol: 'none',
               lineStyle: { width: 2 },
