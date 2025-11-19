@@ -23,7 +23,6 @@ const createPriceFormatter = () => ({
       abbreviate: false,
       maximumSignificantDigits: 4,
     }),
-  minMove: 0.0001,
 })
 
 /**
@@ -347,6 +346,10 @@ const CandleChart = ({
       wickUpColor: memoizedColors.green,
       wickDownColor: memoizedColors.red,
       lastValueVisible: !hideCandleSeriesLabel,
+      priceFormat: {
+        type: 'price',
+        minMove: 0.0001,
+      },
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 

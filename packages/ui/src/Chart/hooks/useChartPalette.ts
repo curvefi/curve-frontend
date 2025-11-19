@@ -50,7 +50,7 @@ export function useChartPalette(options?: UseChartPaletteOptions): ChartColors {
   const rangeBackgroundFuture = theme.design.Chart.LiquidationZone.Future
   const oraclePrice = primary
   const cursorVertLine = theme.design.Chart.Lines.Line1
-  const gridLine = Grays[300]
+  const gridLine = theme.design.Color.Neutral[300]
 
   return useMemo(
     () => ({
