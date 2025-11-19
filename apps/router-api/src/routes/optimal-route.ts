@@ -2,12 +2,13 @@ import type { FastifyRequest } from 'fastify'
 import lodash from 'lodash'
 import { buildCurveRouteResponse } from '../curve-router/curve-router'
 import { buildEnsoRouteResponse } from '../enso-router/enso-router'
+import { buildOdosRouteResponse } from '../odos-router/odos-router'
 import { handleTimeout } from '../router.utils'
 import { type OptimalRouteQuery, type RouteResponse } from './optimal-route.schemas'
 
 const ROUTE_TIMEOUT = 30_000 // 30 seconds
 
-const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse }
+const routers = { curve: buildCurveRouteResponse, enso: buildEnsoRouteResponse, odos: buildOdosRouteResponse }
 
 /**
  * Handles the optimal route request. Returns the optimal route for the given parameters.

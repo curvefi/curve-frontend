@@ -28,7 +28,7 @@ type ErrorResponse = { statusCode: number; code: string; error: string; message:
 type FailureCase = { query: Partial<QueryString>; expectedResponse: ErrorResponse }
 
 /**
- * Success cases per provider. Curve supports amountIn and amountOut; Enso requires amountIn.
+ * Success cases per provider. Curve supports amountIn and amountOut; Enso and Odos require amountIn.
  */
 const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>> = {
   curve: {
@@ -66,6 +66,20 @@ const successCasesByProvider: Record<RouteProvider, Record<string, SuccessCase>>
     'arbitrum amountOut': {
       query: { chainId: CHAIN_ID_ARBITRUM, tokenIn: [ARBITRUM_USDC], tokenOut: [ARBITRUM_USDT], amountOut: ['1000'] },
       expectedRoutes: 0, // Enso requires amountIn to return routes
+    },
+  },
+  odos: {
+    'ethereum amountIn': {
+      query: {
+        chainId: CHAIN_ID_ETHEREUM,
+        tokenIn: [ETHEREUM_USDT],
+        tokenOut: [ETHEREUM_USDC],
+        amountIn: ['1000'],
+        router: ['odos'],
+        // Odos requires a caller (leverage zap) and a blacklist address; any valid addresses are acceptable for quoting
+        fromAddress: '0xC5898606BdB494a994578453B92e7910a90aA873',
+        slippage: '0.5',
+      },
     },
   },
 }
