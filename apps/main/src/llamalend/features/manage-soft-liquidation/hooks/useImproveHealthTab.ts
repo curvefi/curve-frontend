@@ -13,7 +13,7 @@ export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
   const { data: userBalances } = useUserBalances({ chainId: params.chainId, poolId: params.marketId, userAddress })
 
   const debtToken = useDebtToken(params)
-  const { mutate, isPending } = useRepayMutation(params)
+  const { mutate, isPending } = useRepayMutation({ ...params, onRepaid: console.warn })
   const onRepay = useCallback(
     (debt: Decimal) => {
       mutate({

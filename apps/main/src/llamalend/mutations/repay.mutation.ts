@@ -18,7 +18,7 @@ export type RepayOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
-  onReset: () => void
+  onReset?: () => void
 }
 
 export const useRepayMutation = ({ network, marketId, onRepaid, onReset }: RepayOptions) => {
