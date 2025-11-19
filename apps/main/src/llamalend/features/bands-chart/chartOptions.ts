@@ -173,7 +173,6 @@ export const getChartOptions = (
         show: true,
         lineStyle: {
           color: palette.gridColor,
-          opacity: 0.5,
           type: 'dashed',
         },
       },
@@ -211,6 +210,13 @@ export const getChartOptions = (
             unit: 'dollar',
             abbreviate: true,
           }),
+      },
+      splitLine: {
+        show: true,
+        lineStyle: {
+          color: palette.gridColor,
+          type: 'dashed',
+        },
       },
       min: priceMin,
       max: priceMax,
