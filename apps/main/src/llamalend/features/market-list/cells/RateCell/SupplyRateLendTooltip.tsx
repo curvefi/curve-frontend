@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketSupplyRateTooltipContent } from '@/llamalend/widgets/tooltips/MarketSupplyRateTooltipContent'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'

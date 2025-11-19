@@ -2,11 +2,11 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import {
   type RemoveCollateralOptions,
   useRemoveCollateralMutation,
-} from '@/llamalend/features/manage-loan/mutations/remove-collateral.mutation'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+} from '@/llamalend/mutations/remove-collateral.mutation'
 import { useRemoveCollateralBands } from '@/llamalend/queries/remove-collateral/remove-collateral-bands.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
 import { useRemoveCollateralHealth } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'

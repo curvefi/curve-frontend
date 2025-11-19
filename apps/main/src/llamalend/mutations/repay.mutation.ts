@@ -36,7 +36,7 @@ export const useRepayMutation = ({ network, marketId, onRepaid }: RepayOptions) 
     }),
     validationSuite: repayFromCollateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
-    successMessage: (_result, mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
+    successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onRepaid,
   })
 

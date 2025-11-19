@@ -1,5 +1,5 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Chip from '@mui/material/Chip'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

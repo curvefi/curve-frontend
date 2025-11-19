@@ -27,7 +27,7 @@ export const useRemoveCollateralMutation = ({ network, marketId, onRemoved }: Re
     }),
     validationSuite: collateralValidationSuite,
     pendingMessage: (mutation, { market }) => t`Removing collateral... ${formatTokenAmounts(market, mutation)}`,
-    successMessage: (_result, mutation, { market }) =>
+    successMessage: (mutation, { market }) =>
       t`Collateral removed successfully! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onRemoved,
   })

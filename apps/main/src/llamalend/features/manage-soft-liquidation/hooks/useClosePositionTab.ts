@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
-import { useClosePositionMutation } from '@/llamalend/features/manage-loan/mutations/close-position.mutation'
-import type { ClosePositionProps } from '..'
+import { useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import type { MarketParams } from '../types'
 import { useCanClose } from './useCanClose'
 import { useCollateralToRecover } from './useCollateralToRecover'

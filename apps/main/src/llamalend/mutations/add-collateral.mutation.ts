@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { Hex } from 'viem'
 import { useConfig } from 'wagmi'
+import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
@@ -8,10 +9,8 @@ import { type CollateralForm, collateralValidationSuite } from '@/llamalend/quer
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
 import { useConnection } from '@ui-kit/features/connect-wallet'
-import { assertValidity } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
 import { type Decimal, waitForApproval } from '@ui-kit/utils'
-import { waitForTransactionReceipt } from '@wagmi/core'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 
@@ -39,21 +38,17 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
     marketId,
     mutationKey,
     mutationFn: async (mutation, { market }) => {
-      assertValidity(collateralValidationSuite, { chainId, marketId, ...mutation })
-
       await waitForApproval({
         isApproved: () => fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }),
         onApprove: () => approve(market, mutation),
         message: t`Approved collateral addition`,
         config,
       })
-
-      const hash = await addCollateral(market, mutation)
-      await waitForTransactionReceipt(config, { hash })
-      return { hash }
+      return { hash: await addCollateral(market, mutation) }
     },
-    pendingMessage: t`Adding collateral`,
-    successMessage: t`Collateral added successfully`,
+    validationSuite: collateralValidationSuite,
+    pendingMessage: (mutation, { market }) => t`Adding collateral... ${formatTokenAmounts(market, mutation)}`,
+    successMessage: (mutation, { market }) => t`Collateral added successfully! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onAdded,
   })
 

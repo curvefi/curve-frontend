@@ -1,8 +1,8 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
-import { borrowQueryValidationSuite } from './borrow.validation'
+import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 
 export const { useQuery: useBorrowCreateLoanIsApproved, fetchQuery: fetchBorrowCreateLoanIsApproved } = queryFactory({
   queryKey: ({ chainId, marketId, userCollateral = '0', userBorrowed = '0', leverageEnabled }: BorrowFormQueryParams) =>

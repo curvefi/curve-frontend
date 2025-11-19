@@ -2,11 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
-import {
-  type AddCollateralOptions,
-  useAddCollateralMutation,
-} from '@/llamalend/features/manage-loan/mutations/add-collateral.mutation'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'

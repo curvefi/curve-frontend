@@ -3,6 +3,8 @@ import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { fetchBorrowCreateLoanIsApproved } from '@/llamalend/queries/create-loan/borrow-create-loan-approved.query'
+import { borrowFormValidationSuite } from '@/llamalend/queries/validation/borrow.validation'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -13,9 +15,7 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { Address, waitForApproval } from '@ui-kit/utils'
-import { fetchBorrowCreateLoanIsApproved } from '../queries/borrow-create-loan-approved.query'
-import type { BorrowForm, BorrowFormQuery } from '../types'
-import { borrowFormValidationSuite } from './borrow.validation'
+import type { BorrowForm, BorrowFormQuery } from '../features/borrow/types'
 
 type BorrowMutationContext = {
   chainId: IChainId
@@ -75,7 +75,7 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
     },
     validationSuite: borrowFormValidationSuite,
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
-    successMessage: (_, mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
+    successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onCreated,
   })
 

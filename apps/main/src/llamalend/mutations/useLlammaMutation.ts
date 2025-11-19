@@ -1,5 +1,6 @@
 import type { Suite } from 'vest'
 import type { Hex } from 'viem'
+import type { FormattedTransactionReceipt } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -76,9 +77,12 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** Message to display during pending state */
   pendingMessage: (variables: TVariables, context: Omit<Context, 'pendingNotification'>) => string
   /** Message to display on success */
-  successMessage: (data: TData, variables: TVariables, context: Context) => string
+  successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess: undefined | ((data: TData, variables: TVariables, context: Context) => unknown | Promise<unknown>)
+  onSuccess?: (
+    variables: TVariables,
+    context: Context & { receipt: FormattedTransactionReceipt; data: TData },
+  ) => unknown | Promise<unknown>
 }
 
 /**
@@ -124,17 +128,16 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
-      const result = await mutationFn(variables, { market })
-      await waitForTransactionReceipt(config, result)
-      return result
+      const data = await mutationFn(variables, { market })
+      return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
-    onSuccess: async (data, variables, context) => {
-      throwIfError(data)
-      logSuccess(mutationKey, { data, variables, marketId: context.market.id })
-      notify(successMessage(data, variables, context), 'success')
-      updateUserEventsApi(wallet!, network, context.market, data.hash)
+    onSuccess: async ({ data, receipt }, variables, context) => {
+      throwIfError(receipt)
+      logSuccess(mutationKey, { receipt, variables, marketId: context.market.id })
+      notify(successMessage(variables, context), 'success')
+      updateUserEventsApi(wallet!, network, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ marketId, userAddress: wallet?.account.address })
-      await onSuccess?.(data, variables, context)
+      await onSuccess?.(variables, { ...context, receipt, data })
     },
     onError: (error, variables, context) => {
       logError(mutationKey, { error, variables, marketId: context?.market.id })
