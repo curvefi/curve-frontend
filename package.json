@@ -69,6 +69,7 @@
     "ethers": "6.15.0",
     "immer": "10.2.0",
     "lodash": "4.17.21",
+    "pino": "10.1.0",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "styled-components": "6.1.19",
