@@ -11,7 +11,7 @@ import {
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { type BorrowForm, type BorrowFormQueryParams } from '../types'
+import { type BorrowForm, type BorrowFormQueryParams } from '../../features/borrow/types'
 
 export const borrowFormValidationGroup = (
   { userBorrowed, userCollateral, debt, range, slippage, maxDebt, maxCollateral }: FieldsOf<BorrowForm>,

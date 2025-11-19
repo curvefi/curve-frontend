@@ -4,9 +4,9 @@ import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { useCreateLoanExpectedCollateral } from '../queries/create-loan-expected-collateral.query'
-import { useCreateLoanMaxReceive } from '../queries/create-loan-max-receive.query'
-import { useCreateLoanPriceImpact } from '../queries/create-loan-price-impact.query'
+import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
+import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
+import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import type { BorrowFormQueryParams, Token } from '../types'
 
 /**

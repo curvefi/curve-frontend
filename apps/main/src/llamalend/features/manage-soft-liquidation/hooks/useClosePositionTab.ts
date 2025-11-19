@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 import type { ClosePositionProps } from '..'
-import { useClosePosition } from '../mutations/useClosePosition'
+import { useClosePosition } from '../../../mutations/close-position.mutation'
 import type { MarketParams } from '../types'
 import { useCanClose } from './useCanClose'
 import { useCollateralToRecover } from './useCollateralToRecover'

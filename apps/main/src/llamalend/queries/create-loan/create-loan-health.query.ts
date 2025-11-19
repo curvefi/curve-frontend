@@ -1,48 +1,46 @@
 import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery, BorrowFormQueryParams } from '../types'
-import { borrowQueryValidationSuite } from './borrow.validation'
+import type { BorrowFormQuery, BorrowFormQueryParams } from '../../features/borrow/types'
+import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
-type BorrowBandsResult = [number, number]
-
-export const { useQuery: useCreateLoanBands } = queryFactory({
+export const { useQuery: useCreateLoanHealth } = queryFactory({
   queryKey: ({
     chainId,
     marketId,
-    userBorrowed = '0',
-    userCollateral = '0',
-    debt = '0',
+    userBorrowed,
+    userCollateral,
+    debt,
     leverageEnabled,
     range,
   }: BorrowFormQueryParams) =>
     [
       ...rootKeys.market({ chainId, marketId }),
-      'createLoanBands',
+      'createLoanHealth',
       { userCollateral },
       { userBorrowed },
       { debt },
       { leverageEnabled },
       { range },
     ] as const,
-  queryFn: ({
+  queryFn: async ({
     marketId,
     userBorrowed = '0',
     userCollateral = '0',
     debt = '0',
     leverageEnabled,
     range,
-  }: BorrowFormQuery): Promise<BorrowBandsResult> => {
+  }: BorrowFormQuery): Promise<number> => {
     const market = getLlamaMarket(marketId)
     return leverageEnabled
       ? market instanceof LendMarketTemplate
-        ? market.leverage.createLoanBands(userCollateral, userBorrowed, debt, range)
+        ? +(await market.leverage.createLoanHealth(userCollateral, userBorrowed, debt, range))
         : market.leverageV2.hasLeverage()
-          ? market.leverageV2.createLoanBands(userCollateral, userBorrowed, debt, range)
-          : market.leverage.createLoanBands(userCollateral, debt, range)
-      : market.createLoanBands(userCollateral, debt, range)
+          ? +(await market.leverageV2.createLoanHealth(userCollateral, userBorrowed, debt, range))
+          : +(await market.leverage.createLoanHealth(userCollateral, debt, range))
+      : +(await market.createLoanHealth(userCollateral, debt, range))
   },
   staleTime: '1m',
   validationSuite: borrowQueryValidationSuite,

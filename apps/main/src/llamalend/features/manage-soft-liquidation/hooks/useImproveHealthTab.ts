@@ -3,7 +3,7 @@ import { useAccount } from 'wagmi'
 import { useUserBalances } from '@/llamalend/queries/user-balances.query'
 import type { Decimal } from '@ui-kit/utils'
 import type { ImproveHealthProps } from '..'
-import { useRepay } from '../mutations/useRepay'
+import { useRepay } from '../../../mutations/repay.mutation'
 import type { MarketParams } from '../types'
 import { useDebtToken } from './useDebtToken'
 

@@ -19,9 +19,9 @@ import { Address, Amount, Decimal } from '@ui-kit/utils'
 import { waitFor } from '@ui-kit/utils/time.utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getBalanceQueryKey } from '@wagmi/core/query'
-import type { BorrowForm, BorrowFormQuery } from '../types'
-import { borrowFormValidationSuite } from './borrow.validation'
-import { createLoanExpectedCollateralQueryKey } from './create-loan-expected-collateral.query'
+import type { BorrowForm, BorrowFormQuery } from '../features/borrow/types'
+import { createLoanExpectedCollateralQueryKey } from '../queries/create-loan/create-loan-expected-collateral.query'
+import { borrowFormValidationSuite } from '../queries/validation/borrow.validation'
 
 type BorrowMutationContext = {
   chainId: IChainId
