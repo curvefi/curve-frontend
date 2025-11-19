@@ -4,24 +4,6 @@ export type ChartType = 'swap' | 'crvusd' | 'poolPage'
 export type TimeOptions = '15m' | '30m' | '1h' | '4h' | '6h' | '12h' | '1d' | '7d' | '14d'
 export type FetchingStatus = 'LOADING' | 'ERROR' | 'READY'
 
-export type ChartColors = {
-  backgroundColor: string
-  lineColor: string
-  textColor: string
-  areaTopColor: string
-  areaBottomColor: string
-  chartGreenColor: string
-  chartRedColor: string
-  chartLabelColor: string
-  chartVolumeRed: string
-  chartVolumeGreen: string
-  chartOraclePrice: string
-  rangeColor: string
-  rangeColorA25: string
-  rangeColorOld: string
-  rangeColorA25Old: string
-}
-
 export type ChartHeight = {
   expanded: number
   standard: number
@@ -69,12 +51,6 @@ export interface LpPriceOhlcDataFormatted {
   close: number
   high: number
   low: number
-}
-
-export interface VolumeData {
-  time: UTCTimestamp
-  value: number
-  color: string
 }
 
 export interface LlamaBaselinePriceData {
