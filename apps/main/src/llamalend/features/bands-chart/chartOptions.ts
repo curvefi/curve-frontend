@@ -7,13 +7,13 @@ import { getPriceMin, getPriceMax } from './utils'
 
 //
 // Custom series renderer to draw a rectangle spanning [p_down, p_up] with a given width and start offset.
-// Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric]
+// Data value layout per item: [median, startX, widthX, p_down, p_up, isLiquidationNumeric, endX]
 //
 const createCustomRectSeries = (
   name: string,
   color: string,
   softLiquidationBandOutlineColor: string,
-  data: Array<[number, number, number, number, number, number]>,
+  data: Array<[number, number, number, number, number, number, number]>,
   enableSoftLiquidationOutline: boolean,
   markArea?: Record<string, unknown> | null,
   markLine?: Record<string, unknown> | null,
@@ -24,8 +24,8 @@ const createCustomRectSeries = (
   animationDuration: Duration.Transition,
   animationDurationUpdate: Duration.Transition,
   animationEasingUpdate: 'cubicOut', // echarts equivalent to ease-out used in the theme
-  clip: true,
-  encode: { y: 0 },
+  // x encodes start, width, and computed end so the axis sees full band extent
+  encode: { y: 0, x: [1, 2, 6] },
   data,
   emphasis: {
     focus: 'self',
@@ -216,9 +216,9 @@ export const getChartOptions = (
       max: priceMax,
     },
     series: (() => {
-      const marketSeriesData: Array<[number, number, number, number, number, number]> = []
-      const userSeriesData: Array<[number, number, number, number, number, number]> = []
-      const outlineSeriesData: Array<[number, number, number, number, number, number]> = []
+      const marketSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const userSeriesData: Array<[number, number, number, number, number, number, number]> = []
+      const outlineSeriesData: Array<[number, number, number, number, number, number, number]> = []
       for (let i = 0; i < chartData.length; i++) {
         const d = chartData[i]
         const median = d.pUpDownMedian
@@ -229,9 +229,17 @@ export const getChartOptions = (
         const userWidth = derived.userData[i] ?? 0
         const marketStart = 0
         const userStart = marketWidth
-        marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq])
-        userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq])
-        outlineSeriesData.push([median, marketStart, marketWidth + userWidth, pDown, pUp, isLiq])
+        marketSeriesData.push([median, marketStart, marketWidth, pDown, pUp, isLiq, marketStart + marketWidth])
+        userSeriesData.push([median, userStart, userWidth, pDown, pUp, isLiq, userStart + userWidth])
+        outlineSeriesData.push([
+          median,
+          marketStart,
+          marketWidth + userWidth,
+          pDown,
+          pUp,
+          isLiq,
+          marketStart + marketWidth + userWidth,
+        ])
       }
 
       const marketSeries = createCustomRectSeries(
