@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
-import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
+import type { BorrowMutation, CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
@@ -10,6 +10,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import type { Hex } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
@@ -55,7 +56,7 @@ const LoanCreate = ({
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
 
   const onCreated: CreateLoanOptions['onCreated'] = useCallback(
-    async (_hash, { slippage, leverageEnabled }) =>
+    async (_: { hash: Hex }, { slippage, leverageEnabled }: BorrowMutation) =>
       curve && llamma && (await onLoanCreated(curve, leverageEnabled, llamma, slippage)),
     [curve, llamma, onLoanCreated],
   )

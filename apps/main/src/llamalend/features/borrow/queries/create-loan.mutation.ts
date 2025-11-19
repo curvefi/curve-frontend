@@ -1,10 +1,8 @@
 import { useCallback } from 'react'
-import type { Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
+import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
-import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
+import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import type {
   IChainId as LlamaChainId,
   IChainId,
@@ -13,12 +11,8 @@ import type {
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import type { BaseConfig } from '@ui/utils'
-import { notify, useConnection } from '@ui-kit/features/connect-wallet'
-import { assertValidity, logSuccess } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import { Address } from '@ui-kit/utils'
-import { waitForApproval } from '@ui-kit/utils/time.utils'
-import { waitForTransactionReceipt } from '@wagmi/core'
+import { Address, waitForApproval } from '@ui-kit/utils'
 import { fetchBorrowCreateLoanIsApproved } from '../queries/borrow-create-loan-approved.query'
 import type { BorrowForm, BorrowFormQuery } from '../types'
 import { borrowFormValidationSuite } from './borrow.validation'
@@ -28,12 +22,12 @@ type BorrowMutationContext = {
   marketId: string | undefined
 }
 
-type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
+export type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 
 export type CreateLoanOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onCreated: (hash: Hex, mutation: BorrowMutation & { txHash: Hex }) => void
+  onCreated: LlammaMutationOptions<BorrowMutation>['onSuccess']
   reset: () => void
 }
 
@@ -62,16 +56,14 @@ const create = async (
 
 export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLoanOptions) => {
   const config = useConfig()
-  const { wallet } = useConnection()
   const { chainId } = network
   const mutationKey = ['create-loan', { chainId, marketId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMutation, Hex>({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMutation>({
+    network,
     marketId,
     mutationKey,
     mutationFn: async (mutation, { market }) => {
-      assertValidity(borrowFormValidationSuite, mutation)
-
       const params = { ...mutation, chainId, marketId }
       await waitForApproval({
         isApproved: () => fetchBorrowCreateLoanIsApproved(params),
@@ -79,24 +71,15 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
         message: t`Approved loan creation`,
         config,
       })
-
-      const hash = await create(market, mutation)
-      await waitForTransactionReceipt(config, { hash })
-      return hash
+      return { hash: await create(market, mutation) }
     },
-    pendingMessage: t`Creating loan`,
-    onSuccess: async (txHash, mutation, { market }) => {
-      logSuccess(mutationKey, txHash)
-      notify(t`Loan created successfully`, 'success')
-      const userAddress = wallet?.account.address
-      await invalidateUserMarketQueries({ marketId, userAddress })
-      updateUserEventsApi(wallet!, network, market, txHash)
-      onCreated(txHash, { ...mutation, txHash })
-    },
-    onError: (error) => notify(error.message, 'error'),
+    validationSuite: borrowFormValidationSuite,
+    pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
+    successMessage: (_, mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
+    onSuccess: onCreated,
   })
 
   const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])
 
-  return { onSubmit, error, txHash: data, isPending, isSuccess, reset }
+  return { onSubmit, error, data, isPending, isSuccess, reset }
 }

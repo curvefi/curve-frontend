@@ -1,19 +1,16 @@
 import { useCallback } from 'react'
 import { Hex } from 'viem'
 import { useConfig } from 'wagmi'
-import { updateUserEventsApi } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import { useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
+import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
-import { invalidateUserMarketQueries } from '@/llamalend/queries/query.utils'
-import { collateralValidationSuite, type CollateralForm } from '@/llamalend/queries/validation/manage-loan.validation'
+import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import type { BaseConfig } from '@ui/utils'
-import { notify, useConnection } from '@ui-kit/features/connect-wallet'
-import { assertValidity, logSuccess } from '@ui-kit/lib'
+import { useConnection } from '@ui-kit/features/connect-wallet'
+import { assertValidity } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'
-import type { Decimal } from '@ui-kit/utils'
-import { waitForApproval } from '@ui-kit/utils/time.utils'
+import { type Decimal, waitForApproval } from '@ui-kit/utils'
 import { waitForTransactionReceipt } from '@wagmi/core'
 
 type AddCollateralMutation = { userCollateral: Decimal }
@@ -21,7 +18,7 @@ type AddCollateralMutation = { userCollateral: Decimal }
 export type AddCollateralOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onAdded?: (hash: Hex, mutation: AddCollateralMutation & { txHash: Hex }) => void
+  onAdded?: LlammaMutationOptions<AddCollateralMutation>['onSuccess']
 }
 
 const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
@@ -37,7 +34,8 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
   const userAddress = wallet?.account.address
   const mutationKey = ['manage-loan', 'add-collateral', { chainId, marketId }] as const
 
-  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<AddCollateralMutation, Hex>({
+  const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<AddCollateralMutation>({
+    network,
     marketId,
     mutationKey,
     mutationFn: async (mutation, { market }) => {
@@ -52,17 +50,11 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
 
       const hash = await addCollateral(market, mutation)
       await waitForTransactionReceipt(config, { hash })
-      return hash
+      return { hash }
     },
     pendingMessage: t`Adding collateral`,
-    onSuccess: async (txHash, mutation, { market }) => {
-      logSuccess(mutationKey, txHash)
-      notify(t`Collateral added successfully`, 'success')
-      await invalidateUserMarketQueries({ marketId, userAddress })
-      updateUserEventsApi(wallet!, network, market, txHash)
-      onAdded?.(txHash, { ...mutation, txHash })
-    },
-    onError: (error) => notify(error.message, 'error'),
+    successMessage: t`Collateral added successfully`,
+    onSuccess: onAdded,
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as AddCollateralMutation), [mutateAsync])

@@ -170,7 +170,7 @@ const Page = () => {
       )}
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {isManageSoftLiq && <ManageSoftLiquidation marketId={marketId} chainId={rChainId} />}
+          {isManageSoftLiq && <ManageSoftLiquidation marketId={marketId} chainId={rChainId} network={network} />}
           {isValidRouterParams && !isManageSoftLiq && (
             <LoanMange
               {...formProps}

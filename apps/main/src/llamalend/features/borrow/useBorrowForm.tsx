@@ -64,7 +64,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     isPending: isCreating,
     isSuccess: isCreated,
     error: creationError,
-    txHash,
+    data: tx,
     reset: resetCreation,
   } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
 
@@ -83,7 +83,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     collateralToken,
     isCreated,
     creationError,
-    txHash,
+    txHash: tx?.hash,
     isApproved: useBorrowCreateLoanIsApproved(params),
     tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useFormErrors(form.formState),

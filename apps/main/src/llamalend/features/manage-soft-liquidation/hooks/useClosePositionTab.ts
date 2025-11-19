@@ -12,16 +12,13 @@ export function useClosePositionTab(params: MarketParams): ClosePositionProps {
   const collateralToRecover = useCollateralToRecover(params)
   const canClose = useCanClose(params)
 
-  const closePosition = useClosePositionMutation(params)
-  const onClose = useCallback(() => {
-    closePosition.mutate()
-  }, [closePosition])
-
+  const { mutate, isPending } = useClosePositionMutation(params)
+  const onClose = useCallback(() => mutate({}), [mutate])
   return {
     debtToken,
     collateralToRecover,
     canClose,
-    status: closePosition.isPending ? 'close' : 'idle',
+    status: isPending ? 'close' : 'idle',
     onClose,
   }
 }
