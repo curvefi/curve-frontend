@@ -4,7 +4,6 @@ import type {
   TimeOptions,
   FetchingStatus,
   LpPriceOhlcDataFormatted,
-  VolumeData,
   LlamaBaselinePriceData,
   OraclePriceData,
 } from 'ui/src/Chart/types'
@@ -23,7 +22,6 @@ type SliceState = {
     data: LpPriceOhlcDataFormatted[]
     oraclePriceData: OraclePriceData[]
     baselinePriceData: LlamaBaselinePriceData[]
-    volumeData: VolumeData[]
     refetchingCapped: boolean
     lastFetchEndTime: number
     fetchStatus: FetchingStatus
@@ -81,7 +79,6 @@ export type OhlcChartSlice = {
       end: number,
     ): Promise<{
       ohlcData: LpPriceOhlcDataFormatted[]
-      volumeData: VolumeData[]
       oracleData: OraclePriceData[]
       baselineData: LlamaBaselinePriceData[]
       refetchingCapped: boolean
@@ -139,7 +136,6 @@ export type OhlcChartSlice = {
 const DEFAULT_STATE: SliceState = {
   chartLlammaOhlc: {
     data: [],
-    volumeData: [],
     oraclePriceData: [],
     baselinePriceData: [],
     refetchingCapped: false,
@@ -199,7 +195,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           state[sliceKey].chartLlammaOhlc = {
             fetchStatus: 'LOADING',
             data: DEFAULT_STATE.chartLlammaOhlc.data,
-            volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
             oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
             baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
             refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
@@ -225,21 +220,12 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           throw new Error('No LLAMMA OHLC data found. Data may be unavailable for this pool.')
         }
 
-        const volumeArray: VolumeData[] = []
         const baselinePriceArray: LlamaBaselinePriceData[] = []
         const oraclePriceArray: OraclePriceData[] = []
         const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
-
-          if (item.volume && item.open && item.close) {
-            volumeArray.push({
-              time,
-              value: item.volume,
-              color: item.open < item.close ? '#26a69982' : '#ef53507e',
-            })
-          }
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -280,7 +266,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
             state[sliceKey].chartLlammaOhlc.refetchingCapped = ohlcDataArray.length < 298
             state[sliceKey].chartLlammaOhlc.lastFetchEndTime = ohlc[0].time.getUTCTimestamp()
             state[sliceKey].chartLlammaOhlc.fetchStatus = 'READY'
-            state[sliceKey].chartLlammaOhlc.volumeData = volumeArray
             state[sliceKey].chartLlammaOhlc.oraclePriceData = oraclePriceArray
             state[sliceKey].chartLlammaOhlc.baselinePriceData = baselinePriceArray
             state[sliceKey].chartLlammaOhlc.dataDisabled = false
@@ -292,7 +277,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'ERROR',
               data: DEFAULT_STATE.chartLlammaOhlc.data,
-              volumeData: DEFAULT_STATE.chartLlammaOhlc.volumeData,
               oraclePriceData: DEFAULT_STATE.chartLlammaOhlc.oraclePriceData,
               baselinePriceData: DEFAULT_STATE.chartLlammaOhlc.baselinePriceData,
               refetchingCapped: DEFAULT_STATE.chartLlammaOhlc.refetchingCapped,
@@ -324,21 +308,12 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
           end,
         })
 
-        const volumeArray: VolumeData[] = []
         const baselinePriceArray: LlamaBaselinePriceData[] = []
         const oraclePriceArray: OraclePriceData[] = []
         const ohlcDataArray: LpPriceOhlcDataFormatted[] = []
 
         for (const item of ohlc) {
           const time = item.time.getLocalTimestamp()
-
-          if (item.volume && item.open && item.close) {
-            volumeArray.push({
-              time,
-              value: item.volume,
-              color: item.open < item.close ? '#26a69982' : '#ef53507e',
-            })
-          }
 
           if (item.basePrice) {
             baselinePriceArray.push({
@@ -367,7 +342,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
 
         return {
           ohlcData: ohlcDataArray,
-          volumeData: volumeArray,
           oracleData: oraclePriceArray,
           baselineData: baselinePriceArray,
           refetchingCapped: ohlcDataArray.length < 299,
@@ -381,7 +355,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
         )
         return {
           ohlcData: [],
-          volumeData: [],
           oracleData: [],
           baselineData: [],
           refetchingCapped: false,
@@ -621,7 +594,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
               data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
-              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
               oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
               baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,
@@ -664,7 +636,6 @@ const createOhlcChart = (set: StoreApi<State>['setState'], get: StoreApi<State>[
             state[sliceKey].chartLlammaOhlc = {
               fetchStatus: 'READY',
               data: [...llammaData.ohlcData, ...state[sliceKey].chartLlammaOhlc.data],
-              volumeData: [...llammaData.volumeData, ...state[sliceKey].chartLlammaOhlc.volumeData],
               oraclePriceData: [...llammaData.oracleData, ...state[sliceKey].chartLlammaOhlc.oraclePriceData],
               baselinePriceData: [...llammaData.baselineData, ...state[sliceKey].chartLlammaOhlc.baselinePriceData],
               refetchingCapped: llammaData.refetchingCapped,

@@ -24,25 +24,6 @@ export const convertToLocaleTimestamp = (unixTimestamp: number) => {
 }
 
 /**
- * Converts an HSLA color string to RGB format
- * Lightweight Cahrts v5 adds support for HSLA, but until then we need to convert to RGB
- * @param hsla - HSLA color string (e.g. "hsla(230, 60%, 29%, 1)")
- * @returns RGB color string (e.g. "rgb(44, 57, 118)")
- * @example
- * hslaToRgb("hsla(230, 60%, 29%, 1)") // returns "rgb(44, 57, 118)"
- * hslaToRgb("hsl(230, 60%, 29%)") // returns "rgb(44, 57, 118)"
- */
-export function hslaToRgb(hsla: string) {
-  return hsla.replace(/hsla?\((\d+),\s*(\d+)%,\s*(\d+)%(?:,\s*[\d.]+)?\)/, (_, h, s, l) => {
-    const a = s / 100
-    const b = l / 100
-    const k = (n: number) => (n + h / 30) % 12
-    const f = (n: number) => b - a * Math.min(b, 1 - b) * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))
-    return `rgb(${Math.round(255 * f(0))}, ${Math.round(255 * f(8))}, ${Math.round(255 * f(4))})`
-  })
-}
-
-/**
  * Calculates robust price range for chart auto-scaling by filtering outliers
  * Uses percentile-based approach to exclude anomalous candles that would flatten the chart
  * Always includes recent candles to ensure current price action is visible
