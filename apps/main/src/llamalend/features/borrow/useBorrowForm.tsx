@@ -17,9 +17,6 @@ import { type CreateLoanOptions, useCreateLoanMutation } from '../../mutations/c
 import { useBorrowCreateLoanIsApproved } from '../../queries/create-loan/borrow-create-loan-approved.query'
 import { borrowFormValidationSuite } from '../../queries/validation/borrow.validation'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
-import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from './queries/borrow.validation'
-import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { useFormErrors } from './react-form.utils'
 import { type BorrowForm } from './types'
 
@@ -67,9 +64,9 @@ export function useBorrowForm<ChainId extends IChainId>({
     isPending: isCreating,
     isSuccess: isCreated,
     error: creationError,
-    data: tx,
+    data,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
+  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 
@@ -86,7 +83,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     collateralToken,
     isCreated,
     creationError,
-    txHash: tx?.hash,
+    txHash: data?.hash,
     isApproved: useBorrowCreateLoanIsApproved(params),
     tooMuchDebt: !!form.formState.errors['maxDebt'],
     formErrors: useFormErrors(form.formState),

@@ -28,7 +28,7 @@ export type CreateLoanOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   onCreated: LlammaMutationOptions<BorrowMutation>['onSuccess']
-  reset: () => void
+  onReset: () => void
 }
 
 const approve = async (
@@ -54,7 +54,7 @@ const create = async (
   return (await parent.createLoan(userCollateral, debt, range, +slippage)) as Address
 }
 
-export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({ network, marketId, onCreated, onReset }: CreateLoanOptions) => {
   const config = useConfig()
   const { chainId } = network
   const mutationKey = ['create-loan', { chainId, marketId }] as const
@@ -77,6 +77,7 @@ export const useCreateLoanMutation = ({ network, marketId, onCreated }: CreateLo
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onCreated,
+    onReset,
   })
 
   const onSubmit = useCallback((data: BorrowForm) => mutateAsync(data as BorrowMutation), [mutateAsync])

@@ -17,10 +17,11 @@ type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBo
 export type RepayOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onRepaid?: LlammaMutationOptions<RepayMutation>['onSuccess']
+  onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
+  onReset: () => void
 }
 
-export const useRepayMutation = ({ network, marketId, onRepaid }: RepayOptions) => {
+export const useRepayMutation = ({ network, marketId, onRepaid, onReset }: RepayOptions) => {
   const { chainId } = network
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
     network,
@@ -38,6 +39,7 @@ export const useRepayMutation = ({ network, marketId, onRepaid }: RepayOptions) 
     pendingMessage: (mutation, { market }) => t`Repaying loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan repaid! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onRepaid,
+    onReset,
   })
 
   const onSubmit = useCallback((form: RepayForm) => mutateAsync(form as RepayMutation), [mutateAsync])

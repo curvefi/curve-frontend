@@ -22,7 +22,8 @@ export function useClosePositionMutation({
   chainId,
   marketId,
   userAddress,
-}: UserMarketParams<IChainId> & { network: LlamaNetwork }) {
+  onReset,
+}: UserMarketParams<IChainId> & { network: LlamaNetwork; onReset?: () => void }) {
   const maxSlippage = useUserProfileStore((state) => state.maxSlippage.crypto)
   return useLlammaMutation<{}>({
     network,
@@ -32,6 +33,7 @@ export function useClosePositionMutation({
     pendingMessage: () => t`Closing position...`,
     successMessage: () => t`Position closed successfully!`,
     onSuccess: () => invalidateAllUserBorrowDetails({ chainId, marketId, userAddress }),
+    onReset,
     validationSuite: userMarketValidationSuite,
   })
 }

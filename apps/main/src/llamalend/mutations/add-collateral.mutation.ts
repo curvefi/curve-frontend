@@ -17,7 +17,8 @@ type AddCollateralMutation = { userCollateral: Decimal }
 export type AddCollateralOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onAdded?: LlammaMutationOptions<AddCollateralMutation>['onSuccess']
+  onAdded: LlammaMutationOptions<AddCollateralMutation>['onSuccess']
+  onReset: () => void
 }
 
 const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
@@ -26,7 +27,7 @@ const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddColla
 const addCollateral = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
   (await market.addCollateral(userCollateral)) as Hex
 
-export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddCollateralOptions) => {
+export const useAddCollateralMutation = ({ network, marketId, onAdded, onReset }: AddCollateralOptions) => {
   const config = useConfig()
   const { wallet } = useConnection()
   const { chainId } = network
@@ -50,6 +51,7 @@ export const useAddCollateralMutation = ({ network, marketId, onAdded }: AddColl
     pendingMessage: (mutation, { market }) => t`Adding collateral... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Collateral added successfully! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onAdded,
+    onReset,
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as AddCollateralMutation), [mutateAsync])

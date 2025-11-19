@@ -28,14 +28,14 @@ export const useAddCollateralForm = ({
   market,
   network,
   networks,
-  enabled = true,
+  enabled,
   onAdded,
 }: {
   market: LlamaMarketTemplate | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
   networks: NetworkDict<LlamaChainId>
   enabled?: boolean
-  onAdded?: NonNullable<AddCollateralOptions['onAdded']>
+  onAdded: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
@@ -66,7 +66,7 @@ export const useAddCollateralForm = ({
 
   const isApproved = useAddCollateralIsApproved(params)
 
-  const { onSubmit, ...action } = useAddCollateralMutation({ marketId, network, onAdded })
+  const { onSubmit, ...action } = useAddCollateralMutation({ marketId, network, onAdded, onReset: form.reset })
 
   useCallbackAfterFormUpdate(form, action.reset)
 

@@ -1,14 +1,12 @@
 import type { Suite } from 'vest'
-import type { Hex } from 'viem'
-import type { FormattedTransactionReceipt } from 'viem'
+import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
 import type { BaseConfig } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { logSuccess, logMutation, logError, assertValidity } from '@ui-kit/lib'
+import { notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
 import { waitForTransactionReceipt } from '@wagmi/core'
 import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
@@ -50,15 +48,6 @@ type Context = Pick<NonNullable<ReturnType<typeof useConnection>>, 'wallet' | 'l
 
 type Result = { hash: Hex }
 
-/**
- * Custom context specially for the mutation function.
- * Usually mutations don't have a context, but they do
- * when you use our specialized llamma mutation.
- */
-type MutationFnContext = {
-  market: LlamaMarketTemplate
-}
-
 export type LlammaMutationOptions<TVariables extends object, TData extends Result = Result> = {
   /** The llamma market id */
   marketId: string | null | undefined
@@ -66,8 +55,11 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   network: BaseConfig<LlamaNetworkId>
   /** Unique key for the mutation */
   mutationKey: readonly unknown[]
-  /** Function that performs the mutation operation */
-  mutationFn: (variables: TVariables, context: MutationFnContext) => Promise<TData>
+  /**
+   *  Function that performs the mutation operation.
+   *  Usually, mutations functions don't have a context, but we inject it in our custom hook.
+   **/
+  mutationFn: (variables: TVariables, context: { market: LlamaMarketTemplate }) => Promise<TData>
   /**
    * Validation suite to validate variables before mutationFn is called.
    * This is using `any` because `vest` will try to match every single field,
@@ -79,10 +71,14 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** Message to display on success */
   successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess?: (
+  onSuccess: (
+    data: TData,
+    receipt: FormattedTransactionReceipt,
     variables: TVariables,
-    context: Context & { receipt: FormattedTransactionReceipt; data: TData },
+    context: Context,
   ) => unknown | Promise<unknown>
+  /** Callback executed when mutation is reset */
+  onReset?: () => void
 }
 
 /**
@@ -100,11 +96,12 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   pendingMessage,
   successMessage,
   onSuccess,
+  onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
   const { llamaApi, wallet } = useConnection()
   const config = useConfig()
 
-  return useMutation({
+  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       // Early validation - throwing here prevents mutationFn from running
@@ -129,15 +126,16 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
       const data = await mutationFn(variables, { market })
+      throwIfError(data)
       return { data, receipt: await waitForTransactionReceipt(config, data) }
     },
     onSuccess: async ({ data, receipt }, variables, context) => {
-      throwIfError(receipt)
-      logSuccess(mutationKey, { receipt, variables, marketId: context.market.id })
+      logSuccess(mutationKey, { data, variables, marketId: context.market.id })
       notify(successMessage(variables, context), 'success')
       updateUserEventsApi(wallet!, network, context.market, receipt.transactionHash)
       await invalidateAllUserMarketDetails({ marketId, userAddress: wallet?.account.address })
-      await onSuccess?.(variables, { ...context, receipt, data })
+      onReset?.()
+      await onSuccess(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
       logError(mutationKey, { error, variables, marketId: context?.market.id })
@@ -145,4 +143,5 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     },
     onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),
   })
+  return { mutate, mutateAsync, error, ...data, isPending, isSuccess, reset }
 }

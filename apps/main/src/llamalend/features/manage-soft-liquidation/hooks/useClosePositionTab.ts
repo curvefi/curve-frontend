@@ -1,4 +1,5 @@
 import { useCallback } from 'react'
+import { ClosePositionProps } from '@/llamalend/features/manage-soft-liquidation'
 import { useClosePositionMutation } from '@/llamalend/mutations/close-position.mutation'
 import type { MarketParams } from '../types'
 import { useCanClose } from './useCanClose'
@@ -12,7 +13,7 @@ export function useClosePositionTab(params: MarketParams): ClosePositionProps {
   const canClose = useCanClose(params)
 
   const { mutate, isPending } = useClosePositionMutation(params)
-  const onClose = useCallback(() => mutate({}), [mutate])
+  const onClose = useCallback(() => mutate({}), [mutate]) // todo: rename to `closePosition`
   return {
     debtToken,
     collateralToRecover,

@@ -13,10 +13,11 @@ type RemoveCollateralMutation = { userCollateral: Decimal }
 export type RemoveCollateralOptions = {
   marketId: string | undefined
   network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  onRemoved?: LlammaMutationOptions<RemoveCollateralMutation>['onSuccess']
+  onRemoved: LlammaMutationOptions<RemoveCollateralMutation>['onSuccess']
+  onReset: () => void
 }
 
-export const useRemoveCollateralMutation = ({ network, marketId, onRemoved }: RemoveCollateralOptions) => {
+export const useRemoveCollateralMutation = ({ network, marketId, onRemoved, onReset }: RemoveCollateralOptions) => {
   const { chainId } = network
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RemoveCollateralMutation>({
     network,
@@ -30,6 +31,7 @@ export const useRemoveCollateralMutation = ({ network, marketId, onRemoved }: Re
     successMessage: (mutation, { market }) =>
       t`Collateral removed successfully! ${formatTokenAmounts(market, mutation)}`,
     onSuccess: onRemoved,
+    onReset,
   })
 
   const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as RemoveCollateralMutation), [mutateAsync])
