@@ -4,11 +4,12 @@ import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/crea
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
-import { DEFAULT_FORM_VALUES, hasLeverage } from '@/loan/components/PageLoanCreate/utils'
+import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanCreate/utils'
 import useCollateralAlert from '@/loan/hooks/useCollateralAlert'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { hasV1Leverage } from '@/loan/utils/leverage'
 import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
@@ -68,7 +69,7 @@ const LoanCreate = ({
           [{ value: 'create' as const, label: t`Borrow` }]
         : [
             { value: 'create' as const, label: t`Create Loan` },
-            ...(hasLeverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
+            ...(hasV1Leverage(llamma) ? [{ value: 'leverage' as const, label: t`Leverage` }] : []),
           ],
     [llamma, isBorrowUnifiedForm],
   )

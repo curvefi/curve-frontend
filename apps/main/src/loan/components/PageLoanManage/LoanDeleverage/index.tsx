@@ -16,17 +16,13 @@ import type { FormDetailInfo, FormStatus, FormValues } from '@/loan/components/P
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanManage/LoanDeleverage/utils'
 import { StyledDetailInfoWrapper, StyledInpChip } from '@/loan/components/PageLoanManage/styles'
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
-import {
-  DEFAULT_DETAIL_INFO,
-  DEFAULT_FORM_EST_GAS,
-  DEFAULT_HEALTH_MODE,
-  hasDeleverage,
-} from '@/loan/components/PageLoanManage/utils'
+import { DEFAULT_DETAIL_INFO, DEFAULT_FORM_EST_GAS, DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
+import { hasV1Deleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
@@ -422,7 +418,7 @@ const LoanDeleverage = ({
       </StyledDetailInfoWrapper>
 
       {/* actions */}
-      {llamma && !hasDeleverage(llamma) ? (
+      {llamma && !hasV1Deleverage(llamma) ? (
         <AlertBox alertType="info">Deleverage is not available</AlertBox>
       ) : (
         <LoanFormConnect haveSigner={haveSigner} loading={!curve}>

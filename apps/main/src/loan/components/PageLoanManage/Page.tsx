@@ -13,7 +13,6 @@ import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { FormType } from '@/loan/components/PageLoanManage/types'
-import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
@@ -21,6 +20,7 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { hasV1Deleverage } from '@/loan/utils/leverage'
 import { getLoanCreatePathname, parseCollateralParams, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -121,7 +121,7 @@ const Page = () => {
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
-    if (market && rFormType === 'deleverage' && !hasDeleverage(market)) {
+    if (market && rFormType === 'deleverage' && !hasV1Deleverage(market)) {
       push(getLoanCreatePathname(params, market.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

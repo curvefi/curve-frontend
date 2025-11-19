@@ -11,12 +11,12 @@ import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanCreate from '@/loan/components/PageLoanCreate/index'
-import { hasLeverage } from '@/loan/components/PageLoanCreate/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { type CollateralUrlParams, type LlamaApi, Llamma } from '@/loan/types/loan.types'
+import { hasV1Leverage } from '@/loan/utils/leverage'
 import { getTokenName } from '@/loan/utils/utilsLoan'
 import {
   getLoanCreatePathname,
@@ -136,7 +136,7 @@ const Page = () => {
 
   //  redirect if form is leverage but no leverage option
   useEffect(() => {
-    if (market && rFormType === 'leverage' && !hasLeverage(market)) {
+    if (market && rFormType === 'leverage' && !hasV1Leverage(market)) {
       push(getLoanCreatePathname(params, market.id))
     }
   }, [loaded, rFormType, market, push, params])

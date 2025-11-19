@@ -1,6 +1,5 @@
-import { zeroAddress } from 'viem'
 import { FormDetailInfo, FormEstGas, FormStatus } from '@/loan/components/PageLoanManage/types'
-import { Llamma, HealthMode, UserWalletBalances } from '@/loan/types/loan.types'
+import { HealthMode, UserWalletBalances } from '@/loan/types/loan.types'
 
 export const DEFAULT_HEALTH_MODE: HealthMode = {
   percent: '',
@@ -35,8 +34,4 @@ export const DEFAULT_USER_WALLET_BALANCES: UserWalletBalances = {
   collateral: '0',
   stablecoin: '0',
   error: '',
-}
-
-export function hasDeleverage(llamma: Llamma | null) {
-  return !!llamma && llamma?.deleverageZap !== zeroAddress
 }
