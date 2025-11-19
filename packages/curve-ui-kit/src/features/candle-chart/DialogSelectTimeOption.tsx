@@ -1,6 +1,6 @@
 import { styled } from 'styled-components'
-import DialogSelectContent from 'ui/src/Chart/DialogSelectTimeOptionContent'
 import Popover, { Popover2Dialog } from 'ui/src/Popover2'
+import DialogSelectContent from '@ui-kit/features/candle-chart/DialogSelectTimeOptionContent'
 import type { TimeOptions } from './types'
 
 type Props = {
