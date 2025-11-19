@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Grid from '@mui/material/Grid'
 import { ChainIcon } from '@ui-kit/shared/icons/ChainIcon'
 import { GridChip } from '@ui-kit/shared/ui/DataTable/chips/GridChip'

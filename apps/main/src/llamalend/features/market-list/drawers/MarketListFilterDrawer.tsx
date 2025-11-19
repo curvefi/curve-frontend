@@ -1,6 +1,6 @@
 import React from 'react'
-import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
 import type { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { Button, Grid } from '@mui/material'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'

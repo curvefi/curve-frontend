@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { MarketBorrowRateTooltipWrapper } from '@/llamalend/widgets/tooltips/MarketBorrowRateTooltipWrapper'
 import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'

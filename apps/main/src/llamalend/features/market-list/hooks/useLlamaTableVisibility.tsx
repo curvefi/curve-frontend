@@ -1,6 +1,6 @@
 import { isEqual } from 'lodash'
 import { useMemo } from 'react'
-import type { LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
+import type { LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import { SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'
 import type { MigrationOptions } from '@ui-kit/hooks/useStoredState'

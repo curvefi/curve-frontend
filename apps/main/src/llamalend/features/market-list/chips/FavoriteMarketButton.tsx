@@ -1,4 +1,4 @@
-import { useFavoriteMarket } from '@/llamalend/entities/favorite-markets'
+import { useFavoriteMarket } from '@/llamalend/queries/market-list/favorite-markets'
 import IconButton from '@mui/material/IconButton'
 import { useTheme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
