@@ -1,6 +1,7 @@
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { Decimal, formatPercent, formatNumber } from '@ui-kit/utils'
+import { notFalsy } from 'router-api/src/router.utils'
 import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { type Amount, Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive, QueryData } from './LoanInfoAccordion'
 
@@ -13,7 +14,12 @@ type LoanInfoLeverageActionInfoProps = {
   collateralSymbol?: string
 }
 
-export const LoanInfoLeverageActionInfo = ({
+const format = (value: Amount | null | undefined, symbol?: string) =>
+  value == null ? '-' : notFalsy(formatNumber(value, { abbreviate: true }), symbol).join(' ')
+const formatInt = (value: Amount | null | undefined) =>
+  value == null ? '-' : formatNumber(value, { abbreviate: false, decimals: 0 })
+
+export const LoanLeverageActionInfo = ({
   expectedCollateral,
   maxReceive,
   priceImpact,
@@ -38,34 +44,29 @@ export const LoanInfoLeverageActionInfo = ({
     <>
       <ActionInfo
         label={t`Leverage`}
-        value={formatNumber(leverage, { defaultValue: '1', maximumFractionDigits: 0 })}
-        valueRight={
-          leverage != null && maxLeverage && ` (max ${formatNumber(maxLeverage, { maximumFractionDigits: 0 })})`
-        }
-        error={expectedCollateralError || maxReceiveError || undefined}
+        value={formatInt(leverage)}
+        valueRight={maxLeverage && ` (max ${formatInt(maxLeverage)})`}
+        error={expectedCollateralError || maxReceiveError}
         loading={expectedCollateralLoading || maxReceiveLoading}
       />
       <ActionInfo
         label={t`Expected`}
-        value={formatNumber(totalCollateral, {
-          currency: collateralSymbol,
-          defaultValue: '-',
-        })}
-        error={expectedCollateralError ?? undefined}
+        value={format(totalCollateral, collateralSymbol)}
+        error={expectedCollateralError}
         loading={expectedCollateralLoading}
       />
       <ActionInfo
         label={t`Expected avg. price`}
-        value={formatNumber(avgPrice, { defaultValue: '-' })}
-        error={maxReceiveError ?? undefined}
+        value={format(avgPrice)}
+        error={maxReceiveError}
         loading={maxReceiveLoading}
       />
       <ActionInfo
         label={isHighImpact ? t`High price impact` : t`Price impact`}
-        value={formatPercent(priceImpactPercent, { defaultValue: '-' })}
+        value={formatPercent(priceImpactPercent)}
         valueRight={priceImpactPercent != null && '%'}
         {...(isHighImpact && { valueColor: 'error' })}
-        error={priceImpactPercentError ?? undefined}
+        error={priceImpactPercentError}
         loading={priceImpactPercentLoading}
         testId="borrow-price-impact"
       />

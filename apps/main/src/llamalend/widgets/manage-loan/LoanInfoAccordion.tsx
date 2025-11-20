@@ -7,7 +7,7 @@ import { Accordion } from '@ui-kit/shared/ui/Accordion'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatPercent } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
-import { LoanInfoLeverageActionInfo } from './LoanInfoLeverageActionInfo'
+import { LoanLeverageActionInfo } from './LoanLeverageActionInfo'
 
 export type QueryData<T> = {
   data: T | undefined
@@ -88,7 +88,7 @@ export const LoanInfoAccordion = ({
       >
         <Stack>
           {leverage.enabled && (
-            <LoanInfoLeverageActionInfo
+            <LoanLeverageActionInfo
               expectedCollateral={leverage.expectedCollateral}
               maxReceive={leverage.maxReceive}
               priceImpact={leverage.priceImpact}
