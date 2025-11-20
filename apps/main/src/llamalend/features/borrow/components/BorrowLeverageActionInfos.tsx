@@ -4,9 +4,9 @@ import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
-import { useMaxBorrowReceive } from '../queries/borrow-max-receive.query'
-import { useBorrowPriceImpact } from '../queries/borrow-price-impact.query'
+import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
+import { useCreateLoanMaxReceive } from '../../../queries/create-loan/create-loan-max-receive.query'
+import { useCreateLoanPriceImpact } from '../../../queries/create-loan/create-loan-price-impact.query'
 import type { BorrowFormQueryParams, Token } from '../types'
 
 /**
@@ -29,13 +29,13 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
     data: expectedCollateral,
     isLoading: expectedCollateralLoading,
     error: expectedCollateralError,
-  } = useBorrowExpectedCollateral(params, isOpen)
+  } = useCreateLoanExpectedCollateral(params, isOpen)
 
   const {
     data: maxBorrowReceive,
     isLoading: maxBorrowReceiveLoading,
     error: maxBorrowReceiveError,
-  } = useMaxBorrowReceive(params, isOpen)
+  } = useCreateLoanMaxReceive(params, isOpen)
 
   const { totalCollateral, leverage } = expectedCollateral ?? {}
   const { avgPrice, maxLeverage } = maxBorrowReceive ?? {}
@@ -44,7 +44,7 @@ export const BorrowLeverageActionInfos = <ChainId extends IChainId>({
     data: priceImpactPercent,
     isLoading: priceImpactPercentLoading,
     error: priceImpactPercentError,
-  } = useBorrowPriceImpact(params, isOpen)
+  } = useCreateLoanPriceImpact(params, isOpen)
   const isHighImpact = priceImpactPercent != null && priceImpactPercent > +slippage
 
   return (

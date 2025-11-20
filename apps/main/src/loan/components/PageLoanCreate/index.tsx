@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
-import type { CreateLoanOptions } from '@/llamalend/features/borrow/queries/create-loan.mutation'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
+import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanCreate/utils'

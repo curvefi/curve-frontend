@@ -6,11 +6,11 @@ import useStore from '@/loan/store/useStore'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ChartWrapper, { type ChartWrapperProps } from '@ui/Chart/ChartWrapper'
-import type { LiquidationRanges, LlammaLiquididationRange } from '@ui/Chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
 import TextCaption from '@ui/TextCaption'
+import ChartWrapper, { type ChartWrapperProps } from '@ui-kit/features/candle-chart/ChartWrapper'
+import type { LiquidationRanges, LlammaLiquididationRange } from '@ui-kit/features/candle-chart/types'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -292,6 +292,7 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
   }
 
   const ChartWrapperProps: ChartWrapperProps = {
+    hideCandleSeriesLabel: true,
     chartType: 'crvusd',
     chartStatus: llamma ? chartOhlcObject.fetchStatus : 'LOADING',
     chartHeight,
@@ -299,7 +300,6 @@ const ChartOhlcWrapper = ({ rChainId, llamma, llammaId, betaBackgroundColor }: C
     betaBackgroundColor,
     themeType: theme,
     ohlcData: chartOhlcObject.data,
-    volumeData: chartLlammaOhlc.volumeData,
     oraclePriceData: chartOhlcObject.oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,

@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js'
-import { useBorrowExpectedCollateral } from '@/llamalend/features/borrow/queries/borrow-expected-collateral.query'
+import { useCreateLoanExpectedCollateral } from '@/llamalend/queries/create-loan/create-loan-expected-collateral.query'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { Decimal } from '@ui-kit/utils'
@@ -30,7 +30,7 @@ export const useLoanToValue = <ChainId extends IChainId>(
     data: expectedCollateral,
     isLoading: isExpectedCollateralLoading,
     error: expectCollateralError,
-  } = useBorrowExpectedCollateral(params, enabled && (leverageEnabled ?? false))
+  } = useCreateLoanExpectedCollateral(params, enabled && (leverageEnabled ?? false))
   const {
     data: collateralUsdRate,
     error: collateralUsdRateError,

@@ -10,7 +10,7 @@ import {
   rangeFilterFn,
 } from '@ui-kit/shared/ui/DataTable/filters'
 import { MarketRateType } from '@ui-kit/types/market'
-import { LlamaMarket } from '../../entities/llama-markets'
+import { LlamaMarket } from '../../queries/market-list/llama-markets'
 import {
   BoostCell,
   CompactUsdCell,

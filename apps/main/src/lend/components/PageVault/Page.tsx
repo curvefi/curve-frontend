@@ -19,10 +19,10 @@ import {
   getLoanManagePathname,
   parseMarketParams,
 } from '@/lend/utils/utilsRouter'
-import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition, SupplyPositionDetails } from '@/llamalend/features/market-position-details'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
 import Box from '@ui/Box'
@@ -31,7 +31,7 @@ import {
   ExpandIcon,
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
-} from '@ui/Chart/styles'
+} from '@ui-kit/features/candle-chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'

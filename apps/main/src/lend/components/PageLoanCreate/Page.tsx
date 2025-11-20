@@ -15,11 +15,11 @@ import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getCollateralListPathname, parseMarketParams, scrollToTop } from '@/lend/utils/helpers'
 import { getVaultPathname } from '@/lend/utils/utilsRouter'
-import { DetailPageStack } from '@/llamalend/components/DetailPageStack'
 import { MarketDetails } from '@/llamalend/features/market-details'
 import { NoPosition } from '@/llamalend/features/market-position-details'
 import { UserPositionHistory } from '@/llamalend/features/user-position-history'
 import { useUserCollateralEvents } from '@/llamalend/features/user-position-history/hooks/useUserCollateralEvents'
+import { DetailPageStack } from '@/llamalend/widgets/DetailPageStack'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
 import { AppPageFormsWrapper } from '@ui/AppPage'
@@ -29,7 +29,7 @@ import {
   ExpandIcon,
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
-} from '@ui/Chart/styles'
+} from '@ui-kit/features/candle-chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'

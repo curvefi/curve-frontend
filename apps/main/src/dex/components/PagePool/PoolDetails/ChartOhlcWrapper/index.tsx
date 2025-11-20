@@ -6,10 +6,10 @@ import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Box from '@ui/Box'
 import Button from '@ui/Button'
-import ChartWrapper from '@ui/Chart'
-import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui/Chart/types'
-import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui/Chart/utils'
 import Icon from '@ui/Icon'
+import ChartWrapper from '@ui-kit/features/candle-chart/ChartWrapper'
+import type { PricesApiPool, PricesApiCoin, LabelList } from '@ui-kit/features/candle-chart/types'
+import { getThreeHundredResultsAgo, subtractTimeUnit } from '@ui-kit/features/candle-chart/utils'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
@@ -199,6 +199,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
     <ExpandedWrapper activityHidden={activityHidden}>
       <Wrapper variant={'secondary'} chartExpanded={chartExpanded}>
         <ChartWrapper
+          hideCandleSeriesLabel={false}
           chartType="poolPage"
           chartStatus={chartStatus}
           chartHeight={chartHeight}
@@ -264,6 +265,7 @@ const PoolInfoData = ({ rChainId, pricesApiPoolData }: { rChainId: ChainId; pric
       )}
       {poolInfo === 'chart' && (
         <ChartWrapper
+          hideCandleSeriesLabel={false}
           chartType="poolPage"
           chartStatus={chartStatus}
           chartHeight={chartHeight}

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useAccount } from 'wagmi'
-import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
+import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
 import { fetchJson } from '@curvefi/prices-api/fetch'
 import { EmptyValidationSuite } from '@ui-kit/lib'
 import { t } from '@ui-kit/lib/i18n'

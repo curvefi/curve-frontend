@@ -1,0 +1,705 @@
+import type { IChartApi, Time, ISeriesApi, LineWidth } from 'lightweight-charts'
+import {
+  createChart,
+  ColorType,
+  CrosshairMode,
+  LineStyle,
+  AreaSeries,
+  CandlestickSeries,
+  LineSeries,
+} from 'lightweight-charts'
+import lodash from 'lodash'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
+import { styled } from 'styled-components'
+import { formatNumber } from '@ui-kit/utils/'
+import type { ChartColors } from './hooks/useChartPalette'
+import type { LpPriceOhlcDataFormatted, ChartHeight, OraclePriceData, LiquidationRanges } from './types'
+import { calculateRobustPriceRange } from './utils'
+
+const createPriceFormatter = () => ({
+  type: 'custom' as const,
+  formatter: (price: number) =>
+    formatNumber(price, {
+      abbreviate: false,
+      maximumSignificantDigits: 4,
+    }),
+})
+
+/**
+ * Shared configuration for liquidation range area series
+ */
+const SL_RANGE_AREA_SERIES_DEFAULTS = {
+  lineStyle: 3,
+  crosshairMarkerVisible: false,
+  pointMarkersVisible: false,
+  lineVisible: false,
+  priceLineStyle: 3,
+} as const
+
+type Props = {
+  /**
+   * If the chart is used on a Llamalend market page we hide the candle series label and label line.
+   */
+  hideCandleSeriesLabel: boolean
+  chartHeight: ChartHeight
+  ohlcData: LpPriceOhlcDataFormatted[]
+  oraclePriceData?: OraclePriceData[]
+  liquidationRange?: LiquidationRanges
+  timeOption: string
+  wrapperRef: any
+  chartExpanded?: boolean
+  magnet: boolean
+  colors: ChartColors
+  refetchingCapped: boolean
+  fetchMoreChartData: (lastFetchEndTime: number) => void
+  lastFetchEndTime: number
+  oraclePriceVisible?: boolean
+  liqRangeCurrentVisible?: boolean
+  liqRangeNewVisible?: boolean
+  latestOraclePrice?: string
+}
+
+const CandleChart = ({
+  hideCandleSeriesLabel,
+  chartHeight,
+  ohlcData,
+  oraclePriceData,
+  liquidationRange,
+  timeOption,
+  wrapperRef,
+  chartExpanded,
+  magnet,
+  colors,
+  refetchingCapped,
+  fetchMoreChartData,
+  lastFetchEndTime,
+  oraclePriceVisible,
+  liqRangeCurrentVisible,
+  liqRangeNewVisible,
+  latestOraclePrice,
+}: Props) => {
+  const chartContainerRef = useRef(null)
+  const chartRef = useRef<IChartApi>(null)
+
+  const newAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const newAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
+  const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
+  const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
+  const lastFetchEndTimeRef = useRef(lastFetchEndTime)
+  const ohlcDataRef = useRef(ohlcData)
+
+  const isMounted = useRef(true)
+
+  const [isUnmounting, setIsUnmounting] = useState(false)
+  const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
+  const [wrapperDimensions, setWrapperDimensions] = useState({ width: 0, height: 0 })
+  const fetchingMoreRef = useRef(false)
+
+  // Memoize colors to prevent unnecessary re-renders
+  const memoizedColors = useMemo(() => colors, [colors])
+
+  const priceFormat = useMemo(() => createPriceFormatter(), [])
+
+  // Debounced update of wrapper dimensions
+  const debouncedUpdateDimensions = useRef(
+    lodash.debounce(() => {
+      if (wrapperRef.current) {
+        setWrapperDimensions({
+          width: wrapperRef.current.clientWidth,
+          height: wrapperRef.current.clientHeight,
+        })
+      }
+    }, 16), // ~60fps
+  )
+
+  // Update wrapper dimensions when wrapperRef changes
+  useEffect(() => {
+    debouncedUpdateDimensions.current()
+  }, [wrapperRef])
+
+  // Memoized visible range change handler
+  const handleVisibleLogicalRangeChange = useCallback(() => {
+    if (fetchingMoreRef.current || refetchingCapped || !chartRef.current || !candlestickSeriesRef.current) {
+      return
+    }
+
+    const timeScale = chartRef.current.timeScale()
+    const logicalRange = timeScale.getVisibleLogicalRange()
+
+    if (!logicalRange) {
+      return
+    }
+
+    const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(logicalRange)
+    if (barsInfo && barsInfo.barsBefore < 50) {
+      void debouncedFetchMoreChartData.current()
+      setLastTimescale(timeScale.getVisibleRange())
+    }
+  }, [refetchingCapped])
+
+  useEffect(() => {
+    lastFetchEndTimeRef.current = lastFetchEndTime
+    // Reset fetching flag when new data arrives (fetch completed)
+    fetchingMoreRef.current = false
+  }, [lastFetchEndTime])
+
+  // Keep ohlcDataRef in sync with latest ohlcData
+  useEffect(() => {
+    ohlcDataRef.current = ohlcData
+  }, [ohlcData])
+
+  const debouncedFetchMoreChartData = useRef(
+    lodash.debounce(
+      () => {
+        // Check current state at execution time using ref
+        if (fetchingMoreRef.current || refetchingCapped) {
+          return
+        }
+        fetchingMoreRef.current = true
+        fetchMoreChartData(lastFetchEndTimeRef.current)
+      },
+      500,
+      { leading: true, trailing: false },
+    ),
+  )
+
+  // Chart initialization effect - only run once. Keep variables out of the dependencies array.
+  useEffect(() => {
+    if (!chartContainerRef.current) return
+
+    chartRef.current = createChart(chartContainerRef.current, {
+      layout: {
+        background: { type: ColorType.Solid, color: '#ffffff' },
+        textColor: '#000000',
+      },
+      timeScale: {
+        timeVisible: true, // Default, will be updated by separate effect
+        borderVisible: false,
+      },
+      rightPriceScale: {
+        autoScale: true,
+        alignLabels: true,
+        borderVisible: false,
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.1,
+        },
+      },
+      grid: {
+        vertLines: {
+          visible: true,
+          color: '#C3BCDB44',
+        },
+        horzLines: {
+          visible: true,
+          color: '#C3BCDB44',
+        },
+      },
+      crosshair: {
+        mode: CrosshairMode.Normal,
+        vertLine: {
+          width: 4 as LineWidth,
+          color: '#C3BCDB44',
+          style: LineStyle.Solid,
+          labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
+        },
+      },
+    })
+    chartRef.current.timeScale()
+    isMounted.current = true
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.remove()
+        chartRef.current = null
+      }
+    }
+  }, [])
+
+  // Ensure price axis labels use the same formatter
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      localization: {
+        priceFormatter: priceFormat.formatter,
+      },
+    })
+  }, [priceFormat])
+
+  // Update chart colors when they change
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      layout: {
+        background: { type: ColorType.Solid, color: memoizedColors.backgroundColor },
+        textColor: memoizedColors.textColor,
+      },
+      grid: {
+        vertLines: {
+          color: memoizedColors.gridLine,
+        },
+        horzLines: {
+          color: memoizedColors.gridLine,
+        },
+      },
+    })
+  }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
+
+  // Update chart dimensions when they change
+  useEffect(() => {
+    if (!chartRef.current || wrapperDimensions.width <= 0) return
+
+    const width = Math.max(1, wrapperDimensions.width)
+    const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
+
+    chartRef.current.applyOptions({
+      width,
+      height,
+    })
+  }, [chartExpanded, chartHeight.expanded, chartHeight.standard, wrapperDimensions.width])
+
+  // Update timeScale visibility when timeOption changes
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      timeScale: {
+        timeVisible: timeOption !== 'day',
+      },
+    })
+  }, [timeOption])
+
+  // Update crosshair settings when magnet or colors change
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      crosshair: {
+        mode: magnet ? CrosshairMode.Magnet : CrosshairMode.Normal,
+        vertLine: {
+          width: 4 as LineWidth,
+          color: '#C3BCDB44',
+          style: LineStyle.Solid,
+          labelBackgroundColor: memoizedColors.cursorLabel,
+        },
+        horzLine: {
+          color: memoizedColors.cursorLabel,
+          labelBackgroundColor: memoizedColors.cursorLabel,
+          style: LineStyle.Dashed,
+        },
+      },
+    })
+  }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
+
+  // Liquidation range series effect - create/destroy series based on visibility
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    const seriesConfigs = [
+      { ref: currentAreaSeriesRef, visible: liqRangeCurrentVisible },
+      { ref: currentAreaBgSeriesRef, visible: liqRangeCurrentVisible },
+      { ref: newAreaSeriesRef, visible: liqRangeNewVisible },
+      { ref: newAreaBgSeriesRef, visible: liqRangeNewVisible },
+    ]
+
+    // Clean up existing series
+    seriesConfigs.forEach(({ ref }) => {
+      if (ref.current && chartRef.current) {
+        chartRef.current.removeSeries(ref.current)
+        ref.current = null
+      }
+    })
+
+    // Create series only if visible
+    seriesConfigs.forEach(({ ref, visible }) => {
+      if (visible && chartRef.current) {
+        ref.current = chartRef.current.addSeries(AreaSeries, {
+          ...SL_RANGE_AREA_SERIES_DEFAULTS,
+        })
+      }
+    })
+
+    return () => {
+      seriesConfigs.forEach(({ ref }) => {
+        if (ref.current) {
+          chartRef.current?.removeSeries(ref.current)
+          ref.current = null
+        }
+      })
+    }
+  }, [liqRangeCurrentVisible, liqRangeNewVisible])
+
+  // OHLC series effect - only create once when chart is ready
+  useEffect(() => {
+    if (!chartRef.current || candlestickSeriesRef.current) return
+
+    candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
+      priceLineStyle: LineStyle.LargeDashed,
+      priceLineVisible: !hideCandleSeriesLabel,
+      upColor: memoizedColors.green,
+      downColor: memoizedColors.red,
+      borderVisible: false,
+      wickUpColor: memoizedColors.green,
+      wickDownColor: memoizedColors.red,
+      lastValueVisible: !hideCandleSeriesLabel,
+      priceFormat: {
+        type: 'price',
+        minMove: 0.0001,
+      },
+      autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
+        const originalRange = original()
+
+        if (!originalRange || !chartRef.current || !candlestickSeriesRef.current) {
+          return originalRange
+        }
+
+        // Get visible logical range to determine which bars are visible
+        const visibleLogicalRange = chartRef.current.timeScale().getVisibleLogicalRange()
+
+        if (!visibleLogicalRange) {
+          return originalRange
+        }
+
+        // Get the bars that are currently visible
+        const barsInfo = candlestickSeriesRef.current.barsInLogicalRange(visibleLogicalRange)
+
+        // Use ref to access latest ohlcData without causing series recreation
+        const currentOhlcData = ohlcDataRef.current
+
+        if (!barsInfo || !currentOhlcData || currentOhlcData.length === 0) {
+          return originalRange
+        }
+
+        // Calculate the slice indices for visible bars
+        const startIndex = Math.max(0, Math.floor(barsInfo.barsBefore))
+        const endIndex = Math.min(currentOhlcData.length, currentOhlcData.length - Math.floor(barsInfo.barsAfter))
+
+        // Get visible bars
+        const visibleBars = currentOhlcData.slice(startIndex, endIndex)
+
+        if (visibleBars.length === 0) {
+          return originalRange
+        }
+
+        // Collect all price points (high and low) from visible bars
+        const allPrices = visibleBars.flatMap((item) => [item.high, item.low])
+
+        // Get the latest 5 candles to always include in range (current price action)
+        const recentCandleCount = Math.min(5, visibleBars.length)
+        const recentCandles = visibleBars.slice(-recentCandleCount)
+        const recentPrices = recentCandles.flatMap((item) => [item.high, item.low])
+
+        // Calculate robust price range excluding outliers but always including recent prices
+        const robustRange = calculateRobustPriceRange(allPrices, recentPrices)
+
+        // If we can't calculate a robust range, fall back to original auto-scaling
+        if (!robustRange) {
+          return originalRange
+        }
+
+        return {
+          priceRange: robustRange,
+        }
+      },
+    })
+
+    return () => {
+      candlestickSeriesRef.current = null
+    }
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
+
+  // Update candlestick colors when theme colors change
+  useEffect(() => {
+    if (!candlestickSeriesRef.current) return
+
+    candlestickSeriesRef.current.applyOptions({
+      upColor: memoizedColors.green,
+      downColor: memoizedColors.red,
+      wickUpColor: memoizedColors.green,
+      wickDownColor: memoizedColors.red,
+    })
+  }, [memoizedColors.green, memoizedColors.red])
+
+  // Oracle price series effect - only create once when chart is ready
+  useEffect(() => {
+    if (!chartRef.current || oraclePriceSeriesRef.current) return
+
+    oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
+      lineWidth: 2 as LineWidth,
+      priceLineStyle: LineStyle.Dashed,
+      visible: false, // Default visibility, will be updated by separate effect
+    })
+
+    return () => {
+      oraclePriceSeriesRef.current = null
+    }
+  }, [])
+
+  // Update OHLC data when it changes
+  useEffect(() => {
+    if (!candlestickSeriesRef.current || !ohlcData) return
+
+    candlestickSeriesRef.current.setData(ohlcData)
+  }, [ohlcData])
+
+  // Update oracle price data when it changes
+  useEffect(() => {
+    if (!oraclePriceSeriesRef.current || !oraclePriceData) return
+
+    oraclePriceSeriesRef.current.setData(oraclePriceData)
+  }, [oraclePriceData])
+
+  // Update oracle price series visibility and color when they change
+  useEffect(() => {
+    if (!oraclePriceSeriesRef.current) return
+
+    oraclePriceSeriesRef.current.applyOptions({
+      color: memoizedColors.oraclePrice,
+      visible: oraclePriceVisible,
+    })
+  }, [memoizedColors.oraclePrice, oraclePriceVisible])
+
+  // Event subscription effect
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    const timeScale = chartRef.current.timeScale()
+    timeScale.subscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+
+    return () => {
+      timeScale.unsubscribeVisibleLogicalRangeChange(handleVisibleLogicalRangeChange)
+    }
+  }, [handleVisibleLogicalRangeChange])
+
+  // Update liquidation range data when it changes
+  useEffect(() => {
+    const setSeriesData = (series: ISeriesApi<'Area'> | null, data: any) => {
+      if (series) series.setData(data)
+    }
+
+    // Clear all series if liquidationRange is undefined or has no data
+    if (!liquidationRange || (!liquidationRange.current && !liquidationRange.new)) {
+      setSeriesData(currentAreaSeriesRef.current, [])
+      setSeriesData(currentAreaBgSeriesRef.current, [])
+      setSeriesData(newAreaSeriesRef.current, [])
+      setSeriesData(newAreaBgSeriesRef.current, [])
+      return
+    }
+
+    const ranges = []
+    if (liquidationRange.current && liquidationRange.new) {
+      ranges.push(
+        { series: newAreaSeriesRef.current, bgSeries: newAreaBgSeriesRef.current, data: liquidationRange.new },
+        {
+          series: currentAreaSeriesRef.current,
+          bgSeries: currentAreaBgSeriesRef.current,
+          data: liquidationRange.current,
+        },
+      )
+    } else if (liquidationRange.new) {
+      // Clear current series since it's not being used
+      setSeriesData(currentAreaSeriesRef.current, [])
+      setSeriesData(currentAreaBgSeriesRef.current, [])
+      ranges.push({
+        series: newAreaSeriesRef.current,
+        bgSeries: newAreaBgSeriesRef.current,
+        data: liquidationRange.new,
+      })
+    } else if (liquidationRange.current) {
+      // Clear new series since it's not being used
+      setSeriesData(newAreaSeriesRef.current, [])
+      setSeriesData(newAreaBgSeriesRef.current, [])
+      ranges.push({
+        series: currentAreaSeriesRef.current,
+        bgSeries: currentAreaBgSeriesRef.current,
+        data: liquidationRange.current,
+      })
+    }
+
+    // Set data for all ranges
+    ranges.forEach(({ series, bgSeries, data }) => {
+      setSeriesData(series, data.price1)
+      setSeriesData(bgSeries, data.price2)
+    })
+  }, [liquidationRange])
+
+  // Update liquidation range series colors when they change
+  useEffect(() => {
+    const applySeriesOptions = (
+      series: ISeriesApi<'Area'> | null,
+      colors: { top: string; bottom: string; line: string },
+    ) => {
+      if (series) {
+        series.applyOptions({
+          topColor: colors.top,
+          bottomColor: colors.bottom,
+          lineColor: colors.line,
+        })
+      }
+    }
+
+    const currentColors = {
+      top: memoizedColors.rangeBackground,
+      bottom: memoizedColors.rangeBackground,
+      line: memoizedColors.rangeLineTop,
+    }
+
+    // Update current range series
+    if (liqRangeCurrentVisible) {
+      applySeriesOptions(currentAreaSeriesRef.current, currentColors)
+      applySeriesOptions(currentAreaBgSeriesRef.current, {
+        top: memoizedColors.backgroundColor,
+        bottom: memoizedColors.backgroundColor,
+        line: memoizedColors.rangeLineBottom,
+      })
+    }
+
+    // Update new range series
+    if (liqRangeNewVisible) {
+      applySeriesOptions(newAreaSeriesRef.current, {
+        top: memoizedColors.rangeBackgroundFuture,
+        bottom: memoizedColors.rangeBackgroundFuture,
+        line: memoizedColors.rangeLineFutureTop,
+      })
+      applySeriesOptions(newAreaBgSeriesRef.current, {
+        top: memoizedColors.backgroundColor,
+        bottom: memoizedColors.backgroundColor,
+        line: memoizedColors.rangeLineFutureBottom,
+      })
+    }
+  }, [
+    liqRangeCurrentVisible,
+    liqRangeNewVisible,
+    memoizedColors.rangeLineTop,
+    memoizedColors.rangeBackground,
+    memoizedColors.backgroundColor,
+    liquidationRange,
+    memoizedColors.rangeLineBottom,
+    memoizedColors.rangeBackgroundFuture,
+    memoizedColors.rangeLineFutureTop,
+    memoizedColors.rangeLineFutureBottom,
+  ])
+
+  // Update timescale when lastTimescale changes
+  useEffect(() => {
+    if (!chartRef.current || !lastTimescale) return
+
+    const timeScale = chartRef.current.timeScale()
+    timeScale.setVisibleRange(lastTimescale)
+  }, [lastTimescale])
+
+  // Update latest oracle price when it changes (comes from on chain to keep the last data point as up to date as possible)
+  useEffect(() => {
+    if (
+      !latestOraclePrice ||
+      !oraclePriceSeriesRef.current ||
+      !oraclePriceData ||
+      oraclePriceData[oraclePriceData.length - 1].value === +latestOraclePrice
+    )
+      return
+
+    oraclePriceSeriesRef.current.update({
+      time: oraclePriceData[oraclePriceData.length - 1].time,
+      value: +latestOraclePrice,
+    })
+  }, [latestOraclePrice, oraclePriceData])
+
+  // Set series order effect - ensure proper layering
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    let order = 0
+
+    // Define series refs and their order based on liquidation range logic
+    const getLiquidationRangeSeries = () => {
+      if (!liquidationRange || !liquidationRange.current || !liquidationRange.new) {
+        // Only one range or no ranges - use default order
+        return [
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+        ]
+      }
+
+      const addNewFirst = liquidationRange.new.price2[0].value > liquidationRange.current.price2[0].value
+
+      if (addNewFirst) {
+        // New range first
+        return [
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+        ]
+      } else {
+        // Current range first
+        return [
+          currentAreaSeriesRef.current,
+          currentAreaBgSeriesRef.current,
+          newAreaSeriesRef.current,
+          newAreaBgSeriesRef.current,
+        ]
+      }
+    }
+
+    // Define all series in order: liquidation ranges, volume, OHLC, oracle price
+    const allSeries = [
+      ...getLiquidationRangeSeries(),
+      // volumeSeriesRef.current,
+      candlestickSeriesRef.current,
+      oraclePriceSeriesRef.current,
+    ]
+
+    // Set order for all series that exist
+    allSeries.forEach((series) => {
+      if (series) {
+        series.setSeriesOrder(order++)
+      }
+    })
+  }, [liquidationRange])
+
+  useEffect(() => {
+    wrapperRef.current = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+      if (isUnmounting) return
+
+      const { width, height } = entries[0].contentRect
+      if (width <= 0) return
+
+      const adjustedWidth = Math.max(1, width - 1) // Ensure width is at least 1
+      const adjustedHeight = Math.max(1, height) // Ensure height is at least 1
+
+      // Update state with new dimensions (debounced)
+      setWrapperDimensions({ width: adjustedWidth, height: adjustedHeight })
+
+      // Apply dimensions immediately for smooth resizing
+      chartRef.current?.applyOptions({ width: adjustedWidth, height: adjustedHeight })
+      chartRef.current?.timeScale().getVisibleLogicalRange()
+    })
+
+    wrapperRef.current.observe(chartContainerRef.current)
+
+    const debouncedUpdate = debouncedUpdateDimensions.current
+
+    return () => {
+      setIsUnmounting(true)
+      debouncedUpdate.cancel()
+
+      wrapperRef?.current && wrapperRef.current.disconnect()
+    }
+  }, [wrapperRef, isUnmounting])
+
+  return <Container ref={chartContainerRef} />
+}
+
+const Container = styled.div`
+  position: absolute;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+`
+
+export default CandleChart

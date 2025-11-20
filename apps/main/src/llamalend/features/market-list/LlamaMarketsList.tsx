@@ -4,9 +4,9 @@ import {
   invalidateAllUserLendingSupplies,
   invalidateAllUserLendingVaults,
   invalidateLendingVaults,
-} from '@/llamalend/entities/lending-vaults'
-import { useLlamaMarkets } from '@/llamalend/entities/llama-markets'
-import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/entities/mint-markets'
+} from '@/llamalend/queries/market-list/lending-vaults'
+import { useLlamaMarkets } from '@/llamalend/queries/market-list/llama-markets'
+import { invalidateAllUserMintMarkets, invalidateMintMarkets } from '@/llamalend/queries/market-list/mint-markets'
 import { Address } from '@ui-kit/utils'
 import { ListPageWrapper } from '@ui-kit/widgets/ListPageWrapper'
 import { LendTableFooter } from './LendTableFooter'

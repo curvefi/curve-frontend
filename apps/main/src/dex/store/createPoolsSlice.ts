@@ -38,8 +38,8 @@ import type {
   PricesApiPool,
   PricesApiPoolResponse,
   TimeOptions,
-} from '@ui/Chart/types'
-import { convertToLocaleTimestamp } from '@ui/Chart/utils'
+} from '@ui-kit/features/candle-chart/types'
+import { convertToLocaleTimestamp } from '@ui-kit/features/candle-chart/utils'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { log } from '@ui-kit/lib/logging'
 import { fetchTokenUsdRate, getTokenUsdRateQueryData } from '@ui-kit/lib/model/entities/token-usd-rate'

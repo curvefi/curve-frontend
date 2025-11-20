@@ -1,6 +1,6 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { LlamaMarketColumnId } from '@/llamalend/features/market-list/columns.enum'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { BoostTooltipContent } from '@/llamalend/widgets/tooltips/BoostTooltipContent'
 import Skeleton from '@mui/material/Skeleton'
 import Typography from '@mui/material/Typography'

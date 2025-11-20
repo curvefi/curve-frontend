@@ -6,9 +6,9 @@ import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
+import { useCreateLoanRouteImage } from '../../../queries/create-loan/create-loan-route-image.query'
 import { useLiquidationRangeChartData } from '../hooks/useLiquidationRangeChartData'
-import { useBorrowExpectedCollateral } from '../queries/borrow-expected-collateral.query'
-import { useBorrowRouteImage } from '../queries/borrow-route-image.query'
 import type { BorrowForm, BorrowFormQueryParams, Token } from '../types'
 import { LiquidationRangeSlider } from './LiquidationRangeSlider'
 
@@ -37,12 +37,12 @@ export const AdvancedBorrowOptions = ({
     data: routeImage,
     isLoading: routeImageLoading,
     error: routeImageError,
-  } = useBorrowRouteImage(params, leverageEnabled)
+  } = useCreateLoanRouteImage(params, leverageEnabled)
   const {
     data: expectedCollateral,
     isLoading: expectedCollateralLoading,
     error: expectedCollateralError,
-  } = useBorrowExpectedCollateral(params, leverageEnabled)
+  } = useCreateLoanExpectedCollateral(params, leverageEnabled)
 
   return (
     <Stack gap={Spacing.sm} marginBlock={Spacing.sm}>
