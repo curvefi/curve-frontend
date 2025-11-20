@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
+import { useTheme } from '@mui/material/styles'
 import Button from 'ui/src/Button/Button'
 import CandleChart from 'ui/src/Chart/CandleChart'
 import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
 import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
+import { useChartPalette } from 'ui/src/Chart/hooks/useChartPalette'
 import Checkbox from 'ui/src/Checkbox'
 import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
 import type {
-  ChartColors,
   ChartHeight,
   ChartType,
   FetchingStatus,
@@ -17,10 +18,13 @@ import type {
   LpPriceOhlcDataFormatted,
   OraclePriceData,
   TimeOptions,
-  VolumeData,
 } from './types'
 
 export type ChartWrapperProps = {
+  /**
+   * If the chart is used on a Llamalend market page we hide the candle series label and label line.
+   */
+  hideCandleSeriesLabel: boolean
   chartType: ChartType
   chartHeight: ChartHeight
   chartStatus: FetchingStatus
@@ -28,7 +32,6 @@ export type ChartWrapperProps = {
   betaBackgroundColor?: string // Used during the beta phase of the new theme migration to pass theme bg color
   themeType: string
   ohlcData: LpPriceOhlcDataFormatted[]
-  volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   selectedChartIndex?: number
@@ -50,33 +53,14 @@ export type ChartWrapperProps = {
   latestOraclePrice?: string
 }
 
-const DEFAULT_CHART_COLORS: ChartColors = {
-  backgroundColor: '#fafafa',
-  lineColor: '#2962FF',
-  textColor: 'black',
-  areaTopColor: '#2962FF',
-  areaBottomColor: 'rgba(41, 98, 255, 0.28)',
-  chartGreenColor: '#2962FF',
-  chartRedColor: '#ef5350',
-  chartLabelColor: '#9B7DFF',
-  chartVolumeRed: '#ef53507e',
-  chartVolumeGreen: '#26a6997e',
-  chartOraclePrice: '#3360c9c0',
-  rangeColor: '#dfb316',
-  rangeColorA25: '#dfb4167f',
-  rangeColorOld: '#ab792f',
-  rangeColorA25Old: '#ab792f25',
-}
-
 const ChartWrapper = ({
+  hideCandleSeriesLabel,
   chartType,
   chartStatus,
   chartHeight,
   chartExpanded,
   betaBackgroundColor,
-  themeType,
   ohlcData,
-  volumeData,
   oraclePriceData,
   liquidationRange,
   selectedChartIndex,
@@ -99,53 +83,11 @@ const ChartWrapper = ({
 }: ChartWrapperProps) => {
   const [magnet, setMagnet] = useState(false)
   const clonedOhlcData = useMemo(() => [...ohlcData], [ohlcData])
+  const theme = useTheme()
 
   const wrapperRef = useRef(null)
 
-  const [lastTheme, setLastTheme] = useState(themeType)
-  const [colors, setColors] = useState<ChartColors>(DEFAULT_CHART_COLORS)
-
-  useEffect(() => {
-    const style = getComputedStyle(document.body)
-    const backgroundColor = betaBackgroundColor
-      ? betaBackgroundColor
-      : chartType === 'crvusd' && !chartExpanded
-        ? style.getPropertyValue('--tab-secondary--content--background-color')
-        : style.getPropertyValue('--box--secondary--background-color')
-    const lineColor = style.getPropertyValue('--line-color')
-    const textColor = style.getPropertyValue('--page--text-color')
-    const areaTopColor = style.getPropertyValue('--area-top-color')
-    const areaBottomColor = style.getPropertyValue('--area-bottom-color')
-    const chartGreenColor = style.getPropertyValue('--chart-green')
-    const chartRedColor = style.getPropertyValue('--chart-red')
-    const chartLabelColor = style.getPropertyValue('--chart-label')
-    const chartVolumeGreen = style.getPropertyValue('--chart-volume-green')
-    const chartVolumeRed = style.getPropertyValue('--chart-volume-red')
-    const chartOraclePrice = style.getPropertyValue('--chart-oracle-price-line')
-    const rangeColor = style.getPropertyValue('--chart-liq-range')
-    const rangeColorA25 = style.getPropertyValue('--chart-liq-range-a25')
-    const rangeColorOld = style.getPropertyValue('--chart-liq-range-old')
-    const rangeColorA25Old = style.getPropertyValue('--chart-liq-range-a25-old')
-
-    setColors({
-      backgroundColor,
-      lineColor,
-      textColor,
-      areaTopColor,
-      areaBottomColor,
-      chartGreenColor,
-      chartRedColor,
-      chartLabelColor,
-      chartVolumeRed,
-      chartVolumeGreen,
-      chartOraclePrice,
-      rangeColor,
-      rangeColorA25,
-      rangeColorOld,
-      rangeColorA25Old,
-    })
-    setLastTheme(themeType)
-  }, [betaBackgroundColor, chartExpanded, chartType, lastTheme, themeType])
+  const colors = useChartPalette({ backgroundOverride: betaBackgroundColor })
 
   return (
     <Wrapper>
@@ -205,7 +147,7 @@ const ChartWrapper = ({
             <TipWrapper>
               {oraclePriceData && oraclePriceData?.length > 0 && (
                 <StyledCheckbox
-                  fillColor="var(--chart-oracle-price-line)"
+                  fillColor={theme.palette.primary.main}
                   blank
                   isSelected={oraclePriceVisible}
                   onChange={() => toggleOraclePriceVisible()}
@@ -215,7 +157,7 @@ const ChartWrapper = ({
               )}
               {liquidationRange?.new && toggleLiqRangeNewVisible && (
                 <StyledCheckbox
-                  fillColor="var(--chart-liq-range)"
+                  fillColor={theme.design.Chart.LiquidationZone.Future}
                   blank
                   isSelected={liqRangeNewVisible}
                   onChange={() => toggleLiqRangeNewVisible()}
@@ -225,7 +167,7 @@ const ChartWrapper = ({
               )}
               {liquidationRange?.current && (
                 <StyledCheckbox
-                  fillColor={liquidationRange.new ? 'var(--chart-liq-range-old)' : 'var(--chart-liq-range)'}
+                  fillColor={theme.design.Chart.LiquidationZone.Current}
                   blank
                   isSelected={liqRangeCurrentVisible}
                   onChange={() => toggleLiqRangeCurrentVisible()}
@@ -238,9 +180,9 @@ const ChartWrapper = ({
         {chartStatus === 'READY' && (
           <ResponsiveContainer ref={wrapperRef} chartExpanded={chartExpanded} chartHeight={chartHeight}>
             <CandleChart
+              hideCandleSeriesLabel={hideCandleSeriesLabel}
               chartHeight={chartHeight}
               ohlcData={clonedOhlcData}
-              volumeData={volumeData}
               oraclePriceData={oraclePriceData}
               liquidationRange={liquidationRange}
               timeOption={timeOption}

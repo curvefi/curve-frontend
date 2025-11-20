@@ -6,62 +6,43 @@ import {
   LineStyle,
   AreaSeries,
   CandlestickSeries,
-  HistogramSeries,
   LineSeries,
 } from 'lightweight-charts'
 import lodash from 'lodash'
-import { useEffect, useRef, useState, useCallback, useMemo, RefObject } from 'react'
+import { useEffect, useRef, useState, useCallback, useMemo } from 'react'
 import { styled } from 'styled-components'
-import type {
-  LpPriceOhlcDataFormatted,
-  ChartHeight,
-  VolumeData,
-  OraclePriceData,
-  LiquidationRanges,
-  ChartColors,
-} from './types'
-import { hslaToRgb, calculateRobustPriceRange } from './utils'
+import { formatNumber } from '@ui-kit/utils/'
+import type { ChartColors } from './hooks/useChartPalette'
+import type { LpPriceOhlcDataFormatted, ChartHeight, OraclePriceData, LiquidationRanges } from './types'
+import { calculateRobustPriceRange } from './utils'
 
-/**
- * @param totalDecimalPlacesRef - A ref to track the total decimal places for consistent formatting
- * @returns Price format configuration object
- */
-const createPriceFormatter = (totalDecimalPlacesRef: RefObject<number>) => ({
+const createPriceFormatter = () => ({
   type: 'custom' as const,
-  formatter: (price: number) => {
-    const [, fraction] = price.toString().split('.')
-
-    if (!fraction) {
-      return price.toFixed(4)
-    }
-
-    const nonZeroIndex = fraction.split('').findIndex((char: string) => char !== '0')
-
-    // If the price is less than 1, then there will be 4 decimal places after the first non-zero digit.
-    // If the price is greater than or equal to 1, there will be 4 decimal places after the decimal point.
-    totalDecimalPlacesRef.current = price >= 1 ? 4 : nonZeroIndex + 4
-
-    return price.toFixed(totalDecimalPlacesRef.current)
-  },
-  minMove: 0.0000001,
+  formatter: (price: number) =>
+    formatNumber(price, {
+      abbreviate: false,
+      maximumSignificantDigits: 4,
+    }),
 })
 
 /**
  * Shared configuration for liquidation range area series
  */
 const SL_RANGE_AREA_SERIES_DEFAULTS = {
-  lineWidth: 1 as LineWidth,
   lineStyle: 3,
   crosshairMarkerVisible: false,
   pointMarkersVisible: false,
   lineVisible: false,
-  priceLineStyle: 2,
+  priceLineStyle: 3,
 } as const
 
 type Props = {
+  /**
+   * If the chart is used on a Llamalend market page we hide the candle series label and label line.
+   */
+  hideCandleSeriesLabel: boolean
   chartHeight: ChartHeight
   ohlcData: LpPriceOhlcDataFormatted[]
-  volumeData?: VolumeData[]
   oraclePriceData?: OraclePriceData[]
   liquidationRange?: LiquidationRanges
   timeOption: string
@@ -79,9 +60,9 @@ type Props = {
 }
 
 const CandleChart = ({
+  hideCandleSeriesLabel,
   chartHeight,
   ohlcData,
-  volumeData,
   oraclePriceData,
   liquidationRange,
   timeOption,
@@ -105,13 +86,11 @@ const CandleChart = ({
   const currentAreaSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const currentAreaBgSeriesRef = useRef<ISeriesApi<'Area'> | null>(null)
   const candlestickSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null)
-  const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null)
   const oraclePriceSeriesRef = useRef<ISeriesApi<'Line'> | null>(null)
   const lastFetchEndTimeRef = useRef(lastFetchEndTime)
   const ohlcDataRef = useRef(ohlcData)
 
   const isMounted = useRef(true)
-  const totalDecimalPlacesRef = useRef(4)
 
   const [isUnmounting, setIsUnmounting] = useState(false)
   const [lastTimescale, setLastTimescale] = useState<{ from: Time; to: Time } | null>(null)
@@ -120,6 +99,8 @@ const CandleChart = ({
 
   // Memoize colors to prevent unnecessary re-renders
   const memoizedColors = useMemo(() => colors, [colors])
+
+  const priceFormat = useMemo(() => createPriceFormatter(), [])
 
   // Debounced update of wrapper dimensions
   const debouncedUpdateDimensions = useRef(
@@ -184,7 +165,7 @@ const CandleChart = ({
     ),
   )
 
-  // Chart initialization effect - only run once
+  // Chart initialization effect - only run once. Keep variables out of the dependencies array.
   useEffect(() => {
     if (!chartContainerRef.current) return
 
@@ -195,6 +176,7 @@ const CandleChart = ({
       },
       timeScale: {
         timeVisible: true, // Default, will be updated by separate effect
+        borderVisible: false,
       },
       rightPriceScale: {
         autoScale: true,
@@ -207,10 +189,12 @@ const CandleChart = ({
       },
       grid: {
         vertLines: {
-          visible: false,
+          visible: true,
+          color: '#C3BCDB44',
         },
         horzLines: {
-          visible: false,
+          visible: true,
+          color: '#C3BCDB44',
         },
       },
       crosshair: {
@@ -219,11 +203,7 @@ const CandleChart = ({
           width: 4 as LineWidth,
           color: '#C3BCDB44',
           style: LineStyle.Solid,
-          labelBackgroundColor: '#9B7DFF',
-        },
-        horzLine: {
-          color: '#9B7DFF',
-          labelBackgroundColor: '#9B7DFF',
+          labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
         },
       },
     })
@@ -238,23 +218,42 @@ const CandleChart = ({
     }
   }, [])
 
+  // Ensure price axis labels use the same formatter
+  useEffect(() => {
+    if (!chartRef.current) return
+
+    chartRef.current.applyOptions({
+      localization: {
+        priceFormatter: priceFormat.formatter,
+      },
+    })
+  }, [priceFormat])
+
   // Update chart colors when they change
   useEffect(() => {
     if (!chartRef.current) return
 
     chartRef.current.applyOptions({
       layout: {
-        background: { type: ColorType.Solid, color: hslaToRgb(memoizedColors.backgroundColor) },
-        textColor: hslaToRgb(memoizedColors.textColor),
+        background: { type: ColorType.Solid, color: memoizedColors.backgroundColor },
+        textColor: memoizedColors.textColor,
+      },
+      grid: {
+        vertLines: {
+          color: memoizedColors.gridLine,
+        },
+        horzLines: {
+          color: memoizedColors.gridLine,
+        },
       },
     })
-  }, [memoizedColors.backgroundColor, memoizedColors.textColor])
+  }, [memoizedColors.backgroundColor, memoizedColors.textColor, memoizedColors.gridLine])
 
   // Update chart dimensions when they change
   useEffect(() => {
     if (!chartRef.current || wrapperDimensions.width <= 0) return
 
-    const width = Math.max(1, wrapperDimensions.width) // Ensure width is at least 1
+    const width = Math.max(1, wrapperDimensions.width)
     const height = chartExpanded ? chartHeight.expanded : chartHeight.standard
 
     chartRef.current.applyOptions({
@@ -274,7 +273,7 @@ const CandleChart = ({
     })
   }, [timeOption])
 
-  // Update crosshair settings when magnet changes
+  // Update crosshair settings when magnet or colors change
   useEffect(() => {
     if (!chartRef.current) return
 
@@ -285,37 +284,16 @@ const CandleChart = ({
           width: 4 as LineWidth,
           color: '#C3BCDB44',
           style: LineStyle.Solid,
-          labelBackgroundColor: '#9B7DFF',
+          labelBackgroundColor: memoizedColors.cursorLabel,
         },
         horzLine: {
-          color: '#9B7DFF',
-          labelBackgroundColor: '#9B7DFF',
+          color: memoizedColors.cursorLabel,
+          labelBackgroundColor: memoizedColors.cursorLabel,
+          style: LineStyle.Dashed,
         },
       },
     })
-  }, [magnet])
-
-  // Volume series effect - only create once when chart is ready
-  useEffect(() => {
-    if (!chartRef.current || volumeSeriesRef.current) return
-
-    volumeSeriesRef.current = chartRef.current.addSeries(HistogramSeries, {
-      priceFormat: {
-        type: 'volume',
-      },
-      priceScaleId: '', // set as an overlay by setting a blank priceScaleId
-    })
-    volumeSeriesRef.current.priceScale().applyOptions({
-      scaleMargins: {
-        top: 0.7,
-        bottom: 0,
-      },
-    })
-
-    return () => {
-      volumeSeriesRef.current = null
-    }
-  }, [])
+  }, [magnet, memoizedColors.cursorLabel, memoizedColors.cursorVertLine])
 
   // Liquidation range series effect - create/destroy series based on visibility
   useEffect(() => {
@@ -341,7 +319,6 @@ const CandleChart = ({
       if (visible && chartRef.current) {
         ref.current = chartRef.current.addSeries(AreaSeries, {
           ...SL_RANGE_AREA_SERIES_DEFAULTS,
-          priceFormat: createPriceFormatter(totalDecimalPlacesRef),
         })
       }
     })
@@ -361,13 +338,18 @@ const CandleChart = ({
     if (!chartRef.current || candlestickSeriesRef.current) return
 
     candlestickSeriesRef.current = chartRef.current.addSeries(CandlestickSeries, {
-      priceLineStyle: 2,
-      upColor: '#26a69a',
-      downColor: '#ef5350',
+      priceLineStyle: LineStyle.LargeDashed,
+      priceLineVisible: !hideCandleSeriesLabel,
+      upColor: memoizedColors.green,
+      downColor: memoizedColors.red,
       borderVisible: false,
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-      priceFormat: createPriceFormatter(totalDecimalPlacesRef),
+      wickUpColor: memoizedColors.green,
+      wickDownColor: memoizedColors.red,
+      lastValueVisible: !hideCandleSeriesLabel,
+      priceFormat: {
+        type: 'price',
+        minMove: 0.0001,
+      },
       autoscaleInfoProvider: (original: () => { priceRange: { minValue: number; maxValue: number } | null } | null) => {
         const originalRange = original()
 
@@ -428,16 +410,27 @@ const CandleChart = ({
     return () => {
       candlestickSeriesRef.current = null
     }
-  }, [])
+  }, [hideCandleSeriesLabel, memoizedColors.green, memoizedColors.red])
+
+  // Update candlestick colors when theme colors change
+  useEffect(() => {
+    if (!candlestickSeriesRef.current) return
+
+    candlestickSeriesRef.current.applyOptions({
+      upColor: memoizedColors.green,
+      downColor: memoizedColors.red,
+      wickUpColor: memoizedColors.green,
+      wickDownColor: memoizedColors.red,
+    })
+  }, [memoizedColors.green, memoizedColors.red])
 
   // Oracle price series effect - only create once when chart is ready
   useEffect(() => {
     if (!chartRef.current || oraclePriceSeriesRef.current) return
 
     oraclePriceSeriesRef.current = chartRef.current.addSeries(LineSeries, {
-      color: '#000000', // Default color, will be updated by separate effect
       lineWidth: 2 as LineWidth,
-      priceLineStyle: 2,
+      priceLineStyle: LineStyle.Dashed,
       visible: false, // Default visibility, will be updated by separate effect
     })
 
@@ -453,13 +446,6 @@ const CandleChart = ({
     candlestickSeriesRef.current.setData(ohlcData)
   }, [ohlcData])
 
-  // Update volume data when it changes
-  useEffect(() => {
-    if (!volumeSeriesRef.current || !volumeData) return
-
-    volumeSeriesRef.current.setData(volumeData)
-  }, [volumeData])
-
   // Update oracle price data when it changes
   useEffect(() => {
     if (!oraclePriceSeriesRef.current || !oraclePriceData) return
@@ -472,10 +458,10 @@ const CandleChart = ({
     if (!oraclePriceSeriesRef.current) return
 
     oraclePriceSeriesRef.current.applyOptions({
-      color: memoizedColors.chartOraclePrice,
+      color: memoizedColors.oraclePrice,
       visible: oraclePriceVisible,
     })
-  }, [memoizedColors.chartOraclePrice, oraclePriceVisible])
+  }, [memoizedColors.oraclePrice, oraclePriceVisible])
 
   // Event subscription effect
   useEffect(() => {
@@ -556,43 +542,46 @@ const CandleChart = ({
       }
     }
 
-    const isBothRanges = liquidationRange?.current && liquidationRange?.new
-    const currentColors = isBothRanges
-      ? {
-          top: memoizedColors.rangeColorA25Old,
-          bottom: memoizedColors.backgroundColor,
-          line: memoizedColors.rangeColorOld,
-        }
-      : { top: memoizedColors.rangeColorA25, bottom: memoizedColors.backgroundColor, line: memoizedColors.rangeColor }
+    const currentColors = {
+      top: memoizedColors.rangeBackground,
+      bottom: memoizedColors.rangeBackground,
+      line: memoizedColors.rangeLineTop,
+    }
 
     // Update current range series
     if (liqRangeCurrentVisible) {
       applySeriesOptions(currentAreaSeriesRef.current, currentColors)
-      applySeriesOptions(currentAreaBgSeriesRef.current, { ...currentColors, top: currentColors.bottom })
+      applySeriesOptions(currentAreaBgSeriesRef.current, {
+        top: memoizedColors.backgroundColor,
+        bottom: memoizedColors.backgroundColor,
+        line: memoizedColors.rangeLineBottom,
+      })
     }
 
     // Update new range series
     if (liqRangeNewVisible) {
       applySeriesOptions(newAreaSeriesRef.current, {
-        top: memoizedColors.rangeColorA25,
-        bottom: memoizedColors.rangeColorA25,
-        line: memoizedColors.rangeColor,
+        top: memoizedColors.rangeBackgroundFuture,
+        bottom: memoizedColors.rangeBackgroundFuture,
+        line: memoizedColors.rangeLineFutureTop,
       })
       applySeriesOptions(newAreaBgSeriesRef.current, {
         top: memoizedColors.backgroundColor,
         bottom: memoizedColors.backgroundColor,
-        line: memoizedColors.rangeColor,
+        line: memoizedColors.rangeLineFutureBottom,
       })
     }
   }, [
     liqRangeCurrentVisible,
     liqRangeNewVisible,
-    memoizedColors.rangeColorA25,
-    memoizedColors.rangeColor,
+    memoizedColors.rangeLineTop,
+    memoizedColors.rangeBackground,
     memoizedColors.backgroundColor,
-    memoizedColors.rangeColorA25Old,
-    memoizedColors.rangeColorOld,
     liquidationRange,
+    memoizedColors.rangeLineBottom,
+    memoizedColors.rangeBackgroundFuture,
+    memoizedColors.rangeLineFutureTop,
+    memoizedColors.rangeLineFutureBottom,
   ])
 
   // Update timescale when lastTimescale changes
@@ -661,7 +650,7 @@ const CandleChart = ({
     // Define all series in order: liquidation ranges, volume, OHLC, oracle price
     const allSeries = [
       ...getLiquidationRangeSeries(),
-      volumeSeriesRef.current,
+      // volumeSeriesRef.current,
       candlestickSeriesRef.current,
       oraclePriceSeriesRef.current,
     ]
