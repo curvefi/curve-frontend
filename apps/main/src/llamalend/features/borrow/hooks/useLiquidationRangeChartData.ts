@@ -3,7 +3,7 @@ import { useMarketOraclePriceBand } from '@/llamalend/queries/market-oracle-pric
 import { useMarketOraclePrice } from '@/llamalend/queries/market-oracle-price.query'
 import type { LiquidationRangeData } from '@/llamalend/widgets/ChartLiquidationRange'
 import { t } from '@ui-kit/lib/i18n'
-import { useCreateLoanPrices } from '../queries/create-loan-prices.query'
+import { useCreateLoanPrices } from '../../../queries/create-loan/create-loan-prices.query'
 import type { BorrowFormQueryParams } from '../types'
 
 /**

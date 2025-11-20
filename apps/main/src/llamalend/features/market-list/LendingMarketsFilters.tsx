@@ -1,6 +1,6 @@
 import { keyBy, type Dictionary } from 'lodash'
 import { useMemo } from 'react'
-import { type AssetDetails, LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { type AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Chip from '@mui/material/Chip'
 import Grid from '@mui/material/Grid'
 import { t } from '@ui-kit/lib/i18n'

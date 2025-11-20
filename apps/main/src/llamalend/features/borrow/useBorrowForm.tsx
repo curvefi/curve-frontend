@@ -14,10 +14,10 @@ import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
 import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
+import { type CreateLoanOptions, useCreateLoanMutation } from '../../mutations/create-loan.mutation'
+import { useBorrowCreateLoanIsApproved } from '../../queries/create-loan/borrow-create-loan-approved.query'
+import { borrowFormValidationSuite } from '../../queries/validation/borrow.validation'
 import { useMaxTokenValues } from './hooks/useMaxTokenValues'
-import { useBorrowCreateLoanIsApproved } from './queries/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from './queries/borrow.validation'
-import { type CreateLoanOptions, useCreateLoanMutation } from './queries/create-loan.mutation'
 import { type BorrowForm } from './types'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>

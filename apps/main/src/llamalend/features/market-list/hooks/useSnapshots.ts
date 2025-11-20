@@ -1,6 +1,6 @@
 import lodash from 'lodash'
 import { useMemo } from 'react'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CrvUsdSnapshot, useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { LendingSnapshot, useLendingSnapshots } from '@ui-kit/entities/lending-snapshots'
 import { MarketRateType, LlamaMarketType } from '@ui-kit/types/market'

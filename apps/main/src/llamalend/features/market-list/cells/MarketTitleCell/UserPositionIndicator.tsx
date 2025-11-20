@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import type { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import type { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import type { Theme } from '@mui/material/styles'
 import { t } from '@ui-kit/lib/i18n'
