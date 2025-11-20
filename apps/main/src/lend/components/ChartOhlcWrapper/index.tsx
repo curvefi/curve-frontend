@@ -343,6 +343,7 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
   }
 
   const ChartWrapperProps: ChartWrapperProps = {
+    hideCandleSeriesLabel: true,
     chartType: 'crvusd',
     chartStatus: currentChart.fetchStatus,
     chartHeight,
@@ -350,7 +351,6 @@ const ChartOhlcWrapper = ({ rChainId, userActiveKey, rOwmId, betaBackgroundColor
     betaBackgroundColor,
     themeType: theme,
     ohlcData: currentChart.data,
-    volumeData: chartLlammaOhlc.volumeData,
     oraclePriceData,
     liquidationRange: selectedLiqRange,
     timeOption,

@@ -74,9 +74,10 @@ export const buildEnsoRouteResponse = async (
   const json = (await response.json()) as EnsoRouteResponse | EnsoRouteResponse[]
   const data = Array.isArray(json) ? json : [json]
   return data.map(
-    ({ route, ...routeProps }): RouteResponse => ({
+    ({ route, amountOut, ...routeProps }): RouteResponse => ({
       router: 'enso',
-      amountIn,
+      amountIn: [amountIn],
+      amountOut: [amountOut],
       warnings: [], // legacy code seems to only use warnings for stableswap routes
       route: route.map(({ action, chainId: routeChainId, primary, protocol, ...stepProps }) => ({
         name: primary || `${protocol}:${action}`,
