@@ -81,11 +81,14 @@ export type LiquidationRange = { value: number; time: UTCTimestamp }
 export type LlammaLiquididationRange = {
   price1: LiquidationRange[]
   price2: LiquidationRange[]
+  startTime?: UTCTimestamp
+  endTime?: UTCTimestamp
 }
 
 export type LiquidationRanges = {
   new: LlammaLiquididationRange | null
   current: LlammaLiquididationRange | null
+  historical?: LlammaLiquididationRange[] | null
 }
 
 export interface LpTradesData {
