@@ -3,6 +3,7 @@ import { BorrowPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import { FormMessage } from '@/llamalend/widgets/manage-loan/FormMessage'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -115,6 +116,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           testId="borrow-debt-input"
           network={network}
           maxFieldName="maxDebt"
+          message={
+            values.maxDebt && <FormMessage label={t`Max borrow:`} value={values.maxDebt} symbol={borrowToken?.symbol} />
+          }
         />
       </Stack>
 
