@@ -23,22 +23,6 @@ export const oneAddress = (): Address =>
 
 export const onePrice = (max = MAX_USD_VALUE) => oneFloat(max)
 
-/**
- * Return a random Date between start and end (inclusive).
- * Accepts Date | number | string. Defaults to 2015-01-01 .. now.
- * Uses oneInt for randomness.
- *
- * @param start - start date (inclusive) or falsy to use 2015-01-01
- * @param end - end date (inclusive) or falsy to use now
- */
-export const oneDate = (start?: Date | number | string, end?: Date | number | string): Date => {
-  const s = start ? +new Date(start) : +new Date(2015, 0, 1)
-  const e = end ? +new Date(end) : Date.now()
-  const min = Math.min(s, e)
-  const max = Math.max(s, e)
-  return new Date(oneInt(min, max + 1))
-}
-
 export const shuffle = <T>(...options: T[]): T[] => {
   const result = [...options]
   for (let i = result.length - 1; i > 0; i--) {
@@ -50,3 +34,9 @@ export const shuffle = <T>(...options: T[]): T[] => {
 
 export const oneTokenType = () => oneOf('collateral', 'borrowed')
 export type TokenType = ReturnType<typeof oneTokenType>
+
+export const oneDate = (minDate?: Date, maxDate?: Date): Date => {
+  const min = minDate?.getTime() ?? Date.now() - 365 * 24 * 60 * 60 * 1000 // 1 year ago
+  const max = maxDate?.getTime() ?? Date.now()
+  return new Date(oneFloat(min, max))
+}
