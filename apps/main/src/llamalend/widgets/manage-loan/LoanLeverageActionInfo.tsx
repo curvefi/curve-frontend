@@ -1,14 +1,15 @@
 import { notFalsy } from 'router-api/src/router.utils'
+import { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { type Amount, Decimal, formatNumber, formatPercent } from '@ui-kit/utils'
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
-import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive, QueryData } from './LoanInfoAccordion'
+import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive } from './LoanInfoAccordion'
 
 export type LoanLeverageActionInfoProps = {
-  expectedCollateral: QueryData<LoanLeverageExpectedCollateral | null>
-  maxReceive: QueryData<LoanLeverageMaxReceive | null>
-  priceImpact: QueryData<number | null>
+  expectedCollateral: Query<LoanLeverageExpectedCollateral | null>
+  maxReceive: Query<LoanLeverageMaxReceive | null>
+  priceImpact: Query<number | null>
   slippage: Decimal
   onSlippageChange: (newSlippage: Decimal) => void
   collateralSymbol?: string
