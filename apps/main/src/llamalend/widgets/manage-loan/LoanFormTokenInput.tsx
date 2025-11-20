@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 import type { FieldPath, FieldPathValue, FieldValues, UseFormReturn } from 'react-hook-form'
 import type { Address } from 'viem'
 import { useAccount } from 'wagmi'
@@ -23,6 +23,7 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
   max,
   form,
   testId,
+  message,
   network,
 }: {
   label: string
@@ -36,6 +37,7 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
+  message?: ReactNode
   network: LlamaNetwork
 }) => {
   const { address: userAddress } = useAccount()
@@ -66,7 +68,7 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
         [form, name],
       )}
       isError={!!error}
-      message={error?.message}
+      message={error?.message ?? message}
       walletBalance={useMemo(
         // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
         () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading }),
