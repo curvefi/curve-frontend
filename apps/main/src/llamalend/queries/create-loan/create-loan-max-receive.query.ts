@@ -5,8 +5,8 @@ import { queryFactory, rootKeys } from '@ui-kit/lib/model'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
-import type { BorrowFormQuery } from '../types'
-import { borrowFormValidationGroup } from './borrow.validation'
+import type { BorrowFormQuery } from '../../features/borrow/types'
+import { borrowFormValidationGroup } from '../validation/borrow.validation'
 
 type CreateLoanMaxReceiveQuery = Omit<BorrowFormQuery, 'userCollateral' | 'debt'> & { userCollateral: Decimal }
 type CreateLoanMaxReceiveParams = FieldsOf<CreateLoanMaxReceiveQuery>

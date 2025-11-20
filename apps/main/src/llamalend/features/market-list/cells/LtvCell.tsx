@@ -1,5 +1,5 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CurrentLTVTooltipContent } from '@/llamalend/widgets/tooltips/CurrentLTVTooltipContent'
 import { Box } from '@mui/material'
 import Skeleton from '@mui/material/Skeleton'

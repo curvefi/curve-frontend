@@ -1,5 +1,5 @@
 import { type ReactNode } from 'react'
-import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket, LlamaMarketsResult } from '@/llamalend/queries/market-list/llama-markets'
 import Grid from '@mui/material/Grid'
 import { OnChangeFn, SortingState } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'

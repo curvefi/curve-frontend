@@ -5,8 +5,8 @@ import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import type { BorrowFormQuery } from '../types'
-import { borrowQueryValidationSuite } from './borrow.validation'
+import type { BorrowFormQuery } from '../../features/borrow/types'
+import { borrowQueryValidationSuite } from '../validation/borrow.validation'
 import { createLoanMaxReceiveKey } from './create-loan-max-receive.query'
 
 type CreateLoanApproveEstimateGasQuery<T = IChainId> = BorrowFormQuery<T>

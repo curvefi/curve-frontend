@@ -10,7 +10,7 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { Decimal } from '@ui-kit/utils'
-import { useCreateLoanExpectedCollateral } from '../queries/create-loan-expected-collateral.query'
+import { useCreateLoanExpectedCollateral } from '../../../queries/create-loan/create-loan-expected-collateral.query'
 import type { BorrowForm, BorrowFormQueryParams } from '../types'
 
 const { Spacing } = SizesAndSpaces

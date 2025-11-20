@@ -1,6 +1,6 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { HealthBar } from '@/llamalend/features/market-position-details'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { TooltipDescription } from '@/llamalend/widgets/tooltips/TooltipComponents'
 import { Stack } from '@mui/material'
 import { CellContext } from '@tanstack/react-table'

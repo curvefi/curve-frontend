@@ -1,6 +1,6 @@
 import lodash from 'lodash'
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
 import { useFilteredRewards } from '@/llamalend/hooks/useFilteredRewards'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { RewardIcon } from '@/llamalend/widgets/tooltips/RewardIcon'
 import Stack from '@mui/material/Stack'
 import { TokenIcon } from '@ui-kit/shared/ui/TokenIcon'

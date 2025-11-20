@@ -10,7 +10,7 @@ import { useColumnFilters } from '@ui-kit/shared/ui/DataTable/hooks/useColumnFil
 import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableSearchField } from '@ui-kit/shared/ui/DataTable/TableSearchField'
 import { MarketRateType } from '@ui-kit/types/market'
-import { type LlamaMarketsResult } from '../../entities/llama-markets'
+import { type LlamaMarketsResult } from '../../queries/market-list/llama-markets'
 import { ChainFilterChip } from './chips/ChainFilterChip'
 import { LlamaListChips } from './chips/LlamaListChips'
 import { DEFAULT_SORT_BORROW, DEFAULT_SORT_SUPPLY, LLAMA_MARKET_COLUMNS } from './columns'

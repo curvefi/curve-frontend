@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import Stack from '@mui/material/Stack'
 import { CellContext } from '@tanstack/react-table'
 import { useIsMobile } from '@ui-kit/hooks/useBreakpoints'

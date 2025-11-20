@@ -1,5 +1,5 @@
-import { useUserMarketStats } from '@/llamalend/entities/llama-market-stats'
-import { AssetDetails, LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { useUserMarketStats } from '@/llamalend/queries/market-list/llama-market-stats'
+import { AssetDetails, LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CollateralMetricTooltipContent } from '@/llamalend/widgets/tooltips/CollateralMetricTooltipContent'
 import { TotalDebtTooltipContent } from '@/llamalend/widgets/tooltips/TotalDebtTooltipContent'
 import Stack from '@mui/material/Stack'

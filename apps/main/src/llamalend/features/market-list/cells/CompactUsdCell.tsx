@@ -1,4 +1,4 @@
-import { LlamaMarket } from '@/llamalend/entities/llama-markets'
+import { LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { CellContext } from '@tanstack/react-table'
 import { formatNumber } from '@ui/utils'
 
