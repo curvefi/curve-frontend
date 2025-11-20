@@ -11,11 +11,13 @@ export const FormMessage = ({
   label: string
   symbol: string | undefined
 }) => (
-  <Typography component={Stack} alignItems="center" direction="row" gap={1}>
-    {label}
-    <Typography color="text.secondary">
+  <Stack alignItems="center" direction="row" gap={1}>
+    <Typography color="text.secondary" variant="bodyXsRegular">
+      {label}
+    </Typography>
+    <Typography color="text.tertiary" variant="bodyXsRegular">
       {formatNumber(value, { abbreviate: true }) ?? '...'}
       {symbol}
     </Typography>
-  </Typography>
+  </Stack>
 )
