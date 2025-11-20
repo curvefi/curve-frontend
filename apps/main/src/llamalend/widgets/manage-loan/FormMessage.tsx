@@ -1,6 +1,6 @@
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import { formatNumber } from '@ui-kit/utils'
+import { Decimal, formatNumber } from '@ui-kit/utils'
 
 export const FormMessage = ({
   value,
