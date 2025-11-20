@@ -1,3 +1,4 @@
+import { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import Box from '@mui/material/Box'
 import Stack from '@mui/material/Stack'
 import { useTheme } from '@mui/material/styles'
@@ -7,12 +8,6 @@ import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { Decimal, formatNumber, formatPercent, formatUsd } from '@ui-kit/utils'
 import { getHealthValueColor } from '../../features/market-position-details/utils'
 import { LoanLeverageActionInfo, type LoanLeverageActionInfoProps } from './LoanLeverageActionInfo'
-
-export type QueryData<T> = {
-  data: T | undefined
-  isLoading: boolean
-  error: Error | null | undefined
-}
 
 export type LoanInfoGasData = {
   estGasCostUsd?: number | Decimal | `${number}`
@@ -33,13 +28,13 @@ type LoanInfoAccordionProps = {
   isOpen: boolean
   toggle: () => void
   range: number
-  health: QueryData<number>
-  bands: QueryData<[number, number]>
-  prices: QueryData<readonly Decimal[]>
-  rates: QueryData<{ borrowApr?: Decimal } | null>
-  futureRates: QueryData<{ borrowApr?: Decimal } | null>
-  loanToValue: QueryData<Decimal | null>
-  gas: QueryData<LoanInfoGasData | null>
+  health: Query<number>
+  bands: Query<[number, number]>
+  prices: Query<readonly Decimal[]>
+  rates: Query<{ borrowApr?: Decimal } | null>
+  futureRates: Query<{ borrowApr?: Decimal } | null>
+  loanToValue: Query<Decimal | null>
+  gas: Query<LoanInfoGasData | null>
   leverage: LoanLeverageActionInfoProps & { enabled: boolean }
 }
 
