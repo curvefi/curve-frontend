@@ -1,14 +1,14 @@
 import { useMemo, useRef, useState } from 'react'
 import { styled } from 'styled-components'
-import { useTheme } from '@mui/material/styles'
 import Button from 'ui/src/Button/Button'
-import CandleChart from 'ui/src/Chart/CandleChart'
-import DialogSelectChart from 'ui/src/Chart/DialogSelectChart'
-import DialogSelectTimeOption from 'ui/src/Chart/DialogSelectTimeOption'
-import { useChartPalette } from 'ui/src/Chart/hooks/useChartPalette'
 import Checkbox from 'ui/src/Checkbox'
 import Icon from 'ui/src/Icon'
 import Spinner, { SpinnerWrapper } from 'ui/src/Spinner'
+import { useTheme } from '@mui/material/styles'
+import CandleChart from '@ui-kit/features/candle-chart/CandleChart'
+import DialogSelectChart from '@ui-kit/features/candle-chart/DialogSelectChart'
+import DialogSelectTimeOption from '@ui-kit/features/candle-chart/DialogSelectTimeOption'
+import { useChartPalette } from '@ui-kit/features/candle-chart/hooks/useChartPalette'
 import type {
   ChartHeight,
   ChartType,

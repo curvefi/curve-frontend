@@ -33,7 +33,7 @@ import {
   ExpandIcon,
   PriceAndTradesExpandedContainer,
   PriceAndTradesExpandedWrapper,
-} from '@ui/Chart/styles'
+} from '@ui-kit/features/candle-chart/styles'
 import { ConnectWalletPrompt, isLoading, useConnection, useWallet } from '@ui-kit/features/connect-wallet'
 import { useLayoutStore } from '@ui-kit/features/layout'
 import { useParams } from '@ui-kit/hooks/router'
