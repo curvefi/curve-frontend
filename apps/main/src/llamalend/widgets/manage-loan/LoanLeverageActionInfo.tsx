@@ -5,7 +5,7 @@ import { type Amount, Decimal, formatNumber, formatPercent } from '@ui-kit/utils
 import { SlippageToleranceActionInfo } from '@ui-kit/widgets/SlippageSettings'
 import type { LoanLeverageExpectedCollateral, LoanLeverageMaxReceive, QueryData } from './LoanInfoAccordion'
 
-type LoanInfoLeverageActionInfoProps = {
+export type LoanLeverageActionInfoProps = {
   expectedCollateral: QueryData<LoanLeverageExpectedCollateral | null>
   maxReceive: QueryData<LoanLeverageMaxReceive | null>
   priceImpact: QueryData<number | null>
@@ -26,7 +26,7 @@ export const LoanLeverageActionInfo = ({
   slippage,
   onSlippageChange,
   collateralSymbol,
-}: LoanInfoLeverageActionInfoProps) => {
+}: LoanLeverageActionInfoProps) => {
   const {
     data: expectedCollateralData,
     isLoading: expectedCollateralLoading,
@@ -64,7 +64,6 @@ export const LoanLeverageActionInfo = ({
       <ActionInfo
         label={isHighImpact ? t`High price impact` : t`Price impact`}
         value={formatPercent(priceImpactPercent)}
-        valueRight={priceImpactPercent != null && '%'}
         {...(isHighImpact && { valueColor: 'error' })}
         error={priceImpactPercentError}
         loading={priceImpactPercentLoading}
