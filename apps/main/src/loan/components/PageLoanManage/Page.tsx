@@ -20,7 +20,7 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
-import { hasV1Deleverage } from '@/loan/utils/leverage'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getLoanCreatePathname, parseCollateralParams, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -121,7 +121,7 @@ const Page = () => {
 
   //  redirect if form is deleverage but no deleverage option
   useEffect(() => {
-    if (market && rFormType === 'deleverage' && !hasV1Deleverage(market)) {
+    if (market && rFormType === 'deleverage' && !hasDeleverage(market)) {
       push(getLoanCreatePathname(params, market.id))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

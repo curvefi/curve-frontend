@@ -22,7 +22,7 @@ import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { LlamaApi, Llamma } from '@/loan/types/loan.types'
 import { curveProps } from '@/loan/utils/helpers'
-import { hasV1Deleverage } from '@/loan/utils/leverage'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getCollateralListPathname } from '@/loan/utils/utilsRouter'
 import AlertBox from '@ui/AlertBox'
@@ -418,7 +418,7 @@ const LoanDeleverage = ({
       </StyledDetailInfoWrapper>
 
       {/* actions */}
-      {llamma && !hasV1Deleverage(llamma) ? (
+      {llamma && !hasDeleverage(llamma) ? (
         <AlertBox alertType="info">Deleverage is not available</AlertBox>
       ) : (
         <LoanFormConnect haveSigner={haveSigner} loading={!curve}>
