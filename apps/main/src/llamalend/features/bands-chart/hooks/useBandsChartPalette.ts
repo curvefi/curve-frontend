@@ -22,7 +22,7 @@ export const useBandsChartPalette = (): BandsChartPalette => {
       marketBandColor: theme.design.Color.Neutral[300],
       userBandColor: theme.design.Color.Neutral[500],
       borderColor: theme.design.Layer[1].Outline,
-      userRangeHighlightColor: theme.design.Color.Tertiary[200],
+      userRangeHighlightColor: theme.design.Chart.LiquidationZone.Current,
       userRangeLabelBackgroundColor: theme.design.Color.Tertiary[300],
       oraclePriceLineColor: theme.design.Color.Primary[500],
       liquidationBandOutlineColor: theme.design.Color.Tertiary[600],
