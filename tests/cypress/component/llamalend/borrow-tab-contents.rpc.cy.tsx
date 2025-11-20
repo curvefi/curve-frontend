@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import networks from '@/loan/networks'
@@ -51,13 +51,7 @@ function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
     [isHydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
   )
   return market ? (
-    <BorrowTabContents
-      market={market}
-      networks={networks}
-      chainId={chainId}
-      onUpdate={onUpdate}
-      onCreated={onCreated}
-    />
+    <CreateLoanForm market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} onCreated={onCreated} />
   ) : (
     <Skeleton />
   )
@@ -139,10 +133,10 @@ describe('BorrowTabContents Component Tests', () => {
       getActionValue('borrow-slippage').should('not.exist')
     }
 
-    cy.get('[data-testid="borrow-form-errors"]').should('not.exist')
-    cy.get('[data-testid="borrow-submit-button"]').click()
-    cy.get('[data-testid="borrow-submit-button"]').should('be.disabled')
-    cy.get('[data-testid="borrow-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
-    cy.get('[data-testid="borrow-submit-button"]').then(() => expect(onCreated).to.be.called)
+    cy.get('[data-testid="loan-form-errors"]').should('not.exist')
+    cy.get('[data-testid="create-loan-submit-button"]').click()
+    cy.get('[data-testid="create-loan-submit-button"]').should('be.disabled')
+    cy.get('[data-testid="create-loan-submit-button"]', LOAD_TIMEOUT).should('be.enabled')
+    cy.get('[data-testid="create-loan-submit-button"]').then(() => expect(onCreated).to.be.called)
   })
 })

@@ -21,8 +21,8 @@ export const useActionInfo = useLargeTokenInput
 /** New DEX market list (PoolListPage) */
 export const useDexMarketList = useBetaChannel
 
-/** New unified borrow form (BorrowTabContents) */
-export const useBorrowUnifiedForm = useBetaChannel
+/** New unified create loan form */
+export const useCreateLoanMuiForm = useBetaChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
