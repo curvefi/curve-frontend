@@ -2,7 +2,8 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
-import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import { getTokens } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate, LlamaNetwork, NetworkDict } from '@/llamalend/llamalend.types'
 import { type AddCollateralOptions, useAddCollateralMutation } from '@/llamalend/mutations/add-collateral.mutation'
 import { useAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-collateral-bands.query'
@@ -14,9 +15,8 @@ import {
   collateralFormValidationSuite,
   type CollateralForm,
 } from '@/llamalend/queries/validation/manage-loan.validation'
-import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
@@ -24,7 +24,7 @@ import { useFormErrors } from '../../borrow/react-form.utils'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useAddCollateralForm = ({
+export const useAddCollateralForm = <ChainId extends LlamaChainId>({
   market,
   network,
   networks,
@@ -32,14 +32,18 @@ export const useAddCollateralForm = ({
   onAdded,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  networks: NetworkDict<LlamaChainId>
+  network: LlamaNetwork<ChainId>
+  networks: NetworkDict<ChainId>
   enabled?: boolean
   onAdded: NonNullable<AddCollateralOptions['onAdded']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
   const marketId = market?.id
+
+  const tokens = market && getTokens(market)
+  const collateralToken = tokens?.collateralToken
+  const borrowToken = tokens?.borrowToken
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
@@ -59,7 +63,7 @@ export const useAddCollateralForm = ({
           marketId,
           userAddress,
           userCollateral: values.userCollateral,
-        }) as CollateralParams<LlamaChainId>,
+        }) as CollateralParams<ChainId>,
       [chainId, marketId, userAddress, values.userCollateral],
     ),
   )
@@ -92,5 +96,8 @@ export const useAddCollateralForm = ({
     gas,
     isApproved,
     formErrors,
+    collateralToken,
+    borrowToken,
+    txHash: action.data?.hash,
   }
 }

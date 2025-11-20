@@ -10,6 +10,7 @@ import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { Decimal } from '@ui-kit/utils'
+import type { QueryData } from './LoanInfoAccordion'
 
 /**
  * A large token input field for loan forms, with balance and max handling.
@@ -20,36 +21,33 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
   blockchainId,
   name,
   max,
-  isLoading: isMaxLoading,
-  isError,
   form,
   testId,
   network,
-  maxFieldName,
 }: {
   label: string
   token: { address: Address; symbol?: string } | undefined
   blockchainId: INetworkName | undefined
-  isError: boolean
-  isLoading: boolean
-  max: Decimal | undefined
+  /**
+   * Optional max-value query for this field, including loading and error state.
+   * When present, it also carries an optional related max-field name whose errors should be reflected here.
+   */
+  max?: QueryData<Decimal> & { fieldName?: FieldPath<TFieldValues> }
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string
   network: LlamaNetwork
-  /** Optional related max-field name whose errors should be reflected here */
-  maxFieldName?: FieldPath<TFieldValues>
 }) => {
   const { address: userAddress } = useAccount()
   const {
     data: balance,
     isLoading: isBalanceLoading,
-    isError: isBalanceError,
+    error: balanceError,
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
 
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
-  const relatedMaxFieldError = maxFieldName && errors[maxFieldName]
-
+  const relatedMaxFieldError = max?.fieldName && errors[max.fieldName]
+  const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
   return (
     <LargeTokenInput
       name={name}
@@ -67,14 +65,14 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
         (v?: Decimal) => form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions),
         [form, name],
       )}
-      isError={isError || isBalanceError || !!errors[name] || !!relatedMaxFieldError}
-      message={errors[name]?.message ?? relatedMaxFieldError?.message}
+      isError={!!error}
+      message={error?.message}
       walletBalance={useMemo(
-        // todo: separate isLoading for balance and for maxBalance
-        () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading || isMaxLoading }),
-        [balance, isMaxLoading, isBalanceLoading, token?.symbol],
+        // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
+        () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading }),
+        [balance, isBalanceLoading, token?.symbol],
       )}
-      maxBalance={useMemo(() => ({ balance: max, chips: 'max' }), [max])}
+      maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
     />
   )
 }

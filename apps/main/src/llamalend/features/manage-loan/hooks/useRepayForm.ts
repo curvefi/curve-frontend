@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
+import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayBands } from '@/llamalend/queries/repay/repay-bands.query'
@@ -25,7 +26,7 @@ import { useFormErrors } from '../../borrow/react-form.utils'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<RepayForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useRepayForm = ({
+export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends LlamaNetworkId = LlamaNetworkId>({
   market,
   network,
   networks,
@@ -33,14 +34,18 @@ export const useRepayForm = ({
   onRepaid,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  networks: NetworkDict<LlamaChainId>
+  network: BaseConfig<NetworkName, ChainId>
+  networks: NetworkDict<ChainId>
   enabled?: boolean
   onRepaid: NonNullable<RepayOptions['onRepaid']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
   const marketId = market?.id
+
+  const tokens = market && getTokens(market)
+  const collateralToken = tokens?.collateralToken
+  const borrowToken = tokens?.borrowToken
 
   const form = useForm<RepayForm>({
     ...formDefaultOptions,
@@ -64,7 +69,7 @@ export const useRepayForm = ({
           stateCollateral: values.stateCollateral,
           userCollateral: values.userCollateral,
           userBorrowed: values.userBorrowed,
-        }) as RepayFromCollateralParams<LlamaChainId>,
+        }) as RepayFromCollateralParams<ChainId>,
       [chainId, marketId, userAddress, values.stateCollateral, values.userCollateral, values.userBorrowed],
     ),
   )
@@ -105,6 +110,9 @@ export const useRepayForm = ({
     prices,
     routeImage,
     gas,
+    txHash: action.data?.hash,
+    collateralToken,
+    borrowToken,
     formErrors,
   }
 }

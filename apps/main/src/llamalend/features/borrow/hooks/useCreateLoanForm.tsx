@@ -12,18 +12,18 @@ import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
-import { type CreateLoanOptions, useCreateLoanMutation } from '../../mutations/create-loan.mutation'
-import { useBorrowCreateLoanIsApproved } from '../../queries/create-loan/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from '../../queries/validation/borrow.validation'
-import { useMaxTokenValues } from './hooks/useMaxTokenValues'
-import { useFormErrors } from './react-form.utils'
-import { type BorrowForm } from './types'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
+import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
+import { useBorrowCreateLoanIsApproved } from '../../../queries/create-loan/borrow-create-loan-approved.query'
+import { borrowFormValidationSuite } from '../../../queries/validation/borrow.validation'
+import { useFormErrors } from '../react-form.utils'
+import { type BorrowForm } from '../types'
+import { useMaxTokenValues } from './useMaxTokenValues'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export function useBorrowForm<ChainId extends IChainId>({
+export function useCreateLoanForm<ChainId extends IChainId>({
   market,
   network,
   network: { chainId },

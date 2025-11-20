@@ -24,6 +24,9 @@ export const useDexMarketList = useBetaChannel
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useBetaChannel
 
+/** New manage loan forms (add/remove/repay) */
+export const useManageLoanMuiForm = useBetaChannel
+
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
 

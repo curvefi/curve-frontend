@@ -13,9 +13,9 @@ import Stack from '@mui/material/Stack'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
 import { InputDivider } from '../../../widgets/InputDivider'
+import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { setValueOptions } from '../react-form.utils'
 import { type BorrowFormExternalFields, type OnBorrowFormUpdate } from '../types'
-import { useBorrowForm } from '../useBorrowForm'
 import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
 import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
 import { LeverageInput } from './LeverageInput'
@@ -69,7 +69,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
     formErrors,
     tooMuchDebt,
     isApproved,
-  } = useBorrowForm({ market, network, preset, onCreated })
+  } = useCreateLoanForm({ market, network, preset, onCreated })
   const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
   useFormSync(values, onUpdate)
 
@@ -96,12 +96,9 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="userCollateral"
           form={form}
-          isLoading={maxTokenValues.isCollateralLoading}
-          isError={maxTokenValues.isCollateralError}
-          max={values.maxCollateral}
+          max={{ ...maxTokenValues.collateral, fieldName: 'maxCollateral' }}
           testId="borrow-collateral-input"
           network={network}
-          maxFieldName="maxCollateral"
         />
         <LoanFormTokenInput
           label={t`Borrow`}
@@ -109,23 +106,21 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           blockchainId={network.id}
           name="debt"
           form={form}
-          isLoading={maxTokenValues.isDebtLoading}
-          isError={maxTokenValues.isDebtError}
-          max={values.maxDebt}
+          max={{ ...maxTokenValues.debt, fieldName: 'maxDebt' }}
           testId="borrow-debt-input"
           network={network}
-          maxFieldName="maxDebt"
+          message={
+            values.maxDebt && <FormMessage label={t`Max borrow:`} value={values.maxDebt} symbol={borrowToken?.symbol} />
+          }
         />
       </Stack>
 
       {market && hasLeverage(market) && (
         <LeverageInput
-          leverageEnabled={values.leverageEnabled}
+          checked={values.leverageEnabled}
           form={form}
           params={params}
           maxLeverage={maxTokenValues.maxLeverage}
-          isError={maxTokenValues.isLeverageError}
-          isLoading={maxTokenValues.isLeverageLoading}
         />
       )}
 
