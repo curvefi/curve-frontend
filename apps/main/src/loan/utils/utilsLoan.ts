@@ -14,3 +14,13 @@ export function getTokenName(llamma: Llamma | null | undefined) {
   const [stablecoin, collateral] = llamma?.coins ?? ['', '']
   return { stablecoin, collateral }
 }
+
+export const getLeverageV2RepayArgs = (stateCollateral: string) => ({
+  stateCollateral: stateCollateral,
+  // amount for repay/deleverage only from collateral for now
+  userCollateral: '0',
+  userBorrowed: '0',
+})
+
+export const isHigherThanMaxSlippage = (priceImpact: string, maxSlippage: string) =>
+  +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false
