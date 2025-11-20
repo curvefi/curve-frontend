@@ -15,6 +15,7 @@ import {
 } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
 import { getLeverageV2RepayArgs, isHigherThanMaxSlippage } from '../utils/utilsLoan'
 
 export const network = {
@@ -1042,7 +1043,7 @@ const loanDeleverage = {
             repayArgs.userCollateral,
           )
           resp.isHighImpact = isHigherThanMaxSlippage(resp.priceImpact, maxSlippage)
-          resp.routeName = 'ODOS'
+          resp.routeName = ROUTE_AGGREGATOR_LABELS[RouteAggregator.Odos]
 
           if (!resp.isFullRepayment) {
             const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
