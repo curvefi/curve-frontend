@@ -13,7 +13,7 @@ const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
  * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
  * This is used for features actively under development that are known not to be ready.
  *  */
-const usePreBetaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
+const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** LargeTokenInput replaces legacy amount inputs */
 const useLargeTokenInput = useStableChannel
@@ -31,10 +31,10 @@ export const useDexMarketList = useBetaChannel
 export const useCreateLoanMuiForm = useBetaChannel
 
 /** New manage loan forms (add/remove/repay) */
-export const useManageLoanMuiForm = usePreBetaChannel
+export const useManageLoanMuiForm = useAlphaChannel
 
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
 
 /** New card for managing soft liquidations */
-export const useManageSoftLiquidation = usePreBetaChannel
+export const useManageSoftLiquidation = useAlphaChannel

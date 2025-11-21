@@ -55,7 +55,7 @@ export const LoanInfoAccordion = ({
   leverage,
 }: LoanInfoAccordionProps) => (
   // error tooltip isn't displayed correctly because accordion takes the mouse focus. Use title for now.
-  <Box title={health.error?.message ?? undefined}>
+  <Box title={health.error?.message}>
     <Accordion
       ghost
       title={t`Health`}
@@ -64,7 +64,7 @@ export const LoanInfoAccordion = ({
           label=""
           value={health.data == null ? '∞' : formatNumber(health.data, { abbreviate: false })}
           valueColor={getHealthValueColor(Number(health.data ?? 100), useTheme())}
-          error={health.error ?? undefined}
+          error={health.error}
           loading={health.isLoading}
           testId="borrow-health"
         />
@@ -77,14 +77,14 @@ export const LoanInfoAccordion = ({
         <ActionInfo
           label={t`Band range`}
           value={bands.data ? `${bands.data[0]} to ${bands.data[1]}` : '-'}
-          error={bands.error ?? undefined}
+          error={bands.error}
           loading={bands.isLoading}
           testId="borrow-band-range"
         />
         <ActionInfo
           label={t`Price range`}
           value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ') ?? '-'}
-          error={prices.error ?? undefined}
+          error={prices.error}
           loading={prices.isLoading}
           testId="borrow-price-range"
         />
@@ -96,7 +96,7 @@ export const LoanInfoAccordion = ({
             label={t`Borrow APR`}
             prevValue={formatPercent(rates.data?.borrowApr)}
             value={futureRates.data?.borrowApr ? formatPercent(futureRates.data.borrowApr) : '-'}
-            error={(rates.error || futureRates.error) ?? undefined}
+            error={rates.error || futureRates.error}
             loading={rates.isLoading || futureRates.isLoading}
             testId="borrow-apr"
           />
@@ -106,7 +106,7 @@ export const LoanInfoAccordion = ({
             label={t`Loan to value ratio`}
             value={loanToValue.data ? formatPercent(loanToValue.data) : '-'}
             testId="borrow-ltv"
-            error={loanToValue.error ?? undefined}
+            error={loanToValue.error}
             loading={loanToValue.isLoading}
           />
         )}
