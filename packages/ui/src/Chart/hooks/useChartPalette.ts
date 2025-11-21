@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 import { useTheme } from '@mui/material/styles'
-import { Grays } from '@ui-kit/themes/design/0_primitives'
 
 export type ChartColors = {
   backgroundColor: string

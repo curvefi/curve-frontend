@@ -4,6 +4,7 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
+import { llamaMarketValidationGroup } from '@/llamalend/queries/validation/llama.validation'
 import type {
   CollateralHealthParams,
   CollateralParams,
@@ -13,7 +14,6 @@ import type {
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
 import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
-import { marketIdValidationGroup } from '@ui-kit/lib/model/query/market-id-validation'
 import { userAddressValidationGroup } from '@ui-kit/lib/model/query/user-address-validation'
 import type { Decimal } from '@ui-kit/utils'
 
@@ -27,7 +27,7 @@ export type RepayForm = FieldsOf<{
 
 export const collateralValidationGroup = ({ chainId, userCollateral, marketId, userAddress }: CollateralParams) =>
   group('chainValidation', () => {
-    marketIdValidationGroup({ marketId, chainId })
+    llamaMarketValidationGroup({ chainId, marketId })
     userAddressValidationGroup({ userAddress })
     validateUserCollateral(userCollateral)
   })

@@ -66,7 +66,13 @@ export const useAddCollateralForm = ({
 
   const isApproved = useAddCollateralIsApproved(params)
 
-  const { onSubmit, ...action } = useAddCollateralMutation({ marketId, network, onAdded, onReset: form.reset })
+  const { onSubmit, ...action } = useAddCollateralMutation({
+    marketId,
+    network,
+    onAdded,
+    onReset: form.reset,
+    userAddress,
+  })
 
   useCallbackAfterFormUpdate(form, action.reset)
 
