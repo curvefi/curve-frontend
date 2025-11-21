@@ -2,9 +2,8 @@ import type { Suite } from 'vest'
 import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
-import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
-import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -52,7 +51,7 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** The llamma market id */
   marketId: string | null | undefined
   /** The current network config */
-  network: BaseConfig<LlamaNetworkId>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   /** Unique key for the mutation */
   mutationKey: readonly unknown[]
   /**
@@ -88,7 +87,7 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
  * with simple throwing errors.
  */
 export function useLlammaMutation<TVariables extends object, TData extends Result = Result>({
-  network,
+  network: { chainId, id: networkId },
   marketId,
   mutationKey,
   mutationFn,
@@ -99,6 +98,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
   onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
   const { llamaApi, wallet } = useConnection()
+  const userAddress = wallet?.account.address
   const config = useConfig()
 
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
@@ -109,12 +109,7 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
       if (!llamaApi) throw new Error('Missing llamalend api')
       if (!marketId) throw new Error('Missing llamma market id')
 
-      assertValidity(validationSuite as Suite<any, any>, {
-        chainId: network.chainId,
-        marketId,
-        userAddress: wallet?.account.address,
-        ...variables,
-      })
+      assertValidity(validationSuite as Suite<any, any>, { chainId, marketId, userAddress, ...variables })
 
       const market = getLlamaMarket(marketId)
 
@@ -132,8 +127,8 @@ export function useLlammaMutation<TVariables extends object, TData extends Resul
     onSuccess: async ({ data, receipt }, variables, context) => {
       logSuccess(mutationKey, { data, variables, marketId: context.market.id })
       notify(successMessage(variables, context), 'success')
-      updateUserEventsApi(wallet!, network, context.market, receipt.transactionHash)
-      await invalidateAllUserMarketDetails({ marketId, userAddress: wallet?.account.address })
+      updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
+      await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
       onReset?.()
       await onSuccess(data, receipt, variables, context)
     },

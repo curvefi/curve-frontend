@@ -56,6 +56,7 @@ export type GetMarketsResponse = {
       symbol: string
       apr: number
     }[]
+    created_at: string
     max_ltv: number
   }[]
 }

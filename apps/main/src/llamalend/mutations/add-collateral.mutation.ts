@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { Hex } from 'viem'
+import { type Address, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
@@ -7,18 +7,18 @@ import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutat
 import { fetchAddCollateralIsApproved } from '@/llamalend/queries/add-collateral/add-collateral-approved.query'
 import { type CollateralForm, collateralValidationSuite } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
-import type { BaseConfig } from '@ui/utils'
-import { useConnection } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
+import { rootKeys } from '@ui-kit/lib/model'
 import { type Decimal, waitForApproval } from '@ui-kit/utils'
 
 type AddCollateralMutation = { userCollateral: Decimal }
 
 export type AddCollateralOptions = {
   marketId: string | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onAdded: LlammaMutationOptions<AddCollateralMutation>['onSuccess']
   onReset: () => void
+  userAddress: Address | undefined
 }
 
 const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
@@ -27,17 +27,20 @@ const approve = async (market: LlamaMarketTemplate, { userCollateral }: AddColla
 const addCollateral = async (market: LlamaMarketTemplate, { userCollateral }: AddCollateralMutation) =>
   (await market.addCollateral(userCollateral)) as Hex
 
-export const useAddCollateralMutation = ({ network, marketId, onAdded, onReset }: AddCollateralOptions) => {
+export const useAddCollateralMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  onAdded,
+  onReset,
+  userAddress,
+}: AddCollateralOptions) => {
   const config = useConfig()
-  const { wallet } = useConnection()
-  const { chainId } = network
-  const userAddress = wallet?.account.address
-  const mutationKey = ['manage-loan', 'add-collateral', { chainId, marketId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<AddCollateralMutation>({
     network,
     marketId,
-    mutationKey,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'add-collateral'] as const,
     mutationFn: async (mutation, { market }) => {
       await waitForApproval({
         isApproved: () => fetchAddCollateralIsApproved({ chainId, marketId, userAddress, ...mutation }),

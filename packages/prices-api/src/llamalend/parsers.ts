@@ -53,6 +53,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     symbol: y.symbol,
     rate: y.apr,
   })),
+  createdAt: toDate(x.created_at),
   maxLtv: x.max_ltv,
 })
 

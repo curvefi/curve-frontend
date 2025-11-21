@@ -4,10 +4,8 @@ import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
@@ -23,7 +21,7 @@ import { type BorrowForm } from './types'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export function useBorrowForm<ChainId extends IChainId>({
+export function useBorrowForm<ChainId extends LlamaChainId>({
   market,
   network,
   network: { chainId },
@@ -31,7 +29,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   onCreated,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<INetworkName, ChainId>
+  network: { id: LlamaNetworkId; chainId: ChainId }
   preset: BorrowPreset
   onCreated: CreateLoanOptions['onCreated']
 }) {
@@ -66,7 +64,7 @@ export function useBorrowForm<ChainId extends IChainId>({
     error: creationError,
     data,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated })
+  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 

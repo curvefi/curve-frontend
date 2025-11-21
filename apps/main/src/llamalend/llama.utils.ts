@@ -7,7 +7,6 @@ import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
 import { notFalsy } from '@curvefi/prices-api/objects.util'
-import type { BaseConfig } from '@ui/utils'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
 import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
 
@@ -98,7 +97,7 @@ export const calculateLtv = (
  */
 export const updateUserEventsApi = (
   wallet: Wallet,
-  { id: networkId }: BaseConfig<LlamaNetworkId>,
+  { id: networkId }: { id: LlamaNetworkId },
   market: LlamaMarketTemplate,
   txHash: string,
 ) => {
