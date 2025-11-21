@@ -2,9 +2,8 @@ import type { Suite } from 'vest'
 import type { FormattedTransactionReceipt, Hex } from 'viem'
 import { useConfig } from 'wagmi'
 import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
-import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
-import type { BaseConfig } from '@ui/utils'
 import { notify, useConnection } from '@ui-kit/features/connect-wallet'
 import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
 import { waitForTransactionReceipt } from '@wagmi/core'
@@ -52,7 +51,7 @@ export type LlammaMutationOptions<TVariables extends object, TData extends Resul
   /** The llamma market id */
   marketId: string | null | undefined
   /** The current network config */
-  network: BaseConfig<LlamaNetworkId>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   /** Unique key for the mutation */
   mutationKey: readonly unknown[]
   /**
