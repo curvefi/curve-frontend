@@ -162,7 +162,7 @@ export const CreateLoanForm = <ChainId extends IChainId>({
         formErrors={formErrors}
         network={network}
         txHash={txHash}
-        handledErrors={['userCollateral', 'debt', 'maxDebt', 'userCollateral']}
+        handledErrors={['userCollateral', 'debt', 'maxDebt']}
         successTitle={t`Loan created`}
       />
     </LoanFormWrapper>
