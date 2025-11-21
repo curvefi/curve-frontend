@@ -5,9 +5,9 @@ import TradesData from '@/dex/components/PagePool/PoolDetails/ChartOhlcWrapper/T
 import useStore from '@/dex/store/useStore'
 import { ChainId } from '@/dex/types/main.types'
 import Button from '@ui/Button/Button'
-import type { LpTradeToken, PricesApiCoin } from '@ui/Chart/types'
 import Icon from '@ui/Icon'
 import Spinner, { SpinnerWrapper } from '@ui/Spinner'
+import type { LpTradeToken, PricesApiCoin } from '@ui-kit/features/candle-chart/types'
 import { t } from '@ui-kit/lib/i18n'
 
 const PoolActivity = ({

@@ -31,7 +31,7 @@ export const parseMarket = (x: Responses.GetMarketsResponse['data'][number]): Mo
     pending: x.pending_fees,
     collected: x.collected_fees,
   },
-  created_at: new Date(x.created_at),
+  createdAt: toDate(x.created_at),
   maxLtv: x.max_ltv,
 })
 

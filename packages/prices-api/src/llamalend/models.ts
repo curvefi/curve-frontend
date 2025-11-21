@@ -54,6 +54,7 @@ export type Market = {
     symbol: string
     rate: number
   }[]
+  createdAt: Date
   maxLtv: number
 }
 
