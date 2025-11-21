@@ -4,18 +4,22 @@ import type { Address } from 'viem'
 import { useAccount } from 'wagmi'
 import { setValueOptions } from '@/llamalend/features/borrow/react-form.utils'
 import type { LlamaNetwork } from '@/llamalend/llamalend.types'
+import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { Decimal } from '@ui-kit/utils'
-import type { QueryData } from './LoanInfoAccordion'
 
 /**
  * A large token input field for loan forms, with balance and max handling.
  */
-export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName extends FieldPath<TFieldValues>>({
+export const LoanFormTokenInput = <
+  TFieldValues extends FieldValues,
+  TFieldName extends FieldPath<TFieldValues>,
+  TMaxFieldName extends FieldPath<TFieldValues>,
+>({
   label,
   token,
   blockchainId,
@@ -33,7 +37,7 @@ export const LoanFormTokenInput = <TFieldValues extends FieldValues, TFieldName 
    * Optional max-value query for this field, including loading and error state.
    * When present, it also carries an optional related max-field name whose errors should be reflected here.
    */
-  max?: QueryData<Decimal> & { fieldName?: FieldPath<TFieldValues> }
+  max?: Query<Decimal> & { fieldName?: TMaxFieldName }
   name: TFieldName
   form: UseFormReturn<TFieldValues> // the form, used to set the value and get errors
   testId: string

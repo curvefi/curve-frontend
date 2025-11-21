@@ -1,6 +1,6 @@
 import { type ChangeEvent, useCallback } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
-import type { QueryData } from '@/llamalend/widgets/manage-loan/LoanInfoAccordion'
+import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import Checkbox from '@mui/material/Checkbox'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Stack from '@mui/material/Stack'
@@ -25,7 +25,7 @@ export const LeverageInput = ({
   checked: boolean
   form: UseFormReturn<BorrowForm>
   params: BorrowFormQueryParams
-  maxLeverage: QueryData<Decimal>
+  maxLeverage: Query<Decimal>
 }) => {
   const { leverage } = useCreateLoanExpectedCollateral(params).data ?? {}
 
