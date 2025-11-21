@@ -36,6 +36,7 @@ const useDefaultLlamaFilter = (minLiquidity: number) =>
   )
 
 const pagination = { pageIndex: 0, pageSize: 200 }
+const newMarketsCutoffDate = new Date('2025-11-12T00:00:00Z').getTime() // November 12, 2025
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -48,7 +49,7 @@ export const LlamaMarketsTable = ({
   isError: boolean
   loading: boolean
 }) => {
-  const { markets: data = [], userHasPositions, hasFavorites } = result ?? {}
+  const { markets = [], userHasPositions, hasFavorites } = result ?? {}
 
   const minLiquidity = useUserProfileStore((s) => s.hideSmallPools) ? SMALL_POOL_TVL : 0
   const defaultFilters = useDefaultLlamaFilter(minLiquidity)
@@ -66,6 +67,11 @@ export const LlamaMarketsTable = ({
   const [expanded, onExpandedChange] = useState<ExpandedState>({})
   const [searchText, onSearch] = useSearch(columnFiltersById, setColumnFilter)
   const filterProps = { columnFiltersById, setColumnFilter }
+
+  // Filter out markets after a certain creation date, because they're unsafe to use until Llamalend V2 is live.
+  // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
+  // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
+  const data = useMemo(() => markets.filter((market) => market.createdAt <= newMarketsCutoffDate), [markets])
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,
