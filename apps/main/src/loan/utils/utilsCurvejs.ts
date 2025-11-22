@@ -3,19 +3,6 @@ import { BandBalance, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export function getIsUserCloseToLiquidation(
-  userFirstBand: number,
-  userLiquidationBand: number | null,
-  oraclePriceBand: number | null | undefined,
-) {
-  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-    return false
-  } else if (typeof oraclePriceBand === 'number') {
-    return userFirstBand <= oraclePriceBand + 2
-  }
-  return false
-}
-
 export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }

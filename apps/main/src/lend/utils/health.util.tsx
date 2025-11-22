@@ -1,5 +1,5 @@
-import { helpers } from '@/lend/lib/apiLending'
 import { HealthMode, OneWayMarketTemplate } from '@/lend/types/lend.types'
+import { getIsUserCloseToLiquidation } from '@/llamalend/llama.utils'
 import Icon from '@ui/Icon'
 import { formatNumber } from '@ui/utils/utilsFormat'
 import { t } from '@ui-kit/lib/i18n'
@@ -28,7 +28,7 @@ export function getHealthMode(
     warning: '',
   }
 
-  if (helpers.getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
+  if (getIsUserCloseToLiquidation(bands?.[0], null, oraclePriceBand)) {
     let message = ''
 
     if (newColorKey === 'close_to_liquidation') {

@@ -31,25 +31,13 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { getLiquidationStatus } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  getIsUserCloseToLiquidation: (
-    userFirstBand: number,
-    userLiquidationBand: number | null,
-    oraclePriceBand: number | null | undefined,
-  ) => {
-    if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-      return false
-    } else if (typeof oraclePriceBand === 'number') {
-      return userFirstBand <= oraclePriceBand + 2
-    }
-    return false
-  },
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {
     val1 = val1 || '0'
     val2 = val2 || '0'
@@ -302,11 +290,7 @@ const user = {
         const { liquidationBand } = resp ?? {}
 
         const reversedUserBands = _reverseBands(bands)
-        const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
-          reversedUserBands[0],
-          liquidationBand,
-          oraclePriceBand,
-        )
+        const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
           liquidationBand,

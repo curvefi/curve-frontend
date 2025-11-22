@@ -1,8 +1,8 @@
 import { formatNumber } from 'ui/src/utils/utilsFormat'
+import { getIsUserCloseToLiquidation } from '@/llamalend/llama.utils'
 import { HealthMode } from '@/loan/types/loan.types'
 import Icon from '@ui/Icon/Icon'
 import { t } from '@ui-kit/lib/i18n'
-import { getIsUserCloseToLiquidation } from './utilsCurvejs'
 
 export function getHealthMode(
   oraclePriceBand: number | null,

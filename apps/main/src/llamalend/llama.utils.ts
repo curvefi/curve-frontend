@@ -124,3 +124,16 @@ export function getLiquidationStatus(
 
   return userStatus
 }
+
+export function getIsUserCloseToLiquidation(
+  userFirstBand: number,
+  userLiquidationBand: number | null,
+  oraclePriceBand: number | null | undefined,
+) {
+  if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
+    return false
+  } else if (typeof oraclePriceBand === 'number') {
+    return userFirstBand <= oraclePriceBand + 2
+  }
+  return false
+}

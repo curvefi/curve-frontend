@@ -1,17 +1,11 @@
-import { getLiquidationStatus } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
-import {
-  getChartBandBalancesData,
-  getIsUserCloseToLiquidation,
-  parseUserLoss,
-  reverseBands,
-  sortBands,
-} from '@/loan/utils/utilsCurvejs'
+import { getChartBandBalancesData, parseUserLoss, reverseBands, sortBands } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
