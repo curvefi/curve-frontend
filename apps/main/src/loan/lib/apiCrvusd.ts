@@ -52,6 +52,15 @@ function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   return resp
 }
 
+// need due to issue with chart label not showing up correctly.
+export function loadingLRPrices(prices: string[]) {
+  if (!prices) return
+  if (prices.length === 0) return []
+  let randomNum = Math.floor(Math.random() * (100 - 1 + 1) + 1)
+  randomNum = randomNum * 0.000001
+  return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
+}
+
 const detailInfo = {
   priceInfo: async (llamma: Llamma) => {
     log('priceInfo', llamma.collateralSymbol)
