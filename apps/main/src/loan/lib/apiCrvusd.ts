@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsMint } from '@/llamalend/llama.utils'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
@@ -5,8 +6,9 @@ import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
-import { getChartBandBalancesData, parseUserLoss } from '@/loan/utils/utilsCurvejs'
+import { getChartBandBalancesData } from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const network = {
@@ -39,6 +41,15 @@ const DEFAULT_PARAMETERS = {
   rate: '',
   liquidation_discount: '',
   loan_discount: '',
+}
+
+function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
+  const smallAmount = 0.00000001
+  const resp = cloneDeep(userLoss)
+  resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
+  resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
+
+  return resp
 }
 
 const detailInfo = {

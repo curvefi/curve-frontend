@@ -1,5 +1,4 @@
-import lodash from 'lodash'
-import { BandBalance, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { BandBalance, Llamma } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
@@ -60,13 +59,4 @@ export function loadingLRPrices(prices: string[]) {
   let randomNum = Math.floor(Math.random() * (100 - 1 + 1) + 1)
   randomNum = randomNum * 0.000001
   return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
-}
-
-export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
-  const smallAmount = 0.00000001
-  const resp = lodash.cloneDeep(userLoss)
-  resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
-  resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
-
-  return resp
 }
