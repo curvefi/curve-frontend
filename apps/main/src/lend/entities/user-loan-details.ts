@@ -1,5 +1,5 @@
 import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
-import { _fetchChartBandBalancesData } from '@/lend/lib/apiLending'
+import { fetchChartBandBalancesData } from '@/lend/lib/apiLending'
 import { UserLoss, ParsedBandsBalances, ChainId } from '@/lend/types/lend.types'
 import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import type { HealthColorKey } from '@/llamalend/llamalend.types'
@@ -59,7 +59,7 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
 
   const reversedUserBands = reverseBands(bands)
   const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
-  const parsedBandsBalances = await _fetchChartBandBalancesData(
+  const parsedBandsBalances = await fetchChartBandBalancesData(
     sortBandsLend(bandsBalances),
     liquidationBand,
     market,

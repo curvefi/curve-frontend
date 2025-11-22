@@ -52,7 +52,7 @@ function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   return resp
 }
 
-async function getChartBandBalancesData(
+async function fetchChartBandBalancesData(
   {
     bandBalances,
     bandBalancesArr,
@@ -184,7 +184,7 @@ const detailInfo = {
     const liquidationBand = fulfilledValue(liquidationBandResult) ?? null
     const basePrice = fulfilledValue(basePriceResult) ?? undefined
 
-    const parsedBandsBalances = await getChartBandBalancesData(sortBandsMint(bandsBalances), liquidationBand, llamma)
+    const parsedBandsBalances = await fetchChartBandBalancesData(sortBandsMint(bandsBalances), liquidationBand, llamma)
 
     return {
       ...fetchedPartialLoanInfo,
@@ -212,7 +212,7 @@ const detailInfo = {
 
     const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
 
-    const parsedBandsBalances = await getChartBandBalancesData(
+    const parsedBandsBalances = await fetchChartBandBalancesData(
       sortBandsMint(userBandsBalances),
       userLiquidationBand,
       llamma,

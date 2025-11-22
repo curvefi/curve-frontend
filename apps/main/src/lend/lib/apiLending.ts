@@ -91,7 +91,7 @@ const market = {
         const maxMinBands = [maxBand, minBand]
 
         const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
+        const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
           market,
@@ -290,7 +290,7 @@ const user = {
 
         const reversedUserBands = reverseBands(bands)
         const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
+        const parsedBandsBalances = await fetchChartBandBalancesData(
           sortBandsLend(bandsBalances),
           liquidationBand,
           market,
@@ -1771,7 +1771,7 @@ const apiLending = {
 
 export default apiLending
 
-export async function _fetchChartBandBalancesData(
+export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,
