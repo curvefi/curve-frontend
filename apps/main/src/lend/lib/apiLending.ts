@@ -31,7 +31,7 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { getIsUserCloseToLiquidation, getLiquidationStatus } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -289,7 +289,7 @@ const user = {
         const resp = await market.stats.bandsInfo()
         const { liquidationBand } = resp ?? {}
 
-        const reversedUserBands = _reverseBands(bands)
+        const reversedUserBands = reverseBands(bands)
         const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
         const parsedBandsBalances = await _fetchChartBandBalancesData(
           _sortBands(bandsBalances),
@@ -418,7 +418,7 @@ const loanCreate = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -471,7 +471,7 @@ const loanCreate = {
         healthFull: fulfilledValue(healthFullResp) ?? '',
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         prices: fulfilledValue(pricesResp) ?? [],
         routeImage: fulfilledValue(routesResp) ?? null,
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
@@ -539,7 +539,7 @@ const loanCreate = {
           maxRecv: maxRecv || '',
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
-          bands: bands ? _reverseBands(bands) : [0, 0],
+          bands: bands ? reverseBands(bands) : [0, 0],
         }
         liqRangesList.push(detail)
         liqRangesListMapper[n] = { ...detail, sliderIdx }
@@ -568,7 +568,7 @@ const loanCreate = {
           maxRecv: maxRecv || '',
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
-          bands: bands ? _reverseBands(bands) : [0, 0],
+          bands: bands ? reverseBands(bands) : [0, 0],
         }
         liqRangesList.push(detail)
         liqRangesListMapper[n] = { ...detail, sliderIdx }
@@ -725,7 +725,7 @@ const loanBorrowMore = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -783,7 +783,7 @@ const loanBorrowMore = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, slippage),
@@ -921,7 +921,7 @@ const loanRepay = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -1001,7 +1001,7 @@ const loanRepay = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp),
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         repayIsAvailable: fulfilledValue(repayIsAvailableResp) ?? false,
         repayIsFull,
         expectedBorrowed,
@@ -1201,7 +1201,7 @@ const loanCollateralAdd = {
         healthNotFull,
         futureRates: null,
         prices,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       return resp
     } catch (error) {
@@ -1284,7 +1284,7 @@ const loanCollateralRemove = {
         healthNotFull,
         futureRates: null,
         prices,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       return resp
     } catch (error) {
@@ -1771,10 +1771,6 @@ const apiLending = {
 }
 
 export default apiLending
-
-export function _reverseBands(bands: [number, number] | number[]) {
-  return [bands[1], bands[0]] as [number, number]
-}
 
 export function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
   const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)

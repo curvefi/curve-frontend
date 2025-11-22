@@ -3,10 +3,6 @@ import { BandBalance, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
-export function reverseBands(bands: [number, number] | number[]) {
-  return [bands[1], bands[0]] as [number, number]
-}
-
 export async function getChartBandBalancesData(
   {
     bandBalances,
