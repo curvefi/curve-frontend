@@ -95,14 +95,6 @@ export type PageContentProps = {
   market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
 }
-export type HealthMode = {
-  percent: string
-  colorKey: HealthColorKey
-  icon: ReactNode
-  message: string | null
-  warningTitle: string
-  warning: string
-}
 export type LiqRange = {
   prices: string[]
   bands: [number, number]

@@ -1,15 +1,6 @@
 import { zeroAddress } from 'viem'
 import { FormDetailInfo, FormEstGas, FormStatus } from '@/loan/components/PageLoanManage/types'
-import { Llamma, HealthMode, UserWalletBalances } from '@/loan/types/loan.types'
-
-export const DEFAULT_HEALTH_MODE: HealthMode = {
-  percent: '',
-  colorKey: '',
-  icon: null,
-  message: null,
-  warningTitle: '',
-  warning: '',
-}
+import { Llamma, UserWalletBalances } from '@/loan/types/loan.types'
 
 export const DEFAULT_DETAIL_INFO: FormDetailInfo = {
   healthFull: '',

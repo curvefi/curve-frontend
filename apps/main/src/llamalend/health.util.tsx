@@ -1,22 +1,26 @@
-import { formatNumber } from 'ui/src/utils/utilsFormat'
-import { getIsUserCloseToLiquidation } from '@/llamalend/llama.utils'
-import { HealthMode } from '@/loan/types/loan.types'
-import Icon from '@ui/Icon/Icon'
+import type { HealthMode } from '@/llamalend/llamalend.types'
+import Icon from '@ui/Icon'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { getIsUserCloseToLiquidation } from './llama.utils'
 
+// 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
+// 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
+  borrowedTokenSymbol: string | undefined,
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
   formType: 'create-loan' | 'collateral-decrease' | '',
   healthFull: string,
   healthNotFull: string,
-  isNew: boolean,
   currColorKey: string,
   newColorKey: string,
 ) {
+  const health = +healthNotFull < 0 ? healthNotFull : healthFull
+
   let healthMode: HealthMode = {
-    percent: healthFull,
+    percent: health,
     colorKey: 'healthy',
     icon: <Icon name="FavoriteFilled" size={20} />,
     message: null,
@@ -35,15 +39,15 @@ export function getHealthMode(
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {
-          message = t`Borrowing ${formattedAmount} will put you close to soft liquidation.`
+          message = t`Borrowing ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         } else {
-          message = t`Increasing your borrowed amount by ${formattedAmount} will put you close to soft liquidation.`
+          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         }
       }
     }
 
     healthMode = {
-      percent: +healthNotFull < 0 ? healthNotFull : healthFull,
+      percent: health,
       colorKey: 'close_to_liquidation',
       icon: <Icon name="FavoriteHalf" size={20} />,
       message,

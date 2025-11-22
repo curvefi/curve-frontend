@@ -10,22 +10,17 @@ import type { FormStatus, FormValues, StepKey } from '@/lend/components/PageLoan
 import { _parseValues, DEFAULT_FORM_VALUES } from '@/lend/components/PageLoanManage/LoanRepay/utils'
 import { StyledDetailInfoWrapper } from '@/lend/components/PageLoanManage/styles'
 import type { FormEstGas } from '@/lend/components/PageLoanManage/types'
-import { DEFAULT_CONFIRM_WARNING, DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
+import { DEFAULT_CONFIRM_WARNING } from '@/lend/components/PageLoanManage/utils'
 import { NOFITY_MESSAGE } from '@/lend/constants'
 import { useUserLoanDetails } from '@/lend/hooks/useUserLoanDetails'
 import { helpers } from '@/lend/lib/apiLending'
 import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
-import {
-  Api,
-  FormError,
-  HealthMode,
-  type MarketUrlParams,
-  OneWayMarketTemplate,
-  PageContentProps,
-} from '@/lend/types/lend.types'
+import { Api, FormError, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { _showNoLoanFound } from '@/lend/utils/helpers'
 import { getCollateralListPathname } from '@/lend/utils/utilsRouter'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'

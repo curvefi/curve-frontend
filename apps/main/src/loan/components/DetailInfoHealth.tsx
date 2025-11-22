@@ -1,9 +1,9 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
-import type { HealthColorKey } from '@/llamalend/llamalend.types'
-import { DEFAULT_HEALTH_MODE } from '@/loan/components/PageLoanManage/utils'
-import { HealthMode, LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
-import { getHealthMode } from '@/loan/utils/health.util'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { getHealthMode } from '@/llamalend/health.util'
+import type { HealthColorKey, HealthMode } from '@/llamalend/llamalend.types'
+import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
@@ -55,13 +55,13 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand !== 'undefined' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
+          undefined,
           oraclePriceBand,
           amount,
           bands,
           formType,
           healthFull,
           healthNotFull,
-          true,
           currentHealthModeColorKey ?? '',
           newHealthModeColorKey ?? '',
         ),
@@ -87,13 +87,13 @@ const DetailInfoHealth = ({
       const { healthFull, healthNotFull, userBands } = userLoanDetails
       setCurrentHealthMode(
         getHealthMode(
+          undefined,
           oraclePriceBand,
           amount,
           userBands,
           formType,
           healthFull,
           healthNotFull,
-          false,
           '',
           newHealthModeColorKey,
         ),

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react'
 import { styled } from 'styled-components'
-import { HealthMode } from '@/loan/types/loan.types'
+import type { HealthMode } from '@/llamalend/llamalend.types'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
 import Checkbox from '@ui/Checkbox'
