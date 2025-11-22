@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -31,7 +30,7 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
-import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands } from '@/llamalend/llama.utils'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
@@ -93,7 +92,7 @@ const market = {
 
         const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
         const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
+          sortBandsLend(bandsBalances),
           liquidationBand,
           market,
           true,
@@ -292,7 +291,7 @@ const user = {
         const reversedUserBands = reverseBands(bands)
         const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
         const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
+          sortBandsLend(bandsBalances),
           liquidationBand,
           market,
           false,
@@ -1771,16 +1770,6 @@ const apiLending = {
 }
 
 export default apiLending
-
-export function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
-  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
-  for (const k of sortedKeys) {
-    // @ts-ignore
-    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
-  }
-  return { bandsBalancesArr, bandsBalances }
-}
 
 export async function _fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },

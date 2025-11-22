@@ -1,3 +1,4 @@
+import { sortBy } from 'lodash'
 import { type Address, Hex, zeroAddress } from 'viem'
 import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
@@ -140,4 +141,23 @@ export function getIsUserCloseToLiquidation(
 
 export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
+}
+
+export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
+  const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
+  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
+  for (const k of sortedKeys) {
+    // @ts-ignore
+    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
+  }
+  return { bandsBalancesArr, bandsBalances }
+}
+
+export function sortBandsMint(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
+  const sortedKeys = sortBy(Object.keys(bandBalances), (k) => +k)
+  const bandBalancesArr = []
+  for (const k of sortedKeys) {
+    bandBalancesArr.push({ ...bandBalances[k], band: k })
+  }
+  return { bandBalancesArr, bandBalances }
 }

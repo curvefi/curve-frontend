@@ -62,15 +62,6 @@ export function loadingLRPrices(prices: string[]) {
   return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
 }
 
-export function sortBands(bandBalances: { [key: string]: { stablecoin: string; collateral: string } }) {
-  const sortedKeys = lodash.sortBy(Object.keys(bandBalances), (k) => +k)
-  const bandBalancesArr = []
-  for (const k of sortedKeys) {
-    bandBalancesArr.push({ ...bandBalances[k], band: k })
-  }
-  return { bandBalancesArr, bandBalances }
-}
-
 export function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
   const smallAmount = 0.00000001
   const resp = lodash.cloneDeep(userLoss)
