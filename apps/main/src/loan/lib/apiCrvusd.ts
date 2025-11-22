@@ -1,3 +1,4 @@
+import { getLiquidationStatus } from '@/llamalend/llama.utils'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import networks from '@/loan/networks'
@@ -7,7 +8,6 @@ import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import {
   getChartBandBalancesData,
   getIsUserCloseToLiquidation,
-  getLiquidationStatus,
   parseUserLoss,
   reverseBands,
   sortBands,

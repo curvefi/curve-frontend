@@ -6,3 +6,5 @@ import type { BaseConfig } from '@ui/utils'
 export type NetworkDict<ChainId extends IChainId = IChainId> = Record<ChainId, BaseConfig<INetworkName, ChainId>>
 
 export type LlamaMarketTemplate = MintMarketTemplate | LendMarketTemplate
+
+export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''

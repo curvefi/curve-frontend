@@ -1,5 +1,5 @@
 import { type Address, Hex, zeroAddress } from 'viem'
-import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
+import type { HealthColorKey, LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import type { INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
@@ -89,4 +89,38 @@ export const updateUserEventsApi = (
       ? [market.addresses.controller, getLendUserMarketCollateralEvents]
       : [market.controller, getMintUserMarketCollateralEvents]
   void updateEvents(wallet.account.address, networkId as Chain, address as Address, txHash as Hex)
+}
+
+/**
+ * healthNotFull is needed here because:
+ * User full health can be > 0
+ * But user is at risk of liquidation if not full < 0
+ */
+export function getLiquidationStatus(
+  healthNotFull: string,
+  userIsCloseToLiquidation: boolean,
+  userStateStablecoin: string,
+) {
+  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
+    label: 'Healthy',
+    colorKey: 'healthy',
+    tooltip: '',
+  }
+
+  if (+healthNotFull < 0) {
+    userStatus.label = 'Hard liquidatable'
+    userStatus.colorKey = 'hard_liquidation'
+    userStatus.tooltip =
+      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
+  } else if (+userStateStablecoin > 0) {
+    userStatus.label = 'Soft liquidation'
+    userStatus.colorKey = 'soft_liquidation'
+    userStatus.tooltip =
+      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
+  } else if (userIsCloseToLiquidation) {
+    userStatus.label = 'Close to liquidation'
+    userStatus.colorKey = 'close_to_liquidation'
+  }
+
+  return userStatus
 }

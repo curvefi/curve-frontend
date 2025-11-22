@@ -1,5 +1,5 @@
 import lodash from 'lodash'
-import { BandBalance, HealthColorKey, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { BandBalance, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 
@@ -14,39 +14,6 @@ export function getIsUserCloseToLiquidation(
     return userFirstBand <= oraclePriceBand + 2
   }
   return false
-}
-
-/** healthNotFull is needed here because:
- * User full health can be > 0
- * But user is at risk of liquidation if not full < 0
- */
-export function getLiquidationStatus(
-  healthNotFull: string,
-  userIsCloseToLiquidation: boolean,
-  userStateStablecoin: string,
-) {
-  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
-    label: 'Healthy',
-    colorKey: 'healthy',
-    tooltip: '',
-  }
-
-  if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidatable'
-    userStatus.colorKey = 'hard_liquidation'
-    userStatus.tooltip =
-      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > 0) {
-    userStatus.label = 'Soft liquidation'
-    userStatus.colorKey = 'soft_liquidation'
-    userStatus.tooltip =
-      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
-  } else if (userIsCloseToLiquidation) {
-    userStatus.label = 'Close to liquidation'
-    userStatus.colorKey = 'close_to_liquidation'
-  }
-
-  return userStatus
 }
 
 export function reverseBands(bands: [number, number] | number[]) {

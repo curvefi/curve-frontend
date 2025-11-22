@@ -1,12 +1,8 @@
 import { invalidateUserMarketBalances } from '@/lend/entities/user-market-balances'
-import {
-  _fetchChartBandBalancesData,
-  _getLiquidationStatus,
-  _reverseBands,
-  _sortBands,
-  helpers,
-} from '@/lend/lib/apiLending'
-import { UserLoss, ParsedBandsBalances, HealthColorKey, ChainId } from '@/lend/types/lend.types'
+import { _fetchChartBandBalancesData, _reverseBands, _sortBands, helpers } from '@/lend/lib/apiLending'
+import { UserLoss, ParsedBandsBalances, ChainId } from '@/lend/types/lend.types'
+import { getLiquidationStatus } from '@/llamalend/llama.utils'
+import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import { requireLib } from '@ui-kit/features/connect-wallet'
 import { queryFactory } from '@ui-kit/lib/model/query'
 import { rootKeys } from '@ui-kit/lib/model/query/root-keys'
@@ -88,7 +84,7 @@ const _getUserLoanDetails = async ({ marketId, userAddress }: UserLoanDetailsQue
     loss,
     leverage,
     pnl,
-    status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+    status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
   }
 }
 
