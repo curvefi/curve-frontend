@@ -93,6 +93,25 @@ export const updateUserEventsApi = (
 }
 
 /**
+ * It’s possible that when a user briefly enters and then exits soft liquidation,
+ * one or more bands may be left with a tiny amount of crvUSD (dust). There is a
+ * dust-sweeping bot that cleans this up, but there can be a delay before those
+ * remnants are collected.
+ *
+ * The current front-end check is rudimentary and can sometimes conclude that a
+ * user is still in soft liquidation even though their overall health is healthy,
+ * which is confusing.
+ *
+ * As a pragmatic, short-term mitigation to reduce false positives, we only mark
+ * loans as being in soft liquidation when the crvUSD balance of a band exceeds
+ * a small threshold. This prevents trivial dust amounts from triggering the UI.
+ *
+ * If somebody wants to tackle this properly, they can find the bot code here:
+ * https://github.com/curvefi/dust-cleaner-bot/blob/master/app/services/controller.py#L90
+ */
+const SOFT_LIQUIDATION_DUST_THRESHOLD = 0.1
+
+/**
  * healthNotFull is needed here because:
  * User full health can be > 0
  * But user is at risk of liquidation if not full < 0
@@ -113,7 +132,7 @@ export function getLiquidationStatus(
     userStatus.colorKey = 'hard_liquidation'
     userStatus.tooltip =
       'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > 0) {
+  } else if (+userStateStablecoin > SOFT_LIQUIDATION_DUST_THRESHOLD) {
     userStatus.label = 'Soft liquidation'
     userStatus.colorKey = 'soft_liquidation'
     userStatus.tooltip =
