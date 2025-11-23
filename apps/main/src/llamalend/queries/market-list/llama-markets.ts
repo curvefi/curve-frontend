@@ -67,6 +67,7 @@ export type LlamaMarket = {
   leverage: number
   deprecatedMessage: string | null
   userHasPositions: Record<MarketRateType, boolean> | null // null means no positions in either market and makes easy to filter
+  createdAt: number
 }
 
 export type LlamaMarketsResult = {
@@ -112,6 +113,7 @@ const convertLendingVault = (
     leverage,
     extraRewardApr,
     maxLtv,
+    createdAt,
   }: LendingVault,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignPoolRewards[]> = {},
@@ -187,6 +189,7 @@ const convertLendingVault = (
             [MarketRateType.Supply]: hasSupplied,
           }
         : null,
+    createdAt: new Date(createdAt).getTime(),
   }
 }
 
@@ -210,6 +213,7 @@ const convertMintMarket = (
     leverage,
     chain,
     maxLtv,
+    createdAt,
   }: MintMarket,
   favoriteMarkets: Set<Address>,
   campaigns: Record<string, CampaignPoolRewards[]> = {},
@@ -269,6 +273,7 @@ const convertMintMarket = (
     rewards: [...(campaigns[address.toLowerCase()] ?? []), ...(campaigns[llamma.toLowerCase()] ?? [])],
     leverage,
     userHasPositions: hasBorrow ? { [MarketRateType.Borrow]: hasBorrow, [MarketRateType.Supply]: false } : null,
+    createdAt: new Date(createdAt).getTime(),
   }
 }
 
