@@ -3,11 +3,17 @@
  * These return booleans indicating whether a new experience is enabled.
  */
 
-import { ReleaseChannel } from '@ui-kit/utils'
+import { defaultReleaseChannel, ReleaseChannel } from '@ui-kit/utils'
 import { useReleaseChannel } from './useLocalStorage'
 
 const useBetaChannel = () => useReleaseChannel()[0] === ReleaseChannel.Beta
 const useStableChannel = () => useReleaseChannel()[0] !== ReleaseChannel.Legacy
+
+/**
+ * Pre-Beta channel works like beta for preview/localhost urls, but completely hidden in production.
+ * This is used for features actively under development that are known not to be ready.
+ *  */
+const useAlphaChannel = () => useBetaChannel() && defaultReleaseChannel === ReleaseChannel.Beta
 
 /** LargeTokenInput replaces legacy amount inputs */
 const useLargeTokenInput = useStableChannel
@@ -24,12 +30,11 @@ export const useDexMarketList = useBetaChannel
 /** New unified create loan form */
 export const useCreateLoanMuiForm = useBetaChannel
 
+/** New manage loan forms (add/remove/repay) */
+export const useManageLoanMuiForm = useAlphaChannel
+
 /** New bands chart (BandsChart) */
 export const useNewBandsChart = useBetaChannel
 
-/**
- * New card for managing soft liquidations
- * Temporarily disabled until we have a Tenderly account again so we can test for lend markets,
- * but also I want to see the feature implementation to be progressed further along.
- */
-export const useManageSoftLiquidation = () => false
+/** New card for managing soft liquidations */
+export const useManageSoftLiquidation = useAlphaChannel
