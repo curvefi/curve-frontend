@@ -185,7 +185,7 @@ const Page = () => {
           {rChainId &&
             rOwmId &&
             (isManageSoftLiq ? (
-              <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} />
+              <ManageSoftLiquidation marketId={rOwmId} chainId={rChainId} network={network} />
             ) : (
               <LoanMange {...pageProps} />
             ))}

@@ -10,11 +10,7 @@ import type { Decimal } from '@ui-kit/utils'
 type UserBalancesQuery = UserQuery & PoolQuery<IChainId>
 type UserBalancesParams = FieldsOf<UserBalancesQuery>
 
-export const {
-  useQuery: useUserBalances,
-  queryKey: userBalancesQueryKey,
-  invalidate: invalidateUserBalances,
-} = queryFactory({
+export const { useQuery: useUserBalances, invalidate: invalidateUserBalances } = queryFactory({
   queryKey: ({ chainId, poolId, userAddress }: UserBalancesParams) =>
     [...rootKeys.pool({ chainId, poolId }), 'wallet-balances', { userAddress }] as const,
   queryFn: async ({ poolId }: UserBalancesQuery) => {
