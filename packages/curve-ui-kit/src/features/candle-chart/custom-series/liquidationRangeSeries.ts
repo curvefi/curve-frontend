@@ -124,7 +124,7 @@ const collectVisiblePoints = (
     const bar = bars[i]
     const { upper, lower } = bar.originalData
 
-    if (upper === undefined || lower === undefined) continue
+    if (upper == null || lower == null) continue
     if (!isWithinTimeWindow(bar.originalData)) continue
 
     const upperCoord = priceConverter(upper)
@@ -206,23 +206,16 @@ const isWithinTimeWindow = (point: LiquidationRangePoint): boolean => {
   const startTimestamp = toTimestamp(point.rangeStartTime)
   const endTimestamp = toTimestamp(point.rangeEndTime)
 
-  if (pointTimestamp === undefined) {
-    return true
-  }
-
-  if (startTimestamp !== undefined && pointTimestamp < startTimestamp) {
-    return false
-  }
-
-  if (endTimestamp !== undefined && pointTimestamp > endTimestamp) {
-    return false
-  }
-
-  return true
+  return (
+    pointTimestamp == null ||
+    startTimestamp == null ||
+    endTimestamp == null ||
+    (pointTimestamp >= startTimestamp && pointTimestamp <= endTimestamp)
+  )
 }
 
 const toTimestamp = (time?: Time): number | undefined => {
-  if (time === undefined) {
+  if (time == null) {
     return undefined
   }
 
@@ -249,13 +242,12 @@ const priceValueBuilder = (plotRow: LiquidationRangePoint): CustomSeriesPricePlo
 
 const isWhitespacePoint = (
   data: LiquidationRangePoint | CustomSeriesWhitespaceData<Time>,
-): data is CustomSeriesWhitespaceData<Time> => {
-  if ('upper' in data && 'lower' in data) {
-    return data.upper === undefined || data.lower === undefined || Number.isNaN(data.upper) || Number.isNaN(data.lower)
-  }
-
-  return true
-}
+): data is CustomSeriesWhitespaceData<Time> =>
+  !('upper' in data && 'lower' in data) ||
+  data.upper == null ||
+  data.lower == null ||
+  Number.isNaN(data.upper) ||
+  Number.isNaN(data.lower)
 
 const createLiquidationRangePaneView = (): ICustomSeriesPaneView<
   Time,
