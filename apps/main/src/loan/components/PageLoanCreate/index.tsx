@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
-import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import type { BorrowMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
 import type { FormType, FormValues, PageLoanCreateProps } from '@/loan/components/PageLoanCreate/types'
 import { DEFAULT_FORM_VALUES } from '@/loan/components/PageLoanCreate/utils'
@@ -56,7 +56,7 @@ const LoanCreate = ({
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
 
   const onCreated: CreateLoanOptions['onCreated'] = useCallback(
-    async (_hash, { slippage, leverageEnabled }) =>
+    async (_data, _receipt, { slippage, leverageEnabled }: BorrowMutation) =>
       curve && llamma && (await onLoanCreated(curve, leverageEnabled, llamma, slippage)),
     [curve, llamma, onLoanCreated],
   )

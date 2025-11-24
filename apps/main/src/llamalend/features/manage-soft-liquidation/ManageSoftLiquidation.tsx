@@ -9,7 +9,6 @@ export const ManageSoftLiquidation = (params: MarketParams) => {
   const improveHealthTab = useImproveHealthTab(params)
   const closePositionTab = useClosePositionTab(params)
   const actionInfos = useActionInfos(params)
-
   return (
     <ManageSoftLiquidationCard
       actionInfos={actionInfos}
