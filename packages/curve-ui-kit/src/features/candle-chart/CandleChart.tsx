@@ -278,12 +278,7 @@ const CandleChart = ({
     if (!chartContainerRef.current) return
 
     chartRef.current = createChart(chartContainerRef.current, {
-      layout: {
-        background: { type: ColorType.Solid, color: '#ffffff' },
-        textColor: '#000000',
-      },
       timeScale: {
-        timeVisible: true, // Default, will be updated by separate effect
         borderVisible: false,
       },
       rightPriceScale: {
@@ -293,25 +288,6 @@ const CandleChart = ({
         scaleMargins: {
           top: 0.1,
           bottom: 0.1,
-        },
-      },
-      grid: {
-        vertLines: {
-          visible: true,
-          color: '#C3BCDB44',
-        },
-        horzLines: {
-          visible: true,
-          color: '#C3BCDB44',
-        },
-      },
-      crosshair: {
-        mode: CrosshairMode.Normal,
-        vertLine: {
-          width: 4 as LineWidth,
-          color: '#C3BCDB44',
-          style: LineStyle.Solid,
-          labelBackgroundColor: '#9B7DFF', // Default, will be updated by separate effect
         },
       },
     })
@@ -449,14 +425,14 @@ const CandleChart = ({
       priceLinesRef.current = {
         top: series.createPriceLine({
           price: 0,
-          color: appearance.priceLineColorTop ?? '#000000',
+          color: appearance.priceLineColorTop,
           lineWidth: 1,
           lineStyle: LineStyle.LargeDashed,
           axisLabelVisible: true,
         }),
         bottom: series.createPriceLine({
           price: 0,
-          color: appearance.priceLineColorBottom ?? '#000000',
+          color: appearance.priceLineColorBottom,
           lineWidth: 1,
           lineStyle: LineStyle.LargeDashed,
           axisLabelVisible: true,
