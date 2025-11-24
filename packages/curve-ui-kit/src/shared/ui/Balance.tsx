@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
 import type { SvgIcon } from '@mui/material'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -9,6 +8,7 @@ import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { type Amount, formatNumber } from '@ui-kit/utils'
+import { WalletIcon } from '../icons/WalletIcon'
 import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
@@ -70,7 +70,7 @@ export const Balance = <T extends Amount>({
   loading = false,
   usdRate,
   notionalValueUsd = balance && usdRate && usdRate * +balance,
-  prefix: Prefix = AccountBalanceWalletOutlinedIcon,
+  prefix: Prefix = WalletIcon,
   tooltip,
   onClick,
   disabled = false,
