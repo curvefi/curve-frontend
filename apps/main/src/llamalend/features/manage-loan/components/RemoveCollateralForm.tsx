@@ -14,6 +14,8 @@ import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
+import { Balance } from '@ui-kit/shared/ui/Balance'
+import { setValueOptions } from '../../borrow/react-form.utils'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
   market,
@@ -97,9 +99,14 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           testId="remove-collateral-input"
           network={network}
           message={
-            maxRemovable.data && (
-              <FormMessage label={t`Max removable:`} value={maxRemovable.data} symbol={collateralToken?.symbol} />
-            )
+            <Balance
+              prefix={t`Max removable:`}
+              tooltip={t`Max removable`}
+              symbol={collateralToken?.symbol}
+              balance={maxRemovable.data}
+              loading={maxRemovable.isLoading}
+              onClick={() => form.setValue('userCollateral', maxRemovable.data, setValueOptions)}
+            />
           }
         />
       </Stack>

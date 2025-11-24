@@ -3,7 +3,6 @@ import { BorrowPreset } from '@/llamalend/constants'
 import { hasLeverage } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
-import { FormMessage } from '@/llamalend/widgets/manage-loan/FormMessage'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -13,6 +12,7 @@ import Collapse from '@mui/material/Collapse'
 import Stack from '@mui/material/Stack'
 import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
 import { t } from '@ui-kit/lib/i18n'
+import { Balance } from '@ui-kit/shared/ui/Balance'
 import { InputDivider } from '../../../widgets/InputDivider'
 import { useCreateLoanForm } from '../hooks/useCreateLoanForm'
 import { setValueOptions } from '../react-form.utils'
@@ -111,7 +111,14 @@ export const CreateLoanForm = <ChainId extends IChainId>({
           testId="borrow-debt-input"
           network={network}
           message={
-            values.maxDebt && <FormMessage label={t`Max borrow:`} value={values.maxDebt} symbol={borrowToken?.symbol} />
+            <Balance
+              prefix={t`Max borrow:`}
+              tooltip={t`Max borrow`}
+              symbol={borrowToken?.symbol}
+              balance={values.maxDebt}
+              loading={maxTokenValues.debt.isLoading}
+              onClick={() => form.setValue('debt', values.maxDebt, setValueOptions)}
+            />
           }
         />
       </Stack>
