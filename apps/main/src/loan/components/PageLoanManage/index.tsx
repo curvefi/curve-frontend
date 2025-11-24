@@ -14,7 +14,7 @@ import type {
   LoanFormType,
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
-import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import networks from '@/loan/networks'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
