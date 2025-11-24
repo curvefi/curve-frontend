@@ -113,6 +113,7 @@ export const ZeroBalance: Story = {
 
 export const NoBalance: Story = {
   args: {
+    loading: false,
     balance: undefined,
   },
 }

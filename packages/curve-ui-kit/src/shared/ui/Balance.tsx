@@ -67,7 +67,7 @@ export const Balance = <T extends Amount>({
   symbol = '?',
   clickable,
   balance,
-  loading = false,
+  loading = balance == null,
   usdRate,
   notionalValueUsd = balance && usdRate && usdRate * +balance,
   prefix: Prefix = WalletIcon,
