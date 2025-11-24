@@ -9,32 +9,31 @@ type EstimatedGasValue = number | number[] | null | undefined
 
 export type GasEstimateConversionResult = ReturnType<typeof calculateGas>
 
-export const useEstimateGas = <
-  ChainId extends IChainId,
-  TEstimates extends Record<string, EstimatedGasValue> | undefined,
->(
+export const useEstimateGas = <ChainId extends IChainId>(
   networks: NetworkDict<ChainId>,
   chainId: ChainId | null | undefined,
-  estimates: TEstimates,
+  estimate: EstimatedGasValue,
   enabled?: boolean,
 ) => {
   const network = chainId && networks[chainId]
-  const { data: ethRate, isLoading: ethRateLoading } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
-  const { data: gasInfo, isLoading: gasInfoLoading } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
+  const {
+    data: ethRate,
+    isLoading: ethRateLoading,
+    error: ethRateError,
+  } = useTokenUsdRate({ chainId, tokenAddress: ethAddress }, enabled)
+  const {
+    data: gasInfo,
+    isLoading: gasInfoLoading,
+    error: gasInfoError,
+  } = useGasInfoAndUpdateLib<ChainId>({ chainId, networks }, enabled)
 
   const data = useMemo(() => {
-    if (!network || !estimates) {
-      return {} as { [K in keyof NonNullable<TEstimates>]?: GasEstimateConversionResult }
+    if (!network || estimate == null) {
+      return undefined as GasEstimateConversionResult | undefined
     }
 
-    const entries = Object.entries(estimates as Record<string, EstimatedGasValue>).map(([key, value]) => [
-      key,
-      calculateGas(value, gasInfo, ethRate, network),
-    ])
-    return Object.fromEntries(entries) as {
-      [K in keyof NonNullable<TEstimates>]?: GasEstimateConversionResult
-    }
-  }, [estimates, network, gasInfo, ethRate])
+    return calculateGas(estimate, gasInfo, ethRate, network)
+  }, [estimate, network, gasInfo, ethRate])
 
-  return { data, isLoading: ethRateLoading || gasInfoLoading }
+  return { data, isLoading: ethRateLoading || gasInfoLoading, error: ethRateError ?? gasInfoError }
 }

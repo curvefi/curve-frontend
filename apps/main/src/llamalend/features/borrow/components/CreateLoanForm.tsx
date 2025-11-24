@@ -1,0 +1,166 @@
+import { useCallback, useEffect } from 'react'
+import { BorrowPreset } from '@/llamalend/constants'
+import { hasLeverage } from '@/llamalend/llama.utils'
+import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
+import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
+import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
+import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
+import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
+import Button from '@mui/material/Button'
+import Collapse from '@mui/material/Collapse'
+import Stack from '@mui/material/Stack'
+import { useBorrowPreset } from '@ui-kit/hooks/useLocalStorage'
+import { t } from '@ui-kit/lib/i18n'
+import { InputDivider } from '../../../widgets/InputDivider'
+import { setValueOptions } from '../react-form.utils'
+import { type BorrowFormExternalFields, type OnBorrowFormUpdate } from '../types'
+import { useBorrowForm } from '../useBorrowForm'
+import { AdvancedBorrowOptions } from './AdvancedBorrowOptions'
+import { CreateLoanInfoAccordion } from './CreateLoanInfoAccordion'
+import { LeverageInput } from './LeverageInput'
+import { LoanPresetSelector } from './LoanPresetSelector'
+
+/**
+ * Hook to call the parent form to keep in sync with the chart and other components
+ */
+function useFormSync(
+  { userCollateral, range, debt, userBorrowed, slippage, leverageEnabled }: BorrowFormExternalFields,
+  onUpdate: OnBorrowFormUpdate,
+) {
+  useEffect(() => {
+    void onUpdate({ userCollateral, debt, range, userBorrowed, slippage, leverageEnabled })
+  }, [onUpdate, userCollateral, debt, range, userBorrowed, slippage, leverageEnabled])
+}
+
+/**
+ * The form contents for the create loan tab.
+ * @param market The market to create a loan.
+ * @param network The network configuration.
+ * @param onUpdate Callback to set the form values, so it's in sync with the ChartOhlc component.
+ */
+export const CreateLoanForm = <ChainId extends IChainId>({
+  market,
+  networks,
+  chainId,
+  onUpdate,
+  onCreated,
+}: {
+  market: LlamaMarketTemplate | undefined
+  networks: NetworkDict<ChainId>
+  chainId: ChainId
+  onUpdate: OnBorrowFormUpdate
+  onCreated: CreateLoanOptions['onCreated']
+}) => {
+  const network = networks[chainId]
+  const [preset, setPreset] = useBorrowPreset<BorrowPreset>(BorrowPreset.Safe)
+  const {
+    values,
+    onSubmit,
+    isPending,
+    maxTokenValues,
+    params,
+    form,
+    collateralToken,
+    borrowToken,
+    isCreated,
+    creationError,
+    txHash,
+    formErrors,
+    tooMuchDebt,
+    isApproved,
+  } = useBorrowForm({ market, network, preset, onCreated })
+  const setRange = useCallback((range: number) => form.setValue('range', range, setValueOptions), [form])
+  useFormSync(values, onUpdate)
+
+  return (
+    <LoanFormWrapper
+      {...form}
+      onSubmit={onSubmit}
+      infoAccordion={
+        <CreateLoanInfoAccordion
+          params={params}
+          values={values}
+          collateralToken={collateralToken}
+          borrowToken={borrowToken}
+          tooMuchDebt={tooMuchDebt}
+          networks={networks}
+          onSlippageChange={(value) => form.setValue('slippage', value, setValueOptions)}
+        />
+      }
+    >
+      <Stack divider={<InputDivider />}>
+        <LoanFormTokenInput
+          label={t`Collateral`}
+          token={collateralToken}
+          blockchainId={network.id}
+          name="userCollateral"
+          form={form}
+          isLoading={maxTokenValues.isCollateralLoading}
+          isError={maxTokenValues.isCollateralError}
+          max={values.maxCollateral}
+          testId="borrow-collateral-input"
+          network={network}
+          maxFieldName="maxCollateral"
+        />
+        <LoanFormTokenInput
+          label={t`Borrow`}
+          token={borrowToken}
+          blockchainId={network.id}
+          name="debt"
+          form={form}
+          isLoading={maxTokenValues.isDebtLoading}
+          isError={maxTokenValues.isDebtError}
+          max={values.maxDebt}
+          testId="borrow-debt-input"
+          network={network}
+          maxFieldName="maxDebt"
+        />
+      </Stack>
+
+      {market && hasLeverage(market) && (
+        <LeverageInput
+          leverageEnabled={values.leverageEnabled}
+          form={form}
+          params={params}
+          maxLeverage={maxTokenValues.maxLeverage}
+          isError={maxTokenValues.isLeverageError}
+          isLoading={maxTokenValues.isLeverageLoading}
+        />
+      )}
+
+      <LoanPresetSelector preset={preset} setPreset={setPreset} setRange={setRange}>
+        <Collapse in={preset === BorrowPreset.Custom}>
+          <AdvancedBorrowOptions
+            market={market}
+            values={values}
+            params={params}
+            setRange={setRange}
+            network={network.id}
+            collateralToken={collateralToken}
+            borrowToken={borrowToken}
+          />
+        </Collapse>
+      </LoanPresetSelector>
+
+      <Button
+        type="submit"
+        loading={isPending || !market}
+        disabled={formErrors.length > 0}
+        data-testid="create-loan-submit-button"
+      >
+        {isPending ? t`Processing...` : isApproved?.data ? t`Borrow` : t`Approve & Borrow`}
+      </Button>
+
+      <LoanFormAlerts
+        isSuccess={isCreated}
+        error={creationError}
+        formErrors={formErrors}
+        network={network}
+        txHash={txHash}
+        handledErrors={['userCollateral', 'debt', 'maxDebt']}
+        successTitle={t`Loan created`}
+      />
+    </LoanFormWrapper>
+  )
+}
