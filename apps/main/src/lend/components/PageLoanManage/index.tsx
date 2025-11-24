@@ -5,11 +5,16 @@ import LoanCollateralRemove from '@/lend/components/PageLoanManage/LoanCollatera
 import LoanRepay from '@/lend/components/PageLoanManage/LoanRepay'
 import LoanSelfLiquidation from '@/lend/components/PageLoanManage/LoanSelfLiquidation'
 import type { CollateralFormType, LeverageFormType, LoanFormType } from '@/lend/components/PageLoanManage/types'
+import networks from '@/lend/networks'
 import { type MarketUrlParams, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
+import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
+import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
+import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useManageLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -28,8 +33,10 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
 ]
 
 const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
-  const { rOwmId, rFormType, market, params } = pageProps
+  const { rChainId, rOwmId, rFormType, market, params, isLoaded } = pageProps
   const push = useNavigate()
+  const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
+  const useMuiForm = shouldUseManageLoanMuiForm && !!market
 
   type Tab = 'loan' | 'collateral' | 'leverage'
   const tabs: TabOption<Tab>[] = useMemo(
@@ -65,26 +72,84 @@ const ManageLoan = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         onChange={(key) => push(getLoanManagePathname(params, rOwmId, key))}
         options={tabs}
       />
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <TabsSwitcher
-          variant="underlined"
-          size="small"
-          value={subTab}
-          onChange={setSubTab}
-          options={subTabs}
-          fullWidth
-        />
+      {useMuiForm ? (
+        <>
+          <TabsSwitcher
+            variant="underlined"
+            size="small"
+            value={subTab}
+            onChange={setSubTab}
+            options={subTabs}
+            fullWidth
+          />
 
-        <AppFormContentWrapper>
-          {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
-          {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+          {subTab === 'loan-increase' && (
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <AppFormContentWrapper>
+                <LoanBorrowMore {...pageProps} />
+              </AppFormContentWrapper>
+            </Stack>
+          )}
+          {subTab === 'loan-decrease' && market && (
+            <RepayForm
+              networks={networks}
+              chainId={rChainId}
+              market={market}
+              enabled={isLoaded}
+              // No extra side effects required for legacy store; llamalend hooks handle cache invalidation.
+              onRepaid={async () => {}}
+            />
+          )}
           {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
-          {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
-          {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+          {subTab === 'collateral-increase' && market && (
+            <AddCollateralForm
+              networks={networks}
+              chainId={rChainId}
+              market={market}
+              enabled={isLoaded}
+              onAdded={async () => {}}
+            />
+          )}
+          {subTab === 'collateral-decrease' && market && (
+            <RemoveCollateralForm
+              networks={networks}
+              chainId={rChainId}
+              market={market}
+              enabled={isLoaded}
+              onRemoved={async () => {}}
+            />
+          )}
           {/** Leverage has no subtabs */}
-          {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
-        </AppFormContentWrapper>
-      </Stack>
+          {rFormType === 'leverage' && (
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <AppFormContentWrapper>
+                <LoanBorrowMore isLeverage {...pageProps} />
+              </AppFormContentWrapper>
+            </Stack>
+          )}
+        </>
+      ) : (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <TabsSwitcher
+            variant="underlined"
+            size="small"
+            value={subTab}
+            onChange={setSubTab}
+            options={subTabs}
+            fullWidth
+          />
+
+          <AppFormContentWrapper>
+            {subTab === 'loan-increase' && <LoanBorrowMore {...pageProps} />}
+            {subTab === 'loan-decrease' && <LoanRepay {...pageProps} />}
+            {subTab === 'loan-liquidate' && <LoanSelfLiquidation {...pageProps} />}
+            {subTab === 'collateral-increase' && <LoanCollateralAdd {...pageProps} />}
+            {subTab === 'collateral-decrease' && <LoanCollateralRemove {...pageProps} />}
+            {/** Leverage has no subtabs */}
+            {rFormType === 'leverage' && <LoanBorrowMore isLeverage {...pageProps} />}
+          </AppFormContentWrapper>
+        </Stack>
+      )}
     </Stack>
   )
 }

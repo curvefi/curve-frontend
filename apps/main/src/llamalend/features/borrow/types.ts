@@ -6,7 +6,7 @@ import type { MakeOptional } from '@ui-kit/types/util'
 import { Decimal } from '@ui-kit/utils'
 
 /** Complete borrow creation form with all fields already filled in (after validation) */
-export type CompleteBorrowForm = {
+type CompleteBorrowForm = {
   userCollateral: Decimal
   userBorrowed: Decimal // currently hidden and always 0
   debt: Decimal
@@ -33,5 +33,3 @@ export type BorrowFormQueryParams<T = IChainId> = FieldsOf<BorrowFormQuery<T>>
 
 /** A simple token representation */
 export type Token = { symbol: string; address: Address }
-
-export type BorrowFormErrors = (readonly [keyof BorrowForm | 'root', string])[]

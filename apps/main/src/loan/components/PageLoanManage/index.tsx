@@ -1,4 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
+import { AddCollateralForm } from '@/llamalend/features/manage-loan/components/AddCollateralForm'
+import { RemoveCollateralForm } from '@/llamalend/features/manage-loan/components/RemoveCollateralForm'
+import { RepayForm } from '@/llamalend/features/manage-loan/components/RepayForm'
 import CollateralDecrease from '@/loan/components/PageLoanManage/CollateralDecrease'
 import CollateralIncrease from '@/loan/components/PageLoanManage/CollateralIncrease'
 import LoanDecrease from '@/loan/components/PageLoanManage/LoanDecrease'
@@ -12,10 +15,12 @@ import type {
   PageLoanManageProps,
 } from '@/loan/components/PageLoanManage/types'
 import { hasDeleverage } from '@/loan/utils/leverage'
+import networks from '@/loan/networks'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
+import { useManageLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -37,6 +42,8 @@ const tabsCollateral: TabOption<CollateralFormType>[] = [
 
 const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rCollateralId, rFormType }: Props) => {
   const push = useNavigate()
+  const shouldUseManageLoanMuiForm = useManageLoanMuiForm()
+  const useMuiForm = shouldUseManageLoanMuiForm && !!llamma
 
   type Tab = 'loan' | 'collateral' | 'deleverage'
   const tabs: TabOption<Tab>[] = [
@@ -71,26 +78,77 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
         options={tabs}
       />
 
-      <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
-        <TabsSwitcher
-          variant="underlined"
-          size="small"
-          value={subTab}
-          onChange={setSubTab}
-          options={subTabs}
-          fullWidth
-        />
+      {useMuiForm ? (
+        <>
+          <TabsSwitcher
+            variant="underlined"
+            size="small"
+            value={subTab}
+            onChange={setSubTab}
+            options={subTabs}
+            fullWidth
+          />
 
-        <AppFormContentWrapper>
-          {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
-          {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
+          {subTab === 'loan-increase' && (
+            <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+              <AppFormContentWrapper>
+                <LoanIncrease {...formProps} />
+              </AppFormContentWrapper>
+            </Stack>
+          )}
+          {subTab === 'loan-decrease' && llamma && (
+            <RepayForm
+              networks={networks}
+              chainId={rChainId}
+              market={llamma}
+              enabled={isReady}
+              onRepaid={async () => {}}
+            />
+          )}
           {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
-          {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
-          {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
+          {subTab === 'collateral-increase' && llamma && (
+            <AddCollateralForm
+              networks={networks}
+              chainId={rChainId}
+              market={llamma}
+              enabled={isReady}
+              onAdded={async () => {}}
+            />
+          )}
+          {subTab === 'collateral-decrease' && llamma && (
+            <RemoveCollateralForm
+              networks={networks}
+              chainId={rChainId}
+              market={llamma}
+              enabled={isReady}
+              onRemoved={async () => {}}
+            />
+          )}
           {/** Deleverage has no subtabs */}
           {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
-        </AppFormContentWrapper>
-      </Stack>
+        </>
+      ) : (
+        <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
+          <TabsSwitcher
+            variant="underlined"
+            size="small"
+            value={subTab}
+            onChange={setSubTab}
+            options={subTabs}
+            fullWidth
+          />
+
+          <AppFormContentWrapper>
+            {subTab === 'loan-increase' && <LoanIncrease {...formProps} />}
+            {subTab === 'loan-decrease' && <LoanDecrease {...formProps} params={params} />}
+            {subTab === 'loan-liquidate' && <LoanLiquidate {...formProps} params={params} />}
+            {subTab === 'collateral-increase' && <CollateralIncrease {...formProps} />}
+            {subTab === 'collateral-decrease' && <CollateralDecrease {...formProps} />}
+            {/** Deleverage has no subtabs */}
+            {rFormType === 'deleverage' && <LoanDeleverage {...formProps} params={params} />}
+          </AppFormContentWrapper>
+        </Stack>
+      )}
     </Stack>
   )
 }
