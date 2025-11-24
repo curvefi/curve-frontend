@@ -19,10 +19,6 @@ const meta: Meta<typeof Balance> = {
       control: 'number',
       description: 'The USD price of the token',
     },
-    clickable: {
-      control: 'boolean',
-      description: 'The max button mode',
-    },
     disabled: {
       control: 'boolean',
       description: 'Whether the clickable balance is disabled',
@@ -47,11 +43,10 @@ const meta: Meta<typeof Balance> = {
   args: {
     symbol: 'ETH',
     balance: 1.234,
-    clickable: false,
     disabled: false,
     prefix: undefined,
     tooltip: undefined,
-    onClick: fn(),
+    onClick: undefined,
   },
 }
 
@@ -76,13 +71,13 @@ export const WithNotionalValue: Story = {
 
 export const Clickable: Story = {
   args: {
-    clickable: true,
+    onClick: fn(),
   },
 }
 
 export const ClickableButDisabled: Story = {
   args: {
-    clickable: true,
+    onClick: fn(),
     disabled: true,
   },
 }

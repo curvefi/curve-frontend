@@ -45,8 +45,6 @@ const BalanceButton = ({
 export type Props<T> = {
   /** The token symbol to display */
   symbol: string | undefined
-  /** Whether the balance is clickable or not */
-  clickable?: boolean
   /** The token balance amount (optional, in case of loading) */
   balance?: T
   /** The USD price of the token (optional, only used when notionalValueUsd is omitted) */
@@ -69,7 +67,6 @@ export type Props<T> = {
 
 export const Balance = <T extends Amount>({
   symbol = '?',
-  clickable,
   balance,
   loading = balance == null,
   usdRate,
@@ -82,7 +79,7 @@ export const Balance = <T extends Amount>({
 }: Props<T>) => (
   <WithWrapper
     Wrapper={BalanceButton}
-    shouldWrap={clickable && balance != null}
+    shouldWrap={onClick && balance != null}
     onClick={onClick}
     disabled={disabled}
     testId={buttonTestId}

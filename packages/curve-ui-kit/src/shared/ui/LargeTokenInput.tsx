@@ -414,7 +414,7 @@ export const LargeTokenInput = ({
               </Typography>
             )}
 
-            {walletBalance && <Balance disabled={disabled} clickable {...walletBalance} onClick={onWalletBalance} />}
+            {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
           </Stack>
         )}
 
