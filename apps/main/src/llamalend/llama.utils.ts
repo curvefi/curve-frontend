@@ -107,7 +107,7 @@ export const updateUserEventsApi = (
  * a small threshold. This prevents trivial dust amounts from triggering the UI.
  *
  * If somebody wants to tackle this properly, they can find the bot code here:
- * https://github.com/curvefi/dust-cleaner-bot/blob/master/app/services/controller.py#L90
+ * https://github.com/curvefi/dust-cleaner-bot/blob/0795b2fa/app/services/controller.py#L90
  */
 const SOFT_LIQUIDATION_DUST_THRESHOLD = 0.1
 
