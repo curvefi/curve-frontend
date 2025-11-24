@@ -24,7 +24,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         },
         {
           "address": "0x100dAa78fC509Db39Ef7D04DE0c1ABD299f4C6CE",
@@ -47,7 +48,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         },
         {
           "address": "0x4e59541306910aD6dC1daC0AC9dFB29bD9F15c67",
@@ -70,7 +72,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         },
         {
           "address": "0xA920De414eA4Ab66b97dA1bFE9e6EcA7d4219635",
@@ -93,7 +96,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         },
         {
           "address": "0xEC0820EfafC41D8943EE8dE495fC9Ba8495B15cf",
@@ -116,7 +120,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         },
         {
           "address": "0x1C91da0223c763d2e0173243eAdaA0A2ea47E704",
@@ -139,7 +144,8 @@
           "stablecoin_token": {
             "symbol": "crvUSD",
             "address": "0xf939E0A03FB07F59A73314E73794Be0E57ac1b4E"
-          }
+          },
+          "created_at": "2025-01-01T00:00:00.000Z"
         }
       ]
     }

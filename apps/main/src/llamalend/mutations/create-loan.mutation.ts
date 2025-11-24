@@ -12,8 +12,8 @@ import type {
 } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
-import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { rootKeys } from '@ui-kit/lib/model'
 import { Address, waitForApproval } from '@ui-kit/utils'
 import type { BorrowForm, BorrowFormQuery } from '../features/borrow/types'
 
@@ -26,9 +26,10 @@ export type BorrowMutation = Omit<BorrowFormQuery, keyof BorrowMutationContext>
 
 export type CreateLoanOptions = {
   marketId: string | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onCreated: LlammaMutationOptions<BorrowMutation>['onSuccess']
   onReset: () => void
+  userAddress: Address | undefined
 }
 
 const approve = async (
@@ -54,15 +55,20 @@ const create = async (
   return (await parent.createLoan(userCollateral, debt, range, +slippage)) as Address
 }
 
-export const useCreateLoanMutation = ({ network, marketId, onCreated, onReset }: CreateLoanOptions) => {
+export const useCreateLoanMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  onCreated,
+  onReset,
+  userAddress,
+}: CreateLoanOptions) => {
   const config = useConfig()
-  const { chainId } = network
-  const mutationKey = ['create-loan', { chainId, marketId }] as const
 
   const { mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<BorrowMutation>({
     network,
     marketId,
-    mutationKey,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'create-loan'] as const,
     mutationFn: async (mutation, { market }) => {
       const params = { ...mutation, chainId, marketId }
       await waitForApproval({
