@@ -79,7 +79,7 @@ export const Balance = <T extends Amount>({
 }: Props<T>) => (
   <WithWrapper
     Wrapper={BalanceButton}
-    shouldWrap={onClick && balance != null}
+    shouldWrap={onClick && balance != null && !loading}
     onClick={onClick}
     disabled={disabled}
     testId={buttonTestId}
