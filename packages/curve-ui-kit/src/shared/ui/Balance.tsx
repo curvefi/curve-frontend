@@ -109,7 +109,7 @@ export const Balance = <T extends Amount>({
             color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
             data-testid="balance-value"
           >
-            {balance == null ? '-' : loading ? '???' : formatNumber(balance, { abbreviate: true })}
+            {loading ? '???' : balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
           </Typography>
         </WithSkeleton>
 
