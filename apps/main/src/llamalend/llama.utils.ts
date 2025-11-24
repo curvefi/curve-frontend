@@ -160,6 +160,9 @@ export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }
 
+// There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
+// I only want to move code, not change. At least they're neatly in the same place now.
+
 export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
   const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)
   const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
