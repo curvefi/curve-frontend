@@ -1,5 +1,5 @@
 import { styled } from 'styled-components'
-import { CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
+import { STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import {
   CategoryColumn,
   SummaryData,
@@ -27,7 +27,7 @@ const PoolTypeSummary = () => {
           <SummaryDataPlaceholder>{t`No pool type selected`}</SummaryDataPlaceholder>
         ) : (
           <SummaryData>
-            {swapType === CRYPTOSWAP ? t`Cryptoswap` : t`Stableswap${metaPoolToken ? '-Meta' : ''}`}
+            {swapType === STABLESWAP ? t`${swapType}${metaPoolToken ? '-Meta' : ''}` : swapType}
           </SummaryData>
         )}
       </Box>
