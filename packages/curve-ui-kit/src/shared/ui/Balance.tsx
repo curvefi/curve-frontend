@@ -13,6 +13,16 @@ import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
+/**
+ * The following property is required on all typography to properly vertically align it with the icon.
+ * I haven't been able to find a different solution to this re-occuring problem in other components too,
+ * other than resetting the default line-height. Perhaps the default line-heigt works for most use-cases,
+ * but it breaks down when you're trying to align things pixel-perfectly in smaller spaces.
+ */
+const CENTER_TEXT = {
+  '&': { lineHeight: '1rem' },
+} as const
+
 type BalanceButtonProps = {
   children: ReactNode
   onClick?: () => void
@@ -53,11 +63,12 @@ const BalanceText = <T extends Amount>({ symbol, balance, disabled = false, load
           variant="highlightXs"
           color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
           data-testid="balance-value"
+          sx={CENTER_TEXT}
         >
           {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
         </Typography>
 
-        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'}>
+        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'} sx={CENTER_TEXT}>
           {symbol}
         </Typography>
       </Stack>
@@ -103,9 +114,9 @@ export const Balance = <T extends Amount>({
   disabled,
   buttonTestId,
 }: Props<T>) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
+  <Stack direction="row" gap={Spacing.xs} alignItems="stretch" sx={sx}>
     {typeof Prefix === 'string' ? (
-      <Typography variant="bodyXsRegular" color="textTertiary">
+      <Typography variant="bodyXsRegular" color="textTertiary" sx={CENTER_TEXT}>
         {Prefix}
       </Typography>
     ) : (
@@ -131,7 +142,7 @@ export const Balance = <T extends Amount>({
     </WithWrapper>
 
     {notionalValueUsd != null && !loading && (
-      <Typography variant="bodyXsRegular" color="textTertiary">
+      <Typography variant="bodyXsRegular" color="textTertiary" sx={CENTER_TEXT}>
         {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
       </Typography>
     )}
