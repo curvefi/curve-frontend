@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import type { Hex } from 'viem'
+import type { Address, Hex } from 'viem'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
 import {
@@ -8,25 +8,32 @@ import {
 } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
-import type { BaseConfig } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { rootKeys } from '@ui-kit/lib/model'
 import type { Decimal } from '@ui-kit/utils'
 
 type RepayMutation = { stateCollateral: Decimal; userCollateral: Decimal; userBorrowed: Decimal }
 
 export type RepayOptions = {
   marketId: string | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
   onRepaid: LlammaMutationOptions<RepayMutation>['onSuccess']
   onReset?: () => void
+  userAddress: Address | undefined
 }
 
-export const useRepayMutation = ({ network, marketId, onRepaid, onReset }: RepayOptions) => {
-  const { chainId } = network
+export const useRepayMutation = ({
+  network,
+  network: { chainId },
+  marketId,
+  onRepaid,
+  onReset,
+  userAddress,
+}: RepayOptions) => {
   const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useLlammaMutation<RepayMutation>({
     network,
     marketId,
-    mutationKey: ['manage-loan', 'repay', { chainId, marketId }] as const,
+    mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'repay'] as const,
     mutationFn: async ({ userCollateral, userBorrowed, stateCollateral }, { market }) => ({
       hash:
         market instanceof LendMarketTemplate

@@ -18,7 +18,6 @@ import type { RepayFromCollateralParams } from '@/llamalend/queries/validation/m
 import { repayFormValidationSuite, type RepayForm } from '@/llamalend/queries/validation/manage-loan.validation'
 import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { useFormErrors } from '../../borrow/react-form.utils'
@@ -34,7 +33,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
   onRepaid,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<NetworkName, ChainId>
+  network: { id: LlamaNetworkId; chainId: ChainId }
   networks: NetworkDict<ChainId>
   enabled?: boolean
   onRepaid: NonNullable<RepayOptions['onRepaid']>
@@ -74,7 +73,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     ),
   )
 
-  const { onSubmit, ...action } = useRepayMutation({ network, marketId, onRepaid, onReset: form.reset })
+  const { onSubmit, ...action } = useRepayMutation({ network, marketId, onRepaid, onReset: form.reset, userAddress })
 
   useCallbackAfterFormUpdate(form, action.reset)
 

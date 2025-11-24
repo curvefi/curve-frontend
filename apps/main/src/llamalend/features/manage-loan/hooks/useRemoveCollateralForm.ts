@@ -75,7 +75,13 @@ export const useRemoveCollateralForm = <
     ),
   )
 
-  const { onSubmit, ...action } = useRemoveCollateralMutation({ marketId, network, onRemoved, onReset: form.reset })
+  const { onSubmit, ...action } = useRemoveCollateralMutation({
+    marketId,
+    network,
+    onRemoved,
+    onReset: form.reset,
+    userAddress,
+  })
 
   useCallbackAfterFormUpdate(form, action.reset)
 
