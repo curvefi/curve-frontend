@@ -13,16 +13,20 @@ import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
 
-type BalanceButtonProps = {
+/** Button wrapper for clickable balance text */
+const BalanceButton = ({
+  children,
+  onClick,
+  loading,
+  disabled,
+  testId,
+}: {
   children: ReactNode
   onClick?: () => void
   loading?: boolean
   disabled?: boolean
   testId?: string
-}
-
-/** Button wrapper for clickable balance text */
-const BalanceButton = ({ children, onClick, loading, disabled, testId }: BalanceButtonProps) => (
+}) => (
   <Button
     variant="inline"
     color="ghost"
