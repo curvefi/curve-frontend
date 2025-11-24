@@ -57,7 +57,7 @@ const oneLendingPool = (chain: Chain, utilization: number): GetMarketsResponse['
     collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
     borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
     extra_reward_apr: [],
-    created_at: oneDate().toString(),
+    created_at: oneDate().toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }
