@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
-import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { ManageSoftLiquidation } from '@/llamalend/features/manage-soft-liquidation'
 import networks from '@/loan/networks'
-import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, forkVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { LlamalendComponentWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { forkVirtualTestnet } from '@cy/support/helpers/tenderly'
 import Skeleton from '@mui/material/Skeleton'
-import { ConnectionProvider, useConnection } from '@ui-kit/features/connect-wallet'
+import { useConnection } from '@ui-kit/features/connect-wallet'
 import { Chain } from '@ui-kit/utils'
 
 describe('Manage soft liquidation', () => {
@@ -29,16 +28,9 @@ describe('Manage soft liquidation', () => {
   }
 
   const TestComponentWrapper = () => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
-      <ConnectionProvider
-        app="llamalend"
-        network={network}
-        onChainUnavailable={console.error}
-        hydrate={{ llamalend: () => prefetchMarkets({}) }}
-      >
-        <TestComponent />
-      </ConnectionProvider>
-    </ComponentTestWrapper>
+    <LlamalendComponentWrapper network={network} wagmi={{ vnet: getVirtualNetwork(), privateKey }}>
+      <TestComponent />
+    </LlamalendComponentWrapper>
   )
 
   beforeEach(() => {

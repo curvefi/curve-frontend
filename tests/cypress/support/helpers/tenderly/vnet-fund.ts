@@ -1,6 +1,8 @@
 import type { Hex } from 'viem'
 import { oneInt } from '@cy/support/generators'
 
+const thousandEthInWei = '0x3635c9adc5dea00000' // 1000 ETH in wei
+
 /**
  * Funds ETH to multiple addresses in a Tenderly virtual testnet.
  * @param adminRpcUrl Admin RPC URL of the Tenderly virtual testnet
@@ -10,11 +12,11 @@ import { oneInt } from '@cy/support/generators'
 export const fundEth = ({
   adminRpcUrl,
   recipientAddresses,
-  amountWei,
+  amountWei = thousandEthInWei,
 }: {
   adminRpcUrl: string
   recipientAddresses: Hex[]
-  amountWei: Hex
+  amountWei?: Hex
 }) =>
   cy.request({
     method: 'POST',
@@ -39,12 +41,12 @@ export const fundErc20 = ({
   adminRpcUrl,
   tokenAddress,
   recipientAddresses,
-  amountWei,
+  amountWei = thousandEthInWei,
 }: {
   adminRpcUrl: string
   tokenAddress: Hex
   recipientAddresses: Hex[]
-  amountWei: Hex
+  amountWei?: Hex
 }) =>
   cy.request({
     method: 'POST',
