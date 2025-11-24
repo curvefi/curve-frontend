@@ -9,7 +9,7 @@ export const DEFAULT_BORROW_TOKEN_SYMBOL = 'crvUSD' as const
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  borrowedTokenSymbol: string | undefined,
+  borrowedTokenSymbol: string | undefined = '',
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],
@@ -41,9 +41,9 @@ export function getHealthMode(
         if (formType === 'collateral-decrease') {
           message = t`Removing ${formattedAmount} collateral, will put you close to soft liquidation.`
         } else if (formType === 'create-loan') {
-          message = t`Borrowing ${formattedAmount} ${borrowedTokenSymbol || ''} will put you close to soft liquidation.`
+          message = t`Borrowing ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         } else {
-          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedTokenSymbol || ''} will put you close to soft liquidation.`
+          message = t`Increasing your borrowed amount by ${formattedAmount} ${borrowedTokenSymbol} will put you close to soft liquidation.`
         }
       }
     }
