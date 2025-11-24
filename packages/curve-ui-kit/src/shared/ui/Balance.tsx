@@ -49,7 +49,7 @@ export type Props<T> = {
   usdRate?: number
   /** The USD value of the balance (optional, replaces the calculated value with usdRate) */
   notionalValueUsd?: T | number
-  /** Prefix before balance: ReactNode (defaults to wallet icon), string for label, or null for nothing */
+  /** Prefix before balance. SvgIcon (defaults to wallet icon), string for label, or null for nothing */
   prefix?: string | typeof SvgIcon | null
   /** Custom tooltip title, defaults to 'Wallet balance' which is most this component's use cases */
   tooltip?: string
