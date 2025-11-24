@@ -69,9 +69,8 @@ describe('BorrowTabContents Component Tests', () => {
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
     slug: `borrow-tab-${uuid}`,
     display_name: `BorrowTab (${uuid})`,
-    fork_config: {
-      block_number: '23039344',
-    },
+    // calldata is created by Odos, which uses the real mainnet state. Fork isn't fully synced, but the chance of reverts is smaller this way
+    fork_config: { block_number: 'latest' },
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
