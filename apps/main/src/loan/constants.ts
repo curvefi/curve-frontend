@@ -37,3 +37,11 @@ export const DEFAULT_WALLET_BALANCES: UserWalletBalances = {
   collateral: '0',
   error: '',
 }
+
+export enum RouteAggregator {
+  Odos = 'odos',
+}
+
+export const ROUTE_AGGREGATOR_LABELS: Record<RouteAggregator, string> = {
+  [RouteAggregator.Odos]: 'Odos',
+}

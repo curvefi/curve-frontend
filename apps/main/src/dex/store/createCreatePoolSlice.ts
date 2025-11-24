@@ -7,6 +7,7 @@ import {
   CRYPTOSWAP,
   POOL_PRESETS,
   STABLESWAP,
+  FXSWAP,
   TOKEN_A,
   TOKEN_B,
   TOKEN_C,
@@ -20,6 +21,7 @@ import { CreateToken, NgAssetType, SwapType, TokenId, TokenState } from '@/dex/c
 import { isTricrypto } from '@/dex/components/PageCreatePool/utils'
 import type { State } from '@/dex/store/useStore'
 import { ChainId, CurveApi } from '@/dex/types/main.types'
+import { TwoCryptoImplementation } from '@curvefi/api/lib/constants/twoCryptoImplementations'
 import { scanTxPath } from '@ui/utils'
 import { notify } from '@ui-kit/features/connect-wallet'
 import { t } from '@ui-kit/lib/i18n'
@@ -786,7 +788,87 @@ const createCreatePoolSlice = (
       )
 
       const networks = await fetchNetworks()
-      if (swapType === CRYPTOSWAP) {
+      if (swapType === FXSWAP) {
+        // ----- FXSWAP -----
+        const coins = [tokenA.address, tokenB.address]
+
+        try {
+          const maExpTime = Math.round(+maHalfTime / 0.693)
+
+          const deployPoolTx = await curve.twocryptoFactory.deployPool(
+            poolName,
+            poolSymbol,
+            coins,
+            cryptoA,
+            gamma,
+            midFee,
+            outFee,
+            allowedExtraProfit,
+            feeGamma,
+            adjustmentStep,
+            maExpTime,
+            initialPrice.initialPrice[0],
+            TwoCryptoImplementation.FX_REGULAR_50_PERCENT,
+          )
+
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'LOADING'
+              state.createPool.transactionState.transaction = deployPoolTx
+              state.createPool.transactionState.txLink = scanTxPath(networks[chainId], deployPoolTx.hash)
+            }),
+          )
+
+          // set up deploying message
+          dismissConfirm()
+          const deployingNotificationMessage = t`Deploying pool ${poolName}...`
+          const { dismiss: dismissDeploying } = notify(deployingNotificationMessage, 'pending')
+          dismissNotificationHandler = dismissDeploying
+
+          const poolAddress = await curve.twocryptoFactory.getDeployedPoolAddress(deployPoolTx)
+          // deploy pool tx success
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'SUCCESS'
+              state.createPool.transactionState.txSuccess = true
+              state.createPool.transactionState.fetchPoolStatus = 'LOADING'
+              state.createPool.transactionState.poolAddress = poolAddress
+            }),
+          )
+
+          // set up success message
+          dismissDeploying()
+          const successNotificationMessage = t`Pool ${poolName} deployment successful.`
+          notify(successNotificationMessage, 'success', 15000)
+
+          const poolId = await curve.twocryptoFactory.fetchRecentlyDeployedPool(poolAddress)
+          set(
+            produce((state) => {
+              state.createPool.transactionState.poolId = poolId
+            }),
+          )
+
+          const poolData = await fetchNewPool(curve, poolId)
+          if (poolData) {
+            set(
+              produce((state) => {
+                state.createPool.transactionState.fetchPoolStatus = 'SUCCESS'
+                state.createPool.transactionState.lpTokenAddress = poolData.pool.lpToken
+              }),
+            )
+          }
+        } catch (error) {
+          if (typeof dismissNotificationHandler === 'function') {
+            dismissNotificationHandler()
+          }
+          set(
+            produce((state) => {
+              state.createPool.transactionState.txStatus = 'ERROR'
+              state.createPool.transactionState.errorMessage = error.message
+            }),
+          )
+        }
+      } else if (swapType === CRYPTOSWAP) {
         // ----- TRICRYPTO -----
         if (isTricrypto(networks[chainId].tricryptoFactory, tokenAmount, tokenA, tokenB, tokenC)) {
           const coins = [tokenA.address, tokenB.address, tokenC.address]

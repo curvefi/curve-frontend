@@ -1,5 +1,5 @@
 import { isAddress } from 'viem'
-import { STABLESWAP, CRYPTOSWAP } from '@/dex/components/PageCreatePool/constants'
+import { STABLESWAP, CRYPTOSWAP, FXSWAP } from '@/dex/components/PageCreatePool/constants'
 import type { SwapType, TokenState } from '@/dex/components/PageCreatePool/types'
 import { BasePool } from '@/dex/types/main.types'
 export const checkSwapType = (swapType: SwapType) => swapType !== ''
@@ -66,7 +66,7 @@ export const checkParameters = (
 ) => {
   if (poolPresetIndex === null) return false
   if (swapType === STABLESWAP) return stableSwapFee !== null
-  if (swapType === CRYPTOSWAP) {
+  if (swapType === CRYPTOSWAP || swapType === FXSWAP) {
     if (isTricrypto(tricryptoEnabled, tokenAmount, tokenA, tokenB, tokenC))
       return midFee !== null && initialPrice[0] !== '0' && initialPrice[1] !== '0'
     return midFee !== null && initialPrice[0] !== '0'

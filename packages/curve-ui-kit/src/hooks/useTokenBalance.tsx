@@ -19,10 +19,10 @@ export function useTokenBalance(
   { chainId, userAddress }: FieldsOf<{ chainId: number; userAddress: Address }>,
   token: { address: Address } | undefined,
 ) {
-  const { data, isError, isLoading } = useBalance({
+  const { data, error, isLoading } = useBalance({
     ...(userAddress && { address: userAddress }),
     ...(chainId && { chainId: chainId }),
     ...(token && token.address != ethAddress && { token: token.address }),
   })
-  return { ...(data && { data: convertBalance(data) }), isError, isLoading }
+  return { ...(data && { data: convertBalance(data) }), error, isLoading }
 }

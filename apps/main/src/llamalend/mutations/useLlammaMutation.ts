@@ -1,8 +1,13 @@
+import type { Suite } from 'vest'
+import type { FormattedTransactionReceipt, Hex } from 'viem'
+import { useConfig } from 'wagmi'
+import { invalidateAllUserMarketDetails } from '@/llamalend/queries/validation/invalidation'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { useMutation } from '@tanstack/react-query'
-import { useConnection, useWallet } from '@ui-kit/features/connect-wallet'
-import { notify } from '@ui-kit/features/connect-wallet'
-import { logSuccess, logMutation, logError } from '@ui-kit/lib'
-import { getLlamaMarket } from '../llama.utils'
+import { notify, useConnection } from '@ui-kit/features/connect-wallet'
+import { assertValidity, logError, logMutation, logSuccess } from '@ui-kit/lib'
+import { waitForTransactionReceipt } from '@wagmi/core'
+import { getLlamaMarket, updateUserEventsApi } from '../llama.utils'
 import type { LlamaMarketTemplate } from '../llamalend.types'
 
 /**
@@ -35,41 +40,44 @@ function throwIfError(data: unknown) {
 }
 
 /** Context created in onMutate to all callbacks other than mutationFn that also validates */
-type Context = {
-  provider: NonNullable<ReturnType<typeof useWallet>['provider']>
-  curve: NonNullable<ReturnType<typeof useConnection>['llamaApi']>
+type Context = Pick<NonNullable<ReturnType<typeof useConnection>>, 'wallet' | 'llamaApi'> & {
   market: LlamaMarketTemplate
   pendingNotification: ReturnType<typeof notify>
 }
 
-/**
- * Custom context specially for the mutation function.
- * Usually mutations don't have a context, but they do
- * when you use our specialized llamma mutation.
- */
-type MutationFnContext = {
-  market: LlamaMarketTemplate
-}
+type Result = { hash: Hex }
 
-type LlammaMutationOptions<TVariables, TData> = {
+export type LlammaMutationOptions<TVariables extends object, TData extends Result = Result> = {
   /** The llamma market id */
   marketId: string | null | undefined
+  /** The current network config */
+  network: { id: LlamaNetworkId; chainId: LlamaChainId }
+  /** Unique key for the mutation */
   mutationKey: readonly unknown[]
-  /** Function that performs the mutation operation */
-  mutationFn: (variables: TVariables, context: MutationFnContext) => Promise<TData>
+  /**
+   *  Function that performs the mutation operation.
+   *  Usually, mutations functions don't have a context, but we inject it in our custom hook.
+   **/
+  mutationFn: (variables: TVariables, context: { market: LlamaMarketTemplate }) => Promise<TData>
+  /**
+   * Validation suite to validate variables before mutationFn is called.
+   * This is using `any` because `vest` will try to match every single field,
+   * and some validators don't validate everything (we pass chainId, marketId, userAddress plus variables).
+   **/
+  validationSuite: Suite<any, any> | Suite<never, any>
   /** Message to display during pending state */
-  pendingMessage: string | ((variables: TVariables, market: LlamaMarketTemplate) => string)
+  pendingMessage: (variables: TVariables, context: Omit<Context, 'pendingNotification'>) => string
+  /** Message to display on success */
+  successMessage: (variables: TVariables, context: Context) => string
   /** Callback executed on successful mutation */
-  onSuccess?: (data: TData, variables: TVariables, context: Context) => void
-  /** Callback executed on mutation error */
-  onError?: (error: Error, variables: TVariables, context: Context) => void
-  /** Callback executed after mutation settles (success or error) */
-  onSettled?: (
-    data: TData | undefined,
-    error: Error | null,
+  onSuccess: (
+    data: TData,
+    receipt: FormattedTransactionReceipt,
     variables: TVariables,
-    context: Context | undefined,
-  ) => void
+    context: Context,
+  ) => unknown | Promise<unknown>
+  /** Callback executed when mutation is reset */
+  onReset?: () => void
 }
 
 /**
@@ -78,53 +86,57 @@ type LlammaMutationOptions<TVariables, TData> = {
  * it simple for now. Maybe another time, for now we're just doing a quick llamma specialization
  * with simple throwing errors.
  */
-export function useLlammaMutation<TVariables, TData>({
+export function useLlammaMutation<TVariables extends object, TData extends Result = Result>({
+  network: { chainId, id: networkId },
   marketId,
   mutationKey,
   mutationFn,
+  validationSuite,
   pendingMessage,
+  successMessage,
   onSuccess,
-  onError,
-  onSettled,
+  onReset,
 }: LlammaMutationOptions<TVariables, TData>) {
-  const { provider } = useWallet()
-  const { llamaApi: curve } = useConnection()
+  const { llamaApi, wallet } = useConnection()
+  const userAddress = wallet?.account.address
+  const config = useConfig()
 
-  return useMutation({
+  const { mutate, mutateAsync, error, data, isPending, isSuccess, reset } = useMutation({
     mutationKey,
     onMutate: (variables: TVariables) => {
       // Early validation - throwing here prevents mutationFn from running
-      if (!provider) throw new Error('Missing provider')
-      if (!curve) throw new Error('Missing lending api')
+      if (!wallet) throw new Error('Missing provider')
+      if (!llamaApi) throw new Error('Missing llamalend api')
       if (!marketId) throw new Error('Missing llamma market id')
+
+      assertValidity(validationSuite as Suite<any, any>, { chainId, marketId, userAddress, ...variables })
 
       const market = getLlamaMarket(marketId)
 
       logMutation(mutationKey, { variables })
-      const pendingNotification = notify(
-        typeof pendingMessage === 'function' ? pendingMessage(variables, market) : pendingMessage,
-        'pending',
-      )
-
       // Return context to make it available in all callbacks
-      return { provider, curve, market, pendingNotification }
+      const context = { wallet, llamaApi, market }
+      return { ...context, pendingNotification: notify(pendingMessage(variables, context), 'pending') }
     },
-    mutationFn: (variables: TVariables) => {
+    mutationFn: async (variables: TVariables) => {
       const market = getLlamaMarket(marketId!)
-      return mutationFn(variables, { market })
-    },
-    onSuccess: (data, variables, context) => {
+      const data = await mutationFn(variables, { market })
       throwIfError(data)
+      return { data, receipt: await waitForTransactionReceipt(config, data) }
+    },
+    onSuccess: async ({ data, receipt }, variables, context) => {
       logSuccess(mutationKey, { data, variables, marketId: context.market.id })
-      onSuccess?.(data, variables, context)
+      notify(successMessage(variables, context), 'success')
+      updateUserEventsApi(wallet!, { id: networkId }, context.market, receipt.transactionHash)
+      await invalidateAllUserMarketDetails({ chainId, marketId, userAddress })
+      onReset?.()
+      await onSuccess(data, receipt, variables, context)
     },
     onError: (error, variables, context) => {
       logError(mutationKey, { error, variables, marketId: context?.market.id })
-      onError?.(error, variables, context!)
+      notify(error.message, 'error')
     },
-    onSettled: (data, error, variables, context) => {
-      context?.pendingNotification?.dismiss()
-      onSettled?.(data, error, variables, context!)
-    },
+    onSettled: (_data, _error, _variables, context) => context?.pendingNotification?.dismiss(),
   })
+  return { mutate, mutateAsync, error, ...data, isPending, isSuccess, reset }
 }

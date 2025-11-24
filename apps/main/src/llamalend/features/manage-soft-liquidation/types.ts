@@ -1,3 +1,4 @@
+import type { LlamaNetwork } from '@/llamalend/llamalend.types'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import { Address } from '@ui-kit/utils'
 
@@ -5,6 +6,7 @@ import { Address } from '@ui-kit/utils'
 export type MarketParams = {
   chainId: IChainId
   marketId: string
+  network: LlamaNetwork
 }
 
 export type Token = {

@@ -1,6 +1,7 @@
 import {
   CRYPTOSWAP,
   STABLESWAP,
+  FXSWAP,
   TOKEN_A,
   TOKEN_B,
   TOKEN_C,
@@ -45,7 +46,7 @@ export type SelectTokenFormValues = {
   [TOKEN_H]: TokenState
 }
 
-export type SwapType = typeof CRYPTOSWAP | typeof STABLESWAP | ''
+export type SwapType = typeof CRYPTOSWAP | typeof STABLESWAP | typeof FXSWAP | ''
 export type NgAssetType = 0 | 1 | 2 | 3
 export type TokenId =
   | typeof TOKEN_A

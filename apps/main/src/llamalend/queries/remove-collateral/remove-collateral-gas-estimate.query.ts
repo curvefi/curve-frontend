@@ -20,9 +20,7 @@ const { useQuery: useRemoveCollateralGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, userCollateral }: RemoveCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return {
-      removeCollateral: await market.removeCollateralEstimateGas(userCollateral),
-    }
+    return await market.removeCollateralEstimateGas(userCollateral)
   },
   validationSuite: collateralValidationSuite,
   dependencies: (params) => [maxRemovableCollateralKey(params)],
@@ -34,12 +32,15 @@ export const useRemoveCollateralEstimateGas = <ChainId extends IChainId>(
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading } = useRemoveCollateralGasEstimate(query, enabled)
-  const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
-    networks,
-    chainId,
-    estimate,
-    enabled,
-  )
-  return { data, isLoading: estimateLoading || conversionLoading }
+  const {
+    data: estimate,
+    isLoading: estimateLoading,
+    error: estimateError,
+  } = useRemoveCollateralGasEstimate(query, enabled)
+  const {
+    data,
+    isLoading: conversionLoading,
+    error: conversionError,
+  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
+  return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
 }
