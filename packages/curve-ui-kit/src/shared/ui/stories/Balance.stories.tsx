@@ -1,5 +1,6 @@
 import { fn } from 'storybook/test'
 import type { Meta, StoryObj } from '@storybook/react-vite'
+import { FireIcon } from '@ui-kit/shared/icons/FireIcon'
 import { Balance } from '../Balance'
 
 const meta: Meta<typeof Balance> = {
@@ -26,9 +27,9 @@ const meta: Meta<typeof Balance> = {
       control: 'boolean',
       description: 'Whether the clickable balance is disabled',
     },
-    hideIcon: {
-      control: 'boolean',
-      description: 'Whether to hide the wallet icon',
+    prefix: {
+      control: 'object',
+      description: 'Label, custum icon or nothing to show before the actual balance',
     },
     onClick: {
       action: 'onClick',
@@ -44,7 +45,7 @@ const meta: Meta<typeof Balance> = {
     balance: 1.234,
     clickable: false,
     disabled: false,
-    hideIcon: false,
+    prefix: undefined,
     onClick: fn(),
   },
 }
@@ -83,7 +84,19 @@ export const ClickableButDisabled: Story = {
 
 export const NoIcon: Story = {
   args: {
-    hideIcon: true,
+    prefix: null,
+  },
+}
+
+export const DifferentIcon: Story = {
+  args: {
+    prefix: FireIcon,
+  },
+}
+
+export const WithLabel: Story = {
+  args: {
+    prefix: 'Max borrow:',
   },
 }
 

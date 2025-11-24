@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined'
+import type { SvgIcon } from '@mui/material'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -76,8 +77,8 @@ export type Props<T> = {
   usdRate?: number
   /** The USD value of the balance (optional, replaces the calculated value with usdRate) */
   notionalValueUsd?: T | number
-  /** Whether to hide the wallet icon */
-  hideIcon?: boolean
+  /** Prefix before balance: ReactNode (defaults to wallet icon), string for label, or null for nothing */
+  prefix?: string | typeof SvgIcon | null
   /** Whether the balance is loading */
   loading?: boolean
   /** Whether the clickable balance is disabled (something might be loading?) */
@@ -96,21 +97,27 @@ export const Balance = <T extends Amount>({
   loading = balance == null,
   usdRate,
   notionalValueUsd = balance && usdRate && usdRate * +balance,
-  hideIcon,
+  prefix: Prefix = AccountBalanceWalletOutlinedIcon,
   sx,
   onClick,
   disabled,
   buttonTestId,
 }: Props<T>) => (
   <Stack direction="row" gap={Spacing.xs} alignItems="center" sx={sx}>
-    {!hideIcon && (
-      <AccountBalanceWalletOutlinedIcon
-        sx={{
-          width: IconSize.xs,
-          height: IconSize.xs,
-          ...(disabled && { color: (t) => t.palette.text.disabled }),
-        }}
-      />
+    {typeof Prefix === 'string' ? (
+      <Typography variant="bodyXsRegular" color="textTertiary">
+        {Prefix}
+      </Typography>
+    ) : (
+      Prefix !== null && (
+        <Prefix
+          sx={{
+            width: IconSize.xs,
+            height: IconSize.xs,
+            ...(disabled && { color: (t) => t.palette.text.disabled }),
+          }}
+        />
+      )
     )}
 
     <WithWrapper
