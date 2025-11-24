@@ -109,7 +109,7 @@ async function fetchChartBandBalancesData(
 export function loadingLRPrices(prices: string[]) {
   if (!prices) return
   if (prices.length === 0) return []
-  let randomNum = Math.floor(Math.random() * (100 - 1 + 1) + 1)
+  let randomNum = Math.floor(Math.random() * 100 + 1)
   randomNum = randomNum * 0.000001
   return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
 }
