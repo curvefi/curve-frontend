@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
-import { getHealthMode } from '@/llamalend/health.util'
+import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import type { HealthColorKey, HealthMode } from '@/llamalend/llamalend.types'
 import { LoanDetails, UserLoanDetails } from '@/loan/types/loan.types'
 import { parseHealthPercent } from '@/loan/utils/utilsLoan'
@@ -55,7 +55,7 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand !== 'undefined' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
-          undefined,
+          DEFAULT_BORROW_TOKEN_SYMBOL,
           oraclePriceBand,
           amount,
           bands,
@@ -87,7 +87,7 @@ const DetailInfoHealth = ({
       const { healthFull, healthNotFull, userBands } = userLoanDetails
       setCurrentHealthMode(
         getHealthMode(
-          undefined,
+          DEFAULT_BORROW_TOKEN_SYMBOL,
           oraclePriceBand,
           amount,
           userBands,
