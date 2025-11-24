@@ -31,6 +31,10 @@ const meta: Meta<typeof Balance> = {
       control: 'object',
       description: 'Label, custum icon or nothing to show before the actual balance',
     },
+    tooltip: {
+      control: 'text',
+      description: 'Custom tooltip title for hover',
+    },
     onClick: {
       action: 'onClick',
       description: 'Callback when balance is clicked',
@@ -46,6 +50,7 @@ const meta: Meta<typeof Balance> = {
     clickable: false,
     disabled: false,
     prefix: undefined,
+    tooltip: undefined,
     onClick: fn(),
   },
 }
@@ -122,6 +127,12 @@ export const Loading: Story = {
         story: 'Shows the component in a loading state with skeleton placeholders',
       },
     },
+  },
+}
+
+export const CustomTooltip: Story = {
+  args: {
+    tooltip: 'Yolo',
   },
 }
 

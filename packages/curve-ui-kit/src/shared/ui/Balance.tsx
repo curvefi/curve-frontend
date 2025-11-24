@@ -8,20 +8,10 @@ import { t } from '@ui-kit/lib/i18n'
 import { Tooltip } from '@ui-kit/shared/ui/Tooltip'
 import { WithSkeleton } from '@ui-kit/shared/ui/WithSkeleton'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { type Amount, formatNumber, type SxProps } from '@ui-kit/utils'
+import { type Amount, formatNumber } from '@ui-kit/utils'
 import { WithWrapper } from './WithWrapper'
 
 const { Spacing, IconSize } = SizesAndSpaces
-
-/**
- * The following property is required on all typography to properly vertically align it with the icon.
- * I haven't been able to find a different solution to this re-occuring problem in other components too,
- * other than resetting the default line-height. Perhaps the default line-heigt works for most use-cases,
- * but it breaks down when you're trying to align things pixel-perfectly in smaller spaces.
- */
-const CENTER_TEXT = {
-  '&': { lineHeight: '1rem' },
-} as const
 
 type BalanceButtonProps = {
   children: ReactNode
@@ -47,35 +37,6 @@ const BalanceButton = ({ children, onClick, loading, disabled, testId }: Balance
   </Button>
 )
 
-type BalanceTextProps<T> = {
-  symbol: string
-  disabled?: boolean
-  balance?: T
-  loading?: boolean
-}
-
-const BalanceText = <T extends Amount>({ symbol, balance, disabled = false, loading = false }: BalanceTextProps<T>) => (
-  <WithSkeleton loading={loading}>
-    <Tooltip title={t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
-      <Stack direction="row" gap={Spacing.xs} alignItems="center">
-        <Typography
-          className="balance"
-          variant="highlightXs"
-          color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
-          data-testid="balance-value"
-          sx={CENTER_TEXT}
-        >
-          {balance == null ? '-' : formatNumber(balance, { abbreviate: true })}
-        </Typography>
-
-        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'} sx={CENTER_TEXT}>
-          {symbol}
-        </Typography>
-      </Stack>
-    </Tooltip>
-  </WithSkeleton>
-)
-
 /** Props for the Balance component */
 export type Props<T> = {
   /** The token symbol to display */
@@ -90,11 +51,12 @@ export type Props<T> = {
   notionalValueUsd?: T | number
   /** Prefix before balance: ReactNode (defaults to wallet icon), string for label, or null for nothing */
   prefix?: string | typeof SvgIcon | null
+  /** Custom tooltip title, defaults to 'Wallet balance' which is most this component's use cases */
+  tooltip?: string
   /** Whether the balance is loading */
   loading?: boolean
   /** Whether the clickable balance is disabled (something might be loading?) */
   disabled?: boolean
-  sx?: SxProps
   /** Optional test ID for the clickable balance button */
   buttonTestId?: string
   /** Callback function when balance is clicked (if enabled). */
@@ -102,49 +64,65 @@ export type Props<T> = {
 }
 
 export const Balance = <T extends Amount>({
-  symbol = '-',
+  symbol = '?',
   clickable,
   balance,
-  loading = balance == null,
+  loading = false,
   usdRate,
   notionalValueUsd = balance && usdRate && usdRate * +balance,
   prefix: Prefix = AccountBalanceWalletOutlinedIcon,
-  sx,
+  tooltip,
   onClick,
-  disabled,
+  disabled = false,
   buttonTestId,
 }: Props<T>) => (
-  <Stack direction="row" gap={Spacing.xs} alignItems="stretch" sx={sx}>
-    {typeof Prefix === 'string' ? (
-      <Typography variant="bodyXsRegular" color="textTertiary" sx={CENTER_TEXT}>
-        {Prefix}
-      </Typography>
-    ) : (
-      Prefix !== null && (
-        <Prefix
-          sx={{
-            width: IconSize.xs,
-            height: IconSize.xs,
-            ...(disabled && { color: (t) => t.palette.text.disabled }),
-          }}
-        />
-      )
-    )}
+  <WithWrapper
+    Wrapper={BalanceButton}
+    shouldWrap={clickable && balance != null}
+    onClick={onClick}
+    disabled={disabled}
+    testId={buttonTestId}
+  >
+    <Tooltip title={tooltip ?? t`Wallet balance`} body={[balance?.toString() ?? '-', symbol].join(' ')} clickable>
+      <Stack direction="row" gap={Spacing.xs} alignItems="center">
+        {typeof Prefix === 'string' ? (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {Prefix}
+          </Typography>
+        ) : (
+          Prefix !== null && (
+            <Prefix
+              sx={{
+                width: IconSize.xs,
+                height: IconSize.xs,
+                color: (t) => t.palette.text.primary,
+                ...(disabled && { color: (t) => t.palette.text.disabled }),
+              }}
+            />
+          )
+        )}
 
-    <WithWrapper
-      Wrapper={BalanceButton}
-      shouldWrap={clickable && balance != null}
-      onClick={onClick}
-      disabled={disabled}
-      testId={buttonTestId}
-    >
-      <BalanceText symbol={symbol} balance={balance} disabled={disabled} loading={loading} />
-    </WithWrapper>
+        <WithSkeleton loading={loading}>
+          <Typography
+            className="balance"
+            variant="highlightXs"
+            color={disabled ? 'textDisabled' : balance == null ? 'textTertiary' : 'textPrimary'}
+            data-testid="balance-value"
+          >
+            {balance == null ? '-' : loading ? '???' : formatNumber(balance, { abbreviate: true })}
+          </Typography>
+        </WithSkeleton>
 
-    {notionalValueUsd != null && !loading && (
-      <Typography variant="bodyXsRegular" color="textTertiary" sx={CENTER_TEXT}>
-        {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
-      </Typography>
-    )}
-  </Stack>
+        <Typography variant="highlightXs" color={disabled ? 'textDisabled' : 'textPrimary'}>
+          {symbol}
+        </Typography>
+
+        {notionalValueUsd != null && !loading && (
+          <Typography variant="bodyXsRegular" color="textTertiary">
+            {formatNumber(notionalValueUsd, { unit: 'dollar', abbreviate: true })}
+          </Typography>
+        )}
+      </Stack>
+    </Tooltip>
+  </WithWrapper>
 )
