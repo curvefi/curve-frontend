@@ -93,8 +93,8 @@ export const Balance = <T extends Amount>({
           Prefix !== null && (
             <Prefix
               sx={{
-                width: IconSize.xs,
-                height: IconSize.xs,
+                width: IconSize.sm,
+                height: IconSize.sm,
                 color: (t) => t.palette.text.primary,
                 ...(disabled && { color: (t) => t.palette.text.disabled }),
               }}
