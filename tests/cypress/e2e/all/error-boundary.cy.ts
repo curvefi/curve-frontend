@@ -11,7 +11,14 @@ describe('Error Boundary', () => {
             data: [
               // make an error occur on purpose by returning nonsense data
               // note that the error only triggers the boundary if the query succeeds, but it fails during rendering
-              { collateral_token: {}, borrowed_token: {}, extra_reward_apr: [], vault: '', controller: '' },
+              {
+                collateral_token: {},
+                borrowed_token: {},
+                extra_reward_apr: [],
+                vault: '',
+                controller: '',
+                created_at: '2023-01-01T00:00:00Z',
+              },
             ],
           },
         },
