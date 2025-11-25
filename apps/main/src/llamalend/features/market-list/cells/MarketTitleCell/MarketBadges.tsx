@@ -39,7 +39,7 @@ export const MarketBadges = ({ market, isMobile }: { market: LlamaMarket; isMobi
         />
       </Tooltip>
 
-      {leverage > 0 && (
+      {leverage && (
         <Tooltip title={t`How much you can leverage your position`}>
           {isMobile ? (
             <Typography variant="bodyXsRegular">🔥</Typography>
