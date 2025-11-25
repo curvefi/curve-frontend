@@ -107,7 +107,7 @@ export const LlamaMarketExpandedPanel: ExpandedPanel<LlamaMarket> = ({ row: { or
         </Grid>
         <RateItem market={market} type={MarketRateType.Borrow} title={t`Borrow rate`} />
         <RateItem market={market} type={MarketRateType.Supply} title={t`Supply yield`} />
-        {leverage > 0 && (
+        {leverage && (
           <Grid size={6}>
             <Metric label={t`Leverage 🔥`} value={leverage} valueOptions={{ unit: 'multiplier' }} />
           </Grid>
