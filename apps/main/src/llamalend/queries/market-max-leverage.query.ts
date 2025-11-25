@@ -5,8 +5,7 @@ import type { IChainId } from '@curvefi/api/lib/interfaces'
 import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { type MarketQuery, queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { Decimal } from '@ui-kit/utils'
 
 type MaxLeverageQuery = MarketQuery<IChainId> & { range: number }
@@ -24,9 +23,8 @@ export const { useQuery: useMarketMaxLeverage } = queryFactory({
       : '0'
   },
   staleTime: '1m',
-  validationSuite: createValidationSuite(({ chainId, range }: MaxLeverageParams) => {
-    chainValidationGroup({ chainId })
-    llamaApiValidationGroup({ chainId })
+  validationSuite: createValidationSuite(({ chainId, marketId, range }: MaxLeverageParams) => {
+    marketIdValidationSuite({ chainId, marketId })
     group('rangeValidationGroup', () => validateRange(range))
   }),
 })
