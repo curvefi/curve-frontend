@@ -55,6 +55,7 @@ export const Banner = ({
   learnMoreUrl,
   color,
   subtitle,
+  testId,
 }: {
   onClick?: () => void
   buttonText?: string
@@ -63,6 +64,7 @@ export const Banner = ({
   learnMoreUrl?: string
   color?: TypographyProps['color']
   subtitle?: ReactNode
+  testId?: string
 }) => (
   <Card
     sx={{
@@ -75,6 +77,7 @@ export const Banner = ({
       flexDirection: 'column',
       ...WrapperSx[severity],
     }}
+    data-testid={testId}
   >
     <Stack
       direction="row"
