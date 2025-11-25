@@ -135,6 +135,26 @@ export const defineMuiTabs = ({
   styleOverrides: {
     root: {
       minHeight: 0, // It's 48px by default in Mui, but we want it smaller
+      position: 'relative', // For absolute positioning of scroll buttons
+      // Style scroll buttons (arrows) when tabs overflow
+      '& .MuiTabScrollButton-root': {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        zIndex: 1,
+        color: Contained.Current.Outline,
+        opacity: 1,
+        backgroundColor: 'transparent',
+        '&:first-of-type': {
+          left: 0,
+        },
+        '&:last-of-type': {
+          right: 0,
+        },
+        '&.Mui-disabled': {
+          opacity: 0.3,
+        },
+      },
       [`&.${contained}`]: {
         '& .MuiTab-root': tabVariant(Contained),
         '& .MuiTab-root:not(.Mui-selected):not(:last-child)': {
