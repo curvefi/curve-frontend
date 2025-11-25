@@ -1,31 +1,51 @@
-import { Fragment, useEffect } from 'react'
-import { useOneWayMarket } from '@/lend/entities/chain'
+import { useEffect } from 'react'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
-import DetailInfo from '@ui/DetailInfo'
-import Icon from '@ui/Icon'
-import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
 
-const MarketParameters = ({
-  rChainId,
-  rOwmId,
+// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
+// In [2]: ltv((30, 0.11))
+// Out[2]: 0.8316555555555556
+// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
+// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
+function getMaxLTV(a: string | undefined, loanDiscount: string | undefined) {
+  if (typeof a === 'undefined' || typeof loanDiscount === 'undefined') return
+  return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
+}
+
+type MarketDetails = {
+  title: string
+  details: {
+    label: string
+    value: string | number | undefined
+    formatOptions?: NumberFormatOptions
+    isError: string
+    tooltip?: string
+  }[]
+}
+
+export const MarketParameters = ({
+  chainId,
+  market,
+  marketId,
   type,
 }: {
-  rChainId: ChainId
-  rOwmId: string
+  chainId: ChainId
+  market: LendMarketTemplate | undefined
+  marketId: string
   type: 'borrow' | 'supply'
 }) => {
-  const owm = useOneWayMarket(rChainId, rOwmId).data
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[rChainId]?.[rOwmId])
-  const parametersResp = useStore((state) => state.markets.statsParametersMapper[rChainId]?.[rOwmId])
-  const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const loanPricesResp = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
+  const parametersResp = useStore((state) => state.markets.statsParametersMapper[chainId]?.[marketId])
+  const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[chainId]?.[marketId])
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
   const { prices, error: pricesError } = loanPricesResp ?? {}
@@ -33,70 +53,48 @@ const MarketParameters = ({
   const { pricePerShare, error: pricePerShareError } = vaultPricePerShareResp ?? {}
 
   // prettier-ignore
-  const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions; title?: string; isError: string; tooltip?: string }[][] = type === 'borrow' ?
+  const marketDetails: MarketDetails[] = type === 'borrow' ?
     [
-      [
+      { title: t`Loan Parameters`, details: [
         { label: t`AMM swap fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
         { label: t`Admin fee`, value: parameters?.admin_fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
         { label: t`Band width factor`, value: parameters?.A, formatOptions: { useGrouping: false }, isError: parametersError },
         { label: t`Loan discount`, value: parameters?.loan_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
         { label: t`Liquidation discount`, value: parameters?.liquidation_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
-        { label: t`Max LTV`, value: _getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, tooltip: t`Max possible loan at N=4` },
-      ],
-      [
-        { label: t`Base price`, value: prices?.basePrice, formatOptions: { decimals: 5 }, title: t`Prices`, isError: pricesError },
+        { label: t`Max LTV`, value: getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, tooltip: t`Max possible loan at N=4` },
+      ]},
+      { title: t`Prices`, details: [
+        { label: t`Base price`, value: prices?.basePrice, formatOptions: { decimals: 5 }, isError: pricesError },
         { label: t`Oracle price`, value: prices?.oraclePrice, formatOptions: { decimals: 5 }, isError: pricesError },
-      ],
+      ]},
     ] : [
-      [
+      {title: t`Prices`, details: [
         { label: t`Price per share`, value: pricePerShare, formatOptions: { decimals: 5 }, isError: pricePerShareError },
-      ]
+      ]}
     ]
 
   useEffect(() => {
-    if (type === 'supply' && owm) void fetchVaultPricePerShare(rChainId, owm)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type, owm])
+    if (type === 'supply' && market) void fetchVaultPricePerShare(chainId, market)
+  }, [type, market, fetchVaultPricePerShare, chainId])
 
   return (
     <Stack gap={Spacing.md}>
-      {marketDetails.map((details, idx) => (
-        <div key={`details-${idx}`}>
-          {details.map(({ label, value, formatOptions, title, isError, tooltip }) => (
-            <Fragment key={label}>
-              {
-                <>
-                  {title && <Typography variant="headingXsBold">{title}</Typography>}
-                  {
-                    <DetailInfo key={label} label={label}>
-                      {isError ? (
-                        '?'
-                      ) : (
-                        <Chip {...(tooltip ? { tooltip, tooltipProps: { noWrap: true } } : {})} isBold>
-                          {formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
-                          {tooltip && <Icon className="svg-tooltip" name="InformationSquare" size={16} />}
-                        </Chip>
-                      )}
-                    </DetailInfo>
-                  }
-                </>
-              }
-            </Fragment>
+      {marketDetails.map(({ title, details }) => (
+        <Stack gap={Spacing.xs} key={title}>
+          <Typography variant="headingXsBold">{title}</Typography>
+
+          {details.map(({ label, value, formatOptions, isError, tooltip }) => (
+            <Stack gap={Spacing.xs} key={label}>
+              <ActionInfo
+                label={label}
+                value={isError ? '?' : formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
+                valueTooltip={tooltip}
+                loading={value == null}
+              />
+            </Stack>
           ))}
-        </div>
+        </Stack>
       ))}
     </Stack>
   )
 }
-
-// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
-// In [2]: ltv((30, 0.11))
-// Out[2]: 0.8316555555555556
-// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
-// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
-function _getMaxLTV(a: string | undefined, loanDiscount: string | undefined) {
-  if (typeof a === 'undefined' || typeof loanDiscount === 'undefined') return ''
-  return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
-}
-
-export default MarketParameters

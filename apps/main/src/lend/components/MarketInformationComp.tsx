@@ -1,7 +1,6 @@
 import { BandsComp } from '@/lend/components/BandsComp'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
@@ -9,12 +8,11 @@ import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsDat
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketParameters } from './DetailsMarket/components/MarketParameters'
 
 const { Spacing } = SizesAndSpaces
 
@@ -113,8 +111,7 @@ export const MarketInformationComp = ({
             gap={Spacing.xs}
             sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
           >
-            <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-            <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type={type} />
+            <MarketParameters chainId={rChainId} market={market} marketId={rOwmId} type={type} />
           </Stack>
         </Stack>
       )}

@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import AlertFormError from '@/lend/components/AlertFormError'
 import AlertLoanSummary from '@/lend/components/AlertLoanSummary'
-import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
 import DialogFormWarning from '@/lend/components/DialogFormWarning'
 import InpToken from '@/lend/components/InpToken'
 import InpTokenBorrow from '@/lend/components/InpTokenBorrow'
@@ -38,6 +37,7 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
+import { MarketParameters } from '../../DetailsMarket/components/MarketParameters'
 
 const LoanCreate = ({
   isLeverage = false,
@@ -440,7 +440,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type="borrow" />
+          <MarketParameters chainId={rChainId} marketId={rOwmId} type="borrow" />
         </Accordion>
       )}
     </>
