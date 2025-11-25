@@ -54,6 +54,7 @@ export const Banner = ({
   severity = 'default',
   learnMoreUrl,
   color,
+  subtitle,
 }: {
   onClick?: () => void
   buttonText?: string
@@ -61,16 +62,17 @@ export const Banner = ({
   severity?: BannerSeverity
   learnMoreUrl?: string
   color?: TypographyProps['color']
+  subtitle?: ReactNode
 }) => (
   <Card
     sx={{
       display: 'flex',
-      gap: Spacing.md,
       alignSelf: 'stretch',
       paddingInline: Spacing.md,
       paddingBlock: Spacing.xs,
-      alignItems: 'center',
+      alignItems: 'start',
       justifyContent: 'center',
+      flexDirection: 'column',
       ...WrapperSx[severity],
     }}
   >
@@ -113,6 +115,11 @@ export const Banner = ({
             ))}
         </ChangeTheme>
       </Stack>
+    </Stack>
+    <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
+      <Typography color="textSecondary" variant="bodySRegular">
+        {subtitle}
+      </Typography>
     </Stack>
   </Card>
 )
