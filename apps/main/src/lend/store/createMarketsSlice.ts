@@ -11,14 +11,12 @@ import {
   MarketsRewardsMapper,
   MarketsStatsBandsMapper,
   MarketsStatsCapAndAvailableMapper,
-  MarketsStatsParametersMapper,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
 type SliceState = {
-  statsParametersMapper: { [chainId: string]: MarketsStatsParametersMapper }
   statsBandsMapper: { [chainId: string]: MarketsStatsBandsMapper }
   statsCapAndAvailableMapper: { [chainId: string]: MarketsStatsCapAndAvailableMapper }
   maxLeverageMapper: { [chainId: string]: MarketsMaxLeverageMapper }
@@ -47,7 +45,6 @@ export type MarketsSlice = {
 }
 
 const DEFAULT_STATE: SliceState = {
-  statsParametersMapper: {},
   statsBandsMapper: {},
   statsCapAndAvailableMapper: {},
   maxLeverageMapper: {},
@@ -66,7 +63,6 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const { chainId } = api
 
       const fnMapper = {
-        statsParametersMapper: apiLending.market.fetchStatsParameters,
         statsBandsMapper: apiLending.market.fetchStatsBands,
         statsCapAndAvailableMapper: apiLending.market.fetchStatsCapAndAvailable,
         pricesMapper: apiLending.market.fetchMarketsPrices,
@@ -96,7 +92,6 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       const marketId = OneWayMarketTemplate.id
 
       const keys = [
-        'statsParametersMapper',
         'statsBandsMapper',
         'statsCapAndAvailableMapper',
         'pricesMapper',

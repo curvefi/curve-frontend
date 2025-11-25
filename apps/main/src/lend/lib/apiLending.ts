@@ -18,7 +18,6 @@ import {
   MarketRewards,
   MarketStatBands,
   MarketStatCapAndAvailable,
-  MarketStatParameters,
   MaxRecvLeverageResp,
   ParsedBandsBalances,
   Provider,
@@ -54,22 +53,6 @@ export const helpers = {
 }
 
 const market = {
-  fetchStatsParameters: async (markets: OneWayMarketTemplate[]) => {
-    log('fetchStatsParameters', markets.length)
-    const results: { [id: string]: MarketStatParameters } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { parameters: null, error }
-      })
-      .process(async (market) => {
-        const parameters = await market.stats.parameters()
-        results[market.id] = { parameters, error: '' }
-      })
-
-    return results
-  },
   fetchStatsBands: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
     const results: { [id: string]: MarketStatBands } = {}

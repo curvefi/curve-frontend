@@ -99,18 +99,6 @@ export type LiqRange = {
   prices: string[]
   bands: [number, number]
 }
-export type MarketStatParameters = {
-  parameters: {
-    fee: string
-    admin_fee: string
-    liquidation_discount: string
-    loan_discount: string
-    base_price: string
-    A: string
-  } | null
-  error: string
-}
-export type MarketsStatsParametersMapper = { [owmId: string]: MarketStatParameters }
 export type BandsBalances = { [band: number]: { borrowed: string; collateral: string } }
 export type BandsBalancesArr = { borrowed: string; collateral: string; band: number }[]
 export type ParsedBandsBalances = {

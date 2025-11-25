@@ -1,7 +1,7 @@
 import { useMarketPricePerShare } from '@/lend/entities/market-details'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
+import { useMarketParameters } from '@/llamalend/queries/market-parameters'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
@@ -25,7 +25,7 @@ type MarketDetails = {
   label: string
   value: string | number | undefined
   formatOptions: NumberFormatOptions
-  isError: string
+  isError: boolean
   tooltip?: string
 }
 
@@ -38,8 +38,11 @@ export const MarketParameters = ({
   marketId: string
   type: 'borrow' | 'supply'
 }) => {
-  const parametersResp = useStore((state) => state.markets.statsParametersMapper[chainId]?.[marketId])
-  const { parameters, error: parametersError } = parametersResp ?? {}
+  const {
+    data: parameters,
+    isLoading: isLoadingParameters,
+    isError: isErrorParameters,
+  } = useMarketParameters({ chainId, marketId })
 
   const {
     data: pricePerShare,
@@ -52,37 +55,37 @@ export const MarketParameters = ({
       label: t`AMM swap fee`,
       value: parameters?.fee,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-      isError: parametersError,
+      isError: isErrorParameters,
     },
     {
       label: t`Admin fee`,
       value: parameters?.admin_fee,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-      isError: parametersError,
+      isError: isErrorParameters,
     },
     {
       label: t`Band width factor`,
       value: parameters?.A,
       formatOptions: { useGrouping: false },
-      isError: parametersError,
+      isError: isErrorParameters,
     },
     {
       label: t`Loan discount`,
       value: parameters?.loan_discount,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: parametersError,
+      isError: isErrorParameters,
     },
     {
       label: t`Liquidation discount`,
       value: parameters?.liquidation_discount,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: parametersError,
+      isError: isErrorParameters,
     },
     {
       label: t`Max LTV`,
       value: getMaxLTV(parameters?.A, parameters?.loan_discount),
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: parametersError,
+      isError: isErrorParameters,
       tooltip: t`Max possible loan at N=4`,
     },
   ]
@@ -98,7 +101,7 @@ export const MarketParameters = ({
               label={label}
               value={isError ? '?' : formatNumber(value, formatOptions)}
               valueTooltip={tooltip}
-              loading={value == null}
+              loading={isLoadingParameters}
             />
           ))}
         </Stack>
