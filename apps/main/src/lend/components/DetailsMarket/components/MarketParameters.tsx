@@ -2,7 +2,6 @@ import { useMarketPricePerShare } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
-import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
@@ -32,12 +31,10 @@ type MarketDetails = {
 
 export const MarketParameters = ({
   chainId,
-  market,
   marketId,
   type,
 }: {
   chainId: ChainId
-  market: LendMarketTemplate | undefined
   marketId: string
   type: 'borrow' | 'supply'
 }) => {

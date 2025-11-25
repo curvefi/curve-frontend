@@ -109,7 +109,7 @@ export const MarketInformationComp = ({
           </Stack>
 
           <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
-            <MarketParameters chainId={rChainId} market={market} marketId={rOwmId} type={type} />
+            <MarketParameters chainId={rChainId} marketId={rOwmId} type={type} />
           </Stack>
         </Stack>
       )}
