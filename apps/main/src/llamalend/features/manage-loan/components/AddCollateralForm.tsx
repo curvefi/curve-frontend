@@ -38,7 +38,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     params,
     values,
     bands,
-    healthFull,
+    health,
     prices,
     gas,
     isApproved,
@@ -64,7 +64,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
         <LoanInfoAccordion
           isOpen={isOpen}
           toggle={toggle}
-          health={healthFull}
+          health={health}
           bands={bands}
           prices={prices}
           rates={marketRates}

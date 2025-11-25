@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import {
@@ -10,7 +11,7 @@ import {
 } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useRemoveCollateralBands } from '@/llamalend/queries/remove-collateral/remove-collateral-bands.query'
 import { useRemoveCollateralEstimateGas } from '@/llamalend/queries/remove-collateral/remove-collateral-gas-estimate.query'
-import { useRemoveCollateralHealth } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
+import { getRemoveCollateralHealthOptions } from '@/llamalend/queries/remove-collateral/remove-collateral-health.query'
 import { useMaxRemovableCollateral } from '@/llamalend/queries/remove-collateral/remove-collateral-max-removable.query'
 import { useRemoveCollateralPrices } from '@/llamalend/queries/remove-collateral/remove-collateral-prices.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
@@ -87,8 +88,7 @@ export const useRemoveCollateralForm = <
 
   const maxRemovable = useMaxRemovableCollateral(params, enabled)
   const bands = useRemoveCollateralBands(params, enabled)
-  const healthFull = useRemoveCollateralHealth({ ...params, isFull: true }, enabled)
-  const healthNotFull = useRemoveCollateralHealth({ ...params, isFull: false }, enabled)
+  const health = useHealthQueries((isFull) => getRemoveCollateralHealthOptions({ ...params, isFull }, enabled))
   const prices = useRemoveCollateralPrices(params, enabled)
   const gas = useRemoveCollateralEstimateGas(networks, params, enabled)
 
@@ -103,8 +103,7 @@ export const useRemoveCollateralForm = <
     action,
     maxRemovable,
     bands,
-    healthFull,
-    healthNotFull,
+    health,
     prices,
     gas,
     txHash: action.data?.hash,
