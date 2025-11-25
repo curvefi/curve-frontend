@@ -30,7 +30,7 @@ const CLOSE_POSITION_SAFETY_BUFFER = 1.0001 // 0.01% safety margin
  */
 export function useCanClose(params: MarketParams): ClosePositionProps['canClose'] {
   const { address: userAddress } = useAccount()
-  const { data: userBalances } = useUserBalances({ chainId: params.chainId, poolId: params.marketId, userAddress })
+  const { data: userBalances } = useUserBalances({ chainId: params.chainId, marketId: params.marketId, userAddress })
   const { data: userState } = useUserState({ ...params, userAddress })
 
   const { debt = '0', stablecoin = '0' } = userState ?? {}
