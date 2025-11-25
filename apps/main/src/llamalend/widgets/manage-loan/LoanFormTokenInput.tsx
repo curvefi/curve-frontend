@@ -67,6 +67,7 @@ export const LoanFormTokenInput = <
           label={token?.symbol ?? '?'}
         />
       }
+      balance={form.getValues(name)}
       onBalance={useCallback(
         (v?: Decimal) => form.setValue(name, v as FieldPathValue<TFieldValues, TFieldName>, setValueOptions),
         [form, name],

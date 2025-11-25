@@ -2,8 +2,7 @@ import { getLlamaMarket } from '@/llamalend/llama.utils'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
 import { queryFactory, rootKeys } from '@ui-kit/lib/model'
-import { chainValidationGroup } from '@ui-kit/lib/model/query/chain-validation'
-import { llamaApiValidationGroup } from '@ui-kit/lib/model/query/curve-api-validation'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { assert, decimal, Decimal } from '@ui-kit/utils'
 import type { BorrowFormQuery } from '../../features/borrow/types'
 import { borrowFormValidationGroup } from '../validation/borrow.validation'
@@ -40,9 +39,8 @@ const convertNumbers = ({
 })
 
 export const maxReceiveValidation = createValidationSuite(
-  ({ chainId, userBorrowed, userCollateral, range, slippage }: CreateLoanMaxReceiveParams) => {
-    chainValidationGroup({ chainId })
-    llamaApiValidationGroup({ chainId })
+  ({ chainId, marketId, userBorrowed, userCollateral, range, slippage }: CreateLoanMaxReceiveParams) => {
+    marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
       { userBorrowed, userCollateral, debt: undefined, range, slippage },
       { debtRequired: false },

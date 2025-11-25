@@ -1,19 +1,15 @@
+import { cloneDeep } from 'lodash'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsMint } from '@/llamalend/llama.utils'
 import type { MaxRecvLeverage as MaxRecvLeverageForm } from '@/loan/components/PageLoanCreate/types'
 import type { FormDetailInfo as FormDetailInfoDeleverage } from '@/loan/components/PageLoanManage/LoanDeleverage/types'
 import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
-import { ChainId, LlamaApi, Llamma, UserLoanDetails } from '@/loan/types/loan.types'
+import { ChainId, LlamaApi, Llamma, UserLoanDetails, type BandBalance } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
 import { hasV2Leverage } from '@/loan/utils/leverage'
-import {
-  getChartBandBalancesData,
-  getIsUserCloseToLiquidation,
-  getLiquidationStatus,
-  parseUserLoss,
-  reverseBands,
-  sortBands,
-} from '@/loan/utils/utilsCurvejs'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
+import PromisePool from '@supercharge/promise-pool'
+import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
 import { getLeverageV2RepayArgs, isHigherThanMaxSlippage } from '../utils/utilsLoan'
@@ -48,6 +44,74 @@ const DEFAULT_PARAMETERS = {
   rate: '',
   liquidation_discount: '',
   loan_discount: '',
+}
+
+function parseUserLoss(userLoss: UserLoanDetails['userLoss']) {
+  const smallAmount = 0.00000001
+  const resp = cloneDeep(userLoss)
+  resp.loss = resp.loss && BN(resp.loss).isLessThan(smallAmount) ? '0' : userLoss.loss
+  resp.loss_pct = resp.loss_pct && BN(resp.loss_pct).isLessThan(smallAmount) ? '0' : userLoss.loss_pct
+
+  return resp
+}
+
+async function fetchChartBandBalancesData(
+  {
+    bandBalances,
+    bandBalancesArr,
+  }: {
+    bandBalancesArr: { stablecoin: string; collateral: string; band: string }[]
+    bandBalances: BandBalance
+  },
+  liquidationBand: number | null,
+  llamma: Llamma,
+) {
+  // filter out bands that doesn't have stablecoin and collaterals
+  const ns = bandBalancesArr
+    .filter((b) => {
+      const { stablecoin, collateral } = bandBalances[b.band] ?? {}
+      return +stablecoin > 0 || +collateral > 0
+    })
+    .map((b) => b.band)
+
+  // TODO: handle errors
+  const { results } = await PromisePool.for(ns).process(async (n) => {
+    const { collateral, stablecoin } = bandBalances[n]
+    const [p_up, p_down] = await llamma.calcBandPrices(+n)
+    const sqrt = new BN(p_up).multipliedBy(p_down).squareRoot()
+    const pUpDownMedian = new BN(p_up).plus(p_down).dividedBy(2).toFixed(5)
+    const collateralUsd = new BN(collateral).multipliedBy(sqrt)
+
+    return {
+      collateral,
+      collateralUsd: collateralUsd.toString(),
+      isLiquidationBand: liquidationBand ? (liquidationBand === +n ? 'SL' : '') : '',
+      isOraclePriceBand: false, // update this with detail info oracle price
+      isNGrouped: false,
+      n,
+      p_up,
+      p_down,
+      pUpDownMedian,
+      stablecoin,
+      collateralStablecoinUsd: collateralUsd.plus(stablecoin).toNumber(),
+    }
+  })
+
+  const parsedBandBalances = []
+  for (const idx in results) {
+    const r = results[idx]
+    parsedBandBalances.unshift(r)
+  }
+  return parsedBandBalances
+}
+
+// need due to issue with chart label not showing up correctly.
+export function loadingLRPrices(prices: string[]) {
+  if (!prices) return
+  if (prices.length === 0) return []
+  let randomNum = Math.floor(Math.random() * 100 + 1)
+  randomNum = randomNum * 0.000001
+  return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
 }
 
 const detailInfo = {
@@ -123,7 +187,7 @@ const detailInfo = {
     const liquidationBand = fulfilledValue(liquidationBandResult) ?? null
     const basePrice = fulfilledValue(basePriceResult) ?? undefined
 
-    const parsedBandsBalances = await getChartBandBalancesData(sortBands(bandsBalances), liquidationBand, llamma)
+    const parsedBandsBalances = await fetchChartBandBalancesData(sortBandsMint(bandsBalances), liquidationBand, llamma)
 
     return {
       ...fetchedPartialLoanInfo,
@@ -151,8 +215,8 @@ const detailInfo = {
 
     const { healthNotFull, userState, userIsCloseToLiquidation, userLiquidationBand } = fetchedPartialUserLoanInfo
 
-    const parsedBandsBalances = await getChartBandBalancesData(
-      sortBands(userBandsBalances),
+    const parsedBandsBalances = await fetchChartBandBalancesData(
+      sortBandsMint(userBandsBalances),
       userLiquidationBand,
       llamma,
     )

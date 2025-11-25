@@ -407,22 +407,14 @@ export const LargeTokenInput = ({
 
         {/** Third row containing input and max balances */}
         {(walletBalance || inputBalanceUsd) && (
-          <Stack direction="row">
+          <Stack direction="row" justifyContent="end">
             {inputBalanceUsd != null && (
-              <Typography variant="bodyXsRegular" color="textTertiary">
+              <Typography variant="bodyXsRegular" color="textTertiary" sx={{ flexGrow: 1 }}>
                 ≈ {formatNumber(inputBalanceUsd, { unit: 'dollar', abbreviate: false })}
               </Typography>
             )}
 
-            {walletBalance && (
-              <Balance
-                disabled={disabled}
-                clickable
-                {...walletBalance}
-                onClick={onWalletBalance}
-                sx={{ flexGrow: 1, justifyContent: 'end' }}
-              />
-            )}
+            {walletBalance && <Balance disabled={disabled} {...walletBalance} onClick={onWalletBalance} />}
           </Stack>
         )}
 

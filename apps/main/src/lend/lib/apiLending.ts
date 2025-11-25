@@ -1,4 +1,3 @@
-import lodash from 'lodash'
 import { zeroAddress } from 'viem'
 import { USE_API } from '@/lend/shared/config'
 import type { LiqRange } from '@/lend/store/types'
@@ -12,7 +11,6 @@ import {
   ExpectedBorrowed,
   ExpectedCollateral,
   FutureRates,
-  HealthColorKey,
   LiqRangeResp,
   MarketMaxLeverage,
   MarketPrices,
@@ -32,24 +30,13 @@ import {
 } from '@/lend/types/lend.types'
 import { OneWayMarketTemplate } from '@/lend/types/lend.types'
 import { fulfilledValue, getErrorMessage, log } from '@/lend/utils/helpers'
+import { getIsUserCloseToLiquidation, getLiquidationStatus, reverseBands, sortBandsLend } from '@/llamalend/llama.utils'
 import PromisePool from '@supercharge/promise-pool'
 import type { StepStatus } from '@ui/Stepper/types'
 import { BN, shortenAccount } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
 
 export const helpers = {
-  getIsUserCloseToLiquidation: (
-    userFirstBand: number,
-    userLiquidationBand: number | null,
-    oraclePriceBand: number | null | undefined,
-  ) => {
-    if (userLiquidationBand !== null && typeof oraclePriceBand !== 'number') {
-      return false
-    } else if (typeof oraclePriceBand === 'number') {
-      return userFirstBand <= oraclePriceBand + 2
-    }
-    return false
-  },
   isTooMuch: (val1: string | number | undefined, val2: string | number | undefined) => {
     val1 = val1 || '0'
     val2 = val2 || '0'
@@ -104,8 +91,8 @@ const market = {
         const maxMinBands = [maxBand, minBand]
 
         const bandBalances = liquidationBand ? await market.stats.bandBalances(liquidationBand) : null
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
+        const parsedBandsBalances = await fetchChartBandBalancesData(
+          sortBandsLend(bandsBalances),
           liquidationBand,
           market,
           true,
@@ -301,14 +288,10 @@ const user = {
         const resp = await market.stats.bandsInfo()
         const { liquidationBand } = resp ?? {}
 
-        const reversedUserBands = _reverseBands(bands)
-        const isCloseToLiquidation = helpers.getIsUserCloseToLiquidation(
-          reversedUserBands[0],
-          liquidationBand,
-          oraclePriceBand,
-        )
-        const parsedBandsBalances = await _fetchChartBandBalancesData(
-          _sortBands(bandsBalances),
+        const reversedUserBands = reverseBands(bands)
+        const isCloseToLiquidation = getIsUserCloseToLiquidation(reversedUserBands[0], liquidationBand, oraclePriceBand)
+        const parsedBandsBalances = await fetchChartBandBalancesData(
+          sortBandsLend(bandsBalances),
           liquidationBand,
           market,
           false,
@@ -329,7 +312,7 @@ const user = {
             loss,
             leverage,
             pnl,
-            status: _getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
+            status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',
         }
@@ -434,7 +417,7 @@ const loanCreate = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -487,7 +470,7 @@ const loanCreate = {
         healthFull: fulfilledValue(healthFullResp) ?? '',
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         prices: fulfilledValue(pricesResp) ?? [],
         routeImage: fulfilledValue(routesResp) ?? null,
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
@@ -555,7 +538,7 @@ const loanCreate = {
           maxRecv: maxRecv || '',
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
-          bands: bands ? _reverseBands(bands) : [0, 0],
+          bands: bands ? reverseBands(bands) : [0, 0],
         }
         liqRangesList.push(detail)
         liqRangesListMapper[n] = { ...detail, sliderIdx }
@@ -584,7 +567,7 @@ const loanCreate = {
           maxRecv: maxRecv || '',
           maxRecvError: maxRecvsResults.status === 'rejected' ? maxRecvsResults.reason : '',
           prices: nLoanPrices ? [nLoanPrices[1], nLoanPrices[0]] : [],
-          bands: bands ? _reverseBands(bands) : [0, 0],
+          bands: bands ? reverseBands(bands) : [0, 0],
         }
         liqRangesList.push(detail)
         liqRangesListMapper[n] = { ...detail, sliderIdx }
@@ -741,7 +724,7 @@ const loanBorrowMore = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -799,7 +782,7 @@ const loanBorrowMore = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         expectedCollateral: fulfilledValue(expectedCollateralResp) ?? null,
         routeImage: fulfilledValue(routesResp) ?? null,
         ..._getPriceImpactResp(priceImpactResp, slippage),
@@ -937,7 +920,7 @@ const loanRepay = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp) ?? null,
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       resp.error = _detailInfoRespErrorMessage(futureRatesResp, bandsResp)
       return resp
@@ -1017,7 +1000,7 @@ const loanRepay = {
         healthNotFull: fulfilledValue(healthNotFullResp) ?? '',
         futureRates: fulfilledValue(futureRatesResp),
         prices: fulfilledValue(pricesResp) ?? [],
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
         repayIsAvailable: fulfilledValue(repayIsAvailableResp) ?? false,
         repayIsFull,
         expectedBorrowed,
@@ -1217,7 +1200,7 @@ const loanCollateralAdd = {
         healthNotFull,
         futureRates: null,
         prices,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       return resp
     } catch (error) {
@@ -1300,7 +1283,7 @@ const loanCollateralRemove = {
         healthNotFull,
         futureRates: null,
         prices,
-        bands: _reverseBands(bands),
+        bands: reverseBands(bands),
       }
       return resp
     } catch (error) {
@@ -1788,54 +1771,7 @@ const apiLending = {
 
 export default apiLending
 
-/** healthNotFull is needed here because:
- * User full health can be > 0
- * But user is at risk of liquidation if not full < 0
- */
-export function _getLiquidationStatus(
-  healthNotFull: string,
-  userIsCloseToLiquidation: boolean,
-  userStateStablecoin: string,
-) {
-  const userStatus: { label: string; colorKey: HealthColorKey; tooltip: string } = {
-    label: 'Healthy',
-    colorKey: 'healthy',
-    tooltip: '',
-  }
-
-  if (+healthNotFull < 0) {
-    userStatus.label = 'Hard liquidatable'
-    userStatus.colorKey = 'hard_liquidation'
-    userStatus.tooltip =
-      'Hard liquidation is like a usual liquidation, which can happen only if you experience significant losses in soft liquidation so that you get below 0 health.'
-  } else if (+userStateStablecoin > 0) {
-    userStatus.label = 'Soft liquidation'
-    userStatus.colorKey = 'soft_liquidation'
-    userStatus.tooltip =
-      'Soft liquidation is the initial process of collateral being converted into stablecoin, you may experience some degree of loss.'
-  } else if (userIsCloseToLiquidation) {
-    userStatus.label = 'Close to liquidation'
-    userStatus.colorKey = 'close_to_liquidation'
-  }
-
-  return userStatus
-}
-
-export function _reverseBands(bands: [number, number] | number[]) {
-  return [bands[1], bands[0]] as [number, number]
-}
-
-export function _sortBands(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
-  const sortedKeys = lodash.sortBy(Object.keys(bandsBalances), (k) => +k)
-  const bandsBalancesArr: { borrowed: string; collateral: string; band: number }[] = []
-  for (const k of sortedKeys) {
-    // @ts-ignore
-    bandsBalancesArr.push({ ...bandsBalances[k], band: k })
-  }
-  return { bandsBalancesArr, bandsBalances }
-}
-
-export async function _fetchChartBandBalancesData(
+export async function fetchChartBandBalancesData(
   { bandsBalances, bandsBalancesArr }: { bandsBalances: BandsBalances; bandsBalancesArr: BandsBalancesArr },
   liquidationBand: number | null,
   market: OneWayMarketTemplate,

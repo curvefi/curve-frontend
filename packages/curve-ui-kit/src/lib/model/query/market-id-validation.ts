@@ -11,8 +11,8 @@ export const marketIdValidationGroup = ({ marketId }: Pick<MarketParams, 'market
     })
   })
 
-export const marketIdValidationSuite = createValidationSuite((params: MarketParams) => {
-  chainValidationGroup(params)
-  llamaApiValidationGroup(params)
-  marketIdValidationGroup(params)
+export const marketIdValidationSuite = createValidationSuite(({ marketId, chainId }: MarketParams) => {
+  chainValidationGroup({ chainId })
+  llamaApiValidationGroup({ chainId })
+  marketIdValidationGroup({ marketId })
 })

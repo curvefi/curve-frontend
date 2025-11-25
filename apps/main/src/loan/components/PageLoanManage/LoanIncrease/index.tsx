@@ -1,4 +1,5 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DetailInfoBorrowRate from '@/loan/components/DetailInfoBorrowRate'
 import DetailInfoEstimateGas from '@/loan/components/DetailInfoEstimateGas'
@@ -12,7 +13,6 @@ import type { FormEstGas, PageLoanManageProps } from '@/loan/components/PageLoan
 import {
   DEFAULT_DETAIL_INFO,
   DEFAULT_FORM_EST_GAS,
-  DEFAULT_HEALTH_MODE,
   DEFAULT_USER_WALLET_BALANCES,
 } from '@/loan/components/PageLoanManage/utils'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'

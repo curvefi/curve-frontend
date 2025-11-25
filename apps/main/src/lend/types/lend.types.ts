@@ -1,6 +1,7 @@
 import { ethers } from 'ethers'
 import type { ReactNode } from 'react'
 import { TITLE } from '@/lend/constants'
+import type { HealthColorKey } from '@/llamalend/llamalend.types'
 import type { IChainId, INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import type { TooltipProps } from '@ui/Tooltip/types'
@@ -93,15 +94,6 @@ export type PageContentProps = {
   api: LlamaApi | null
   market: OneWayMarketTemplate | undefined
   titleMapper: TitleMapper
-}
-export type HealthColorKey = 'healthy' | 'close_to_liquidation' | 'soft_liquidation' | 'hard_liquidation' | ''
-export type HealthMode = {
-  percent: string
-  colorKey: HealthColorKey
-  icon: ReactNode
-  message: string | null
-  warningTitle: string
-  warning: string
 }
 export type LiqRange = {
   prices: string[]
