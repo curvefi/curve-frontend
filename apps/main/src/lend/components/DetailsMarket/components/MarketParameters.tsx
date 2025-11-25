@@ -8,7 +8,6 @@ import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
-import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { t } from '@ui-kit/lib/i18n'
 
 const MarketParameters = ({
@@ -26,14 +25,12 @@ const MarketParameters = ({
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
-  const isAdvancedMode = useUserProfileStore((state) => state.isAdvancedMode)
-
   const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}
   const { pricePerShare, error: pricePerShareError } = vaultPricePerShareResp ?? {}
 
   // prettier-ignore
-  const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions; title?: string; isError: string; isRow?: boolean, isAdvance?: boolean; tooltip?: string }[][] = type === 'borrow' ?
+  const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions; title?: string; isError: string; isRow?: boolean, tooltip?: string }[][] = type === 'borrow' ?
     [
       [
         { label: t`AMM swap fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
@@ -41,7 +38,7 @@ const MarketParameters = ({
         { label: t`Band width factor`, value: parameters?.A, formatOptions: { useGrouping: false }, isError: parametersError },
         { label: t`Loan discount`, value: parameters?.loan_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
         { label: t`Liquidation discount`, value: parameters?.liquidation_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
-        { label: t`Max LTV`, value: _getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, isAdvance: true, tooltip: t`Max possible loan at N=4` },
+        { label: t`Max LTV`, value: _getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, tooltip: t`Max possible loan at N=4` },
       ],
       [
         { label: t`Base price`, value: prices?.basePrice, formatOptions: { decimals: 5 }, title: t`Prices`, isError: pricesError },
@@ -62,35 +59,32 @@ const MarketParameters = ({
     <Box grid gridRowGap={4}>
       {marketDetails.map((details, idx) => (
         <div key={`details-${idx}`}>
-          {details.map(({ label, value, formatOptions, title, isError, isRow, isAdvance, tooltip }) => {
-            const show = typeof isAdvance === 'undefined' || (isAdvance && isAdvancedMode)
-            return (
-              <Fragment key={label}>
-                {show ? (
-                  <>
-                    {title && <SubTitle>{title}</SubTitle>}
-                    {isRow ? (
-                      <Box grid>
-                        <Chip isBold>{label}:</Chip>
-                        <strong>{formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}</strong>
-                      </Box>
-                    ) : (
-                      <DetailInfo key={label} label={label}>
-                        {isError ? (
-                          '?'
-                        ) : (
-                          <Chip {...(tooltip ? { tooltip, tooltipProps: { noWrap: true } } : {})} isBold>
-                            {formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
-                            {tooltip && <Icon className="svg-tooltip" name="InformationSquare" size={16} />}
-                          </Chip>
-                        )}
-                      </DetailInfo>
-                    )}
-                  </>
-                ) : null}
-              </Fragment>
-            )
-          })}
+          {details.map(({ label, value, formatOptions, title, isError, isRow, tooltip }) => (
+            <Fragment key={label}>
+              {
+                <>
+                  {title && <SubTitle>{title}</SubTitle>}
+                  {isRow ? (
+                    <Box grid>
+                      <Chip isBold>{label}:</Chip>
+                      <strong>{formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}</strong>
+                    </Box>
+                  ) : (
+                    <DetailInfo key={label} label={label}>
+                      {isError ? (
+                        '?'
+                      ) : (
+                        <Chip {...(tooltip ? { tooltip, tooltipProps: { noWrap: true } } : {})} isBold>
+                          {formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
+                          {tooltip && <Icon className="svg-tooltip" name="InformationSquare" size={16} />}
+                        </Chip>
+                      )}
+                    </DetailInfo>
+                  )}
+                </>
+              }
+            </Fragment>
+          ))}
         </div>
       ))}
     </Box>
