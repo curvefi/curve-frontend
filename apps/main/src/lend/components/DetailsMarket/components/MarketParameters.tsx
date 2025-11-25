@@ -42,11 +42,13 @@ export const MarketParameters = ({
   type: 'borrow' | 'supply'
 }) => {
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[chainId]?.[marketId])
-  const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[chainId]?.[marketId])
-  const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
-
   const { parameters, error: parametersError } = parametersResp ?? {}
-  const { pricePerShare, error: pricePerShareError } = vaultPricePerShareResp ?? {}
+
+  const {
+    data: pricePerShare,
+    isLoading: isLoadingPricePerShare,
+    error: errorPricePerShare,
+  } = useMarketPricePerShare({ chainId, marketId })
 
   const borrowDetails: MarketDetails[] = [
     {
@@ -88,10 +90,6 @@ export const MarketParameters = ({
     },
   ]
 
-  useEffect(() => {
-    if (type === 'supply' && market) void fetchVaultPricePerShare(chainId, market)
-  }, [type, market, fetchVaultPricePerShare, chainId])
-
   return (
     <Stack gap={Spacing.md}>
       {type === 'borrow' && (
@@ -115,8 +113,9 @@ export const MarketParameters = ({
         {type === 'supply' && (
           <ActionInfo
             label={t`Price per share`}
-            value={pricePerShareError ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
-            loading={pricePerShare == null}
+            value={errorPricePerShare ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
+            loading={isLoadingPricePerShare}
+            error={errorPricePerShare}
           />
         )}
       </Stack>

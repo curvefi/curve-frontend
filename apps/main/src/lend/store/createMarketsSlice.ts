@@ -4,7 +4,6 @@ import apiLending from '@/lend/lib/apiLending'
 import type { State } from '@/lend/store/useStore'
 import {
   Api,
-  ChainId,
   MarketDetailsView,
   MarketsMaxLeverageMapper,
   MarketsPricesMapper,
@@ -15,7 +14,6 @@ import {
   MarketsStatsParametersMapper,
   OneWayMarketTemplate,
 } from '@/lend/types/lend.types'
-import { getErrorMessage } from '@/lend/utils/helpers'
 
 type StateKey = keyof typeof DEFAULT_STATE
 
@@ -28,7 +26,6 @@ type SliceState = {
   ratesMapper: { [chainId: string]: MarketsRatesMapper }
   rewardsMapper: { [chainId: string]: MarketsRewardsMapper }
   marketDetailsView: MarketDetailsView
-  vaultPricePerShare: { [chainId: string]: { [owmId: string]: { pricePerShare: string; error: string } } }
 }
 
 const sliceKey = 'markets'
@@ -41,7 +38,6 @@ export type MarketsSlice = {
 
     // individual
     fetchAll(api: Api, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
-    fetchVaultPricePerShare(chainId: ChainId, OneWayMarketTemplate: OneWayMarketTemplate, shouldRefetch?: boolean): Promise<void>
 
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): void
     setStateByKey<T>(key: StateKey, value: T): void
@@ -59,7 +55,6 @@ const DEFAULT_STATE: SliceState = {
   ratesMapper: {},
   rewardsMapper: {},
   marketDetailsView: '',
-  vaultPricePerShare: {},
 }
 
 const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>['getState']): MarketsSlice => ({
@@ -112,27 +107,6 @@ const createMarketsSlice = (set: StoreApi<State>['setState'], get: StoreApi<Stat
       // invalidate and refetch onchain data
       invalidateMarketDetails({ chainId, marketId })
       await Promise.all(keys.map((key) => sliceState.fetchDatas(key, api, [OneWayMarketTemplate], shouldRefetch)))
-    },
-    fetchVaultPricePerShare: async (chainId, owm, shouldRefetch) => {
-      const sliceState = get()[sliceKey]
-      const resp = { pricePerShare: '', error: '' }
-
-      const { pricePerShare: foundPricePerShare } = sliceState.vaultPricePerShare[chainId]?.[owm.id] ?? {}
-      if (foundPricePerShare && +foundPricePerShare > 0 && !shouldRefetch) {
-        resp.pricePerShare = foundPricePerShare
-      } else {
-        try {
-          resp.pricePerShare = await owm.vault.previewRedeem(1)
-        } catch (error) {
-          console.error(error)
-          resp.error = getErrorMessage(error, 'error-api')
-        }
-
-        sliceState.setStateByActiveKey('vaultPricePerShare', chainId.toString(), {
-          ...(get()[sliceKey].vaultPricePerShare[chainId] ?? {}),
-          [owm.id]: resp,
-        })
-      }
     },
 
     // slice helpers
