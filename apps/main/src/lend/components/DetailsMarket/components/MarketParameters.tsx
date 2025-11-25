@@ -1,14 +1,17 @@
 import { Fragment, useEffect } from 'react'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
-import Box from '@ui/Box'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
 import Chip from '@ui/Typography/Chip'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+
+const { Spacing } = SizesAndSpaces
 
 const MarketParameters = ({
   rChainId,
@@ -56,14 +59,14 @@ const MarketParameters = ({
   }, [type, owm])
 
   return (
-    <Box grid gridRowGap={4}>
+    <Stack gap={Spacing.md}>
       {marketDetails.map((details, idx) => (
         <div key={`details-${idx}`}>
           {details.map(({ label, value, formatOptions, title, isError, tooltip }) => (
             <Fragment key={label}>
               {
                 <>
-                  {title && <SubTitle>{title}</SubTitle>}
+                  {title && <Typography variant="headingXsBold">{title}</Typography>}
                   {
                     <DetailInfo key={label} label={label}>
                       {isError ? (
@@ -82,7 +85,7 @@ const MarketParameters = ({
           ))}
         </div>
       ))}
-    </Box>
+    </Stack>
   )
 }
 

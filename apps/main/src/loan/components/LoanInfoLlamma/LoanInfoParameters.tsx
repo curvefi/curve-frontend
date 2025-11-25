@@ -1,12 +1,12 @@
 import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import useStore from '@/loan/store/useStore'
-import Box from '@ui/Box'
+import Stack from '@mui/material/Stack'
 import DetailInfo from '@ui/DetailInfo'
 import { Chip } from '@ui/Typography'
 import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 
-interface Props extends Pick<PageLoanManageProps, 'llamma' | 'llammaId'> {}
+type Props = Pick<PageLoanManageProps, 'llamma' | 'llammaId'>
 
 const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
@@ -14,10 +14,8 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
   const { parameters, priceInfo } = loanDetails ?? {}
 
   return (
-    <Box grid gridRowGap="1">
-      <DetailInfo label={t`Band width factor`}>
-        <span>{formatNumber(llamma?.A, { useGrouping: false })}</span>
-      </DetailInfo>
+    <Stack>
+      <DetailInfo label={t`Band width factor`}>{formatNumber(llamma?.A, { useGrouping: false })}</DetailInfo>
       <DetailInfo label={t`Base price`}>
         {typeof loanDetails?.basePrice !== 'undefined' && (
           <Chip
@@ -51,7 +49,7 @@ const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
           </Chip>
         )}
       </DetailInfo>
-    </Box>
+    </Stack>
   )
 }
 

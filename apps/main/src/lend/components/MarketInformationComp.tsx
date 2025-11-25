@@ -2,13 +2,14 @@ import { BandsComp } from '@/lend/components/BandsComp'
 import ChartOhlcWrapper from '@/lend/components/ChartOhlcWrapper'
 import DetailsContracts from '@/lend/components/DetailsMarket/components/DetailsContracts'
 import MarketParameters from '@/lend/components/DetailsMarket/components/MarketParameters'
-import { SubTitle } from '@/lend/components/DetailsMarket/styles'
 import networks from '@/lend/networks'
 import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
-import { Stack, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
@@ -108,8 +109,11 @@ export const MarketInformationComp = ({
           <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
             <DetailsContracts rChainId={rChainId} market={market} />
           </Stack>
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
-            <SubTitle>{t`Parameters`}</SubTitle>
+          <Stack
+            gap={Spacing.xs}
+            sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
+          >
+            <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
             <MarketParameters rChainId={rChainId} rOwmId={rOwmId} type={type} />
           </Stack>
         </Stack>
