@@ -1,56 +1,48 @@
-import type { PageLoanManageProps } from '@/loan/components/PageLoanManage/types'
 import useStore from '@/loan/store/useStore'
+import type { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import Stack from '@mui/material/Stack'
-import DetailInfo from '@ui/DetailInfo'
-import { Chip } from '@ui/Typography'
-import { FORMAT_OPTIONS, formatNumber } from '@ui/utils'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 
-type Props = Pick<PageLoanManageProps, 'llamma' | 'llammaId'>
-
-const LoanInfoParameters = ({ llamma, llammaId }: Props) => {
-  const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId])
-
+export const LoanInfoParameters = ({
+  market,
+  marketId: marketId,
+}: {
+  market: MintMarketTemplate | null
+  marketId: string
+}) => {
+  const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
   const { parameters, priceInfo } = loanDetails ?? {}
 
   return (
     <Stack>
-      <DetailInfo label={t`Band width factor`}>{formatNumber(llamma?.A, { useGrouping: false })}</DetailInfo>
-      <DetailInfo label={t`Base price`}>
-        {typeof loanDetails?.basePrice !== 'undefined' && (
-          <Chip
-            size="md"
-            tooltip={formatNumber(loanDetails.basePrice, { decimals: 5 })}
-            tooltipProps={{ placement: 'top-end' }}
-          >
-            {formatNumber(loanDetails.basePrice)}
-          </Chip>
-        )}
-      </DetailInfo>
-      <DetailInfo label={t`Oracle price`}>
-        {typeof priceInfo?.oraclePrice !== 'undefined' && (
-          <Chip
-            size="md"
-            tooltip={formatNumber(priceInfo.oraclePrice, { decimals: 5 })}
-            tooltipProps={{ placement: 'top-end' }}
-          >
-            {formatNumber(priceInfo.oraclePrice)}
-          </Chip>
-        )}
-      </DetailInfo>
-      <DetailInfo label={t`Borrow rate`}>
-        {typeof parameters?.rate !== 'undefined' && (
-          <Chip
-            size="md"
-            tooltip={formatNumber(parameters.rate, { style: 'percent', decimals: 5 })}
-            tooltipProps={{ placement: 'top-end' }}
-          >
-            {formatNumber(parameters.rate, FORMAT_OPTIONS.PERCENT)}
-          </Chip>
-        )}
-      </DetailInfo>
+      <ActionInfo
+        label={t`Band width factor`}
+        value={formatNumber(market?.A, { useGrouping: false })}
+        loading={market?.A == null}
+      />
+
+      <ActionInfo
+        label={t`Base price`}
+        value={formatNumber(loanDetails?.basePrice)}
+        valueTooltip={formatNumber(loanDetails?.basePrice, { decimals: 5 })}
+        loading={loanDetails?.basePrice == null}
+      />
+
+      <ActionInfo
+        label={t`Oracle price`}
+        value={formatNumber(priceInfo?.oraclePrice)}
+        valueTooltip={formatNumber(priceInfo?.oraclePrice, { decimals: 5 })}
+        loading={priceInfo?.oraclePrice == null}
+      />
+
+      <ActionInfo
+        label={t`Borrow rate`}
+        value={formatNumber(parameters?.rate, { style: 'percent' })}
+        valueTooltip={formatNumber(parameters?.rate, { style: 'percent', decimals: 5 })}
+        loading={parameters?.rate == null}
+      />
     </Stack>
   )
 }
-
-export default LoanInfoParameters
