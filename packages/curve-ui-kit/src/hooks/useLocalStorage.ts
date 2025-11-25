@@ -7,9 +7,6 @@ import { type MigrationOptions, useStoredState } from './useStoredState'
 
 const { kebabCase } = lodash
 
-// old keys that are not used anymore - clean them up
-window.localStorage.removeItem('phishing-warning-dismissed')
-
 function getFromLocalStorage<T>(storageKey: string): T | null {
   if (typeof window === 'undefined') {
     return null
@@ -71,4 +68,19 @@ export const getFavoriteMarkets = () => getFromLocalStorage<Address[]>('favorite
 export const useFavoriteMarkets = () => {
   const initialValue = useMemo(() => [], [])
   return useLocalStorage<Address[]>('favoriteMarkets', initialValue)
+}
+
+const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
+
+export const usePhishingWarningDismissed = () => {
+  const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>('phishing-warning-dismissed', null)
+
+  const shouldShowPhishingWarning = useMemo(() => {
+    if (dismissedAt == null) return true
+    const now = Date.now()
+    const timeSinceDismissed = now - dismissedAt
+    return timeSinceDismissed >= ONE_MONTH_MS // Show if dismissed more than a month ago
+  }, [dismissedAt])
+
+  return { dismissedAt, setDismissedAt, shouldShowPhishingWarning }
 }
