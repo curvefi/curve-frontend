@@ -54,20 +54,6 @@ export const Blues = {
   '950': '#171e55',
 } as const
 
-export const Yellows = {
-  '50': '#fff9e6',
-  '100': '#fff9f0',
-  '200': '#fff1db',
-  '300': '#ffe6bd',
-  '400': '#ffd88b',
-  '500': '#ffc300',
-  '600': '#e0ab00',
-  '700': '#c19300',
-  '800': '#a37c0c',
-  '900': '#84671d',
-  '950': '#665223',
-} as const
-
 export const Oranges = {
   '50': '#f0ddd1',
   '100': '#f3cfb9',
@@ -80,6 +66,20 @@ export const Oranges = {
   '800': '#8f4700',
   '900': '#6f3601',
   '950': '#4e2708',
+} as const
+
+export const Yellows = {
+  '50': '#fffbf5',
+  '100': '#fff9f0',
+  '200': '#fff1db',
+  '300': '#ffe6bd',
+  '400': '#ffd88b',
+  '500': '#ffc300',
+  '600': '#e0ab00',
+  '700': '#c19300',
+  '800': '#a37c0c',
+  '900': '#84671d',
+  '950': '#665223',
 } as const
 
 export const Violets = {
@@ -98,6 +98,7 @@ export const Violets = {
 
 export const Spacing = {
   '50': '0',
+  '75': '0.0625rem', // 1px
   '100': '0.125rem', // 2px
   '200': '0.25rem', // 4px
   '300': '0.5rem', // 8px
@@ -110,6 +111,8 @@ export const Spacing = {
 } as const
 
 export const Sizing = {
+  '10': '0.0625rem', // 1px
+  '25': '0.125rem', // 2px
   '50': '0.25rem', // 4px
   '100': '0.5rem', // 8px
   '125': '0.75rem', // 12px
@@ -119,7 +122,6 @@ export const Sizing = {
   '300': '1.5rem', // 24px
   '350': '1.75rem', // 28px
   '400': '2rem', // 32px
-  '450': '2.25rem', // 36px
   '500': '2.5rem', // 40px
   '600': '3rem', // 48px
   '650': '3.5rem', // 56px
