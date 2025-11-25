@@ -107,10 +107,8 @@ export const MarketInformationComp = ({
           <Stack sx={{ flexGrow: 1, padding: Spacing.md }}>
             <DetailsContracts rChainId={rChainId} market={market} />
           </Stack>
-          <Stack
-            gap={Spacing.xs}
-            sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
-          >
+
+          <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
             <MarketParameters chainId={rChainId} market={market} marketId={rOwmId} type={type} />
           </Stack>
         </Stack>

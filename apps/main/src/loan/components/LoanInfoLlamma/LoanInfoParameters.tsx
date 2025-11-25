@@ -13,7 +13,7 @@ export const LoanInfoParameters = ({
   marketId: string
 }) => {
   const loanDetails = useStore((state) => state.loans.detailsMapper[marketId])
-  const { parameters, priceInfo } = loanDetails ?? {}
+  const { parameters } = loanDetails ?? {}
 
   return (
     <Stack>
@@ -21,20 +21,6 @@ export const LoanInfoParameters = ({
         label={t`Band width factor`}
         value={formatNumber(market?.A, { useGrouping: false })}
         loading={market?.A == null}
-      />
-
-      <ActionInfo
-        label={t`Base price`}
-        value={formatNumber(loanDetails?.basePrice)}
-        valueTooltip={formatNumber(loanDetails?.basePrice, { decimals: 5 })}
-        loading={loanDetails?.basePrice == null}
-      />
-
-      <ActionInfo
-        label={t`Oracle price`}
-        value={formatNumber(priceInfo?.oraclePrice)}
-        valueTooltip={formatNumber(priceInfo?.oraclePrice, { decimals: 5 })}
-        loading={priceInfo?.oraclePrice == null}
       />
 
       <ActionInfo

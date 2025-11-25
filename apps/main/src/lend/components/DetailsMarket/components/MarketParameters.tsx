@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useMarketPricePerShare } from '@/lend/entities/market-details'
 import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
+import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import type { LendMarketTemplate } from '@curvefi/llamalend-api/lib/lendMarkets'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
@@ -22,14 +23,11 @@ function getMaxLTV(a: string | undefined, loanDiscount: string | undefined) {
 }
 
 type MarketDetails = {
-  title: string
-  details: {
-    label: string
-    value: string | number | undefined
-    formatOptions?: NumberFormatOptions
-    isError: string
-    tooltip?: string
-  }[]
+  label: string
+  value: string | number | undefined
+  formatOptions: NumberFormatOptions
+  isError: string
+  tooltip?: string
 }
 
 export const MarketParameters = ({
@@ -43,35 +41,52 @@ export const MarketParameters = ({
   marketId: string
   type: 'borrow' | 'supply'
 }) => {
-  const loanPricesResp = useStore((state) => state.markets.pricesMapper[chainId]?.[marketId])
   const parametersResp = useStore((state) => state.markets.statsParametersMapper[chainId]?.[marketId])
   const vaultPricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[chainId]?.[marketId])
   const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
-  const { prices, error: pricesError } = loanPricesResp ?? {}
   const { parameters, error: parametersError } = parametersResp ?? {}
   const { pricePerShare, error: pricePerShareError } = vaultPricePerShareResp ?? {}
 
-  // prettier-ignore
-  const marketDetails: MarketDetails[] = type === 'borrow' ?
-    [
-      { title: t`Loan Parameters`, details: [
-        { label: t`AMM swap fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
-        { label: t`Admin fee`, value: parameters?.admin_fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
-        { label: t`Band width factor`, value: parameters?.A, formatOptions: { useGrouping: false }, isError: parametersError },
-        { label: t`Loan discount`, value: parameters?.loan_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
-        { label: t`Liquidation discount`, value: parameters?.liquidation_discount, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError },
-        { label: t`Max LTV`, value: getMaxLTV( parameters?.A, parameters?.loan_discount), formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 }, isError: parametersError, tooltip: t`Max possible loan at N=4` },
-      ]},
-      { title: t`Prices`, details: [
-        { label: t`Base price`, value: prices?.basePrice, formatOptions: { decimals: 5 }, isError: pricesError },
-        { label: t`Oracle price`, value: prices?.oraclePrice, formatOptions: { decimals: 5 }, isError: pricesError },
-      ]},
-    ] : [
-      {title: t`Prices`, details: [
-        { label: t`Price per share`, value: pricePerShare, formatOptions: { decimals: 5 }, isError: pricePerShareError },
-      ]}
-    ]
+  const borrowDetails: MarketDetails[] = [
+    {
+      label: t`AMM swap fee`,
+      value: parameters?.fee,
+      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
+      isError: parametersError,
+    },
+    {
+      label: t`Admin fee`,
+      value: parameters?.admin_fee,
+      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
+      isError: parametersError,
+    },
+    {
+      label: t`Band width factor`,
+      value: parameters?.A,
+      formatOptions: { useGrouping: false },
+      isError: parametersError,
+    },
+    {
+      label: t`Loan discount`,
+      value: parameters?.loan_discount,
+      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
+      isError: parametersError,
+    },
+    {
+      label: t`Liquidation discount`,
+      value: parameters?.liquidation_discount,
+      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
+      isError: parametersError,
+    },
+    {
+      label: t`Max LTV`,
+      value: getMaxLTV(parameters?.A, parameters?.loan_discount),
+      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
+      isError: parametersError,
+      tooltip: t`Max possible loan at N=4`,
+    },
+  ]
 
   useEffect(() => {
     if (type === 'supply' && market) void fetchVaultPricePerShare(chainId, market)
@@ -79,22 +94,32 @@ export const MarketParameters = ({
 
   return (
     <Stack gap={Spacing.md}>
-      {marketDetails.map(({ title, details }) => (
-        <Stack gap={Spacing.xs} key={title}>
-          <Typography variant="headingXsBold">{title}</Typography>
-
-          {details.map(({ label, value, formatOptions, isError, tooltip }) => (
-            <Stack gap={Spacing.xs} key={label}>
-              <ActionInfo
-                label={label}
-                value={isError ? '?' : formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}
-                valueTooltip={tooltip}
-                loading={value == null}
-              />
-            </Stack>
+      {type === 'borrow' && (
+        <Stack gap={Spacing.xs}>
+          <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
+          {borrowDetails.map(({ label, value, formatOptions, isError, tooltip }) => (
+            <ActionInfo
+              key={label}
+              label={label}
+              value={isError ? '?' : formatNumber(value, formatOptions)}
+              valueTooltip={tooltip}
+              loading={value == null}
+            />
           ))}
         </Stack>
-      ))}
+      )}
+
+      <Stack gap={Spacing.xs}>
+        <Typography variant="headingXsBold">{t`Prices`}</Typography>
+        <MarketPrices chainId={chainId} marketId={marketId} />
+        {type === 'supply' && (
+          <ActionInfo
+            label={t`Price per share`}
+            value={pricePerShareError ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
+            loading={pricePerShare == null}
+          />
+        )}
+      </Stack>
     </Stack>
   )
 }

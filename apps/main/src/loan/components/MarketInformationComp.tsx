@@ -1,6 +1,7 @@
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
+import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
@@ -118,12 +119,20 @@ export const MarketInformationComp = ({
               address={llamma?.monetaryPolicy ?? ''}
             />
           </Stack>
+
           <Stack
-            gap={Spacing.xs}
+            gap={Spacing.md}
             sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
           >
-            <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-            <LoanInfoParameters market={llamma} marketId={marketId} />
+            <Stack gap={Spacing.xs}>
+              <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
+              <LoanInfoParameters market={llamma} marketId={marketId} />
+            </Stack>
+
+            <Stack gap={Spacing.xs}>
+              <Typography variant="headingXsBold">{t`Prices`}</Typography>
+              <MarketPrices chainId={chainId} marketId={marketId} />
+            </Stack>
           </Stack>
         </Stack>
       )}
