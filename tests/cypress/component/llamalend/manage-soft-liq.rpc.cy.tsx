@@ -21,8 +21,11 @@ describe('Manage soft liquidation', () => {
   const TestComponent = () => {
     const { isHydrated, llamaApi } = useConnection()
     const market = useMemo(() => isHydrated && llamaApi?.getMintMarket(MARKET_ID), [isHydrated, llamaApi])
-
-    return market ? <ManageSoftLiquidation marketId={MARKET_ID} chainId={Chain.Ethereum} /> : <Skeleton />
+    return market ? (
+      <ManageSoftLiquidation marketId={MARKET_ID} chainId={Chain.Ethereum} network={network} />
+    ) : (
+      <Skeleton />
+    )
   }
 
   const TestComponentWrapper = () => (

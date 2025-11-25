@@ -13,7 +13,6 @@ import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import { MarketInformationComp } from '@/loan/components/MarketInformationComp'
 import LoanMange from '@/loan/components/PageLoanManage/index'
 import type { FormType } from '@/loan/components/PageLoanManage/types'
-import { hasDeleverage } from '@/loan/components/PageLoanManage/utils'
 import { useMintMarket } from '@/loan/entities/mint-markets'
 import { useLoanPositionDetails } from '@/loan/hooks/useLoanPositionDetails'
 import { useMarketDetails } from '@/loan/hooks/useMarketDetails'
@@ -21,6 +20,7 @@ import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import type { CollateralUrlParams } from '@/loan/types/loan.types'
+import { hasDeleverage } from '@/loan/utils/leverage'
 import { getLoanCreatePathname, parseCollateralParams, useChainId } from '@/loan/utils/utilsRouter'
 import { isChain } from '@curvefi/prices-api'
 import Stack from '@mui/material/Stack'
@@ -170,7 +170,7 @@ const Page = () => {
       )}
       <DetailPageStack>
         <AppPageFormsWrapper>
-          {isManageSoftLiq && <ManageSoftLiquidation marketId={marketId} chainId={rChainId} />}
+          {isManageSoftLiq && <ManageSoftLiquidation marketId={marketId} chainId={rChainId} network={network} />}
           {isValidRouterParams && !isManageSoftLiq && (
             <LoanMange
               {...formProps}

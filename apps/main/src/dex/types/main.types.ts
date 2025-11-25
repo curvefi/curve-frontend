@@ -52,6 +52,7 @@ export interface NetworkConfig extends BaseConfig<NetworkEnum> {
   twocryptoFactoryOld: boolean
   twocryptoFactory: boolean
   tricryptoFactory: boolean
+  fxswapFactory: boolean
   hasFactory: boolean
   pricesApi: boolean
 }

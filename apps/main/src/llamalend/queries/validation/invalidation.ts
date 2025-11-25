@@ -7,8 +7,9 @@ import { invalidateUserState } from '../user-state.query'
  * Helper function to easily invalidate the entire user state of a market.
  * Useful when their loan states has changed and the entire UI needs an update.
  */
-export const invalidateAllUserMarketDetails = (params: UserMarketParams) => {
-  invalidateUserState(params)
-  invalidateUserHealth(params)
-  invalidateUserBalances(params)
-}
+export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams) =>
+  Promise.all([
+    invalidateUserState({ marketId, userAddress, chainId }),
+    invalidateUserHealth({ marketId, userAddress, chainId }),
+    invalidateUserBalances({ userAddress, chainId }),
+  ])

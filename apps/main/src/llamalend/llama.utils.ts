@@ -7,9 +7,9 @@ import { MintMarketTemplate } from '@curvefi/llamalend-api/lib/mintMarkets'
 import { Chain } from '@curvefi/prices-api'
 import { getUserMarketCollateralEvents as getMintUserMarketCollateralEvents } from '@curvefi/prices-api/crvusd'
 import { getUserMarketCollateralEvents as getLendUserMarketCollateralEvents } from '@curvefi/prices-api/lending'
-import type { BaseConfig } from '@ui/utils'
+import { notFalsy } from '@curvefi/prices-api/objects.util'
 import { requireLib, type Wallet } from '@ui-kit/features/connect-wallet'
-import { CRVUSD } from '@ui-kit/utils'
+import { CRVUSD, type Decimal, formatNumber } from '@ui-kit/utils'
 
 /**
  * Gets a Llama market (either a mint or lend market) by its ID.
@@ -27,6 +27,23 @@ export const hasLeverage = (market: LlamaMarketTemplate) =>
   market instanceof LendMarketTemplate
     ? market.leverage.hasLeverage()
     : market.leverageZap !== zeroAddress || market.leverageV2.hasLeverage()
+
+const getBorrowSymbol = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? CRVUSD.symbol : market.borrowed_token.symbol
+
+const getCollateralSymbol = (market: LlamaMarketTemplate) =>
+  market instanceof MintMarketTemplate ? market.collateralSymbol : market.collateral_token.symbol
+
+export const formatTokenAmounts = (
+  market: LlamaMarketTemplate,
+  { userBorrowed, userCollateral }: { userBorrowed?: Decimal; userCollateral?: Decimal },
+) =>
+  notFalsy(
+    userBorrowed && +userBorrowed && `${formatNumber(userBorrowed, { abbreviate: false })} ${getBorrowSymbol(market)}`,
+    userCollateral &&
+      +userCollateral &&
+      `${formatNumber(userCollateral, { abbreviate: false })} ${getCollateralSymbol(market)}`,
+  ).join(', ')
 
 export const getTokens = (market: LlamaMarketTemplate) =>
   market instanceof MintMarketTemplate
@@ -81,7 +98,7 @@ export const calculateLtv = (
  */
 export const updateUserEventsApi = (
   wallet: Wallet,
-  { id: networkId }: BaseConfig<LlamaNetworkId>,
+  { id: networkId }: { id: LlamaNetworkId },
   market: LlamaMarketTemplate,
   txHash: string,
 ) => {
@@ -161,6 +178,9 @@ export function getIsUserCloseToLiquidation(
 export function reverseBands(bands: [number, number] | number[]) {
   return [bands[1], bands[0]] as [number, number]
 }
+
+// There's a slight difference in types (borrowed vs stablecoin) that I didn't want to touch at the risk of breaking things;
+// I only want to move code, not change. At least they're neatly in the same place now.
 
 export function sortBandsLend(bandsBalances: { [index: number]: { borrowed: string; collateral: string } }) {
   const sortedKeys = sortBy(Object.keys(bandsBalances), (k) => +k)

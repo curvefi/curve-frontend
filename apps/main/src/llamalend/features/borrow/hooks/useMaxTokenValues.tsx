@@ -24,13 +24,13 @@ export function useMaxTokenValues(
 ) {
   const {
     data: userBalance,
-    isError: isBalanceError,
+    error: balanceError,
     isLoading: isBalanceLoading,
   } = useTokenBalance(params, collateralToken)
-  const { data: maxBorrow, isError: isErrorMaxBorrow, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
+  const { data: maxBorrow, error: maxBorrowError, isLoading: isLoadingMaxBorrow } = useCreateLoanMaxReceive(params)
   const {
     data: maxTotalLeverage,
-    isError: isErrorMaxLeverage,
+    error: maxLeverageError,
     isLoading: isLoadingMaxLeverage,
   } = useMarketMaxLeverage(params)
 
@@ -46,12 +46,20 @@ export function useMaxTokenValues(
   useEffect(() => form.setValue('maxCollateral', maxCollateral, setValueOptions), [form, maxCollateral])
 
   return {
-    isCollateralLoading: !collateralToken || isLoadingMaxBorrow || isBalanceLoading,
-    isDebtLoading: !collateralToken || isLoadingMaxBorrow,
-    isCollateralError: isErrorMaxBorrow || isBalanceError,
-    isDebtError: isErrorMaxBorrow,
-    isLeverageError: isErrorMaxLeverage || isErrorMaxBorrow,
-    isLeverageLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
-    maxLeverage,
+    collateral: {
+      data: maxCollateral,
+      isLoading: !collateralToken || isLoadingMaxBorrow || isBalanceLoading,
+      error: maxBorrowError || balanceError,
+    },
+    debt: {
+      data: maxDebt,
+      isLoading: !collateralToken || isLoadingMaxBorrow,
+      error: maxBorrowError,
+    },
+    maxLeverage: {
+      data: maxLeverage,
+      isLoading: isLoadingMaxLeverage || isLoadingMaxBorrow,
+      error: maxLeverageError || maxBorrowError,
+    },
   }
 }

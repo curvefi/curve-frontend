@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
-import { getHealthMode } from '@/llamalend/health.util'
+import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
@@ -50,7 +50,7 @@ export const useLoanPositionDetails = ({
   useEffect(() => {
     if (!lodash.isUndefined(oraclePriceBand) && healthFull && healthNotFull && userBands) {
       const fetchedHealthMode = getHealthMode(
-        undefined,
+        DEFAULT_BORROW_TOKEN_SYMBOL,
         oraclePriceBand,
         '',
         userBands,

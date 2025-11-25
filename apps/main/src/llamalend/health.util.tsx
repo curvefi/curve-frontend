@@ -4,10 +4,12 @@ import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import { getIsUserCloseToLiquidation } from './llama.utils'
 
+export const DEFAULT_BORROW_TOKEN_SYMBOL = 'crvUSD' as const
+
 // 1. If health(full=true) < loan_discount, user is at risk to go from healthy mode to soft liquidation mode (green —> orange).
 // 2. If health(full=false) < liquidation_discount , user is at risk to go from soft liquidation mode to hard liquidation mode (orange —> red).
 export function getHealthMode(
-  borrowedTokenSymbol: string | undefined,
+  borrowedTokenSymbol: string | undefined = '',
   oraclePriceBand: number | null,
   amount: string,
   bands: [number, number] | number[],

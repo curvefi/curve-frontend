@@ -6,10 +6,13 @@ import networks from '@/loan/networks'
 import type { LiqRange, MaxRecvLeverage, Provider } from '@/loan/store/types'
 import { ChainId, LlamaApi, Llamma, UserLoanDetails, type BandBalance } from '@/loan/types/loan.types'
 import { fulfilledValue, getErrorMessage, log } from '@/loan/utils/helpers'
+import { hasV2Leverage } from '@/loan/utils/leverage'
 import type { TGas } from '@curvefi/llamalend-api/lib/interfaces'
 import PromisePool from '@supercharge/promise-pool'
 import { BN } from '@ui/utils'
 import { waitForTransaction, waitForTransactions } from '@ui-kit/lib/ethers'
+import { ROUTE_AGGREGATOR_LABELS, RouteAggregator } from '../constants'
+import { getLeverageV2RepayArgs, isHigherThanMaxSlippage } from '../utils/utilsLoan'
 
 export const network = {
   1: {
@@ -106,7 +109,7 @@ async function fetchChartBandBalancesData(
 export function loadingLRPrices(prices: string[]) {
   if (!prices) return
   if (prices.length === 0) return []
-  let randomNum = Math.floor(Math.random() * (100 - 1 + 1) + 1)
+  let randomNum = Math.floor(Math.random() * 100 + 1)
   randomNum = randomNum * 0.000001
   return [`${+prices[0] + randomNum}`, `${+prices[1] + randomNum}`]
 }
@@ -1017,9 +1020,26 @@ const loanDeleverage = {
   estGas: async (activeKey: string, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('estGas', llamma.collateralSymbol, collateral, maxSlippage)
     const resp = { activeKey, estimatedGas: initialGas, error: '' }
+    const slippage = Number(maxSlippage) || 0
 
     try {
-      resp.estimatedGas = await llamma.deleverage.estimateGas.repay(collateral, +maxSlippage)
+      if (hasV2Leverage(llamma)) {
+        const repayArgs = getLeverageV2RepayArgs(collateral)
+        await llamma.leverageV2.repayExpectedBorrowed(
+          repayArgs.stateCollateral,
+          repayArgs.userCollateral,
+          repayArgs.userBorrowed,
+          slippage,
+        )
+        resp.estimatedGas = await llamma.leverageV2.estimateGas.repay(
+          repayArgs.stateCollateral,
+          repayArgs.userCollateral,
+          repayArgs.userBorrowed,
+          slippage,
+        )
+      } else {
+        resp.estimatedGas = await llamma.deleverage.estimateGas.repay(collateral, slippage)
+      }
       return resp
     } catch (error) {
       console.error(error)
@@ -1052,36 +1072,110 @@ const loanDeleverage = {
     }
 
     try {
-      // check if deleverage is available
-      const deleverageCollateral = +userState.collateral > 0 ? userState.collateral : collateral
-      if (+deleverageCollateral > 0) {
-        resp.isAvailable = await llamma.deleverage.isAvailable(deleverageCollateral)
-      }
+      const slippage = Number(maxSlippage) || 0
+      if (hasV2Leverage(llamma)) {
+        const repayArgs = getLeverageV2RepayArgs(collateral)
+        const availabilityCollateral = +userState.collateral > 0 ? userState.collateral : repayArgs.stateCollateral
+        const availabilityArgs = getLeverageV2RepayArgs(availabilityCollateral)
 
-      if (resp.isAvailable && +collateral > 0) {
-        resp.isFullRepayment = await llamma.deleverage.isFullRepayment(collateral)
+        if (+availabilityArgs.stateCollateral > 0) {
+          resp.isAvailable = await llamma.leverageV2.repayIsAvailable(
+            availabilityArgs.stateCollateral,
+            availabilityArgs.userCollateral,
+            availabilityArgs.userBorrowed,
+            address,
+          )
+        }
 
-        const [{ stablecoins, routeIdx }, priceImpact] = await Promise.all([
-          llamma.deleverage.repayStablecoins(collateral),
-          llamma.deleverage.priceImpact(collateral),
-        ])
-        resp.receiveStablecoin = stablecoins
-        resp.routeName = await llamma.deleverage.getRouteName(routeIdx)
-        resp.priceImpact = priceImpact
-        resp.isHighImpact = +priceImpact > 0 && +maxSlippage > 0 ? +priceImpact > +maxSlippage : false
+        if (resp.isAvailable && +repayArgs.stateCollateral > 0) {
+          const repayExpected = await llamma.leverageV2.repayExpectedBorrowed(
+            repayArgs.stateCollateral,
+            repayArgs.userCollateral,
+            repayArgs.userBorrowed,
+            slippage,
+          )
+          resp.receiveStablecoin = repayExpected.totalBorrowed
+          resp.isFullRepayment = await llamma.leverageV2.repayIsFull(
+            repayArgs.stateCollateral,
+            repayArgs.userCollateral,
+            repayArgs.userBorrowed,
+            address,
+          )
 
-        if (!resp.isFullRepayment) {
-          const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
-            llamma.deleverage.repayHealth(collateral, true, address),
-            llamma.deleverage.repayHealth(collateral, false, address),
-            llamma.deleverage.repayBands(collateral, address),
-            llamma.deleverage.repayPrices(collateral, address),
+          resp.priceImpact = await llamma.leverageV2.repayPriceImpact(
+            repayArgs.stateCollateral,
+            repayArgs.userCollateral,
+          )
+          resp.isHighImpact = isHigherThanMaxSlippage(resp.priceImpact, maxSlippage)
+          resp.routeName = ROUTE_AGGREGATOR_LABELS[RouteAggregator.Odos]
+
+          if (!resp.isFullRepayment) {
+            const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+              llamma.leverageV2.repayHealth(
+                repayArgs.stateCollateral,
+                repayArgs.userCollateral,
+                repayArgs.userBorrowed,
+                true,
+                address,
+              ),
+              llamma.leverageV2.repayHealth(
+                repayArgs.stateCollateral,
+                repayArgs.userCollateral,
+                repayArgs.userBorrowed,
+                false,
+                address,
+              ),
+              llamma.leverageV2.repayBands(
+                repayArgs.stateCollateral,
+                repayArgs.userCollateral,
+                repayArgs.userBorrowed,
+                address,
+              ),
+              llamma.leverageV2.repayPrices(
+                repayArgs.stateCollateral,
+                repayArgs.userCollateral,
+                repayArgs.userBorrowed,
+                address,
+              ),
+            ])
+
+            resp.healthFull = fulfilledValue(healthFullResult) ?? ''
+            resp.healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
+            resp.bands = reverseBands(fulfilledValue(bandsResult) ?? [0, 0])
+            resp.prices = fulfilledValue(pricesResult) ?? []
+          }
+        }
+      } else {
+        const deleverageCollateral = +userState.collateral > 0 ? userState.collateral : collateral
+        if (+deleverageCollateral > 0) {
+          resp.isAvailable = await llamma.deleverage.isAvailable(deleverageCollateral)
+        }
+
+        if (resp.isAvailable && +collateral > 0) {
+          resp.isFullRepayment = await llamma.deleverage.isFullRepayment(collateral)
+
+          const [{ stablecoins, routeIdx }, priceImpact] = await Promise.all([
+            llamma.deleverage.repayStablecoins(collateral),
+            llamma.deleverage.priceImpact(collateral),
           ])
+          resp.receiveStablecoin = stablecoins
+          resp.routeName = await llamma.deleverage.getRouteName(routeIdx)
+          resp.priceImpact = priceImpact
+          resp.isHighImpact = isHigherThanMaxSlippage(priceImpact, maxSlippage)
 
-          resp.healthFull = fulfilledValue(healthFullResult) ?? ''
-          resp.healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
-          resp.bands = reverseBands(fulfilledValue(bandsResult) ?? [0, 0])
-          resp.prices = fulfilledValue(pricesResult) ?? []
+          if (!resp.isFullRepayment) {
+            const [healthFullResult, healthNotFullResult, bandsResult, pricesResult] = await Promise.allSettled([
+              llamma.deleverage.repayHealth(collateral, true, address),
+              llamma.deleverage.repayHealth(collateral, false, address),
+              llamma.deleverage.repayBands(collateral, address),
+              llamma.deleverage.repayPrices(collateral, address),
+            ])
+
+            resp.healthFull = fulfilledValue(healthFullResult) ?? ''
+            resp.healthNotFull = fulfilledValue(healthNotFullResult) ?? ''
+            resp.bands = reverseBands(fulfilledValue(bandsResult) ?? [0, 0])
+            resp.prices = fulfilledValue(pricesResult) ?? []
+          }
         }
       }
 
@@ -1095,9 +1189,26 @@ const loanDeleverage = {
   repay: async (activeKey: string, provider: Provider, llamma: Llamma, collateral: string, maxSlippage: string) => {
     log('deleverageRepay', llamma.collateralSymbol, collateral, maxSlippage)
     const resp = { activeKey, hash: '', error: '' }
+    const slippage = Number(maxSlippage) || 0
 
     try {
-      resp.hash = await llamma.deleverage.repay(collateral, +maxSlippage)
+      if (hasV2Leverage(llamma)) {
+        const repayArgs = getLeverageV2RepayArgs(collateral)
+        await llamma.leverageV2.repayExpectedBorrowed(
+          repayArgs.stateCollateral,
+          repayArgs.userCollateral,
+          repayArgs.userBorrowed,
+          slippage,
+        )
+        resp.hash = await llamma.leverageV2.repay(
+          repayArgs.stateCollateral,
+          repayArgs.userCollateral,
+          repayArgs.userBorrowed,
+          slippage,
+        )
+      } else {
+        resp.hash = await llamma.deleverage.repay(collateral, slippage)
+      }
       await waitForTransaction(resp.hash, provider)
       return resp
     } catch (error) {

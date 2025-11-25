@@ -4,26 +4,24 @@ import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
-import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
-import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { notFalsy, recordEntries } from '@curvefi/prices-api/objects.util'
+import type { IChainId as LlamaChainId, INetworkName as LlamaNetworkId } from '@curvefi/llamalend-api/lib/interfaces'
 import { vestResolver } from '@hookform/resolvers/vest'
-import type { BaseConfig } from '@ui/utils'
 import { useDebouncedValue } from '@ui-kit/hooks/useDebounce'
 import { formDefaultOptions } from '@ui-kit/lib/model'
 import { Decimal } from '@ui-kit/utils'
 import { SLIPPAGE_PRESETS } from '@ui-kit/widgets/SlippageSettings/slippage.utils'
-import { BORROW_PRESET_RANGES, BorrowPreset } from '../../constants'
-import { type CreateLoanOptions, useCreateLoanMutation } from '../../mutations/create-loan.mutation'
-import { useBorrowCreateLoanIsApproved } from '../../queries/create-loan/borrow-create-loan-approved.query'
-import { borrowFormValidationSuite } from '../../queries/validation/borrow.validation'
-import { useMaxTokenValues } from './hooks/useMaxTokenValues'
-import { type BorrowForm } from './types'
+import { BORROW_PRESET_RANGES, BorrowPreset } from '../../../constants'
+import { type CreateLoanOptions, useCreateLoanMutation } from '../../../mutations/create-loan.mutation'
+import { useBorrowCreateLoanIsApproved } from '../../../queries/create-loan/borrow-create-loan-approved.query'
+import { borrowFormValidationSuite } from '../../../queries/validation/borrow.validation'
+import { useFormErrors } from '../react-form.utils'
+import { type BorrowForm } from '../types'
+import { useMaxTokenValues } from './useMaxTokenValues'
 
 const useCallbackAfterFormUpdate = (form: UseFormReturn<BorrowForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export function useBorrowForm<ChainId extends IChainId>({
+export function useCreateLoanForm<ChainId extends LlamaChainId>({
   market,
   network,
   network: { chainId },
@@ -31,7 +29,7 @@ export function useBorrowForm<ChainId extends IChainId>({
   onCreated,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<INetworkName, ChainId>
+  network: { id: LlamaNetworkId; chainId: ChainId }
   preset: BorrowPreset
   onCreated: CreateLoanOptions['onCreated']
 }) {
@@ -59,16 +57,14 @@ export function useBorrowForm<ChainId extends IChainId>({
     ),
   )
 
-  const { data: isApproved } = useBorrowCreateLoanIsApproved(params, !!market)
-
   const {
     onSubmit,
     isPending: isCreating,
     isSuccess: isCreated,
     error: creationError,
-    txHash,
+    data,
     reset: resetCreation,
-  } = useCreateLoanMutation({ network, marketId: market?.id, reset: form.reset, onCreated })
+  } = useCreateLoanMutation({ network, marketId: market?.id, onReset: form.reset, onCreated, userAddress })
 
   const { borrowToken, collateralToken } = useMemo(() => market && getTokens(market), [market]) ?? {}
 
@@ -85,17 +81,9 @@ export function useBorrowForm<ChainId extends IChainId>({
     collateralToken,
     isCreated,
     creationError,
-    txHash,
-    isApproved,
+    txHash: data?.hash,
+    isApproved: useBorrowCreateLoanIsApproved(params),
     tooMuchDebt: !!form.formState.errors['maxDebt'],
-    formErrors: useMemo(
-      () =>
-        notFalsy(
-          ...recordEntries(form.formState.errors)
-            .filter(([field, error]) => field in form.formState.dirtyFields && error?.message)
-            .map(([field, error]) => [field, error!.message!] as const),
-        ),
-      [form.formState],
-    ),
+    formErrors: useFormErrors(form.formState),
   }
 }

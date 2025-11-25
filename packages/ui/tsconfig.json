@@ -11,5 +11,5 @@
       "@ui-kit/*": ["../../curve-ui-kit/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "../curve-ui-kit/**/*.d.ts"]
 }

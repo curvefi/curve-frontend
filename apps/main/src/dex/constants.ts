@@ -45,6 +45,7 @@ export const DEFAULT_NETWORK_CONFIG = {
   twocryptoFactoryOld: false, // determines support in pool creation and gauge deployment
   twocryptoFactory: false, // determines support in pool creation and gauge deployment
   tricryptoFactory: false, // determines support in pool creation and gauge deployment
+  fxswapFactory: false, // determines support in pool creation and gauge deployment
   hasFactory: false,
   pricesApi: false,
 }

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import SelectButton from '@/dex/components/PageCreatePool/components/SelectButton'
 import ModalDialog from '@/dex/components/PageCreatePool/ConfirmModal/ModalDialog'
-import { CRYPTOSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
+import { CRYPTOSWAP, FXSWAP, POOL_PRESETS, STABLESWAP } from '@/dex/components/PageCreatePool/constants'
 import useStore from '@/dex/store/useStore'
 import type { UrlParams } from '@/dex/types/main.types'
 import { getPath } from '@/dex/utils/utilsRouter'
@@ -184,22 +184,6 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                     paddingSize={'small'}
                   />
                 </SelectButtonWrapper>
-                <SelectButtonWrapper>
-                  <SelectButton
-                    selected={poolPresetIndex === 9}
-                    name={POOL_PRESETS[9].name}
-                    descriptionName={t(POOL_PRESETS[9].descriptionName)}
-                    description={t(POOL_PRESETS[9].description)}
-                    handleClick={() => {
-                      updatePoolPresetIndex(9)
-                      setMidValue(t(POOL_PRESETS[9].defaultParams.midFee))
-                      setOutValue(t(POOL_PRESETS[9].defaultParams.outFee))
-                      overlayTriggerState.close()
-                    }}
-                    paddingSize={'small'}
-                    disabled={true} // Coming soon!
-                  />
-                </SelectButtonWrapper>
               </>
             )}
             {swapType === CRYPTOSWAP && tokenAmount === 3 && (
@@ -236,18 +220,49 @@ const SelectPreset = ({ setStableFeeValue, setMidValue, setOutValue }: Props) =>
                 </SelectButtonWrapper>
               </>
             )}
-            <PresetMessage>
-              {t`Can't find the pool preset you want? Check out`}
-              <StyledExternalLink
-                target="_blank"
-                href={getPath(params, DEX_ROUTES.PAGE_POOLS)}
-              >{t`existing pools`}</StyledExternalLink>
-              {t`with similar assets for inspiration (or use`}
-              <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">
-                curvesim
-              </StyledExternalLink>
-              {t`to sim).`}
-            </PresetMessage>
+            {swapType === FXSWAP && tokenAmount === 2 && (
+              <>
+                <SelectButtonWrapper>
+                  <SelectButton
+                    selected={poolPresetIndex === 9}
+                    name={POOL_PRESETS[9].name}
+                    descriptionName={t(POOL_PRESETS[9].descriptionName)}
+                    description={t(POOL_PRESETS[9].description)}
+                    handleClick={() => {
+                      updatePoolPresetIndex(9)
+                      setMidValue(t(POOL_PRESETS[9].defaultParams.midFee))
+                      setOutValue(t(POOL_PRESETS[9].defaultParams.outFee))
+                      overlayTriggerState.close()
+                    }}
+                    paddingSize={'small'}
+                  />
+                </SelectButtonWrapper>
+              </>
+            )}
+            {swapType === FXSWAP ? (
+              <PresetMessage>
+                {t`FXSwap pools are experimental and still evolving. Can't find the right preset?`}
+                <StyledExternalLink
+                  href="https://quiver-meadow-354.notion.site/27f599aae0648017bae7d050934d5493"
+                  target="_blank"
+                >
+                  {t`Reach out to the team.`}
+                </StyledExternalLink>
+              </PresetMessage>
+            ) : (
+              <PresetMessage>
+                {t`Can't find the pool preset you want? Check out`}
+                <StyledExternalLink
+                  target="_blank"
+                  href={getPath(params, DEX_ROUTES.PAGE_POOLS)}
+                >{t`existing pools`}</StyledExternalLink>
+                {t`with similar assets for inspiration (or use`}
+                <StyledExternalLink href="https://github.com/curveresearch/curvesim" target="_blank">
+                  curvesim
+                </StyledExternalLink>
+                {t`to sim).`}
+              </PresetMessage>
+            )}
           </SelectPresetWrapper>
         </StyledModalDialog>
       )}

@@ -29,14 +29,11 @@ const { useQuery: useRepayGasEstimate } = queryFactory({
     ] as const,
   queryFn: async ({ marketId, stateCollateral, userCollateral, userBorrowed }: RepayFromCollateralGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return {
-      repayFromCollateral:
-        market instanceof LendMarketTemplate
-          ? await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
-          : market.leverageV2.hasLeverage()
-            ? await market.leverageV2.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
-            : await market.deleverage.estimateGas.repay(userCollateral),
-    }
+    return market instanceof LendMarketTemplate
+      ? await market.leverage.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
+      : market.leverageV2.hasLeverage()
+        ? await market.leverageV2.estimateGas.repay(stateCollateral, userCollateral, userBorrowed)
+        : await market.deleverage.estimateGas.repay(userCollateral)
   },
   validationSuite: repayFromCollateralValidationSuite,
 })
@@ -47,12 +44,11 @@ export const useRepayEstimateGas = <ChainId extends IChainId>(
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading } = useRepayGasEstimate(query, enabled)
-  const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
-    networks,
-    chainId,
-    estimate,
-    enabled,
-  )
-  return { data, isLoading: estimateLoading || conversionLoading }
+  const { data: estimate, isLoading: estimateLoading, error: estimateError } = useRepayGasEstimate(query, enabled)
+  const {
+    data,
+    isLoading: conversionLoading,
+    error: conversionError,
+  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
+  return { data, isLoading: estimateLoading || conversionLoading, error: estimateError ?? conversionError }
 }
