@@ -75,12 +75,12 @@ const ONE_MONTH_MS = 30 * 24 * 60 * 60 * 1000 // 30 days in milliseconds
 export const usePhishingWarningDismissed = () => {
   const [dismissedAt, setDismissedAt] = useLocalStorage<number | null>('phishing-warning-dismissed', null)
 
-  const shouldShowPhishingWarning = useMemo(() => {
-    if (dismissedAt == null) return true
-    const now = Date.now()
-    const timeSinceDismissed = now - dismissedAt
-    return timeSinceDismissed >= ONE_MONTH_MS // Show if dismissed more than a month ago
-  }, [dismissedAt])
+  const shouldShowPhishingWarning = useMemo(
+    () =>
+      dismissedAt == null ||
+      Date.now() - dismissedAt >= ONE_MONTH_MS, // Show if dismissed more than a month ago
+    [dismissedAt],
+  )
 
   return { dismissedAt, setDismissedAt, shouldShowPhishingWarning }
 }

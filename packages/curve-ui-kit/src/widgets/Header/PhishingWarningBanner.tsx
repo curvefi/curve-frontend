@@ -18,19 +18,17 @@ export const PhishingWarningBanner = () => {
     setDismissedAt(Date.now())
   }
 
-  if (!shouldShowPhishingWarning) {
-    return null
-  }
-
   return (
-    <Banner
-      subtitle={t`Always carefully check that your URL is ${URL}.`}
-      severity="warning"
-      onClick={handleDismiss}
-      testId="phishing-warning-banner"
-    >
-      <ExclamationTriangleIcon sx={{ width: IconSize.sm, height: IconSize.sm, verticalAlign: 'text-bottom' }} />
-      {t`Make sure you are on the right domain`}
-    </Banner>
+    shouldShowPhishingWarning && (
+      <Banner
+        subtitle={t`Always carefully check that your URL is ${URL}.`}
+        severity="warning"
+        onClick={handleDismiss}
+        testId="phishing-warning-banner"
+      >
+        <ExclamationTriangleIcon sx={{ width: IconSize.sm, height: IconSize.sm, verticalAlign: 'text-bottom' }} />{' '}
+        {t`Make sure you are on the right domain`}
+      </Banner>
+    )
   )
 }
