@@ -30,7 +30,7 @@ const MarketParameters = ({
   const { pricePerShare, error: pricePerShareError } = vaultPricePerShareResp ?? {}
 
   // prettier-ignore
-  const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions; title?: string; isError: string; isRow?: boolean, tooltip?: string }[][] = type === 'borrow' ?
+  const marketDetails: { label: string; value: string | number | undefined; formatOptions?: NumberFormatOptions; title?: string; isError: string; tooltip?: string }[][] = type === 'borrow' ?
     [
       [
         { label: t`AMM swap fee`, value: parameters?.fee, formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 }, isError: parametersError },
@@ -46,7 +46,7 @@ const MarketParameters = ({
       ],
     ] : [
       [
-        { label: t`Price per share`, value: pricePerShare, formatOptions: { decimals: 5 }, isRow: true, isError: pricePerShareError },
+        { label: t`Price per share`, value: pricePerShare, formatOptions: { decimals: 5 }, isError: pricePerShareError },
       ]
     ]
 
@@ -59,17 +59,12 @@ const MarketParameters = ({
     <Box grid gridRowGap={4}>
       {marketDetails.map((details, idx) => (
         <div key={`details-${idx}`}>
-          {details.map(({ label, value, formatOptions, title, isError, isRow, tooltip }) => (
+          {details.map(({ label, value, formatOptions, title, isError, tooltip }) => (
             <Fragment key={label}>
               {
                 <>
                   {title && <SubTitle>{title}</SubTitle>}
-                  {isRow ? (
-                    <Box grid>
-                      <Chip isBold>{label}:</Chip>
-                      <strong>{formatNumber(value, { ...(formatOptions ?? {}), defaultValue: '-' })}</strong>
-                    </Box>
-                  ) : (
+                  {
                     <DetailInfo key={label} label={label}>
                       {isError ? (
                         '?'
@@ -80,7 +75,7 @@ const MarketParameters = ({
                         </Chip>
                       )}
                     </DetailInfo>
-                  )}
+                  }
                 </>
               }
             </Fragment>
