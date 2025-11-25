@@ -2,7 +2,6 @@ import { useLoanToValueFromUserState } from '@/llamalend/features/manage-loan/ho
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import type { RemoveCollateralOptions } from '@/llamalend/mutations/remove-collateral.mutation'
 import { useMarketRates } from '@/llamalend/queries/market-rates'
-import { FormMessage } from '@/llamalend/widgets/manage-loan/FormMessage'
 import { LoanFormAlerts } from '@/llamalend/widgets/manage-loan/LoanFormAlerts'
 import { LoanFormTokenInput } from '@/llamalend/widgets/manage-loan/LoanFormTokenInput'
 import { LoanFormWrapper } from '@/llamalend/widgets/manage-loan/LoanFormWrapper'
@@ -12,7 +11,9 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import { useSwitch } from '@ui-kit/hooks/useSwitch'
 import { t } from '@ui-kit/lib/i18n'
+import { Balance } from '@ui-kit/shared/ui/Balance'
 import { InputDivider } from '../../../widgets/InputDivider'
+import { setValueOptions } from '../../borrow/react-form.utils'
 import { useRemoveCollateralForm } from '../hooks/useRemoveCollateralForm'
 
 export const RemoveCollateralForm = <ChainId extends IChainId>({
@@ -97,9 +98,14 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
           testId="remove-collateral-input"
           network={network}
           message={
-            maxRemovable.data && (
-              <FormMessage label={t`Max removable:`} value={maxRemovable.data} symbol={collateralToken?.symbol} />
-            )
+            <Balance
+              prefix={t`Max removable:`}
+              tooltip={t`Max removable`}
+              symbol={collateralToken?.symbol}
+              balance={maxRemovable.data}
+              loading={maxRemovable.isLoading}
+              onClick={() => form.setValue('userCollateral', maxRemovable.data, setValueOptions)}
+            />
           }
         />
       </Stack>

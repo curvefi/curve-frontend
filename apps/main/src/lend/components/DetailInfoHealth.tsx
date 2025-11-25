@@ -1,11 +1,12 @@
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { styled } from 'styled-components'
 import ExternalLink from 'ui/src/Link/ExternalLink'
-import { DEFAULT_HEALTH_MODE } from '@/lend/components/PageLoanManage/utils'
 import { useOneWayMarket } from '@/lend/entities/chain'
 import useStore from '@/lend/store/useStore'
-import { HealthColorKey, HealthMode, PageContentProps } from '@/lend/types/lend.types'
-import { getHealthMode } from '@/lend/utils/health.util'
+import { PageContentProps } from '@/lend/types/lend.types'
+import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { getHealthMode } from '@/llamalend/health.util'
+import type { HealthColorKey, HealthMode } from '@/llamalend/llamalend.types'
 import Box from '@ui/Box'
 import DetailInfo from '@ui/DetailInfo'
 import Icon from '@ui/Icon'
@@ -63,7 +64,7 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand === 'number' && healthFull && healthNotFull) {
       setHealthMode(
         getHealthMode(
-          market,
+          market?.borrowed_token?.symbol,
           oraclePriceBand,
           amount,
           bands,
@@ -95,7 +96,7 @@ const DetailInfoHealth = ({
     if (typeof oraclePriceBand === 'number' && bandsCurrent && healthFullCurrent && healthNotFullCurrent) {
       setCurrentHealthMode(
         getHealthMode(
-          market,
+          market?.borrowed_token?.symbol,
           oraclePriceBand,
           amount,
           bandsCurrent,
