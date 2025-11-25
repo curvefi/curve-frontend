@@ -7,10 +7,10 @@ import type { ImproveHealthProps } from '..'
 import type { MarketParams } from '../types'
 import { useDebtToken } from './useDebtToken'
 
-/** Hook to cobble up the improve health tab */
+/** Hook to cobble up the "improve health" tab */
 export function useImproveHealthTab(params: MarketParams): ImproveHealthProps {
   const { address: userAddress } = useAccount()
-  const { data: userBalances } = useUserBalances({ chainId: params.chainId, poolId: params.marketId, userAddress })
+  const { data: userBalances } = useUserBalances({ ...params, userAddress })
 
   const debtToken = useDebtToken(params)
   const { mutate, isPending } = useRepayMutation({ ...params, onRepaid: console.warn, userAddress })

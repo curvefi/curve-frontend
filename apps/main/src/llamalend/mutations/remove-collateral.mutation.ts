@@ -43,5 +43,5 @@ export const useRemoveCollateralMutation = ({
 
   const onSubmit = useCallback((form: CollateralForm) => mutateAsync(form as RemoveCollateralMutation), [mutateAsync])
 
-  return { onSubmit, mutateAsync, error, txHash: data, isPending, isSuccess, reset }
+  return { onSubmit, mutateAsync, error, data, isPending, isSuccess, reset }
 }

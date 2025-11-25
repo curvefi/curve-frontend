@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import type { BorrowMutation, CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import LoanFormCreate from '@/loan/components/PageLoanCreate/LoanFormCreate'
@@ -14,7 +14,7 @@ import { getLoanCreatePathname, getLoanManagePathname } from '@/loan/utils/utils
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
+import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { type TabOption, TabsSwitcher } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -51,7 +51,7 @@ const LoanCreate = ({
   const { curve, llamma, loanExists, params, rCollateralId, rFormType, rChainId } = props
   const push = useNavigate()
   const collateralAlert = useCollateralAlert(llamma?.address)
-  const isBorrowUnifiedForm = useBorrowUnifiedForm()
+  const isBorrowUnifiedForm = useCreateLoanMuiForm()
   const onUpdate = useOnFormUpdate(props)
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
 
@@ -103,7 +103,7 @@ const LoanCreate = ({
         options={tabs}
       />
       {isBorrowUnifiedForm ? (
-        <BorrowTabContents
+        <CreateLoanForm
           networks={networks}
           chainId={rChainId}
           market={llamma ?? undefined}

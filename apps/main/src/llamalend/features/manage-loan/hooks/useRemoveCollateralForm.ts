@@ -2,6 +2,7 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
+import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import {
   type RemoveCollateralOptions,
@@ -27,7 +28,10 @@ import { useFormErrors } from '../../borrow/react-form.utils'
 const useCallbackAfterFormUpdate = (form: UseFormReturn<CollateralForm>, callback: () => void) =>
   useEffect(() => form.subscribe({ formState: { values: true }, callback }), [form, callback])
 
-export const useRemoveCollateralForm = ({
+export const useRemoveCollateralForm = <
+  ChainId extends LlamaChainId,
+  NetworkName extends LlamaNetworkId = LlamaNetworkId,
+>({
   market,
   network,
   networks,
@@ -35,14 +39,18 @@ export const useRemoveCollateralForm = ({
   onRemoved,
 }: {
   market: LlamaMarketTemplate | undefined
-  network: BaseConfig<LlamaNetworkId, LlamaChainId>
-  networks: NetworkDict<LlamaChainId>
+  network: BaseConfig<NetworkName, ChainId>
+  networks: NetworkDict<ChainId>
   enabled?: boolean
   onRemoved: NonNullable<RemoveCollateralOptions['onRemoved']>
 }) => {
   const { address: userAddress } = useAccount()
   const { chainId } = network
   const marketId = market?.id
+
+  const tokens = market && getTokens(market)
+  const collateralToken = tokens?.collateralToken
+  const borrowToken = tokens?.borrowToken
 
   const form = useForm<CollateralForm>({
     ...formDefaultOptions,
@@ -62,7 +70,7 @@ export const useRemoveCollateralForm = ({
           marketId,
           userAddress,
           userCollateral: values.userCollateral,
-        }) as CollateralParams<LlamaChainId>,
+        }) as CollateralParams<ChainId>,
       [chainId, marketId, userAddress, values.userCollateral],
     ),
   )
@@ -99,6 +107,9 @@ export const useRemoveCollateralForm = ({
     healthNotFull,
     prices,
     gas,
+    txHash: action.data?.hash,
+    collateralToken,
+    borrowToken,
     formErrors,
   }
 }

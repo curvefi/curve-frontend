@@ -28,15 +28,13 @@ const { useQuery: useCreateLoanApproveEstimateGas } = queryFactory({
     leverageEnabled,
   }: CreateLoanApproveEstimateGasQuery) => {
     const market = getLlamaMarket(marketId)
-    return {
-      createLoanApprove: !leverageEnabled
-        ? await market.estimateGas.createLoanApprove(userCollateral)
-        : market instanceof LendMarketTemplate
-          ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-          : market.leverageV2.hasLeverage()
-            ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
-            : await market.leverage.estimateGas.createLoanApprove(userCollateral),
-    }
+    return !leverageEnabled
+      ? await market.estimateGas.createLoanApprove(userCollateral)
+      : market instanceof LendMarketTemplate
+        ? await market.leverage.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+        : market.leverageV2.hasLeverage()
+          ? await market.leverageV2.estimateGas.createLoanApprove(userCollateral, userBorrowed)
+          : await market.leverage.estimateGas.createLoanApprove(userCollateral)
   },
   validationSuite: borrowQueryValidationSuite,
   dependencies: (params) => [createLoanMaxReceiveKey(params)],
@@ -48,12 +46,11 @@ export const useCreateLoanEstimateGas = <ChainId extends IChainId>(
   enabled?: boolean,
 ) => {
   const { chainId } = query
-  const { data: estimate, isLoading: estimateLoading } = useCreateLoanApproveEstimateGas(query, enabled)
-  const { data, isLoading: conversionLoading } = useEstimateGas<ChainId, typeof estimate>(
-    networks,
-    chainId,
-    estimate,
-    enabled,
-  )
-  return { data, isLoading: estimateLoading || conversionLoading }
+  const { data: estimate, isLoading: estimateLoading, error } = useCreateLoanApproveEstimateGas(query, enabled)
+  const {
+    data,
+    isLoading: conversionLoading,
+    error: estimateError,
+  } = useEstimateGas<ChainId>(networks, chainId, estimate, enabled)
+  return { data, isLoading: estimateLoading || conversionLoading, error: error ?? estimateError }
 }

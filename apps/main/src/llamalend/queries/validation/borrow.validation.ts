@@ -8,8 +8,8 @@ import {
   validateUserBorrowed,
   validateUserCollateral,
 } from '@/llamalend/queries/validation/borrow-fields.validation'
-import { llamaMarketValidationGroup } from '@/llamalend/queries/validation/llama.validation'
 import { createValidationSuite, type FieldsOf } from '@ui-kit/lib'
+import { marketIdValidationSuite } from '@ui-kit/lib/model/query/market-id-validation'
 import { type BorrowForm, type BorrowFormQueryParams } from '../../features/borrow/types'
 
 export const borrowFormValidationGroup = (
@@ -39,7 +39,7 @@ export const borrowQueryValidationSuite = createValidationSuite(
     range,
     slippage,
   }: BorrowFormQueryParams) => {
-    llamaMarketValidationGroup({ chainId, marketId })
+    marketIdValidationSuite({ chainId, marketId })
     borrowFormValidationGroup(
       { userBorrowed, userCollateral, debt, range, slippage, leverageEnabled },
       { debtRequired: true },

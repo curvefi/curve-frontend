@@ -6,12 +6,12 @@ import networks from '@/lend/networks'
 import useStore from '@/lend/store/useStore'
 import { type MarketUrlParams, type PageContentProps } from '@/lend/types/lend.types'
 import { getLoanCreatePathname } from '@/lend/utils/utilsRouter'
-import { BorrowTabContents } from '@/llamalend/features/borrow/components/BorrowTabContents'
+import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import Stack from '@mui/material/Stack'
 import { AppFormContentWrapper } from '@ui/AppForm'
 import { useNavigate } from '@ui-kit/hooks/router'
-import { useBorrowUnifiedForm } from '@ui-kit/hooks/useFeatureFlags'
+import { useCreateLoanMuiForm } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { TabsSwitcher, type TabOption } from '@ui-kit/shared/ui/TabsSwitcher'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -40,7 +40,7 @@ const useOnFormUpdate = ({ api, market }: PageContentProps): OnBorrowFormUpdate 
 const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) => {
   const { rChainId, rOwmId, rFormType, market, params, api } = pageProps
   const push = useNavigate()
-  const shouldUseBorrowUnifiedForm = useBorrowUnifiedForm()
+  const shouldUseBorrowUnifiedForm = useCreateLoanMuiForm()
   const onUpdate = useOnFormUpdate(pageProps)
 
   const onLoanCreated = useStore((state) => state.loanCreate.onLoanCreated)
@@ -82,7 +82,7 @@ const LoanCreate = (pageProps: PageContentProps & { params: MarketUrlParams }) =
         options={tabs}
       />
       {shouldUseBorrowUnifiedForm ? (
-        <BorrowTabContents
+        <CreateLoanForm
           networks={networks}
           chainId={rChainId}
           market={market ?? undefined}
