@@ -11,6 +11,7 @@ function createLightSurfaces() {
       Success: Greens['600'],
       Warning: Oranges['500'],
       Error: Reds['500'],
+      Inverted: Grays['50'],
     },
     FilledFeedback: {
       info: {
@@ -35,7 +36,6 @@ function createLightSurfaces() {
       },
     },
   } as const
-
   const Layer = {
     '1': {
       Fill: Grays['50'],
@@ -61,28 +61,27 @@ function createLightSurfaces() {
       Hover: Grays['150'],
     },
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Hover,
-        Hover: Layer.TypeAction.Selected,
+        Default: Grays['50'],
+        Selected: Grays['150'],
+        Hover: Blues['100'],
       },
       Header: {
         Fill: Grays['200'],
-        'Label_&_Icon': {
-          Default: Text.Secondary,
-          Hover: Text.Highlight,
-          Active: Text.Primary,
+        Label: {
+          Default: Grays['700'],
+          Hover: Blues['500'],
+          Active: Grays['950'],
         },
       },
     },
     Badges: {
       Label: {
-        Default: Text.Primary,
+        Default: Grays['950'],
         Active: Grays['10'],
         Alert: Grays['10'],
         Highlight: Blues['500'],
@@ -98,10 +97,10 @@ function createLightSurfaces() {
         Accent: Blues['500'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Grays['50'],
         Active: Greens['400'],
         Alert: Reds['500'],
-        Highlight: Layer['1'].Fill,
+        Highlight: Grays['50'],
         Warning: Yellows['500'],
         Accent: Blues['500'],
       },
@@ -142,9 +141,9 @@ function createDarkSurfaces() {
       Success: Greens['400'],
       Warning: Yellows['500'],
       Error: Reds['500'],
+      Inverted: Grays['950'],
     },
   } as const
-
   const Layer = {
     '1': {
       Fill: Grays['950'],
@@ -170,22 +169,21 @@ function createDarkSurfaces() {
       Hover: Grays['750'],
     },
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Selected,
-        Hover: Layer.TypeAction.Hover,
+        Default: Grays['950'],
+        Selected: Blues['900'],
+        Hover: Grays['750'],
       },
       Header: {
         Fill: Grays['800'],
-        'Label_&_Icon': {
-          Default: Text.secondary,
-          Hover: Text.highlight,
-          Active: Text.primary,
+        Label: {
+          Default: Grays['300'],
+          Hover: Blues['400'],
+          Active: Grays['50'],
         },
       },
     },
@@ -207,10 +205,10 @@ function createDarkSurfaces() {
         Accent: Blues['400'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Grays['950'],
         Active: Greens['500'],
         Alert: Reds['500'],
-        Highlight: Layer['1'].Fill,
+        Highlight: Grays['950'],
         Warning: Yellows['500'],
         Accent: Blues['400'],
       },
@@ -224,6 +222,7 @@ function createChadSurfaces() {
       Warning: Oranges['500'],
       Success: Greens['600'],
       Error: Reds['500'],
+      Inverted: Grays['50'],
     },
     FilledFeedback: {
       info: {
@@ -253,7 +252,6 @@ function createChadSurfaces() {
     Disabled: Grays['500'],
     Highlight: Violets['600'],
   } as const
-
   const Layer = {
     '1': {
       Fill: Grays['150'],
@@ -279,28 +277,27 @@ function createChadSurfaces() {
     },
     Highlight: Violets['800'],
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Selected,
-        Hover: Layer.TypeAction.Hover,
+        Default: Grays['150'],
+        Selected: Violets['50'],
+        Hover: Violets['200'],
       },
       Header: {
-        Fill: Layer['3'].Fill,
-        'Label_&_Icon': {
-          Default: Text.Secondary,
-          Hover: Text.Highlight,
-          Active: Text.Primary,
+        Fill: Grays['400'],
+        Label: {
+          Default: Grays['750'],
+          Hover: Violets['600'],
+          Active: Grays['950'],
         },
       },
     },
     Badges: {
       Label: {
-        Default: Text.Primary,
+        Default: Grays['950'],
         Active: Grays['10'],
         Alert: Grays['10'],
         Highlight: Violets['800'],
@@ -316,10 +313,10 @@ function createChadSurfaces() {
         Accent: Violets['800'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Grays['150'],
         Active: Greens['500'],
         Alert: Reds['500'],
-        Highlight: Layer['1'].Fill,
+        Highlight: Grays['150'],
         Warning: Yellows['500'],
         Accent: Violets['800'],
       },
@@ -338,6 +335,7 @@ function createLightInvertedSurfaces() {
       Success: Greens['300'],
       Warning: Oranges['500'],
       Error: Reds['500'],
+      Inverted: Grays['50'],
     },
     FilledFeedback: {
       info: {
@@ -362,7 +360,6 @@ function createLightInvertedSurfaces() {
       },
     },
   } as const
-
   const Layer = {
     '1': {
       Fill: Grays['950'],
@@ -388,28 +385,27 @@ function createLightInvertedSurfaces() {
       Hover: Grays['850'],
     },
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Hover,
-        Hover: Layer.TypeAction.Selected,
+        Default: Grays['950'],
+        Selected: Grays['850'],
+        Hover: Grays['750'],
       },
       Header: {
         Fill: Grays['800'],
-        'Label_&_Icon': {
-          Default: Text.Primary,
-          Hover: Text.Highlight,
-          Active: Text.Secondary,
+        Label: {
+          Default: Grays['50'],
+          Hover: Blues['300'],
+          Active: Grays['300'],
         },
       },
     },
     Badges: {
       Label: {
-        Default: Text.Primary,
+        Default: Grays['50'],
         Active: Grays['10'],
         Alert: Grays['10'],
         Highlight: Blues['400'],
@@ -425,7 +421,7 @@ function createLightInvertedSurfaces() {
         Accent: Blues['400'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Grays['950'],
         Active: Greens['400'],
         Alert: Reds['500'],
         Highlight: Grays['10'],
@@ -469,9 +465,9 @@ function createDarkInvertedSurfaces() {
       Success: Greens['600'],
       Warning: Oranges['500'],
       Error: Reds['500'],
+      Inverted: Grays['950'],
     },
   } as const
-
   const Layer = {
     '1': {
       Fill: Grays['75'],
@@ -497,22 +493,21 @@ function createDarkInvertedSurfaces() {
       Hover: Blues['100'],
     },
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Selected,
-        Hover: Layer.TypeAction.Hover,
+        Default: Grays['75'],
+        Selected: Blues['50'],
+        Hover: Blues['100'],
       },
       Header: {
         Fill: Grays['200'],
-        'Label_&_Icon': {
-          Default: Text.secondary,
-          Hover: Text.highlight,
-          Active: Text.primary,
+        Label: {
+          Default: Grays['750'],
+          Hover: Blues['500'],
+          Active: Grays['950'],
         },
       },
     },
@@ -534,10 +529,10 @@ function createDarkInvertedSurfaces() {
         Accent: Blues['500'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Grays['75'],
         Active: Greens['500'],
         Alert: Reds['500'],
-        Highlight: Layer['1'].Fill,
+        Highlight: Grays['75'],
         Warning: Yellows['500'],
         Accent: Blues['500'],
       },
@@ -551,6 +546,7 @@ function createChadInvertedSurfaces() {
       Warning: Yellows['500'],
       Success: Greens['500'],
       Error: Reds['500'],
+      Inverted: Grays['50'],
     },
     FilledFeedback: {
       info: {
@@ -580,7 +576,6 @@ function createChadInvertedSurfaces() {
     Disabled: Grays['500'],
     Highlight: Violets['400'],
   } as const
-
   const Layer = {
     '1': {
       Fill: Violets['950'],
@@ -606,28 +601,27 @@ function createChadInvertedSurfaces() {
     },
     Highlight: Violets['950'],
   } as const
-
   return {
     Text,
     Layer,
     Tables: {
       Row: {
-        Default: Layer['1'].Fill,
-        Selected: Layer.TypeAction.Selected,
-        Hover: Layer.TypeAction.Hover,
+        Default: Violets['950'],
+        Selected: Violets['900'],
+        Hover: Violets['800'],
       },
       Header: {
-        Fill: Layer['3'].Fill,
-        'Label_&_Icon': {
-          Default: Text.Secondary,
-          Hover: Text.Highlight,
-          Active: Text.Primary,
+        Fill: Violets['700'],
+        Label: {
+          Default: Grays['300'],
+          Hover: Violets['400'],
+          Active: Grays['50'],
         },
       },
     },
     Badges: {
       Label: {
-        Default: Text.Primary,
+        Default: Grays['50'],
         Active: Grays['10'],
         Alert: Grays['10'],
         Highlight: Violets['200'],
@@ -643,10 +637,10 @@ function createChadInvertedSurfaces() {
         Accent: Violets['400'],
       },
       Fill: {
-        Default: Layer['1'].Fill,
+        Default: Violets['950'],
         Active: Greens['500'],
         Alert: Reds['500'],
-        Highlight: Layer['1'].Fill,
+        Highlight: Violets['950'],
         Warning: Yellows['500'],
         Accent: Violets['400'],
       },
@@ -655,11 +649,7 @@ function createChadInvertedSurfaces() {
 }
 
 export const SurfacesAndText = {
-  plain: {
-    Light: createLightSurfaces(),
-    Dark: createDarkSurfaces(),
-    Chad: createChadSurfaces(),
-  },
+  plain: { Light: createLightSurfaces(), Dark: createDarkSurfaces(), Chad: createChadSurfaces() },
   inverted: {
     Light: createLightInvertedSurfaces(),
     Dark: createDarkInvertedSurfaces(),
