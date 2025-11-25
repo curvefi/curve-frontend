@@ -47,8 +47,8 @@ export const CreateLoanInfoAccordion = <ChainId extends IChainId>({
       health={useCreateLoanHealth(params, !tooMuchDebt)}
       bands={useCreateLoanBands(params, isOpen && !tooMuchDebt)}
       prices={useCreateLoanPrices(params, isOpen && !tooMuchDebt)}
-      rates={useMarketRates(params, isOpen)}
-      futureRates={useMarketFutureRates(params, isOpen)}
+      prevRates={useMarketRates(params, isOpen)}
+      rates={useMarketFutureRates(params, isOpen)}
       loanToValue={useLoanToValue(
         {
           params,
