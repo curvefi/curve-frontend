@@ -72,6 +72,13 @@ export const PriceCell = ({ getValue, row, column }: CellContext<LlamaMarket, nu
                 (stats?.borrowToken?.amount ?? 0) * (stats?.borrowToken?.usdRate ?? 0),
               loading: isLoading,
             }}
+            collateralLoss={{
+              depositedCollateral: stats?.collateralLoss?.depositedCollateral,
+              currentCollateralEstimation: stats?.collateralLoss?.currentCollateralEstimation,
+              percentage: stats?.collateralLoss?.percentage,
+              amount: stats?.collateralLoss?.amount,
+              loading: isLoading,
+            }}
           />
         ),
       }[columnId]

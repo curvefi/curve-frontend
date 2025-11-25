@@ -41,6 +41,7 @@ export const useBorrowPositionDetails = ({
     health,
     leverage,
     pnl,
+    loss,
     prices: liquidationPrices,
     status,
     state: { collateral, borrowed, debt } = {},
@@ -151,6 +152,13 @@ export const useBorrowPositionDetails = ({
     },
     totalDebt: {
       value: debt ? Number(debt) : null,
+      loading: !market || isUserLoanDetailsLoading,
+    },
+    collateralLoss: {
+      depositedCollateral: loss && Number(loss.deposited_collateral),
+      currentCollateralEstimation: loss && Number(loss.current_collateral_estimation),
+      percentage: loss && Number(loss.loss_pct),
+      amount: loss && Number(loss.loss),
       loading: !market || isUserLoanDetailsLoading,
     },
   }

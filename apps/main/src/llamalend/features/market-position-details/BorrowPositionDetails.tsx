@@ -55,6 +55,13 @@ export type CollateralValue = {
 }
 export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
+export type CollateralLoss = {
+  depositedCollateral: number | undefined
+  currentCollateralEstimation: number | undefined
+  percentage: number | undefined
+  amount: number | undefined
+  loading: boolean
+}
 
 export type BorrowPositionDetailsProps = {
   marketType: LlamaMarketType
@@ -68,6 +75,7 @@ export type BorrowPositionDetailsProps = {
   collateralValue: CollateralValue
   ltv: Ltv
   totalDebt: TotalDebt
+  collateralLoss: CollateralLoss
 }
 
 const alerts = {
@@ -114,6 +122,7 @@ export const BorrowPositionDetails = ({
   collateralValue,
   ltv,
   totalDebt,
+  collateralLoss,
 }: BorrowPositionDetailsProps) => (
   <Stack>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
@@ -129,6 +138,7 @@ export const BorrowPositionDetails = ({
       liquidationRange={liquidationRange}
       bandRange={bandRange}
       totalDebt={totalDebt}
+      collateralLoss={collateralLoss}
     />
   </Stack>
 )

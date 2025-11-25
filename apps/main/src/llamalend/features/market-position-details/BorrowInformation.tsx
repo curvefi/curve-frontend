@@ -16,6 +16,7 @@ import type {
   TotalDebt,
   LiquidationRange,
   BandRange,
+  CollateralLoss,
 } from './BorrowPositionDetails'
 import { LiquidationThresholdTooltipContent } from './tooltips/LiquidationThresholdMetricTooltipContent'
 import { PnlMetricTooltipContent } from './tooltips/PnlMetricTooltipContent'
@@ -41,6 +42,7 @@ type BorrowInformationProps = {
   liquidationRange: LiquidationRange | undefined | null
   bandRange: BandRange | undefined | null
   totalDebt: TotalDebt | undefined | null
+  collateralLoss: CollateralLoss | undefined | null
 }
 
 export const BorrowInformation = ({
@@ -53,6 +55,7 @@ export const BorrowInformation = ({
   liquidationRange,
   bandRange,
   totalDebt,
+  collateralLoss,
 }: BorrowInformationProps) => (
   <Stack>
     <CardHeader title={t`Borrow Information`} size="small" />
@@ -124,7 +127,7 @@ export const BorrowInformation = ({
         valueOptions={{ unit: 'dollar' }}
         valueTooltip={{
           title: t`Collateral value`,
-          body: <CollateralMetricTooltipContent collateralValue={collateralValue} />,
+          body: <CollateralMetricTooltipContent collateralValue={collateralValue} collateralLoss={collateralLoss} />,
           placement: 'top',
           arrow: false,
           clickable: true,

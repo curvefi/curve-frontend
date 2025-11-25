@@ -89,6 +89,12 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           usdRate: borrowedUsdRate,
         },
         ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
+        collateralLoss: {
+          depositedCollateral: stats.totalDeposited,
+          currentCollateralEstimation: stats.collateral,
+          percentage: stats.lossPct,
+          amount: stats.loss,
+        },
       },
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),

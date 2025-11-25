@@ -40,6 +40,7 @@ export const useLoanPositionDetails = ({
   const userPrices = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userPrices)
   const userBands = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userBands)
   const userStatus = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userStatus)
+  const userLoss = useStore((state) => state.loans.userDetailsMapper[llammaId]?.userLoss)
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
@@ -155,6 +156,13 @@ export const useLoanPositionDetails = ({
     },
     totalDebt: {
       value: debt ? Number(debt) : null,
+      loading: userLoanDetailsLoading ?? true,
+    },
+    collateralLoss: {
+      depositedCollateral: userLoss && Number(userLoss.deposited_collateral),
+      currentCollateralEstimation: userLoss && Number(userLoss.current_collateral_estimation),
+      percentage: userLoss && Number(userLoss.loss_pct),
+      amount: userLoss && Number(userLoss.loss),
       loading: userLoanDetailsLoading ?? true,
     },
   }
