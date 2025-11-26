@@ -155,11 +155,11 @@ const CandleChart = ({
         return {
           seriesOptions: {
             fillColor: memoizedColors.rangeBackground,
-            fillOpacity: 0.5,
+            fillOpacity: 1,
             topLineColor: memoizedColors.rangeLineTop,
             bottomLineColor: memoizedColors.rangeLineBottom,
             lineWidth: 2,
-            lineStyle: LineStyle.LargeDashed,
+            lineStyle: LineStyle.Dashed,
             showTopLine: false,
             showBottomLine: false,
           },
@@ -172,7 +172,7 @@ const CandleChart = ({
         return {
           seriesOptions: {
             fillColor: memoizedColors.rangeBackgroundFuture,
-            fillOpacity: 0.35,
+            fillOpacity: 1,
             topLineColor: memoizedColors.rangeLineFutureTop,
             bottomLineColor: memoizedColors.rangeLineFutureBottom,
             lineWidth: 2,
@@ -188,11 +188,11 @@ const CandleChart = ({
       return {
         seriesOptions: {
           fillColor: memoizedColors.rangeBackground,
-          fillOpacity: 0.2,
+          fillOpacity: 1,
           topLineColor: memoizedColors.rangeLineBottom,
           bottomLineColor: memoizedColors.rangeLineBottom,
-          lineWidth: 1,
-          lineStyle: LineStyle.Solid,
+          lineWidth: 2,
+          lineStyle: LineStyle.Dashed,
           showTopLine: true,
           showBottomLine: true,
         },
@@ -426,14 +426,14 @@ const CandleChart = ({
         top: series.createPriceLine({
           price: 0,
           color: appearance.priceLineColorTop,
-          lineWidth: 1,
+          lineWidth: 2,
           lineStyle: LineStyle.LargeDashed,
           axisLabelVisible: true,
         }),
         bottom: series.createPriceLine({
           price: 0,
           color: appearance.priceLineColorBottom,
-          lineWidth: 1,
+          lineWidth: 2,
           lineStyle: LineStyle.LargeDashed,
           axisLabelVisible: true,
         }),
@@ -445,8 +445,8 @@ const CandleChart = ({
     historicalRanges.forEach(() => {
       if (!chartRef.current) return
       const series = chartRef.current.addCustomSeries(createLiquidationRangeSeries(), {
-        lineWidth: 1,
-        lineStyle: LineStyle.Solid,
+        lineWidth: 2,
+        lineStyle: LineStyle.LargeDashed,
       })
       series.applyOptions(getSeriesAppearance('historical').seriesOptions)
       historicalRangeSeriesRefs.current.push(series)
@@ -668,11 +668,11 @@ const CandleChart = ({
 
       currentRangePriceLinesRef.current.top?.applyOptions({
         color: appearance.priceLineColorTop,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Dashed,
       })
       currentRangePriceLinesRef.current.bottom?.applyOptions({
         color: appearance.priceLineColorBottom,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Dashed,
       })
     }
 
@@ -682,11 +682,11 @@ const CandleChart = ({
 
       newRangePriceLinesRef.current.top?.applyOptions({
         color: appearance.priceLineColorTop,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Dashed,
       })
       newRangePriceLinesRef.current.bottom?.applyOptions({
         color: appearance.priceLineColorBottom,
-        lineStyle: LineStyle.LargeDashed,
+        lineStyle: LineStyle.Dashed,
       })
     }
 
@@ -736,7 +736,7 @@ const CandleChart = ({
         liquidationRange.current.price2?.[0]?.value ?? liquidationRange.current.price1?.[0]?.value ?? 0
       const newBottom = liquidationRange.new.price2?.[0]?.value ?? liquidationRange.new.price1?.[0]?.value ?? 0
 
-      const addNewFirst = newBottom > currentBottom
+      const addNewFirst = newBottom < currentBottom
 
       return addNewFirst
         ? [newRangeSeriesRef.current, currentRangeSeriesRef.current]
