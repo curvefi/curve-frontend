@@ -339,6 +339,7 @@ export const SizesAndSpaces = {
     scrollUpButton: {
       mobile: '1.25rem', // 20px
       tablet: '4rem', // 64px
+      desktop: '4rem', // 64px
     },
   },
 } as const
