@@ -3,6 +3,7 @@ import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { Decimal } from '@ui-kit/utils/decimal'
 import { BorrowInformation } from './BorrowInformation'
 import { HealthDetails } from './HealthDetails'
 
@@ -55,6 +56,13 @@ export type CollateralValue = {
 }
 export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
+export type CollateralLoss = {
+  depositedCollateral: Decimal | undefined
+  currentCollateralEstimation: Decimal | undefined
+  percentage: Decimal | undefined
+  amount: Decimal | undefined
+  loading: boolean
+}
 
 export type BorrowPositionDetailsProps = {
   marketType: LlamaMarketType
@@ -68,6 +76,7 @@ export type BorrowPositionDetailsProps = {
   collateralValue: CollateralValue
   ltv: Ltv
   totalDebt: TotalDebt
+  collateralLoss: CollateralLoss
 }
 
 const alerts = {
@@ -114,6 +123,7 @@ export const BorrowPositionDetails = ({
   collateralValue,
   ltv,
   totalDebt,
+  collateralLoss,
 }: BorrowPositionDetailsProps) => (
   <Stack>
     {liquidationAlert.softLiquidation && <LiquidationAlert type="soft" />}
@@ -129,6 +139,7 @@ export const BorrowPositionDetails = ({
       liquidationRange={liquidationRange}
       bandRange={bandRange}
       totalDebt={totalDebt}
+      collateralLoss={collateralLoss}
     />
   </Stack>
 )
