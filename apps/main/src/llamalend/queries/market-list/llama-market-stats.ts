@@ -6,6 +6,7 @@ import { type LlamaMarket } from '@/llamalend/queries/market-list/llama-markets'
 import { useUserMintMarketStats } from '@/llamalend/queries/market-list/mint-markets'
 import { useTokenUsdPrice } from '@ui-kit/lib/model/entities/token-usd-prices'
 import { LlamaMarketType } from '@ui-kit/types/market'
+import { decimal } from '@ui-kit/utils/decimal'
 
 const statsColumns = [
   LlamaMarketColumnId.UserHealth,
@@ -89,6 +90,12 @@ export function useUserMarketStats(market: LlamaMarket, column?: LlamaMarketColu
           usdRate: borrowedUsdRate,
         },
         ltv: calculateLtv(stats.debt, stats.collateral, borrowedAmount, borrowedUsdRate, collateralUsdRate),
+        collateralLoss: {
+          depositedCollateral: decimal(stats.totalDeposited),
+          currentCollateralEstimation: decimal(stats.collateral),
+          percentage: decimal(stats.lossPct),
+          amount: decimal(stats.loss),
+        },
       },
     }),
     ...(enableEarnings && { data: { earnings: earnData } }),

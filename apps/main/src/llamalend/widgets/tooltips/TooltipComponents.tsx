@@ -95,7 +95,12 @@ export const TooltipItem = ({
           const typographyColor = isFirstChild ? valueTypographyColor[variant] : 'textSecondary'
 
           return (
-            <Typography variant={typographyVariant} color={typographyColor} component="span">
+            <Typography
+              variant={typographyVariant}
+              color={typographyColor}
+              component="span"
+              sx={{ textAlign: 'right' }}
+            >
               {child}
             </Typography>
           )
