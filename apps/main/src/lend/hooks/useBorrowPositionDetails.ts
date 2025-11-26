@@ -156,10 +156,10 @@ export const useBorrowPositionDetails = ({
       loading: !market || isUserLoanDetailsLoading,
     },
     collateralLoss: {
-      depositedCollateral: loss && decimal(loss.deposited_collateral),
-      currentCollateralEstimation: loss && decimal(loss.current_collateral_estimation),
-      percentage: loss && decimal(loss.loss_pct),
-      amount: loss && decimal(loss.loss),
+      depositedCollateral: decimal(loss?.deposited_collateral),
+      currentCollateralEstimation: decimal(loss?.current_collateral_estimation),
+      percentage: decimal(loss?.loss_pct),
+      amount: decimal(loss?.loss),
       loading: !market || isUserLoanDetailsLoading,
     },
   }
