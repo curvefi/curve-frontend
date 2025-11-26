@@ -8,20 +8,17 @@ import { validateIsFull } from './validation/borrow-fields.validation'
 type UserHealthParams = UserMarketParams & { isFull: boolean }
 type UserHealthQuery = UserMarketQuery & { isFull: boolean }
 
-const userHealthValidationSuite = createValidationSuite(
-  ({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
-    userMarketValidationSuite({ userAddress, marketId, chainId })
-    validateIsFull(isFull)
-  },
-)
-
-// TODO: This query is for the current user health, not the change in health when repaying debt.
-// Use `market.repayHealth` for that.
-
+/**
+ * Query to get the user's health in a market.
+ * Note this is NOT the health change when repaying debt, use `repayHealth` query for that.
+ */
 export const { getQueryOptions: getUserHealthOptions, invalidate: invalidateUserHealth } = queryFactory({
   queryKey: ({ isFull, ...params }: UserHealthParams) =>
     [...rootKeys.userMarket(params), 'market-user-health', { isFull }] as const,
   queryFn: async ({ marketId, userAddress, isFull }: UserHealthQuery) =>
     (await getLlamaMarket(marketId).userHealth(isFull, userAddress)) as Decimal,
-  validationSuite: userHealthValidationSuite,
+  validationSuite: createValidationSuite(({ userAddress, isFull, marketId, chainId }: UserHealthParams) => {
+    userMarketValidationSuite({ userAddress, marketId, chainId })
+    validateIsFull(isFull)
+  }),
 })

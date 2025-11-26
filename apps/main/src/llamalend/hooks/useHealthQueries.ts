@@ -33,7 +33,7 @@ type HealthQueryResults = QueryResultsArray<readonly HealthQueryOptions[]>
  *   In or below soft-liq healthFull = healthNotFull, above soft-liq healthFull > healthNotFull
  *   When healthNotFull is below 0, the user is in soft-liq and we should return the corresponding metric.
  */
-export const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
+const combineHealth = ([healthFull, healthNotFull]: HealthQueryResults) => ({
   data:
     healthFull.data == null || healthNotFull.data == null
       ? undefined
