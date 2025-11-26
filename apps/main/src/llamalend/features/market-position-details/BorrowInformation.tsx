@@ -147,8 +147,7 @@ export const BorrowInformation = ({
           clickable: true,
         }}
       />
-      {leverage &&
-        leverage?.value &&
+      {leverage?.value != null &&
         leverage?.value > 1 && ( // Leverage is only available on lend for now
           <Metric
             size="small"
