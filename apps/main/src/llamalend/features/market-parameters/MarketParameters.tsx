@@ -1,15 +1,9 @@
-import { useMarketPricePerShare } from '@/lend/entities/market-details'
-import { ChainId } from '@/lend/types/lend.types'
-import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { useMarketParameters } from '@/llamalend/queries/market-parameters'
+import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
 import Stack from '@mui/material/Stack'
-import Typography from '@mui/material/Typography'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
-import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-
-const { Spacing } = SizesAndSpaces
 
 // In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
 // In [2]: ltv((30, 0.11))
@@ -25,100 +19,61 @@ type MarketDetails = {
   label: string
   value: string | number | undefined
   formatOptions: NumberFormatOptions
-  isError: boolean
   tooltip?: string
 }
 
-export const MarketParameters = ({
-  chainId,
-  marketId,
-  type,
-}: {
-  chainId: ChainId
-  marketId: string
-  type: 'borrow' | 'supply'
-}) => {
+export const MarketParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
   const {
     data: parameters,
     isLoading: isLoadingParameters,
     isError: isErrorParameters,
   } = useMarketParameters({ chainId, marketId })
 
-  const {
-    data: pricePerShare,
-    isLoading: isLoadingPricePerShare,
-    error: errorPricePerShare,
-  } = useMarketPricePerShare({ chainId, marketId })
-
-  const borrowDetails: MarketDetails[] = [
+  const details: MarketDetails[] = [
     {
       label: t`AMM swap fee`,
       value: parameters?.fee,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-      isError: isErrorParameters,
     },
     {
       label: t`Admin fee`,
       value: parameters?.admin_fee,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-      isError: isErrorParameters,
     },
     {
       label: t`Band width factor`,
       value: parameters?.A,
       formatOptions: { useGrouping: false },
-      isError: isErrorParameters,
     },
     {
       label: t`Loan discount`,
       value: parameters?.loan_discount,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: isErrorParameters,
     },
     {
       label: t`Liquidation discount`,
       value: parameters?.liquidation_discount,
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: isErrorParameters,
     },
     {
       label: t`Max LTV`,
       value: getMaxLTV(parameters?.A, parameters?.loan_discount),
       formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      isError: isErrorParameters,
       tooltip: t`Max possible loan at N=4`,
     },
   ]
 
   return (
-    <Stack gap={Spacing.md}>
-      {type === 'borrow' && (
-        <Stack gap={Spacing.xs}>
-          <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-          {borrowDetails.map(({ label, value, formatOptions, isError, tooltip }) => (
-            <ActionInfo
-              key={label}
-              label={label}
-              value={isError ? '?' : formatNumber(value, formatOptions)}
-              valueTooltip={tooltip}
-              loading={isLoadingParameters}
-            />
-          ))}
-        </Stack>
-      )}
-
-      <Stack gap={Spacing.xs}>
-        <Typography variant="headingXsBold">{t`Prices`}</Typography>
-        <MarketPrices chainId={chainId} marketId={marketId} />
-        {type === 'supply' && (
-          <ActionInfo
-            label={t`Price per share`}
-            value={errorPricePerShare ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
-            loading={isLoadingPricePerShare}
-            error={errorPricePerShare}
-          />
-        )}
-      </Stack>
+    <Stack>
+      {details.map(({ label, value, formatOptions, tooltip }) => (
+        <ActionInfo
+          key={label}
+          label={label}
+          value={isErrorParameters ? '?' : formatNumber(value, formatOptions)}
+          valueTooltip={tooltip}
+          loading={isLoadingParameters}
+        />
+      ))}
     </Stack>
   )
 }

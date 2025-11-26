@@ -6,13 +6,15 @@ import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
-import { useTheme } from '@mui/material'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
+import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
+import { Typography, useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
+import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { MarketParameters } from './DetailsMarket/components/MarketParameters'
 
 const { Spacing } = SizesAndSpaces
 
@@ -108,8 +110,21 @@ export const MarketInformationComp = ({
             <DetailsContracts rChainId={rChainId} market={market} />
           </Stack>
 
-          <Stack sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}>
-            <MarketParameters chainId={rChainId} marketId={rOwmId} type={type} />
+          <Stack
+            gap={Spacing.md}
+            sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
+          >
+            {type === 'borrow' && (
+              <Stack gap={Spacing.xs}>
+                <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
+                <MarketParameters chainId={rChainId} marketId={rOwmId} />
+              </Stack>
+            )}
+
+            <Stack gap={Spacing.xs}>
+              <Typography variant="headingXsBold">{t`Prices`}</Typography>
+              <MarketPrices chainId={rChainId} marketId={rOwmId} />
+            </Stack>
           </Stack>
         </Stack>
       )}

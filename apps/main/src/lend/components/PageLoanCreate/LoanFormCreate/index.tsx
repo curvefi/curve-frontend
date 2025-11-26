@@ -19,6 +19,7 @@ import useStore from '@/lend/store/useStore'
 import { Api, type MarketUrlParams, OneWayMarketTemplate, PageContentProps } from '@/lend/types/lend.types'
 import { getLoanManagePathname } from '@/lend/utils/utilsRouter'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
 import Accordion from '@ui/Accordion'
@@ -37,7 +38,6 @@ import { useNavigate } from '@ui-kit/hooks/router'
 import usePageVisibleInterval from '@ui-kit/hooks/usePageVisibleInterval'
 import { t } from '@ui-kit/lib/i18n'
 import { REFRESH_INTERVAL } from '@ui-kit/lib/model'
-import { MarketParameters } from '../../DetailsMarket/components/MarketParameters'
 
 const LoanCreate = ({
   isLeverage = false,
@@ -440,7 +440,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <MarketParameters chainId={rChainId} marketId={rOwmId} type="borrow" />
+          <MarketParameters chainId={rChainId} marketId={rOwmId} />
         </Accordion>
       )}
     </>

@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
@@ -36,7 +37,6 @@ import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
 import { decimal, type Decimal } from '@ui-kit/utils'
-import { LoanInfoParameters } from '../../LoanInfoLlamma/LoanInfoParameters'
 
 const LoanCreate = ({
   collateralAlert,
@@ -469,7 +469,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={t`Loan Parameters`}>
-          <LoanInfoParameters market={llamma} marketId={llammaId} />
+          <MarketParameters chainId={rChainId} marketId={llammaId} />
         </Accordion>
       )}
     </>

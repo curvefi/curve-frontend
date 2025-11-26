@@ -1,6 +1,7 @@
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
@@ -14,7 +15,6 @@ import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { LoanInfoParameters } from './LoanInfoLlamma/LoanInfoParameters'
 
 const { Spacing } = SizesAndSpaces
 
@@ -126,7 +126,7 @@ export const MarketInformationComp = ({
           >
             <Stack gap={Spacing.xs}>
               <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-              <LoanInfoParameters market={llamma} marketId={marketId} />
+              <MarketParameters chainId={chainId} marketId={marketId} />
             </Stack>
 
             <Stack gap={Spacing.xs}>
