@@ -72,7 +72,7 @@ export const APP_LINK: Record<AppMenuOption, AppRoutes> = {
     ],
   },
   dao: {
-    label: 'DAO',
+    label: 'Governance',
     routes: [
       { app: 'dao', route: DAO_ROUTES.PAGE_VECRV_CREATE, label: () => t`Lock CRV` },
       { app: 'dao', route: DAO_ROUTES.PAGE_PROPOSALS, label: () => t`Proposals` },
