@@ -16,6 +16,7 @@ import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { calculateAverageRates } from '@ui-kit/utils/averageRates'
+import { decimal } from '@ui-kit/utils/decimal'
 
 type UseLoanPositionDetailsProps = {
   chainId: ChainId
@@ -159,10 +160,10 @@ export const useLoanPositionDetails = ({
       loading: userLoanDetailsLoading ?? true,
     },
     collateralLoss: {
-      depositedCollateral: userLoss && Number(userLoss.deposited_collateral),
-      currentCollateralEstimation: userLoss && Number(userLoss.current_collateral_estimation),
-      percentage: userLoss && Number(userLoss.loss_pct),
-      amount: userLoss && Number(userLoss.loss),
+      depositedCollateral: userLoss && decimal(userLoss.deposited_collateral),
+      currentCollateralEstimation: userLoss && decimal(userLoss.current_collateral_estimation),
+      percentage: userLoss && decimal(userLoss.loss_pct),
+      amount: userLoss && decimal(userLoss.loss),
       loading: userLoanDetailsLoading ?? true,
     },
   }

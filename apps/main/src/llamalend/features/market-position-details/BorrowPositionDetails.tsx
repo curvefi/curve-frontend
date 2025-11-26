@@ -3,6 +3,7 @@ import { CampaignPoolRewards } from '@ui-kit/entities/campaigns'
 import { t } from '@ui-kit/lib/i18n'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import type { LlamaMarketType } from '@ui-kit/types/market'
+import type { Decimal } from '@ui-kit/utils/decimal'
 import { BorrowInformation } from './BorrowInformation'
 import { HealthDetails } from './HealthDetails'
 
@@ -56,10 +57,10 @@ export type CollateralValue = {
 export type Ltv = { value: number | undefined | null; loading: boolean }
 export type TotalDebt = { value: number | undefined | null; loading: boolean }
 export type CollateralLoss = {
-  depositedCollateral: number | undefined
-  currentCollateralEstimation: number | undefined
-  percentage: number | undefined
-  amount: number | undefined
+  depositedCollateral: Decimal | undefined
+  currentCollateralEstimation: Decimal | undefined
+  percentage: Decimal | undefined
+  amount: Decimal | undefined
   loading: boolean
 }
 

@@ -11,6 +11,7 @@ import {
 import { Stack } from '@mui/material'
 import { t } from '@ui-kit/lib/i18n'
 import { formatPercent, formatNumber, formatUsd } from '@ui-kit/utils'
+import { Decimal } from '@ui-kit/utils/decimal'
 
 type CollateralMetricTooltipContentProps = {
   collateralValue: CollateralValue | undefined | null
@@ -19,7 +20,7 @@ type CollateralMetricTooltipContentProps = {
 
 const UnavailableNotation = '-'
 
-const formatMetricValue = (value?: number | null) => {
+const formatMetricValue = (value?: number | Decimal | null) => {
   if (value === 0) return '0'
   if (value) return formatNumber(value, { abbreviate: true })
   return UnavailableNotation
@@ -86,7 +87,7 @@ export const CollateralMetricTooltipContent = ({
         <TooltipItems secondary>
           <TooltipItem title={t`Eroded collateral`} variant="independent">
             {`${collateralLossFormatted} ${collateralValue?.collateral?.symbol}`}
-            {collateralLoss?.percentage && collateralLoss.percentage != 0
+            {collateralLoss?.percentage && Number(collateralLoss.percentage) != 0
               ? ` (${formatPercent(collateralLoss.percentage)})`
               : ''}
           </TooltipItem>
