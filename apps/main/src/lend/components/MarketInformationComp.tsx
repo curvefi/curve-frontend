@@ -117,13 +117,17 @@ export const MarketInformationComp = ({
             {type === 'borrow' && (
               <Stack gap={Spacing.xs}>
                 <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-                <MarketParameters chainId={rChainId} marketId={rOwmId} />
+                <Stack>
+                  <MarketParameters chainId={rChainId} marketId={rOwmId} />
+                </Stack>
               </Stack>
             )}
 
             <Stack gap={Spacing.xs}>
               <Typography variant="headingXsBold">{t`Prices`}</Typography>
-              <MarketPrices chainId={rChainId} marketId={rOwmId} />
+              <Stack>
+                <MarketPrices chainId={rChainId} marketId={rOwmId} />
+              </Stack>
             </Stack>
           </Stack>
         </Stack>

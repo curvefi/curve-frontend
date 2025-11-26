@@ -20,6 +20,7 @@ import { curveProps } from '@/loan/utils/helpers'
 import { hasV1Deleverage } from '@/loan/utils/leverage'
 import { getStepStatus, getTokenName } from '@/loan/utils/utilsLoan'
 import { getLoanManagePathname } from '@/loan/utils/utilsRouter'
+import Stack from '@mui/material/Stack'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -469,7 +470,9 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={t`Loan Parameters`}>
-          <MarketParameters chainId={rChainId} marketId={llammaId} />
+          <Stack>
+            <MarketParameters chainId={rChainId} marketId={llammaId} />
+          </Stack>
         </Accordion>
       )}
     </>

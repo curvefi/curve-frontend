@@ -1,6 +1,5 @@
 import { useMarketParameters } from '@/llamalend/queries/market-parameters'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import Stack from '@mui/material/Stack'
 import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
@@ -64,7 +63,7 @@ export const MarketParameters = ({ chainId, marketId }: { chainId: IChainId; mar
   ]
 
   return (
-    <Stack>
+    <>
       {details.map(({ label, value, formatOptions, tooltip }) => (
         <ActionInfo
           key={label}
@@ -74,6 +73,6 @@ export const MarketParameters = ({ chainId, marketId }: { chainId: IChainId; mar
           loading={isLoadingParameters}
         />
       ))}
-    </Stack>
+    </>
   )
 }

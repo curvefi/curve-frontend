@@ -126,12 +126,16 @@ export const MarketInformationComp = ({
           >
             <Stack gap={Spacing.xs}>
               <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-              <MarketParameters chainId={chainId} marketId={marketId} />
+              <Stack>
+                <MarketParameters chainId={chainId} marketId={marketId} />
+              </Stack>
             </Stack>
 
             <Stack gap={Spacing.xs}>
               <Typography variant="headingXsBold">{t`Prices`}</Typography>
-              <MarketPrices chainId={chainId} marketId={marketId} />
+              <Stack>
+                <MarketPrices chainId={chainId} marketId={marketId} />
+              </Stack>
             </Stack>
           </Stack>
         </Stack>
