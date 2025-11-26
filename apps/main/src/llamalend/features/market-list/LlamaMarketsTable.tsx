@@ -26,13 +26,13 @@ import { LlamaMarketExpandedPanel } from './LlamaMarketExpandedPanel'
 
 const LOCAL_STORAGE_KEY = 'Llamalend Markets'
 
-const useDefaultLlamaFilter = (minLiquidity: number) =>
+const useDefaultLlamaFilter = (minTvl: number) =>
   useMemo(
     () => [
       { id: LlamaMarketColumnId.DeprecatedMessage, value: 'no' },
-      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minLiquidity, null])! },
+      { id: LlamaMarketColumnId.Tvl, value: serializeRangeFilter([minTvl, null])! },
     ],
-    [minLiquidity],
+    [minTvl],
   )
 
 const pagination = { pageIndex: 0, pageSize: 200 }

@@ -104,10 +104,7 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, electron]
-        count: [1]
-        include:
-          - browser: chrome
-            count: 2
+        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
     name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
@@ -135,7 +132,7 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
