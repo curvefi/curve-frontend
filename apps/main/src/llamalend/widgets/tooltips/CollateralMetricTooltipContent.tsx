@@ -43,8 +43,7 @@ export const CollateralMetricTooltipContent = ({
 }: CollateralMetricTooltipContentProps) => {
   const collateralValueFormatted = formatMetricValue(collateralValue?.collateral?.value)
   const depositedCollateralFormatted = formatMetricValue(collateralLoss?.depositedCollateral)
-  const collateralLossFormatted =
-    collateralLoss?.amount && collateralLoss.amount < 0 ? 0 : formatMetricValue(collateralLoss?.amount)
+  const collateralLossFormatted = formatMetricValue(collateralLoss?.amount)
   const collateralPercentage = formatPercentage(
     collateralValue?.collateral?.value,
     collateralValue?.totalValue,
@@ -85,8 +84,8 @@ export const CollateralMetricTooltipContent = ({
           </TooltipItem>
         </TooltipItems>
         <TooltipItems secondary>
-          <TooltipItem title={t`Liquidation losses`} variant="independent">
-            {`${collateralLossFormatted}${collateralLoss?.percentage && collateralLoss.percentage > 0 ? ` (${collateralLoss.percentage}%)` : ''}`}
+          <TooltipItem title={t`Eroded collateral`} variant="independent">
+            {`${collateralLossFormatted} ${collateralValue?.collateral?.symbol} ${collateralLoss?.percentage && collateralLoss.percentage != 0 ? ` (${formatPercent(collateralLoss.percentage)})` : ''}`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
