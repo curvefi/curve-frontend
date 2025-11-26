@@ -1,8 +1,9 @@
 import Button from '@mui/material/Button'
 import { PinTopIcon } from '@ui-kit/shared/icons/PinTopIcon'
+import { mapBreakpoints } from '@ui-kit/themes/basic-theme'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
-const { ButtonSize } = SizesAndSpaces
+const { ButtonSize, Inset } = SizesAndSpaces
 
 export const ScrollUpButton = ({ visible }: { visible: boolean }) => (
   <Button
@@ -18,7 +19,7 @@ export const ScrollUpButton = ({ visible }: { visible: boolean }) => (
     sx={{
       // Put on the bottom right corner
       position: 'fixed',
-      inset: 'auto 4rem 4rem auto',
+      inset: mapBreakpoints(Inset.scrollUpButton, (inset) => `auto ${inset} ${inset} auto`),
 
       // Make sure it's always on top
       zIndex: 'var(--z-index-page-settings)',
