@@ -87,7 +87,7 @@ export const LoanInfoAccordion = ({
             value={debt.data == null ? '-' : formatNumber(debt.data, { abbreviate: false })}
             valueRight={debt.tokenSymbol}
             error={debt?.error ?? prevDebt?.error}
-            loading={!!(debt?.isLoading || prevDebt?.isLoading)}
+            loading={debt?.isLoading || prevDebt?.isLoading}
             testId="borrow-debt"
           />
         )}
