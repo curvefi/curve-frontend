@@ -6,6 +6,7 @@ import { PageContentProps } from '@/lend/types/lend.types'
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
+import { MarketMisc } from '@/llamalend/features/market-parameters/MarketMisc'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { Typography, useTheme } from '@mui/material'
@@ -144,6 +145,13 @@ export const MarketInformationComp = ({
                     error={errorPricePerShare}
                   />
                 )}
+              </Stack>
+            </Stack>
+
+            <Stack gap={Spacing.xs}>
+              <Typography variant="headingXsBold">{t`Market`}</Typography>
+              <Stack>
+                <MarketMisc market={market} />
               </Stack>
             </Stack>
           </Stack>

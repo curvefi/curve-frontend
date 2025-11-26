@@ -1,6 +1,7 @@
 import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
+import { MarketMisc } from '@/llamalend/features/market-parameters/MarketMisc'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { BandsComp } from '@/loan/components/BandsComp'
@@ -135,6 +136,13 @@ export const MarketInformationComp = ({
               <Typography variant="headingXsBold">{t`Prices`}</Typography>
               <Stack>
                 <MarketPrices chainId={chainId} marketId={marketId} />
+              </Stack>
+            </Stack>
+
+            <Stack gap={Spacing.xs}>
+              <Typography variant="headingXsBold">{t`Market`}</Typography>
+              <Stack>
+                <MarketMisc market={llamma} />
               </Stack>
             </Stack>
           </Stack>
