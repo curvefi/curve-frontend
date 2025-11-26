@@ -144,7 +144,7 @@ export const defineMuiTabs = ({
         zIndex: 1,
         color: Contained.Current.Outline,
         opacity: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: Layer[1].Fill,
         '&:first-of-type': {
           left: 0,
         },
@@ -152,7 +152,7 @@ export const defineMuiTabs = ({
           right: 0,
         },
         '&.Mui-disabled': {
-          opacity: 0.3,
+          opacity: 0,
         },
       },
       [`&.${contained}`]: {
