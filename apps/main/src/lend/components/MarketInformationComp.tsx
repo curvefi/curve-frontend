@@ -10,11 +10,14 @@ import { MarketParameters } from '@/llamalend/features/market-parameters/MarketP
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { Typography, useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
+import { formatNumber } from '@ui/utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
+import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { useMarketPricePerShare } from '../entities/market-details'
 
 const { Spacing } = SizesAndSpaces
 
@@ -62,6 +65,12 @@ export const MarketInformationComp = ({
   })
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol)
   const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.borrowed_token.symbol)
+
+  const {
+    data: pricePerShare,
+    isLoading: isLoadingPricePerShare,
+    error: errorPricePerShare,
+  } = useMarketPricePerShare({ chainId: rChainId, marketId: rOwmId })
 
   return (
     <>
@@ -127,6 +136,14 @@ export const MarketInformationComp = ({
               <Typography variant="headingXsBold">{t`Prices`}</Typography>
               <Stack>
                 <MarketPrices chainId={rChainId} marketId={rOwmId} />
+                {type === 'supply' && (
+                  <ActionInfo
+                    label={t`Price per share`}
+                    value={errorPricePerShare ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
+                    loading={isLoadingPricePerShare}
+                    error={errorPricePerShare}
+                  />
+                )}
               </Stack>
             </Stack>
           </Stack>
