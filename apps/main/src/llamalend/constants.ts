@@ -1,3 +1,5 @@
+import type { HealthMode } from './llamalend.types'
+
 /**
  * Preset options for borrowing
  * @see BORROW_PRESET_RANGES
@@ -21,4 +23,13 @@ export enum PositionsEmptyState {
   Error = 'error',
   NoPositions = 'no-positions',
   Filtered = 'filtered',
+}
+
+export const DEFAULT_HEALTH_MODE: HealthMode = {
+  percent: '',
+  colorKey: '',
+  icon: null,
+  message: null,
+  warningTitle: '',
+  warning: '',
 }
