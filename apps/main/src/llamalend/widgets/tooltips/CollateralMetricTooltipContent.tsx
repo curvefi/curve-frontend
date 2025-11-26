@@ -87,9 +87,9 @@ export const CollateralMetricTooltipContent = ({
         <TooltipItems secondary>
           <TooltipItem title={t`Eroded collateral`} variant="independent">
             {`${collateralLossFormatted} ${collateralValue?.collateral?.symbol}`}
-            {collateralLoss?.percentage && Number(collateralLoss.percentage) != 0
-              ? ` (${formatPercent(collateralLoss.percentage)})`
-              : ''}
+            {collateralLoss?.percentage &&
+              Number(collateralLoss.percentage) != 0 &&
+              ` (${formatPercent(collateralLoss.percentage)})`}
           </TooltipItem>
         </TooltipItems>
       </Stack>
