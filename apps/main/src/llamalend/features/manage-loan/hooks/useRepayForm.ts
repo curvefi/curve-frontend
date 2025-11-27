@@ -2,13 +2,14 @@ import { useEffect, useMemo } from 'react'
 import type { UseFormReturn } from 'react-hook-form'
 import { useForm } from 'react-hook-form'
 import { useAccount } from 'wagmi'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
 import { getTokens } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate, NetworkDict } from '@/llamalend/llamalend.types'
 import { type RepayOptions, useRepayMutation } from '@/llamalend/mutations/repay.mutation'
 import { useRepayBands } from '@/llamalend/queries/repay/repay-bands.query'
 import { useRepayExpectedBorrowed } from '@/llamalend/queries/repay/repay-expected-borrowed.query'
 import { useRepayEstimateGas } from '@/llamalend/queries/repay/repay-gas-estimate.query'
-import { useRepayHealth } from '@/llamalend/queries/repay/repay-health.query'
+import { getRepayHealthOptions } from '@/llamalend/queries/repay/repay-health.query'
 import { useRepayIsAvailable } from '@/llamalend/queries/repay/repay-is-available.query'
 import { useRepayIsFull } from '@/llamalend/queries/repay/repay-is-full.query'
 import { useRepayPriceImpact } from '@/llamalend/queries/repay/repay-price-impact.query'
@@ -79,8 +80,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
 
   const bands = useRepayBands(params, enabled)
   const expectedBorrowed = useRepayExpectedBorrowed(params, enabled)
-  const healthFull = useRepayHealth({ ...params, isFull: true }, enabled)
-  const healthNotFull = useRepayHealth({ ...params, isFull: false }, enabled)
+  const health = useHealthQueries((isFull) => getRepayHealthOptions({ ...params, isFull }, enabled))
   const isAvailable = useRepayIsAvailable(params, enabled)
   const isFull = useRepayIsFull(params, enabled)
   const priceImpact = useRepayPriceImpact(params, enabled)
@@ -101,8 +101,7 @@ export const useRepayForm = <ChainId extends LlamaChainId, NetworkName extends L
     action,
     bands,
     expectedBorrowed,
-    healthFull,
-    healthNotFull,
+    health,
     isAvailable,
     isFull,
     priceImpact,
