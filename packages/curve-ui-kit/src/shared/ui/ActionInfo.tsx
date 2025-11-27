@@ -176,7 +176,7 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && (
+        {error && !loading && (
           <Tooltip title={errorMessage} placement="top">
             <ExclamationTriangleIcon fontSize="small" color="error" />
           </Tooltip>
