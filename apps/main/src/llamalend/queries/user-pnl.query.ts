@@ -9,6 +9,7 @@ import { createValidationSuite } from '@ui-kit/lib/validation'
 import { decimal } from '@ui-kit/utils'
 
 /**
+ * Query for fetching user PNL data in lend and mint markets.
  * PNL data from llamalend-js for mint markets is currently only avaiable when v2 leverage is enabled.
  */
 type UserPnlQuery = UserQuery & MarketQuery<IChainId> & { loanExists: boolean; hasV2Leverage: boolean }
