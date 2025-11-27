@@ -22,7 +22,6 @@ import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import type { HealthMode } from '@/llamalend/llamalend.types'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import Stack from '@mui/material/Stack'
 import Accordion from '@ui/Accordion'
 import AlertBox from '@ui/AlertBox'
 import Box from '@ui/Box'
@@ -441,9 +440,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={<TextCaption isCaps isBold>{t`Market details`}</TextCaption>}>
-          <Stack>
-            <MarketParameters chainId={rChainId} marketId={rOwmId} />
-          </Stack>
+          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action="borrow" />
         </Accordion>
       )}
     </>
