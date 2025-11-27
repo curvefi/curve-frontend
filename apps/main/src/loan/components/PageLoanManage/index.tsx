@@ -87,6 +87,7 @@ const LoanManage = ({ curve, isReady, llamma, llammaId, params, rChainId, rColla
             onChange={setSubTab}
             options={subTabs}
             fullWidth
+            sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}
           />
 
           {subTab === 'loan-increase' && (
