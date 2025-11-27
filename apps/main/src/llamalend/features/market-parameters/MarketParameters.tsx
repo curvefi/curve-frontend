@@ -1,78 +1,71 @@
-import { useMarketParameters } from '@/llamalend/queries/market-parameters'
+// TODO: refactor into llamalend
+// eslint-disable-next-line import/no-restricted-paths
+import { useMarketPricePerShare } from '@/lend/entities/market-details'
+import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import type { IChainId } from '@curvefi/llamalend-api/lib/interfaces'
-import { FORMAT_OPTIONS, formatNumber, NumberFormatOptions } from '@ui/utils'
+import { Typography } from '@mui/material'
+import Stack from '@mui/material/Stack'
+import { formatNumber } from '@ui/utils'
 import { t } from '@ui-kit/lib/i18n'
 import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
+import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
+import { MarketLoanParameters } from './MarketLoanParameters'
 
-// In [1]: ltv = lambda x: ((x[0] - 1) / x[0])**2 * (1 - x[1])
-// In [2]: ltv((30, 0.11))
-// Out[2]: 0.8316555555555556
-// where x[0] is A, x[1] is loan discount normalised between 0 and 1 (so 11% is 0.11). multiply ltv by 100 to show percentage.
-// always show 'max ltv' which is the max possible loan at N=4 (not advisable but hey it exists!).
-function getMaxLTV(a: string | undefined, loanDiscount: string | undefined) {
-  if (typeof a === 'undefined' || typeof loanDiscount === 'undefined') return
-  return ((+a - 1) / +a) ** 2 * (1 - +loanDiscount / 100) * 100
-}
+const { Spacing } = SizesAndSpaces
 
-type MarketDetails = {
-  label: string
-  value: string | number | undefined
-  formatOptions: NumberFormatOptions
-  tooltip?: string
-}
-
-export const MarketParameters = ({ chainId, marketId }: { chainId: IChainId; marketId: string }) => {
+export const MarketParameters = ({
+  chainId,
+  marketId,
+  marketType,
+  action,
+}: {
+  chainId: IChainId
+  marketId: string
+  marketType: 'lend' | 'mint'
+  action: 'borrow' | 'supply'
+}) => {
+  const enablePricePerShare = marketType === 'lend' && action === 'supply'
   const {
-    data: parameters,
-    isLoading: isLoadingParameters,
-    isError: isErrorParameters,
-  } = useMarketParameters({ chainId, marketId })
-
-  const details: MarketDetails[] = [
-    {
-      label: t`AMM swap fee`,
-      value: parameters?.fee,
-      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-    },
-    {
-      label: t`Admin fee`,
-      value: parameters?.admin_fee,
-      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 3 },
-    },
-    {
-      label: t`Band width factor`,
-      value: parameters?.A,
-      formatOptions: { useGrouping: false },
-    },
-    {
-      label: t`Loan discount`,
-      value: parameters?.loan_discount,
-      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-    },
-    {
-      label: t`Liquidation discount`,
-      value: parameters?.liquidation_discount,
-      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-    },
-    {
-      label: t`Max LTV`,
-      value: getMaxLTV(parameters?.A, parameters?.loan_discount),
-      formatOptions: { ...FORMAT_OPTIONS.PERCENT, maximumSignificantDigits: 2 },
-      tooltip: t`Max possible loan at N=4`,
-    },
-  ]
+    data: pricePerShare,
+    isLoading: isLoadingPricePerShare,
+    error: errorPricePerShare,
+  } = useMarketPricePerShare({ chainId, marketId }, enablePricePerShare)
 
   return (
-    <>
-      {details.map(({ label, value, formatOptions, tooltip }) => (
-        <ActionInfo
-          key={label}
-          label={label}
-          value={formatNumber(value, formatOptions)}
-          valueTooltip={tooltip}
-          loading={isLoadingParameters}
-        />
-      ))}
-    </>
+    <Stack
+      gap={Spacing.md}
+      sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
+    >
+      {action === 'borrow' && (
+        <Stack gap={Spacing.xs}>
+          <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
+          <Stack>
+            <MarketLoanParameters chainId={chainId} marketId={marketId} />
+          </Stack>
+        </Stack>
+      )}
+
+      <Stack gap={Spacing.xs}>
+        <Typography variant="headingXsBold">{t`Prices`}</Typography>
+        <Stack>
+          <MarketPrices chainId={chainId} marketId={marketId} />
+          {enablePricePerShare && (
+            <ActionInfo
+              label={t`Price per share`}
+              value={formatNumber(pricePerShare, { decimals: 5 })}
+              loading={isLoadingPricePerShare}
+              error={errorPricePerShare}
+            />
+          )}
+        </Stack>
+      </Stack>
+
+      <Stack gap={Spacing.xs}>
+        <Typography variant="headingXsBold">{t`Market`}</Typography>
+        <Stack>
+          <ActionInfo label={t`ID`} value={marketId} loading={!marketId} />
+        </Stack>
+      </Stack>
+    </Stack>
   )
 }

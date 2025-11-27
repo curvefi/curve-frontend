@@ -2,7 +2,6 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
-import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
 import { BandsComp } from '@/loan/components/BandsComp'
 import ChartOhlcWrapper from '@/loan/components/ChartOhlcWrapper'
 import DetailInfoAddressLookup from '@/loan/components/LoanInfoLlamma/components/DetailInfoAddressLookup'
@@ -14,7 +13,6 @@ import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
 import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 
 const { Spacing } = SizesAndSpaces
@@ -121,31 +119,7 @@ export const MarketInformationComp = ({
             />
           </Stack>
 
-          <Stack
-            gap={Spacing.md}
-            sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
-          >
-            <Stack gap={Spacing.xs}>
-              <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-              <Stack>
-                <MarketParameters chainId={chainId} marketId={marketId} />
-              </Stack>
-            </Stack>
-
-            <Stack gap={Spacing.xs}>
-              <Typography variant="headingXsBold">{t`Prices`}</Typography>
-              <Stack>
-                <MarketPrices chainId={chainId} marketId={marketId} />
-              </Stack>
-            </Stack>
-
-            <Stack gap={Spacing.xs}>
-              <Typography variant="headingXsBold">{t`Market`}</Typography>
-              <Stack>
-                <ActionInfo label={t`ID`} value={llamma?.id} loading={!llamma} />
-              </Stack>
-            </Stack>
-          </Stack>
+          <MarketParameters chainId={chainId} marketId={marketId} marketType="mint" action="borrow" />
         </Stack>
       )}
     </>

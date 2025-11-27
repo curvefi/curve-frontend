@@ -7,17 +7,12 @@ import { BandsChart } from '@/llamalend/features/bands-chart/BandsChart'
 import { useBandsData } from '@/llamalend/features/bands-chart/hooks/useBandsData'
 import { getBandsChartToken } from '@/llamalend/features/bands-chart/utils'
 import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
-import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
-import { Typography, useTheme } from '@mui/material'
+import { useTheme } from '@mui/material'
 import Stack from '@mui/material/Stack'
-import { formatNumber } from '@ui/utils'
 import { getLib } from '@ui-kit/features/connect-wallet'
 import { useUserProfileStore } from '@ui-kit/features/user-profile'
 import { useNewBandsChart } from '@ui-kit/hooks/useFeatureFlags'
-import { t } from '@ui-kit/lib/i18n'
-import ActionInfo from '@ui-kit/shared/ui/ActionInfo'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
-import { useMarketPricePerShare } from '../entities/market-details'
 
 const { Spacing } = SizesAndSpaces
 
@@ -66,12 +61,6 @@ export const MarketInformationComp = ({
   const collateralToken = getBandsChartToken(collateralTokenAddress, market?.collateral_token.symbol)
   const borrowToken = getBandsChartToken(borrowedTokenAddress, market?.borrowed_token.symbol)
 
-  const {
-    data: pricePerShare,
-    isLoading: isLoadingPricePerShare,
-    error: errorPricePerShare,
-  } = useMarketPricePerShare({ chainId: rChainId, marketId: rOwmId })
-
   return (
     <>
       {networks[rChainId]?.pricesData && !chartExpanded && (
@@ -119,41 +108,7 @@ export const MarketInformationComp = ({
             <DetailsContracts rChainId={rChainId} market={market} />
           </Stack>
 
-          <Stack
-            gap={Spacing.md}
-            sx={{ backgroundColor: (t) => t.design.Layer[2].Fill, padding: Spacing.md, minWidth: '18.75rem' }}
-          >
-            {type === 'borrow' && (
-              <Stack gap={Spacing.xs}>
-                <Typography variant="headingXsBold">{t`Loan Parameters`}</Typography>
-                <Stack>
-                  <MarketParameters chainId={rChainId} marketId={rOwmId} />
-                </Stack>
-              </Stack>
-            )}
-
-            <Stack gap={Spacing.xs}>
-              <Typography variant="headingXsBold">{t`Prices`}</Typography>
-              <Stack>
-                <MarketPrices chainId={rChainId} marketId={rOwmId} />
-                {type === 'supply' && (
-                  <ActionInfo
-                    label={t`Price per share`}
-                    value={formatNumber(pricePerShare, { decimals: 5 })}
-                    loading={isLoadingPricePerShare}
-                    error={errorPricePerShare}
-                  />
-                )}
-              </Stack>
-            </Stack>
-
-            <Stack gap={Spacing.xs}>
-              <Typography variant="headingXsBold">{t`Market`}</Typography>
-              <Stack>
-                <ActionInfo label={t`ID`} value={rOwmId} loading={!market} />
-              </Stack>
-            </Stack>
-          </Stack>
+          <MarketParameters chainId={rChainId} marketId={rOwmId} marketType="lend" action={type} />
         </Stack>
       )}
     </>
