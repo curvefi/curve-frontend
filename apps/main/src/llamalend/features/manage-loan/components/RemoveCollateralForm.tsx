@@ -63,14 +63,13 @@ export const RemoveCollateralForm = <ChainId extends IChainId>({
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
-        <LoanInfoAccordion
+        <LoanInfoAccordion // todo: prevHealth, prevRates, debt, prevDebt
           isOpen={isOpen}
           toggle={toggle}
           health={health}
           bands={bands}
           prices={prices}
           rates={marketRates}
-          futureRates={marketRates}
           loanToValue={useLoanToValueFromUserState({
             chainId: params.chainId!,
             marketId: params.marketId,
