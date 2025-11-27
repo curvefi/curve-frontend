@@ -7,13 +7,13 @@ import { calculateRangeToLiquidation } from '@/llamalend/features/market-positio
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv } from '@/llamalend/llama.utils'
 import { useLoanExists } from '@/llamalend/queries/loan-exists'
-import { useHasV2Leverage } from '@/llamalend/queries/market-has-v2-leverage'
 import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
 import useStore from '@/loan/store/useStore'
 import { ChainId, Llamma } from '@/loan/types/loan.types'
+import { hasV2Leverage } from '@/loan/utils/leverage'
 import { Address } from '@curvefi/prices-api'
 import { useCampaignsByAddress } from '@ui-kit/entities/campaigns'
 import { useCrvUsdSnapshots } from '@ui-kit/entities/crvusd-snapshots'
@@ -50,21 +50,19 @@ export const useLoanPositionDetails = ({
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
+  const v2LeverageEnabled = useMemo(() => hasV2Leverage(llamma ?? null), [llamma])
+
   const { data: loanExists } = useLoanExists({
     chainId,
     marketId: llammaId,
     userAddress,
-  })
-  const { data: hasV2Leverage } = useHasV2Leverage({
-    chainId,
-    marketId: llammaId,
   })
   const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
     chainId,
     marketId: llammaId,
     userAddress,
     loanExists,
-    hasV2Leverage,
+    hasV2Leverage: v2LeverageEnabled,
   })
   const { oraclePriceBand } = loanDetails ?? {}
 
@@ -176,7 +174,7 @@ export const useLoanPositionDetails = ({
           : null,
       loading: userLoanDetailsLoading ?? true,
     },
-    pnl: hasV2Leverage
+    pnl: v2LeverageEnabled
       ? {
           currentProfit: userPnl?.currentProfit,
           currentPositionValue: userPnl?.currentPosition,

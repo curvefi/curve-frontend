@@ -10,7 +10,7 @@ import { decimal } from '@ui-kit/utils'
 
 /**
  * Query for fetching user PNL data in lend and mint markets.
- * PNL data from llamalend-js for mint markets is currently only avaiable when v2 leverage is enabled.
+ * PNL data from llamalend-js for mint markets is currently only available when v2 leverage is enabled.
  */
 type UserPnlQuery = UserQuery & MarketQuery<IChainId> & { loanExists: boolean; hasV2Leverage: boolean }
 type UserPnlParams = FieldsOf<UserPnlQuery>
@@ -23,10 +23,10 @@ export const { useQuery: useUserPnl, invalidate: invalidateUserPnl } = queryFact
 
     const pnl = await market.currentPnL(userAddress)
     return {
-      currentPosition: decimal(pnl.currentPosition),
-      deposited: decimal(pnl.deposited),
-      currentProfit: decimal(pnl.currentProfit),
-      percentage: decimal(pnl.percentage),
+      currentPosition: decimal(pnl?.currentPosition),
+      deposited: decimal(pnl?.deposited),
+      currentProfit: decimal(pnl?.currentProfit),
+      percentage: decimal(pnl?.percentage),
     }
   },
   staleTime: '1m',
