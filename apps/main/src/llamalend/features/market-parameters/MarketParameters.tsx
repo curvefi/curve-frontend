@@ -1,4 +1,4 @@
-// TODO: refactor into llamalend
+// TODO: refactor query into llamalend for both mint and lend markets
 // eslint-disable-next-line import/no-restricted-paths
 import { useMarketPricePerShare } from '@/lend/entities/market-details'
 import { MarketPrices } from '@/llamalend/features/market-parameters/MarketPrices'
