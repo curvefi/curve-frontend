@@ -14,10 +14,10 @@ export type LiquidationAlert = {
   hardLiquidation: boolean
 }
 export type Pnl = {
-  currentProfit: number | undefined | null
-  currentPositionValue: number | undefined | null
-  depositedValue: number | undefined | null
-  percentageChange: number | undefined | null
+  currentProfit: Decimal | undefined
+  currentPositionValue: Decimal | undefined
+  depositedValue: Decimal | undefined
+  percentageChange: Decimal | undefined
   loading: boolean
 }
 export type Health = { value: number | undefined | null; loading: boolean }
@@ -69,7 +69,7 @@ export type BorrowPositionDetailsProps = {
   liquidationAlert: LiquidationAlert
   health: Health
   borrowAPY: BorrowAPY
-  pnl?: Pnl // doesn't exist yet for crvusd
+  pnl?: Pnl // not all mint markets has PNL data (requires v2 leverage support)
   liquidationRange: LiquidationRange
   bandRange: BandRange
   leverage?: Leverage // doesn't exist yet for crvusd

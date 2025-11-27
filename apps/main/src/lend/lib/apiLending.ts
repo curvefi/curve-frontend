@@ -263,7 +263,7 @@ const user = {
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
 
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage] =
           await Promise.all([
             market.userState(),
             market.userHealth(),
@@ -274,7 +274,6 @@ const user = {
             market.userBandsBalances(),
             market.oraclePriceBand(),
             market.currentLeverage(signerAddress),
-            market.currentPnL(signerAddress),
           ])
 
         // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
@@ -311,7 +310,6 @@ const user = {
             prices,
             loss,
             leverage,
-            pnl,
             status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',

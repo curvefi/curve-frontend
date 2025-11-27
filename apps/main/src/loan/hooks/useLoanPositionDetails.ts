@@ -1,10 +1,14 @@
 import lodash from 'lodash'
 import { useEffect, useMemo, useState } from 'react'
+import { useAccount } from 'wagmi'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
 import type { BorrowPositionDetailsProps } from '@/llamalend/features/market-position-details'
 import { calculateRangeToLiquidation } from '@/llamalend/features/market-position-details/utils'
 import { DEFAULT_BORROW_TOKEN_SYMBOL, getHealthMode } from '@/llamalend/health.util'
 import { calculateLtv } from '@/llamalend/llama.utils'
+import { useLoanExists } from '@/llamalend/queries/loan-exists'
+import { useHasV2Leverage } from '@/llamalend/queries/market-has-v2-leverage'
+import { useUserPnl } from '@/llamalend/queries/user-pnl.query'
 import { CRVUSD_ADDRESS } from '@/loan/constants'
 import { useUserLoanDetails } from '@/loan/hooks/useUserLoanDetails'
 import networks from '@/loan/networks'
@@ -33,6 +37,7 @@ export const useLoanPositionDetails = ({
   llammaId,
 }: UseLoanPositionDetailsProps): BorrowPositionDetailsProps => {
   const blockchainId = networks[chainId]?.id
+  const { address: userAddress } = useAccount()
   const { data: campaigns } = useCampaignsByAddress({
     blockchainId,
     address: llamma?.controller?.toLocaleLowerCase() as Address,
@@ -45,6 +50,22 @@ export const useLoanPositionDetails = ({
   const userLoanDetailsLoading = useStore((state) => state.loans.userDetailsMapper[llammaId]?.loading)
   const loanDetails = useStore((state) => state.loans.detailsMapper[llammaId ?? ''])
   const { healthFull, healthNotFull } = useUserLoanDetails(llammaId) ?? {}
+  const { data: loanExists } = useLoanExists({
+    chainId,
+    marketId: llammaId,
+    userAddress,
+  })
+  const { data: hasV2Leverage } = useHasV2Leverage({
+    chainId,
+    marketId: llammaId,
+  })
+  const { data: userPnl, isLoading: isUserPnlLoading } = useUserPnl({
+    chainId,
+    marketId: llammaId,
+    userAddress,
+    loanExists,
+    hasV2Leverage,
+  })
   const { oraclePriceBand } = loanDetails ?? {}
 
   const [healthMode, setHealthMode] = useState(DEFAULT_HEALTH_MODE)
@@ -155,6 +176,15 @@ export const useLoanPositionDetails = ({
           : null,
       loading: userLoanDetailsLoading ?? true,
     },
+    pnl: hasV2Leverage
+      ? {
+          currentProfit: userPnl?.currentProfit,
+          currentPositionValue: userPnl?.currentPosition,
+          depositedValue: userPnl?.deposited,
+          percentageChange: userPnl?.percentage,
+          loading: isUserPnlLoading ?? true,
+        }
+      : undefined,
     totalDebt: {
       value: debt ? Number(debt) : null,
       loading: userLoanDetailsLoading ?? true,
