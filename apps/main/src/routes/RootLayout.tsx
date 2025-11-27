@@ -49,14 +49,14 @@ const NetworkAwareLayout = () => {
   const currentApp = getCurrentApp(usePathname())
   const onChainUnavailable = useOnChainUnavailable(networks)
   const hydrate = useHydrationMethods()
-  const config = useWagmiConfig(networks)
+  const wagmiConfig = useWagmiConfig(networks)
 
   useLayoutStoreResponsive()
 
   return (
-    config &&
+    wagmiConfig &&
     networks && (
-      <WagmiProvider config={config}>
+      <WagmiProvider {...wagmiConfig}>
         <ConnectionProvider
           app={currentApp}
           network={network}

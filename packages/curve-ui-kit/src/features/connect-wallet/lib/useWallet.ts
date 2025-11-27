@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react'
 import { useConnect, useConnectors, useDisconnect, useEnsName } from 'wagmi'
 import { useConnection } from '@ui-kit/features/connect-wallet'
 import { useGlobalState } from '@ui-kit/hooks/useGlobalState'
+import { useWagmiAutoConnect } from '@ui-kit/hooks/useLocalStorage'
 import { isCypress } from '@ui-kit/utils'
 import type { Wallet } from './types'
 import type { Connector } from './wagmi/wallets'
@@ -21,6 +22,7 @@ export const useWallet = () => {
   const closeModal = useCallback(() => setShowModal(false), [setShowModal])
   const { wallet, provider, connectState } = useConnection()
   const connectors = useConnectors()
+  const [, setAutoConnect] = useWagmiAutoConnect()
   state.wallet = wallet ?? null
   state.provider = provider ?? null
 
@@ -39,13 +41,14 @@ export const useWallet = () => {
       const connector = connectors.find((x) => x.id === selectedConnector) ?? connectors[0]
       try {
         await connectAsync({ connector })
+        setAutoConnect(true)
         setShowModal(false)
       } catch (err) {
         console.error('Error connecting wallet:', err)
         throw err
       }
     },
-    [connectAsync, connectors, setShowModal],
+    [connectAsync, connectors, setAutoConnect, setShowModal],
   )
 
   const { data: ensName } = useEnsName({ address: wallet?.account.address })
@@ -54,7 +57,12 @@ export const useWallet = () => {
     state.wallet && (state.wallet.account.ensName = ensName ?? undefined)
   }, [ensName])
 
-  return { wallet, connect, disconnect, provider, showModal, closeModal, connectState }
+  const disconnectWallet = useCallback(() => {
+    setAutoConnect(false)
+    disconnect()
+  }, [disconnect, setAutoConnect])
+
+  return { wallet, connect, disconnect: disconnectWallet, provider, showModal, closeModal, connectState }
 }
 
 useWallet.getState = () => ({ wallet: state.wallet, provider: state.provider })

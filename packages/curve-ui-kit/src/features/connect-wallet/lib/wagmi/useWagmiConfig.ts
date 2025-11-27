@@ -1,14 +1,16 @@
 import { useMemo } from 'react'
 import type { Chain } from 'viem'
+import { WagmiProviderProps } from 'wagmi'
 import { mapRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkMapping } from '@ui/utils'
+import { useWagmiAutoConnect } from '@ui-kit/hooks/useLocalStorage'
 import { createChainFromNetwork } from './chains'
 import { defaultGetRpcUrls } from './rpc'
 import { createTransportFromNetwork } from './transports'
 import { createWagmiConfig } from './wagmi-config'
 
-export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined) =>
-  useMemo(
+export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined): WagmiProviderProps | undefined => {
+  const config = useMemo(
     () =>
       networks &&
       createWagmiConfig({
@@ -20,3 +22,7 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
       }),
     [networks],
   )
+  const [reconnectOnMount] = useWagmiAutoConnect()
+
+  return config && { config, reconnectOnMount }
+}

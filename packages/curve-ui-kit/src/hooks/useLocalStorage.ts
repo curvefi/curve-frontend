@@ -41,8 +41,8 @@ const useLocalStorage = <T>(key: string, initialValue: T, migration?: MigrationO
 
 /* -- Export specific hooks so that we can keep an overview of all the local storage keys used in the app -- */
 export const useShowTestNets = () => useLocalStorage<boolean>('showTestnets', false)
+export const useWagmiAutoConnect = () => useLocalStorage<boolean>('wagmi-auto-connect', true)
 
-export const getReleaseChannel = () => getFromLocalStorage<ReleaseChannel>('release-channel') ?? defaultReleaseChannel
 export const useReleaseChannel = () =>
   useLocalStorage<ReleaseChannel>('release-channel', defaultReleaseChannel, {
     version: 1,
