@@ -68,7 +68,7 @@ export const MarketParameters = ({ chainId, marketId }: { chainId: IChainId; mar
         <ActionInfo
           key={label}
           label={label}
-          value={isErrorParameters ? '?' : formatNumber(value, formatOptions)}
+          value={formatNumber(value, formatOptions)}
           valueTooltip={tooltip}
           loading={isLoadingParameters}
         />

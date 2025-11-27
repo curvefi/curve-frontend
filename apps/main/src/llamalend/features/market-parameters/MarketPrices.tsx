@@ -22,7 +22,7 @@ export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketI
     <>
       <ActionInfo
         label={t`Base price`}
-        value={errorBasePrice ? '?' : formatNumber(basePrice)}
+        value={formatNumber(basePrice)}
         valueTooltip={basePrice && formatNumber(basePrice, { decimals: 5 })}
         loading={isLoadingBasePrice}
         error={errorBasePrice}
@@ -30,7 +30,7 @@ export const MarketPrices = ({ chainId, marketId }: { chainId: IChainId; marketI
 
       <ActionInfo
         label={t`Oracle price`}
-        value={errorOraclePrice ? '?' : formatNumber(oraclePrice)}
+        value={formatNumber(oraclePrice)}
         valueTooltip={oraclePrice && formatNumber(oraclePrice, { decimals: 5 })}
         loading={isLoadingOraclePrice}
         error={errorOraclePrice}

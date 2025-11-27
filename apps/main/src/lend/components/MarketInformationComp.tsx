@@ -140,7 +140,7 @@ export const MarketInformationComp = ({
                 {type === 'supply' && (
                   <ActionInfo
                     label={t`Price per share`}
-                    value={errorPricePerShare ? '?' : formatNumber(pricePerShare, { decimals: 5 })}
+                    value={formatNumber(pricePerShare, { decimals: 5 })}
                     loading={isLoadingPricePerShare}
                     error={errorPricePerShare}
                   />
