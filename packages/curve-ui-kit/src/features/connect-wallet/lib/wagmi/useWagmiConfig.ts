@@ -3,7 +3,7 @@ import type { Chain } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { mapRecord, recordValues } from '@curvefi/prices-api/objects.util'
 import type { NetworkMapping } from '@ui/utils'
-import { isCypress } from '@ui-kit/utils'
+import { Chain as ChainEnum, isCypress } from '@ui-kit/utils'
 import { createChainFromNetwork } from './chains'
 import { defaultGetRpcUrls } from './rpc'
 import { createTransportFromNetwork } from './transports'
@@ -23,7 +23,12 @@ export const useWagmiConfig = <T extends NetworkMapping>(networks: T | undefined
       chains,
       transports: mapRecord(networks, (_, network) => createTransportFromNetwork(network, defaultGetRpcUrls)),
       ...(isCypress && {
-        connectors: [createTestConnector({ privateKey: generatePrivateKey(), chain: chains[0] })],
+        connectors: [
+          createTestConnector({
+            privateKey: generatePrivateKey(),
+            chain: chains.find((chain) => chain.id === ChainEnum.Ethereum)!,
+          })!,
+        ],
       }),
     })
   }, [networks])
