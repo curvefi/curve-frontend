@@ -168,7 +168,7 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '' : value}
               </Typography>
             </WithSkeleton>
 
