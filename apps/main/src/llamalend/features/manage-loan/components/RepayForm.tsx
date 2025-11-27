@@ -37,7 +37,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onSubmit,
     action,
     bands,
-    healthFull,
+    health,
     prices,
     gas,
     isAvailable,
@@ -68,7 +68,7 @@ export const RepayForm = <ChainId extends IChainId>({
         <LoanInfoAccordion
           isOpen={isOpen}
           toggle={toggle}
-          health={healthFull}
+          health={health}
           bands={bands}
           prices={prices}
           rates={marketRates}
