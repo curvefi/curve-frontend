@@ -37,7 +37,7 @@ export const RepayForm = <ChainId extends IChainId>({
     onSubmit,
     action,
     bands,
-    healthFull,
+    health,
     prices,
     gas,
     isAvailable,
@@ -61,18 +61,17 @@ export const RepayForm = <ChainId extends IChainId>({
   const isDisabled = formErrors.length > 0 || isAvailable.data === false
 
   return (
-    <LoanFormWrapper
+    <LoanFormWrapper // todo: prevHealth, prevRates, debt, prevDebt
       {...form}
       onSubmit={onSubmit}
       infoAccordion={
         <LoanInfoAccordion
           isOpen={isOpen}
           toggle={toggle}
-          health={healthFull}
+          health={health}
           bands={bands}
           prices={prices}
           rates={marketRates}
-          futureRates={marketRates}
           loanToValue={useLoanToValueFromUserState({
             chainId,
             marketId: params.marketId,

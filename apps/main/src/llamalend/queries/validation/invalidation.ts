@@ -10,6 +10,7 @@ import { invalidateUserState } from '../user-state.query'
 export const invalidateAllUserMarketDetails = ({ marketId, userAddress, chainId }: UserMarketParams) =>
   Promise.all([
     invalidateUserState({ marketId, userAddress, chainId }),
-    invalidateUserHealth({ marketId, userAddress, chainId }),
+    invalidateUserHealth({ marketId, userAddress, chainId, isFull: true }),
+    invalidateUserHealth({ marketId, userAddress, chainId, isFull: false }),
     invalidateUserBalances({ userAddress, chainId }),
   ])
