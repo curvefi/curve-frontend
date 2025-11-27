@@ -1,7 +1,7 @@
 import { PegKeeper } from '@/loan/components/PagePegKeepers/components/PegKeeper'
 import { PEG_KEEPERS } from '@/loan/components/PagePegKeepers/constants'
 import { ComponentTestWrapper, type Config } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 
 const getVirtualNetwork = createVirtualTestnet((uuid) => ({
   slug: `pegkeepers-${uuid}`,
@@ -25,7 +25,7 @@ describe('Peg stability reserve', () => {
       return
     }
 
-    const config = createTestWagmiConfigFromVNet({ vnet })
+    const config = createTenderlyWagmiConfigFromVNet({ vnet })
     cy.mount(<TestComponent config={config} />)
 
     // Initial data when not connected
