@@ -13,7 +13,7 @@ const oneSmallTvl = () => oneFloat(SMALL_POOL_TVL)
 
 const oneLendingPool = (
   chain: Chain,
-  { utilization = oneFloat(0.99), tvl = oneLargeTvl() }: { utilization?: number; tvl?: number },
+  { utilization = oneFloat(0, 0.99), tvl = oneLargeTvl() }: { utilization?: number; tvl?: number },
 ): GetMarketsResponse['data'][number] => {
   const collateral = oneToken(chain)
   const borrowed = oneToken(chain)
@@ -101,6 +101,7 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
           {
             // 99% utilization to test the sorting and slider filter
             ...oneLendingPool(chain, { utilization: 0.99 }),
+            extra_reward_apr: [{ address: oneAddress(), symbol: 'RWD', apr: 0.5 }],
             address: HighUtilizationAddress,
             vault: HighUtilizationAddress,
             controller: HighUtilizationAddress,

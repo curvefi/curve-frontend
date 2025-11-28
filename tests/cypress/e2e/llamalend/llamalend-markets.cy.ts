@@ -163,7 +163,7 @@ describe(`LlamaLend Markets`, () => {
         )
         .then(([x, y]) => cy.get(`@slider`).click(x, y, { waitForAnimations: true }))
       closeSlider()
-      cy.get(`[data-testid^="data-table-row"]`).should('have.length.below', length)
+      cy.get(`[data-testid^="data-table-row"]`, LOAD_TIMEOUT).should('have.length.below', length)
     })
   })
 
