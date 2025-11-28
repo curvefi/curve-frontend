@@ -8,9 +8,10 @@ import type { Query } from '@/llamalend/widgets/manage-loan/loan.types'
 import type { INetworkName } from '@curvefi/llamalend-api/lib/interfaces'
 import type { PartialRecord } from '@curvefi/prices-api/objects.util'
 import { useTokenBalance } from '@ui-kit/hooks/useTokenBalance'
+import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { LargeTokenInput } from '@ui-kit/shared/ui/LargeTokenInput'
 import { TokenLabel } from '@ui-kit/shared/ui/TokenLabel'
-import { Decimal } from '@ui-kit/utils'
+import { decimal, Decimal } from '@ui-kit/utils'
 
 /**
  * A large token input field for loan forms, with balance and max handling.
@@ -51,6 +52,22 @@ export const LoanFormTokenInput = <
     error: balanceError,
   } = useTokenBalance({ chainId: network?.chainId, userAddress }, token)
 
+  const { data: usdRate } = useTokenUsdRate(
+    { chainId: network?.chainId, tokenAddress: token?.address },
+    !!token?.address,
+  )
+
+  const walletBalance = useMemo(
+    // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
+    () => ({
+      balance,
+      symbol: token?.symbol,
+      loading: isBalanceLoading,
+      usdRate,
+    }),
+    [balance, isBalanceLoading, token?.symbol, usdRate],
+  )
+
   const errors = form.formState.errors as PartialRecord<FieldPath<TFieldValues>, Error>
   const relatedMaxFieldError = max?.fieldName && errors[max.fieldName]
   const error = errors[name] || max?.error || balanceError || relatedMaxFieldError
@@ -74,12 +91,9 @@ export const LoanFormTokenInput = <
       )}
       isError={!!error}
       message={error?.message ?? message}
-      walletBalance={useMemo(
-        // todo: support separate isLoading for balance and for maxBalance in LargeTokenInput
-        () => ({ balance, symbol: token?.symbol, loading: isBalanceLoading }),
-        [balance, isBalanceLoading, token?.symbol],
-      )}
+      walletBalance={walletBalance}
       maxBalance={useMemo(() => max && { balance: max.data, chips: 'max' }, [max])}
+      inputBalanceUsd={decimal(form.getValues(name) && usdRate && usdRate * +form.getValues(name))}
     />
   )
 }

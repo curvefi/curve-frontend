@@ -83,7 +83,7 @@ export const AddCollateralForm = <ChainId extends IChainId>({
     >
       <Stack divider={<InputDivider />}>
         <LoanFormTokenInput
-          label={t`Collateral`}
+          label={t`Collateral to Add`}
           token={collateralToken}
           blockchainId={network.id}
           name="userCollateral"

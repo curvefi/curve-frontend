@@ -23,7 +23,7 @@ export const LoanFormWrapper = <TFieldValues extends FieldValues, TContext = any
 } & FormProviderProps<TFieldValues, TContext, TTransformedValues>) => (
   <FormProvider {...form}>
     <form onSubmit={onSubmit} style={{ overflowWrap: 'break-word' }}>
-      <Stack gap={Spacing.md}>
+      <Stack gap={Spacing.sm}>
         <Stack sx={{ backgroundColor: (t) => t.design.Layer[1].Fill }}>
           <AppFormContentWrapper>
             <Stack gap={Spacing.md}>{children}</Stack>
