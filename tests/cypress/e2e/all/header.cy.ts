@@ -27,7 +27,7 @@ describe('Header', () => {
       viewport = oneDesktopViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
@@ -89,7 +89,7 @@ describe('Header', () => {
       viewport = oneMobileOrTabletViewport()
       cy.viewport(...viewport)
       route = oneAppRoute()
-      cy.visit(`/${route}`)
+      cy.visitWithoutTestConnector(route)
       waitIsLoaded(route)
     })
 
