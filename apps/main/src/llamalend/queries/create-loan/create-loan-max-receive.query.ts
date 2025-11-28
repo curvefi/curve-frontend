@@ -48,7 +48,11 @@ export const maxReceiveValidation = createValidationSuite(
   },
 )
 
-export const { useQuery: useCreateLoanMaxReceive, queryKey: createLoanMaxReceiveKey } = queryFactory({
+export const {
+  useQuery: useCreateLoanMaxReceive,
+  queryKey: createLoanMaxReceiveKey,
+  fetchQuery: fetchLoanMaxReceive,
+} = queryFactory({
   queryKey: ({
     chainId,
     marketId,

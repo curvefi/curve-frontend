@@ -1,5 +1,5 @@
 import { useCallback } from 'react'
-import { useConfig } from 'wagmi'
+import { Config as WagmiConfig, useConfig } from 'wagmi'
 import { formatTokenAmounts } from '@/llamalend/llama.utils'
 import type { LlamaMarketTemplate } from '@/llamalend/llamalend.types'
 import { type LlammaMutationOptions, useLlammaMutation } from '@/llamalend/mutations/useLlammaMutation'
@@ -32,7 +32,7 @@ export type CreateLoanOptions = {
   userAddress: Address | undefined
 }
 
-const approve = async (
+export const approveLoan = async (
   market: LlamaMarketTemplate,
   { userCollateral, userBorrowed, leverageEnabled }: BorrowMutation,
 ) =>
@@ -42,7 +42,7 @@ const approve = async (
       : await market.leverage.createLoanApprove(userCollateral, userBorrowed)
     : await market.createLoanApprove(userCollateral)) as Address[]
 
-const create = async (
+export const createLoan = async (
   market: LlamaMarketTemplate,
   { debt, userCollateral, userBorrowed, leverageEnabled, range, slippage }: BorrowMutation,
 ) => {
@@ -53,6 +53,24 @@ const create = async (
   console.assert(!+userBorrowed, `userBorrowed not supported in this market`)
   const parent = leverageEnabled && market instanceof MintMarketTemplate ? market.leverage : market
   return (await parent.createLoan(userCollateral, debt, range, +slippage)) as Address
+}
+
+const approveAndCreateLoan = async ({
+  config,
+  market,
+  ...mutation
+}: BorrowMutation & {
+  chainId: IChainId
+  market: MintMarketTemplate | LendMarketTemplate
+  config: WagmiConfig
+}) => {
+  await waitForApproval({
+    isApproved: () => fetchBorrowCreateLoanIsApproved({ ...mutation, marketId: market.id }),
+    onApprove: () => approveLoan(market, mutation),
+    message: t`Approved loan creation`,
+    config,
+  })
+  return { hash: await createLoan(market, mutation) }
 }
 
 export const useCreateLoanMutation = ({
@@ -69,16 +87,7 @@ export const useCreateLoanMutation = ({
     network,
     marketId,
     mutationKey: [...rootKeys.userMarket({ chainId, marketId, userAddress }), 'create-loan'] as const,
-    mutationFn: async (mutation, { market }) => {
-      const params = { ...mutation, chainId, marketId }
-      await waitForApproval({
-        isApproved: () => fetchBorrowCreateLoanIsApproved(params),
-        onApprove: () => approve(market, mutation),
-        message: t`Approved loan creation`,
-        config,
-      })
-      return { hash: await create(market, mutation) }
-    },
+    mutationFn: async (mutation, { market }) => await approveAndCreateLoan({ ...mutation, chainId, market, config }),
     validationSuite: borrowFormValidationSuite,
     pendingMessage: (mutation, { market }) => t`Creating loan... ${formatTokenAmounts(market, mutation)}`,
     successMessage: (mutation, { market }) => t`Loan created! ${formatTokenAmounts(market, mutation)}`,

@@ -60,7 +60,8 @@ export function queryFactory<
     getQueryData: (params) => queryClient.getQueryData(queryKey(params)),
     setQueryData: (params, data) => queryClient.setQueryData<TData>(queryKey(params), data),
     prefetchQuery: (params, staleTime = 0) => queryClient.prefetchQuery({ ...getQueryOptions(params), staleTime }),
-    fetchQuery: (params, options) => queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
+    fetchQuery: (params, options = { staleTime: 0 }) =>
+      queryClient.fetchQuery({ ...getQueryOptions(params), ...options }),
     /**
      * Function that is like fetchQuery, but sets staleTime to 0 to ensure fresh data is fetched.
      * Primary use case is for Zustand stores where want to both use queries and ensure freshness.

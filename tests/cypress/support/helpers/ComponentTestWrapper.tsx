@@ -1,7 +1,11 @@
-import { type ReactElement } from 'react'
-import { WagmiProvider, type ResolvedRegister } from 'wagmi'
+import { type ReactElement, useMemo } from 'react'
+import { type ResolvedRegister, WagmiProvider } from 'wagmi'
+import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
+import { NetworkConfig } from '@/loan/types/loan.types'
+import { createTestWagmiConfigFromVNet } from '@cy/support/helpers/tenderly'
+import Box from '@mui/material/Box'
 import { createMemoryHistory, createRootRoute, createRouter, RouterProvider } from '@tanstack/react-router'
-import { WalletToast } from '@ui-kit/features/connect-wallet'
+import { ConnectionProvider, type LlamaApi, requireLib, WalletToast } from '@ui-kit/features/connect-wallet'
 import { persister, queryClient, QueryProvider } from '@ui-kit/lib/api'
 import { ThemeProvider } from '@ui-kit/shared/ui/ThemeProvider'
 import { WithWrapper } from '@ui-kit/shared/ui/WithWrapper'
@@ -40,3 +44,34 @@ export function ComponentTestWrapper({ config, children, autoConnect }: Props) {
     </ThemeProvider>
   )
 }
+
+export const LlamalendComponentWrapper = ({
+  network,
+  wagmi,
+  children,
+  onHydrated,
+}: {
+  network: NetworkConfig
+  wagmi: Parameters<typeof createTestWagmiConfigFromVNet>[0]
+  children: ReactElement
+  onHydrated?: (lib: LlamaApi) => Promise<void>
+}) => (
+  <ComponentTestWrapper config={createTestWagmiConfigFromVNet(wagmi)} autoConnect>
+    <ConnectionProvider
+      app="llamalend"
+      network={network}
+      onChainUnavailable={console.error}
+      hydrate={useMemo(
+        () => ({
+          llamalend: async () => {
+            await prefetchMarkets({})
+            await onHydrated?.(requireLib('llamaApi'))
+          },
+        }),
+        [onHydrated],
+      )}
+    >
+      <Box sx={{ maxWidth: 500 }}>{children}</Box>
+    </ConnectionProvider>
+  </ComponentTestWrapper>
+)

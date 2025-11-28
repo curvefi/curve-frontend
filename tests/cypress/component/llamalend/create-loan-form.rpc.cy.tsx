@@ -1,55 +1,27 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
-import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
 import type { OnBorrowFormUpdate } from '@/llamalend/features/borrow/types'
 import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutation'
 import networks from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
-import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { LlamalendComponentWrapper } from '@cy/support/helpers/ComponentTestWrapper'
+import { checkAccordion, getActionValue, TEST_LLAMA_MARKETS, useTestLlamaMarket } from '@cy/support/helpers/loan'
+import { createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
-import Box from '@mui/material/Box'
 import Skeleton from '@mui/material/Skeleton'
-import { useConnection } from '@ui-kit/features/connect-wallet/lib/ConnectionContext'
-import { ConnectionProvider } from '@ui-kit/features/connect-wallet/lib/ConnectionProvider'
 import { LlamaMarketType } from '@ui-kit/types/market'
 import { Chain } from '@ui-kit/utils'
 
 const chainId = Chain.Ethereum
-const MARKETS = {
-  [LlamaMarketType.Mint]: {
-    id: 'lbtc',
-    collateralAddress: '0x8236a87084f8b84306f72007f36f2618a5634494' as const, // lbtc
-    collateral: '1',
-    borrow: '100',
-  },
-  [LlamaMarketType.Lend]: {
-    id: 'one-way-market-14',
-    collateralAddress: '0x4c9EDD5852cd905f086C759E8383e09bff1E68B3' as const, // USDe
-    collateral: '1',
-    borrow: '0.9',
-  },
-}
-const oneEthInWei = '0xde0b6b3a7640000' // 1 ETH=1e18 wei
-
 const onUpdate: OnBorrowFormUpdate = async (form) => console.info('form updated', form)
 
 type BorrowTabTestProps = { type: LlamaMarketType } & Pick<CreateLoanOptions, 'onCreated'>
 
-const prefetch = () => prefetchMarkets({})
-
 function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
-  const { isHydrated, llamaApi } = useConnection()
-  const { id } = MARKETS[type]
-  const market = useMemo(
-    () =>
-      isHydrated &&
-      { [LlamaMarketType.Mint]: llamaApi?.getMintMarket, [LlamaMarketType.Lend]: llamaApi?.getLendMarket }[type]?.(id),
-    [isHydrated, id, llamaApi?.getLendMarket, llamaApi?.getMintMarket, type],
-  )
+  const market = useTestLlamaMarket(type)
   return market ? (
     <CreateLoanForm market={market} networks={networks} chainId={chainId} onUpdate={onUpdate} onCreated={onCreated} />
   ) : (
@@ -57,7 +29,7 @@ function BorrowTabTest({ type, onCreated }: BorrowTabTestProps) {
   )
 }
 
-describe('BorrowTabContents Component Tests', () => {
+describe('Create loan form component tests', () => {
   const privateKey = generatePrivateKey()
   const { address } = privateKeyToAccount(privateKey)
   const getVirtualNetwork = createVirtualTestnet((uuid) => ({
@@ -68,33 +40,22 @@ describe('BorrowTabContents Component Tests', () => {
   }))
 
   const marketType = oneValueOf(LlamaMarketType)
-  const { collateralAddress: tokenAddress, collateral, borrow } = MARKETS[marketType]
+  const { collateralAddress, collateral, borrow } = TEST_LLAMA_MARKETS[marketType]
   const leverageEnabled = oneBool() // test with and without leverage
 
   beforeEach(() => {
     const vnet = getVirtualNetwork()
     const { adminRpcUrl } = getRpcUrls(vnet)
-    fundEth({ adminRpcUrl, amountWei: oneEthInWei, recipientAddresses: [address] })
-    fundErc20({ adminRpcUrl, amountWei: oneEthInWei, tokenAddress, recipientAddresses: [address] })
+    fundEth({ adminRpcUrl, recipientAddresses: [address] })
+    fundErc20({ adminRpcUrl, tokenAddress: collateralAddress, recipientAddresses: [address] })
     cy.log(`Funded some eth and collateral to ${address} in vnet ${vnet.slug}`)
   })
 
   const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
-      <ConnectionProvider
-        app="llamalend"
-        network={networks[chainId]}
-        onChainUnavailable={console.error}
-        hydrate={{ llamalend: prefetch }}
-      >
-        <Box sx={{ maxWidth: 500 }}>
-          <BorrowTabTest {...props} />
-        </Box>
-      </ConnectionProvider>
-    </ComponentTestWrapper>
+    <LlamalendComponentWrapper wagmi={{ vnet: getVirtualNetwork(), privateKey }} network={networks[chainId]}>
+      <BorrowTabTest {...props} />
+    </LlamalendComponentWrapper>
   )
-
-  const getActionValue = (name: string) => cy.get(`[data-testid="${name}-value"]`, LOAD_TIMEOUT)
 
   it(`calculates max debt and health for ${marketType} market ${leverageEnabled ? 'with' : 'without'} leverage`, () => {
     const onCreated = cy.stub()
@@ -109,28 +70,7 @@ describe('BorrowTabContents Component Tests', () => {
     if (leverageEnabled) {
       cy.get('[data-testid="leverage-checkbox"]').click()
     }
-
-    // open borrow advanced settings and check all fields
-    cy.contains('button', 'Health').click()
-
-    getActionValue('borrow-band-range')
-      .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) to (\d(\.\d+)?)/)
-    getActionValue('borrow-price-range')
-      .invoke(LOAD_TIMEOUT, 'text')
-      .should('match', /(\d(\.\d+)?) - (\d(\.\d+)?)/)
-    getActionValue('borrow-apr').contains('%')
-    getActionValue('borrow-apr-previous').contains('%')
-    getActionValue('borrow-ltv').contains('%')
-    getActionValue('borrow-n').contains('50')
-
-    if (leverageEnabled) {
-      getActionValue('borrow-price-impact').contains('%')
-      getActionValue('borrow-slippage').contains('%')
-    } else {
-      getActionValue('borrow-price-impact').should('not.exist')
-      getActionValue('borrow-slippage').should('not.exist')
-    }
+    checkAccordion(leverageEnabled)
 
     cy.get('[data-testid="loan-form-errors"]').should('not.exist')
     cy.get('[data-testid="create-loan-submit-button"]').click()
