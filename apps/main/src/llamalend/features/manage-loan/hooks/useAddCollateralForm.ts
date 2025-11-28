@@ -11,6 +11,7 @@ import { useAddCollateralBands } from '@/llamalend/queries/add-collateral/add-co
 import { useAddCollateralEstimateGas } from '@/llamalend/queries/add-collateral/add-collateral-gas-estimate.query'
 import { getAddCollateralHealthOptions } from '@/llamalend/queries/add-collateral/add-collateral-health.query'
 import { useAddCollateralPrices } from '@/llamalend/queries/add-collateral/add-collateral-prices.query'
+import { useUserState } from '@/llamalend/queries/user-state.query'
 import type { CollateralParams } from '@/llamalend/queries/validation/manage-loan.types'
 import {
   collateralFormValidationSuite,
@@ -81,6 +82,7 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
 
   useCallbackAfterFormUpdate(form, action.reset)
 
+  const userState = useUserState(params, enabled)
   const bands = useAddCollateralBands(params, enabled)
   const health = useHealthQueries((isFull) => getAddCollateralHealthOptions({ ...params, isFull }, enabled))
   const prices = useAddCollateralPrices(params, enabled)
@@ -104,5 +106,6 @@ export const useAddCollateralForm = <ChainId extends LlamaChainId>({
     collateralToken,
     borrowToken,
     txHash: action.data?.hash,
+    userState,
   }
 }
