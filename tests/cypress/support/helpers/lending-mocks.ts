@@ -89,20 +89,14 @@ function oneLendingVaultResponse(chain: Chain): GetMarketsResponse {
           },
           {
             // largest TVL to test the sorting
-            ...oneLendingPool(chain, { utilization: oneFloat() }),
-            total_assets_usd: 60_000_000,
-            total_debt_usd: 50_000_000,
-            collateral_balance_usd: 50_000_000,
-            borrowed_balance_usd: 50_000_000,
+            ...oneLendingPool(chain, { utilization: oneFloat(), tvl: MAX_USD_VALUE }),
             address: HighTVLAddress,
             vault: HighTVLAddress,
             controller: HighTVLAddress,
           },
           {
             // 99% utilization to test the sorting and slider filter
-            ...oneLendingPool(chain, { utilization: oneFloat() }),
-            total_assets_usd: 100_000_000,
-            total_debt_usd: 99_000_000,
+            ...oneLendingPool(chain, { utilization: 0.99 }),
             address: HighUtilizationAddress,
             vault: HighUtilizationAddress,
             controller: HighUtilizationAddress,

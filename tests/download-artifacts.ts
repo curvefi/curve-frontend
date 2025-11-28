@@ -1,13 +1,15 @@
-import { execFileSync, spawnSync } from 'node:child_process'
-import { mkdir, readdir, unlink } from 'node:fs/promises'
-import path from 'node:path'
+import path from 'path'
+import { execFileSync, spawnSync, type ExecFileSyncOptionsWithStringEncoding } from 'child_process'
+import { mkdir, readdir, unlink } from 'fs/promises'
 
 type Extractor = (zipPath: string, targetDir: string) => void
+
+const { BRANCH, WORKFLOW, DEST_DIR, REPOSITORY = 'curvefi/curve-frontend' } = process.env
 
 /**
  * Execute a command and return trimmed stdout.
  */
-const run = (command: string, args: string[], options?: Parameters<typeof execFileSync>[2]): string =>
+const run = (command: string, args: string[], options?: ExecFileSyncOptionsWithStringEncoding): string =>
   execFileSync(command, args, {
     encoding: 'utf8',
     stdio: ['inherit', 'pipe', 'pipe'],
@@ -46,6 +48,8 @@ const findLatestRunId = (branch: string, workflow: string): string =>
   run('gh', [
     'run',
     'list',
+    '--repo',
+    REPOSITORY,
     '--branch',
     branch,
     '--workflow',
@@ -62,7 +66,7 @@ const findLatestRunId = (branch: string, workflow: string): string =>
  * Download artifacts for the given run into dest.
  */
 const downloadArtifacts = (runId: string, dest: string) => {
-  runStreaming('gh', ['run', 'download', runId, '--dir', dest])
+  runStreaming('gh', ['run', 'download', runId, '--repo', REPOSITORY, '--dir', dest])
 }
 
 /**
@@ -100,7 +104,6 @@ async function downloadLatestArtifacts(): Promise<void> {
   const repoRoot = run('git', ['rev-parse', '--show-toplevel'])
   process.chdir(repoRoot)
 
-  const { BRANCH, WORKFLOW, DEST_DIR } = process.env
   const branch = BRANCH?.trim() || run('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
   const workflow = WORKFLOW?.trim() || 'ci.yaml'
   const runId = findLatestRunId(branch, workflow)
