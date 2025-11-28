@@ -143,8 +143,8 @@ const usePoolAlert = (poolData?: PoolData | PoolDataCache) => {
       message: (
         <MessageWrapper>
           <div>
-            This pool is managed by <b>Yieldbasis</b>. Only deposits done from from the Yieldbasis UI earn from fees and
-            rewards. <br /> Go to{' '}
+            This pool is managed by <b>YieldBasis</b>. Only deposits made on the YieldBasis UI earn fees and rewards.{' '}
+            <br /> Go to{' '}
             <ExternalLink $noStyles href="https://yieldbasis.com">
               yieldbasis.com
             </ExternalLink>{' '}
