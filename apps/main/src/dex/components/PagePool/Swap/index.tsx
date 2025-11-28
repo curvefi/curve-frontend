@@ -429,6 +429,8 @@ const Swap = ({
                   selectedToken={fromToken}
                   tokens={selectList}
                   disabled={isDisabled || selectList.length === 0}
+                  showSearch={false}
+                  showManageList={false}
                   compact
                   onToken={({ address, symbol }) =>
                     updateFormValues(
