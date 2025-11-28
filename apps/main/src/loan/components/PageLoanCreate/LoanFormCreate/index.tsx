@@ -1,10 +1,10 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { styled } from 'styled-components'
 import { DEFAULT_HEALTH_MODE } from '@/llamalend/constants'
+import { MarketParameters } from '@/llamalend/features/market-parameters/MarketParameters'
 import AlertFormError from '@/loan/components/AlertFormError'
 import DialogHealthWarning from '@/loan/components/DialogHealthWarning'
 import LoanFormConnect from '@/loan/components/LoanFormConnect'
-import LoanInfoParameters from '@/loan/components/LoanInfoLlamma/LoanInfoParameters'
 import DetailInfo from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DetailInfo'
 import DialogHealthLeverageWarning from '@/loan/components/PageLoanCreate/LoanFormCreate/components/DialogHealthLeverageWarning'
 import type { FormStatus, FormValues, PageLoanCreateProps, StepKey } from '@/loan/components/PageLoanCreate/types'
@@ -469,7 +469,7 @@ const LoanCreate = ({
 
       {!isAdvancedMode && (
         <Accordion btnLabel={t`Loan Parameters`}>
-          <LoanInfoParameters llamma={llamma} llammaId={llammaId} />
+          <MarketParameters chainId={rChainId} marketId={llammaId} marketType="mint" action="borrow" />
         </Accordion>
       )}
     </>

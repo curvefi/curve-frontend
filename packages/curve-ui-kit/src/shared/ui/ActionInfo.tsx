@@ -168,7 +168,7 @@ const ActionInfo = ({
                 color={error ? 'error' : (valueColor ?? 'textPrimary')}
                 component="div"
               >
-                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : value}
+                {loading ? (typeof loading === 'string' ? loading : MOCK_SKELETON) : error ? '' : value}
               </Typography>
             </WithSkeleton>
 
@@ -176,7 +176,7 @@ const ActionInfo = ({
           </Stack>
         </Tooltip>
 
-        {error && (
+        {error && !loading && (
           <Tooltip title={errorMessage} placement="top">
             <ExclamationTriangleIcon fontSize="small" color="error" />
           </Tooltip>
