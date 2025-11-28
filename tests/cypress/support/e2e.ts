@@ -1,1 +1,28 @@
-// This file is imported automatically before e2e tests run. Try to keep it empty if possible
+import type { AppRoute } from './routes'
+
+declare global {
+  interface Window {
+    CypressNoTestConnector?: string
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable<Subject = any> {
+      visitWithoutTestConnector(route: AppRoute, options?: Partial<Cypress.VisitOptions>): Chainable<AUTWindow>
+    }
+  }
+}
+
+/**
+ * For most of our e2e tests we have a wagmi test connect that auto-connects, so there's a wallet available.
+ * However, in some cases we want to test functionality without a wallet connected.
+ */
+Cypress.Commands.add('visitWithoutTestConnector', (route: AppRoute, options?: Partial<Cypress.VisitOptions>) =>
+  cy.visit(`/${route}`, {
+    ...options,
+    onBeforeLoad(win) {
+      win.CypressNoTestConnector = 'true'
+      options?.onBeforeLoad?.(win)
+    },
+  }),
+)
