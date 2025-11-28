@@ -1,7 +1,7 @@
 import type { Address } from '@curvefi/prices-api'
 import { range, recordValues } from '@curvefi/prices-api/objects.util'
 
-export const MAX_USD_VALUE = 40_000_000 // $ 40m 🤑 not higher so we can test the highest TVL
+export const MAX_USD_VALUE = 400_000_000
 
 export const oneFloat = (minOrMax = 1, maxExclusive?: number): number =>
   maxExclusive === undefined ? Math.random() * minOrMax : minOrMax + Math.random() * (maxExclusive - minOrMax)
