@@ -30,16 +30,46 @@ type LoanInfoAccordionProps = {
   range?: number
   health: Query<Decimal>
   prevHealth?: Query<Decimal>
-  bands: Query<[number, number]>
-  prices: Query<readonly Decimal[]>
+  bands?: Query<[number, number]>
+  prices?: Query<readonly Decimal[]>
   rates: Query<{ borrowApr?: Decimal } | null>
   prevRates?: Query<{ borrowApr?: Decimal } | null>
   loanToValue: Query<Decimal | null>
   prevLoanToValue?: Query<Decimal | null>
   gas: Query<LoanInfoGasData | null>
-  debt?: Query<Decimal | null> & { tokenSymbol: string }
-  prevDebt?: Query<Decimal | null>
+  debt?: Query<Decimal | null> & { tokenSymbol?: string }
+  prevDebt?: Query<Decimal | null> & { tokenSymbol?: string }
+  collateral?: Query<Decimal | null> & { tokenSymbol?: string }
+  prevCollateral?: Query<Decimal | null> & { tokenSymbol?: string }
   leverage?: LoanLeverageActionInfoProps & { enabled: boolean }
+}
+
+/**
+ * Builds props for ActionInfo component that handles prev/current value transitions.
+ * - Displays "previous -> current" when both values are available
+ * - Displays "current" when only current value is available
+ * - Displays "previous" when only previous value is available
+ * - Displays empty value when neither are available
+ */
+const buildPrevCurrentValues = <T,>(
+  current: Query<T | null> | undefined,
+  previous: Query<T | null> | undefined,
+  format: (value: NonNullable<T>) => string,
+  emptyValue = '-',
+) => {
+  const hasCurrent = current?.data != null
+  const hasPrevious = previous?.data != null
+
+  return {
+    ...(hasCurrent && hasPrevious && { prevValue: format(previous!.data as NonNullable<T>) }),
+    value: hasCurrent
+      ? format(current!.data as NonNullable<T>)
+      : hasPrevious
+        ? format(previous!.data as NonNullable<T>)
+        : emptyValue,
+    error: current?.error ?? previous?.error,
+    loading: current?.isLoading || previous?.isLoading,
+  }
 }
 
 export const LoanInfoAccordion = ({
@@ -55,23 +85,22 @@ export const LoanInfoAccordion = ({
   loanToValue,
   prevLoanToValue,
   gas,
-  debt,
   prevDebt,
+  debt,
+  prevCollateral,
+  collateral,
   leverage,
 }: LoanInfoAccordionProps) => (
   // error tooltip isn't displayed correctly because accordion takes the mouse focus. Use title for now.
-  <Box title={health.error?.message}>
+  <Box title={(health.error ?? prevHealth?.error)?.message}>
     <Accordion
       ghost
       title={t`Health`}
       info={
         <ActionInfo
           label=""
-          prevValue={prevHealth?.data == null ? undefined : formatNumber(prevHealth.data, { abbreviate: false })}
-          value={health.data == null ? '∞' : formatNumber(health.data, { abbreviate: false })}
-          valueColor={getHealthValueColor(Number(health.data ?? 100), useTheme())}
-          error={health.error ?? prevHealth?.error}
-          loading={health.isLoading || prevHealth?.isLoading}
+          {...buildPrevCurrentValues(health, prevHealth, (v) => formatNumber(v, { abbreviate: false }), '∞')}
+          valueColor={getHealthValueColor(Number(health.data ?? prevHealth?.data ?? 100), useTheme())}
           testId="borrow-health"
         />
       }
@@ -80,31 +109,41 @@ export const LoanInfoAccordion = ({
     >
       <Stack>
         {leverage?.enabled && <LoanLeverageActionInfo {...leverage} />}
-        {debt && (
+        {(debt || prevDebt) && (
           <ActionInfo
             label={t`Debt`}
-            {...(prevDebt?.data && { prevValue: formatNumber(prevDebt.data, { abbreviate: false }) })}
-            value={debt.data == null ? '-' : formatNumber(debt.data, { abbreviate: false })}
-            valueRight={debt.tokenSymbol}
-            error={debt?.error ?? prevDebt?.error}
-            loading={debt?.isLoading || prevDebt?.isLoading}
+            {...buildPrevCurrentValues(debt, prevDebt, (v) => formatNumber(v, { abbreviate: false }))}
+            valueRight={debt?.tokenSymbol ?? prevDebt?.tokenSymbol}
             testId="borrow-debt"
           />
         )}
-        <ActionInfo
-          label={t`Band range`}
-          value={bands.data ? `${bands.data[0]} to ${bands.data[1]}` : '-'}
-          error={bands.error}
-          loading={bands.isLoading}
-          testId="borrow-band-range"
-        />
-        <ActionInfo
-          label={t`Price range`}
-          value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ') ?? '-'}
-          error={prices.error}
-          loading={prices.isLoading}
-          testId="borrow-price-range"
-        />
+        {(collateral || prevCollateral) && (
+          <ActionInfo
+            label={t`Collateral`}
+            {...buildPrevCurrentValues(collateral, prevCollateral, (v) => formatNumber(v, { abbreviate: false }))}
+            valueRight={collateral?.tokenSymbol ?? prevCollateral?.tokenSymbol}
+            testId="borrow-collateral"
+          />
+        )}
+
+        {bands && (
+          <ActionInfo
+            label={t`Band range`}
+            value={bands.data ? `${bands.data[0]} to ${bands.data[1]}` : '-'}
+            error={bands.error}
+            loading={bands.isLoading}
+            testId="borrow-band-range"
+          />
+        )}
+        {prices && (
+          <ActionInfo
+            label={t`Price range`}
+            value={prices.data?.map((p) => formatNumber(p, { abbreviate: false })).join(' - ') ?? '-'}
+            error={prices.error}
+            loading={prices.isLoading}
+            testId="borrow-price-range"
+          />
+        )}
         {range != null && (
           <ActionInfo label={t`N`} value={formatNumber(range, { decimals: 0, abbreviate: false })} testId="borrow-n" />
         )}
@@ -116,14 +155,11 @@ export const LoanInfoAccordion = ({
           loading={rates.isLoading || prevRates?.isLoading}
           testId="borrow-apr"
         />
-        {loanToValue && (
+        {(loanToValue || prevLoanToValue) && (
           <ActionInfo
             label={t`Loan to value ratio`}
-            {...(prevLoanToValue?.data && { prevValue: formatPercent(prevLoanToValue.data) })}
-            value={loanToValue.data ? formatPercent(loanToValue.data) : '-'}
+            {...buildPrevCurrentValues(loanToValue, prevLoanToValue, formatPercent)}
             testId="borrow-ltv"
-            error={prevLoanToValue?.error ?? loanToValue.error}
-            loading={loanToValue.isLoading || prevLoanToValue?.isLoading}
           />
         )}
         <ActionInfo
