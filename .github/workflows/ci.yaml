@@ -64,7 +64,7 @@ jobs:
         with:
           name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
   cypress-component-rpc:
@@ -96,7 +96,7 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
   cypress-e2e:
@@ -147,7 +147,7 @@ jobs:
         with:
           name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4

@@ -16,7 +16,8 @@
     "cy:run:e2e": "wait-on http://localhost:3000 --timeout 1m && cypress run --e2e",
     "cy:open:component": "cypress open --component",
     "cy:run:component": "cypress run --component --spec 'cypress/component/**/!(*.rpc).cy.{ts,tsx}'",
-    "cy:run:rpc": "cypress run --component --spec 'cypress/component/**/*.rpc.cy.{ts,tsx}'"
+    "cy:run:rpc": "cypress run --component --spec 'cypress/component/**/*.rpc.cy.{ts,tsx}'",
+    "download:artifacts": "node --experimental-strip-types download-artifacts.ts"
   },
   "devDependencies": {
     "@cypress/react": "^9.0.1",
