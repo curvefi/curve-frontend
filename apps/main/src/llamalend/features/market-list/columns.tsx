@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { ColumnDef, createColumnHelper, FilterFnOption, type ColumnMeta } from '@tanstack/react-table'
+import { ColumnDef, type ColumnMeta, createColumnHelper, FilterFnOption } from '@tanstack/react-table'
 import { type DeepKeys } from '@tanstack/table-core'
 import { t } from '@ui-kit/lib/i18n'
 import {
@@ -25,12 +25,12 @@ import {
 } from './cells'
 import { LlamaMarketColumnId } from './columns.enum'
 import {
-  CollateralBorrowHeaderTooltipContent,
   BorrowRateHeaderTooltipContent,
+  CollateralBorrowHeaderTooltipContent,
   LendRateHeaderTooltipContent,
-  UtilizationHeaderTooltipContent,
   LiquidityUsdHeaderTooltipContent,
   TvlHeaderTooltipContent,
+  UtilizationHeaderTooltipContent,
 } from './header-tooltips'
 
 const columnHelper = createColumnHelper<LlamaMarket>()
@@ -228,3 +228,5 @@ export const LLAMA_MARKET_COLUMNS = [
 export const DEFAULT_SORT = [{ id: LlamaMarketColumnId.Tvl, desc: true }]
 export const DEFAULT_SORT_BORROW = [{ id: LlamaMarketColumnId.UserHealth, desc: false }]
 export const DEFAULT_SORT_SUPPLY = [{ id: LlamaMarketColumnId.UserDeposited, desc: true }]
+
+export const MARKET_CUTOFF_DATE = new Date('2025-11-12T00:00:00Z') // November 12, 2025

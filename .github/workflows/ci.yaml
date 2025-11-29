@@ -64,7 +64,7 @@ jobs:
         with:
           name: cypress-component-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
   cypress-component-rpc:
@@ -96,7 +96,7 @@ jobs:
         with:
           name: cypress-rpc
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
   cypress-e2e:
@@ -135,7 +135,7 @@ jobs:
         working-directory: tests
         run: |
           set -o pipefail # fail tee if the main command fails
-          yarn run cy:run:e2e --browser ${{ matrix.browser }} | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
+          yarn run cy:run:e2e --browser ${{ matrix.browser }} 2>&1 | tee ../e2e-cypress-${{ matrix.browser }}-${{ matrix.count }}.log
         env:
           ELECTRON_ENABLE_LOGGING: true # send console logs to stdout in electron browser
           NODE_ENV: test
@@ -143,6 +143,7 @@ jobs:
 
       - name: Check runtime errors
         if: always()
+        # todo: add `Cannot destructure .. as it is undefined`
         run: if grep --ignore-case --extended-regexp "update depth exceeded|many re-renders|unmounted component|non-unique keys|uncontrolled to controlled|properties of undefined" e2e-*.log; then exit 1; fi
 
       - uses: actions/upload-artifact@v4
@@ -150,7 +151,7 @@ jobs:
         with:
           name: cypress-e2e-${{ matrix.browser }}-${{ matrix.count }}
           path: tests/cypress/screenshots
-          retention-days: 1
+          retention-days: 3
           if-no-files-found: error
 
       - uses: actions/upload-artifact@v4

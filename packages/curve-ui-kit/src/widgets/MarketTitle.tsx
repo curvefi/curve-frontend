@@ -7,6 +7,7 @@ import type { Address } from '@ui-kit/utils'
 import { CopyIconButton } from '../shared/ui/CopyIconButton'
 import { ClickableInRowClass, DesktopOnlyHoverClass } from '../shared/ui/DataTable/data-table.utils'
 import { RouterLink } from '../shared/ui/RouterLink'
+import { responsiveTitleEllipsisSx } from '../shared/ui/titleTruncate'
 
 export function MarketTitle({ address, title, url }: { address: Address; title: ReactNode; url: string }) {
   const isMobile = useIsMobile()
@@ -30,10 +31,7 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
         })}
         sx={{
           // for very small screens, truncate the text and limit to a maximum width
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '40vw', // make sure the other column will fit in small screens
+          ...responsiveTitleEllipsisSx,
           paddingBlock: { mobile: '5px', tablet: 0 },
         }}
       >

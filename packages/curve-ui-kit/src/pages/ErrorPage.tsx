@@ -4,6 +4,7 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 import { useLayoutStore } from '@ui-kit/features/layout'
+import { persister, queryClient } from '@ui-kit/lib/api'
 import { t } from '@ui-kit/lib/i18n'
 import { RouterLink } from '@ui-kit/shared/ui/RouterLink'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
@@ -26,6 +27,8 @@ export const ErrorPage = ({
   const navHeight = useLayoutStore((state) => state.navHeight)
   const [resetClicked, setResetClicked] = useState(false)
   const onRetry = useCallback(() => {
+    queryClient.clear()
+    persister?.removeClient?.()
     if (resetError && !resetClicked) {
       setResetClicked(true)
       resetError()

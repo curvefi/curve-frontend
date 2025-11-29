@@ -20,7 +20,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 37939132349027.805,
-      "dt": "2025-02-11T08:00:11"
+      "dt": "2025-02-11T08:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.12350547389952227,
@@ -40,7 +50,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36677049030796.016,
-      "dt": "2025-02-09T00:00:11"
+      "dt": "2025-02-09T00:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.05986224417328345,
@@ -60,7 +80,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36645687805726.6,
-      "dt": "2025-02-07T00:00:11"
+      "dt": "2025-02-07T00:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.05986224417328345,
@@ -80,7 +110,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36645665106473.21,
-      "dt": "2025-02-06T23:57:23"
+      "dt": "2025-02-06T23:57:23",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.04974604614220168,
@@ -100,7 +140,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36643756361810.8,
-      "dt": "2025-02-06T20:00:11"
+      "dt": "2025-02-06T20:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.04974604614220168,
@@ -120,7 +170,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36638869416787.555,
-      "dt": "2025-02-06T07:58:11"
+      "dt": "2025-02-06T07:58:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.047944530655772866,
@@ -140,7 +200,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36634585938627.53,
-      "dt": "2025-02-06T04:00:11"
+      "dt": "2025-02-06T04:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.03401332663166623,
@@ -160,7 +230,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 36631342124169.234,
-      "dt": "2025-02-05T20:00:11"
+      "dt": "2025-02-05T20:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.0327819465080883,
@@ -180,7 +260,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 35794438630890.19,
-      "dt": "2025-02-04T15:57:59"
+      "dt": "2025-02-04T15:57:59",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.03293724986562663,
@@ -200,7 +290,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 35768991389047.4,
-      "dt": "2025-02-04T12:00:11"
+      "dt": "2025-02-04T12:00:11",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.03293724986562663,
@@ -220,7 +320,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 35768976392716.57,
-      "dt": "2025-02-04T11:56:47"
+      "dt": "2025-02-04T11:56:47",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     },
     {
       "rate": 0.030969959883235365,
@@ -240,7 +350,17 @@
       "loan_discount": 9e16,
       "liquidation_discount": 6e16,
       "sum_debt_squared": 35748305621806.73,
-      "dt": "2025-02-03T03:57:35"
+      "dt": "2025-02-03T03:57:35",
+      "collateral_token": {
+        "symbol": "wstETH",
+        "address": "0x7f39c581f595b53c5cb5bbd59eae13dd6c3c6c5d",
+        "rebasing_yield": null
+      },
+      "stablecoin_token": {
+        "symbol": "crvUSD",
+        "address": "0xf939e0a03fb07f59a73314e73794be0e57ac1b4e",
+        "rebasing_yield": null
+      }
     }
   ]
 }
