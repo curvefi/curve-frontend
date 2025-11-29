@@ -1,7 +1,7 @@
 import { ComponentProps, useState } from 'react'
+import { Stack } from '@mui/material'
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import { TabsSwitcher, type TabOption } from '../../shared/ui/TabsSwitcher'
-import { Stack } from '@mui/material'
 
 type Tab = `${number}`
 const tabs: TabOption<Tab>[] = [
