@@ -33,7 +33,7 @@ export function MarketTitle({ address, title, url }: { address: Address; title: 
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
-          maxWidth: '40vw', // make sure the other column will fit in small screens
+          maxWidth: '30vw', // make sure the other column will fit in small screens
           paddingBlock: { mobile: '5px', tablet: 0 },
         }}
       >
