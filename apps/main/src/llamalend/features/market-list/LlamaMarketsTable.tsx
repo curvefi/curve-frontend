@@ -17,7 +17,7 @@ import { TableFilters } from '@ui-kit/shared/ui/DataTable/TableFilters'
 import { TableFiltersTitles } from '@ui-kit/shared/ui/DataTable/TableFiltersTitles'
 import { EmptyStateCard } from '@ui-kit/shared/ui/EmptyStateCard'
 import { LlamaListChips } from './chips/LlamaListChips'
-import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS } from './columns'
+import { DEFAULT_SORT, LLAMA_MARKET_COLUMNS, MARKET_CUTOFF_DATE } from './columns'
 import { LlamaMarketColumnId } from './columns.enum'
 import { useLlamaTableVisibility } from './hooks/useLlamaTableVisibility'
 import { useSearch } from './hooks/useSearch'
@@ -36,7 +36,6 @@ const useDefaultLlamaFilter = (minTvl: number) =>
   )
 
 const pagination = { pageIndex: 0, pageSize: 200 }
-const newMarketsCutoffDate = new Date('2025-11-12T00:00:00Z').getTime() // November 12, 2025
 
 export const LlamaMarketsTable = ({
   onReload,
@@ -71,7 +70,7 @@ export const LlamaMarketsTable = ({
   // Filter out markets after a certain creation date, because they're unsafe to use until Llamalend V2 is live.
   // We're directly filtering the market list and not the hooks and queries, to avoid the chance of breaking
   // other components with potential missing data or incomplete metrics. It's purely presentational filtering.
-  const data = useMemo(() => markets.filter((market) => market.createdAt <= newMarketsCutoffDate), [markets])
+  const data = useMemo(() => markets.filter((market) => market.createdAt <= MARKET_CUTOFF_DATE.getTime()), [markets])
 
   const table = useReactTable({
     columns: LLAMA_MARKET_COLUMNS,

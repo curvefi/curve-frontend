@@ -1,3 +1,4 @@
+import { MARKET_CUTOFF_DATE } from '@/llamalend/features/market-list/columns'
 import type { GetMarketsResponse } from '@curvefi/prices-api/llamalend'
 import { fromEntries, range } from '@curvefi/prices-api/objects.util'
 import { MAX_USD_VALUE, oneAddress, oneDate, oneFloat, oneInt, oneOf, onePrice } from '@cy/support/generators'
@@ -70,7 +71,7 @@ const oneLendingPool = (
     collateral_token: { symbol: collateral.symbol, address: collateral.address, rebasing_yield: null },
     borrowed_token: { symbol: borrowed.symbol, address: borrowed.address, rebasing_yield: null },
     extra_reward_apr: [],
-    created_at: oneDate().toISOString(),
+    created_at: oneDate({ maxDate: MARKET_CUTOFF_DATE }).toISOString(),
     max_ltv: oneFloat(60, 110), // between 60% and 110%
   }
 }

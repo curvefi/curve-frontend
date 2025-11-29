@@ -169,9 +169,9 @@ describe(`LlamaLend Markets`, () => {
 
   it(`should allow filtering by using a slider input`, () => {
     const [columnId, getFilterValue] = oneOf(
-      ['liquidityUsd', () => getMaxLiquidity(vaultData) / 2],
-      ['tvl', () => getMaxTvl(vaultData) / 2],
-      ['utilizationPercent', () => 50],
+      ['liquidityUsd', () => getMaxLiquidity(vaultData) / 10],
+      ['tvl', () => getMaxTvl(vaultData) / 10],
+      ['utilizationPercent', () => 90],
     )
 
     cy.get(`[data-testid^="data-table-row"]`).then(({ length }) => {
@@ -433,14 +433,14 @@ function enableGraphColumn() {
 }
 
 function setupMocks() {
-  const vaultData = createLendingVaultChainsResponse()
-  console.log(JSON.stringify({ vaultData }))
+  const generatedData = createLendingVaultChainsResponse()
   mockTokenPrices()
-  mockLendingVaults(vaultData)
+  mockLendingVaults(generatedData)
   mockLendingSnapshots().as('lend-snapshots')
   mockMintMarkets()
   mockMintSnapshots()
-  return vaultData
+  console.info(JSON.stringify({ generatedData })) // for debugging ci failures
+  return generatedData
 }
 
 const getMaxLiquidity = (vaultData: Record<Chain, GetMarketsResponse>) =>

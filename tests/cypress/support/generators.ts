@@ -35,8 +35,10 @@ export const shuffle = <T>(...options: T[]): T[] => {
 export const oneTokenType = () => oneOf('collateral', 'borrowed')
 export type TokenType = ReturnType<typeof oneTokenType>
 
-export const oneDate = (minDate?: Date, maxDate?: Date): Date => {
-  const min = minDate?.getTime() ?? Date.now() - 365 * 24 * 60 * 60 * 1000 // 1 year ago
-  const max = maxDate?.getTime() ?? Date.now()
-  return new Date(oneFloat(min, max))
-}
+export const oneDate = ({
+  minDate = new Date(Date.now() - 365 * 24 * 60 * 60 * 1000), // 1 year ago
+  maxDate = new Date(Date.now()),
+}: {
+  minDate?: Date
+  maxDate?: Date
+}): Date => new Date(oneFloat(minDate.getTime(), maxDate.getTime()))
