@@ -8,6 +8,7 @@ import { LlamaIcon } from '@ui-kit/shared/icons/LlamaIcon'
 import { Banner } from '@ui-kit/shared/ui/Banner'
 import { SizesAndSpaces } from '@ui-kit/themes/design/1_sizes_spaces'
 import { isCypress, ReleaseChannel } from '@ui-kit/utils'
+import { PhishingWarningBanner } from '@ui-kit/widgets/Header/PhishingWarningBanner'
 
 export type GlobalBannerProps = {
   networkId: string
@@ -30,6 +31,7 @@ export const GlobalBanner = ({ networkId, chainId }: GlobalBannerProps) => {
   const warnColor = useTheme().palette.mode === 'dark' ? '#000' : 'textSecondary' // todo: fix this in the design system of the alert component
   return (
     <Box>
+      <PhishingWarningBanner />
       {releaseChannel !== ReleaseChannel.Stable && !isCypress && (
         <Banner onClick={() => setReleaseChannel(ReleaseChannel.Stable)} buttonText={t`Disable ${releaseChannel} Mode`}>
           <LlamaIcon sx={{ width: IconSize.sm, height: IconSize.sm }} /> {t`${releaseChannel} Mode Enabled`}

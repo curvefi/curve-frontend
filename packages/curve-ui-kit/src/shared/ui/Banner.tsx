@@ -54,6 +54,8 @@ export const Banner = ({
   severity = 'default',
   learnMoreUrl,
   color,
+  subtitle,
+  testId,
 }: {
   onClick?: () => void
   buttonText?: string
@@ -61,57 +63,60 @@ export const Banner = ({
   severity?: BannerSeverity
   learnMoreUrl?: string
   color?: TypographyProps['color']
+  subtitle?: ReactNode
+  testId?: string
 }) => (
   <Card
     sx={{
       display: 'flex',
-      gap: Spacing.md,
       alignSelf: 'stretch',
       paddingInline: Spacing.md,
       paddingBlock: Spacing.xs,
-      alignItems: 'center',
       justifyContent: 'center',
       ...WrapperSx[severity],
     }}
+    data-testid={testId}
   >
-    <Stack
-      direction="row"
-      sx={{ width: '100%', maxWidth: MaxWidth.banner }}
-      alignItems="center"
-      justifyContent="space-between"
-    >
-      <InvertTheme inverted={TitleInverted[severity]}>
-        <Typography color={color ?? TitleColor[severity]} variant="headingXsBold">
-          {children}
-        </Typography>
-      </InvertTheme>
-      <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
-        {/* fixme: currently using light theme on dark theme */}
-        <ChangeTheme to={color === '#000' && 'light'}>
-          {learnMoreUrl && (
-            <Button
-              component={LinkMui}
-              href={learnMoreUrl}
-              target="_blank"
-              color="ghost"
-              variant="link"
-              endIcon={<ArrowTopRightIcon />}
-              size="extraSmall"
-            >
-              {t`Learn more`}
-            </Button>
-          )}
-          {onClick &&
-            (buttonText ? (
-              <Button color="ghost" onClick={onClick} size="extraSmall">
-                {buttonText}
+    <Stack direction="column" width="100%" maxWidth={MaxWidth.banner}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <InvertTheme inverted={TitleInverted[severity]}>
+          <Typography color={color ?? TitleColor[severity]} variant="headingXsBold">
+            {children}
+          </Typography>
+        </InvertTheme>
+        <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
+          {/* fixme: currently using light theme on dark theme */}
+          <ChangeTheme to={color === '#000' && 'light'}>
+            {learnMoreUrl && (
+              <Button
+                component={LinkMui}
+                href={learnMoreUrl}
+                target="_blank"
+                color="ghost"
+                variant="link"
+                endIcon={<ArrowTopRightIcon />}
+                size="extraSmall"
+              >
+                {t`Learn more`}
               </Button>
-            ) : (
-              <IconButton onClick={onClick} size="extraSmall">
-                <CloseIcon />
-              </IconButton>
-            ))}
-        </ChangeTheme>
+            )}
+            {onClick &&
+              (buttonText ? (
+                <Button color="ghost" onClick={onClick} size="extraSmall">
+                  {buttonText}
+                </Button>
+              ) : (
+                <IconButton onClick={onClick} size="extraSmall">
+                  <CloseIcon />
+                </IconButton>
+              ))}
+          </ChangeTheme>
+        </Stack>
+      </Stack>
+      <Stack direction="row" alignItems="center" justifyContent="start" height="100%">
+        <Typography color="textSecondary" variant="bodySRegular">
+          {subtitle}
+        </Typography>
       </Stack>
     </Stack>
   </Card>
