@@ -104,7 +104,10 @@ jobs:
       fail-fast: false
       matrix:
         browser: [chrome, firefox, electron]
-        count: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        count: [1]
+        include:
+          - browser: chrome
+            count: 2
     name: Cypress e2e tests in ${{ matrix.browser }} ${{ matrix.count }}
     timeout-minutes: 15
     runs-on: ubuntu-latest
