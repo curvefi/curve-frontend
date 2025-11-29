@@ -7,6 +7,7 @@ export const combineQueriesMeta = <T extends QueryOptionsArray>(results: QueryRe
   isPending: results.some((result) => result.isPending),
   isError: results.some((result) => result.isError),
   isFetching: results.some((result) => result.isFetching),
+  error: results.find((result) => result.error)?.error,
 })
 
 /** Combines the data and metadata of multiple queries into a single object. */

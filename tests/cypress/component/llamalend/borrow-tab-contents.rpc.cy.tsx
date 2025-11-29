@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import { useMemo } from 'react'
 import { generatePrivateKey, privateKeyToAccount } from 'viem/accounts'
 import { prefetchMarkets } from '@/lend/entities/chain/chain-query'
 import { CreateLoanForm } from '@/llamalend/features/borrow/components/CreateLoanForm'
@@ -7,7 +7,7 @@ import type { CreateLoanOptions } from '@/llamalend/mutations/create-loan.mutati
 import networks from '@/loan/networks'
 import { oneBool, oneValueOf } from '@cy/support/generators'
 import { ComponentTestWrapper } from '@cy/support/helpers/ComponentTestWrapper'
-import { createTestWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
+import { createTenderlyWagmiConfigFromVNet, createVirtualTestnet } from '@cy/support/helpers/tenderly'
 import { getRpcUrls } from '@cy/support/helpers/tenderly/vnet'
 import { fundErc20, fundEth } from '@cy/support/helpers/tenderly/vnet-fund'
 import { LOAD_TIMEOUT } from '@cy/support/ui'
@@ -80,7 +80,10 @@ describe('BorrowTabContents Component Tests', () => {
   })
 
   const BorrowTabTestWrapper = (props: BorrowTabTestProps) => (
-    <ComponentTestWrapper config={createTestWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })} autoConnect>
+    <ComponentTestWrapper
+      config={createTenderlyWagmiConfigFromVNet({ vnet: getVirtualNetwork(), privateKey })}
+      autoConnect
+    >
       <ConnectionProvider
         app="llamalend"
         network={networks[chainId]}

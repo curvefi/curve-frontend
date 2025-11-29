@@ -11,4 +11,9 @@ describe('Basic Access Test', () => {
     cy.title(LOAD_TIMEOUT).should('equal', 'Savings crvUSD - Curve')
     cy.url().should('match', /http:\/\/localhost:\d+\/crvusd\/ethereum\/scrvUSD\/?$/)
   })
+
+  it('should open a loan market page succesfully', () => {
+    cy.visit('/crvusd/ethereum/markets/WBTC') // some WBTC mint market on ethereum
+    cy.get('[data-testid^="detail-page-stack"]', LOAD_TIMEOUT).should('be.visible')
+  })
 })

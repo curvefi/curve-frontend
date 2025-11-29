@@ -18,7 +18,6 @@ import {
   MarketRewards,
   MarketStatBands,
   MarketStatCapAndAvailable,
-  MarketStatParameters,
   MaxRecvLeverageResp,
   ParsedBandsBalances,
   Provider,
@@ -54,22 +53,6 @@ export const helpers = {
 }
 
 const market = {
-  fetchStatsParameters: async (markets: OneWayMarketTemplate[]) => {
-    log('fetchStatsParameters', markets.length)
-    const results: { [id: string]: MarketStatParameters } = {}
-
-    await PromisePool.for(markets)
-      .handleError((errorObj, market) => {
-        const error = getErrorMessage(errorObj, 'error-api')
-        results[market.id] = { parameters: null, error }
-      })
-      .process(async (market) => {
-        const parameters = await market.stats.parameters()
-        results[market.id] = { parameters, error: '' }
-      })
-
-    return results
-  },
   fetchStatsBands: async (markets: OneWayMarketTemplate[]) => {
     log('fetchStatsBands', markets.length)
     const results: { [id: string]: MarketStatBands } = {}
@@ -263,7 +246,7 @@ const user = {
       .process(async (market) => {
         const userActiveKey = helpers.getUserActiveKey(api, market)
 
-        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage, pnl] =
+        const [state, healthFull, healthNotFull, range, bands, prices, bandsBalances, oraclePriceBand, leverage] =
           await Promise.all([
             market.userState(),
             market.userHealth(),
@@ -274,7 +257,6 @@ const user = {
             market.userBandsBalances(),
             market.oraclePriceBand(),
             market.currentLeverage(signerAddress),
-            market.currentPnL(signerAddress),
           ])
 
         // Fetch user loss separately to prevent prices-api dependency from blocking contract read data
@@ -311,7 +293,6 @@ const user = {
             prices,
             loss,
             leverage,
-            pnl,
             status: getLiquidationStatus(healthNotFull, isCloseToLiquidation, state.borrowed),
           },
           error: '',

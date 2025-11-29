@@ -1,7 +1,6 @@
 import type { Hex } from 'viem'
 import { generatePrivateKey } from 'viem/accounts'
 import { DeepPartial } from '@ui-kit/types/util'
-import { createTestWagmiConfig } from '../wagmi'
 import { tenderlyAccount } from './account'
 import {
   createVirtualTestnet as createVirtualTestnetRequest,
@@ -19,6 +18,7 @@ import {
   type GetVirtualTestnetOptions,
   type GetVirtualTestnetResponse,
 } from './vnet-get'
+import { createTenderlyWagmiConfig } from './wagmi'
 
 /**
  * Extracts the Admin and Public RPC URLs from a Tenderly virtual testnet response.
@@ -31,7 +31,7 @@ export const getRpcUrls = (
   publicRpcUrl: vnet.rpcs.find((rpc) => rpc.name === 'Public RPC')!.url,
 })
 
-export function createTestWagmiConfigFromVNet({
+export function createTenderlyWagmiConfigFromVNet({
   vnet,
   privateKey = generatePrivateKey(),
 }: {
@@ -39,7 +39,7 @@ export function createTestWagmiConfigFromVNet({
   privateKey?: Hex
 }) {
   const { adminRpcUrl: rpcUrl, publicRpcUrl: explorerUrl } = getRpcUrls(vnet)
-  return createTestWagmiConfig({
+  return createTenderlyWagmiConfig({
     privateKey,
     rpcUrl,
     explorerUrl,

@@ -1,5 +1,6 @@
 import { useAccount } from 'wagmi'
-import { useUserHealth } from '@/llamalend/queries/user-health.query'
+import { useHealthQueries } from '@/llamalend/hooks/useHealthQueries'
+import { getUserHealthOptions } from '@/llamalend/queries/user-health.query'
 import type { ActionInfosProps } from '..'
 import type { MarketParams } from '../types'
 import { useCollateralInfo } from './useCollateralInfo'
@@ -11,9 +12,17 @@ import { useLoanInfo } from './useLoanInfo'
  */
 export function useActionInfos(params: MarketParams): ActionInfosProps {
   const { address: userAddress } = useAccount()
-  const { data: userHealth } = useUserHealth({ ...params, userAddress })
+  const { data: userHealth } = useHealthQueries((isFull) =>
+    getUserHealthOptions(
+      {
+        ...{ ...params, userAddress },
+        isFull,
+      },
+      undefined,
+    ),
+  )
 
-  const health = { current: Number(userHealth?.health ?? 0) }
+  const health = { current: Number(userHealth ?? 0) }
 
   const loanInfo = useLoanInfo(params)
   const collateral = useCollateralInfo(params)

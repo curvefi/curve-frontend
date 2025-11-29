@@ -1,9 +1,9 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useOneWayMarket } from '@/lend/entities/chain'
-import useStore from '@/lend/store/useStore'
 import { ChainId } from '@/lend/types/lend.types'
 import { useTokenUsdRate } from '@ui-kit/lib/model/entities/token-usd-rate'
 import { formatNumber } from '@ui-kit/utils'
+import { useMarketPricePerShare } from '../entities/market-details'
 
 function formatNumberWithPrecision(value: number, precisionDigits: number) {
   const valueDigits = Math.max(0, Math.floor(Math.log10(value)))
@@ -13,15 +13,15 @@ function formatNumberWithPrecision(value: number, precisionDigits: number) {
 
 function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string | number | undefined = '0') {
   const market = useOneWayMarket(rChainId, rOwmId).data
-  const pricePerShareResp = useStore((state) => state.markets.vaultPricePerShare[rChainId]?.[rOwmId])
+  const { data: pricePerShare, error: errorPricePerShare } = useMarketPricePerShare({
+    chainId: rChainId,
+    marketId: rOwmId,
+  })
   const { address = '', symbol = '' } = market?.borrowed_token ?? {}
   const { data: usdRate } = useTokenUsdRate({ chainId: rChainId, tokenAddress: address })
-  const fetchVaultPricePerShare = useStore((state) => state.markets.fetchVaultPricePerShare)
 
   const { borrowedAmount, borrowedAmountUsd } = useMemo<{ borrowedAmount: string; borrowedAmountUsd: string }>(() => {
-    const { pricePerShare, error } = pricePerShareResp ?? {}
-
-    if (error || usdRate == null || isNaN(usdRate)) {
+    if (pricePerShare == null || errorPricePerShare || usdRate == null || isNaN(usdRate)) {
       return { borrowedAmount: '?', borrowedAmountUsd: '?' }
     }
 
@@ -36,12 +36,7 @@ function useVaultShares(rChainId: ChainId, rOwmId: string, vaultShares: string |
     }
 
     return { borrowedAmount: '', borrowedAmountUsd: '' }
-  }, [pricePerShareResp, usdRate, symbol, vaultShares])
-
-  useEffect(() => {
-    if (market && +vaultShares > 0) void fetchVaultPricePerShare(rChainId, market)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [market?.id, vaultShares])
+  }, [pricePerShare, errorPricePerShare, usdRate, symbol, vaultShares])
 
   return {
     isLoading: borrowedAmount === '' && borrowedAmountUsd === '',
