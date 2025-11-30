@@ -16,14 +16,13 @@ type SliceState = {
   poolsMapper: { [chainId: string]: PoolDataCacheMapper }
   routerFormValues: { [chainId: string]: SwapFormValuesCache }
   tvlMapper: { [chainId: string]: ValueMapperCached }
-  volumeMapper: { [chainId: string]: ValueMapperCached }
 }
 
 const sliceKey = 'storeCache'
 
 export type CacheSlice = {
   [sliceKey]: SliceState & {
-    setTvlVolumeMapper(type: 'tvlMapper' | 'volumeMapper', chainId: ChainId, mapper: ValueMapperCached): void
+    setTvlVolumeMapper(type: 'tvlMapper', chainId: ChainId, mapper: ValueMapperCached): void
     setStateByActiveKey<T>(key: StateKey, activeKey: string, value: T): Promise<void>
     setStateByKey<T>(key: StateKey, value: T): Promise<void>
     setStateByKeys(SliceState: Partial<SliceState>): Promise<void>
@@ -35,7 +34,6 @@ const DEFAULT_STATE: SliceState = {
   poolsMapper: {},
   routerFormValues: {},
   tvlMapper: {},
-  volumeMapper: {},
 }
 
 const TIMEOUT_MS = 4000

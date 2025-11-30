@@ -32,7 +32,6 @@ export type TableRowProps = {
   showInPoolColumn: boolean
   tvlCached: { value: string } | undefined
   tvl: Tvl | undefined
-  volumeCached: { value: string } | undefined
   volume: Volume | undefined
   handleCellClick(target: EventTarget, formType?: 'swap' | 'withdraw'): void
 }
@@ -51,7 +50,6 @@ const TableRow = ({
   showInPoolColumn,
   tvlCached,
   tvl,
-  volumeCached,
   volume,
   handleCellClick,
 }: TableRowProps) => {
@@ -139,7 +137,7 @@ const TableRow = ({
           )}
           {columnKey === COLUMN_KEYS.volume && (
             <Td className="right">
-              <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+              <TableCellVolume isHighLight={sortBy === 'volume'} volume={volume} />
             </Td>
           )}
           {columnKey === COLUMN_KEYS.tvl && (

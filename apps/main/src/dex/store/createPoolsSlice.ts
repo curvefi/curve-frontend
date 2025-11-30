@@ -194,7 +194,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
     },
     fetchPoolsVolume: async (chainId, poolDatas) => {
       const {
-        storeCache,
         [sliceKey]: { volumeMapper: sVolumeMapper, ...sliceState },
       } = get()
       const { getVolume } = curvejsApi.pool
@@ -217,9 +216,6 @@ const createPoolsSlice = (set: StoreApi<State>['setState'], get: StoreApi<State>
       // update volumeMapper
       const volumeMapper: VolumeMapper = { ...sVolumeMapper[chainId], ...Object.fromEntries(results) }
       sliceState.setStateByActiveKey('volumeMapper', chainId.toString(), volumeMapper)
-
-      //  update cache
-      storeCache.setTvlVolumeMapper('volumeMapper', chainId, volumeMapper)
     },
     fetchPools: async (curve, poolIds, failedFetching24hOldVprice) => {
       const {

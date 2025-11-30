@@ -46,7 +46,6 @@ const TableRowMobile = ({
   themeType,
   tvlCached,
   tvl,
-  volumeCached,
   volume,
   handleCellClick,
   setShowDetail,
@@ -108,7 +107,7 @@ const TableRowMobile = ({
                 <ListInfoItems>
                   {columnKeys.indexOf(COLUMN_KEYS.volume) !== -1 && (
                     <ListInfoItem title={tableLabel.volume.name}>
-                      <TableCellVolume isHighLight={sortBy === 'volume'} volumeCached={volumeCached} volume={volume} />
+                      <TableCellVolume isHighLight={sortBy === 'volume'} volume={volume} />
                     </ListInfoItem>
                   )}
                   <ListInfoItem title={tableLabel.tvl.name}>

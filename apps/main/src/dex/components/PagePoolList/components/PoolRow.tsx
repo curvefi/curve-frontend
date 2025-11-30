@@ -65,7 +65,6 @@ export const PoolRow = ({
   const tvlCached = useStore((state) => state.storeCache.tvlMapper[rChainId]?.[poolId])
   const tvl = useStore((state) => state.pools.tvlMapper[rChainId]?.[poolId])
   const isInPool = useStore((state) => state.user.poolList[userActiveKey]?.[poolId])
-  const volumeCached = useStore((state) => state.storeCache.volumeMapper[rChainId]?.[poolId])
   const volume = useStore((state) => state.pools.volumeMapper[rChainId]?.[poolId])
   const { data: network } = useNetworkByChain({ chainId: rChainId })
 
@@ -103,7 +102,6 @@ export const PoolRow = ({
     showInPoolColumn,
     tvlCached,
     tvl,
-    volumeCached,
     volume,
     handleCellClick,
   }
