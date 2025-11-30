@@ -14,7 +14,7 @@ const { isEqual } = lodash
 
 type GlobalState = {
   hasDepositAndStake: { [chainId: string]: boolean | null }
-  hasRouter: { [chainId: string]: boolean | null }
+  hasRouter: { [chainId: string]: boolean | undefined }
 }
 
 export interface GlobalSlice extends GlobalState {
@@ -47,7 +47,7 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
     }
     if (chainId) {
       resp.hasDepositAndStake = get().hasDepositAndStake[chainId] ?? get().storeCache.hasDepositAndStake[chainId]
-      resp.hasRouter = get().hasRouter[chainId] ?? get().storeCache.hasRouter[chainId]
+      resp.hasRouter = get().hasRouter[chainId]
     }
     return resp
   },
@@ -59,7 +59,6 @@ const createGlobalSlice = (set: StoreApi<State>['setState'], get: StoreApi<State
         state.hasDepositAndStake[chainId] = hasDepositAndStake
         state.storeCache.hasDepositAndStake[chainId] = hasDepositAndStake
         state.hasRouter[chainId] = hasRouter
-        state.storeCache.hasRouter[chainId] = hasRouter
       }),
     )
   },
